@@ -1,13 +1,27 @@
+/*
+ * Copyright (c) 2019. Antonello Andrea (www.hydrologis.com). All rights reserved.
+ * Use of this source code is governed by a GPL3 license that can be
+ * found in the LICENSE file.
+ */
+
 import 'package:flutter/material.dart';
 
-// Copyright 2019 Antonello Andrea (www.hydrologis.com). All rights reserved.
-// Use of this source code is governed by a GPL3 license that can be
-// found in the LICENSE file.
+class GeopaparazziColors{
+  static Color mainBackground = const ColorExt("#FFFFFF");
+  static Color mainDecorations = ColorExt("#5d9d76");
+  static Color mainDecorationsDark = ColorExt("#378756");
+  static Color mainTextColor = ColorExt("#5d9d76");
+  static Color mainTextColorNeutral = ColorExt("#000000");
+  static Color mainSelection = ColorExt("#FF9933");
+  static Color mainSelectionBorder = ColorExt("#993300");
+}
+
 
 /// Color Extended
 ///
 /// A color class that also allows to use hex and wkt colors in the constructor.
 class ColorExt extends Color {
+
   static int _getColorFromHex(String hexOrNamedColor) {
     if (hexOrNamedColor.startsWith("#")) {
       hexOrNamedColor = hexOrNamedColor.toUpperCase().replaceAll("#", "");
