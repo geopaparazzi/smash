@@ -6,7 +6,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/geopaparazzi_models.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/dashboard.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(LoadingImageApp());
 
@@ -16,8 +18,9 @@ class LoadingImageApp extends StatelessWidget {
     return MaterialApp(
       title: 'Geopaparazzi',
       theme: ThemeData(
-          primarySwatch:  GeopaparazziColors.mainDecorationsMc,
+          primarySwatch: GeopaparazziColors.mainDecorationsMc,
           accentColor: GeopaparazziColors.mainSelectionMc,
+          canvasColor: GeopaparazziColors.mainBackground,
           brightness: Brightness.light,
           inputDecorationTheme: InputDecorationTheme(
             border: const OutlineInputBorder(
@@ -39,7 +42,10 @@ class LoadingImageApp extends StatelessWidget {
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       showPerformanceOverlay: false,
-      home: DashboardWidget(),
+      home: ScopedModel<GeopaparazziProjectModel>(
+        model: GeopaparazziProjectModel(),
+        child: DashboardWidget(),
+      ),
     );
   }
 }
