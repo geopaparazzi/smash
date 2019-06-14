@@ -12,6 +12,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/geopaparazzi_m
 import 'package:scoped_model/scoped_model.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/notes.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/logs.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/map.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,14 +30,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   String _projectName = "No project loaded";
   int _notesCount = 0;
   int _logsCount = 0;
-
-  _DashboardWidgetState() {}
+  GeopaparazziProjectModel _projectModel;
 
   Future<bool> _checkStats(BuildContext context) async {
-    GeopaparazziProjectModel projectModel =
-        ScopedModel.of<GeopaparazziProjectModel>(context,
-            rebuildOnChange: true);
-    var database = await projectModel.getDatabase();
+    _projectModel = ScopedModel.of<GeopaparazziProjectModel>(context,
+        rebuildOnChange: true);
+    var database = await _projectModel.getDatabase();
     if (database != null) {
       _projectName = basename(database.path);
 
@@ -83,15 +82,18 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the Future is complete, display the preview.
                 return OrientationBuilder(builder: (context, orientation) {
-                  return GridView.count(
-                    crossAxisCount: orientation == Orientation.portrait ? 2 : 3,
-                    childAspectRatio:
-                        orientation == Orientation.portrait ? 0.9 : 1.6,
-                    padding: EdgeInsets.all(5),
-                    mainAxisSpacing: 2,
-                    crossAxisSpacing: 2,
-                    children: getTiles(orientation == Orientation.portrait),
-                  );
+                  return ScopedModelDescendant<GeopaparazziProjectModel>(
+                      builder: (context, child, model) => GridView.count(
+                            crossAxisCount:
+                                orientation == Orientation.portrait ? 2 : 3,
+                            childAspectRatio:
+                                orientation == Orientation.portrait ? 0.9 : 1.6,
+                            padding: EdgeInsets.all(5),
+                            mainAxisSpacing: 2,
+                            crossAxisSpacing: 2,
+                            children: getTiles(context, model,
+                                orientation == Orientation.portrait),
+                          ));
                 });
               } else {
                 // Otherwise, display a loading indicator.
@@ -112,7 +114,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     );
   }
 
-  List<Widget> getTiles(bool isPortrait) {
+  List<Widget> getTiles(
+      BuildContext context, GeopaparazziProjectModel model, bool isPortrait) {
     var headerColor = Color.fromRGBO(256, 256, 256, 0);
     var iconSize = isPortrait ? _media.width / 4 : _media.height / 4;
 
@@ -140,22 +143,35 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     var iconExport = Icons.file_upload;
 
     return [
-      getSingleTile(headerNotes, headerColor,
-          _notesCount == 0 ? "" : "${_notesCount}", iconNotes, iconSize),
-      getSingleTile(
-          headerMetadata, headerColor, infoMetadata, iconMetadata, iconSize),
-      getSingleTile(headerLogs, headerColor,
-          _logsCount == 0 ? "" : "${_logsCount}", iconLogs, iconSize),
-      getSingleTile(headerMaps, headerColor, infoMaps, iconMaps, iconSize),
-      getSingleTile(
-          headerImport, headerColor, infoImport, iconImport, iconSize),
-      getSingleTile(
-          headerExport, headerColor, infoExport, iconExport, iconSize),
+      getSingleTile(context, null, headerNotes, headerColor,
+          _notesCount == 0 ? "" : "${_notesCount}", iconNotes, iconSize, null),
+      getSingleTile(context, null, headerMetadata, headerColor, infoMetadata,
+          iconMetadata, iconSize, null),
+      getSingleTile(context, null, headerLogs, headerColor,
+          _logsCount == 0 ? "" : "${_logsCount}", iconLogs, iconSize, null),
+      getSingleTile(context, model, headerMaps, headerColor, infoMaps, iconMaps,
+          iconSize, openMapFunction),
+      getSingleTile(context, null, headerImport, headerColor, infoImport,
+          iconImport, iconSize, null),
+      getSingleTile(context, null, headerExport, headerColor, infoExport,
+          iconExport, iconSize, null),
     ];
   }
 
+  openMapFunction(context, model) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => GeopaparazziMapWidget(_projectModel)));
+  }
+
   GridTile getSingleTile(
-      String header, Color color, String info, IconData icon, double iconSize) {
+      BuildContext context,
+      GeopaparazziProjectModel model,
+      String header,
+      Color color,
+      String info,
+      IconData icon,
+      double iconSize,
+      Function function) {
     return GridTile(
         header: GridTileBar(
           title: Text(header, style: TextStyle(fontWeight: FontWeight.bold)),
@@ -175,7 +191,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               color: GeopaparazziColors.mainBackground,
             ),
             iconSize: iconSize,
-            onPressed: () {},
+            onPressed: () {
+              function(context, model);
+            },
             color: GeopaparazziColors.mainBackground,
             highlightColor: GeopaparazziColors.mainSelection,
           ),
@@ -190,12 +208,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     return [
       new Container(
         margin: EdgeInsets.only(bottom: 20),
-        child: new DrawerHeader(
-            child: new SvgPicture.asset(
-          assetName,
-          fit: BoxFit.scaleDown,
-          semanticsLabel: 'A red up arrow',
-        )),
+        child: new DrawerHeader(child: Image.asset("assets/gpicon.png")),
+//            new SvgPicture.asset(
+//          assetName,
+//          fit: BoxFit.scaleDown,
+//          semanticsLabel: 'A red up arrow',
+//        )),
         color: GeopaparazziColors.mainDecorations,
       ),
       new Container(

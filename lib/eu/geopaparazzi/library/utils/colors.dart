@@ -60,47 +60,47 @@ class ColorExt extends Color {
       String colorName = hexOrNamedColor.toLowerCase();
       switch (colorName) {
         case "red":
-          return int.parse("#d32f2f", radix: 16); //
+          return int.parse("ffd32f2f", radix: 16); //
         case "pink":
-          return int.parse("#c2185b", radix: 16); //
+          return int.parse("ffc2185b", radix: 16); //
         case "purple":
-          return int.parse("#7b1fa2", radix: 16); //
+          return int.parse("ff7b1fa2", radix: 16); //
         case "deep_purple":
-          return int.parse("#512da8", radix: 16); //
+          return int.parse("ff512da8", radix: 16); //
         case "indigo":
-          return int.parse("#303f9f", radix: 16); //
+          return int.parse("ff303f9f", radix: 16); //
         case "blue":
-          return int.parse("#1976d2", radix: 16); //
+          return int.parse("ff1976d2", radix: 16); //
         case "light_blue":
-          return int.parse("#0288d1", radix: 16); //
+          return int.parse("ff0288d1", radix: 16); //
         case "cyan":
-          return int.parse("#0097a7", radix: 16); //
+          return int.parse("ff0097a7", radix: 16); //
         case "teal":
-          return int.parse("#00796b", radix: 16); //
+          return int.parse("ff00796b", radix: 16); //
         case "green":
-          return int.parse("#00796b", radix: 16); //
+          return int.parse("ff00796b", radix: 16); //
         case "light_green":
-          return int.parse("#689f38", radix: 16); //
+          return int.parse("ff689f38", radix: 16); //
         case "lime":
-          return int.parse("#afb42b", radix: 16); //
+          return int.parse("ffafb42b", radix: 16); //
         case "yellow":
-          return int.parse("#fbc02d", radix: 16); //
+          return int.parse("fffbc02d", radix: 16); //
         case "amber":
-          return int.parse("#ffa000", radix: 16); //
+          return int.parse("ffffa000", radix: 16); //
         case "orange":
-          return int.parse("#f57c00", radix: 16); //
+          return int.parse("fff57c00", radix: 16); //
         case "deep_orange":
-          return int.parse("#e64a19", radix: 16); //
+          return int.parse("ffe64a19", radix: 16); //
         case "brown":
-          return int.parse("#5d4037", radix: 16); //
+          return int.parse("ff5d4037", radix: 16); //
         case "grey":
-          return int.parse("#616161", radix: 16); //
+          return int.parse("ff616161", radix: 16); //
         case "blue_grey":
-          return int.parse("#455a64", radix: 16); //
+          return int.parse("ff455a64", radix: 16); //
         case "white":
-          return int.parse("#ffffff", radix: 16); //
+          return int.parse("ffffffff", radix: 16); //
         case "almost_black":
-          return int.parse("#212121", radix: 16); //
+          return int.parse("ff212121", radix: 16); //
         default:
           return Colors.red.value;
       }

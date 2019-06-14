@@ -10,9 +10,9 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/geopaparazzi_m
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/dashboard.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-void main() => runApp(LoadingImageApp());
+void main() => runApp(GeopaparazziApp());
 
-class LoadingImageApp extends StatelessWidget {
+class GeopaparazziApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

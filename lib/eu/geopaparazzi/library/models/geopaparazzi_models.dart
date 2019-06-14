@@ -45,3 +45,4 @@ class GeopaparazziProjectModel extends Model {
     _projectPath = null;
   }
 }
+
