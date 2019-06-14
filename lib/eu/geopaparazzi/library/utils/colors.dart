@@ -6,22 +6,48 @@
 
 import 'package:flutter/material.dart';
 
-class GeopaparazziColors{
-  static Color mainBackground = const ColorExt("#FFFFFF");
+class GeopaparazziColors {
+  static Color mainBackground = ColorExt("#FFFFFF");
   static Color mainDecorations = ColorExt("#5d9d76");
   static Color mainDecorationsDark = ColorExt("#378756");
   static Color mainTextColor = ColorExt("#5d9d76");
   static Color mainTextColorNeutral = ColorExt("#000000");
   static Color mainSelection = ColorExt("#FF9933");
   static Color mainSelectionBorder = ColorExt("#993300");
+
+  static MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
+  static MaterialColor mainDecorationsMc = toMaterialColor(mainDecorations);
+  static MaterialColor mainDecorationsDarkMc =
+      toMaterialColor(mainDecorationsDark);
+  static MaterialColor mainTextColorMc = toMaterialColor(mainTextColor);
+  static MaterialColor mainTextColorNeutralMc =
+      toMaterialColor(mainTextColorNeutral);
+  static MaterialColor mainSelectionMc = toMaterialColor(mainSelection);
+  static MaterialColor mainSelectionBorderMc =
+      toMaterialColor(mainSelectionBorder);
 }
 
+MaterialColor toMaterialColor(Color color) {
+  Map<int, Color> swatch = {
+    50: color.withOpacity(.1),
+    100: color.withOpacity(.2),
+    200: color.withOpacity(.3),
+    300: color.withOpacity(.4),
+    400: color.withOpacity(.5),
+    500: color.withOpacity(.6),
+    600: color.withOpacity(.7),
+    700: color.withOpacity(.8),
+    800: color.withOpacity(.9),
+    900: color.withOpacity(1),
+  };
+  MaterialColor colorMc = MaterialColor(color.value, swatch);
+  return colorMc;
+}
 
 /// Color Extended
 ///
 /// A color class that also allows to use hex and wkt colors in the constructor.
 class ColorExt extends Color {
-
   static int _getColorFromHex(String hexOrNamedColor) {
     if (hexOrNamedColor.startsWith("#")) {
       hexOrNamedColor = hexOrNamedColor.toUpperCase().replaceAll("#", "");
