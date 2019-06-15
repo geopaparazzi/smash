@@ -1,22 +1,20 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geopaparazzi.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 
+import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geopaparazzi.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:latlong/latlong.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/geopaparazzi_models.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class GeopaparazziMapWidget extends StatefulWidget {
-  GeopaparazziProjectModel _model;
-  GeopaparazziMapWidget(this._model, {Key key}) : super(key: key);
+  GeopaparazziMapWidget({Key key}) : super(key: key);
 
   @override
   GeopaparazziMapWidgetState createState() => new GeopaparazziMapWidgetState();
@@ -30,27 +28,33 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
   MarkerLayerOptions _geopapMarker;
   PolylineLayerOptions _geopapLogs;
   TileLayerOptions _osmLayer;
-  var _currentZoom = 7.0;
   Position _lastPosition;
-  bool _isFirstLoad = true;
+
+  double _initLon;
+  double _initLat;
+  double _initZoom;
 
   MapController _mapController;
 
-  void set geopapMarkers(MarkerLayerOptions geopapMarker) {
+  set geopapMarkers(MarkerLayerOptions geopapMarker) {
     _geopapMarker = geopapMarker;
   }
 
-  void set geopapLogs(PolylineLayerOptions geopapLogs) {
+  set geopapLogs(PolylineLayerOptions geopapLogs) {
     _geopapLogs = geopapLogs;
   }
 
-  void showSnackBar(SnackBar bar) {
+  showSnackBar(SnackBar bar) {
     _scaffoldKey.currentState.showSnackBar(bar);
   }
 
   @override
   void initState() {
     super.initState();
+    _initLon = gpProjectModel.lastCenterLon;
+    _initLat = gpProjectModel.lastCenterLat;
+    _initZoom = gpProjectModel.lastCenterZoom;
+
     GpsHandler().addPositionListener(this);
     _mapController = MapController();
     _osmLayer = new TileLayerOptions(
@@ -64,27 +68,28 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
   }
 
   Future loadProject() async {
-    if (widget._model.projectPath != null) {
+    if (gpProjectModel.projectPath != null) {
       GeopaparazziMapLoader loader =
-          new GeopaparazziMapLoader(new File(widget._model.projectPath), this);
+          new GeopaparazziMapLoader(new File(gpProjectModel.projectPath), this);
       await loader.loadNotes();
     }
+    setState(() {
+    });
   }
 
   @override
   void dispose() {
+    // save last position
+    gpProjectModel.lastCenterLon = _mapController.center.longitude;
+    gpProjectModel.lastCenterLat = _mapController.center.latitude;
+    gpProjectModel.lastCenterZoom = _mapController.zoom;
+    // stop listening to gps
     GpsHandler().removePositionListener(this);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-//    if(_isFirstLoad){
-//      loadProject(context);
-//      _isFirstLoad = false;
-//    }
-
-
     var layers = <LayerOptions>[];
     layers.add(_osmLayer);
 
@@ -134,11 +139,11 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
           )
         ],
       ),
-      body: Center(
+      body: Center( // here no futurebuilder can be used, because the gps triggers refresh, which makes it cluttered
           child: FlutterMap(
         options: new MapOptions(
-          center: new LatLng(46.32, 11.46),
-          zoom: _currentZoom,
+          center: new LatLng(_initLat, _initLon),
+          zoom: _initZoom,
         ),
         layers: layers,
         mapController: _mapController,
@@ -157,9 +162,9 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
       child: FloatingActionButton(
         onPressed: () {
           setState(() {
-            _currentZoom = _currentZoom + 1;
-            if (_currentZoom > 19) _currentZoom = 19;
-            _mapController.move(_mapController.center, _currentZoom);
+            var zoom = _mapController.zoom + 1;
+            if (zoom > 19) zoom = 19;
+            _mapController.move(_mapController.center, zoom);
           });
         },
         tooltip: 'Zoom in',
@@ -177,9 +182,9 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
       child: FloatingActionButton(
         onPressed: () {
           setState(() {
-            _currentZoom = _currentZoom - 1;
-            if (_currentZoom < 0) _currentZoom = 0;
-            _mapController.move(_mapController.center, _currentZoom);
+            var zoom = _mapController.zoom - 1;
+            if (zoom < 0) zoom = 0;
+            _mapController.move(_mapController.center, zoom);
           });
         },
         tooltip: 'Zoom out',

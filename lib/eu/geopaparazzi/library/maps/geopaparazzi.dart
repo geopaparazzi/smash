@@ -113,13 +113,11 @@ class GeopaparazziMapLoader {
           Polyline(points: points, strokeWidth: width, color: ColorExt(color)));
     });
 
-    _widgetState.setState(() {
-      _widgetState.geopapLogs = PolylineLayerOptions(
-        polylines: lines,
-      );
-      _widgetState.geopapMarkers = MarkerLayerOptions(
-        markers: markers,
-      );
-    });
+    _widgetState.geopapLogs = PolylineLayerOptions(
+      polylines: lines,
+    );
+    _widgetState.geopapMarkers = MarkerLayerOptions(
+      markers: markers,
+    );
   }
 }

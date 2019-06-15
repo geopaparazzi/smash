@@ -6,13 +6,35 @@
 
 import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/geopaparazzi_models.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/dashboard.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(GeopaparazziApp());
 
-class GeopaparazziApp extends StatelessWidget {
+class GeopaparazziApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return GeopaparazziAppState();
+  }
+}
+
+class GeopaparazziAppState extends State<GeopaparazziApp> {
+  @override
+  void initState() {
+    super.initState();
+    gpProjectModel = GPProjectModel();
+  }
+
+  @override
+  void dispose() {
+    if (gpProjectModel != null) {
+      gpProjectModel.close();
+      gpProjectModel = null;
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,10 +64,7 @@ class GeopaparazziApp extends StatelessWidget {
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       showPerformanceOverlay: false,
-      home: ScopedModel<GeopaparazziProjectModel>(
-        model: GeopaparazziProjectModel(),
-        child: DashboardWidget(),
-      ),
+      home: DashboardWidget(),
     );
   }
 }
