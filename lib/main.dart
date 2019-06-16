@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/dashboard.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(GeopaparazziApp());
@@ -24,15 +25,31 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
   void initState() {
     super.initState();
     gpProjectModel = GPProjectModel();
+    GpPreferences().getLastPosition().then((pos) {
+      if (pos != null) {
+        gpProjectModel.lastCenterLon = pos[0];
+        gpProjectModel.lastCenterLat = pos[1];
+        gpProjectModel.lastCenterZoom = pos[2];
+      }
+    });
   }
 
   @override
   void dispose() {
     if (gpProjectModel != null) {
-      gpProjectModel.close();
-      gpProjectModel = null;
+      savePosition().then((v) {
+        gpProjectModel.close();
+        gpProjectModel = null;
+        super.dispose();
+      });
+    } else {
+      super.dispose();
     }
-    super.dispose();
+  }
+
+  Future<void> savePosition() async {
+    await GpPreferences().setLastPosition(gpProjectModel.lastCenterLon,
+        gpProjectModel.lastCenterLat, gpProjectModel.lastCenterZoom);
   }
 
   @override
@@ -64,7 +81,12 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       showPerformanceOverlay: false,
-      home: DashboardWidget(),
+      home: WillPopScope(
+          child: DashboardWidget(),
+          onWillPop: () {
+            dispose();
+            return Future.value(true);
+          }),
     );
   }
 }

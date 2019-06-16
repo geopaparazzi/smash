@@ -71,40 +71,40 @@ class GPProjectModel extends BloCSetting {
   }
 }
 
-class GeopaparazziProjectModel extends Model {
-  final KEY_LAST_GPAPPROJECT = "lastgpapProject";
-
-  String _projectPath;
-  Database _db;
-
-  String get projectPath => _projectPath;
-
-  void set projectPath(String path) {
-    _projectPath = path;
-    if (_db != null && _db.isOpen) {
-      _db.close();
-      _db = null;
-    }
-  }
-
-  Future<Database> getDatabase() async {
-    if (_db == null) {
-      if (_projectPath == null) {
-        _projectPath = await GpPreferences().getString(KEY_LAST_GPAPPROJECT);
-      }
-      if (_projectPath == null) {
-        return null;
-      }
-      _db = await openDatabase(_projectPath);
-      await GpPreferences().setString(KEY_LAST_GPAPPROJECT, _projectPath);
-    }
-    return _db;
-  }
-
-  void close() {
-    if (_db != null) {
-      _db.close();
-    }
-    _projectPath = null;
-  }
-}
+//class GeopaparazziProjectModel extends Model {
+//  final KEY_LAST_GPAPPROJECT = "lastgpapProject";
+//
+//  String _projectPath;
+//  Database _db;
+//
+//  String get projectPath => _projectPath;
+//
+//  void set projectPath(String path) {
+//    _projectPath = path;
+//    if (_db != null && _db.isOpen) {
+//      _db.close();
+//      _db = null;
+//    }
+//  }
+//
+//  Future<Database> getDatabase() async {
+//    if (_db == null) {
+//      if (_projectPath == null) {
+//        _projectPath = await GpPreferences().getString(KEY_LAST_GPAPPROJECT);
+//      }
+//      if (_projectPath == null) {
+//        return null;
+//      }
+//      _db = await openDatabase(_projectPath);
+//      await GpPreferences().setString(KEY_LAST_GPAPPROJECT, _projectPath);
+//    }
+//    return _db;
+//  }
+//
+//  void close() {
+//    if (_db != null) {
+//      _db.close();
+//    }
+//    _projectPath = null;
+//  }
+//}

@@ -3,18 +3,20 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/notes.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/logs.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/notes.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/map.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:path/path.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -23,12 +25,23 @@ class DashboardWidget extends StatefulWidget {
   _DashboardWidgetState createState() => new _DashboardWidgetState();
 }
 
-class _DashboardWidgetState extends State<DashboardWidget> {
+class _DashboardWidgetState extends State<DashboardWidget>
+    implements PositionListener {
   Size _media;
 
   String _projectName = "No project loaded";
   int _notesCount = 0;
   int _logsCount = 0;
+  GpsStatus _gpsStatus = GpsStatus.OFF;
+  Icon _gpsIcon;
+
+  @override
+  void initState() {
+    _gpsIcon = Icon(
+      Icons.gps_fixed,
+      color: getGpsStatusColor(),
+    );
+  }
 
   Future<bool> _checkStats(BuildContext context) async {
     var database = await gpProjectModel.getDatabase();
@@ -48,7 +61,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   Widget build(BuildContext context) {
     LocationPermissionHandler().requestPermission().then((isGranted) {
       if (isGranted) {
-        GpsHandler();
+        GpsHandler().addPositionListener(this);
       }
     });
 
@@ -59,10 +72,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         title: new Text("Geopaparazzi"),
         actions: <Widget>[
           IconButton(
-              icon: Icon(
-                Icons.gps_fixed,
-                color: GeopaparazziColors.mainBackground,
-              ),
+              icon: _gpsIcon,
               tooltip: "Check GPS Information",
               onPressed: () {
                 print("GPS info Pressed...");
@@ -119,7 +129,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
     var headerLogs = "Logs";
     var infoLogs = "0";
-    var iconLogs = Icons.gps_off;
+    var iconLogs = GpsHandler().isLogging ? Icons.gps_fixed : Icons.gps_off;
 
     var headerMaps = "Maps";
     var infoMaps = "";
@@ -138,8 +148,14 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           _notesCount == 0 ? "" : "${_notesCount}", iconNotes, iconSize, null),
       getSingleTile(context, headerMetadata, headerColor, infoMetadata,
           iconMetadata, iconSize, null),
-      getSingleTile(context, headerLogs, headerColor,
-          _logsCount == 0 ? "" : "${_logsCount}", iconLogs, iconSize, null),
+      getSingleTile(
+          context,
+          headerLogs,
+          headerColor,
+          _logsCount == 0 ? "" : "${_logsCount}",
+          iconLogs,
+          iconSize,
+          toggleLoggingFunction),
       getSingleTile(context, headerMaps, headerColor, infoMaps, iconMaps,
           iconSize, openMapFunction),
       getSingleTile(context, headerImport, headerColor, infoImport, iconImport,
@@ -152,6 +168,17 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   openMapFunction(context) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => GeopaparazziMapWidget()));
+  }
+
+  toggleLoggingFunction(context) {
+    if (GpsHandler().isLogging) {
+      GpsHandler().stopLogging();
+    } else {
+      // TODO ask user
+      String logName = ISO8601_TS_FORMATTER.format(DateTime.now());
+      GpsHandler().startLogging(logName);
+    }
+    setState(() {});
   }
 
   GridTile getSingleTile(BuildContext context, String header, Color color,
@@ -185,7 +212,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   }
 
   getDrawerWidgets(BuildContext context) {
-    final String assetName = 'assets/geopaparazzi_launcher_icon.svg';
+//    final String assetName = 'assets/geopaparazzi_launcher_icon.svg';
     double iconSize = 48;
     double textSize = iconSize / 2;
     var c = GeopaparazziColors.mainDecorations;
@@ -249,18 +276,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
             ),
             onTap: () => _openAbout(context),
           ),
-          ListTile(
-            leading: new Icon(
-              Icons.exit_to_app,
-              color: c,
-              size: iconSize,
-            ),
-            title: Text(
-              "Exit",
-              style: TextStyle(fontSize: textSize, color: c),
-            ),
-            onTap: () => doExit(context),
-          ),
         ]),
       ),
     ];
@@ -281,6 +296,47 @@ class _DashboardWidgetState extends State<DashboardWidget> {
         await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
     if (file != null && file.existsSync()) {
       gpProjectModel.setNewProject(this, file.path);
+    }
+  }
+
+  @override
+  void onPositionUpdate(Position position) {}
+
+  @override
+  void setStatus(GpsStatus currentStatus) {
+    if (currentStatus != _gpsStatus) {
+      setState(() {
+        _gpsStatus = currentStatus;
+        _gpsIcon = Icon(
+          Icons.gps_fixed,
+          color: getGpsStatusColor(),
+        );
+      });
+    }
+  }
+
+  Color getGpsStatusColor() {
+    switch (_gpsStatus) {
+      case GpsStatus.OFF:
+        {
+          return GeopaparazziColors.gpsOff;
+        }
+      case GpsStatus.ON_WITH_FIX:
+        {
+          return GeopaparazziColors.gpsOnWithFix;
+        }
+      case GpsStatus.ON_NO_FIX:
+        {
+          return GeopaparazziColors.gpsOnNoFix;
+        }
+      case GpsStatus.LOGGING:
+        {
+          return GeopaparazziColors.gpsLogging;
+        }
+      case GpsStatus.NOPERMISSION:
+        {
+          return GeopaparazziColors.gpsNoPermission;
+        }
     }
   }
 }

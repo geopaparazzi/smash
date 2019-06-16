@@ -14,6 +14,11 @@ class GeopaparazziColors {
   static Color mainTextColorNeutral = ColorExt("#000000");
   static Color mainSelection = ColorExt("#FF9933");
   static Color mainSelectionBorder = ColorExt("#993300");
+  static Color gpsNoPermission = ColorExt("#ff8484");
+  static Color gpsOnNoFix = ColorExt("#ffd293");
+  static Color gpsOnWithFix = ColorExt("#00ff08");
+  static Color gpsLogging = ColorExt("#84beff");
+  static Color gpsOff = ColorExt("#ff8484");
 
   static MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
   static MaterialColor mainDecorationsMc = toMaterialColor(mainDecorations);

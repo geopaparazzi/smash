@@ -27,6 +27,8 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
   MarkerLayerOptions _geopapMarker;
   PolylineLayerOptions _geopapLogs;
+  Polyline _currentGeopapLog =
+      Polyline(points: [], strokeWidth: 3, color: ColorExt("red"));
   TileLayerOptions _osmLayer;
   Position _lastPosition;
 
@@ -73,8 +75,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
           new GeopaparazziMapLoader(new File(gpProjectModel.projectPath), this);
       await loader.loadNotes();
     }
-    setState(() {
-    });
+    setState(() {});
   }
 
   @override
@@ -95,6 +96,14 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
     if (_geopapLogs != null) layers.add(_geopapLogs);
     if (_geopapMarker != null) layers.add(_geopapMarker);
+
+    if (GpsHandler().currentLogPoints.length > 0) {
+      _currentGeopapLog.points.clear();
+      _currentGeopapLog.points.addAll(GpsHandler().currentLogPoints);
+      layers.add(PolylineLayerOptions(
+        polylines: [_currentGeopapLog],
+      ));
+    }
 
     if (_lastPosition != null) {
       layers.add(
@@ -139,7 +148,8 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
           )
         ],
       ),
-      body: Center( // here no futurebuilder can be used, because the gps triggers refresh, which makes it cluttered
+      body: Center(
+          // here no futurebuilder can be used, because the gps triggers refresh, which makes it cluttered
           child: FlutterMap(
         options: new MapOptions(
           center: new LatLng(_initLat, _initLon),
@@ -222,4 +232,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
       _lastPosition = position;
     });
   }
+
+  @override
+  void setStatus(GpsStatus currentStatus) {}
 }
