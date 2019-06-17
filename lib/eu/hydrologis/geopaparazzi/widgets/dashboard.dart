@@ -31,52 +31,51 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   String _projectName = "No project loaded";
   int _notesCount = 0;
-  int _logsCount = 0;
-  GpsStatus _gpsStatus = GpsStatus.OFF;
-  Icon _gpsIcon;
 
-  @override
+  GpsStatus _lastNonLoggingStatus;
+  ValueNotifier<GpsStatus> _gpsStatusValueNotifier =
+      new ValueNotifier(GpsStatus.OFF);
+  ValueNotifier<bool> _gpsLoggingValueNotifier = new ValueNotifier(false);
+
   void initState() {
-    _gpsIcon = Icon(
-      Icons.gps_fixed,
-      color: getGpsStatusColor(),
-    );
+    LocationPermissionHandler().requestPermission().then((isGranted) {
+      if (isGranted) {
+        GpsHandler().addPositionListener(this);
+      }
+    });
+    super.initState();
   }
 
   Future<bool> _checkStats(BuildContext context) async {
     var database = await gpProjectModel.getDatabase();
     if (database != null) {
       _projectName = basename(database.path);
+      _projectName = _projectName.substring(0, _projectName.length - 5);
 
       _notesCount = await getNotesCount(database, false);
-      _logsCount = await getLogsCount(database, false);
     } else {
       _notesCount = 0;
-      _logsCount = 0;
     }
+
+    bool gpsIsOn = await GpsHandler().isGpsOn();
+    if (gpsIsOn != null) {
+      if (gpsIsOn) {
+        _gpsStatusValueNotifier.value = GpsStatus.ON_NO_FIX;
+      }
+    }
+
     return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    LocationPermissionHandler().requestPermission().then((isGranted) {
-      if (isGranted) {
-        GpsHandler().addPositionListener(this);
-      }
-    });
-
     _media = MediaQuery.of(context).size;
 
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Geopaparazzi"),
         actions: <Widget>[
-          IconButton(
-              icon: _gpsIcon,
-              tooltip: "Check GPS Information",
-              onPressed: () {
-                print("GPS info Pressed...");
-              })
+          AppBarGpsInfo(_gpsStatusValueNotifier),
         ],
       ),
       backgroundColor: GeopaparazziColors.mainBackground,
@@ -123,13 +122,9 @@ class _DashboardWidgetState extends State<DashboardWidget>
     var headerNotes = "Notes";
     var iconNotes = Icons.note_add;
 
-    var headerMetadata = "Metadata";
+    var headerMetadata = _projectName;
     var infoMetadata = "";
     var iconMetadata = Icons.developer_board;
-
-    var headerLogs = "Logs";
-    var infoLogs = "0";
-    var iconLogs = GpsHandler().isLogging ? Icons.gps_fixed : Icons.gps_off;
 
     var headerMaps = "Maps";
     var infoMaps = "";
@@ -148,14 +143,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
           _notesCount == 0 ? "" : "${_notesCount}", iconNotes, iconSize, null),
       getSingleTile(context, headerMetadata, headerColor, infoMetadata,
           iconMetadata, iconSize, null),
-      getSingleTile(
-          context,
-          headerLogs,
-          headerColor,
-          _logsCount == 0 ? "" : "${_logsCount}",
-          iconLogs,
-          iconSize,
-          toggleLoggingFunction),
+      DashboardLogButton(_gpsLoggingValueNotifier, _gpsStatusValueNotifier),
       getSingleTile(context, headerMaps, headerColor, infoMaps, iconMaps,
           iconSize, openMapFunction),
       getSingleTile(context, headerImport, headerColor, infoImport, iconImport,
@@ -168,17 +156,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
   openMapFunction(context) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => GeopaparazziMapWidget()));
-  }
-
-  toggleLoggingFunction(context) {
-    if (GpsHandler().isLogging) {
-      GpsHandler().stopLogging();
-    } else {
-      // TODO ask user
-      String logName = ISO8601_TS_FORMATTER.format(DateTime.now());
-      GpsHandler().startLogging(logName);
-    }
-    setState(() {});
   }
 
   GridTile getSingleTile(BuildContext context, String header, Color color,
@@ -304,39 +281,215 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   @override
   void setStatus(GpsStatus currentStatus) {
-    if (currentStatus != _gpsStatus) {
-      setState(() {
-        _gpsStatus = currentStatus;
-        _gpsIcon = Icon(
-          Icons.gps_fixed,
-          color: getGpsStatusColor(),
-        );
-      });
+    if (GpsHandler().isLogging) {
+      if (_gpsStatusValueNotifier.value != GpsStatus.LOGGING) {
+        _gpsStatusValueNotifier.value = GpsStatus.LOGGING;
+      }
+    } else {
+      _gpsStatusValueNotifier.value = currentStatus;
     }
   }
+}
 
-  Color getGpsStatusColor() {
-    switch (_gpsStatus) {
-      case GpsStatus.OFF:
-        {
-          return GeopaparazziColors.gpsOff;
+/// Class to hold the state of the GPS info button, updated by the gps state notifier.
+///
+class AppBarGpsInfo extends StatefulWidget {
+  final ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
+
+  AppBarGpsInfo(this._gpsStatusValueNotifier);
+
+  @override
+  State<StatefulWidget> createState() =>
+      AppBarGpsInfoState(_gpsStatusValueNotifier);
+}
+
+class AppBarGpsInfoState extends State<AppBarGpsInfo> {
+  ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
+  GpsStatus _gpsStatus;
+
+  AppBarGpsInfoState(this._gpsStatusValueNotifier);
+
+  @override
+  void initState() {
+    _gpsStatusValueNotifier.addListener(() {
+      setState(() {
+        _gpsStatus = _gpsStatusValueNotifier.value;
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+        icon: getGpsStatusIcon(_gpsStatus),
+        tooltip: "Check GPS Information",
+        onPressed: () {
+          print("GPS info Pressed...");
+        });
+  }
+}
+
+Icon getGpsStatusIcon(GpsStatus status) {
+  Color color;
+  IconData iconData;
+  switch (status) {
+    case GpsStatus.OFF:
+      {
+        color = GeopaparazziColors.gpsOff;
+        iconData = Icons.gps_off;
+        break;
+      }
+    case GpsStatus.ON_WITH_FIX:
+      {
+        color = GeopaparazziColors.gpsOnWithFix;
+        iconData = Icons.gps_fixed;
+        break;
+      }
+    case GpsStatus.ON_NO_FIX:
+      {
+        iconData = Icons.gps_not_fixed;
+        color = GeopaparazziColors.gpsOnNoFix;
+        break;
+      }
+    case GpsStatus.LOGGING:
+      {
+        iconData = Icons.gps_fixed;
+        color = GeopaparazziColors.gpsLogging;
+        break;
+      }
+    case GpsStatus.NOPERMISSION:
+      {
+        iconData = Icons.gps_off;
+        color = GeopaparazziColors.gpsNoPermission;
+        break;
+      }
+  }
+  return Icon(
+    iconData,
+    color: color,
+  );
+}
+
+/// Class to hold the state of the dashboard logging button, updated by the gps logging state notifier.
+///
+class DashboardLogButton extends StatefulWidget {
+  ValueNotifier<bool> _gpsLoggingValueNotifier;
+  ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
+
+  DashboardLogButton(
+      this._gpsLoggingValueNotifier, this._gpsStatusValueNotifier);
+
+  @override
+  State<StatefulWidget> createState() => DashboardLogButtonState(
+      _gpsLoggingValueNotifier, _gpsStatusValueNotifier);
+}
+
+class DashboardLogButtonState extends State<DashboardLogButton> {
+  ValueNotifier<bool> _gpsLoggingValueNotifier;
+  bool _isLogging;
+  ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
+
+  GpsStatus _lastNonLoggingStatus;
+
+  int _logsCount;
+
+  DashboardLogButtonState(
+      this._gpsLoggingValueNotifier, this._gpsStatusValueNotifier);
+
+  @override
+  void initState() {
+    _isLogging = _gpsLoggingValueNotifier.value;
+    _gpsLoggingValueNotifier.addListener(() {
+      setState(() {
+        _isLogging = _gpsLoggingValueNotifier.value;
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var headerColor = Color.fromRGBO(256, 256, 256, 0);
+
+    var header = "Logs";
+    var icon = _isLogging ? Icons.gps_fixed : Icons.gps_off;
+
+    var _media = MediaQuery.of(context).size;
+
+    return FutureBuilder<void>(
+      future: _checkStats(context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          // If the Future is complete, display the preview.
+          return OrientationBuilder(builder: (context, orientation) {
+            return GridTile(
+                header: GridTileBar(
+                  title: Text(header,
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  backgroundColor: headerColor,
+                ),
+                footer: GridTileBar(
+                    title: Text(_logsCount == 0 ? "" : "${_logsCount}",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                child: Card(
+                  margin: EdgeInsets.all(10),
+                  elevation: 5,
+                  color: _isLogging
+                      ? GeopaparazziColors.gpsLogging
+                      : GeopaparazziColors.mainDecorations,
+                  child: IconButton(
+                    icon: Icon(
+                      icon,
+                      color: GeopaparazziColors.mainBackground,
+                    ),
+                    iconSize: orientation == Orientation.portrait
+                        ? _media.width / 4
+                        : _media.height / 4,
+                    onPressed: () {
+                      toggleLoggingFunction();
+                    },
+                    color: GeopaparazziColors.mainBackground,
+                    highlightColor: GeopaparazziColors.mainSelection,
+                  ),
+                ));
+          });
+        } else {
+          // Otherwise, display a loading indicator.
+          return Center(child: CircularProgressIndicator());
         }
-      case GpsStatus.ON_WITH_FIX:
-        {
-          return GeopaparazziColors.gpsOnWithFix;
+      },
+    );
+  }
+
+  Future<bool> _checkStats(BuildContext context) async {
+    var database = await gpProjectModel.getDatabase();
+    if (database != null) {
+      _logsCount = await getLogsCount(database, false);
+    } else {
+      _logsCount = 0;
+    }
+    return true;
+  }
+
+  toggleLoggingFunction() {
+    if (GpsHandler().isLogging) {
+      GpsHandler().stopLogging();
+      _gpsStatusValueNotifier.value = _lastNonLoggingStatus;
+      _gpsLoggingValueNotifier.value = false;
+    } else {
+      // TODO ask user
+      String logName = ISO8601_TS_FORMATTER.format(DateTime.now());
+      GpsHandler().startLogging(logName).then((logId) {
+        if (logId == null) {
+          // TODO show error
+        } else {
+          _lastNonLoggingStatus = _gpsStatusValueNotifier.value;
+          _gpsStatusValueNotifier.value = GpsStatus.LOGGING;
+          _gpsLoggingValueNotifier.value = true;
         }
-      case GpsStatus.ON_NO_FIX:
-        {
-          return GeopaparazziColors.gpsOnNoFix;
-        }
-      case GpsStatus.LOGGING:
-        {
-          return GeopaparazziColors.gpsLogging;
-        }
-      case GpsStatus.NOPERMISSION:
-        {
-          return GeopaparazziColors.gpsNoPermission;
-        }
+      });
     }
   }
 }

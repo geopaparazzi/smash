@@ -88,6 +88,11 @@ class GpsHandler {
     }
   }
 
+  Future<bool> isGpsOn() async {
+    if (_geolocator == null) return null;
+    return await _geolocator.isLocationServiceEnabled();
+  }
+
   void onPositionUpdate(Position position) {
     if (_locationDisabled) return;
     GpsStatus tmpStatus;
@@ -113,15 +118,14 @@ class GpsHandler {
     } else {
       tmpStatus = GpsStatus.ON_NO_FIX;
     }
-    if (tmpStatus != _gpsStatus) {
+
+    if (tmpStatus != null) {
       _gpsStatus = tmpStatus;
-    } else {
-      tmpStatus = null;
+      positionListeners.forEach((PositionListener pl) {
+        pl.onPositionUpdate(position);
+        pl.setStatus(_gpsStatus);
+      });
     }
-    positionListeners.forEach((PositionListener pl) {
-      pl.onPositionUpdate(position);
-      if (tmpStatus != null) pl.setStatus(tmpStatus);
-    });
 
     _lastPosition = position;
   }
@@ -148,8 +152,9 @@ class GpsHandler {
     if (_locationDisabled) return;
   }
 
-  void startLogging(String logName) {
-    gpProjectModel.getDatabase().then((db) {
+  Future<int> startLogging(String logName) async {
+    try {
+      var db = await gpProjectModel.getDatabase();
       Log l = new Log();
       l.text = logName;
       l.startTime = DateTime.now().millisecondsSinceEpoch;
@@ -161,11 +166,13 @@ class GpsHandler {
       lp.color = "#FF0000";
       lp.width = 3;
 
-      addGpsLog(db, l, lp).then((logId) {
-        _currentLogId = logId;
-        _isLogging = true;
-      });
-    });
+      var logId = await addGpsLog(db, l, lp);
+      _currentLogId = logId;
+      _isLogging = true;
+      return logId;
+    } catch (e) {
+      return null;
+    }
   }
 
   bool get isLogging => _isLogging;
