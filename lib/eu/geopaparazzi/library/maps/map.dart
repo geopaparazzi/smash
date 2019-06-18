@@ -12,6 +12,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:latlong/latlong.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 class GeopaparazziMapWidget extends StatefulWidget {
   GeopaparazziMapWidget({Key key}) : super(key: key);
@@ -25,7 +26,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     implements PositionListener {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  MarkerLayerOptions _geopapMarker;
+  List<Marker> _geopapMarkers;
   PolylineLayerOptions _geopapLogs;
   Polyline _currentGeopapLog =
       Polyline(points: [], strokeWidth: 3, color: ColorExt("red"));
@@ -38,8 +39,8 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
   MapController _mapController;
 
-  set geopapMarkers(MarkerLayerOptions geopapMarker) {
-    _geopapMarker = geopapMarker;
+  set geopapMarkers(List<Marker> geopapMarkers) {
+    _geopapMarkers = geopapMarkers;
   }
 
   set geopapLogs(PolylineLayerOptions geopapLogs) {
@@ -95,7 +96,31 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     layers.add(_osmLayer);
 
     if (_geopapLogs != null) layers.add(_geopapLogs);
-    if (_geopapMarker != null) layers.add(_geopapMarker);
+    if (_geopapMarkers != null && _geopapMarkers.length > 0) {
+      var markerCluster = MarkerClusterLayerOptions(
+        maxClusterRadius: 80,
+        height: 40,
+        width: 40,
+        fitBoundsOptions: FitBoundsOptions(
+          padding: EdgeInsets.all(50),
+        ),
+        markers: _geopapMarkers,
+        polygonOptions: PolygonOptions(
+            borderColor: GeopaparazziColors.mainDecorationsDark,
+            color: GeopaparazziColors.mainDecorations.withOpacity(0.2),
+            borderStrokeWidth: 3),
+        builder: (context, markers) {
+          return FloatingActionButton(
+            child: Text(markers.length.toString()),
+            onPressed: null,
+            backgroundColor: GeopaparazziColors.mainDecorationsDark,
+            foregroundColor: GeopaparazziColors.mainBackground,
+            heroTag: null,
+          );
+        },
+      );
+      layers.add(markerCluster);
+    }
 
     if (GpsHandler().currentLogPoints.length > 0) {
       _currentGeopapLog.points.clear();
@@ -154,6 +179,9 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
         options: new MapOptions(
           center: new LatLng(_initLat, _initLon),
           zoom: _initZoom,
+          plugins: [
+            MarkerClusterPlugin(),
+          ],
         ),
         layers: layers,
         mapController: _mapController,

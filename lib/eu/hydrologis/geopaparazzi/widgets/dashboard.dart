@@ -32,7 +32,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
   String _projectName = "No project loaded";
   int _notesCount = 0;
 
-  GpsStatus _lastNonLoggingStatus;
   ValueNotifier<GpsStatus> _gpsStatusValueNotifier =
       new ValueNotifier(GpsStatus.OFF);
   ValueNotifier<bool> _gpsLoggingValueNotifier = new ValueNotifier(false);
@@ -281,13 +280,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   @override
   void setStatus(GpsStatus currentStatus) {
-    if (GpsHandler().isLogging) {
-      if (_gpsStatusValueNotifier.value != GpsStatus.LOGGING) {
-        _gpsStatusValueNotifier.value = GpsStatus.LOGGING;
-      }
-    } else {
-      _gpsStatusValueNotifier.value = currentStatus;
-    }
+    _gpsStatusValueNotifier.value = currentStatus;
   }
 }
 

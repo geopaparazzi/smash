@@ -116,8 +116,6 @@ class GeopaparazziMapLoader {
     _widgetState.geopapLogs = PolylineLayerOptions(
       polylines: lines,
     );
-    _widgetState.geopapMarkers = MarkerLayerOptions(
-      markers: markers,
-    );
+    _widgetState.geopapMarkers = markers;
   }
 }

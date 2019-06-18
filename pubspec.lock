@@ -125,6 +125,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.5+2"
+  flutter_map_marker_cluster:
+    dependency: "direct main"
+    description:
+      name: flutter_map_marker_cluster
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.4"
   flutter_svg:
     dependency: "direct main"
     description:

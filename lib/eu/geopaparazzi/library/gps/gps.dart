@@ -37,6 +37,7 @@ class GpsHandler {
   Geolocator _geolocator;
   StreamSubscription<Position> _positionStreamSubscription;
   GpsStatus _gpsStatus = GpsStatus.OFF;
+  GpsStatus _lastGpsStatusBeforeLogging;
 
   Position _lastPosition;
 
@@ -169,6 +170,13 @@ class GpsHandler {
       var logId = await addGpsLog(db, l, lp);
       _currentLogId = logId;
       _isLogging = true;
+
+      _lastGpsStatusBeforeLogging = _gpsStatus;
+      _gpsStatus = GpsStatus.LOGGING;
+      positionListeners.forEach((PositionListener pl) {
+        pl.setStatus(_gpsStatus);
+      });
+
       return logId;
     } catch (e) {
       return null;
@@ -185,6 +193,14 @@ class GpsHandler {
       _currentLogPoints.clear();
       int endTs = DateTime.now().millisecondsSinceEpoch;
       updateGpsLogEndts(db, _currentLogId, endTs);
+
+      if (_lastGpsStatusBeforeLogging == null)
+        _lastGpsStatusBeforeLogging = GpsStatus.ON_NO_FIX;
+      _gpsStatus = _lastGpsStatusBeforeLogging;
+      _lastGpsStatusBeforeLogging = null;
+      positionListeners.forEach((PositionListener pl) {
+        pl.setStatus(_gpsStatus);
+      });
     });
   }
 }
