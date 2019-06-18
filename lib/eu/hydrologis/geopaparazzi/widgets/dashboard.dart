@@ -16,7 +16,9 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/map.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:path/path.dart';
+import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/notes_ui.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -138,8 +140,14 @@ class _DashboardWidgetState extends State<DashboardWidget>
     var iconExport = Icons.file_upload;
 
     return [
-      getSingleTile(context, headerNotes, headerColor,
-          _notesCount == 0 ? "" : "${_notesCount}", iconNotes, iconSize, null),
+      getSingleTile(
+          context,
+          headerNotes,
+          headerColor,
+          _notesCount == 0 ? "" : "${_notesCount}",
+          iconNotes,
+          iconSize,
+          openAddNoteFunction),
       getSingleTile(context, headerMetadata, headerColor, infoMetadata,
           iconMetadata, iconSize, null),
       DashboardLogButton(_gpsLoggingValueNotifier, _gpsStatusValueNotifier),
@@ -155,6 +163,15 @@ class _DashboardWidgetState extends State<DashboardWidget>
   openMapFunction(context) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => GeopaparazziMapWidget()));
+  }
+
+  openAddNoteFunction(context) {
+    if (GpsHandler().hasFix()) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => AddNotePage()));
+    } else {
+      showOperationNeedsGps(context);
+    }
   }
 
   GridTile getSingleTile(BuildContext context, String header, Color color,
@@ -394,9 +411,10 @@ class DashboardLogButtonState extends State<DashboardLogButton> {
   void initState() {
     _isLogging = _gpsLoggingValueNotifier.value;
     _gpsLoggingValueNotifier.addListener(() {
-      setState(() {
-        _isLogging = _gpsLoggingValueNotifier.value;
-      });
+      if (this.mounted)
+        setState(() {
+          _isLogging = _gpsLoggingValueNotifier.value;
+        });
     });
     super.initState();
   }
@@ -441,7 +459,7 @@ class DashboardLogButtonState extends State<DashboardLogButton> {
                         ? _media.width / 4
                         : _media.height / 4,
                     onPressed: () {
-                      toggleLoggingFunction();
+                      toggleLoggingFunction(context);
                     },
                     color: GeopaparazziColors.mainBackground,
                     highlightColor: GeopaparazziColors.mainSelection,
@@ -466,23 +484,35 @@ class DashboardLogButtonState extends State<DashboardLogButton> {
     return true;
   }
 
-  toggleLoggingFunction() {
+  toggleLoggingFunction(BuildContext context) {
     if (GpsHandler().isLogging) {
       GpsHandler().stopLogging();
       _gpsStatusValueNotifier.value = _lastNonLoggingStatus;
       _gpsLoggingValueNotifier.value = false;
     } else {
-      // TODO ask user
-      String logName = ISO8601_TS_FORMATTER.format(DateTime.now());
-      GpsHandler().startLogging(logName).then((logId) {
-        if (logId == null) {
-          // TODO show error
-        } else {
-          _lastNonLoggingStatus = _gpsStatusValueNotifier.value;
-          _gpsStatusValueNotifier.value = GpsStatus.LOGGING;
-          _gpsLoggingValueNotifier.value = true;
-        }
-      });
+      if (GpsHandler().hasFix()) {
+        String logName = "log ${ISO8601_TS_FORMATTER.format(DateTime.now())}";
+
+        showInputDialog(context, "New Log", "Enter a name for the new log",
+                hintText: logName)
+            .then((userString) {
+          if (userString != null) {
+            if (userString.trim().length == 0) userString = logName;
+
+            GpsHandler().startLogging(logName).then((logId) {
+              if (logId == null) {
+                // TODO show error
+              } else {
+                _lastNonLoggingStatus = _gpsStatusValueNotifier.value;
+                _gpsStatusValueNotifier.value = GpsStatus.LOGGING;
+                _gpsLoggingValueNotifier.value = true;
+              }
+            });
+          }
+        });
+      } else {
+        showOperationNeedsGps(context);
+      }
     }
   }
 }

@@ -54,7 +54,7 @@ class GpsHandler {
   GpsHandler._internal() {
     _init();
 
-    _timer = Timer.periodic(Duration(seconds: 2), (timer) async {
+    _timer = Timer.periodic(Duration(milliseconds: 300), (timer) async {
       if (_geolocator != null &&
           !await _geolocator.isLocationServiceEnabled()) {
         if (GpsStatus.OFF != _gpsStatus) {
@@ -88,6 +88,14 @@ class GpsHandler {
       _gpsStatus = GpsStatus.NOPERMISSION;
     }
   }
+
+  bool hasFix() {
+    var hasFix = _gpsStatus == GpsStatus.ON_WITH_FIX;
+    var isLogging = _gpsStatus == GpsStatus.LOGGING;
+    return hasFix || isLogging;
+  }
+
+  Position get lastPosition => _lastPosition;
 
   Future<bool> isGpsOn() async {
     if (_geolocator == null) return null;

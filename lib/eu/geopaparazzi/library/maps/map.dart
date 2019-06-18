@@ -81,13 +81,17 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
   @override
   void dispose() {
+    updateCenterPosition();
+    // stop listening to gps
+    GpsHandler().removePositionListener(this);
+    super.dispose();
+  }
+
+  void updateCenterPosition() {
     // save last position
     gpProjectModel.lastCenterLon = _mapController.center.longitude;
     gpProjectModel.lastCenterLat = _mapController.center.latitude;
     gpProjectModel.lastCenterZoom = _mapController.zoom;
-    // stop listening to gps
-    GpsHandler().removePositionListener(this);
-    super.dispose();
   }
 
   @override

@@ -37,6 +37,18 @@ class GpPreferences {
     _preferences.setString(key, value);
   }
 
+  Future<bool> getBoolean(String key, [bool defaultValue]) async {
+    await checkPreferences();
+    bool prefValue = _preferences.getBool(key);
+    if (prefValue == null) return defaultValue;
+    return prefValue;
+  }
+
+  setBoolean(String key, bool value) async {
+    await checkPreferences();
+    _preferences.setBool(key, value);
+  }
+
   /// Return last saved position as [lon, lat, zoom] or null.
   Future<List<dynamic>> getLastPosition() async {
     await checkPreferences();
