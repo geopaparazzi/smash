@@ -6,31 +6,31 @@
 
 import 'package:flutter/material.dart';
 
-
 /// The Geopaparazzi Colors list
 class GeopaparazziColors {
-  static Color mainBackground = ColorExt("#FFFFFF");
-  static Color mainDecorations = ColorExt("#5d9d76");
-  static Color mainDecorationsDark = ColorExt("#378756");
-  static Color mainTextColor = ColorExt("#5d9d76");
-  static Color mainTextColorNeutral = ColorExt("#000000");
-  static Color mainSelection = ColorExt("#FF9933");
-  static Color mainSelectionBorder = ColorExt("#993300");
-  static Color gpsNoPermission = ColorExt("#ff8484");
-  static Color gpsOnNoFix = ColorExt("#ffd293");
-  static Color gpsOnWithFix = ColorExt("#00ff08");
-  static Color gpsLogging = ColorExt("#84beff");
-  static Color gpsOff = ColorExt("#ff8484");
+  static final Color mainBackground = ColorExt("#FFFFFF");
+  static final Color mainDecorations = ColorExt("#5d9d76");
+  static final Color mainDecorationsDark = ColorExt("#378756");
+  static final Color mainTextColor = ColorExt("#5d9d76");
+  static final Color mainTextColorNeutral = ColorExt("#000000");
+  static final Color mainSelection = ColorExt("#FF9933");
+  static final Color mainSelectionBorder = ColorExt("#993300");
+  static final Color gpsNoPermission = ColorExt("#ff8484");
+  static final Color gpsOnNoFix = ColorExt("#ffd293");
+  static final Color gpsOnWithFix = ColorExt("#00ff08");
+  static final Color gpsLogging = ColorExt("#84beff");
+  static final Color gpsOff = ColorExt("#ff8484");
 
-  static MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
-  static MaterialColor mainDecorationsMc = toMaterialColor(mainDecorations);
-  static MaterialColor mainDecorationsDarkMc =
+  static final MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
+  static final MaterialColor mainDecorationsMc =
+      toMaterialColor(mainDecorations);
+  static final MaterialColor mainDecorationsDarkMc =
       toMaterialColor(mainDecorationsDark);
-  static MaterialColor mainTextColorMc = toMaterialColor(mainTextColor);
-  static MaterialColor mainTextColorNeutralMc =
+  static final MaterialColor mainTextColorMc = toMaterialColor(mainTextColor);
+  static final MaterialColor mainTextColorNeutralMc =
       toMaterialColor(mainTextColorNeutral);
-  static MaterialColor mainSelectionMc = toMaterialColor(mainSelection);
-  static MaterialColor mainSelectionBorderMc =
+  static final MaterialColor mainSelectionMc = toMaterialColor(mainSelection);
+  static final MaterialColor mainSelectionBorderMc =
       toMaterialColor(mainSelectionBorder);
 }
 

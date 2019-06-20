@@ -6,7 +6,7 @@
 import 'package:intl/intl.dart';
 
 /// An ISO8601 date formatter (yyyy-MM-dd HH:mm:ss).
-DateFormat ISO8601_TS_FORMATTER = DateFormat("yyyy-MM-dd HH:mm:ss");
+final DateFormat ISO8601_TS_FORMATTER = DateFormat("yyyy-MM-dd HH:mm:ss");
 
 /// A date formatter (yyyyMMdd_HHmmss) useful for file names (it contains no spaces).
-DateFormat DATE_TS_FORMATTER = DateFormat("yyyyMMdd_HHmmss");
+final DateFormat DATE_TS_FORMATTER = DateFormat("yyyyMMdd_HHmmss");
