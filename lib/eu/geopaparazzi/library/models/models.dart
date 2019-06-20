@@ -6,7 +6,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
 
 /// The global reference to the Geopaparazzi Project Model
 GPProjectModel gpProjectModel;
@@ -47,7 +47,17 @@ class GPProjectModel extends StateUpdater {
       if (_projectPath == null) {
         return null;
       }
-      _db = await openDatabase(_projectPath);
+      try {
+        _db = await openDatabase(
+          _projectPath,
+          version: 1,
+          onCreate: (Database db, int version) async {
+            await createDatabase(db);
+          },
+        );
+      } catch (e) {
+        print(e);
+      }
       await GpPreferences().setString(KEY_LAST_GPAPPROJECT, _projectPath);
     }
     return _db;
@@ -78,4 +88,3 @@ class StateUpdater extends State {
     return null;
   }
 }
-

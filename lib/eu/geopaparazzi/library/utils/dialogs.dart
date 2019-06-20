@@ -170,7 +170,7 @@ void showInfoDialog(BuildContext context, String prompt,
 /// Optionally the a [hintText] can be passed in and the
 /// strings for the [okText] and [cancelText] of the buttons.
 ///
-/// If the user pushes the cancel button, null will be returned.
+/// If the user pushes the cancel button, null will be returned, if user pushes ok without entering anything the empty string '' is returned.
 Future<String> showInputDialog(BuildContext context, String title, String label,
     {hintText: '', okText: 'Ok', cancelText: 'Cancel'}) async {
   String userInput = '';

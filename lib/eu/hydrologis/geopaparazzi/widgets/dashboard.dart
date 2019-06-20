@@ -16,6 +16,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/map.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/files.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:path/path.dart';
@@ -179,12 +180,12 @@ class _DashboardWidgetState extends State<DashboardWidget>
           _notesCount == 0 ? "" : "${_notesCount}",
           iconNotes,
           iconSize,
-          openAddNoteFunction),
+          _openAddNoteFunction),
       getSingleTile(context, headerMetadata, headerColor, infoMetadata,
           iconMetadata, iconSize, null),
       DashboardLogButton(_gpsLoggingValueNotifier, _gpsStatusValueNotifier),
       getSingleTile(context, headerMaps, headerColor, infoMaps, iconMaps,
-          iconSize, openMapFunction),
+          iconSize, _openMapFunction),
       getSingleTile(context, headerImport, headerColor, infoImport, iconImport,
           iconSize, null),
       getSingleTile(context, headerExport, headerColor, infoExport, iconExport,
@@ -192,12 +193,12 @@ class _DashboardWidgetState extends State<DashboardWidget>
     ];
   }
 
-  openMapFunction(context) {
+  _openMapFunction(context) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => GeopaparazziMapWidget()));
   }
 
-  openAddNoteFunction(context) {
+  _openAddNoteFunction(context) {
     if (GpsHandler().hasFix()) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => AddNotePage()));
@@ -264,6 +265,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
               "New Project",
               style: TextStyle(fontSize: textSize, color: c),
             ),
+            onTap: () => _createNewProject(context),
           ),
           ListTile(
             leading: new Icon(
@@ -321,6 +323,25 @@ class _DashboardWidgetState extends State<DashboardWidget>
         await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
     if (file != null && file.existsSync()) {
       gpProjectModel.setNewProject(this, file.path);
+    }
+  }
+
+  Future _createNewProject(BuildContext context) async {
+    String projectName =
+        "geopaparazzi_${DATE_TS_FORMATTER.format(DateTime.now())}";
+
+    var userString = await showInputDialog(context, "New Project",
+        "Enter a name for the new project or accept the proposed.",
+        hintText: projectName);
+    if (userString != null) {
+      if (userString.trim().length == 0) userString = projectName;
+      var file = await FileUtils.getDefaultStorageFolder();
+      var newPath = join(file.path, userString);
+      if (!newPath.endsWith(".gpap")) {
+        newPath = "${newPath}.gpap";
+      }
+      var gpFile = new File(newPath);
+      gpProjectModel.setNewProject(this, gpFile.path);
     }
   }
 

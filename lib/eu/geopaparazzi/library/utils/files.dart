@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_ex/path_provider_ex.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 
 /// File path and folder utilities.
 class FileUtils {
@@ -44,6 +45,40 @@ class FileUtils {
   static Future<List<StorageInfo>> getStorageInfo() async {
     List<StorageInfo> storageInfo = await PathProviderEx.getStorageInfo();
     return storageInfo;
+  }
+
+  /// Get the default storage folder.
+  ///
+  /// On Android this is supposed to be root of the internal sdcard.
+  /// If unable to get it, this falls back on the internal appfolder,
+  /// inside which the app is supposed to be able to write.
+  ///
+  /// Returns the file of the folder to use..
+  static Future<File> getDefaultStorageFolder() async {
+    var storageInfo = await getStorageInfo();
+    var intenalStorage = await getInternalStorage(storageInfo);
+    if (intenalStorage.isNotEmpty) {
+      return new File(intenalStorage[0]);
+    } else {
+      var directory = await getAppFolderPath();
+      return new File(directory.path);
+    }
+  }
+
+  /// Get the application configuration folder.
+  ///
+  /// An optional [appName] can be passed to allow other apps to use this.
+  ///
+  /// Returns the file of the folder to use.
+  static Future<File> getApplicationConfigurationFolder({appName: appName}) async {
+    var storageInfo = await getStorageInfo();
+    var intenalStorage = await getInternalStorage(storageInfo);
+    if (intenalStorage.isNotEmpty) {
+      return new File(intenalStorage[0]);
+    } else {
+      var directory = await getAppFolderPath();
+      return new File(directory.path);
+    }
   }
 
   static List<String> getInternalStorage(List<StorageInfo> storageInfo) {

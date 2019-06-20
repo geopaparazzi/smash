@@ -5,6 +5,8 @@
  */
 import 'package:intl/intl.dart';
 
+const String appName = "geopaparazzi_light";
+
 /// An ISO8601 date formatter (yyyy-MM-dd HH:mm:ss).
 final DateFormat ISO8601_TS_FORMATTER = DateFormat("yyyy-MM-dd HH:mm:ss");
 
