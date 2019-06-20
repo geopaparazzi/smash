@@ -10,20 +10,27 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location_permissions/location_permissions.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/logs.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
 import 'package:latlong/latlong.dart';
 
 enum GpsStatus { OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
 
+/// Interface to handle position updates
 abstract class PositionListener {
+
+  /// Launched whenever a new [position] comes in.
   void onPositionUpdate(Position position);
 
+  // Launched whenever a new gps status is triggered.
   void setStatus(GpsStatus currentStatus);
 }
 
+/// A permission checking helper class for the location service.
 class LocationPermissionHandler {
   static bool permissionGranted = false;
 
+  /// Request permission for the location service.
   Future<bool> requestPermission() async {
     PermissionStatus permission =
         await LocationPermissions().requestPermissions();
@@ -32,6 +39,13 @@ class LocationPermissionHandler {
   }
 }
 
+/// A central GPS handling class.
+///
+/// This is used to:
+/// * initialize and terminate the location service
+/// * registre for updates through the [PositionListener] interface
+/// * handle the GPS logging
+///
 class GpsHandler {
   static final GpsHandler _instance = GpsHandler._internal();
   Geolocator _geolocator;
@@ -49,6 +63,7 @@ class GpsHandler {
   List<LatLng> _currentLogPoints = [];
   Timer _timer;
 
+  /// internal handler singleton
   factory GpsHandler() => _instance;
 
   GpsHandler._internal() {
@@ -80,7 +95,7 @@ class GpsHandler {
         final Stream<Position> positionStream =
             _geolocator.getPositionStream(locationOptions);
         _positionStreamSubscription = positionStream
-            .listen((Position position) => onPositionUpdate(position));
+            .listen((Position position) => _onPositionUpdate(position));
       }
       _locationDisabled = false;
     } else {
@@ -89,20 +104,24 @@ class GpsHandler {
     }
   }
 
+  /// Returns true if the gps currently has a fix or is logging.
   bool hasFix() {
     var hasFix = _gpsStatus == GpsStatus.ON_WITH_FIX;
     var isLogging = _gpsStatus == GpsStatus.LOGGING;
     return hasFix || isLogging;
   }
 
+  // Getter for the last available position.
   Position get lastPosition => _lastPosition;
 
+  // Checks if the gps is on or off.
   Future<bool> isGpsOn() async {
     if (_geolocator == null) return null;
     return await _geolocator.isLocationServiceEnabled();
   }
 
-  void onPositionUpdate(Position position) {
+
+  void _onPositionUpdate(Position position) {
     if (_locationDisabled) return;
     GpsStatus tmpStatus;
     if (position != null) {
@@ -139,6 +158,7 @@ class GpsHandler {
     _lastPosition = position;
   }
 
+  /// Registers a new listener to position updates.
   void addPositionListener(PositionListener listener) {
     if (_locationDisabled) return;
     if (!positionListeners.contains(listener)) {
@@ -146,12 +166,14 @@ class GpsHandler {
     }
   }
 
+  /// Unregisters a listener from position updates.
   void removePositionListener(PositionListener listener) {
     if (positionListeners.contains(listener)) {
       positionListeners.remove(listener);
     }
   }
 
+  /// Close the handler.
   void close() {
     if (_timer != null) _timer.cancel();
     if (_positionStreamSubscription != null) {
@@ -161,6 +183,13 @@ class GpsHandler {
     if (_locationDisabled) return;
   }
 
+  /// Start logging to database.
+  ///
+  /// This creates a new log with the name [logName] and returns
+  /// the id of the created log.
+  ///
+  /// Once logging, the [_onPositionUpdate] method adds the
+  /// points as the come.
   Future<int> startLogging(String logName) async {
     try {
       var db = await gpProjectModel.getDatabase();
@@ -191,10 +220,15 @@ class GpsHandler {
     }
   }
 
+  /// Checks if the application is currently logging.
   bool get isLogging => _isLogging;
 
+  /// Get the list of current log points.
   List<LatLng> get currentLogPoints => _currentLogPoints;
 
+  /// Stop logging to database.
+  ///
+  /// This also properly closes the recorded log.
   void stopLogging() {
     gpProjectModel.getDatabase().then((db) {
       _isLogging = false;

@@ -10,6 +10,7 @@ final KEY_LAST_LAT = "lastgpap_lat";
 final KEY_LAST_LON = "lastgpap_lon";
 final KEY_LAST_ZOOM = "lastgpap_zoom";
 
+/// Geopaparazzi Preferences singleton.
 class GpPreferences {
   static final GpPreferences _instance = GpPreferences._internal();
 
@@ -19,39 +20,49 @@ class GpPreferences {
 
   SharedPreferences _preferences;
 
-  Future checkPreferences() async {
+  Future _checkPreferences() async {
     if (_preferences == null) {
       _preferences = await SharedPreferences.getInstance();
     }
   }
 
+  /// Get a string from the preferences.
+  ///
+  /// The method takes the preferences [key] and an optional [defaultValue]
+  /// which can be returned in case the preference doesn't exist.
   Future<String> getString(String key, [String defaultValue]) async {
-    await checkPreferences();
+    await _checkPreferences();
     String prefValue = _preferences.getString(key);
     if (prefValue == null) return defaultValue;
     return prefValue;
   }
 
+  /// Save a string [value] to the preferences using a preferences [key].
   setString(String key, String value) async {
-    await checkPreferences();
+    await _checkPreferences();
     _preferences.setString(key, value);
   }
 
+  /// Get a boolean from the preferences.
+  ///
+  /// The method takes the preferences [key] and an optional [defaultValue]
+  /// which can be returned in case the preference doesn't exist.
   Future<bool> getBoolean(String key, [bool defaultValue]) async {
-    await checkPreferences();
+    await _checkPreferences();
     bool prefValue = _preferences.getBool(key);
     if (prefValue == null) return defaultValue;
     return prefValue;
   }
 
+  /// Save a bool [value] to the preferences using a preferences [key].
   setBoolean(String key, bool value) async {
-    await checkPreferences();
+    await _checkPreferences();
     _preferences.setBool(key, value);
   }
 
   /// Return last saved position as [lon, lat, zoom] or null.
   Future<List<dynamic>> getLastPosition() async {
-    await checkPreferences();
+    await _checkPreferences();
     var lat = _preferences.getDouble(KEY_LAST_LAT);
     var lon = _preferences.getDouble(KEY_LAST_LON);
     var zoom = _preferences.getDouble(KEY_LAST_ZOOM);
@@ -61,7 +72,7 @@ class GpPreferences {
 
   /// Save last position to preferences.
   setLastPosition(double lon, double lat, double zoom) async {
-    await checkPreferences();
+    await _checkPreferences();
     _preferences.setDouble(KEY_LAST_LAT, lat);
     _preferences.setDouble(KEY_LAST_LON, lon);
     _preferences.setDouble(KEY_LAST_ZOOM, zoom);

@@ -6,6 +6,8 @@
 
 import 'package:flutter/material.dart';
 
+
+/// The Geopaparazzi Colors list
 class GeopaparazziColors {
   static Color mainBackground = ColorExt("#FFFFFF");
   static Color mainDecorations = ColorExt("#5d9d76");
@@ -32,6 +34,7 @@ class GeopaparazziColors {
       toMaterialColor(mainSelectionBorder);
 }
 
+/// Converts a [Color] to a [MaterialColor].
 MaterialColor toMaterialColor(Color color) {
   Map<int, Color> swatch = {
     50: color.withOpacity(.1),
@@ -49,7 +52,7 @@ MaterialColor toMaterialColor(Color color) {
   return colorMc;
 }
 
-/// Color Extended
+/// The Flutter Color class Extended
 ///
 /// A color class that also allows to use hex and wkt colors in the constructor.
 class ColorExt extends Color {

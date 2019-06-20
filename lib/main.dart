@@ -9,7 +9,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/dashboard.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 
 void main() => runApp(GeopaparazziApp());
 
@@ -32,24 +32,6 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
         gpProjectModel.lastCenterZoom = pos[2];
       }
     });
-  }
-
-  @override
-  void dispose() {
-    if (gpProjectModel != null) {
-      savePosition().then((v) {
-        gpProjectModel.close();
-        gpProjectModel = null;
-        super.dispose();
-      });
-    } else {
-      super.dispose();
-    }
-  }
-
-  Future<void> savePosition() async {
-    await GpPreferences().setLastPosition(gpProjectModel.lastCenterLon,
-        gpProjectModel.lastCenterLat, gpProjectModel.lastCenterZoom);
   }
 
   @override
@@ -81,12 +63,7 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       showPerformanceOverlay: false,
-      home: WillPopScope(
-          child: DashboardWidget(),
-          onWillPop: () {
-            dispose();
-            return Future.value(true);
-          }),
+      home: DashboardWidget(),
     );
   }
 }

@@ -10,7 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/notes.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
@@ -39,7 +40,8 @@ class AddNotePageState extends State<AddNotePage> {
         actions: <Widget>[
           IconButton(
             onPressed: () async {
-              bool doInGps = await GpPreferences().getBoolean(KEYNOTEDOGPS, false);
+              bool doInGps =
+                  await GpPreferences().getBoolean(KEYNOTEDOGPS, false);
               int ts = DateTime.now().millisecondsSinceEpoch;
               Position pos;
               double lon;

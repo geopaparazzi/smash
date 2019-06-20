@@ -13,13 +13,13 @@ double SIMPLE_DIALOGS_ICONSIZE = 80;
 ///
 /// To be used as:
 ///
-/// showConfirmDialog().then((result) {
-///     if (result == true) {
-///         setState(() {
-///             // do stuff
-///         });
-///     }
-/// });
+///     showConfirmDialog().then((result) {
+///         if (result == true) {
+///             setState(() {
+///                 // do stuff
+///             });
+///         }
+///     });
 ///
 Future<bool> showConfirmDialog(
     BuildContext context, String title, String prompt,
@@ -48,6 +48,7 @@ Future<bool> showConfirmDialog(
       });
 }
 
+/// Show a warning dialog, adding an optional [title] and a [prompt] for the user.
 void showWarningDialog(BuildContext context, String prompt,
     {String title: "Warning"}) async {
   await showDialog<bool>(
@@ -86,6 +87,7 @@ void showWarningDialog(BuildContext context, String prompt,
       });
 }
 
+/// Show an error dialog, adding an optional [title] and a [prompt] for the user.
 void showErrorDialog(BuildContext context, String prompt,
     {String title: "Error"}) async {
   await showDialog<bool>(
@@ -124,6 +126,7 @@ void showErrorDialog(BuildContext context, String prompt,
       });
 }
 
+/// Show an info dialog, adding an optional [title] and a [prompt] for the user.
 void showInfoDialog(BuildContext context, String prompt,
     {String title: "Info"}) async {
   await showDialog<bool>(
@@ -162,6 +165,12 @@ void showInfoDialog(BuildContext context, String prompt,
       });
 }
 
+/// Show a user input dialog, adding a [title] and a [label].
+///
+/// Optionally the a [hintText] can be passed in and the
+/// strings for the [okText] and [cancelText] of the buttons.
+///
+/// If the user pushes the cancel button, null will be returned.
 Future<String> showInputDialog(BuildContext context, String title, String label,
     {hintText: '', okText: 'Ok', cancelText: 'Cancel'}) async {
   String userInput = '';
@@ -204,6 +213,9 @@ Future<String> showInputDialog(BuildContext context, String title, String label,
   );
 }
 
+/// Show a multiselection dialog, adding a [title] and a list of [items] to propose.
+///
+/// Returns the selected item.
 Future<String> showComboDialog(
     BuildContext context, String title, List<String> items) async {
   List<SimpleDialogOption> widgets = items.map((str) => SimpleDialogOption(
@@ -224,6 +236,7 @@ Future<String> showComboDialog(
   return selection;
 }
 
+/// Show a warning dialog about the need of a GPS fix to proceed with the action.
 showOperationNeedsGps(context) {
   showWarningDialog(
       context, "This option is available only when the GPS has a fix.");

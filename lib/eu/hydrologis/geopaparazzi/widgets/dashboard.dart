@@ -9,13 +9,14 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/logs.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/notes.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/map.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:path/path.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/notes_ui.dart';
@@ -72,48 +73,79 @@ class _DashboardWidgetState extends State<DashboardWidget>
   Widget build(BuildContext context) {
     _media = MediaQuery.of(context).size;
 
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Geopaparazzi"),
-        actions: <Widget>[
-          AppBarGpsInfo(_gpsStatusValueNotifier),
-        ],
-      ),
-      backgroundColor: GeopaparazziColors.mainBackground,
-      body: FutureBuilder<void>(
-        future: _checkStats(context),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return OrientationBuilder(builder: (context, orientation) {
-              return GridView.count(
-                crossAxisCount: orientation == Orientation.portrait ? 2 : 3,
-                childAspectRatio:
-                    orientation == Orientation.portrait ? 0.9 : 1.6,
-                padding: EdgeInsets.all(5),
-                mainAxisSpacing: 2,
-                crossAxisSpacing: 2,
-                children:
-                    getTiles(context, orientation == Orientation.portrait),
-              );
-            });
-          } else {
-            // Otherwise, display a loading indicator.
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
+    return WillPopScope(
+        // check when the app is left
+        child: new Scaffold(
+          appBar: new AppBar(
+            title: new Text("Geopaparazzi"),
+            actions: <Widget>[
+              AppBarGpsInfo(_gpsStatusValueNotifier),
+            ],
+          ),
+          backgroundColor: GeopaparazziColors.mainBackground,
+          body: FutureBuilder<void>(
+            future: _checkStats(context),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the Future is complete, display the preview.
+                return OrientationBuilder(builder: (context, orientation) {
+                  return GridView.count(
+                    crossAxisCount: orientation == Orientation.portrait ? 2 : 3,
+                    childAspectRatio:
+                        orientation == Orientation.portrait ? 0.9 : 1.6,
+                    padding: EdgeInsets.all(5),
+                    mainAxisSpacing: 2,
+                    crossAxisSpacing: 2,
+                    children:
+                        getTiles(context, orientation == Orientation.portrait),
+                  );
+                });
+              } else {
+                // Otherwise, display a loading indicator.
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
 //      persistentFooterButtons: <Widget>[
 //        Card(
 //            elevation: 5,
 //            color: GeopaparazziColors.mainDecorations,
 //            child: Text(_projectName)),
 //      ],
-      drawer: Drawer(
-          child: ListView(
-        children: getDrawerWidgets(context),
-      )),
-    );
+          drawer: Drawer(
+              child: ListView(
+            children: getDrawerWidgets(context),
+          )),
+        ),
+        onWillPop: () async {
+          bool doExit = await showConfirmDialog(
+              context,
+              "Are you sure you want to exit?",
+              "Active operations will be stopped.");
+          if (doExit) {
+            dispose();
+            return Future.value(true);
+//              Navigator.of(context).pop(true);
+          }
+        });
+  }
+
+  @override
+  void dispose() {
+    if (gpProjectModel != null) {
+      _savePosition().then((v) {
+        gpProjectModel.close();
+        gpProjectModel = null;
+        super.dispose();
+      });
+    } else {
+      super.dispose();
+    }
+  }
+
+  Future<void> _savePosition() async {
+    await GpPreferences().setLastPosition(gpProjectModel.lastCenterLon,
+        gpProjectModel.lastCenterLat, gpProjectModel.lastCenterZoom);
   }
 
   List<Widget> getTiles(BuildContext context, bool isPortrait) {
@@ -477,7 +509,7 @@ class DashboardLogButtonState extends State<DashboardLogButton> {
   Future<bool> _checkStats(BuildContext context) async {
     var database = await gpProjectModel.getDatabase();
     if (database != null) {
-      _logsCount = await getLogsCount(database, false);
+      _logsCount = await getGpsLogCount(database, false);
     } else {
       _logsCount = 0;
     }
