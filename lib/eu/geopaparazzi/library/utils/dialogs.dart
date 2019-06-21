@@ -167,13 +167,40 @@ void showInfoDialog(BuildContext context, String prompt,
 
 /// Show a user input dialog, adding a [title] and a [label].
 ///
-/// Optionally the a [hintText] can be passed in and the
+/// Optionally a [hintText] and a [defaultText] can be passed in and the
 /// strings for the [okText] and [cancelText] of the buttons.
 ///
 /// If the user pushes the cancel button, null will be returned, if user pushes ok without entering anything the empty string '' is returned.
 Future<String> showInputDialog(BuildContext context, String title, String label,
-    {hintText: '', okText: 'Ok', cancelText: 'Cancel'}) async {
-  String userInput = '';
+    {defaultText: '',
+    hintText: '',
+    okText: 'Ok',
+    cancelText: 'Cancel',
+    Function validationFunction}) async {
+  String userInput = defaultText;
+  String errorText;
+
+  var textEditingController = new TextEditingController(text: defaultText);
+  var inputDecoration =
+      new InputDecoration(labelText: label, hintText: hintText);
+  var textWidget = new TextFormField(
+    controller: textEditingController,
+    autofocus: true,
+    autovalidate: true,
+    decoration: inputDecoration,
+    validator: (inputText) {
+      if (validationFunction != null) {
+        errorText = validationFunction(inputText);
+      } else {
+        errorText = null;
+      }
+      return errorText;
+    },
+    onSaved: (value) {
+      userInput = value;
+    },
+  );
+
   return showDialog<String>(
     context: context,
     barrierDismissible: false,
@@ -182,17 +209,7 @@ Future<String> showInputDialog(BuildContext context, String title, String label,
       return AlertDialog(
         title: Text(title),
         content: new Row(
-          children: <Widget>[
-            new Expanded(
-                child: new TextField(
-              autofocus: true,
-              decoration:
-                  new InputDecoration(labelText: label, hintText: hintText),
-              onChanged: (value) {
-                userInput = value;
-              },
-            ))
-          ],
+          children: <Widget>[new Expanded(child: textWidget)],
         ),
         actions: <Widget>[
           FlatButton(
@@ -204,7 +221,9 @@ Future<String> showInputDialog(BuildContext context, String title, String label,
           FlatButton(
             child: Text(okText),
             onPressed: () {
-              Navigator.of(context).pop(userInput);
+              if (errorText == null) {
+                Navigator.of(context).pop(userInput);
+              }
             },
           ),
         ],

@@ -19,6 +19,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/files.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
 import 'package:path/path.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/notes_ui.dart';
 
@@ -330,15 +331,20 @@ class _DashboardWidgetState extends State<DashboardWidget>
     String projectName =
         "geopaparazzi_${DATE_TS_FORMATTER.format(DateTime.now())}";
 
-    var userString = await showInputDialog(context, "New Project",
-        "Enter a name for the new project or accept the proposed.",
-        hintText: projectName);
+    var userString = await showInputDialog(
+      context,
+      "New Project",
+      "Enter a name for the new project or accept the proposed.",
+      hintText: '',
+      defaultText: projectName,
+      validationFunction: fileNameValidator,
+    );
     if (userString != null) {
       if (userString.trim().length == 0) userString = projectName;
       var file = await FileUtils.getDefaultStorageFolder();
       var newPath = join(file.path, userString);
       if (!newPath.endsWith(".gpap")) {
-        newPath = "${newPath}.gpap";
+        newPath = "$newPath.gpap";
       }
       var gpFile = new File(newPath);
       gpProjectModel.setNewProject(this, gpFile.path);
@@ -546,9 +552,14 @@ class DashboardLogButtonState extends State<DashboardLogButton> {
       if (GpsHandler().hasFix()) {
         String logName = "log ${ISO8601_TS_FORMATTER.format(DateTime.now())}";
 
-        showInputDialog(context, "New Log", "Enter a name for the new log",
-                hintText: logName)
-            .then((userString) {
+        showInputDialog(
+          context,
+          "New Log",
+          "Enter a name for the new log",
+          hintText: '',
+          defaultText: logName,
+          validationFunction: noEmptyValidator,
+        ).then((userString) {
           if (userString != null) {
             if (userString.trim().length == 0) userString = logName;
 
