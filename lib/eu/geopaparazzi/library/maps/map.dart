@@ -8,11 +8,15 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geopaparazzi.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:latlong/latlong.dart';
+import 'package:path/path.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:screen/screen.dart';
 
 class GeopaparazziMapWidget extends StatefulWidget {
   GeopaparazziMapWidget({Key key}) : super(key: key);
@@ -39,6 +43,8 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
   MapController _mapController;
 
+  TileLayerOptions _mapsforgeLayer;
+
   set geopapMarkers(List<Marker> geopapMarkers) {
     _geopapMarkers = geopapMarkers;
   }
@@ -54,6 +60,8 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
   @override
   void initState() {
     super.initState();
+    Screen.keepOn(true);
+
     _initLon = gpProjectModel.lastCenterLon;
     _initLat = gpProjectModel.lastCenterLat;
     _initZoom = gpProjectModel.lastCenterZoom;
@@ -67,6 +75,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
       maxZoom: 19,
       subdomains: ['a', 'b', 'c'],
     );
+
     loadProject();
   }
 
@@ -76,6 +85,15 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
           new GeopaparazziMapLoader(new File(gpProjectModel.projectPath), this);
       await loader.loadNotes();
     }
+
+    var mapsforgePath = await GpPreferences().getString(KEY_LAST_MAPSFORGEPATH);
+    if (mapsforgePath != null) {
+      File mapsforgeFile = new File(mapsforgePath);
+      if (mapsforgeFile.existsSync()) {
+        _mapsforgeLayer = await loadMapsforgeLayer(mapsforgeFile);
+      }
+    }
+
     setState(() {});
   }
 
@@ -97,7 +115,11 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
   @override
   Widget build(BuildContext context) {
     var layers = <LayerOptions>[];
-    layers.add(_osmLayer);
+//    layers.add(_osmLayer);
+
+    if (_mapsforgeLayer != null) {
+      layers.add(_mapsforgeLayer);
+    }
 
     if (_geopapLogs != null) layers.add(_geopapLogs);
     if (_geopapMarkers != null && _geopapMarkers.length > 0) {
@@ -165,11 +187,19 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
           IconButton(
             onPressed: () async {
               File file = await FilePicker.getFile(
-                  type: FileType.ANY, fileExtension: 'gpap');
+                  type: FileType.ANY, fileExtension: 'map');
               if (file != null) {
-                GeopaparazziMapLoader loader =
-                    new GeopaparazziMapLoader(file, this);
-                loader.loadNotes();
+                if (file.path.endsWith(".map")) {
+//                GeopaparazziMapLoader loader =
+//                    new GeopaparazziMapLoader(file, this);
+//                loader.loadNotes();
+                  _mapsforgeLayer = await loadMapsforgeLayer(file);
+                  await GpPreferences()
+                      .setString(KEY_LAST_MAPSFORGEPATH, file.path);
+                  setState(() {});
+                } else {
+                  showWarningDialog(context, "File format not supported.");
+                }
               }
             },
             icon: Icon(Icons.layers),
@@ -260,6 +290,12 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
   @override
   void onPositionUpdate(Position position) {
+    // TODO make this a preference (center on GPS)
+    if (!_mapController.bounds
+        .contains(LatLng(position.latitude, position.longitude))) {
+      _mapController.move(
+          LatLng(position.latitude, position.longitude), _mapController.zoom);
+    }
     setState(() {
       _lastPosition = position;
     });

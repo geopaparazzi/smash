@@ -56,7 +56,7 @@ class FileUtils {
   /// Returns the file of the folder to use..
   static Future<File> getDefaultStorageFolder() async {
     var storageInfo = await getStorageInfo();
-    var intenalStorage = await getInternalStorage(storageInfo);
+    var intenalStorage = getInternalStorage(storageInfo);
     if (intenalStorage.isNotEmpty) {
       return new File(intenalStorage[0]);
     } else {

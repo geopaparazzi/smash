@@ -25,9 +25,11 @@ dependencies:
   cupertino_icons: ^0.1.2
   datetime_picker_formfield: ^0.1.3
   http: ^0.12.0+2
-  rxdart: 0.18.1
-  flutter_map: any
-  flutter_map_marker_cluster: any
+  rxdart: 0.21.0
+
+  flutter_map: 0.5.5+2
+  flutter_map_marker_cluster: 0.1.5
+
   geolocator: ^5.0.0
   sqflite: ^1.1.5
   path: ^1.6.2
@@ -39,6 +41,10 @@ dependencies:
   location_permissions: ^2.0.0
   animated_floatactionbuttons: ^0.1.0
   flutter_svg: 0.12.4
+  screen: 0.0.5
+
+  mapsforge_flutter:
+    path: ../../mapsforge_flutter/mapsforge_flutter
 
 
 dev_dependencies:
@@ -64,6 +70,169 @@ flutter:
   assets:
     - assets/geopaparazzi_launcher_icon.svg
     - assets/gpicon.png
+    - assets/defaultrender.xml
+    - packages/mapsforge_flutter/assets/patterns/coniferous.svg
+    - packages/mapsforge_flutter/assets/patterns/coniferous_and_deciduous.svg
+    - packages/mapsforge_flutter/assets/patterns/deciduous.svg
+    - packages/mapsforge_flutter/assets/patterns/farmland.svg
+    - packages/mapsforge_flutter/assets/patterns/grass.svg
+    - packages/mapsforge_flutter/assets/patterns/hills.svg
+    - packages/mapsforge_flutter/assets/patterns/quarry.svg
+    - packages/mapsforge_flutter/assets/patterns/scrub.svg
+    - packages/mapsforge_flutter/assets/patterns/swamp.svg
+    - packages/mapsforge_flutter/assets/patterns/access-destination.png
+    - packages/mapsforge_flutter/assets/patterns/access-private.png
+    - packages/mapsforge_flutter/assets/patterns/arrow.png
+    - packages/mapsforge_flutter/assets/patterns/cemetery.png
+    - packages/mapsforge_flutter/assets/patterns/coniferous.svg
+    - packages/mapsforge_flutter/assets/patterns/coniferous_and_deciduous.svg
+    - packages/mapsforge_flutter/assets/patterns/deciduous.svg
+    - packages/mapsforge_flutter/assets/patterns/dot.png
+    - packages/mapsforge_flutter/assets/patterns/farmland.svg
+    - packages/mapsforge_flutter/assets/patterns/grass.svg
+    - packages/mapsforge_flutter/assets/patterns/hills.svg
+    - packages/mapsforge_flutter/assets/patterns/marsh.png
+    - packages/mapsforge_flutter/assets/patterns/military.png
+    - packages/mapsforge_flutter/assets/patterns/nature-reserve.png
+    - packages/mapsforge_flutter/assets/patterns/pike.png
+    - packages/mapsforge_flutter/assets/patterns/quarry.svg
+    - packages/mapsforge_flutter/assets/patterns/rail.png
+    - packages/mapsforge_flutter/assets/patterns/scrub.svg
+    - packages/mapsforge_flutter/assets/patterns/swamp.svg
+    - packages/mapsforge_flutter/assets/patterns/wood-coniferous.png
+    - packages/mapsforge_flutter/assets/patterns/wood-deciduous.png
+    - packages/mapsforge_flutter/assets/patterns/wood-mixed.png
+    - packages/mapsforge_flutter/assets/symbols/bench.svg
+    - packages/mapsforge_flutter/assets/symbols/cable_car.svg
+    - packages/mapsforge_flutter/assets/symbols/chair_lift.svg
+    - packages/mapsforge_flutter/assets/symbols/dot_black.svg
+    - packages/mapsforge_flutter/assets/symbols/dot_blue.svg
+    - packages/mapsforge_flutter/assets/symbols/dot_blue_dark.svg
+    - packages/mapsforge_flutter/assets/symbols/dot_magenta.svg
+    - packages/mapsforge_flutter/assets/symbols/dot_white.svg
+    - packages/mapsforge_flutter/assets/symbols/gondola.svg
+    - packages/mapsforge_flutter/assets/symbols/oneway.svg
+    - packages/mapsforge_flutter/assets/symbols/peak.svg
+    - packages/mapsforge_flutter/assets/symbols/railway-crossing-small.svg
+    - packages/mapsforge_flutter/assets/symbols/railway-crossing.svg
+    - packages/mapsforge_flutter/assets/symbols/traffic_signal.svg
+    - packages/mapsforge_flutter/assets/symbols/volcano.svg
+    - packages/mapsforge_flutter/assets/symbols/accommodation/alpinehut.svg
+    - packages/mapsforge_flutter/assets/symbols/accommodation/camping.svg
+    - packages/mapsforge_flutter/assets/symbols/accommodation/caravan_park.svg
+    - packages/mapsforge_flutter/assets/symbols/accommodation/chalet.svg
+    - packages/mapsforge_flutter/assets/symbols/accommodation/hostel.svg
+    - packages/mapsforge_flutter/assets/symbols/accommodation/hotel2.svg
+    - packages/mapsforge_flutter/assets/symbols/accommodation/shelter2.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/firestation3.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/fountain2.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/library.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/playground.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/police2.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/post_box.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/post_office.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/recycling.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/telephone.svg
+    - packages/mapsforge_flutter/assets/symbols/amenity/toilets.svg
+    - packages/mapsforge_flutter/assets/symbols/barrier/blocks.svg
+    - packages/mapsforge_flutter/assets/symbols/barrier/bollard.svg
+    - packages/mapsforge_flutter/assets/symbols/barrier/cycle_barrier.svg
+    - packages/mapsforge_flutter/assets/symbols/barrier/gate.svg
+    - packages/mapsforge_flutter/assets/symbols/barrier/lift_gate.svg
+    - packages/mapsforge_flutter/assets/symbols/barrier/stile.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/amenity/fountain2.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/amenity/library.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/amenity/toilets.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/money/atm2.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/archaeological2.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/attraction.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/castle2.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/cinema2.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/information.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/memorial.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/monument.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/museum.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/ruin.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/theatre.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/view_point.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/windmill.svg
+    - packages/mapsforge_flutter/assets/symbols/custom/tourist/zoo.svg
+    - packages/mapsforge_flutter/assets/symbols/education/nursery3.svg
+    - packages/mapsforge_flutter/assets/symbols/education/school.svg
+    - packages/mapsforge_flutter/assets/symbols/education/university.svg
+    - packages/mapsforge_flutter/assets/symbols/food/bar.svg
+    - packages/mapsforge_flutter/assets/symbols/food/biergarten.svg
+    - packages/mapsforge_flutter/assets/symbols/food/cafe.svg
+    - packages/mapsforge_flutter/assets/symbols/food/drinkingtap.svg
+    - packages/mapsforge_flutter/assets/symbols/food/fastfood.svg
+    - packages/mapsforge_flutter/assets/symbols/food/pub.svg
+    - packages/mapsforge_flutter/assets/symbols/food/restaurant.svg
+    - packages/mapsforge_flutter/assets/symbols/health/doctors2.svg
+    - packages/mapsforge_flutter/assets/symbols/health/hospital.svg
+    - packages/mapsforge_flutter/assets/symbols/health/pharmacy.svg
+    - packages/mapsforge_flutter/assets/symbols/money/atm2.svg
+    - packages/mapsforge_flutter/assets/symbols/money/bank2.svg
+    - packages/mapsforge_flutter/assets/symbols/place_of_worship/buddhist.svg
+    - packages/mapsforge_flutter/assets/symbols/place_of_worship/christian.svg
+    - packages/mapsforge_flutter/assets/symbols/place_of_worship/hindu.svg
+    - packages/mapsforge_flutter/assets/symbols/place_of_worship/islamic.svg
+    - packages/mapsforge_flutter/assets/symbols/place_of_worship/jewish.svg
+    - packages/mapsforge_flutter/assets/symbols/place_of_worship/shinto.svg
+    - packages/mapsforge_flutter/assets/symbols/place_of_worship/unknown.svg
+    - packages/mapsforge_flutter/assets/symbols/poi/cave.svg
+    - packages/mapsforge_flutter/assets/symbols/poi/embassy2.svg
+    - packages/mapsforge_flutter/assets/symbols/poi/mountain_pass.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/alcohol.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/bakery.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/bicycle.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/book.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/butcher.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/car_repair.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/convenience.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/diy.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/greengrocer.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/laundrette.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/marketplace.svg
+    - packages/mapsforge_flutter/assets/symbols/shopping/supermarket.svg
+    - packages/mapsforge_flutter/assets/symbols/sport/golf.svg
+    - packages/mapsforge_flutter/assets/symbols/sport/shooting.svg
+    - packages/mapsforge_flutter/assets/symbols/sport/soccer.svg
+    - packages/mapsforge_flutter/assets/symbols/sport/stadium.svg
+    - packages/mapsforge_flutter/assets/symbols/sport/swimming_outdoor.svg
+    - packages/mapsforge_flutter/assets/symbols/sport/tennis.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/archaeological2.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/attraction.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/castle2.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/cinema2.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/information.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/memorial.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/monument.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/museum.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/picnic.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/ruin.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/theatre.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/view_point.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/windmill.svg
+    - packages/mapsforge_flutter/assets/symbols/tourist/zoo.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/airport2.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/bus_station.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/bus_stop.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/fuel.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/helicopter.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/lighthouse.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/parking.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/parking_private.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/rental_bicycle.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/slipway.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/traffic_lights.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/train_station2.svg
+    - packages/mapsforge_flutter/assets/symbols/transport/tram_stop.svg
+    - packages/mapsforge_flutter/assets/symbols/water/weir.svg
+    - packages/mapsforge_flutter/assets/symbols/windsock.svg
+    - packages/mapsforge_flutter/assets/symbols/viewpoint.svg
+
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

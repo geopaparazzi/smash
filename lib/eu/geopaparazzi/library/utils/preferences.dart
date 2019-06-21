@@ -9,6 +9,7 @@ final KEY_LAST_GPAPPROJECT = "lastgpapProject";
 final KEY_LAST_LAT = "lastgpap_lat";
 final KEY_LAST_LON = "lastgpap_lon";
 final KEY_LAST_ZOOM = "lastgpap_zoom";
+final KEY_LAST_MAPSFORGEPATH = "lastmapsforge_path";
 
 /// Geopaparazzi Preferences singleton.
 class GpPreferences {
