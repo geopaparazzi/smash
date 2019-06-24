@@ -10,6 +10,7 @@ final KEY_LAST_LAT = "lastgpap_lat";
 final KEY_LAST_LON = "lastgpap_lon";
 final KEY_LAST_ZOOM = "lastgpap_zoom";
 final KEY_LAST_MAPSFORGEPATH = "lastmapsforge_path";
+final KEY_CENTER_ON_GPS = "center_on_gps";
 
 /// Geopaparazzi Preferences singleton.
 class GpPreferences {
@@ -77,5 +78,13 @@ class GpPreferences {
     _preferences.setDouble(KEY_LAST_LAT, lat);
     _preferences.setDouble(KEY_LAST_LON, lon);
     _preferences.setDouble(KEY_LAST_ZOOM, zoom);
+  }
+
+  Future<bool> getCenterOnGps() async {
+    return getBoolean(KEY_CENTER_ON_GPS, false);
+  }
+
+  void setCenterOnGps(bool centerOnGps) {
+    setBoolean(KEY_CENTER_ON_GPS, centerOnGps);
   }
 }

@@ -29,6 +29,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     with SingleTickerProviderStateMixin
     implements PositionListener {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  ValueNotifier<bool> _keepGpsOnScreenNotifier = new ValueNotifier(false);
 
   List<Marker> _geopapMarkers;
   PolylineLayerOptions _geopapLogs;
@@ -80,6 +81,9 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
   }
 
   Future loadProject() async {
+    bool centerOnGps = await GpPreferences().getCenterOnGps();
+    _keepGpsOnScreenNotifier.value = centerOnGps;
+
     if (gpProjectModel.projectPath != null) {
       GeopaparazziMapLoader loader =
           new GeopaparazziMapLoader(new File(gpProjectModel.projectPath), this);
@@ -226,6 +230,10 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
           colorStartAnimation: GeopaparazziColors.mainDecorations,
           colorEndAnimation: GeopaparazziColors.mainSelection,
           animatedIconData: AnimatedIcons.menu_close),
+      endDrawer: Drawer(
+          child: ListView(
+        children: getDrawerWidgets(context),
+      )),
     );
   }
 
@@ -290,9 +298,9 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
   @override
   void onPositionUpdate(Position position) {
-    // TODO make this a preference (center on GPS)
-    if (!_mapController.bounds
-        .contains(LatLng(position.latitude, position.longitude))) {
+    if (_keepGpsOnScreenNotifier.value &&
+        !_mapController.bounds
+            .contains(LatLng(position.latitude, position.longitude))) {
       _mapController.move(
           LatLng(position.latitude, position.longitude), _mapController.zoom);
     }
@@ -303,4 +311,105 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
   @override
   void setStatus(GpsStatus currentStatus) {}
+
+  getDrawerWidgets(BuildContext context) {
+    double iconSize = 48;
+    double textSize = iconSize / 2;
+    var c = GeopaparazziColors.mainDecorations;
+    return [
+      new Container(
+        margin: EdgeInsets.only(bottom: 20),
+        child: new DrawerHeader(child: Image.asset("assets/gpicon.png")),
+//            new SvgPicture.asset(
+//          assetName,
+//          fit: BoxFit.scaleDown,
+//          semanticsLabel: 'A red up arrow',
+//        )),
+        color: GeopaparazziColors.mainDecorations,
+      ),
+      new Container(
+        child: new Column(children: [
+          ListTile(
+            leading: new Icon(
+              Icons.timeline,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "GPS data list",
+              style: TextStyle(fontSize: textSize, color: c),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.navigation,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Go to",
+              style: TextStyle(fontSize: textSize, color: c),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.share,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Share position",
+              style: TextStyle(fontSize: textSize, color: c),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.layers,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Layers",
+              style: TextStyle(fontSize: textSize, color: c),
+            ),
+            onTap: () => _openLayers(context),
+          ),
+          ListTile(
+            leading: Checkbox(
+                value: _keepGpsOnScreenNotifier.value,
+                onChanged: (value) {
+                  _keepGpsOnScreenNotifier.value = value;
+                  GpPreferences().setBoolean(KEY_CENTER_ON_GPS, value);
+//                  Navigator.of(context).pop();
+                }),
+            title: Text(
+              "Keep GPS on screen",
+              style: TextStyle(fontSize: textSize, color: c),
+            ),
+            onTap: () => _openLayers(context),
+          ),
+        ]),
+      ),
+    ];
+  }
+
+  _openLayers(BuildContext context) async {
+    File file =
+        await FilePicker.getFile(type: FileType.ANY, fileExtension: 'map');
+    if (file != null) {
+      if (file.path.endsWith(".map")) {
+//                GeopaparazziMapLoader loader =
+//                    new GeopaparazziMapLoader(file, this);
+//                loader.loadNotes();
+        _mapsforgeLayer = await loadMapsforgeLayer(file);
+        await GpPreferences().setString(KEY_LAST_MAPSFORGEPATH, file.path);
+        setState(() {});
+      } else {
+        showWarningDialog(context, "File format not supported.");
+      }
+    }
+  }
 }

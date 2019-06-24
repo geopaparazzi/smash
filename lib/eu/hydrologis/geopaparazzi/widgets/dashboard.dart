@@ -22,6 +22,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
 import 'package:path/path.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/notes_ui.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforgetest/showmap.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -183,7 +184,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
           iconSize,
           _openAddNoteFunction),
       getSingleTile(context, headerMetadata, headerColor, infoMetadata,
-          iconMetadata, iconSize, null),
+          iconMetadata, iconSize, _openMapsforgeFunction),
       DashboardLogButton(_gpsLoggingValueNotifier, _gpsStatusValueNotifier),
       getSingleTile(context, headerMaps, headerColor, infoMaps, iconMaps,
           iconSize, _openMapFunction),
@@ -197,6 +198,11 @@ class _DashboardWidgetState extends State<DashboardWidget>
   _openMapFunction(context) {
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => GeopaparazziMapWidget()));
+  }
+
+  _openMapsforgeFunction(context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => Showmap()));
   }
 
   _openAddNoteFunction(context) {
@@ -325,6 +331,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
     if (file != null && file.existsSync()) {
       gpProjectModel.setNewProject(this, file.path);
     }
+    Navigator.of(context).pop();
   }
 
   Future _createNewProject(BuildContext context) async {
@@ -349,6 +356,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
       var gpFile = new File(newPath);
       gpProjectModel.setNewProject(this, gpFile.path);
     }
+
+    Navigator.of(context).pop();
   }
 
   @override
