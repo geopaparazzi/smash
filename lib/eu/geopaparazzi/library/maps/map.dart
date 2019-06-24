@@ -12,6 +12,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:latlong/latlong.dart';
@@ -194,29 +195,44 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
       key: _scaffoldKey,
       appBar: new AppBar(
         title: Text("Map View"),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () async {
-              File file = await FilePicker.getFile(
-                  type: FileType.ANY, fileExtension: 'map');
-              if (file != null) {
-                if (file.path.endsWith(".map")) {
-//                GeopaparazziMapLoader loader =
-//                    new GeopaparazziMapLoader(file, this);
-//                loader.loadNotes();
-                  _mapsforgeLayer = await loadMapsforgeLayer(file);
-                  await GpPreferences()
-                      .setString(KEY_LAST_MAPSFORGEPATH, file.path);
-                  setState(() {});
-                } else {
-                  showWarningDialog(context, "File format not supported.");
-                }
-              }
-            },
-            icon: Icon(Icons.layers),
-            tooltip: "Add geopap Porject",
-          )
-        ],
+//        actions: <Widget>[
+//          IconButton(
+//            onPressed: () {
+//              setState(() {
+//                var zoom = _mapController.zoom + 1;
+//                if (zoom > 19) zoom = 19;
+//                _mapController.move(_mapController.center, zoom);
+//              });
+//            },
+//            tooltip: 'Zoom in',
+//            icon: Icon(
+//              Icons.zoom_in,
+//              color: GeopaparazziColors.mainBackground,
+//            ),
+//          ),
+//          zoomOut(),
+//          IconButton(
+//            onPressed: () async {
+//              File file = await FilePicker.getFile(
+//                  type: FileType.ANY, fileExtension: 'map');
+//              if (file != null) {
+//                if (file.path.endsWith(".map")) {
+////                GeopaparazziMapLoader loader =
+////                    new GeopaparazziMapLoader(file, this);
+////                loader.loadNotes();
+//                  _mapsforgeLayer = await loadMapsforgeLayer(file);
+//                  await GpPreferences()
+//                      .setString(KEY_LAST_MAPSFORGEPATH, file.path);
+//                  setState(() {});
+//                } else {
+//                  showWarningDialog(context, "File format not supported.");
+//                }
+//              }
+//            },
+//            icon: Icon(Icons.layers),
+//            tooltip: "Add geopap Porject",
+//          )
+//        ],
       ),
       body: Center(
           // here no futurebuilder can be used, because the gps triggers refresh, which makes it cluttered
@@ -231,16 +247,84 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
         layers: layers,
         mapController: _mapController,
       )),
-      floatingActionButton: AnimatedFloatingActionButton(
-          //Fab list
-          fabButtons: <Widget>[zoomIn(), zoomOut(), centerOnGps()],
-          colorStartAnimation: GeopaparazziColors.mainDecorations,
-          colorEndAnimation: GeopaparazziColors.mainSelection,
-          animatedIconData: AnimatedIcons.menu_close),
+//      floatingActionButton: AnimatedFloatingActionButton(
+//          //Fab list
+//          fabButtons: <Widget>[zoomIn(), zoomOut(), centerOnGps()],
+//          colorStartAnimation: GeopaparazziColors.mainDecorations,
+//          colorEndAnimation: GeopaparazziColors.mainSelection,
+//          animatedIconData: AnimatedIcons.menu_close),
       endDrawer: Drawer(
           child: ListView(
         children: getDrawerWidgets(context),
       )),
+      bottomNavigationBar: BottomAppBar(
+        color: GeopaparazziColors.mainDecorations,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            IconButton(
+              onPressed: () {},
+              tooltip: 'Add note',
+              icon: Icon(
+                Icons.note_add,
+                color: GeopaparazziColors.mainBackground,
+              ),
+            ),
+            IconButton(
+              onPressed: () {},
+              tooltip: 'Notes list',
+              icon: Icon(
+                Icons.list,
+                color: GeopaparazziColors.mainBackground,
+              ),
+            ),
+            Spacer(),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  if (_lastPosition != null)
+                    _mapController.move(
+                        LatLng(_lastPosition.latitude, _lastPosition.longitude),
+                        _mapController.zoom);
+                });
+              },
+              tooltip: 'Center on GPS',
+              icon: Icon(
+                Icons.center_focus_strong,
+                color: GeopaparazziColors.mainBackground,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  var zoom = _mapController.zoom + 1;
+                  if (zoom > 19) zoom = 19;
+                  _mapController.move(_mapController.center, zoom);
+                });
+              },
+              tooltip: 'Zoom in',
+              icon: Icon(
+                Icons.zoom_in,
+                color: GeopaparazziColors.mainBackground,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  var zoom = _mapController.zoom - 1;
+                  if (zoom < 0) zoom = 0;
+                  _mapController.move(_mapController.center, zoom);
+                });
+              },
+              tooltip: 'Zoom out',
+              icon: Icon(
+                Icons.zoom_out,
+                color: GeopaparazziColors.mainBackground,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -320,9 +404,9 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
   void setStatus(GpsStatus currentStatus) {}
 
   getDrawerWidgets(BuildContext context) {
-    double iconSize = 36;
-    double textSize = iconSize / 2;
     var c = GeopaparazziColors.mainDecorations;
+    var textStyle = GpConstants.MEDIUM_DIALOG_TEXT_STYLE;
+    var iconSize = GpConstants.MEDIUM_DIALOG_ICON_SIZE;
     return [
       new Container(
         margin: EdgeInsets.only(bottom: 20),
@@ -344,7 +428,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
             ),
             title: Text(
               "GPS data list",
-              style: TextStyle(fontSize: textSize, color: c),
+              style: textStyle,
             ),
             onTap: () {},
           ),
@@ -356,7 +440,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
             ),
             title: Text(
               "Go to",
-              style: TextStyle(fontSize: textSize, color: c),
+              style: textStyle,
             ),
             onTap: () {
               Navigator.pop(context);
@@ -375,7 +459,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
             ),
             title: Text(
               "Share position",
-              style: TextStyle(fontSize: textSize, color: c),
+              style: textStyle,
             ),
             onTap: () {},
           ),
@@ -387,22 +471,27 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
             ),
             title: Text(
               "Layers",
-              style: TextStyle(fontSize: textSize, color: c),
+              style: textStyle,
             ),
             onTap: () => _openLayers(context),
           ),
           ListTile(
-            leading: Checkbox(
+            leading: new Icon(
+              Icons.center_focus_weak,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "GPS on screen",
+              style: textStyle,
+            ),
+            trailing: Checkbox(
                 value: _keepGpsOnScreenNotifier.value,
                 onChanged: (value) {
                   _keepGpsOnScreenNotifier.value = value;
                   GpPreferences().setBoolean(KEY_CENTER_ON_GPS, value);
 //                  Navigator.of(context).pop();
                 }),
-            title: Text(
-              "Keep GPS on screen",
-              style: TextStyle(fontSize: textSize, color: c),
-            ),
             onTap: () => _openLayers(context),
           ),
         ]),
