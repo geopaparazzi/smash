@@ -8,6 +8,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geopaparazzi.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
@@ -30,6 +31,8 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     implements PositionListener {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   ValueNotifier<bool> _keepGpsOnScreenNotifier = new ValueNotifier(false);
+  ValueNotifier<LatLng> _mapCenterValueNotifier =
+      new ValueNotifier(LatLng(0, 0));
 
   List<Marker> _geopapMarkers;
   PolylineLayerOptions _geopapLogs;
@@ -77,6 +80,9 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
       subdomains: ['a', 'b', 'c'],
     );
 
+    _mapCenterValueNotifier.addListener(() {
+      _mapController.move(_mapCenterValueNotifier.value, _mapController.zoom);
+    });
     loadProject();
   }
 
@@ -103,6 +109,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
   @override
   void dispose() {
+//    _mapCenterValueNotifier.removeListener();
     updateCenterPosition();
     // stop listening to gps
     GpsHandler().removePositionListener(this);
@@ -313,7 +320,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
   void setStatus(GpsStatus currentStatus) {}
 
   getDrawerWidgets(BuildContext context) {
-    double iconSize = 48;
+    double iconSize = 36;
     double textSize = iconSize / 2;
     var c = GeopaparazziColors.mainDecorations;
     return [
@@ -351,7 +358,14 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
               "Go to",
               style: TextStyle(fontSize: textSize, color: c),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          GeocodingPage(_mapCenterValueNotifier)));
+            },
           ),
           ListTile(
             leading: new Icon(

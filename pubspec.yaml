@@ -42,6 +42,7 @@ dependencies:
   animated_floatactionbuttons: ^0.1.0
   flutter_svg: 0.12.4
   screen: 0.0.5
+  geocoder: 0.1.2
 
   mapsforge_flutter:
     path: ../../mapsforge_flutter/mapsforge_flutter
