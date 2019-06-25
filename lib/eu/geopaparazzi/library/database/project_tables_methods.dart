@@ -5,7 +5,9 @@
  */
 import 'package:sqflite/sqflite.dart';
 import 'package:latlong/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
 
@@ -111,13 +113,27 @@ void createDatabase(Database db) async {
   });
 }
 
+/// Get a list of items from the database [db], defined by the [queryObj].
+Future<List<T>> getQueryObjectsList<T>(
+    Database db, QueryObjectBuilder<T> queryObj) async {
+  String querySql = queryObj.querySql();
+  var res = await db.rawQuery(querySql);
+  List<T> items = [];
+  for (int i = 0; i < res.length; i++) {
+    var map = res[i];
+    var obj = queryObj.fromMap(map);
+    items.add(obj);
+  }
+  return items;
+}
+
 /// Get the count of the current notes
 ///
 /// Get the count on a given [db], using [onlyDirty] to count only dirty notes.
 Future<int> getNotesCount(Database db, bool onlyDirty) async {
-  String where = !onlyDirty ? "" : " where ${NOTES_COLUMN_ISDIRTY} = 1";
-  List<Map<String, dynamic>> resNotes = await db
-      .rawQuery("SELECT count(*) as count FROM ${TABLE_NOTES} ${where}");
+  String where = !onlyDirty ? "" : " where $NOTES_COLUMN_ISDIRTY = 1";
+  List<Map<String, dynamic>> resNotes =
+      await db.rawQuery("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
   var resNote = resNotes[0];
   var count = resNote["count"];
@@ -140,8 +156,8 @@ Future<int> addNote(Database db, Note note) {
 ///
 /// Get the count on a given [db], using [onlyDirty] to count only dirty notes.
 Future<int> getGpsLogCount(Database db, bool onlyDirty) async {
-  String where = !onlyDirty ? "" : " where ${LOGS_COLUMN_ISDIRTY} = 1";
-  var sql = "SELECT count(*) as count FROM ${TABLE_GPSLOGS}${where}";
+  String where = !onlyDirty ? "" : " where $LOGS_COLUMN_ISDIRTY = 1";
+  var sql = "SELECT count(*) as count FROM $TABLE_GPSLOGS$where";
   List<Map<String, dynamic>> resMap = await db.rawQuery(sql);
 
   var res = resMap[0];
@@ -149,14 +165,24 @@ Future<int> getGpsLogCount(Database db, bool onlyDirty) async {
   return count;
 }
 
+/// Add a new gps [Log] into teh database.
+///
+/// The log is inserted in [db] with the properties [prop].
+/// The method returns the id of the inserted log.
 Future<int> addGpsLog(Database db, Log insertLog, LogProperty prop) async {
-  // TODO use transaction
-  int insertedId = await db.insert(TABLE_GPSLOGS, insertLog.toMap());
-  prop.logid = insertedId;
-  await db.insert(TABLE_GPSLOG_PROPERTIES, prop.toMap());
-  return insertedId;
+  await db.transaction((tx) async {
+    int insertedId = await tx.insert(TABLE_GPSLOGS, insertLog.toMap());
+    prop.logid = insertedId;
+    insertLog.id = insertedId;
+    await tx.insert(TABLE_GPSLOG_PROPERTIES, prop.toMap());
+  });
+
+  return insertLog.id;
 }
 
+/// Add a point [logPoint] to a [Log] of id [logId] in the [db].
+///
+/// Returns the id of the inserted point.
 Future<int> addGpsLogPoint(
     Database db, int logId, LogDataPoint logPoint) async {
   logPoint.logid = logId;
@@ -164,8 +190,50 @@ Future<int> addGpsLogPoint(
   return insertedId;
 }
 
+/// Updates the end timestamp [endTs] of a log of id [logId] in the [db].
 Future<int> updateGpsLogEndts(Database db, int logId, int endTs) async {
   var updatedId = await db.rawUpdate(
-      "update ${TABLE_GPSLOGS} set ${LOGS_COLUMN_ENDTS}=${endTs} where ${LOGS_COLUMN_ID}=${logId}");
+      "update $TABLE_GPSLOGS set $LOGS_COLUMN_ENDTS=$endTs where $LOGS_COLUMN_ID=$logId");
+  await updateLogLength(db, logId);
   return updatedId;
+}
+
+/// Update the length of a log
+///
+/// Calculates the length of a log of id [logId] in the [db].
+Future<double> updateLogLength(Database db, int logId) async {
+  var sql = '''
+      SELECT $LOGSDATA_COLUMN_LON,$LOGSDATA_COLUMN_LAT,$LOGSDATA_COLUMN_TS 
+      FROM $TABLE_GPSLOG_DATA 
+      WHERE $LOGSDATA_COLUMN_LOGID=$logId
+      ORDER BY $LOGSDATA_COLUMN_TS ASC
+    ''';
+  double summedDistance = 0.0;
+
+  var res = await db.rawQuery(sql);
+  Position previousPosition;
+  for (int i = 0; i < res.length; i++) {
+    var map = res[i];
+    var lon = map[LOGSDATA_COLUMN_LON];
+    var lat = map[LOGSDATA_COLUMN_LAT];
+    var ts = map[LOGSDATA_COLUMN_TS];
+    Position pos = Position(longitude: lon, latitude: lat);
+    if (previousPosition != null) {
+      var distanceMeters =
+          await GpsHandler().getDistanceMeters(pos, previousPosition);
+      summedDistance += distanceMeters;
+    }
+    previousPosition = pos;
+  }
+
+  // update the value
+  String insert = '''
+    update $TABLE_GPSLOGS set $LOGS_COLUMN_LENGTHM=$summedDistance 
+    where $LOGS_COLUMN_ID=$logId;
+  ''';
+  var updateNums = await db.rawUpdate(insert);
+  if (updateNums != 1) {
+    return null;
+  }
+  return summedDistance;
 }

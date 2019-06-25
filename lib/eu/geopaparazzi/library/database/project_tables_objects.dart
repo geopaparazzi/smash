@@ -6,6 +6,16 @@
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:latlong/latlong.dart';
 
+abstract class QueryObjectBuilder<T> {
+  String querySql();
+
+  String insertSql();
+
+  Map<String, dynamic> toMap(T item);
+
+  T fromMap(Map<String, dynamic> map);
+}
+
 /*
  * The metadata table name.
  */
@@ -197,7 +207,6 @@ class Log {
   double lengthm;
   String text;
   int isDirty;
-
   List<LatLng> logData = [];
 
   Map<String, dynamic> toMap() {

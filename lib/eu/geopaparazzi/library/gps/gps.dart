@@ -18,7 +18,6 @@ enum GpsStatus { OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
 
 /// Interface to handle position updates
 abstract class PositionListener {
-
   /// Launched whenever a new [position] comes in.
   void onPositionUpdate(Position position);
 
@@ -119,7 +118,6 @@ class GpsHandler {
     if (_geolocator == null) return null;
     return await _geolocator.isLocationServiceEnabled();
   }
-
 
   void _onPositionUpdate(Position position) {
     if (_locationDisabled) return;
@@ -244,5 +242,15 @@ class GpsHandler {
         pl.setStatus(_gpsStatus);
       });
     });
+  }
+
+  Future<double> getDistanceMeters(Position p1, Position p2) async {
+    if (_geolocator != null) {
+      var distanceBetween = await _geolocator.distanceBetween(
+          p1.latitude, p1.longitude, p2.latitude, p2.longitude);
+      return distanceBetween;
+    } else {
+      return null;
+    }
   }
 }

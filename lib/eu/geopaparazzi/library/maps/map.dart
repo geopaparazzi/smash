@@ -11,6 +11,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geopaparazzi.dar
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
@@ -278,6 +279,17 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                 color: GeopaparazziColors.mainBackground,
               ),
             ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LogWidget()));
+              },
+              tooltip: 'Logs list',
+              icon: Icon(
+                Icons.timeline,
+                color: GeopaparazziColors.mainBackground,
+              ),
+            ),
             Spacer(),
             IconButton(
               onPressed: () {
@@ -328,65 +340,6 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     );
   }
 
-  Widget zoomIn() {
-    return Container(
-      child: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            var zoom = _mapController.zoom + 1;
-            if (zoom > 19) zoom = 19;
-            _mapController.move(_mapController.center, zoom);
-          });
-        },
-        tooltip: 'Zoom in',
-        child: Icon(
-          Icons.zoom_in,
-          color: GeopaparazziColors.mainBackground,
-        ),
-        heroTag: null,
-      ),
-    );
-  }
-
-  Widget zoomOut() {
-    return Container(
-      child: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            var zoom = _mapController.zoom - 1;
-            if (zoom < 0) zoom = 0;
-            _mapController.move(_mapController.center, zoom);
-          });
-        },
-        tooltip: 'Zoom out',
-        child: Icon(
-          Icons.zoom_out,
-          color: GeopaparazziColors.mainBackground,
-        ),
-        heroTag: null,
-      ),
-    );
-  }
-
-  Widget centerOnGps() {
-    return Container(
-      child: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            if (_lastPosition != null)
-              _mapController.move(
-                  LatLng(_lastPosition.latitude, _lastPosition.longitude),
-                  _mapController.zoom);
-          });
-        },
-        tooltip: 'Center on GPS',
-        child: Icon(Icons.center_focus_strong,
-            color: GeopaparazziColors.mainBackground),
-        heroTag: null,
-      ),
-    );
-  }
-
   @override
   void onPositionUpdate(Position position) {
     if (_keepGpsOnScreenNotifier.value &&
@@ -420,18 +373,6 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
       ),
       new Container(
         child: new Column(children: [
-          ListTile(
-            leading: new Icon(
-              Icons.timeline,
-              color: c,
-              size: iconSize,
-            ),
-            title: Text(
-              "GPS data list",
-              style: textStyle,
-            ),
-            onTap: () {},
-          ),
           ListTile(
             leading: new Icon(
               Icons.navigation,
