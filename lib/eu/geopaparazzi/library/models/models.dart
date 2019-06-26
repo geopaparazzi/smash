@@ -52,6 +52,9 @@ class GPProjectModel extends StateUpdater {
       } catch (e) {
         print(e);
       }
+
+//      await _db.printInfo();
+
       await GpPreferences().setString(KEY_LAST_GPAPPROJECT, _projectPath);
     }
     return _db;

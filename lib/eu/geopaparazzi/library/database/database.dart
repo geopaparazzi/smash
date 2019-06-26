@@ -60,7 +60,7 @@ class SqliteDb {
     return items;
   }
 
-  query(String querySql) async {
+  Future<List<Map<String, dynamic>>> query(String querySql) async {
     return _db.rawQuery(querySql);
   }
 
@@ -85,6 +85,55 @@ class SqliteDb {
     return _db.transaction(action, exclusive: exclusive);
   }
 
+  Future<List<String>> getTables(bool doOrder) async {
+    List<String> tableNames = [];
+    String orderBy = " ORDER BY name";
+    if (!doOrder) {
+      orderBy = "";
+    }
+    String sql =
+        "SELECT name FROM sqlite_master WHERE type='table' or type='view'" +
+            orderBy;
+    var res = await query(sql);
+    for (int i = 0; i < res.length; i++) {
+      var name = res[i]['name'];
+      tableNames.add(name);
+    }
+    return tableNames;
+  }
+
+  Future<bool> hasTable(String tableName) async {
+    String sql = "SELECT name FROM sqlite_master WHERE type='table'";
+    var res = await query(sql);
+    tableName = tableName.toLowerCase();
+    for (int i = 0; i < res.length; i++) {
+      String name = res[i]['name'];
+      if (name.toLowerCase() == tableName) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Get the table columns from a non spatial db.
+   *
+   * @param db the db.
+   * @param tableName the name of the table to get the columns for.
+   * @return the list of table column information.
+   * @throws Exception
+   */
+  Future<List<List<dynamic>>> getTableColumns(String tableName) async {
+    String sql = "PRAGMA table_info(" + tableName + ")";
+    List<List<dynamic>> columnsList = [];
+    var res = await query(sql);
+    for (int i = 0; i < res.length; i++) {
+      var map = res[i];
+      String colName = map['name'];
+      String colType = map['type'];
+      int isPk = map['pk'];
+      columnsList.add([colName, colType, isPk]);
+    }
+    return columnsList;
+  }
 }
 
 class GeopaparazziProjectDb extends SqliteDb {
@@ -331,5 +380,20 @@ class GeopaparazziProjectDb extends SqliteDb {
         }
       }
     });
+  }
+
+  void printInfo() async {
+    var tableNames = await getTables(true);
+    for (int i = 0; i < tableNames.length; i++) {
+      var tableName = tableNames[i];
+      var has = await hasTable(tableName);
+      print("$tableName found: $has");
+      var tableColumns = await getTableColumns(tableName);
+      for (int j = 0; j < tableColumns.length; j++) {
+        var tableColumn = tableColumns[j];
+        print(
+            "    ${tableColumn[0]} ${tableColumn[1]} ${tableColumn[2] == 1 ? "isPk" : ""} ");
+      }
+    }
   }
 }
