@@ -3,10 +3,9 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'package:sqflite/sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
 
 /// The global reference to the Geopaparazzi Project Model
 GPProjectModel gpProjectModel;
@@ -19,7 +18,7 @@ GPProjectModel gpProjectModel;
 /// * the database used
 class GPProjectModel extends StateUpdater {
   String _projectPath;
-  Database _db;
+  GeopaparazziProjectDb _db;
 
   double lastCenterLon = 0;
   double lastCenterLat = 0;
@@ -31,7 +30,7 @@ class GPProjectModel extends StateUpdater {
     rebuildWidgets(
         setStates: () {
           _projectPath = path;
-          if (_db != null && _db.isOpen) {
+          if (_db != null && _db.isOpen()) {
             _db.close();
             _db = null;
           }
@@ -39,7 +38,7 @@ class GPProjectModel extends StateUpdater {
         states: [state]);
   }
 
-  Future<Database> getDatabase() async {
+  Future<GeopaparazziProjectDb> getDatabase() async {
     if (_db == null) {
       if (_projectPath == null) {
         _projectPath = await GpPreferences().getString(KEY_LAST_GPAPPROJECT);
@@ -48,13 +47,8 @@ class GPProjectModel extends StateUpdater {
         return null;
       }
       try {
-        _db = await openDatabase(
-          _projectPath,
-          version: 1,
-          onCreate: (Database db, int version) async {
-            await createDatabase(db);
-          },
-        );
+        _db = GeopaparazziProjectDb(_projectPath);
+        await _db.openOrCreate();
       } catch (e) {
         print(e);
       }

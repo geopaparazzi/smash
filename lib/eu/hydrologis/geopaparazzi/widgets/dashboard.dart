@@ -9,20 +9,18 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/map.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforgetest/showmap.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/files.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
-import 'package:path/path.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/notes_ui.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforgetest/showmap.dart';
+import 'package:path/path.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -57,7 +55,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
       _projectName = basename(database.path);
       _projectName = _projectName.substring(0, _projectName.length - 5);
 
-      _notesCount = await getNotesCount(database, false);
+      _notesCount = await database.getNotesCount(false);
     } else {
       _notesCount = 0;
     }
@@ -201,8 +199,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
   }
 
   _openMapsforgeFunction(context) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => Showmap()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Showmap()));
   }
 
   _openAddNoteFunction(context) {
@@ -545,7 +542,7 @@ class DashboardLogButtonState extends State<DashboardLogButton> {
   Future<bool> _checkStats(BuildContext context) async {
     var database = await gpProjectModel.getDatabase();
     if (database != null) {
-      _logsCount = await getGpsLogCount(database, false);
+      _logsCount = await database.getGpsLogCount(false);
     } else {
       _logsCount = 0;
     }

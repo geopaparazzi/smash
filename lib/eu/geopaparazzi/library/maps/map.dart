@@ -8,7 +8,6 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
@@ -16,8 +15,8 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/share.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:latlong/latlong.dart';
 import 'package:screen/screen.dart';
 import 'package:sqflite/sqflite.dart';
@@ -509,7 +508,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                                     "Are you sure you want to remove note ${id}?");
                                 if (doRemove) {
                                   var db = await gpProjectModel.getDatabase();
-                                  deleteNote(db, id);
+                                  db.deleteNote(id);
                                   reloadProject();
                                 }
                                 _scaffoldKey.currentState.hideCurrentSnackBar();

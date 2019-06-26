@@ -9,9 +9,9 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
 
 /// Log object dedicated to the list of logs widget.
 class Log4ListWidget {
@@ -82,7 +82,7 @@ class LogWidgetState extends State<LogWidget> {
 
   Future<bool> loadLogs() async {
     var db = await gpProjectModel.getDatabase();
-    var itemsList = await getQueryObjectsList(db, Log4ListWidgetBuilder());
+    var itemsList = await db.getQueryObjectsList(Log4ListWidgetBuilder());
     if (itemsList != null) {
       _logsList = itemsList;
     }
@@ -134,11 +134,10 @@ class LogWidgetState extends State<LogWidget> {
                                 onChanged: (isVisible) async {
                                   logItem.isVisible = isVisible ? 1 : 0;
                                   var db = await gpProjectModel.getDatabase();
-                                  await updateGpsLogVisibility(
-                                      db, logItem.id, isVisible);
+                                  await db.updateGpsLogVisibility(
+                                      logItem.id, isVisible);
                                   widget._reloadFunction();
-                                  setState(() {
-                                  });
+                                  setState(() {});
                                 }),
                           ],
                         ),
@@ -169,7 +168,7 @@ class LogWidgetState extends State<LogWidget> {
     );
     if (result != null) {
       var db = await gpProjectModel.getDatabase();
-      await updateGpsLogName(db, logItem.id, result);
+      await db.updateGpsLogName(logItem.id, result);
       setState(() {
         logItem.name = result;
       });
@@ -275,8 +274,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
           _logItem.color = ColorExt.asHex(_logColor);
 
           var db = await gpProjectModel.getDatabase();
-          await updateGpsLogStyle(
-              db, _logItem.id, _logItem.color, _logItem.width);
+          await db.updateGpsLogStyle(
+              _logItem.id, _logItem.color, _logItem.width);
           widget._reloadFunction();
           return true;
         },

@@ -4,20 +4,13 @@
  * found in the LICENSE file.
  */
 
-import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:latlong/latlong.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 class AddNotePage extends StatefulWidget {
   @override
@@ -65,7 +58,7 @@ class AddNotePageState extends State<AddNotePage> {
                       ..lon = pos != null ? pos.longitude : lon
                       ..lat = pos != null ? pos.latitude : lat
                       ..altim = pos != null ? pos.altitude : -1;
-                    addNote(db, note);
+                    db.addNote(note);
                   });
                 }
               });

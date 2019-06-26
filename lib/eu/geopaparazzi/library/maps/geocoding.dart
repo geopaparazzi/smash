@@ -3,17 +3,9 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'package:geocoder/geocoder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:latlong/latlong.dart';
 
 // From a query
@@ -53,7 +45,8 @@ class GeocodingPageState extends State<GeocodingPage> {
           },
         ),
         title: Text("${address.addressLine}"),
-        subtitle: Text("Lat: ${address.coordinates.latitude} Lon: ${address.coordinates.longitude}"),
+        subtitle: Text(
+            "Lat: ${address.coordinates.latitude} Lon: ${address.coordinates.longitude}"),
       );
     }));
 

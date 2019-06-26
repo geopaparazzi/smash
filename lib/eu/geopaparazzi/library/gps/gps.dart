@@ -6,13 +6,12 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/material.dart';
+
 import 'package:geolocator/geolocator.dart';
-import 'package:location_permissions/location_permissions.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:latlong/latlong.dart';
+import 'package:location_permissions/location_permissions.dart';
 
 enum GpsStatus { OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
 
@@ -138,7 +137,7 @@ class GpsHandler {
           ldp.altim = position.altitude;
           ldp.ts = DateTime.now().millisecondsSinceEpoch;
 
-          addGpsLogPoint(db, _currentLogId, ldp);
+          db.addGpsLogPoint(_currentLogId, ldp);
         });
       }
     } else {
@@ -202,7 +201,7 @@ class GpsHandler {
       lp.color = "#FF0000";
       lp.width = 3;
 
-      var logId = await addGpsLog(db, l, lp);
+      var logId = await db.addGpsLog(l, lp);
       _currentLogId = logId;
       _isLogging = true;
 
@@ -232,7 +231,7 @@ class GpsHandler {
       _isLogging = false;
       _currentLogPoints.clear();
       int endTs = DateTime.now().millisecondsSinceEpoch;
-      updateGpsLogEndts(db, _currentLogId, endTs);
+      db.updateGpsLogEndts(_currentLogId, endTs);
 
       if (_lastGpsStatusBeforeLogging == null)
         _lastGpsStatusBeforeLogging = GpsStatus.ON_NO_FIX;
