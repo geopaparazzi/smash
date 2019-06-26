@@ -17,6 +17,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/share.dart';
 import 'package:latlong/latlong.dart';
 import 'package:screen/screen.dart';
 import 'package:sqflite/sqflite.dart';
@@ -57,10 +58,6 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 
   set geopapLogs(PolylineLayerOptions geopapLogs) {
     _geopapLogs = geopapLogs;
-  }
-
-  showSnackBar(SnackBar bar) {
-    _scaffoldKey.currentState.showSnackBar(bar);
   }
 
   @override
@@ -470,53 +467,68 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
               onTap: () {
                 _scaffoldKey.currentState.showSnackBar(SnackBar(
                   backgroundColor: GeopaparazziColors.snackBarColor,
-                  content: Row(
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(
-                        label,
-                        style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            label,
+                            style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
                       ),
-                      Spacer(flex: 1),
-                      IconButton(
-                        icon: Icon(
-                          Icons.share,
-                          color: GeopaparazziColors.mainSelection,
+                      Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(
+                                Icons.share,
+                                color: GeopaparazziColors.mainSelection,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () {
+                                shareText(label);
+                                _scaffoldKey.currentState.hideCurrentSnackBar();
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: GeopaparazziColors.mainDanger,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () async {
+                                var doRemove = await showConfirmDialog(
+                                    ctx,
+                                    "Remove Note",
+                                    "Are you sure you want to remove note ${id}?");
+                                if (doRemove) {
+                                  var db = await gpProjectModel.getDatabase();
+                                  deleteNote(db, id);
+                                  reloadProject();
+                                }
+                                _scaffoldKey.currentState.hideCurrentSnackBar();
+                              },
+                            ),
+                            Spacer(flex: 1),
+                            IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: GeopaparazziColors.mainDecorationsDark,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () {
+                                _scaffoldKey.currentState.hideCurrentSnackBar();
+                              },
+                            ),
+                          ],
                         ),
-                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                        onPressed: () {
-                          print(id);
-                          _scaffoldKey.currentState.hideCurrentSnackBar();
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: GeopaparazziColors.mainDanger,
-                        ),
-                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                        onPressed: () async {
-                          var doRemove = await showConfirmDialog(
-                              ctx,
-                              "Remove Note",
-                              "Are you sure you want to remove note ${id}?");
-                          if (doRemove) {
-                            var db = await gpProjectModel.getDatabase();
-                            deleteNote(db, id);
-                            reloadProject();
-                          }
-                          _scaffoldKey.currentState.hideCurrentSnackBar();
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: GeopaparazziColors.mainDecorationsDark,
-                        ),
-                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                        onPressed: () {
-                          _scaffoldKey.currentState.hideCurrentSnackBar();
-                        },
-                      ),
+                      )
                     ],
                   ),
                   duration: Duration(seconds: 5),
