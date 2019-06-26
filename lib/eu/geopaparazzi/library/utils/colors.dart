@@ -116,4 +116,14 @@ class ColorExt extends Color {
   }
 
   ColorExt(final String hexColor) : super(_getColorFromHex(hexColor));
+
+  static ColorExt fromColor(Color color) {
+    String hex = asHex(color);
+    return ColorExt(hex);
+  }
+
+  static String asHex(Color color) {
+    var hex = '#${color.value.toRadixString(16)}';
+    return hex;
+  }
 }

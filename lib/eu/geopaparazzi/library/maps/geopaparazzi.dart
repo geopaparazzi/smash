@@ -9,6 +9,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
 import 'package:latlong/latlong.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -43,12 +45,16 @@ class GeopaparazziMapLoader {
     });
 
     // NOTES
-    List<Map<String, dynamic>> resNotes =
-        await db.query("notes", columns: ['lat', 'lon', 'text', 'form']);
+    List<Map<String, dynamic>> resNotes = await db.query(TABLE_NOTES, columns: [
+      NOTES_COLUMN_LAT,
+      NOTES_COLUMN_LON,
+      NOTES_COLUMN_TEXT,
+      NOTES_COLUMN_FORM
+    ]);
     resNotes.forEach((map) {
-      var lat = map["lat"];
-      var lon = map["lon"];
-      var text = map["text"];
+      var lat = map[NOTES_COLUMN_LAT];
+      var lon = map[NOTES_COLUMN_LON];
+      var text = map[NOTES_COLUMN_TEXT];
       var label = "note: ${text}\nlat: ${lat}\nlon: ${lon}";
       tmp.add(Marker(
         width: 80.0,
@@ -72,8 +78,11 @@ class GeopaparazziMapLoader {
       ));
     });
 
-    String logsQuery =
-        "select l._id, p.color, p.width from gpslogs l, gpslogsproperties p where l._id = p._id";
+    String logsQuery = '''
+        select l.$LOGS_COLUMN_ID, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH 
+        from $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
+        where l.$LOGS_COLUMN_ID = p.$LOGSPROP_COLUMN_ID and p.$LOGSPROP_COLUMN_VISIBLE=1
+    ''';
     List<Map<String, dynamic>> resLogs = await db.rawQuery(logsQuery);
     Map<int, List> logs = Map();
     resLogs.forEach((map) {
@@ -90,15 +99,17 @@ class GeopaparazziMapLoader {
   void addLogLines(
       List<Marker> markers, Map<int, List> logs, Database db) async {
     String logDataQuery =
-        "select lat, lon, logid from gpslogsdata order by logid, ts";
+        "select $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LOGID from $TABLE_GPSLOG_DATA order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS";
     List<Map<String, dynamic>> resLogs = await db.rawQuery(logDataQuery);
     resLogs.forEach((map) {
-      var logid = map["logid"];
-      var lat = map["lat"];
-      var lon = map["lon"];
-
-      var coordsList = logs[logid][2];
-      coordsList.add(LatLng(lat, lon));
+      var logid = map[LOGSDATA_COLUMN_LOGID];
+      var log = logs[logid];
+      if (log != null) {
+        var lat = map[LOGSDATA_COLUMN_LAT];
+        var lon = map[LOGSDATA_COLUMN_LON];
+        var coordsList = log[2];
+        coordsList.add(LatLng(lat, lon));
+      }
     });
 
     List<Polyline> lines = [];

@@ -85,10 +85,10 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     _mapCenterValueNotifier.addListener(() {
       _mapController.move(_mapCenterValueNotifier.value, _mapController.zoom);
     });
-    loadProject();
+    load();
   }
 
-  Future loadProject() async {
+  Future load() async {
     bool centerOnGps = await GpPreferences().getCenterOnGps();
     _keepGpsOnScreenNotifier.value = centerOnGps;
 
@@ -106,6 +106,13 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
       }
     }
 
+    setState(() {});
+  }
+
+  reloadProject() async {
+    GeopaparazziMapLoader loader =
+        new GeopaparazziMapLoader(new File(gpProjectModel.projectPath), this);
+    await loader.loadProject();
     setState(() {});
   }
 
@@ -281,8 +288,11 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
             ),
             IconButton(
               onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LogWidget()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LogWidget(reloadProject)));
               },
               tooltip: 'Logs list',
               icon: Icon(

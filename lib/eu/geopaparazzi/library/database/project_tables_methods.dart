@@ -198,6 +198,29 @@ Future<int> updateGpsLogEndts(Database db, int logId, int endTs) async {
   return updatedId;
 }
 
+/// Updates the [name] of a log of id [logId] in the [db].
+Future<int> updateGpsLogName(Database db, int logId, String name) async {
+  var updatedId = await db.rawUpdate(
+      "update $TABLE_GPSLOGS set $LOGS_COLUMN_TEXT='$name' where $LOGS_COLUMN_ID=$logId");
+  return updatedId;
+}
+
+/// Updates the [color] and [width] of a log of id [logId] in the [db].
+Future<int> updateGpsLogStyle(
+    Database db, int logId, String color, double width) async {
+  var updatedId = await db.rawUpdate(
+      "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_COLOR='$color', $LOGSPROP_COLUMN_WIDTH=$width where $LOGSPROP_COLUMN_LOGID=$logId");
+  return updatedId;
+}
+
+/// Updates the [isVisible] of a log of id [logId] in the [db].
+Future<int> updateGpsLogVisibility(
+    Database db, int logId, bool isVisible) async {
+  var updatedId = await db.rawUpdate(
+      "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_VISIBLE=${isVisible ? 1 : 0} where $LOGSPROP_COLUMN_LOGID=$logId");
+  return updatedId;
+}
+
 /// Update the length of a log
 ///
 /// Calculates the length of a log of id [logId] in the [db].

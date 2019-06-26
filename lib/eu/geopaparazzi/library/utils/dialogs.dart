@@ -183,21 +183,19 @@ Future<String> showInputDialog(BuildContext context, String title, String label,
   var textEditingController = new TextEditingController(text: defaultText);
   var inputDecoration =
       new InputDecoration(labelText: label, hintText: hintText);
-  var textWidget = new TextFormField(
+  var _textWidget = new TextFormField(
     controller: textEditingController,
     autofocus: true,
     autovalidate: true,
     decoration: inputDecoration,
     validator: (inputText) {
+      userInput = inputText;
       if (validationFunction != null) {
         errorText = validationFunction(inputText);
       } else {
         errorText = null;
       }
       return errorText;
-    },
-    onSaved: (value) {
-      userInput = value;
     },
   );
 
@@ -209,7 +207,7 @@ Future<String> showInputDialog(BuildContext context, String title, String label,
       return AlertDialog(
         title: Text(title),
         content: new Row(
-          children: <Widget>[new Expanded(child: textWidget)],
+          children: <Widget>[new Expanded(child: _textWidget)],
         ),
         actions: <Widget>[
           FlatButton(
