@@ -18,12 +18,9 @@ class GeopaparazziMapLoader {
 
   GeopaparazziMapLoader(this._file, this._widgetState);
 
-  loadNotes() async {
+  loadProject() async {
     Database db = await openDatabase(_file.path);
-    queryNotes(db);
-  }
 
-  queryNotes(Database db) async {
     List<Marker> tmp = [];
     // IMAGES
     List<Map<String, dynamic>> resImages =

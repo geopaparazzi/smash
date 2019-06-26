@@ -95,7 +95,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     if (gpProjectModel.projectPath != null) {
       GeopaparazziMapLoader loader =
           new GeopaparazziMapLoader(new File(gpProjectModel.projectPath), this);
-      await loader.loadNotes();
+      await loader.loadProject();
     }
 
     var mapsforgePath = await GpPreferences().getString(KEY_LAST_MAPSFORGEPATH);
