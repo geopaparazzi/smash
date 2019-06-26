@@ -203,44 +203,6 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
       key: _scaffoldKey,
       appBar: new AppBar(
         title: Text("Map View"),
-//        actions: <Widget>[
-//          IconButton(
-//            onPressed: () {
-//              setState(() {
-//                var zoom = _mapController.zoom + 1;
-//                if (zoom > 19) zoom = 19;
-//                _mapController.move(_mapController.center, zoom);
-//              });
-//            },
-//            tooltip: 'Zoom in',
-//            icon: Icon(
-//              Icons.zoom_in,
-//              color: GeopaparazziColors.mainBackground,
-//            ),
-//          ),
-//          zoomOut(),
-//          IconButton(
-//            onPressed: () async {
-//              File file = await FilePicker.getFile(
-//                  type: FileType.ANY, fileExtension: 'map');
-//              if (file != null) {
-//                if (file.path.endsWith(".map")) {
-////                GeopaparazziMapLoader loader =
-////                    new GeopaparazziMapLoader(file, this);
-////                loader.loadNotes();
-//                  _mapsforgeLayer = await loadMapsforgeLayer(file);
-//                  await GpPreferences()
-//                      .setString(KEY_LAST_MAPSFORGEPATH, file.path);
-//                  setState(() {});
-//                } else {
-//                  showWarningDialog(context, "File format not supported.");
-//                }
-//              }
-//            },
-//            icon: Icon(Icons.layers),
-//            tooltip: "Add geopap Porject",
-//          )
-//        ],
       ),
       body: Center(
           // here no futurebuilder can be used, because the gps triggers refresh, which makes it cluttered
@@ -291,8 +253,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            LogWidget(reloadProject)));
+                        builder: (context) => LogWidget(reloadProject)));
               },
               tooltip: 'Logs list',
               icon: Icon(
