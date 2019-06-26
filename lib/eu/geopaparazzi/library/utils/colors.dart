@@ -8,18 +8,20 @@ import 'package:flutter/material.dart';
 
 /// The Geopaparazzi Colors list
 class GeopaparazziColors {
-  static final Color mainBackground = ColorExt("#FFFFFF");
-  static final Color mainDecorations = ColorExt("#5d9d76");
-  static final Color mainDecorationsDark = ColorExt("#378756");
-  static final Color mainTextColor = ColorExt("#5d9d76");
-  static final Color mainTextColorNeutral = ColorExt("#000000");
-  static final Color mainSelection = ColorExt("#FF9933");
-  static final Color mainSelectionBorder = ColorExt("#993300");
-  static final Color gpsNoPermission = ColorExt("#ff8484");
-  static final Color gpsOnNoFix = ColorExt("#ffd293");
-  static final Color gpsOnWithFix = ColorExt("#00ff08");
-  static final Color gpsLogging = ColorExt("#84beff");
-  static final Color gpsOff = ColorExt("#ff8484");
+  static final Color mainBackground = ColorExt("#ffFFFFFF");
+  static final Color mainDecorations = ColorExt("#ff5d9d76");
+  static final Color mainDecorationsDark = ColorExt("#ff378756");
+  static final Color mainTextColor = ColorExt("#ff5d9d76");
+  static final Color mainTextColorNeutral = ColorExt("#ff000000");
+  static final Color mainSelection = ColorExt("#ffFF9933");
+  static final Color mainSelectionBorder = ColorExt("ff#993300");
+  static final Color mainDanger = ColorExt("#ffFF0000");
+  static final Color gpsNoPermission = ColorExt("#ffff8484");
+  static final Color gpsOnNoFix = ColorExt("#ffffd293");
+  static final Color gpsOnWithFix = ColorExt("#ff00ff08");
+  static final Color gpsLogging = ColorExt("#ff84beff");
+  static final Color gpsOff = ColorExt("#ffff8484");
+  static final Color snackBarColor = ColorExt("#daffffff");
 
   static final MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
   static final MaterialColor mainDecorationsMc =

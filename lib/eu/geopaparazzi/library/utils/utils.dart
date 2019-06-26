@@ -23,10 +23,21 @@ class GpConstants {
       TextStyle(fontSize: 18, color: GeopaparazziColors.mainDecorations);
   static final TextStyle LARGE_DIALOG_TEXT_STYLE =
       TextStyle(fontSize: 24, color: GeopaparazziColors.mainDecorations);
+
+  static final TextStyle SMALL_DIALOG_TEXT_STYLE_NEUTRAL =
+      TextStyle(fontSize: 12, color: GeopaparazziColors.mainTextColorNeutral);
+  static final TextStyle MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL =
+      TextStyle(fontSize: 18, color: GeopaparazziColors.mainTextColorNeutral);
+  static final TextStyle LARGE_DIALOG_TEXT_STYLE_NEUTRAL =
+      TextStyle(fontSize: 24, color: GeopaparazziColors.mainTextColorNeutral);
+
+
   static const double SMALL_DIALOG_ICON_SIZE = 24;
   static const double MEDIUM_DIALOG_ICON_SIZE = 36;
   static const double LARGE_DIALOG_ICON_SIZE = 48;
 
   static const double DEFAULT_PADDING = 10.0;
   static const double DEFAULT_ELEVATION = 5.0;
+
+
 }

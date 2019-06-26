@@ -1,25 +1,25 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_methods.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geopaparazzi.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:latlong/latlong.dart';
-import 'package:path/path.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:screen/screen.dart';
+import 'package:sqflite/sqflite.dart';
 
 class GeopaparazziMapWidget extends StatefulWidget {
   GeopaparazziMapWidget({Key key}) : super(key: key);
@@ -92,12 +92,6 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     bool centerOnGps = await GpPreferences().getCenterOnGps();
     _keepGpsOnScreenNotifier.value = centerOnGps;
 
-    if (gpProjectModel.projectPath != null) {
-      GeopaparazziMapLoader loader =
-          new GeopaparazziMapLoader(new File(gpProjectModel.projectPath), this);
-      await loader.loadProject();
-    }
-
     var mapsforgePath = await GpPreferences().getString(KEY_LAST_MAPSFORGEPATH);
     if (mapsforgePath != null) {
       File mapsforgeFile = new File(mapsforgePath);
@@ -105,14 +99,14 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
         _mapsforgeLayer = await loadMapsforgeLayer(mapsforgeFile);
       }
     }
-
+    if (gpProjectModel.projectPath != null) {
+      await loadCurrentProject();
+    }
     setState(() {});
   }
 
   reloadProject() async {
-    GeopaparazziMapLoader loader =
-        new GeopaparazziMapLoader(new File(gpProjectModel.projectPath), this);
-    await loader.loadProject();
+    await loadCurrentProject();
     setState(() {});
   }
 
@@ -426,5 +420,164 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
         showWarningDialog(context, "File format not supported.");
       }
     }
+  }
+
+  loadCurrentProject() async {
+    var file = new File(gpProjectModel.projectPath);
+    Database db = await openDatabase(file.path);
+
+    List<Marker> tmp = [];
+    // IMAGES
+    List<Map<String, dynamic>> resImages =
+        await db.query("images", columns: ['lat', 'lon']);
+    resImages.forEach((map) {
+      var lat = map["lat"];
+      var lon = map["lon"];
+      tmp.add(Marker(
+        width: 80.0,
+        height: 80.0,
+        point: new LatLng(lat, lon),
+        builder: (ctx) => new Container(
+              child: Icon(
+                Icons.image,
+                size: 32,
+                color: Colors.blue,
+              ),
+            ),
+      ));
+    });
+
+    // NOTES
+    List<Map<String, dynamic>> resNotes = await db.query(TABLE_NOTES, columns: [
+      NOTES_COLUMN_ID,
+      NOTES_COLUMN_LAT,
+      NOTES_COLUMN_LON,
+      NOTES_COLUMN_TEXT,
+      NOTES_COLUMN_FORM
+    ]);
+    resNotes.forEach((map) {
+      var id = map[NOTES_COLUMN_ID];
+      var lat = map[NOTES_COLUMN_LAT];
+      var lon = map[NOTES_COLUMN_LON];
+      var text = map[NOTES_COLUMN_TEXT];
+      var label = "note: ${text}\nlat: ${lat}\nlon: ${lon}";
+      tmp.add(Marker(
+        width: 80.0,
+        height: 80.0,
+        point: new LatLng(lat, lon),
+        builder: (ctx) => new Container(
+                child: GestureDetector(
+              onTap: () {
+                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  backgroundColor: GeopaparazziColors.snackBarColor,
+                  content: Row(
+                    children: <Widget>[
+                      Text(
+                        label,
+                        style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
+                      ),
+                      Spacer(flex: 1),
+                      IconButton(
+                        icon: Icon(
+                          Icons.share,
+                          color: GeopaparazziColors.mainSelection,
+                        ),
+                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                        onPressed: () {
+                          print(id);
+                          _scaffoldKey.currentState.hideCurrentSnackBar();
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: GeopaparazziColors.mainDanger,
+                        ),
+                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                        onPressed: () async {
+                          var doRemove = await showConfirmDialog(
+                              ctx,
+                              "Remove Note",
+                              "Are you sure you want to remove note ${id}?");
+                          if (doRemove) {
+                            var db = await gpProjectModel.getDatabase();
+                            deleteNote(db, id);
+                            reloadProject();
+                          }
+                          _scaffoldKey.currentState.hideCurrentSnackBar();
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: GeopaparazziColors.mainDecorationsDark,
+                        ),
+                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                        onPressed: () {
+                          _scaffoldKey.currentState.hideCurrentSnackBar();
+                        },
+                      ),
+                    ],
+                  ),
+                  duration: Duration(seconds: 5),
+                ));
+              },
+              child: Icon(
+                Icons.note,
+                size: 32,
+                color: Colors.green,
+                semanticLabel: text,
+              ),
+            )),
+      ));
+    });
+
+    String logsQuery = '''
+        select l.$LOGS_COLUMN_ID, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH 
+        from $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
+        where l.$LOGS_COLUMN_ID = p.$LOGSPROP_COLUMN_ID and p.$LOGSPROP_COLUMN_VISIBLE=1
+    ''';
+    List<Map<String, dynamic>> resLogs = await db.rawQuery(logsQuery);
+    Map<int, List> logs = Map();
+    resLogs.forEach((map) {
+      var id = map['_id'];
+      var color = map["color"];
+      var width = map["width"];
+
+      logs[id] = [color, width, <LatLng>[]];
+    });
+
+    addLogLines(tmp, logs, db);
+  }
+
+  void addLogLines(
+      List<Marker> markers, Map<int, List> logs, Database db) async {
+    String logDataQuery =
+        "select $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LOGID from $TABLE_GPSLOG_DATA order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS";
+    List<Map<String, dynamic>> resLogs = await db.rawQuery(logDataQuery);
+    resLogs.forEach((map) {
+      var logid = map[LOGSDATA_COLUMN_LOGID];
+      var log = logs[logid];
+      if (log != null) {
+        var lat = map[LOGSDATA_COLUMN_LAT];
+        var lon = map[LOGSDATA_COLUMN_LON];
+        var coordsList = log[2];
+        coordsList.add(LatLng(lat, lon));
+      }
+    });
+
+    List<Polyline> lines = [];
+    logs.forEach((key, list) {
+      var color = list[0];
+      var width = list[1];
+      var points = list[2];
+      lines.add(
+          Polyline(points: points, strokeWidth: width, color: ColorExt(color)));
+    });
+
+    _geopapLogs = PolylineLayerOptions(
+      polylines: lines,
+    );
+    _geopapMarkers = markers;
   }
 }

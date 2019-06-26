@@ -199,7 +199,9 @@ class LogWidgetState extends State<LogWidget> {
     }
   }
 
-  _onDismissed(Log4ListWidget logItem) {}
+  _onDismissed(Log4ListWidget logItem) {
+    // TODO remove log
+  }
 
   Future<bool> _confirmLogDismiss(DismissDirection direction) async {
     return await showDialog<bool>(

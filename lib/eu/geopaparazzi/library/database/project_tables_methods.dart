@@ -152,6 +152,13 @@ Future<int> addNote(Database db, Note note) {
   return noteId;
 }
 
+/// Delete a note by its [noteId].
+Future<int> deleteNote(Database db, int noteId) async {
+  var sql = "delete from $TABLE_NOTES where $NOTES_COLUMN_ID=$noteId";
+  var deletedCount = await db.rawDelete(sql);
+  return deletedCount;
+}
+
 /// Get the count of the current logs
 ///
 /// Get the count on a given [db], using [onlyDirty] to count only dirty notes.
