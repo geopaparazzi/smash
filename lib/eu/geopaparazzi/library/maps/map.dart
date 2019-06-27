@@ -324,13 +324,8 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     return [
       new Container(
         margin: EdgeInsets.only(bottom: 20),
-        child: new DrawerHeader(child: Image.asset("assets/gpicon.png")),
-//            new SvgPicture.asset(
-//          assetName,
-//          fit: BoxFit.scaleDown,
-//          semanticsLabel: 'A red up arrow',
-//        )),
-        color: SmashColors.mainDecorations,
+        child: new DrawerHeader(child: Image.asset("assets/maptools_icon.png")),
+        color: SmashColors.mainBackground,
       ),
       new Container(
         child: new Column(children: [

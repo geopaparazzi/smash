@@ -10,6 +10,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/dashboard.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 
 void main() => runApp(GeopaparazziApp());
 
@@ -25,8 +26,6 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
   void initState() {
     super.initState();
 
-    GpLogger(); // init logger
-
     gpProjectModel = GPProjectModel();
     GpPreferences().getLastPosition().then((pos) {
       if (pos != null) {
@@ -40,7 +39,7 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Geopaparazzi',
+      title: GpConstants.APP_NAME,
       theme: ThemeData(
           primarySwatch: SmashColors.mainDecorationsMc,
           accentColor: SmashColors.mainSelectionMc,

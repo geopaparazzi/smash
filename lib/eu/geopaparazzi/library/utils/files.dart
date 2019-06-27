@@ -75,10 +75,10 @@ class FileUtils {
   ///
   /// Returns the file of the folder to use.
   static Future<Directory> getApplicationConfigurationFolder(
-      {appName: APP_NAME}) async {
+      {appName: GpConstants.APP_NAME}) async {
     var storageInfo = await getDefaultStorageFolder();
     var configFolderPath =
-        joinPaths(storageInfo.path, appName == null ? APP_NAME : appName);
+        joinPaths(storageInfo.path, appName == null ? GpConstants.APP_NAME : appName);
     Directory configFolder = Directory(configFolderPath);
     if (!configFolder.existsSync()) {
       configFolder.createSync();

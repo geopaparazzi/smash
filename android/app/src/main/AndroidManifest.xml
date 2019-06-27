@@ -21,7 +21,7 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Geopaparazzi Light"
+        android:label="SMASH"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

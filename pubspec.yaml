@@ -38,7 +38,6 @@ dependencies:
   scoped_model: ^1.0.1
   shared_preferences: 0.5.3+1
   camera: 0.5.2+1
-  location_permissions: ^2.0.0
   animated_floatactionbuttons: ^0.1.0
   flutter_svg: 0.12.4
   screen: 0.0.5
@@ -52,6 +51,9 @@ dependencies:
 
   # MIT
   logger: 0.6.0
+
+  # MIT
+  permission_handler: '^3.1.0'
 
   mapsforge_flutter:
     path: ../../mapsforge_flutter/mapsforge_flutter
@@ -80,7 +82,9 @@ flutter:
   assets:
     - assets/geopaparazzi_launcher_icon.svg
     - assets/gpicon.png
+    - assets/maptools_icon.png
     - assets/smash_icon.png
+    - assets/smash_text.png
     - assets/defaultrender.xml
     - packages/mapsforge_flutter/assets/patterns/coniferous.svg
     - packages/mapsforge_flutter/assets/patterns/coniferous_and_deciduous.svg

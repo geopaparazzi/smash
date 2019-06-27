@@ -8,15 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 
-const String APP_NAME = "smash";
-
-/// An ISO8601 date formatter (yyyy-MM-dd HH:mm:ss).
-final DateFormat ISO8601_TS_FORMATTER = DateFormat("yyyy-MM-dd HH:mm:ss");
-
-/// A date formatter (yyyyMMdd_HHmmss) useful for file names (it contains no spaces).
-final DateFormat DATE_TS_FORMATTER = DateFormat("yyyyMMdd_HHmmss");
-
 class GpConstants {
+  static const String APP_NAME = "smash";
+
+  /// An ISO8601 date formatter (yyyy-MM-dd HH:mm:ss).
+  static final DateFormat ISO8601_TS_FORMATTER = DateFormat("yyyy-MM-dd HH:mm:ss");
+
+  /// A date formatter (yyyyMMdd_HHmmss) useful for file names (it contains no spaces).
+  static final DateFormat DATE_TS_FORMATTER = DateFormat("yyyyMMdd_HHmmss");
+
+
   static final TextStyle SMALL_DIALOG_TEXT_STYLE =
       TextStyle(fontSize: 12, color: SmashColors.mainTextColorNeutral);
   static final TextStyle MEDIUM_DIALOG_TEXT_STYLE =

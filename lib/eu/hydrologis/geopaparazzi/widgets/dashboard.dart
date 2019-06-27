@@ -18,9 +18,11 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/files.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/notes_ui.dart';
 import 'package:path/path.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -40,16 +42,35 @@ class _DashboardWidgetState extends State<DashboardWidget>
       new ValueNotifier(GpsStatus.OFF);
   ValueNotifier<bool> _gpsLoggingValueNotifier = new ValueNotifier(false);
 
-  void initState() {
-    LocationPermissionHandler().requestPermission().then((isGranted) {
-      if (isGranted) {
+  Future<bool> _loadDashboardData(BuildContext context) async {
+    List<PermissionGroup> mandatory = [];
+    PermissionStatus permission = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.storage);
+    if (permission != PermissionStatus.granted) {
+      mandatory.add(PermissionGroup.storage);
+    }
+    permission = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.location);
+    if (permission != PermissionStatus.granted) {
+      mandatory.add(PermissionGroup.location);
+    }
+
+    if (mandatory.length > 0) {
+      Map<PermissionGroup, PermissionStatus> permissionsMap =
+          await PermissionHandler().requestPermissions(mandatory);
+      if (permissionsMap[PermissionGroup.storage] != PermissionStatus.granted) {
+        return false;
+      }
+      if (permissionsMap[PermissionGroup.location] !=
+          PermissionStatus.granted) {
+        return false;
+      } else {
         GpsHandler().addPositionListener(this);
       }
-    });
-    super.initState();
-  }
+    }
 
-  Future<bool> _checkStats(BuildContext context) async {
+    await GpLogger().init(); // init logger
+
     var database = await gpProjectModel.getDatabase();
     if (database != null) {
       _projectName = basename(database.path);
@@ -78,29 +99,57 @@ class _DashboardWidgetState extends State<DashboardWidget>
         // check when the app is left
         child: new Scaffold(
           appBar: new AppBar(
-            title: new Text(APP_NAME),
+            title: Padding(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Image.asset("assets/smash_text.png", fit: BoxFit.cover),
+            ),
+            //new Text(GpConstants.APP_NAME),
             actions: <Widget>[
               AppBarGpsInfo(_gpsStatusValueNotifier),
             ],
           ),
           backgroundColor: SmashColors.mainBackground,
-          body: FutureBuilder<void>(
-            future: _checkStats(context),
+          body: FutureBuilder<bool>(
+            future: _loadDashboardData(context),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                // If the Future is complete, display the preview.
-                return OrientationBuilder(builder: (context, orientation) {
-                  return GridView.count(
-                    crossAxisCount: orientation == Orientation.portrait ? 2 : 3,
-                    childAspectRatio:
-                        orientation == Orientation.portrait ? 0.9 : 1.6,
-                    padding: EdgeInsets.all(5),
-                    mainAxisSpacing: 2,
-                    crossAxisSpacing: 2,
-                    children:
-                        getTiles(context, orientation == Orientation.portrait),
-                  );
-                });
+                if (snapshot.data == true) {
+                  // If the Future is complete and ended well, display the dashboard
+                  return OrientationBuilder(builder: (context, orientation) {
+                    return GridView.count(
+                      crossAxisCount:
+                          orientation == Orientation.portrait ? 2 : 3,
+                      childAspectRatio:
+                          orientation == Orientation.portrait ? 0.9 : 1.6,
+                      padding: EdgeInsets.all(5),
+                      mainAxisSpacing: 2,
+                      crossAxisSpacing: 2,
+                      children: getTiles(
+                          context, orientation == Orientation.portrait),
+                    );
+                  });
+                } else {
+                  return Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Container(
+                          color: Colors.red,
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Text(
+                              "Storage and location permission are necessary to work!",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ))
+                    ],
+                  ));
+                }
               } else {
                 // Otherwise, display a loading indicator.
                 return Center(child: CircularProgressIndicator());
@@ -328,7 +377,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   Future _createNewProject(BuildContext context) async {
     String projectName =
-        "geopaparazzi_${DATE_TS_FORMATTER.format(DateTime.now())}";
+        "geopaparazzi_${GpConstants.DATE_TS_FORMATTER.format(DateTime.now())}";
 
     var userString = await showInputDialog(
       context,
@@ -551,7 +600,8 @@ class DashboardLogButtonState extends State<DashboardLogButton> {
       _gpsLoggingValueNotifier.value = false;
     } else {
       if (GpsHandler().hasFix()) {
-        String logName = "log ${ISO8601_TS_FORMATTER.format(DateTime.now())}";
+        String logName =
+            "log ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.now())}";
 
         showInputDialog(
           context,

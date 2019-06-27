@@ -331,14 +331,14 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       TableRow(
         children: [
           cellForString("Start"),
-          cellForString(ISO8601_TS_FORMATTER.format(
+          cellForString(GpConstants.ISO8601_TS_FORMATTER.format(
               new DateTime.fromMillisecondsSinceEpoch(_logItem.startTime))),
         ],
       ),
       TableRow(
         children: [
           cellForString("End"),
-          cellForString(ISO8601_TS_FORMATTER.format(
+          cellForString(GpConstants.ISO8601_TS_FORMATTER.format(
               new DateTime.fromMillisecondsSinceEpoch(_logItem.endTime))),
         ],
       ),

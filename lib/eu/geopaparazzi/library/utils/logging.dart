@@ -110,7 +110,11 @@ class GpLogger {
 
   factory GpLogger() => _instance;
 
-  GpLogger._internal() {
+  GpLogger._internal();
+
+  init() async {
+    if (_logger != null) return;
+
     LogDb logDb = LogDb();
     logDb.init().then((ok) {
       if (ok) {

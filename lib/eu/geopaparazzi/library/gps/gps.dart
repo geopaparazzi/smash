@@ -24,19 +24,6 @@ abstract class PositionListener {
   void setStatus(GpsStatus currentStatus);
 }
 
-/// A permission checking helper class for the location service.
-class LocationPermissionHandler {
-  static bool permissionGranted = false;
-
-  /// Request permission for the location service.
-  Future<bool> requestPermission() async {
-    PermissionStatus permission =
-        await LocationPermissions().requestPermissions();
-    permissionGranted = permission == PermissionStatus.granted;
-    return permissionGranted;
-  }
-}
-
 /// A central GPS handling class.
 ///
 /// This is used to:
@@ -81,25 +68,20 @@ class GpsHandler {
   }
 
   void _init() async {
-    if (LocationPermissionHandler.permissionGranted) {
-      _geolocator = Geolocator();
-      if (Platform.isAndroid) {
-        _geolocator.forceAndroidLocationManager = true;
-      }
-
-      if (_positionStreamSubscription == null) {
-        const LocationOptions locationOptions =
-            LocationOptions(accuracy: LocationAccuracy.best, distanceFilter: 0);
-        final Stream<Position> positionStream =
-            _geolocator.getPositionStream(locationOptions);
-        _positionStreamSubscription = positionStream
-            .listen((Position position) => _onPositionUpdate(position));
-      }
-      _locationDisabled = false;
-    } else {
-      _locationDisabled = true;
-      _gpsStatus = GpsStatus.NOPERMISSION;
+    _geolocator = Geolocator();
+    if (Platform.isAndroid) {
+      _geolocator.forceAndroidLocationManager = true;
     }
+
+    if (_positionStreamSubscription == null) {
+      const LocationOptions locationOptions =
+          LocationOptions(accuracy: LocationAccuracy.best, distanceFilter: 0);
+      final Stream<Position> positionStream =
+          _geolocator.getPositionStream(locationOptions);
+      _positionStreamSubscription = positionStream
+          .listen((Position position) => _onPositionUpdate(position));
+    }
+    _locationDisabled = false;
   }
 
   /// Returns true if the gps currently has a fix or is logging.

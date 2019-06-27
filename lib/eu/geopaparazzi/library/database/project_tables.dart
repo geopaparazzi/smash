@@ -256,7 +256,7 @@ class Log {
       LOGS_COLUMN_ENDTS: endTime,
       LOGS_COLUMN_LENGTHM: lengthm,
       LOGS_COLUMN_TEXT:
-          text == null ? ISO8601_TS_FORMATTER.format(new DateTime.now()) : text,
+          text == null ? GpConstants.ISO8601_TS_FORMATTER.format(new DateTime.now()) : text,
       LOGS_COLUMN_ISDIRTY: isDirty,
     };
     if (id != null) {
