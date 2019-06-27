@@ -14,6 +14,7 @@ final String TABLE_METADATA = "metadata";
  * The notes table name.
  */
 final String TABLE_NOTES = "notes";
+final String TABLE_NOTESEXT = "notesext";
 /*
  * Image table name.
  */
@@ -114,6 +115,56 @@ class Note {
     }
     if (style != null) {
       map[NOTES_COLUMN_STYLE] = style;
+    }
+    return map;
+  }
+}
+
+final String NOTESEXT_COLUMN_ID = "_id";
+final String NOTESEXT_COLUMN_MARKER = "marker";
+final String NOTESEXT_COLUMN_SIZE = "size";
+final String NOTESEXT_COLUMN_ROTATION = "rotation";
+final String NOTESEXT_COLUMN_COLOR = "color";
+final String NOTESEXT_COLUMN_ACCURACY = "accuracy";
+final String NOTESEXT_COLUMN_HEADING = "heading";
+final String NOTESEXT_COLUMN_SPEED = "speed";
+final String NOTESEXT_COLUMN_SPEEDACCURACY = "speedaccuracy";
+final String NOTESEXT_COLUMN_NOTEID = "noteid";
+
+class NoteExt {
+  int id;
+  int noteId;
+  String marker;
+  double size = 48;
+  double rotation = 0;
+  String color = "#FF000000";
+  double accuracy;
+  double heading;
+  double speed;
+  double speedaccuracy;
+
+  Map<String, dynamic> toMap() {
+    var map = {
+      NOTESEXT_COLUMN_NOTEID: noteId,
+      NOTESEXT_COLUMN_MARKER: marker,
+      NOTESEXT_COLUMN_SIZE: size,
+      NOTESEXT_COLUMN_ROTATION: rotation,
+      NOTESEXT_COLUMN_COLOR: color,
+    };
+    if (id != null) {
+      map[NOTESEXT_COLUMN_ID] = id;
+    }
+    if (accuracy != null) {
+      map[NOTESEXT_COLUMN_ACCURACY] = accuracy;
+    }
+    if (heading != null) {
+      map[NOTESEXT_COLUMN_HEADING] = heading;
+    }
+    if (speed != null) {
+      map[NOTESEXT_COLUMN_SPEED] = speed;
+    }
+    if (speedaccuracy != null) {
+      map[NOTESEXT_COLUMN_SPEEDACCURACY] = speedaccuracy;
     }
     return map;
   }

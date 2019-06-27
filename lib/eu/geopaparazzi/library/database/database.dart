@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 import 'package:geolocator/geolocator.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables_objects.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -137,6 +137,22 @@ class SqliteDb {
 }
 
 class GeopaparazziProjectDb extends SqliteDb {
+  var CREATE_NOTESEXT_STATEMENT = '''
+        CREATE TABLE $TABLE_NOTESEXT (  
+          $NOTESEXT_COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+          $NOTESEXT_COLUMN_NOTEID  INTEGER NOT NULL,  
+          $NOTESEXT_COLUMN_MARKER  TEXT NOT NULL,  
+          $NOTESEXT_COLUMN_SIZE  REAL NOT NULL, 
+          $NOTESEXT_COLUMN_ROTATION  REAL NOT NULL, 
+          $NOTESEXT_COLUMN_COLOR TEXT NOT NULL, 
+          $NOTESEXT_COLUMN_ACCURACY REAL,  
+          $NOTESEXT_COLUMN_HEADING REAL,  
+          $NOTESEXT_COLUMN_SPEED REAL,  
+          $NOTESEXT_COLUMN_SPEEDACCURACY REAL
+        );
+        CREATE INDEX notesext_noteidx ON $TABLE_NOTESEXT ($NOTESEXT_COLUMN_NOTEID);
+    ''';
+
   GeopaparazziProjectDb(dbPath) : super(dbPath);
 
   openOrCreate({Function dbCreateFunction}) async {
@@ -299,6 +315,8 @@ class GeopaparazziProjectDb extends SqliteDb {
     CREATE INDEX notes_x_by_y_idx ON $TABLE_NOTES ($NOTES_COLUMN_LON, $NOTES_COLUMN_LAT);
     CREATE INDEX notes_isdirty_idx ON $TABLE_NOTES ($NOTES_COLUMN_ISDIRTY);
     
+    $CREATE_NOTESEXT_STATEMENT
+    
     CREATE TABLE $TABLE_GPSLOGS (
       $LOGS_COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, 
       $LOGS_COLUMN_STARTTS LONG NOT NULL,
@@ -380,6 +398,21 @@ class GeopaparazziProjectDb extends SqliteDb {
         }
       }
     });
+  }
+
+  createNecessaryExtraTables() async{
+    bool has = await hasTable(TABLE_NOTESEXT);
+    if(!has){
+      await transaction((tx) async {
+        var split = CREATE_NOTESEXT_STATEMENT.replaceAll("\n", "").trim().split(";");
+        for (int i = 0; i < split.length; i++) {
+          var sql = split[i].trim();
+          if (sql.length > 0 && !sql.startsWith("--")) {
+            await tx.execute(sql);
+          }
+        }
+      });
+    }
   }
 
   void printInfo() async {

@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 
 /// The global reference to the Geopaparazzi Project Model
 GPProjectModel gpProjectModel;
@@ -53,6 +54,7 @@ class GPProjectModel extends StateUpdater {
         print(e);
       }
 
+      await _db.createNecessaryExtraTables();
 //      await _db.printInfo();
 
       await GpPreferences().setString(KEY_LAST_GPAPPROJECT, _projectPath);
