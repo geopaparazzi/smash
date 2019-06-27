@@ -12,6 +12,10 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 
 /// File path and folder utilities.
 class FileUtils {
+  static String joinPaths(String path1, String path2) {
+    return join(path1, path2);
+  }
+
   /*
    * Get the list of files names from a given [parentPath] and optionally filtered by [ext].
    */
@@ -54,14 +58,14 @@ class FileUtils {
   /// inside which the app is supposed to be able to write.
   ///
   /// Returns the file of the folder to use..
-  static Future<File> getDefaultStorageFolder() async {
+  static Future<Directory> getDefaultStorageFolder() async {
     var storageInfo = await getStorageInfo();
     var intenalStorage = getInternalStorage(storageInfo);
     if (intenalStorage.isNotEmpty) {
-      return new File(intenalStorage[0]);
+      return new Directory(intenalStorage[0]);
     } else {
       var directory = await getAppFolderPath();
-      return new File(directory.path);
+      return new Directory(directory.path);
     }
   }
 
@@ -70,15 +74,16 @@ class FileUtils {
   /// An optional [appName] can be passed to allow other apps to use this.
   ///
   /// Returns the file of the folder to use.
-  static Future<File> getApplicationConfigurationFolder({appName: appName}) async {
-    var storageInfo = await getStorageInfo();
-    var intenalStorage = await getInternalStorage(storageInfo);
-    if (intenalStorage.isNotEmpty) {
-      return new File(intenalStorage[0]);
-    } else {
-      var directory = await getAppFolderPath();
-      return new File(directory.path);
+  static Future<Directory> getApplicationConfigurationFolder(
+      {appName: APP_NAME}) async {
+    var storageInfo = await getDefaultStorageFolder();
+    var configFolderPath =
+        joinPaths(storageInfo.path, appName == null ? APP_NAME : appName);
+    Directory configFolder = Directory(configFolderPath);
+    if (!configFolder.existsSync()) {
+      configFolder.createSync();
     }
+    return configFolder;
   }
 
   static List<String> getInternalStorage(List<StorageInfo> storageInfo) {

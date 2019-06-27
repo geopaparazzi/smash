@@ -50,6 +50,9 @@ dependencies:
   # BSD
   esys_flutter_share: any #1.0.2
 
+  # MIT
+  logger: 0.6.0
+
   mapsforge_flutter:
     path: ../../mapsforge_flutter/mapsforge_flutter
 

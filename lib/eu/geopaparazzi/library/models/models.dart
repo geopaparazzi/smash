@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 
 /// The global reference to the Geopaparazzi Project Model
 GPProjectModel gpProjectModel;
@@ -43,13 +43,17 @@ class GPProjectModel extends StateUpdater {
     if (_db == null) {
       if (_projectPath == null) {
         _projectPath = await GpPreferences().getString(KEY_LAST_GPAPPROJECT);
+        GpLogger().d("Read db path from preferences: $_projectPath");
       }
       if (_projectPath == null) {
+        GpLogger().w("No project path found");
         return null;
       }
       try {
+        GpLogger().d("Opening db $_projectPath...");
         _db = GeopaparazziProjectDb(_projectPath);
         await _db.openOrCreate();
+        GpLogger().d("Db opened: $_projectPath");
       } catch (e) {
         print(e);
       }
@@ -65,6 +69,7 @@ class GPProjectModel extends StateUpdater {
   void close() {
     if (_db != null) {
       _db.close();
+      GpLogger().d("Closed db: ${_db.path}");
     }
     _projectPath = null;
   }

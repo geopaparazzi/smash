@@ -6,6 +6,7 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 import 'package:sqflite/sqflite.dart';
 
 abstract class QueryObjectBuilder<T> {
@@ -285,11 +286,11 @@ class GeopaparazziProjectDb extends SqliteDb {
     }
 
     // update the value
-    String insert = '''
-    update $TABLE_GPSLOGS set $LOGS_COLUMN_LENGTHM=$summedDistance 
-    where $LOGS_COLUMN_ID=$logId;
-  ''';
-    var updateNums = await update(insert);
+    String updateSql = '''
+      update $TABLE_GPSLOGS set $LOGS_COLUMN_LENGTHM=$summedDistance 
+      where $LOGS_COLUMN_ID=$logId;
+    ''';
+    var updateNums = await update(updateSql);
     if (updateNums != 1) {
       return null;
     }
@@ -400,11 +401,13 @@ class GeopaparazziProjectDb extends SqliteDb {
     });
   }
 
-  createNecessaryExtraTables() async{
-    bool has = await hasTable(TABLE_NOTESEXT);
-    if(!has){
+  createNecessaryExtraTables() async {
+    bool hasNotesExt = await hasTable(TABLE_NOTESEXT);
+    if (!hasNotesExt) {
+      GpLogger().w("Adding extra database table $TABLE_NOTESEXT.");
       await transaction((tx) async {
-        var split = CREATE_NOTESEXT_STATEMENT.replaceAll("\n", "").trim().split(";");
+        var split =
+            CREATE_NOTESEXT_STATEMENT.replaceAll("\n", "").trim().split(";");
         for (int i = 0; i < split.length; i++) {
           var sql = split[i].trim();
           if (sql.length > 0 && !sql.startsWith("--")) {

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 
-const String appName = "geopaparazzi_light";
+const String APP_NAME = "smash";
 
 /// An ISO8601 date formatter (yyyy-MM-dd HH:mm:ss).
 final DateFormat ISO8601_TS_FORMATTER = DateFormat("yyyy-MM-dd HH:mm:ss");

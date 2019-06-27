@@ -9,7 +9,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/dashboard.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 
 void main() => runApp(GeopaparazziApp());
 
@@ -24,6 +24,9 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
   @override
   void initState() {
     super.initState();
+
+    GpLogger(); // init logger
+
     gpProjectModel = GPProjectModel();
     GpPreferences().getLastPosition().then((pos) {
       if (pos != null) {
