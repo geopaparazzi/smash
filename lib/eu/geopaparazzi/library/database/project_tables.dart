@@ -92,6 +92,7 @@ class Note {
   String style;
   String form;
   int isDirty = 1;
+  NoteExt noteExt;
 
   Map<String, dynamic> toMap() {
     var map = {
@@ -135,7 +136,7 @@ class NoteExt {
   int id;
   int noteId;
   String marker;
-  double size = 48;
+  double size = 36;
   double rotation = 0;
   String color = "#FF000000";
   double accuracy;

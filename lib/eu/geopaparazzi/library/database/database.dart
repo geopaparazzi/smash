@@ -173,6 +173,64 @@ class GeopaparazziProjectDb extends SqliteDb {
     return count;
   }
 
+  Future<List<Note>> getNotes(bool onlyDirty) async {
+    String where = "";
+    if (onlyDirty) {
+      where = " where $NOTES_COLUMN_ISDIRTY=1";
+    }
+
+    String sql = '''
+      select n.$NOTES_COLUMN_ID,n.$NOTES_COLUMN_LON,n.$NOTES_COLUMN_LAT,
+             n.$NOTES_COLUMN_ALTIM,n.$NOTES_COLUMN_TS,n.$NOTES_COLUMN_DESCRIPTION,
+             n.$NOTES_COLUMN_TEXT,n.$NOTES_COLUMN_FORM,n.$NOTES_COLUMN_STYLE,n.$NOTES_COLUMN_ISDIRTY,
+             nex.$NOTESEXT_COLUMN_NOTEID,nex.$NOTESEXT_COLUMN_MARKER,nex.$NOTESEXT_COLUMN_SIZE,
+             nex.$NOTESEXT_COLUMN_ROTATION,nex.$NOTESEXT_COLUMN_COLOR,nex.$NOTESEXT_COLUMN_ACCURACY,
+             nex.$NOTESEXT_COLUMN_HEADING,nex.$NOTESEXT_COLUMN_SPEED,nex.$NOTESEXT_COLUMN_SPEEDACCURACY
+      from $TABLE_NOTES n left join  $TABLE_NOTESEXT nex
+      on n.$NOTES_COLUMN_ID=nex.$NOTESEXT_COLUMN_NOTEID
+      $where
+    ''';
+
+    List<Note> notes = [];
+    List<Map<String, dynamic>> resNotes = await query(sql);
+    for (int i = 0; i < resNotes.length; i++) {
+      Map resNoteMap = resNotes[i];
+
+      Note note = Note()
+        ..id = resNoteMap[NOTES_COLUMN_ID]
+        ..lon = resNoteMap[NOTES_COLUMN_LON]
+        ..lat = resNoteMap[NOTES_COLUMN_LAT]
+        ..altim = resNoteMap[NOTES_COLUMN_ALTIM]
+        ..timeStamp = resNoteMap[NOTES_COLUMN_TS]
+        ..description = resNoteMap[NOTES_COLUMN_DESCRIPTION]
+        ..text = resNoteMap[NOTES_COLUMN_TEXT]
+        ..form = resNoteMap[NOTES_COLUMN_FORM]
+        ..style = resNoteMap[NOTES_COLUMN_STYLE]
+        ..isDirty = resNoteMap[NOTES_COLUMN_ISDIRTY];
+
+      // we can add the extended part
+      NoteExt noteExt = NoteExt();
+      if (resNoteMap[NOTESEXT_COLUMN_NOTEID] != null) {
+        noteExt.noteId = note.id;
+        var marker = resNoteMap[NOTESEXT_COLUMN_MARKER];
+        if (marker != null) noteExt.marker = marker;
+        var _size = resNoteMap[NOTESEXT_COLUMN_SIZE];
+        if (_size != null) noteExt.size = _size;
+        var _rotation = resNoteMap[NOTESEXT_COLUMN_ROTATION];
+        if (_rotation != null) noteExt.rotation = _rotation;
+        var _color = resNoteMap[NOTESEXT_COLUMN_COLOR];
+        if (_color != null) noteExt.color = _color;
+        noteExt.accuracy = resNoteMap[NOTESEXT_COLUMN_ACCURACY];
+        noteExt.heading = resNoteMap[NOTESEXT_COLUMN_HEADING];
+        noteExt.speed = resNoteMap[NOTESEXT_COLUMN_SPEED];
+        noteExt.speedaccuracy = resNoteMap[NOTESEXT_COLUMN_SPEEDACCURACY];
+      }
+      note.noteExt = noteExt;
+      notes.add(note);
+    }
+    return notes;
+  }
+
 /*
  * Add a note.
  *
