@@ -32,7 +32,7 @@ Future<TileLayerOptions> loadMapsforgeLayer(File file) async {
     tileProvider: mapsforgeTileProvider,
     tileSize: tileSize,
     keepBuffer: 2,
-    backgroundColor: GeopaparazziColors.mainBackground,
+    backgroundColor: SmashColors.mainBackground,
     maxZoom: 21,
   );
 }

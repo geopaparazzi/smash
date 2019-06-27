@@ -30,11 +30,8 @@ class GPProjectModel extends StateUpdater {
   void setNewProject(state, String path) {
     rebuildWidgets(
         setStates: () {
+          close();
           _projectPath = path;
-          if (_db != null && _db.isOpen()) {
-            _db.close();
-            _db = null;
-          }
         },
         states: [state]);
   }
@@ -67,10 +64,11 @@ class GPProjectModel extends StateUpdater {
   }
 
   void close() {
-    if (_db != null) {
+    if (_db != null && _db.isOpen()) {
       _db.close();
       GpLogger().d("Closed db: ${_db.path}");
     }
+    _db = null;
     _projectPath = null;
   }
 }

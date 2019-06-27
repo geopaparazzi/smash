@@ -73,7 +73,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     _osmLayer = new TileLayerOptions(
       urlTemplate: "https://{s}.tile.openstreetmap.org/"
           "{z}/{x}/{y}.png",
-      backgroundColor: GeopaparazziColors.mainBackground,
+      backgroundColor: SmashColors.mainBackground,
       maxZoom: 19,
       subdomains: ['a', 'b', 'c'],
     );
@@ -142,15 +142,15 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
         ),
         markers: _geopapMarkers,
         polygonOptions: PolygonOptions(
-            borderColor: GeopaparazziColors.mainDecorationsDark,
-            color: GeopaparazziColors.mainDecorations.withOpacity(0.2),
+            borderColor: SmashColors.mainDecorationsDark,
+            color: SmashColors.mainDecorations.withOpacity(0.2),
             borderStrokeWidth: 3),
         builder: (context, markers) {
           return FloatingActionButton(
             child: Text(markers.length.toString()),
             onPressed: null,
-            backgroundColor: GeopaparazziColors.mainDecorationsDark,
-            foregroundColor: GeopaparazziColors.mainBackground,
+            backgroundColor: SmashColors.mainDecorationsDark,
+            foregroundColor: SmashColors.mainBackground,
             heroTag: null,
           );
         },
@@ -218,7 +218,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
         children: getDrawerWidgets(context),
       )),
       bottomNavigationBar: BottomAppBar(
-        color: GeopaparazziColors.mainDecorations,
+        color: SmashColors.mainDecorations,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -227,7 +227,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
               tooltip: 'Add note',
               icon: Icon(
                 Icons.note_add,
-                color: GeopaparazziColors.mainBackground,
+                color: SmashColors.mainBackground,
               ),
             ),
             IconButton(
@@ -235,7 +235,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
               tooltip: 'Notes list',
               icon: Icon(
                 Icons.list,
-                color: GeopaparazziColors.mainBackground,
+                color: SmashColors.mainBackground,
               ),
             ),
             IconButton(
@@ -248,7 +248,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
               tooltip: 'Logs list',
               icon: Icon(
                 Icons.timeline,
-                color: GeopaparazziColors.mainBackground,
+                color: SmashColors.mainBackground,
               ),
             ),
             Spacer(),
@@ -264,7 +264,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
               tooltip: 'Center on GPS',
               icon: Icon(
                 Icons.center_focus_strong,
-                color: GeopaparazziColors.mainBackground,
+                color: SmashColors.mainBackground,
               ),
             ),
             IconButton(
@@ -278,7 +278,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
               tooltip: 'Zoom in',
               icon: Icon(
                 Icons.zoom_in,
-                color: GeopaparazziColors.mainBackground,
+                color: SmashColors.mainBackground,
               ),
             ),
             IconButton(
@@ -292,7 +292,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
               tooltip: 'Zoom out',
               icon: Icon(
                 Icons.zoom_out,
-                color: GeopaparazziColors.mainBackground,
+                color: SmashColors.mainBackground,
               ),
             ),
           ],
@@ -318,7 +318,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
   void setStatus(GpsStatus currentStatus) {}
 
   getDrawerWidgets(BuildContext context) {
-    var c = GeopaparazziColors.mainDecorations;
+    var c = SmashColors.mainDecorations;
     var textStyle = GpConstants.MEDIUM_DIALOG_TEXT_STYLE;
     var iconSize = GpConstants.MEDIUM_DIALOG_ICON_SIZE;
     return [
@@ -330,7 +330,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
 //          fit: BoxFit.scaleDown,
 //          semanticsLabel: 'A red up arrow',
 //        )),
-        color: GeopaparazziColors.mainDecorations,
+        color: SmashColors.mainDecorations,
       ),
       new Container(
         child: new Column(children: [
@@ -465,7 +465,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                 child: GestureDetector(
               onTap: () {
                 _scaffoldKey.currentState.showSnackBar(SnackBar(
-                  backgroundColor: GeopaparazziColors.snackBarColor,
+                  backgroundColor: SmashColors.snackBarColor,
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -487,7 +487,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                             IconButton(
                               icon: Icon(
                                 Icons.share,
-                                color: GeopaparazziColors.mainSelection,
+                                color: SmashColors.mainSelection,
                               ),
                               iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
                               onPressed: () {
@@ -498,7 +498,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                             IconButton(
                               icon: Icon(
                                 Icons.delete,
-                                color: GeopaparazziColors.mainDanger,
+                                color: SmashColors.mainDanger,
                               ),
                               iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
                               onPressed: () async {
@@ -518,7 +518,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                             IconButton(
                               icon: Icon(
                                 Icons.close,
-                                color: GeopaparazziColors.mainDecorationsDark,
+                                color: SmashColors.mainDecorationsDark,
                               ),
                               iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
                               onPressed: () {

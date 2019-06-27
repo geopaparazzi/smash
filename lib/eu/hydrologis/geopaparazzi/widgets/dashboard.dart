@@ -78,12 +78,12 @@ class _DashboardWidgetState extends State<DashboardWidget>
         // check when the app is left
         child: new Scaffold(
           appBar: new AppBar(
-            title: new Text("Geopaparazzi"),
+            title: new Text(APP_NAME),
             actions: <Widget>[
               AppBarGpsInfo(_gpsStatusValueNotifier),
             ],
           ),
-          backgroundColor: GeopaparazziColors.mainBackground,
+          backgroundColor: SmashColors.mainBackground,
           body: FutureBuilder<void>(
             future: _checkStats(context),
             builder: (context, snapshot) {
@@ -225,18 +225,18 @@ class _DashboardWidgetState extends State<DashboardWidget>
         child: Card(
           margin: EdgeInsets.all(10),
           elevation: 5,
-          color: GeopaparazziColors.mainDecorations,
+          color: SmashColors.mainDecorations,
           child: IconButton(
             icon: Icon(
               icon,
-              color: GeopaparazziColors.mainBackground,
+              color: SmashColors.mainBackground,
             ),
             iconSize: iconSize,
             onPressed: () {
               function(context);
             },
-            color: GeopaparazziColors.mainBackground,
-            highlightColor: GeopaparazziColors.mainSelection,
+            color: SmashColors.mainBackground,
+            highlightColor: SmashColors.mainSelection,
           ),
         ));
   }
@@ -245,17 +245,12 @@ class _DashboardWidgetState extends State<DashboardWidget>
 //    final String assetName = 'assets/geopaparazzi_launcher_icon.svg';
     double iconSize = 48;
     double textSize = iconSize / 2;
-    var c = GeopaparazziColors.mainDecorations;
+    var c = SmashColors.mainDecorations;
     return [
       new Container(
         margin: EdgeInsets.only(bottom: 20),
-        child: new DrawerHeader(child: Image.asset("assets/gpicon.png")),
-//            new SvgPicture.asset(
-//          assetName,
-//          fit: BoxFit.scaleDown,
-//          semanticsLabel: 'A red up arrow',
-//        )),
-        color: GeopaparazziColors.mainDecorations,
+        child: new DrawerHeader(child: Image.asset("assets/smash_icon.png")),
+        color: SmashColors.mainBackground,
       ),
       new Container(
         child: new Column(children: [
@@ -411,32 +406,32 @@ Icon getGpsStatusIcon(GpsStatus status) {
   switch (status) {
     case GpsStatus.OFF:
       {
-        color = GeopaparazziColors.gpsOff;
+        color = SmashColors.gpsOff;
         iconData = Icons.gps_off;
         break;
       }
     case GpsStatus.ON_WITH_FIX:
       {
-        color = GeopaparazziColors.gpsOnWithFix;
+        color = SmashColors.gpsOnWithFix;
         iconData = Icons.gps_fixed;
         break;
       }
     case GpsStatus.ON_NO_FIX:
       {
         iconData = Icons.gps_not_fixed;
-        color = GeopaparazziColors.gpsOnNoFix;
+        color = SmashColors.gpsOnNoFix;
         break;
       }
     case GpsStatus.LOGGING:
       {
         iconData = Icons.gps_fixed;
-        color = GeopaparazziColors.gpsLogging;
+        color = SmashColors.gpsLogging;
         break;
       }
     case GpsStatus.NOPERMISSION:
       {
         iconData = Icons.gps_off;
-        color = GeopaparazziColors.gpsNoPermission;
+        color = SmashColors.gpsNoPermission;
         break;
       }
   }
@@ -513,12 +508,12 @@ class DashboardLogButtonState extends State<DashboardLogButton> {
                   margin: EdgeInsets.all(10),
                   elevation: 5,
                   color: _isLogging
-                      ? GeopaparazziColors.gpsLogging
-                      : GeopaparazziColors.mainDecorations,
+                      ? SmashColors.gpsLogging
+                      : SmashColors.mainDecorations,
                   child: IconButton(
                     icon: Icon(
                       icon,
-                      color: GeopaparazziColors.mainBackground,
+                      color: SmashColors.mainBackground,
                     ),
                     iconSize: orientation == Orientation.portrait
                         ? _media.width / 4
@@ -526,8 +521,8 @@ class DashboardLogButtonState extends State<DashboardLogButton> {
                     onPressed: () {
                       toggleLoggingFunction(context);
                     },
-                    color: GeopaparazziColors.mainBackground,
-                    highlightColor: GeopaparazziColors.mainSelection,
+                    color: SmashColors.mainBackground,
+                    highlightColor: SmashColors.mainSelection,
                   ),
                 ));
           });

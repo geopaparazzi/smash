@@ -145,7 +145,7 @@ void showInfoDialog(BuildContext context, String prompt,
                   padding: const EdgeInsets.all(15.0),
                   child: Icon(
                     Icons.info_outline,
-                    color: GeopaparazziColors.mainDecorations,
+                    color: SmashColors.mainDecorations,
                     size: SIMPLE_DIALOGS_ICONSIZE,
                   ),
                 ),

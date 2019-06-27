@@ -6,6 +6,53 @@
 
 import 'package:flutter/material.dart';
 
+/// The SMASH Colors list
+///
+/// https://material.io/tools/color/#!/?view.left=0&view.right=0&primary.color=1976D2&secondary.color=BF360C
+class SmashColors {
+  static final Color mainBackground = ColorExt("#ffFFFFFF");
+
+  static final Color mainDecorations = ColorExt("#ff1976d2");
+  static const int mainDecorationsR = 25;
+  static const int mainDecorationsG = 118;
+  static const int mainDecorationsB = 210;
+
+  static final Color mainDecorationsDark = ColorExt("#ff004ba0");
+  static const int mainDecorationsDarkR = 0;
+  static const int mainDecorationsDarkG = 75;
+  static const int mainDecorationsDarkB = 160;
+
+  static final Color mainTextColor = ColorExt("#ff800000");
+  static final Color mainTextColorNeutral = ColorExt("#ff000000");
+
+  static final Color mainSelection = ColorExt("#ffbf360c");
+
+  static final Color mainSelectionBorder = ColorExt("#ff870000");
+  static const int mainSelectionBorderR = 135;
+  static const int mainSelectionBorderG = 0;
+  static const int mainSelectionBorderB = 0;
+
+  static final Color mainDanger = ColorExt("#ffFF0000");
+  static final Color gpsNoPermission = ColorExt("#ffff8484");
+  static final Color gpsOnNoFix = ColorExt("#ffffd293");
+  static final Color gpsOnWithFix = ColorExt("#ff00ff08");
+  static final Color gpsLogging = ColorExt("#ff84beff");
+  static final Color gpsOff = ColorExt("#ffff8484");
+  static final Color snackBarColor = ColorExt("#daffffff");
+
+  static final MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
+  static final MaterialColor mainDecorationsMc =
+      toMaterialColor(mainDecorations);
+  static final MaterialColor mainDecorationsDarkMc =
+      toMaterialColor(mainDecorationsDark);
+  static final MaterialColor mainTextColorMc = toMaterialColor(mainTextColor);
+  static final MaterialColor mainTextColorNeutralMc =
+      toMaterialColor(mainTextColorNeutral);
+  static final MaterialColor mainSelectionMc = toMaterialColor(mainSelection);
+  static final MaterialColor mainSelectionBorderMc =
+      toMaterialColor(mainSelectionBorder);
+}
+
 /// The Geopaparazzi Colors list
 class GeopaparazziColors {
   static final Color mainBackground = ColorExt("#ffFFFFFF");

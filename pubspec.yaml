@@ -80,6 +80,7 @@ flutter:
   assets:
     - assets/geopaparazzi_launcher_icon.svg
     - assets/gpicon.png
+    - assets/smash_icon.png
     - assets/defaultrender.xml
     - packages/mapsforge_flutter/assets/patterns/coniferous.svg
     - packages/mapsforge_flutter/assets/patterns/coniferous_and_deciduous.svg

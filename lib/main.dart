@@ -42,26 +42,41 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
     return MaterialApp(
       title: 'Geopaparazzi',
       theme: ThemeData(
-          primarySwatch: GeopaparazziColors.mainDecorationsMc,
-          accentColor: GeopaparazziColors.mainSelectionMc,
-          canvasColor: GeopaparazziColors.mainBackground,
+          primarySwatch: SmashColors.mainDecorationsMc,
+          accentColor: SmashColors.mainSelectionMc,
+          canvasColor: SmashColors.mainBackground,
           brightness: Brightness.light,
           inputDecorationTheme: InputDecorationTheme(
             border: const OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 55, 135, 86)),
+              borderSide: BorderSide(
+                  color: Color.fromARGB(
+                      255,
+                      SmashColors.mainDecorationsDarkR,
+                      SmashColors.mainDecorationsDarkG,
+                      SmashColors.mainDecorationsDarkB)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 55, 135, 86)),
+              borderSide: BorderSide(
+                  color: Color.fromARGB(
+                      255,
+                      SmashColors.mainDecorationsDarkR,
+                      SmashColors.mainDecorationsDarkG,
+                      SmashColors.mainDecorationsDarkB)),
             ),
             disabledBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Color.fromARGB(255, 128, 128, 128)),
             ),
             focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 153, 51, 0)),
+              borderSide: BorderSide(
+                  color: Color.fromARGB(
+                      255,
+                      SmashColors.mainSelectionBorderR,
+                      SmashColors.mainSelectionBorderG,
+                      SmashColors.mainSelectionBorderB)),
             ),
-            labelStyle: const TextStyle(
-              color: Color.fromARGB(255, 128, 128, 128),
-            ),
+//            labelStyle: const TextStyle(
+//              color: Color.fromARGB(255, 128, 128, 128),
+//            ),
           )),
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,

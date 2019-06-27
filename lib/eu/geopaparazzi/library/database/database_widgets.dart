@@ -365,7 +365,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
               Flexible(
                   flex: 1,
                   child: Slider(
-                    activeColor: GeopaparazziColors.mainSelection,
+                    activeColor: SmashColors.mainSelection,
                     min: 1.0,
                     max: 20.0,
                     divisions: 10,

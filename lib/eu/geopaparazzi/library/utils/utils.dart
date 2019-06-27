@@ -18,18 +18,18 @@ final DateFormat DATE_TS_FORMATTER = DateFormat("yyyyMMdd_HHmmss");
 
 class GpConstants {
   static final TextStyle SMALL_DIALOG_TEXT_STYLE =
-      TextStyle(fontSize: 12, color: GeopaparazziColors.mainDecorations);
+      TextStyle(fontSize: 12, color: SmashColors.mainTextColorNeutral);
   static final TextStyle MEDIUM_DIALOG_TEXT_STYLE =
-      TextStyle(fontSize: 18, color: GeopaparazziColors.mainDecorations);
+      TextStyle(fontSize: 18, color: SmashColors.mainTextColorNeutral);
   static final TextStyle LARGE_DIALOG_TEXT_STYLE =
-      TextStyle(fontSize: 24, color: GeopaparazziColors.mainDecorations);
+      TextStyle(fontSize: 24, color: SmashColors.mainTextColorNeutral);
 
   static final TextStyle SMALL_DIALOG_TEXT_STYLE_NEUTRAL =
-      TextStyle(fontSize: 12, color: GeopaparazziColors.mainTextColorNeutral);
+      TextStyle(fontSize: 12, color: SmashColors.mainTextColorNeutral);
   static final TextStyle MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL =
-      TextStyle(fontSize: 18, color: GeopaparazziColors.mainTextColorNeutral);
+      TextStyle(fontSize: 18, color: SmashColors.mainTextColorNeutral);
   static final TextStyle LARGE_DIALOG_TEXT_STYLE_NEUTRAL =
-      TextStyle(fontSize: 24, color: GeopaparazziColors.mainTextColorNeutral);
+      TextStyle(fontSize: 24, color: SmashColors.mainTextColorNeutral);
 
 
   static const double SMALL_DIALOG_ICON_SIZE = 24;
