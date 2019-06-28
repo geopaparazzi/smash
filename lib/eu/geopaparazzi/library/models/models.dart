@@ -23,7 +23,7 @@ class GPProjectModel extends StateUpdater {
 
   double lastCenterLon = 0;
   double lastCenterLat = 0;
-  double lastCenterZoom = 5;
+  double lastCenterZoom = 16;
 
   String get projectPath => _projectPath;
 

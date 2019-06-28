@@ -12,6 +12,8 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
+import 'package:latlong/latlong.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Log object dedicated to the list of logs widget.
 class Log4ListWidget {
@@ -25,7 +27,7 @@ class Log4ListWidget {
   int isVisible;
 }
 
-/// [QueryObjectBuilder] to allow erasy extraction from the db.
+/// [QueryObjectBuilder] to allow easy extraction from the db.
 class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
   @override
   Log4ListWidget fromMap(Map<String, dynamic> map) {
@@ -66,18 +68,21 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
   }
 }
 
-class LogWidget extends StatefulWidget {
+/// The log list widget.
+class LogListWidget extends StatefulWidget {
   Function _reloadFunction;
+  Function _moveToFunction;
 
-  LogWidget(this._reloadFunction);
+  LogListWidget(this._reloadFunction, this._moveToFunction);
 
   @override
   State<StatefulWidget> createState() {
-    return LogWidgetState();
+    return LogListWidgetState();
   }
 }
 
-class LogWidgetState extends State<LogWidget> {
+/// The log list widget state.
+class LogListWidgetState extends State<LogListWidget> {
   List<Log4ListWidget> _logsList = [];
 
   Future<bool> loadLogs() async {
@@ -94,6 +99,35 @@ class LogWidgetState extends State<LogWidget> {
     return Scaffold(
         appBar: AppBar(
           title: Text("GPS Logs list"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.check),
+              tooltip: "Select all",
+              onPressed: () async {
+                var db = await gpProjectModel.getDatabase();
+                db.updateGpsLogVisibility(true);
+                setState(() {});
+              },
+            ),
+            IconButton(
+              tooltip: "Unselect all",
+              icon: Icon(Icons.check_box_outline_blank),
+              onPressed: () async {
+                var db = await gpProjectModel.getDatabase();
+                db.updateGpsLogVisibility(false);
+                setState(() {});
+              },
+            ),
+            IconButton(
+              tooltip: "Invert selection",
+              icon: Icon(Icons.check_box),
+              onPressed: () async {
+                var db = await gpProjectModel.getDatabase();
+                db.invertGpsLogsVisibility();
+                setState(() {});
+              },
+            ),
+          ],
         ),
         body: FutureBuilder<void>(
           future: loadLogs(),
@@ -135,7 +169,7 @@ class LogWidgetState extends State<LogWidget> {
                                   logItem.isVisible = isVisible ? 1 : 0;
                                   var db = await gpProjectModel.getDatabase();
                                   await db.updateGpsLogVisibility(
-                                      logItem.id, isVisible);
+                                      isVisible, logItem.id);
                                   widget._reloadFunction();
                                   setState(() {});
                                 }),
@@ -146,7 +180,13 @@ class LogWidgetState extends State<LogWidget> {
                         subtitle:
                             Text('${_getTime(logItem)} ${_getLength(logItem)}'),
                         onTap: () => _navigateToLogProperties(context, logItem),
-                        onLongPress: () => _changeLogName(context, logItem),
+                        onLongPress: () async {
+                          var db = await gpProjectModel.getDatabase();
+                          LatLng position =
+                              await db.getLogStartPosition(logItem.id);
+                          widget._moveToFunction(position);
+                          Navigator.of(context).pop();
+                        },
                       ),
                     );
                   });
@@ -156,23 +196,6 @@ class LogWidgetState extends State<LogWidget> {
             }
           },
         ));
-  }
-
-  _changeLogName(BuildContext context, Log4ListWidget logItem) async {
-    String result = await showInputDialog(
-      context,
-      "Change log name",
-      "Please enter a new name for the log",
-      hintText: logItem.name,
-      validationFunction: noEmptyValidator,
-    );
-    if (result != null) {
-      var db = await gpProjectModel.getDatabase();
-      await db.updateGpsLogName(logItem.id, result);
-      setState(() {
-        logItem.name = result;
-      });
-    }
   }
 
   _getTime(Log4ListWidget item) {
@@ -200,6 +223,8 @@ class LogWidgetState extends State<LogWidget> {
 
   _onDismissed(Log4ListWidget logItem) {
     // TODO remove log
+
+    widget._reloadFunction();
   }
 
   Future<bool> _confirmLogDismiss(DismissDirection direction) async {
@@ -234,6 +259,7 @@ class LogWidgetState extends State<LogWidget> {
   }
 }
 
+/// The log properties page.
 class LogPropertiesWidget extends StatefulWidget {
   var _logItem;
   Function _reloadFunction;
@@ -251,6 +277,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
   double _widthSliderValue;
   ColorExt _logColor;
   double maxWidth = 20.0;
+  bool _somethingChanged = false;
 
   LogPropertiesWidgetState(this._logItem);
 
@@ -269,14 +296,16 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          // save color and width
-          _logItem.width = _widthSliderValue;
-          _logItem.color = ColorExt.asHex(_logColor);
+          if (_somethingChanged) {
+            // save color and width
+            _logItem.width = _widthSliderValue;
+            _logItem.color = ColorExt.asHex(_logColor);
 
-          var db = await gpProjectModel.getDatabase();
-          await db.updateGpsLogStyle(
-              _logItem.id, _logItem.color, _logItem.width);
-          widget._reloadFunction();
+            var db = await gpProjectModel.getDatabase();
+            await db.updateGpsLogStyle(
+                _logItem.id, _logItem.color, _logItem.width);
+            widget._reloadFunction();
+          }
           return true;
         },
         child: Scaffold(
@@ -307,7 +336,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                               0: FlexColumnWidth(0.2),
                               1: FlexColumnWidth(0.8),
                             },
-                            children: _getInfoTableCells(),
+                            children: _getInfoTableCells(context),
                           ),
                         ],
                       ),
@@ -320,12 +349,12 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
         ));
   }
 
-  _getInfoTableCells() {
+  _getInfoTableCells(BuildContext context) {
     return [
       TableRow(
         children: [
           cellForString("Name"),
-          cellForString(_logItem.name),
+          cellForEditableName(context, _logItem),
         ],
       ),
       TableRow(
@@ -349,9 +378,11 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
               allowShades: false,
               onColorChange: (Color color) {
                 _logColor = ColorExt.fromColor(color);
+                _somethingChanged = true;
               },
               onMainColorChange: (mColor) {
                 _logColor = ColorExt.fromColor(mColor);
+                _somethingChanged = true;
               },
               selectedColor: Color(_logColor.value)),
         ],
@@ -370,6 +401,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                     max: 20.0,
                     divisions: 10,
                     onChanged: (newRating) {
+                      _somethingChanged = true;
                       setState(() => _widthSliderValue = newRating);
                     },
                     value: _widthSliderValue,
@@ -397,5 +429,39 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
         ),
       ),
     );
+  }
+
+  TableCell cellForEditableName(BuildContext context, Log4ListWidget item) {
+    return TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: GestureDetector(
+          child: Text(
+            item.name,
+            style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE,
+          ),
+          onDoubleTap: () {
+            _changeLogName(context, item);
+          },
+        ),
+      ),
+    );
+  }
+
+  _changeLogName(BuildContext context, Log4ListWidget logItem) async {
+    String result = await showInputDialog(
+      context,
+      "Change log name",
+      "Please enter a new name for the log",
+      defaultText: logItem.name,
+      validationFunction: noEmptyValidator,
+    );
+    if (result != null) {
+      var db = await gpProjectModel.getDatabase();
+      await db.updateGpsLogName(logItem.id, result);
+      setState(() {
+        logItem.name = result;
+      });
+    }
   }
 }

@@ -112,8 +112,8 @@ class GpLogger {
 
   GpLogger._internal();
 
-  init() async {
-    if (_logger != null) return;
+  Future<bool> init() async {
+    if (_logger != null) return false;
 
     LogDb logDb = LogDb();
     logDb.init().then((ok) {
@@ -137,6 +137,7 @@ class GpLogger {
         );
       }
     });
+    return true;
   }
 
   v(dynamic message, [dynamic error, StackTrace stackTrace]) {

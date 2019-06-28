@@ -55,6 +55,9 @@ dependencies:
   # MIT
   permission_handler: '^3.1.0'
 
+  # MIT
+  font_awesome_flutter: 8.4.0
+
   mapsforge_flutter:
     path: ../../mapsforge_flutter/mapsforge_flutter
 

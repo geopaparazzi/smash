@@ -8,6 +8,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tabl
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:latlong/latlong.dart';
 
 abstract class QueryObjectBuilder<T> {
   String querySql();
@@ -106,6 +107,7 @@ class SqliteDb {
   Future<bool> hasTable(String tableName) async {
     String sql = "SELECT name FROM sqlite_master WHERE type='table'";
     var res = await query(sql);
+    getLogStartPosition() {}
     tableName = tableName.toLowerCase();
     for (int i = 0; i < res.length; i++) {
       String name = res[i]['name'];
@@ -262,6 +264,25 @@ class GeopaparazziProjectDb extends SqliteDb {
     return count;
   }
 
+  /// Get the start position coordinate of a log identified by [logId].
+  Future<LatLng> getLogStartPosition(int logId) async {
+    var sql = '''
+      select $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LAT from $TABLE_GPSLOG_DATA 
+      where $LOGSDATA_COLUMN_LOGID=$logId
+      order by $LOGSDATA_COLUMN_TS 
+      limit 1
+    ''';
+
+    List<Map<String, dynamic>> resList = await query(sql);
+    if (resList.length == 1) {
+      var map = resList[0];
+      var lon = map[LOGSDATA_COLUMN_LON];
+      var lat = map[LOGSDATA_COLUMN_LAT];
+      return LatLng(lat, lon);
+    }
+    return null;
+  }
+
   /// Add a new gps [Log] into teh database.
   ///
   /// The log is inserted with the properties [prop].
@@ -309,9 +330,26 @@ class GeopaparazziProjectDb extends SqliteDb {
   }
 
   /// Updates the [isVisible] of a log of id [logId].
-  Future<int> updateGpsLogVisibility(int logId, bool isVisible) async {
+  Future<int> updateGpsLogVisibility(bool isVisible, [int logId]) async {
+    String where = "";
+    if (logId != null) {
+      where = " where $LOGSPROP_COLUMN_LOGID=$logId";
+    }
+
     var updatedId = await update(
-        "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_VISIBLE=${isVisible ? 1 : 0} where $LOGSPROP_COLUMN_LOGID=$logId");
+        "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_VISIBLE=${isVisible ? 1 : 0}$where");
+    return updatedId;
+  }
+
+  /// Invert the visiblity of all logs.
+  Future<int> invertGpsLogsVisibility() async {
+    String sql = '''
+      update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_VISIBLE= CASE
+        WHEN $LOGSPROP_COLUMN_VISIBLE = 1 THEN 0
+                       ELSE 1
+        END
+    ''';
+    var updatedId = await update(sql);
     return updatedId;
   }
 

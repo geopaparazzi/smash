@@ -106,6 +106,10 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
     setState(() {});
   }
 
+  moveTo(LatLng position) async {
+    _mapController.move(position, _mapController.zoom);
+  }
+
   @override
   void dispose() {
 //    _mapCenterValueNotifier.removeListener();
@@ -243,7 +247,8 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => LogWidget(reloadProject)));
+                        builder: (context) =>
+                            LogListWidget(reloadProject, moveTo)));
               },
               tooltip: 'Logs list',
               icon: Icon(
