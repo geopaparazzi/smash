@@ -488,6 +488,22 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                             ),
                             IconButton(
                               icon: Icon(
+                                Icons.edit,
+                                color: SmashColors.mainSelection,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            NotePropertiesWidget(
+                                                reloadProject, note)));
+                                _scaffoldKey.currentState.hideCurrentSnackBar();
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
                                 Icons.delete,
                                 color: SmashColors.mainDanger,
                               ),
@@ -525,7 +541,7 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
                 ));
               },
               child: Icon(
-                Icons.note,
+                NOTES_ICONDATA[noteExt.marker],
                 size: noteExt.size,
                 color: ColorExt(noteExt.color),
               ),

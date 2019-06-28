@@ -5,6 +5,7 @@
  */
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:latlong/latlong.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /*
  * The metadata table name.
@@ -135,7 +136,7 @@ final String NOTESEXT_COLUMN_NOTEID = "noteid";
 class NoteExt {
   int id;
   int noteId;
-  String marker;
+  String marker = 'marker';
   double size = 36;
   double rotation = 0;
   String color = "#FF000000";

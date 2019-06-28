@@ -465,3 +465,354 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
     }
   }
 }
+
+const Map<String, dynamic> NOTES_ICONDATA = {
+  'marker': FontAwesomeIcons.mapMarker,
+  'circle': FontAwesomeIcons.solidCircle,
+  'bomb': FontAwesomeIcons.bomb,
+  'bell': FontAwesomeIcons.solidBell,
+  'carrot': FontAwesomeIcons.carrot,
+  'warning': FontAwesomeIcons.exclamationTriangle,
+  'flag': FontAwesomeIcons.solidFlag,
+  'frog': FontAwesomeIcons.frog,
+  'info': FontAwesomeIcons.infoCircle,
+  'medkit': FontAwesomeIcons.medkit,
+  'smile': FontAwesomeIcons.solidSmile,
+  'angry': FontAwesomeIcons.solidAngry,
+  'star': FontAwesomeIcons.solidStar,
+  'tag': FontAwesomeIcons.tag,
+  'glass': FontAwesomeIcons.glassWhiskey,
+  'drop': FontAwesomeIcons.tint,
+  'ok': FontAwesomeIcons.solidCheckCircle,
+  'tools': FontAwesomeIcons.tools,
+  'trash': FontAwesomeIcons.trash,
+  'user': FontAwesomeIcons.solidUser,
+  'note': FontAwesomeIcons.solidComment,
+  'food': FontAwesomeIcons.pizzaSlice,
+};
+
+/// The notes properties page.
+class NotePropertiesWidget extends StatefulWidget {
+  var _note;
+  Function _reloadFunction;
+
+  NotePropertiesWidget(this._reloadFunction, this._note);
+
+  @override
+  State<StatefulWidget> createState() {
+    return NotePropertiesWidgetState(_note);
+  }
+}
+
+class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
+  Note _note;
+  double _sizeSliderValue = 10;
+  double _maxSize = 100.0;
+  ColorExt _noteColor;
+  String _marker = 'marker';
+  bool _somethingChanged = false;
+  List<GridTile> _iconButtons;
+
+  NotePropertiesWidgetState(this._note);
+
+  @override
+  void initState() {
+    _sizeSliderValue = _note?.noteExt?.size;
+    if (_sizeSliderValue > _maxSize) {
+      _sizeSliderValue = _maxSize;
+    }
+    _noteColor = ColorExt(_note.noteExt.color);
+    _marker = _note.noteExt.marker;
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _iconButtons = [];
+    NOTES_ICONDATA.forEach((name, iconData) {
+      var color = SmashColors.mainDecorations;
+      if (name == _marker) color = SmashColors.mainSelection;
+      var but = GridTile(
+//          header: GridTileBar(
+//            title: Text(name, style: TextStyle(fontWeight: FontWeight.bold)),
+//            backgroundColor: color,
+//          ),
+          child: Card(
+            margin: EdgeInsets.all(10),
+            elevation: 5,
+            color: SmashColors.mainBackground,
+            child: IconButton(
+              icon: Icon(NOTES_ICONDATA[name]),
+              color: color,
+              onPressed: () {
+                _marker = name;
+                _somethingChanged = true;
+                setState(() {});
+              },
+            ),
+          ));
+      _iconButtons.add(but);
+    });
+
+    return WillPopScope(
+        onWillPop: () async {
+          if (_somethingChanged) {
+            _note.noteExt.color = ColorExt.asHex(_noteColor);
+            _note.noteExt.marker = _marker;
+            _note.noteExt.size = _sizeSliderValue;
+
+            var db = await gpProjectModel.getDatabase();
+            await db.updateNote(_note);
+            widget._reloadFunction();
+          }
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Note Properties"),
+          ),
+          body: Center(
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                  child: Card(
+                    elevation: GpConstants.DEFAULT_ELEVATION,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Table(
+                            columnWidths: {
+                              0: FlexColumnWidth(0.4),
+                              1: FlexColumnWidth(0.6),
+                            },
+                            children: _getInfoTableCells(context),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                  child: Card(
+                    elevation: GpConstants.DEFAULT_ELEVATION,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                      child: MaterialColorPicker(
+                          allowShades: false,
+                          circleSize: 45,
+                          onColorChange: (Color color) {
+                            _noteColor = ColorExt.fromColor(color);
+                            _somethingChanged = true;
+                          },
+                          onMainColorChange: (mColor) {
+                            _noteColor = ColorExt.fromColor(mColor);
+                            _somethingChanged = true;
+                          },
+                          selectedColor: Color(_noteColor.value)),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                  child: Card(
+                    elevation: GpConstants.DEFAULT_ELEVATION,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Text("Size",
+                              style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE),
+                          Flexible(
+                              flex: 1,
+                              child: Slider(
+                                activeColor: SmashColors.mainSelection,
+                                min: 1.0,
+                                max: _maxSize,
+                                divisions: 20,
+                                onChanged: (newRating) {
+                                  _somethingChanged = true;
+                                  setState(() => _sizeSliderValue = newRating);
+                                },
+                                value: _sizeSliderValue,
+                              )),
+                          Container(
+                            width: 50.0,
+                            alignment: Alignment.center,
+                            child: Text('${_sizeSliderValue.toInt()}',
+                                style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                  child: Card(
+                    elevation: GpConstants.DEFAULT_ELEVATION,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                      child: OrientationBuilder(
+                        builder: (context, orientation) {
+                          return GridView.count(
+                            shrinkWrap: true,
+                            physics: BouncingScrollPhysics(),
+                            crossAxisCount:
+                                orientation == Orientation.portrait ? 5 : 10,
+                            childAspectRatio: 1,
+                            padding: EdgeInsets.all(5),
+                            mainAxisSpacing: 2,
+                            crossAxisSpacing: 2,
+                            children: _iconButtons,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+
+  _getInfoTableCells(BuildContext context) {
+    return [
+      TableRow(
+        children: [
+          _cellForString("Note"),
+          _cellForNoteText(context, _note),
+        ],
+      ),
+      TableRow(
+        children: [
+          _cellForString("Description"),
+          _cellForNoteDescription(context, _note),
+        ],
+      ),
+      TableRow(
+        children: [
+          _cellForString("Timestamp"),
+          _cellForString(GpConstants.ISO8601_TS_FORMATTER
+              .format(DateTime.fromMillisecondsSinceEpoch(_note.timeStamp))),
+        ],
+      ),
+      TableRow(
+        children: [
+          _cellForString("Altitude"),
+          _cellForString(_note.altim.toString()),
+        ],
+      ),
+      TableRow(
+        children: [
+          _cellForString("Longitude"),
+          _cellForString(_note.lon.toString()),
+        ],
+      ),
+      TableRow(
+        children: [
+          _cellForString("Latitude"),
+          _cellForString(_note.lat.toString()),
+        ],
+      ),
+//      TableRow(
+//        children: [
+//          _cellForString("Icon"),
+
+//        ],
+//      ),
+    ];
+  }
+
+  TableCell _cellForString(String data) {
+    return TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Text(
+          data,
+          style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE,
+        ),
+      ),
+    );
+  }
+
+  TableCell _cellForNoteText(BuildContext context, Note item) {
+    return TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: GestureDetector(
+          child: Text(
+            item.text,
+            style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE,
+          ),
+          onDoubleTap: () async {
+            String result = await showInputDialog(
+              context,
+              "Change note text",
+              "Please enter a new text for the note",
+              defaultText: _note.text,
+              validationFunction: noEmptyValidator,
+            );
+            if (result != null) {
+              _note.text = result;
+              _somethingChanged = true;
+              setState(() {});
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  TableCell _cellForNoteDescription(BuildContext context, Note item) {
+    return TableCell(
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: GestureDetector(
+          child: Text(
+            item.text,
+            style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE,
+          ),
+          onDoubleTap: () async {
+            String result = await showInputDialog(
+              context,
+              "Change note description",
+              "Please enter a new description for the note",
+              defaultText: _note.description,
+              validationFunction: noEmptyValidator,
+            );
+            if (result != null) {
+              _note.description = result;
+              _somethingChanged = true;
+              setState(() {});
+            }
+          },
+        ),
+      ),
+    );
+  }
+}

@@ -78,6 +78,10 @@ class SqliteDb {
     return _db.rawUpdate(updateSql);
   }
 
+  updateMap(String table, Map<String, dynamic> values, String where) async {
+    return _db.update(table, values, where: where);
+  }
+
   delete(String deleteSql) async {
     return _db.rawDelete(deleteSql);
   }
@@ -180,12 +184,12 @@ class GeopaparazziProjectDb extends SqliteDb {
     if (onlyDirty) {
       where = " where $NOTES_COLUMN_ISDIRTY=1";
     }
-
+    String extid = "extid";
     String sql = '''
       select n.$NOTES_COLUMN_ID,n.$NOTES_COLUMN_LON,n.$NOTES_COLUMN_LAT,
              n.$NOTES_COLUMN_ALTIM,n.$NOTES_COLUMN_TS,n.$NOTES_COLUMN_DESCRIPTION,
              n.$NOTES_COLUMN_TEXT,n.$NOTES_COLUMN_FORM,n.$NOTES_COLUMN_STYLE,n.$NOTES_COLUMN_ISDIRTY,
-             nex.$NOTESEXT_COLUMN_NOTEID,nex.$NOTESEXT_COLUMN_MARKER,nex.$NOTESEXT_COLUMN_SIZE,
+             nex.$NOTESEXT_COLUMN_ID as $extid,nex.$NOTESEXT_COLUMN_NOTEID,nex.$NOTESEXT_COLUMN_MARKER,nex.$NOTESEXT_COLUMN_SIZE,
              nex.$NOTESEXT_COLUMN_ROTATION,nex.$NOTESEXT_COLUMN_COLOR,nex.$NOTESEXT_COLUMN_ACCURACY,
              nex.$NOTESEXT_COLUMN_HEADING,nex.$NOTESEXT_COLUMN_SPEED,nex.$NOTESEXT_COLUMN_SPEEDACCURACY
       from $TABLE_NOTES n left join  $TABLE_NOTESEXT nex
@@ -212,7 +216,8 @@ class GeopaparazziProjectDb extends SqliteDb {
 
       // we can add the extended part
       NoteExt noteExt = NoteExt();
-      if (resNoteMap[NOTESEXT_COLUMN_NOTEID] != null) {
+      if (resNoteMap[extid] != null) {
+        noteExt.id = resNoteMap[extid];
         noteExt.noteId = note.id;
         var marker = resNoteMap[NOTESEXT_COLUMN_MARKER];
         if (marker != null) noteExt.marker = marker;
@@ -226,6 +231,11 @@ class GeopaparazziProjectDb extends SqliteDb {
         noteExt.heading = resNoteMap[NOTESEXT_COLUMN_HEADING];
         noteExt.speed = resNoteMap[NOTESEXT_COLUMN_SPEED];
         noteExt.speedaccuracy = resNoteMap[NOTESEXT_COLUMN_SPEEDACCURACY];
+      } else {
+        // insert the note ext
+        noteExt.noteId = note.id;
+        int noteExtId = await addNoteExt(noteExt);
+        noteExt.id = noteExtId;
       }
       note.noteExt = noteExt;
       notes.add(note);
@@ -242,6 +252,11 @@ class GeopaparazziProjectDb extends SqliteDb {
   Future<int> addNote(Note note) {
     var noteId = insertMap(TABLE_NOTES, note.toMap());
     return noteId;
+  }
+
+  Future<int> addNoteExt(NoteExt noteExt) {
+    var noteExtId = insertMap(TABLE_NOTESEXT, noteExt.toMap());
+    return noteExtId;
   }
 
   /// Delete a note by its [noteId].
@@ -391,6 +406,23 @@ class GeopaparazziProjectDb extends SqliteDb {
       return null;
     }
     return summedDistance;
+  }
+
+  Future<int> updateNote(Note note) async {
+    var map = note.toMap();
+    var noteId = map.remove(NOTES_COLUMN_ID);
+
+    int count = await updateMap(TABLE_NOTES, map, "$NOTES_COLUMN_ID=$noteId");
+    if (count == 1) {
+      var extMap = note.noteExt.toMap();
+      int noteExtId = extMap.remove(NOTESEXT_COLUMN_ID);
+      extMap.remove(NOTESEXT_COLUMN_NOTEID);
+      count = await updateMap(
+          TABLE_NOTESEXT, extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
+      if (count != 1) {
+        print("Not updated");
+      }
+    }
   }
 
   /// Create the geopaparazzi project database.
