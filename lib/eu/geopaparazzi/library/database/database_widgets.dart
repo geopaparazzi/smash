@@ -489,6 +489,9 @@ const Map<String, dynamic> NOTES_ICONDATA = {
   'user': FontAwesomeIcons.solidUser,
   'note': FontAwesomeIcons.solidComment,
   'food': FontAwesomeIcons.pizzaSlice,
+  'truck': FontAwesomeIcons.truck,
+  'thumbs up': FontAwesomeIcons.solidThumbsUp,
+  'thumbs down': FontAwesomeIcons.solidThumbsDown,
 };
 
 /// The notes properties page.
@@ -539,19 +542,19 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 //            backgroundColor: color,
 //          ),
           child: Card(
-            margin: EdgeInsets.all(10),
-            elevation: 5,
-            color: SmashColors.mainBackground,
-            child: IconButton(
-              icon: Icon(NOTES_ICONDATA[name]),
-              color: color,
-              onPressed: () {
-                _marker = name;
-                _somethingChanged = true;
-                setState(() {});
-              },
-            ),
-          ));
+        margin: EdgeInsets.all(10),
+        elevation: 5,
+        color: SmashColors.mainBackground,
+        child: IconButton(
+          icon: Icon(NOTES_ICONDATA[name]),
+          color: color,
+          onPressed: () {
+            _marker = name;
+            _somethingChanged = true;
+            setState(() {});
+          },
+        ),
+      ));
       _iconButtons.add(but);
     });
 
@@ -564,7 +567,9 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 
             var db = await gpProjectModel.getDatabase();
             await db.updateNote(_note);
-            widget._reloadFunction();
+            if (widget._reloadFunction() != null) {
+              widget._reloadFunction();
+            }
           }
           return true;
         },
@@ -794,7 +799,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
         padding: const EdgeInsets.all(4.0),
         child: GestureDetector(
           child: Text(
-            item.text,
+            item.description,
             style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE,
           ),
           onDoubleTap: () async {

@@ -18,8 +18,6 @@ class AddNotePage extends StatefulWidget {
 }
 
 class AddNotePageState extends State<AddNotePage> {
-  final KEYNOTEDOGPS = 'KEY_NOTE_DOGPS';
-
   @override
   void initState() {
     super.initState();
@@ -34,7 +32,7 @@ class AddNotePageState extends State<AddNotePage> {
           IconButton(
             onPressed: () async {
               bool doInGps =
-                  await GpPreferences().getBoolean(KEYNOTEDOGPS, false);
+                  await GpPreferences().getBoolean(KEY_NOTEDOGPS, false);
               int ts = DateTime.now().millisecondsSinceEpoch;
               Position pos;
               double lon;

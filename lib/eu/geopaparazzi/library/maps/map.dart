@@ -227,7 +227,43 @@ class GeopaparazziMapWidgetState extends State<GeopaparazziMapWidget>
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                bool doInGps =
+                    await GpPreferences().getBoolean(KEY_NOTEDOGPS, true);
+                int ts = DateTime.now().millisecondsSinceEpoch;
+                Position pos;
+                double lon;
+                double lat;
+                if (doInGps) {
+                  pos = GpsHandler().lastPosition;
+                } else {
+                  lon = gpProjectModel.lastCenterLon;
+                  lat = gpProjectModel.lastCenterLat;
+                }
+                Note note = Note()
+                  ..text = "double tap to change"
+                  ..description = "double tap to change"
+                  ..timeStamp = ts
+                  ..lon = pos != null ? pos.longitude : lon
+                  ..lat = pos != null ? pos.latitude : lat
+                  ..altim = pos != null ? pos.altitude : -1;
+                if (pos != null) {
+                  NoteExt next = NoteExt()
+                    ..speedaccuracy = pos.speedAccuracy
+                    ..speed = pos.speed
+                    ..heading = pos.heading
+                    ..accuracy = pos.accuracy;
+                  note.noteExt = next;
+                }
+                var db = await gpProjectModel.getDatabase();
+                await db.addNote(note);
+
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            NotePropertiesWidget(reloadProject, note)));
+              },
               tooltip: 'Add note',
               icon: Icon(
                 Icons.note_add,

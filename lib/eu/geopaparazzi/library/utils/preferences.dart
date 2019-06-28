@@ -11,6 +11,7 @@ final KEY_LAST_LON = "lastgpap_lon";
 final KEY_LAST_ZOOM = "lastgpap_zoom";
 final KEY_LAST_MAPSFORGEPATH = "lastmapsforge_path";
 final KEY_CENTER_ON_GPS = "center_on_gps";
+final KEY_NOTEDOGPS = 'KEY_NOTE_DOGPS';
 
 /// Geopaparazzi Preferences singleton.
 class GpPreferences {

@@ -249,8 +249,20 @@ class GeopaparazziProjectDb extends SqliteDb {
  * @param note the note to insert.
  * @return the inserted note id.
  */
-  Future<int> addNote(Note note) {
-    var noteId = insertMap(TABLE_NOTES, note.toMap());
+  Future<int> addNote(Note note) async {
+    var noteId = await insertMap(TABLE_NOTES, note.toMap());
+    note.id = noteId;
+    if (note.noteExt == null) {
+      NoteExt noteExt = NoteExt();
+      noteExt.noteId = note.id;
+      int noteExtId = await addNoteExt(noteExt);
+      noteExt.id = noteExtId;
+      note.noteExt = noteExt;
+    } else {
+      note.noteExt.noteId = noteId;
+      int extid = await addNoteExt(note.noteExt);
+      note.noteExt.id = extid;
+    }
     return noteId;
   }
 

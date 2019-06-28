@@ -139,7 +139,7 @@ class NoteExt {
   String marker = 'marker';
   double size = 36;
   double rotation = 0;
-  String color = "#FF000000";
+  String color = "#FFf44336";
   double accuracy;
   double heading;
   double speed;
