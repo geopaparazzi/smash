@@ -46,11 +46,13 @@ class _DashboardWidgetState extends State<DashboardWidget>
     List<PermissionGroup> mandatory = [];
     PermissionStatus permission = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.storage);
+    GpLogger().d("Storage permission is granted: $permission");
     if (permission != PermissionStatus.granted) {
       mandatory.add(PermissionGroup.storage);
     }
     permission = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.location);
+    GpLogger().d("Location permission is granted: $permission");
     if (permission != PermissionStatus.granted) {
       mandatory.add(PermissionGroup.location);
     }
@@ -59,17 +61,21 @@ class _DashboardWidgetState extends State<DashboardWidget>
       Map<PermissionGroup, PermissionStatus> permissionsMap =
           await PermissionHandler().requestPermissions(mandatory);
       if (permissionsMap[PermissionGroup.storage] != PermissionStatus.granted) {
+        GpLogger().d("Unable to grant storage permission");
         return false;
       }
       if (permissionsMap[PermissionGroup.location] !=
           PermissionStatus.granted) {
+        GpLogger().d("Unable to grant location permission");
         return false;
       } else {
         GpsHandler().addPositionListener(this);
       }
     }
 
+    GpLogger().d("Initialize logger with db...");
     await GpLogger().init(); // init logger
+    GpLogger().d("...db logger initialized.");
 
     var database = await gpProjectModel.getDatabase();
     if (database != null) {

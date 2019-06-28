@@ -140,30 +140,58 @@ class GpLogger {
   }
 
   v(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) _logger.v(message, error, stackTrace);
+    if (_logger != null) {
+      _logger.v(message, error, stackTrace);
+    } else {
+      print("PRELOGGER v: ${message.toString()}");
+    }
   }
 
   d(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) _logger.d(message, error, stackTrace);
+    if (_logger != null) {
+      _logger.d(message, error, stackTrace);
+    } else {
+      print("PRELOGGER d: ${message.toString()}");
+    }
   }
 
   i(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) _logger.i(message, error, stackTrace);
+    if (_logger != null) {
+      _logger.i(message, error, stackTrace);
+    } else {
+      print("PRELOGGER i: ${message.toString()}");
+    }
   }
 
   w(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) _logger.w(message, error, stackTrace);
+    if (_logger != null) {
+      _logger.w(message, error, stackTrace);
+    } else {
+      print("PRELOGGER w: ${message.toString()}");
+    }
   }
 
   e(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) _logger.e(message, error, stackTrace);
+    if (_logger != null) {
+      _logger.e(message, error, stackTrace);
+    } else {
+      print("PRELOGGER e: ${message.toString()}");
+    }
   }
 
   err(dynamic message, StackTrace stackTrace) {
-    if (_logger != null) _logger.e(message, "ERROR", stackTrace);
+    if (_logger != null) {
+      _logger.e(message, "ERROR", stackTrace);
+    } else {
+      print("PRELOGGER err: ${message.toString()}");
+    }
   }
 
   wtf(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) _logger.wtf(message, error, stackTrace);
+    if (_logger != null) {
+      _logger.wtf(message, error, stackTrace);
+    } else {
+      print("PRELOGGER wtf: ${message.toString()}");
+    }
   }
 }
