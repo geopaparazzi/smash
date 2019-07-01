@@ -87,8 +87,8 @@ class SqliteDb {
   }
 
   Future<T> transaction<T>(Future<T> action(Transaction txn),
-      {bool exclusive}) {
-    return _db.transaction(action, exclusive: exclusive);
+      {bool exclusive}) async {
+    return await _db.transaction(action, exclusive: exclusive);
   }
 
   Future<List<String>> getTables(bool doOrder) async {
@@ -332,6 +332,27 @@ class GeopaparazziProjectDb extends SqliteDb {
     logPoint.logid = logId;
     int insertedId = await insertMap(TABLE_GPSLOG_DATA, logPoint.toMap());
     return insertedId;
+  }
+
+  /**
+   * Delete a gps log by its id.
+   *
+   * @param id the log's id.
+   * @throws IOException
+   */
+  Future<bool> deleteGpslog(int logId) async {
+    await transaction((tx) {
+      // delete log
+      String sql = "delete from $TABLE_GPSLOGS where $LOGS_COLUMN_ID = $logId";
+      tx.execute(sql);
+      sql =
+          "delete from $TABLE_GPSLOG_PROPERTIES where $LOGSPROP_COLUMN_LOGID = $logId";
+      tx.execute(sql);
+      sql =
+          "delete from $TABLE_GPSLOG_DATA where $LOGSDATA_COLUMN_LOGID = $logId";
+      tx.execute(sql);
+    });
+    return true;
   }
 
   /// Updates the end timestamp [endTs] of a log of id [logId].

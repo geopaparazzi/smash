@@ -28,12 +28,8 @@ class GPProjectModel extends StateUpdater {
   String get projectPath => _projectPath;
 
   void setNewProject(state, String path) {
-    rebuildWidgets(
-        setStates: () {
-          close();
-          _projectPath = path;
-        },
-        states: [state]);
+    close();
+    _projectPath = path;
   }
 
   Future<GeopaparazziProjectDb> getDatabase() async {

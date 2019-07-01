@@ -6,8 +6,8 @@
 import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 
-double SIMPLE_DIALOGS_HEIGHT = 150;
-double SIMPLE_DIALOGS_ICONSIZE = 80;
+const double SIMPLE_DIALOGS_HEIGHT = 150;
+const double SIMPLE_DIALOGS_ICONSIZE = 80;
 
 /// Confirm dialog using custom [title] and [prompt].
 ///
@@ -127,18 +127,19 @@ void showErrorDialog(BuildContext context, String prompt,
 }
 
 /// Show an info dialog, adding an optional [title] and a [prompt] for the user.
-void showInfoDialog(BuildContext context, String prompt,
-    {String title: "Info"}) async {
+void showInfoDialog(BuildContext context, String prompt, {String title, double dialogHeight: SIMPLE_DIALOGS_HEIGHT}) async {
   await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
-            title,
-            textAlign: TextAlign.center,
-          ),
+          title: title == null
+              ? null
+              : Text(
+                  title,
+                  textAlign: TextAlign.center,
+                ),
           content: Container(
-            height: SIMPLE_DIALOGS_HEIGHT,
+            height: dialogHeight,
             child: Column(
               children: <Widget>[
                 Padding(

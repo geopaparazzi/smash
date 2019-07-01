@@ -8,21 +8,29 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/map.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforgetest/showmap.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/files.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/share.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/smash/widgets/notes_ui.dart';
+import 'package:latlong/latlong.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:screen/screen.dart';
+import 'package:badges/badges.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -33,16 +41,105 @@ class DashboardWidget extends StatefulWidget {
 
 class _DashboardWidgetState extends State<DashboardWidget>
     implements PositionListener {
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  ValueNotifier<bool> _keepGpsOnScreenNotifier = new ValueNotifier(false);
+  ValueNotifier<LatLng> _mapCenterValueNotifier =
+      new ValueNotifier(LatLng(0, 0));
+
+  List<Marker> _geopapMarkers;
+  PolylineLayerOptions _geopapLogs;
+  Polyline _currentGeopapLog =
+      Polyline(points: [], strokeWidth: 3, color: ColorExt("red"));
+  TileLayerOptions _osmLayer;
+  Position _lastPosition;
+
+  double _initLon;
+  double _initLat;
+  double _initZoom;
+
+  MapController _mapController;
+
+  TileLayerOptions _mapsforgeLayer;
+
   Size _media;
 
   String _projectName = "No project loaded";
+  String _projectDirName = null;
   int _notesCount = 0;
+  int _logsCount = 0;
 
   ValueNotifier<GpsStatus> _gpsStatusValueNotifier =
       new ValueNotifier(GpsStatus.OFF);
   ValueNotifier<bool> _gpsLoggingValueNotifier = new ValueNotifier(false);
 
-  Future<bool> _loadDashboardData(BuildContext context) async {
+  @override
+  void initState() {
+    Screen.keepOn(true);
+
+    _initLon = gpProjectModel.lastCenterLon;
+    _initLat = gpProjectModel.lastCenterLat;
+    _initZoom = gpProjectModel.lastCenterZoom;
+
+    _mapController = MapController();
+    _osmLayer = new TileLayerOptions(
+      urlTemplate: "https://{s}.tile.openstreetmap.org/"
+          "{z}/{x}/{y}.png",
+      backgroundColor: SmashColors.mainBackground,
+      maxZoom: 19,
+      subdomains: ['a', 'b', 'c'],
+    );
+
+    _mapCenterValueNotifier.addListener(() {
+      _mapController.move(_mapCenterValueNotifier.value, _mapController.zoom);
+    });
+
+    _checkPermissions().then((allRight) async {
+      if (allRight) {
+        bool init = await GpLogger().init(); // init logger
+        if (init) GpLogger().d("Db logger initialized.");
+
+        // start gps listening
+        GpsHandler().addPositionListener(this);
+
+        // check center on gps
+        bool centerOnGps = await GpPreferences().getCenterOnGps();
+        _keepGpsOnScreenNotifier.value = centerOnGps;
+
+        // set initial status
+        bool gpsIsOn = await GpsHandler().isGpsOn();
+        if (gpsIsOn != null) {
+          if (gpsIsOn) {
+            _gpsStatusValueNotifier.value = GpsStatus.ON_NO_FIX;
+          }
+        }
+
+        // load mapsforge maps
+        var mapsforgePath =
+            await GpPreferences().getString(KEY_LAST_MAPSFORGEPATH);
+        if (mapsforgePath != null) {
+          File mapsforgeFile = new File(mapsforgePath);
+          if (mapsforgeFile.existsSync()) {
+            _mapsforgeLayer = await loadMapsforgeLayer(mapsforgeFile);
+          }
+        }
+
+        await loadCurrentProject();
+        setState(() {});
+      }
+    });
+
+    super.initState();
+  }
+
+  _showSnackbar(snackbar) {
+    _scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  _hideSnackbar() {
+    _scaffoldKey.currentState.hideCurrentSnackBar();
+  }
+
+  Future<bool> _checkPermissions() async {
     List<PermissionGroup> mandatory = [];
     PermissionStatus permission = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.storage);
@@ -70,29 +167,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
         return false;
       }
     }
-
-    GpsHandler().addPositionListener(this);
-
-    bool init = await GpLogger().init(); // init logger
-    if (init) GpLogger().d("Db logger initialized.");
-
-    var database = await gpProjectModel.getDatabase();
-    if (database != null) {
-      _projectName = basename(database.path);
-      _projectName = _projectName.substring(0, _projectName.length - 5);
-
-      _notesCount = await database.getNotesCount(false);
-    } else {
-      _notesCount = 0;
-    }
-
-    bool gpsIsOn = await GpsHandler().isGpsOn();
-    if (gpsIsOn != null) {
-      if (gpsIsOn) {
-        _gpsStatusValueNotifier.value = GpsStatus.ON_NO_FIX;
-      }
-    }
-
     return true;
   }
 
@@ -100,83 +174,247 @@ class _DashboardWidgetState extends State<DashboardWidget>
   Widget build(BuildContext context) {
     _media = MediaQuery.of(context).size;
 
+    var layers = <LayerOptions>[];
+    if (_mapsforgeLayer != null) {
+      layers.add(_mapsforgeLayer);
+    }
+
+    if (_geopapLogs != null) layers.add(_geopapLogs);
+    if (_geopapMarkers != null && _geopapMarkers.length > 0) {
+      var markerCluster = MarkerClusterLayerOptions(
+        maxClusterRadius: 80,
+        height: 40,
+        width: 40,
+        fitBoundsOptions: FitBoundsOptions(
+          padding: EdgeInsets.all(50),
+        ),
+        markers: _geopapMarkers,
+        polygonOptions: PolygonOptions(
+            borderColor: SmashColors.mainDecorationsDark,
+            color: SmashColors.mainDecorations.withOpacity(0.2),
+            borderStrokeWidth: 3),
+        builder: (context, markers) {
+          return FloatingActionButton(
+            child: Text(markers.length.toString()),
+            onPressed: null,
+            backgroundColor: SmashColors.mainDecorationsDark,
+            foregroundColor: SmashColors.mainBackground,
+            heroTag: null,
+          );
+        },
+      );
+      layers.add(markerCluster);
+    }
+
+    if (GpsHandler().currentLogPoints.length > 0) {
+      _currentGeopapLog.points.clear();
+      _currentGeopapLog.points.addAll(GpsHandler().currentLogPoints);
+      layers.add(PolylineLayerOptions(
+        polylines: [_currentGeopapLog],
+      ));
+    }
+
+    if (_lastPosition != null) {
+      layers.add(
+        MarkerLayerOptions(
+          markers: [
+            Marker(
+              width: 80.0,
+              height: 80.0,
+              anchorPos: AnchorPos.align(AnchorAlign.center),
+              point:
+                  new LatLng(_lastPosition.latitude, _lastPosition.longitude),
+              builder: (ctx) => new Container(
+                    child: Icon(
+                      Icons.my_location,
+                      size: 32,
+                      color: Colors.black,
+                    ),
+                  ),
+            )
+          ],
+        ),
+      );
+    }
+
     var bar = new AppBar(
       title: Padding(
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
         child: Image.asset("assets/smash_text.png", fit: BoxFit.cover),
       ),
-      //new Text(GpConstants.APP_NAME),
       actions: <Widget>[
-        AppBarGpsInfo(_gpsStatusValueNotifier),
+        IconButton(
+            icon: Icon(Icons.info_outline),
+            onPressed: () {
+              String gpsInfo = "";
+              if (_lastPosition != null) {
+                gpsInfo = '''
+Last position:
+  Latitude: ${_lastPosition.latitude}
+  Longitude: ${_lastPosition.longitude}
+  Altitude: ${_lastPosition.altitude.round()} m
+  Accuracy: ${_lastPosition.accuracy.round()} m
+  Heading: ${_lastPosition.heading}
+  Speed: ${_lastPosition.speed} m/s
+  Timestamp: ${GpConstants.ISO8601_TS_FORMATTER.format(_lastPosition.timestamp)}''';
+              }
+              showInfoDialog(
+                  context,
+                  '''Project: $_projectName
+${_projectDirName != null ? "Folder: $_projectDirName\n" : ""}
+$gpsInfo
+'''
+                      .trim(),
+                  dialogHeight: _media.height / 2);
+            })
       ],
     );
     return WillPopScope(
         // check when the app is left
         child: new Scaffold(
+          key: _scaffoldKey,
           appBar: bar,
           backgroundColor: SmashColors.mainBackground,
-          body: FutureBuilder<bool>(
-            future: _loadDashboardData(context),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.data == true) {
-                  double w = _media.width;
-                  double h = _media.height;
-                  int rows = 3;
-                  int cols = 2;
-                  double ratio = rows / cols;
-                  var potraitRatio =
-                      (w / (h - bar.preferredSize.height * ratio)) * ratio;
-                  var lanscapeRatio =
-                      ((h + bar.preferredSize.height / ratio) / w) * ratio;
-
-                  // If the Future is complete and ended well, display the dashboard
-                  return OrientationBuilder(builder: (context, orientation) {
-                    return GridView.count(
-                      crossAxisCount:
-                          orientation == Orientation.portrait ? cols : rows,
-                      childAspectRatio: orientation == Orientation.portrait
-                          ? potraitRatio
-                          : lanscapeRatio,
-                      padding: EdgeInsets.all(5),
-                      mainAxisSpacing: 2,
-                      crossAxisSpacing: 2,
-                      children: getTiles(
-                          context, orientation == Orientation.portrait),
-                    );
-                  });
-                } else {
-                  return Center(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Container(
-                          color: Colors.red,
-                          child: Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Text(
-                              "Storage and location permission are necessary to work!",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ))
-                    ],
-                  ));
-                }
-              } else {
-                // Otherwise, display a loading indicator.
-                return Center(child: CircularProgressIndicator());
-              }
-            },
+          body: FlutterMap(
+            options: new MapOptions(
+              center: new LatLng(_initLat, _initLon),
+              zoom: _initZoom,
+              plugins: [
+                MarkerClusterPlugin(),
+              ],
+            ),
+            layers: layers,
+            mapController: _mapController,
           ),
           drawer: Drawer(
               child: ListView(
-            children: getDrawerWidgets(context),
+            children: _getDrawerWidgets(context),
           )),
+          endDrawer: Drawer(
+              child: ListView(
+            children: getEndDrawerWidgets(context),
+          )),
+          bottomNavigationBar: BottomAppBar(
+            color: SmashColors.mainDecorations,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                makeToolbarBadge(
+                    IconButton(
+                      onPressed: () async {
+                        bool doInGps = await GpPreferences()
+                            .getBoolean(KEY_NOTEDOGPS, true);
+                        int ts = DateTime.now().millisecondsSinceEpoch;
+                        Position pos;
+                        double lon;
+                        double lat;
+                        if (doInGps) {
+                          pos = GpsHandler().lastPosition;
+                        } else {
+                          lon = gpProjectModel.lastCenterLon;
+                          lat = gpProjectModel.lastCenterLat;
+                        }
+                        Note note = Note()
+                          ..text = "double tap to change"
+                          ..description = "double tap to change"
+                          ..timeStamp = ts
+                          ..lon = pos != null ? pos.longitude : lon
+                          ..lat = pos != null ? pos.latitude : lat
+                          ..altim = pos != null ? pos.altitude : -1;
+                        if (pos != null) {
+                          NoteExt next = NoteExt()
+                            ..speedaccuracy = pos.speedAccuracy
+                            ..speed = pos.speed
+                            ..heading = pos.heading
+                            ..accuracy = pos.accuracy;
+                          note.noteExt = next;
+                        }
+                        var db = await gpProjectModel.getDatabase();
+                        await db.addNote(note);
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    NotePropertiesWidget(reloadProject, note)));
+                      },
+                      tooltip: 'Notes',
+                      icon: Icon(
+                        Icons.note,
+                        color: SmashColors.mainBackground,
+                      ),
+                    ),
+                    _notesCount),
+                makeToolbarBadge(
+                    LoggingButton(
+                        _gpsStatusValueNotifier, reloadProject, moveTo),
+
+//                    IconButton(
+//                      onPressed: () {
+//                        Navigator.push(
+//                            context,
+//                            MaterialPageRoute(
+//                                builder: (context) =>
+//                                    LogListWidget(reloadProject, moveTo)));
+//                      },
+//                      tooltip: 'Logs',
+//                      icon: Icon(
+//                        Icons.timeline,
+//                        color: SmashColors.mainBackground,
+//                      ),
+//                    )
+//                    ,
+                    _logsCount),
+                Spacer(),
+                GpsInfoButton(_gpsStatusValueNotifier),
+                Spacer(),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_lastPosition != null)
+                        _mapController.move(
+                            LatLng(_lastPosition.latitude,
+                                _lastPosition.longitude),
+                            _mapController.zoom);
+                    });
+                  },
+                  tooltip: 'Center on GPS',
+                  icon: Icon(
+                    Icons.center_focus_strong,
+                    color: SmashColors.mainBackground,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      var zoom = _mapController.zoom + 1;
+                      if (zoom > 19) zoom = 19;
+                      _mapController.move(_mapController.center, zoom);
+                    });
+                  },
+                  tooltip: 'Zoom in',
+                  icon: Icon(
+                    Icons.zoom_in,
+                    color: SmashColors.mainBackground,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      var zoom = _mapController.zoom - 1;
+                      if (zoom < 0) zoom = 0;
+                      _mapController.move(_mapController.center, zoom);
+                    });
+                  },
+                  tooltip: 'Zoom out',
+                  icon: Icon(
+                    Icons.zoom_out,
+                    color: SmashColors.mainBackground,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
         onWillPop: () async {
           bool doExit = await showConfirmDialog(
@@ -190,8 +428,122 @@ class _DashboardWidgetState extends State<DashboardWidget>
         });
   }
 
+  Widget makeToolbarBadge(Widget widget, int badgeValue) {
+    if (badgeValue > 0) {
+      return Badge(
+        badgeColor: SmashColors.mainSelection,
+        shape: BadgeShape.circle,
+        toAnimate: false,
+        badgeContent: Text(
+          '$badgeValue',
+          style: TextStyle(color: Colors.white),
+        ),
+        child: widget,
+      );
+    } else {
+      return widget;
+    }
+  }
+
+  getEndDrawerWidgets(BuildContext context) {
+    var c = SmashColors.mainDecorations;
+    var textStyle = GpConstants.MEDIUM_DIALOG_TEXT_STYLE;
+    var iconSize = GpConstants.MEDIUM_DIALOG_ICON_SIZE;
+    return [
+      new Container(
+        margin: EdgeInsets.only(bottom: 20),
+        child: new DrawerHeader(child: Image.asset("assets/maptools_icon.png")),
+        color: SmashColors.mainBackground,
+      ),
+      new Container(
+        child: new Column(children: [
+          ListTile(
+            leading: new Icon(
+              Icons.navigation,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Go to",
+              style: textStyle,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          GeocodingPage(_mapCenterValueNotifier)));
+            },
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.share,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Share position",
+              style: textStyle,
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.layers,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Layers",
+              style: textStyle,
+            ),
+            onTap: () => _openLayers(context),
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.center_focus_weak,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "GPS on screen",
+              style: textStyle,
+            ),
+            trailing: Checkbox(
+                value: _keepGpsOnScreenNotifier.value,
+                onChanged: (value) {
+                  _keepGpsOnScreenNotifier.value = value;
+                  GpPreferences().setBoolean(KEY_CENTER_ON_GPS, value);
+//                  Navigator.of(context).pop();
+                }),
+            onTap: () => _openLayers(context),
+          ),
+        ]),
+      ),
+    ];
+  }
+
+  _openLayers(BuildContext context) async {
+    File file =
+        await FilePicker.getFile(type: FileType.ANY, fileExtension: 'map');
+    if (file != null) {
+      if (file.path.endsWith(".map")) {
+//                GeopaparazziMapLoader loader =
+//                    new GeopaparazziMapLoader(file, this);
+//                loader.loadNotes();
+        _mapsforgeLayer = await loadMapsforgeLayer(file);
+        await GpPreferences().setString(KEY_LAST_MAPSFORGEPATH, file.path);
+        setState(() {});
+      } else {
+        showWarningDialog(context, "File format not supported.");
+      }
+    }
+  }
+
   @override
   void dispose() {
+    updateCenterPosition();
     GpsHandler().removePositionListener(this);
     if (gpProjectModel != null) {
       _savePosition().then((v) {
@@ -204,62 +556,25 @@ class _DashboardWidgetState extends State<DashboardWidget>
     }
   }
 
+  void updateCenterPosition() {
+    // save last position
+    gpProjectModel.lastCenterLon = _mapController.center.longitude;
+    gpProjectModel.lastCenterLat = _mapController.center.latitude;
+    gpProjectModel.lastCenterZoom = _mapController.zoom;
+  }
+
+  Future<void> reloadProject() async {
+    await loadCurrentProject();
+    setState(() {});
+  }
+
+  Future<void> moveTo(LatLng position) async {
+    _mapController.move(position, _mapController.zoom);
+  }
+
   Future<void> _savePosition() async {
     await GpPreferences().setLastPosition(gpProjectModel.lastCenterLon,
         gpProjectModel.lastCenterLat, gpProjectModel.lastCenterZoom);
-  }
-
-  List<Widget> getTiles(BuildContext context, bool isPortrait) {
-    var headerColor = Color.fromRGBO(256, 256, 256, 0);
-    var iconSize = isPortrait ? _media.width / 4 : _media.height / 4;
-
-    var headerNotes = "Notes";
-    var iconNotes = Icons.note_add;
-
-    var headerMetadata = _projectName;
-    var infoMetadata = "";
-    var iconMetadata = Icons.developer_board;
-
-    var headerMaps = "Maps";
-    var infoMaps = "";
-    var iconMaps = Icons.map;
-
-    var headerImport = "Import";
-    var infoImport = "";
-    var iconImport = Icons.file_download;
-
-    var headerExport = "Export";
-    var infoExport = "";
-    var iconExport = Icons.file_upload;
-
-    return [
-      getSingleTile(
-          context,
-          headerNotes,
-          headerColor,
-          _notesCount == 0 ? "" : "${_notesCount}",
-          iconNotes,
-          iconSize,
-          _openAddNoteFunction),
-      getSingleTile(context, headerMetadata, headerColor, infoMetadata,
-          iconMetadata, iconSize, _openMapsforgeFunction),
-      DashboardLogButton(_gpsLoggingValueNotifier, _gpsStatusValueNotifier),
-      getSingleTile(context, headerMaps, headerColor, infoMaps, iconMaps,
-          iconSize, _openMapFunction),
-      getSingleTile(context, headerImport, headerColor, infoImport, iconImport,
-          iconSize, null),
-      getSingleTile(context, headerExport, headerColor, infoExport, iconExport,
-          iconSize, null),
-    ];
-  }
-
-  _openMapFunction(context) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => GeopaparazziMapWidget()));
-  }
-
-  _openMapsforgeFunction(context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Showmap()));
   }
 
   _openAddNoteFunction(context) {
@@ -271,37 +586,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
     }
   }
 
-  GridTile getSingleTile(BuildContext context, String header, Color color,
-      String info, IconData icon, double iconSize, Function function) {
-    return GridTile(
-        header: GridTileBar(
-          title: Text(header, style: TextStyle(fontWeight: FontWeight.bold)),
-          backgroundColor: color,
-        ),
-        footer: GridTileBar(
-            title: Text(info,
-                textAlign: TextAlign.left,
-                style: TextStyle(fontWeight: FontWeight.bold))),
-        child: Card(
-          margin: EdgeInsets.all(10),
-          elevation: 5,
-          color: SmashColors.mainDecorations,
-          child: IconButton(
-            icon: Icon(
-              icon,
-              color: SmashColors.mainBackground,
-            ),
-            iconSize: iconSize,
-            onPressed: () {
-              function(context);
-            },
-            color: SmashColors.mainBackground,
-            highlightColor: SmashColors.mainSelection,
-          ),
-        ));
-  }
-
-  getDrawerWidgets(BuildContext context) {
+  _getDrawerWidgets(BuildContext context) {
 //    final String assetName = 'assets/geopaparazzi_launcher_icon.svg';
     double iconSize = 48;
     double textSize = iconSize / 2;
@@ -337,6 +622,30 @@ class _DashboardWidgetState extends State<DashboardWidget>
               style: TextStyle(fontSize: textSize, color: c),
             ),
             onTap: () => _openProject(context),
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.file_download,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Import",
+              style: TextStyle(fontSize: textSize, color: c),
+            ),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.file_upload,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Export",
+              style: TextStyle(fontSize: textSize, color: c),
+            ),
+            onTap: () {},
           ),
           ListTile(
             leading: new Icon(
@@ -382,6 +691,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
         await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
     if (file != null && file.existsSync()) {
       gpProjectModel.setNewProject(this, file.path);
+      reloadProject();
     }
     Navigator.of(context).pop();
   }
@@ -413,31 +723,226 @@ class _DashboardWidgetState extends State<DashboardWidget>
   }
 
   @override
-  void onPositionUpdate(Position position) {}
+  void onPositionUpdate(Position position) {
+    if (_keepGpsOnScreenNotifier.value &&
+        !_mapController.bounds
+            .contains(LatLng(position.latitude, position.longitude))) {
+      _mapController.move(
+          LatLng(position.latitude, position.longitude), _mapController.zoom);
+    }
+    setState(() {
+      _lastPosition = position;
+    });
+  }
 
   @override
   void setStatus(GpsStatus currentStatus) {
     _gpsStatusValueNotifier.value = currentStatus;
   }
+
+  loadCurrentProject() async {
+    var db = await gpProjectModel.getDatabase();
+    if (db == null) return;
+    _projectName = basenameWithoutExtension(db.path);
+    _projectDirName = dirname(db.path);
+    _notesCount = await db.getNotesCount(false);
+    _logsCount = await db.getGpsLogCount(false);
+
+    List<Marker> tmp = [];
+    // IMAGES
+//    List<Map<String, dynamic>> resImages =
+//        await db.query("images", columns: ['lat', 'lon']);
+//    resImages.forEach((map) {
+//      var lat = map["lat"];
+//      var lon = map["lon"];
+//      tmp.add(Marker(
+//        width: 80.0,
+//        height: 80.0,
+//        point: new LatLng(lat, lon),
+//        builder: (ctx) => new Container(
+//              child: Icon(
+//                Icons.image,
+//                size: 32,
+//                color: Colors.blue,
+//              ),
+//            ),
+//      ));
+//    });
+
+    // NOTES
+    List<Note> notesList = await db.getNotes(false);
+    notesList.forEach((note) {
+      var label =
+          "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim}\nts: ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
+      NoteExt noteExt = note.noteExt;
+      tmp.add(Marker(
+        width: 80,
+        height: 80,
+        point: new LatLng(note.lat, note.lon),
+        builder: (ctx) => new Container(
+                child: GestureDetector(
+              onTap: () {
+                _showSnackbar(SnackBar(
+                  backgroundColor: SmashColors.snackBarColor,
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            label,
+                            style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(
+                                Icons.share,
+                                color: SmashColors.mainSelection,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () {
+                                shareText(label);
+                                _hideSnackbar();
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.edit,
+                                color: SmashColors.mainSelection,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () {
+                                Navigator.push(
+                                    ctx,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            NotePropertiesWidget(
+                                                reloadProject, note)));
+                                _hideSnackbar();
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: SmashColors.mainDanger,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () async {
+                                var doRemove = await showConfirmDialog(
+                                    ctx,
+                                    "Remove Note",
+                                    "Are you sure you want to remove note ${note.id}?");
+                                if (doRemove) {
+                                  var db = await gpProjectModel.getDatabase();
+                                  db.deleteNote(note.id);
+                                  reloadProject();
+                                }
+                                _hideSnackbar();
+                              },
+                            ),
+                            Spacer(flex: 1),
+                            IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: SmashColors.mainDecorationsDark,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () {
+                                _hideSnackbar();
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  duration: Duration(seconds: 5),
+                ));
+              },
+              child: Icon(
+                NOTES_ICONDATA[noteExt.marker],
+                size: noteExt.size,
+                color: ColorExt(noteExt.color),
+              ),
+            )),
+      ));
+    });
+
+    String logsQuery = '''
+        select l.$LOGS_COLUMN_ID, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH 
+        from $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
+        where l.$LOGS_COLUMN_ID = p.$LOGSPROP_COLUMN_ID and p.$LOGSPROP_COLUMN_VISIBLE=1
+    ''';
+
+    List<Map<String, dynamic>> resLogs = await db.query(logsQuery);
+    Map<int, List> logs = Map();
+    resLogs.forEach((map) {
+      var id = map['_id'];
+      var color = map["color"];
+      var width = map["width"];
+
+      logs[id] = [color, width, <LatLng>[]];
+    });
+
+    addLogLines(tmp, logs, db);
+  }
+
+  void addLogLines(List<Marker> markers, Map<int, List> logs, var db) async {
+    String logDataQuery =
+        "select $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LOGID from $TABLE_GPSLOG_DATA order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS";
+    List<Map<String, dynamic>> resLogs = await db.query(logDataQuery);
+    resLogs.forEach((map) {
+      var logid = map[LOGSDATA_COLUMN_LOGID];
+      var log = logs[logid];
+      if (log != null) {
+        var lat = map[LOGSDATA_COLUMN_LAT];
+        var lon = map[LOGSDATA_COLUMN_LON];
+        var coordsList = log[2];
+        coordsList.add(LatLng(lat, lon));
+      }
+    });
+
+    List<Polyline> lines = [];
+    logs.forEach((key, list) {
+      var color = list[0];
+      var width = list[1];
+      var points = list[2];
+      lines.add(
+          Polyline(points: points, strokeWidth: width, color: ColorExt(color)));
+    });
+
+    _geopapLogs = PolylineLayerOptions(
+      polylines: lines,
+    );
+    _geopapMarkers = markers;
+  }
 }
 
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
-class AppBarGpsInfo extends StatefulWidget {
+class GpsInfoButton extends StatefulWidget {
   final ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
 
-  AppBarGpsInfo(this._gpsStatusValueNotifier);
+  GpsInfoButton(this._gpsStatusValueNotifier);
 
   @override
   State<StatefulWidget> createState() =>
-      AppBarGpsInfoState(_gpsStatusValueNotifier);
+      GpsInfoButtonState(_gpsStatusValueNotifier);
 }
 
-class AppBarGpsInfoState extends State<AppBarGpsInfo> {
+class GpsInfoButtonState extends State<GpsInfoButton> {
   ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
   GpsStatus _gpsStatus;
 
-  AppBarGpsInfoState(this._gpsStatusValueNotifier);
+  GpsInfoButtonState(this._gpsStatusValueNotifier);
 
   @override
   void initState() {
@@ -457,6 +962,91 @@ class AppBarGpsInfoState extends State<AppBarGpsInfo> {
         onPressed: () {
           print("GPS info Pressed...");
         });
+  }
+}
+
+/// Class to hold the state of the GPS info button, updated by the gps state notifier.
+///
+class LoggingButton extends StatefulWidget {
+  final ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
+  Function _reloadFunction;
+  Function _moveToFunction;
+
+  LoggingButton(
+      this._gpsStatusValueNotifier, this._reloadFunction, this._moveToFunction);
+
+  @override
+  State<StatefulWidget> createState() => LoggingButtonState(
+      _gpsStatusValueNotifier, _reloadFunction, _moveToFunction);
+}
+
+class LoggingButtonState extends State<LoggingButton> {
+  ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
+  GpsStatus _gpsStatus;
+  Function _reloadFunction;
+  Function _moveToFunction;
+
+  LoggingButtonState(
+      this._gpsStatusValueNotifier, this._reloadFunction, this._moveToFunction);
+
+  @override
+  void initState() {
+    _gpsStatusValueNotifier.addListener(() {
+      if (this.mounted)
+        setState(() {
+          _gpsStatus = _gpsStatusValueNotifier.value;
+        });
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: IconButton(
+          icon: getLoggingIcon(_gpsStatus),
+          onPressed: () {
+            toggleLoggingFunction(context);
+          }),
+      onLongPress: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    LogListWidget(_reloadFunction, _moveToFunction)));
+      },
+    );
+  }
+
+  toggleLoggingFunction(BuildContext context) async {
+    if (GpsHandler().isLogging) {
+      await GpsHandler().stopLogging();
+      _reloadFunction();
+    } else {
+      if (GpsHandler().hasFix()) {
+        String logName =
+            "log ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.now())}";
+
+        String userString = await showInputDialog(
+          context,
+          "New Log",
+          "Enter a name for the new log",
+          hintText: '',
+          defaultText: logName,
+          validationFunction: noEmptyValidator,
+        );
+
+        if (userString != null) {
+          if (userString.trim().length == 0) userString = logName;
+          int logId = await GpsHandler().startLogging(logName);
+          if (logId == null) {
+            // TODO show error
+          }
+        }
+      } else {
+        showOperationNeedsGps(context);
+      }
+    }
   }
 }
 
@@ -501,144 +1091,33 @@ Icon getGpsStatusIcon(GpsStatus status) {
   );
 }
 
-/// Class to hold the state of the dashboard logging button, updated by the gps logging state notifier.
-///
-class DashboardLogButton extends StatefulWidget {
-  ValueNotifier<bool> _gpsLoggingValueNotifier;
-  ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
-
-  DashboardLogButton(
-      this._gpsLoggingValueNotifier, this._gpsStatusValueNotifier);
-
-  @override
-  State<StatefulWidget> createState() => DashboardLogButtonState(
-      _gpsLoggingValueNotifier, _gpsStatusValueNotifier);
-}
-
-class DashboardLogButtonState extends State<DashboardLogButton> {
-  ValueNotifier<bool> _gpsLoggingValueNotifier;
-  bool _isLogging;
-  ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
-
-  GpsStatus _lastNonLoggingStatus;
-
-  int _logsCount;
-
-  DashboardLogButtonState(
-      this._gpsLoggingValueNotifier, this._gpsStatusValueNotifier);
-
-  @override
-  void initState() {
-    _isLogging = _gpsLoggingValueNotifier.value;
-    _gpsLoggingValueNotifier.addListener(() {
-      if (this.mounted)
-        setState(() {
-          _isLogging = _gpsLoggingValueNotifier.value;
-        });
-    });
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var headerColor = Color.fromRGBO(256, 256, 256, 0);
-
-    var header = "Logs";
-    var icon = _isLogging ? Icons.gps_fixed : Icons.gps_off;
-
-    var _media = MediaQuery.of(context).size;
-
-    return FutureBuilder<void>(
-      future: _checkStats(context),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          // If the Future is complete, display the preview.
-          return OrientationBuilder(builder: (context, orientation) {
-            return GridTile(
-                header: GridTileBar(
-                  title: Text(header,
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  backgroundColor: headerColor,
-                ),
-                footer: GridTileBar(
-                    title: Text(_logsCount == 0 ? "" : "${_logsCount}",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                child: Card(
-                  margin: EdgeInsets.all(10),
-                  elevation: 5,
-                  color: _isLogging
-                      ? SmashColors.gpsLogging
-                      : SmashColors.mainDecorations,
-                  child: IconButton(
-                    icon: Icon(
-                      icon,
-                      color: SmashColors.mainBackground,
-                    ),
-                    iconSize: orientation == Orientation.portrait
-                        ? _media.width / 4
-                        : _media.height / 4,
-                    onPressed: () {
-                      toggleLoggingFunction(context);
-                    },
-                    color: SmashColors.mainBackground,
-                    highlightColor: SmashColors.mainSelection,
-                  ),
-                ));
-          });
-        } else {
-          // Otherwise, display a loading indicator.
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-
-  Future<bool> _checkStats(BuildContext context) async {
-    var database = await gpProjectModel.getDatabase();
-    if (database != null) {
-      _logsCount = await database.getGpsLogCount(false);
-    } else {
-      _logsCount = 0;
-    }
-    return true;
-  }
-
-  toggleLoggingFunction(BuildContext context) {
-    if (GpsHandler().isLogging) {
-      GpsHandler().stopLogging();
-      _gpsStatusValueNotifier.value = _lastNonLoggingStatus;
-      _gpsLoggingValueNotifier.value = false;
-    } else {
-      if (GpsHandler().hasFix()) {
-        String logName =
-            "log ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.now())}";
-
-        showInputDialog(
-          context,
-          "New Log",
-          "Enter a name for the new log",
-          hintText: '',
-          defaultText: logName,
-          validationFunction: noEmptyValidator,
-        ).then((userString) {
-          if (userString != null) {
-            if (userString.trim().length == 0) userString = logName;
-
-            GpsHandler().startLogging(logName).then((logId) {
-              if (logId == null) {
-                // TODO show error
-              } else {
-                _lastNonLoggingStatus = _gpsStatusValueNotifier.value;
-                _gpsStatusValueNotifier.value = GpsStatus.LOGGING;
-                _gpsLoggingValueNotifier.value = true;
-              }
-            });
-          }
-        });
-      } else {
-        showOperationNeedsGps(context);
+Icon getLoggingIcon(GpsStatus status) {
+  Color color;
+  IconData iconData;
+  switch (status) {
+    case GpsStatus.LOGGING:
+      {
+        iconData = Icons.timeline;
+        color = SmashColors.gpsLogging;
+        break;
       }
-    }
+    case GpsStatus.OFF:
+    case GpsStatus.ON_WITH_FIX:
+    case GpsStatus.ON_NO_FIX:
+    case GpsStatus.NOPERMISSION:
+      {
+        iconData = Icons.timeline;
+        color = SmashColors.mainBackground;
+        break;
+      }
+    default:
+      {
+        iconData = Icons.timeline;
+        color = SmashColors.mainBackground;
+      }
   }
+  return Icon(
+    iconData,
+    color: color,
+  );
 }

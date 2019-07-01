@@ -23,6 +23,7 @@ import 'package:mapsforge_flutter/src/graphics/tilebitmap.dart';
 import 'package:mapsforge_flutter/src/implementation/graphics/fluttertilebitmap.dart';
 import 'package:mapsforge_flutter/src/model/tile.dart';
 import 'package:mapsforge_flutter/src/renderer/rendererjob.dart';
+import 'package:http/http.dart' as http;
 
 Future<TileLayerOptions> loadMapsforgeLayer(File file) async {
   double tileSize = 256;
@@ -143,15 +144,23 @@ class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
       resultTile =
           await key._dataStoreRenderer.executeJob(key._mapGeneratorJob);
 
+      // todo make this way better
+      Uint8List bytes;
       if (resultTile == null) {
-        // TODO create an empty bitmap
-        return Future<Codec>.error('Failed to load tile for coords: $_tile');
-      }
-      _bitmapCache.addTileBitmap(_tile, resultTile);
+        String url =
+            "https://tile.openstreetmap.org/${_tile.zoomLevel}/${_tile.tileX}/${_tile.tileY}.png";
+        var response = await http.get(url);
+        if (response == null) {
+          return Future<Codec>.error('Failed to load tile for coords: $_tile');
+        }
+        bytes = response.bodyBytes;
+      } else {
+        _bitmapCache.addTileBitmap(_tile, resultTile);
 
-      ui.Image img = (resultTile as FlutterTileBitmap).bitmap;
-      var byteData = await img.toByteData(format: ImageByteFormat.png);
-      final Uint8List bytes = byteData.buffer.asUint8List();
+        ui.Image img = (resultTile as FlutterTileBitmap).bitmap;
+        var byteData = await img.toByteData(format: ImageByteFormat.png);
+        bytes = byteData.buffer.asUint8List();
+      }
 
       var codec = await PaintingBinding.instance.instantiateImageCodec(bytes);
       return codec;

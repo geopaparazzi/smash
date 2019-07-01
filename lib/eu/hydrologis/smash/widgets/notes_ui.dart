@@ -12,7 +12,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 
-class AddNotePage extends StatefulWidget {
+class  AddNotePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => AddNotePageState();
 }

@@ -141,8 +141,13 @@ class LogListWidgetState extends State<LogListWidget> {
                     return Dismissible(
                       confirmDismiss: _confirmLogDismiss,
                       direction: DismissDirection.endToStart,
-                      onDismissed: _onDismissed(logItem),
-                      key: ValueKey(logItem.hashCode.toString()),
+                      onDismissed: (direction) {
+                        gpProjectModel.getDatabase().then((db) async {
+                            await db.deleteGpslog(logItem.id);
+                            widget._reloadFunction();
+                        });
+                      },
+                      key: Key("${logItem.id}"),
                       background: Container(
                         alignment: AlignmentDirectional.centerEnd,
                         color: Colors.red,
@@ -221,19 +226,13 @@ class LogListWidgetState extends State<LogListWidget> {
     }
   }
 
-  _onDismissed(Log4ListWidget logItem) {
-    // TODO remove log
-
-    widget._reloadFunction();
-  }
-
   Future<bool> _confirmLogDismiss(DismissDirection direction) async {
     return await showDialog<bool>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Confirm'),
-            content: Text('Are you dure you want to delete the log?'),
+            content: Text('Are you sure you want to delete the log?'),
             actions: <Widget>[
               FlatButton(
                   onPressed: () {

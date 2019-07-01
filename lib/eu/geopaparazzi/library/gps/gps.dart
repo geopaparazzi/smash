@@ -208,20 +208,19 @@ class GpsHandler {
   /// Stop logging to database.
   ///
   /// This also properly closes the recorded log.
-  void stopLogging() {
-    gpProjectModel.getDatabase().then((db) {
-      _isLogging = false;
-      _currentLogPoints.clear();
-      int endTs = DateTime.now().millisecondsSinceEpoch;
-      db.updateGpsLogEndts(_currentLogId, endTs);
+  void stopLogging() async {
+    var db = await gpProjectModel.getDatabase();
+    _isLogging = false;
+    _currentLogPoints.clear();
+    int endTs = DateTime.now().millisecondsSinceEpoch;
+    await db.updateGpsLogEndts(_currentLogId, endTs);
 
-      if (_lastGpsStatusBeforeLogging == null)
-        _lastGpsStatusBeforeLogging = GpsStatus.ON_NO_FIX;
-      _gpsStatus = _lastGpsStatusBeforeLogging;
-      _lastGpsStatusBeforeLogging = null;
-      positionListeners.forEach((PositionListener pl) {
-        pl.setStatus(_gpsStatus);
-      });
+    if (_lastGpsStatusBeforeLogging == null)
+      _lastGpsStatusBeforeLogging = GpsStatus.ON_NO_FIX;
+    _gpsStatus = _lastGpsStatusBeforeLogging;
+    _lastGpsStatusBeforeLogging = null;
+    positionListeners.forEach((PositionListener pl) {
+      pl.setStatus(_gpsStatus);
     });
   }
 
