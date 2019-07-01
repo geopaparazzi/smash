@@ -20,7 +20,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dar
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
-import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/notes_ui.dart';
+import 'package:geopaparazzi_light/eu/hydrologis/smash/widgets/notes_ui.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -68,10 +68,10 @@ class _DashboardWidgetState extends State<DashboardWidget>
           PermissionStatus.granted) {
         GpLogger().d("Unable to grant location permission");
         return false;
-      } else {
-        GpsHandler().addPositionListener(this);
       }
     }
+
+    GpsHandler().addPositionListener(this);
 
     bool init = await GpLogger().init(); // init logger
     if (init) GpLogger().d("Db logger initialized.");
@@ -100,32 +100,44 @@ class _DashboardWidgetState extends State<DashboardWidget>
   Widget build(BuildContext context) {
     _media = MediaQuery.of(context).size;
 
+    var bar = new AppBar(
+      title: Padding(
+        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+        child: Image.asset("assets/smash_text.png", fit: BoxFit.cover),
+      ),
+      //new Text(GpConstants.APP_NAME),
+      actions: <Widget>[
+        AppBarGpsInfo(_gpsStatusValueNotifier),
+      ],
+    );
     return WillPopScope(
         // check when the app is left
         child: new Scaffold(
-          appBar: new AppBar(
-            title: Padding(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: Image.asset("assets/smash_text.png", fit: BoxFit.cover),
-            ),
-            //new Text(GpConstants.APP_NAME),
-            actions: <Widget>[
-              AppBarGpsInfo(_gpsStatusValueNotifier),
-            ],
-          ),
+          appBar: bar,
           backgroundColor: SmashColors.mainBackground,
           body: FutureBuilder<bool>(
             future: _loadDashboardData(context),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 if (snapshot.data == true) {
+                  double w = _media.width;
+                  double h = _media.height;
+                  int rows = 3;
+                  int cols = 2;
+                  double ratio = rows / cols;
+                  var potraitRatio =
+                      (w / (h - bar.preferredSize.height * ratio)) * ratio;
+                  var lanscapeRatio =
+                      ((h + bar.preferredSize.height / ratio) / w) * ratio;
+
                   // If the Future is complete and ended well, display the dashboard
                   return OrientationBuilder(builder: (context, orientation) {
                     return GridView.count(
                       crossAxisCount:
-                          orientation == Orientation.portrait ? 2 : 3,
-                      childAspectRatio:
-                          orientation == Orientation.portrait ? 0.9 : 1.6,
+                          orientation == Orientation.portrait ? cols : rows,
+                      childAspectRatio: orientation == Orientation.portrait
+                          ? potraitRatio
+                          : lanscapeRatio,
                       padding: EdgeInsets.all(5),
                       mainAxisSpacing: 2,
                       crossAxisSpacing: 2,
@@ -161,12 +173,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
               }
             },
           ),
-//      persistentFooterButtons: <Widget>[
-//        Card(
-//            elevation: 5,
-//            color: GeopaparazziColors.mainDecorations,
-//            child: Text(_projectName)),
-//      ],
           drawer: Drawer(
               child: ListView(
             children: getDrawerWidgets(context),
@@ -180,13 +186,13 @@ class _DashboardWidgetState extends State<DashboardWidget>
           if (doExit) {
             dispose();
             return Future.value(true);
-//              Navigator.of(context).pop(true);
           }
         });
   }
 
   @override
   void dispose() {
+    GpsHandler().removePositionListener(this);
     if (gpProjectModel != null) {
       _savePosition().then((v) {
         gpProjectModel.close();

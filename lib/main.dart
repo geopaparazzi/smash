@@ -5,12 +5,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/hydrologis/geopaparazzi/widgets/dashboard.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:geopaparazzi_light/eu/hydrologis/smash/widgets/dashboard.dart';
 
 void main() => runApp(GeopaparazziApp());
 
