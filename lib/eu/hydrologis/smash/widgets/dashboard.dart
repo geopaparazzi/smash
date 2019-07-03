@@ -75,10 +75,15 @@ class _DashboardWidgetState extends State<DashboardWidget>
   void initState() {
     Screen.keepOn(true);
 
-    _initLon = gpProjectModel.lastCenterLon;
-    _initLat = gpProjectModel.lastCenterLat;
-    _initZoom = gpProjectModel.lastCenterZoom;
-
+    if (gpProjectModel != null) {
+      _initLon = gpProjectModel.lastCenterLon;
+      _initLat = gpProjectModel.lastCenterLat;
+      _initZoom = gpProjectModel.lastCenterZoom;
+    } else {
+      _initLon = 0;
+      _initLat = 0;
+      _initZoom = 16;
+    }
     _mapController = MapController();
 
     _mapCenterValueNotifier.addListener(() {
@@ -105,15 +110,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
           }
         }
 
-        var activeLayersInfos = await LayerManager().getActiveLayers();
-        _activeLayers = [];
-        for (int i = 0; i < activeLayersInfos.length; i++) {
-          var tl = await activeLayersInfos[i].toTileLayer();
-          _activeLayers.add(tl);
-        }
-
         await loadCurrentProject();
-        setState(() {});
+        await reloadLayers();
       }
     });
 
@@ -335,23 +333,13 @@ $gpsInfo
                 makeToolbarBadge(
                     LoggingButton(
                         _gpsStatusValueNotifier, reloadProject, moveTo),
-
-//                    IconButton(
-//                      onPressed: () {
-//                        Navigator.push(
-//                            context,
-//                            MaterialPageRoute(
-//                                builder: (context) =>
-//                                    LogListWidget(reloadProject, moveTo)));
-//                      },
-//                      tooltip: 'Logs',
-//                      icon: Icon(
-//                        Icons.timeline,
-//                        color: SmashColors.mainBackground,
-//                      ),
-//                    )
-//                    ,
                     _logsCount),
+                IconButton(
+                  icon: Icon(Icons.layers),
+                  onPressed: () => _openLayers(context),
+                  color: SmashColors.mainBackground,
+                  tooltip: 'Open layers list',
+                ),
                 Spacer(),
                 GpsInfoButton(_gpsStatusValueNotifier),
                 Spacer(),
@@ -477,18 +465,6 @@ $gpsInfo
           ),
           ListTile(
             leading: new Icon(
-              Icons.layers,
-              color: c,
-              size: iconSize,
-            ),
-            title: Text(
-              "Layers",
-              style: textStyle,
-            ),
-            onTap: () => _openLayers(context),
-          ),
-          ListTile(
-            leading: new Icon(
               Icons.center_focus_weak,
               color: c,
               size: iconSize,
@@ -512,20 +488,10 @@ $gpsInfo
   }
 
   _openLayers(BuildContext context) async {
-//    File file =
-//        await FilePicker.getFile(type: FileType.ANY, fileExtension: 'map');
-//    if (file != null) {
-//      if (file.path.endsWith(".map")) {
-////                GeopaparazziMapLoader loader =
-////                    new GeopaparazziMapLoader(file, this);
-////                loader.loadNotes();
-//        _mapsforgeLayer = await loadMapsforgeLayer(file);
-//        await GpPreferences().setString(KEY_LAST_MAPSFORGEPATH, file.path);
-//        setState(() {});
-//      } else {
-//        showWarningDialog(context, "File format not supported.");
-//      }
-//    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => LayersPage(reloadLayers, moveTo)));
   }
 
   @override
@@ -552,6 +518,16 @@ $gpsInfo
 
   Future<void> reloadProject() async {
     await loadCurrentProject();
+    setState(() {});
+  }
+
+  Future<void> reloadLayers() async {
+    var activeLayersInfos = await LayerManager().getActiveLayers();
+    _activeLayers = [];
+    for (int i = 0; i < activeLayersInfos.length; i++) {
+      var tl = await activeLayersInfos[i].toTileLayer();
+      _activeLayers.add(tl);
+    }
     setState(() {});
   }
 

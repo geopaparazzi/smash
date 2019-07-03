@@ -16,6 +16,14 @@ class FileUtils {
     return join(path1, path2);
   }
 
+  static String nameFromFile(String filePath, bool withExtension) {
+    if (withExtension) {
+      return basename(filePath);
+    } else {
+      return basenameWithoutExtension(filePath);
+    }
+  }
+
   /*
    * Get the list of files names from a given [parentPath] and optionally filtered by [ext].
    */
@@ -77,8 +85,8 @@ class FileUtils {
   static Future<Directory> getApplicationConfigurationFolder(
       {appName: GpConstants.APP_NAME}) async {
     var storageInfo = await getDefaultStorageFolder();
-    var configFolderPath =
-        joinPaths(storageInfo.path, appName == null ? GpConstants.APP_NAME : appName);
+    var configFolderPath = joinPaths(
+        storageInfo.path, appName == null ? GpConstants.APP_NAME : appName);
     Directory configFolder = Directory(configFolderPath);
     if (!configFolder.existsSync()) {
       configFolder.createSync();

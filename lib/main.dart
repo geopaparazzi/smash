@@ -22,66 +22,76 @@ class GeopaparazziApp extends StatefulWidget {
 }
 
 class GeopaparazziAppState extends State<GeopaparazziApp> {
-  @override
-  void initState() {
-    super.initState();
-
-    LayerManager().initialize();
+  Future<bool> loadConfiguration() async {
+    var layerManager = LayerManager();
+    await layerManager.initialize();
     gpProjectModel = GPProjectModel();
-    GpPreferences().getLastPosition().then((pos) {
-      if (pos != null) {
-        gpProjectModel.lastCenterLon = pos[0];
-        gpProjectModel.lastCenterLat = pos[1];
-        gpProjectModel.lastCenterZoom = pos[2];
-      }
-    });
+    await gpProjectModel.getDatabase();
+    var pos = await GpPreferences().getLastPosition();
+    if (pos != null && gpProjectModel != null) {
+      gpProjectModel.lastCenterLon = pos[0];
+      gpProjectModel.lastCenterLat = pos[1];
+      gpProjectModel.lastCenterZoom = pos[2];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: GpConstants.APP_NAME,
-      theme: ThemeData(
-          primarySwatch: SmashColors.mainDecorationsMc,
-          accentColor: SmashColors.mainSelectionMc,
-          canvasColor: SmashColors.mainBackground,
-          brightness: Brightness.light,
-          inputDecorationTheme: InputDecorationTheme(
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Color.fromARGB(
-                      255,
-                      SmashColors.mainDecorationsDarkR,
-                      SmashColors.mainDecorationsDarkG,
-                      SmashColors.mainDecorationsDarkB)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Color.fromARGB(
-                      255,
-                      SmashColors.mainDecorationsDarkR,
-                      SmashColors.mainDecorationsDarkG,
-                      SmashColors.mainDecorationsDarkB)),
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 128, 128, 128)),
-            ),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Color.fromARGB(
-                      255,
-                      SmashColors.mainSelectionBorderR,
-                      SmashColors.mainSelectionBorderG,
-                      SmashColors.mainSelectionBorderB)),
-            ),
+    return FutureBuilder<void>(
+      future: loadConfiguration(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          // If the Future is complete, display the preview.
+          return MaterialApp(
+            title: GpConstants.APP_NAME,
+            theme: ThemeData(
+                primarySwatch: SmashColors.mainDecorationsMc,
+                accentColor: SmashColors.mainSelectionMc,
+                canvasColor: SmashColors.mainBackground,
+                brightness: Brightness.light,
+                inputDecorationTheme: InputDecorationTheme(
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Color.fromARGB(
+                            255,
+                            SmashColors.mainDecorationsDarkR,
+                            SmashColors.mainDecorationsDarkG,
+                            SmashColors.mainDecorationsDarkB)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Color.fromARGB(
+                            255,
+                            SmashColors.mainDecorationsDarkR,
+                            SmashColors.mainDecorationsDarkG,
+                            SmashColors.mainDecorationsDarkB)),
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 128, 128, 128)),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Color.fromARGB(
+                            255,
+                            SmashColors.mainSelectionBorderR,
+                            SmashColors.mainSelectionBorderG,
+                            SmashColors.mainSelectionBorderB)),
+                  ),
 //            labelStyle: const TextStyle(
 //              color: Color.fromARGB(255, 128, 128, 128),
 //            ),
-          )),
-      debugShowMaterialGrid: false,
-      debugShowCheckedModeBanner: false,
-      showPerformanceOverlay: false,
-      home: DashboardWidget(),
+                )),
+            debugShowMaterialGrid: false,
+            debugShowCheckedModeBanner: false,
+            showPerformanceOverlay: false,
+            home: DashboardWidget(),
+          );
+        } else {
+          // Otherwise, display a loading indicator.
+          return Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }

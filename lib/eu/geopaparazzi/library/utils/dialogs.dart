@@ -241,7 +241,7 @@ Future<String> showComboDialog(
           Navigator.pop(context, str);
         },
         child: Text(str),
-      ));
+      )).toList();
 
   String selection = await showDialog<String>(
       context: context,
