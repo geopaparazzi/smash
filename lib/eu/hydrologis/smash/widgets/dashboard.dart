@@ -26,6 +26,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/share.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/smash/widgets/notes_ui.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/layers.dart';
 import 'package:latlong/latlong.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -50,7 +51,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
   PolylineLayerOptions _geopapLogs;
   Polyline _currentGeopapLog =
       Polyline(points: [], strokeWidth: 3, color: ColorExt("red"));
-  TileLayerOptions _osmLayer;
   Position _lastPosition;
 
   double _initLon;
@@ -59,7 +59,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   MapController _mapController;
 
-  TileLayerOptions _mapsforgeLayer;
+  List<TileLayerOptions> _activeLayers = [];
 
   Size _media;
 
@@ -70,7 +70,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   ValueNotifier<GpsStatus> _gpsStatusValueNotifier =
       new ValueNotifier(GpsStatus.OFF);
-  ValueNotifier<bool> _gpsLoggingValueNotifier = new ValueNotifier(false);
 
   @override
   void initState() {
@@ -81,13 +80,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
     _initZoom = gpProjectModel.lastCenterZoom;
 
     _mapController = MapController();
-    _osmLayer = new TileLayerOptions(
-      urlTemplate: "https://{s}.tile.openstreetmap.org/"
-          "{z}/{x}/{y}.png",
-      backgroundColor: SmashColors.mainBackground,
-      maxZoom: 19,
-      subdomains: ['a', 'b', 'c'],
-    );
 
     _mapCenterValueNotifier.addListener(() {
       _mapController.move(_mapCenterValueNotifier.value, _mapController.zoom);
@@ -113,14 +105,11 @@ class _DashboardWidgetState extends State<DashboardWidget>
           }
         }
 
-        // load mapsforge maps
-        var mapsforgePath =
-            await GpPreferences().getString(KEY_LAST_MAPSFORGEPATH);
-        if (mapsforgePath != null) {
-          File mapsforgeFile = new File(mapsforgePath);
-          if (mapsforgeFile.existsSync()) {
-            _mapsforgeLayer = await loadMapsforgeLayer(mapsforgeFile);
-          }
+        var activeLayersInfos = await LayerManager().getActiveLayers();
+        _activeLayers = [];
+        for (int i = 0; i < activeLayersInfos.length; i++) {
+          var tl = await activeLayersInfos[i].toTileLayer();
+          _activeLayers.add(tl);
         }
 
         await loadCurrentProject();
@@ -175,9 +164,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
     _media = MediaQuery.of(context).size;
 
     var layers = <LayerOptions>[];
-    if (_mapsforgeLayer != null) {
-      layers.add(_mapsforgeLayer);
-    }
+    layers.addAll(_activeLayers);
 
     if (_geopapLogs != null) layers.add(_geopapLogs);
     if (_geopapMarkers != null && _geopapMarkers.length > 0) {
@@ -525,20 +512,20 @@ $gpsInfo
   }
 
   _openLayers(BuildContext context) async {
-    File file =
-        await FilePicker.getFile(type: FileType.ANY, fileExtension: 'map');
-    if (file != null) {
-      if (file.path.endsWith(".map")) {
-//                GeopaparazziMapLoader loader =
-//                    new GeopaparazziMapLoader(file, this);
-//                loader.loadNotes();
-        _mapsforgeLayer = await loadMapsforgeLayer(file);
-        await GpPreferences().setString(KEY_LAST_MAPSFORGEPATH, file.path);
-        setState(() {});
-      } else {
-        showWarningDialog(context, "File format not supported.");
-      }
-    }
+//    File file =
+//        await FilePicker.getFile(type: FileType.ANY, fileExtension: 'map');
+//    if (file != null) {
+//      if (file.path.endsWith(".map")) {
+////                GeopaparazziMapLoader loader =
+////                    new GeopaparazziMapLoader(file, this);
+////                loader.loadNotes();
+//        _mapsforgeLayer = await loadMapsforgeLayer(file);
+//        await GpPreferences().setString(KEY_LAST_MAPSFORGEPATH, file.path);
+//        setState(() {});
+//      } else {
+//        showWarningDialog(context, "File format not supported.");
+//      }
+//    }
   }
 
   @override

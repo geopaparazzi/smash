@@ -9,9 +9,12 @@ final KEY_LAST_GPAPPROJECT = "lastgpapProject";
 final KEY_LAST_LAT = "lastgpap_lat";
 final KEY_LAST_LON = "lastgpap_lon";
 final KEY_LAST_ZOOM = "lastgpap_zoom";
-final KEY_LAST_MAPSFORGEPATH = "lastmapsforge_path";
 final KEY_CENTER_ON_GPS = "center_on_gps";
 final KEY_NOTEDOGPS = 'KEY_NOTE_DOGPS';
+
+final KEY_LAST_BASEMAP = "lastbasemapinfo";
+final KEY_BASELAYERINFO_LIST = 'KEY_BASELAYERINFO_LIST';
+final KEY_MBTILES_LIST = 'KEY_MBTILES_LIST';
 
 /// Geopaparazzi Preferences singleton.
 class GpPreferences {
@@ -87,5 +90,31 @@ class GpPreferences {
 
   void setCenterOnGps(bool centerOnGps) {
     setBoolean(KEY_CENTER_ON_GPS, centerOnGps);
+  }
+
+  Future<List<String>> getBaseLayerInfoList() async {
+    await _checkPreferences();
+    var list = _preferences.getStringList(KEY_BASELAYERINFO_LIST);
+    if (list == null) list = [];
+    return list;
+  }
+
+  void setBaseLayerInfoList(List<String> baselayerInfoList) async {
+    await _checkPreferences();
+    if (baselayerInfoList == null) baselayerInfoList = [];
+    _preferences.setStringList(KEY_BASELAYERINFO_LIST, baselayerInfoList);
+  }
+
+  Future<List<String>> getMbtilesFilesList() async {
+    await _checkPreferences();
+    var list = _preferences.getStringList(KEY_MBTILES_LIST);
+    if (list == null) list = [];
+    return list;
+  }
+
+  void setMbtilesFilesList(List<String> mbtilesList) async {
+    await _checkPreferences();
+    if (mbtilesList == null) mbtilesList = [];
+    _preferences.setStringList(KEY_MBTILES_LIST, mbtilesList);
   }
 }
