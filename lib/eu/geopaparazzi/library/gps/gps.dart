@@ -208,7 +208,7 @@ class GpsHandler {
   /// Stop logging to database.
   ///
   /// This also properly closes the recorded log.
-  void stopLogging() async {
+  Future<void> stopLogging() async {
     var db = await gpProjectModel.getDatabase();
     _isLogging = false;
     _currentLogPoints.clear();

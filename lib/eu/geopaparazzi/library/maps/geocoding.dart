@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/eventhandlers.dart';
 import 'package:latlong/latlong.dart';
 
 // From a query
@@ -21,9 +22,9 @@ import 'package:latlong/latlong.dart';
 //print("${first.featureName} : ${first.addressLine}");
 
 class GeocodingPage extends StatefulWidget {
-  ValueNotifier<LatLng> _geocodingValueNotifier;
+  MainEventHandler _eventsHandler;
 
-  GeocodingPage(this._geocodingValueNotifier);
+  GeocodingPage(this._eventsHandler);
 
   @override
   State<StatefulWidget> createState() => GeocodingPageState();
@@ -39,8 +40,8 @@ class GeocodingPageState extends State<GeocodingPage> {
         leading: IconButton(
           icon: Icon(Icons.navigation),
           onPressed: () {
-            widget._geocodingValueNotifier.value = LatLng(
-                address.coordinates.latitude, address.coordinates.longitude);
+            widget._eventsHandler.setMapCenter(LatLng(
+                address.coordinates.latitude, address.coordinates.longitude));
             Navigator.pop(context);
           },
         ),

@@ -8,12 +8,13 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/icons.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/eventhandlers.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
 import 'package:latlong/latlong.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Log object dedicated to the list of logs widget.
 class Log4ListWidget {
@@ -70,10 +71,9 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
 
 /// The log list widget.
 class LogListWidget extends StatefulWidget {
-  Function _reloadFunction;
-  Function _moveToFunction;
+  final MainEventHandler _eventHandler;
 
-  LogListWidget(this._reloadFunction, this._moveToFunction);
+  LogListWidget(this._eventHandler);
 
   @override
   State<StatefulWidget> createState() {
@@ -143,8 +143,8 @@ class LogListWidgetState extends State<LogListWidget> {
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) {
                         gpProjectModel.getDatabase().then((db) async {
-                            await db.deleteGpslog(logItem.id);
-                            widget._reloadFunction();
+                          await db.deleteGpslog(logItem.id);
+                          widget._eventHandler.reloadProjectFunction();
                         });
                       },
                       key: Key("${logItem.id}"),
@@ -175,7 +175,7 @@ class LogListWidgetState extends State<LogListWidget> {
                                   var db = await gpProjectModel.getDatabase();
                                   await db.updateGpsLogVisibility(
                                       isVisible, logItem.id);
-                                  widget._reloadFunction();
+                                  widget._eventHandler.reloadProjectFunction();
                                   setState(() {});
                                 }),
                           ],
@@ -189,7 +189,7 @@ class LogListWidgetState extends State<LogListWidget> {
                           var db = await gpProjectModel.getDatabase();
                           LatLng position =
                               await db.getLogStartPosition(logItem.id);
-                          widget._moveToFunction(position);
+                          widget._eventHandler.moveToFunction(position);
                           Navigator.of(context).pop();
                         },
                       ),
@@ -254,16 +254,16 @@ class LogListWidgetState extends State<LogListWidget> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                LogPropertiesWidget(widget._reloadFunction, logItem)));
+                LogPropertiesWidget(widget._eventHandler, logItem)));
   }
 }
 
 /// The log properties page.
 class LogPropertiesWidget extends StatefulWidget {
   var _logItem;
-  Function _reloadFunction;
+  final MainEventHandler _eventHandler;
 
-  LogPropertiesWidget(this._reloadFunction, this._logItem);
+  LogPropertiesWidget(this._eventHandler, this._logItem);
 
   @override
   State<StatefulWidget> createState() {
@@ -303,7 +303,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
             var db = await gpProjectModel.getDatabase();
             await db.updateGpsLogStyle(
                 _logItem.id, _logItem.color, _logItem.width);
-            widget._reloadFunction();
+            widget._eventHandler.reloadProjectFunction();
           }
           return true;
         },
@@ -464,34 +464,6 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
     }
   }
 }
-
-const Map<String, dynamic> NOTES_ICONDATA = {
-  'marker': FontAwesomeIcons.mapMarker,
-  'circle': FontAwesomeIcons.solidCircle,
-  'bomb': FontAwesomeIcons.bomb,
-  'bell': FontAwesomeIcons.solidBell,
-  'carrot': FontAwesomeIcons.carrot,
-  'warning': FontAwesomeIcons.exclamationTriangle,
-  'flag': FontAwesomeIcons.solidFlag,
-  'frog': FontAwesomeIcons.frog,
-  'info': FontAwesomeIcons.infoCircle,
-  'medkit': FontAwesomeIcons.medkit,
-  'smile': FontAwesomeIcons.solidSmile,
-  'angry': FontAwesomeIcons.solidAngry,
-  'star': FontAwesomeIcons.solidStar,
-  'tag': FontAwesomeIcons.tag,
-  'glass': FontAwesomeIcons.glassWhiskey,
-  'drop': FontAwesomeIcons.tint,
-  'ok': FontAwesomeIcons.solidCheckCircle,
-  'tools': FontAwesomeIcons.tools,
-  'trash': FontAwesomeIcons.trash,
-  'user': FontAwesomeIcons.solidUser,
-  'note': FontAwesomeIcons.solidComment,
-  'food': FontAwesomeIcons.pizzaSlice,
-  'truck': FontAwesomeIcons.truck,
-  'thumbs up': FontAwesomeIcons.solidThumbsUp,
-  'thumbs down': FontAwesomeIcons.solidThumbsDown,
-};
 
 /// The notes properties page.
 class NotePropertiesWidget extends StatefulWidget {

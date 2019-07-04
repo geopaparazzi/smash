@@ -22,9 +22,11 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/files.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/icons.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/share.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/eventhandlers.dart';
 import 'package:geopaparazzi_light/eu/hydrologis/smash/widgets/notes_ui.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/layers.dart';
 import 'package:latlong/latlong.dart';
@@ -43,9 +45,12 @@ class DashboardWidget extends StatefulWidget {
 class _DashboardWidgetState extends State<DashboardWidget>
     implements PositionListener {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  ValueNotifier<bool> _keepGpsOnScreenNotifier = new ValueNotifier(false);
-  ValueNotifier<LatLng> _mapCenterValueNotifier =
-      new ValueNotifier(LatLng(0, 0));
+  MainEventHandler _mainEventsHandler;
+
+  _DashboardWidgetState() {
+    _mainEventsHandler =
+        MainEventHandler(reloadLayers, reloadProject, moveTo);
+  }
 
   List<Marker> _geopapMarkers;
   PolylineLayerOptions _geopapLogs;
@@ -68,9 +73,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
   int _notesCount = 0;
   int _logsCount = 0;
 
-  ValueNotifier<GpsStatus> _gpsStatusValueNotifier =
-      new ValueNotifier(GpsStatus.OFF);
-
   @override
   void initState() {
     Screen.keepOn(true);
@@ -86,8 +88,9 @@ class _DashboardWidgetState extends State<DashboardWidget>
     }
     _mapController = MapController();
 
-    _mapCenterValueNotifier.addListener(() {
-      _mapController.move(_mapCenterValueNotifier.value, _mapController.zoom);
+    _mainEventsHandler.addMapCenterListener(() {
+      _mapController.move(
+          _mainEventsHandler.getMapCenter(), _mapController.zoom);
     });
 
     _checkPermissions().then((allRight) async {
@@ -100,13 +103,13 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
         // check center on gps
         bool centerOnGps = await GpPreferences().getCenterOnGps();
-        _keepGpsOnScreenNotifier.value = centerOnGps;
+        _mainEventsHandler.setCenterOnGps(centerOnGps);
 
         // set initial status
         bool gpsIsOn = await GpsHandler().isGpsOn();
         if (gpsIsOn != null) {
           if (gpsIsOn) {
-            _gpsStatusValueNotifier.value = GpsStatus.ON_NO_FIX;
+            _mainEventsHandler.setGpsStatus(GpsStatus.ON_NO_FIX);
           }
         }
 
@@ -330,10 +333,7 @@ $gpsInfo
                       ),
                     ),
                     _notesCount),
-                makeToolbarBadge(
-                    LoggingButton(
-                        _gpsStatusValueNotifier, reloadProject, moveTo),
-                    _logsCount),
+                makeToolbarBadge(LoggingButton(_mainEventsHandler), _logsCount),
                 IconButton(
                   icon: Icon(Icons.layers),
                   onPressed: () => _openLayers(context),
@@ -341,7 +341,7 @@ $gpsInfo
                   tooltip: 'Open layers list',
                 ),
                 Spacer(),
-                GpsInfoButton(_gpsStatusValueNotifier),
+                GpsInfoButton(_mainEventsHandler),
                 Spacer(),
                 IconButton(
                   onPressed: () {
@@ -448,7 +448,7 @@ $gpsInfo
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          GeocodingPage(_mapCenterValueNotifier)));
+                          GeocodingPage(_mainEventsHandler)));
             },
           ),
           ListTile(
@@ -474,9 +474,9 @@ $gpsInfo
               style: textStyle,
             ),
             trailing: Checkbox(
-                value: _keepGpsOnScreenNotifier.value,
+                value: _mainEventsHandler.isKeepGpsOnScreen(),
                 onChanged: (value) {
-                  _keepGpsOnScreenNotifier.value = value;
+                  _mainEventsHandler.setKeepGpsOnScreen(value);
                   GpPreferences().setBoolean(KEY_CENTER_ON_GPS, value);
 //                  Navigator.of(context).pop();
                 }),
@@ -687,7 +687,7 @@ $gpsInfo
 
   @override
   void onPositionUpdate(Position position) {
-    if (_keepGpsOnScreenNotifier.value &&
+    if (_mainEventsHandler.isKeepGpsOnScreen() &&
         !_mapController.bounds
             .contains(LatLng(position.latitude, position.longitude))) {
       _mapController.move(
@@ -700,7 +700,7 @@ $gpsInfo
 
   @override
   void setStatus(GpsStatus currentStatus) {
-    _gpsStatusValueNotifier.value = currentStatus;
+    _mainEventsHandler.setGpsStatus(currentStatus);
   }
 
   loadCurrentProject() async {
@@ -839,6 +839,8 @@ $gpsInfo
       ));
     });
 
+    _geopapMarkers = tmp;
+
     String logsQuery = '''
         select l.$LOGS_COLUMN_ID, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH 
         from $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
@@ -855,10 +857,10 @@ $gpsInfo
       logs[id] = [color, width, <LatLng>[]];
     });
 
-    addLogLines(tmp, logs, db);
+    addLogLines(logs, db);
   }
 
-  void addLogLines(List<Marker> markers, Map<int, List> logs, var db) async {
+  void addLogLines(Map<int, List> logs, var db) async {
     String logDataQuery =
         "select $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LOGID from $TABLE_GPSLOG_DATA order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS";
     List<Map<String, dynamic>> resLogs = await db.query(logDataQuery);
@@ -885,33 +887,31 @@ $gpsInfo
     _geopapLogs = PolylineLayerOptions(
       polylines: lines,
     );
-    _geopapMarkers = markers;
   }
 }
 
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
 class GpsInfoButton extends StatefulWidget {
-  final ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
+  final MainEventHandler _eventHandler;
 
-  GpsInfoButton(this._gpsStatusValueNotifier);
+  GpsInfoButton(this._eventHandler);
 
   @override
   State<StatefulWidget> createState() =>
-      GpsInfoButtonState(_gpsStatusValueNotifier);
+      GpsInfoButtonState();
 }
 
 class GpsInfoButtonState extends State<GpsInfoButton> {
-  ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
   GpsStatus _gpsStatus;
 
-  GpsInfoButtonState(this._gpsStatusValueNotifier);
+  GpsInfoButtonState();
 
   @override
   void initState() {
-    _gpsStatusValueNotifier.addListener(() {
+    widget._eventHandler.addGpsStatusListener(() {
       setState(() {
-        _gpsStatus = _gpsStatusValueNotifier.value;
+        _gpsStatus = widget._eventHandler.getGpsStatus();
       });
     });
     super.initState();
@@ -931,33 +931,23 @@ class GpsInfoButtonState extends State<GpsInfoButton> {
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
 class LoggingButton extends StatefulWidget {
-  final ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
-  Function _reloadFunction;
-  Function _moveToFunction;
+  final MainEventHandler _eventHandler;
 
-  LoggingButton(
-      this._gpsStatusValueNotifier, this._reloadFunction, this._moveToFunction);
+  LoggingButton(this._eventHandler);
 
   @override
-  State<StatefulWidget> createState() => LoggingButtonState(
-      _gpsStatusValueNotifier, _reloadFunction, _moveToFunction);
+  State<StatefulWidget> createState() => LoggingButtonState();
 }
 
 class LoggingButtonState extends State<LoggingButton> {
-  ValueNotifier<GpsStatus> _gpsStatusValueNotifier;
   GpsStatus _gpsStatus;
-  Function _reloadFunction;
-  Function _moveToFunction;
-
-  LoggingButtonState(
-      this._gpsStatusValueNotifier, this._reloadFunction, this._moveToFunction);
 
   @override
   void initState() {
-    _gpsStatusValueNotifier.addListener(() {
+    widget._eventHandler.addMapCenterListener(() {
       if (this.mounted)
         setState(() {
-          _gpsStatus = _gpsStatusValueNotifier.value;
+          _gpsStatus = widget._eventHandler.getGpsStatus();
         });
     });
     super.initState();
@@ -976,7 +966,7 @@ class LoggingButtonState extends State<LoggingButton> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    LogListWidget(_reloadFunction, _moveToFunction)));
+                    LogListWidget(widget._eventHandler)));
       },
     );
   }
@@ -984,7 +974,7 @@ class LoggingButtonState extends State<LoggingButton> {
   toggleLoggingFunction(BuildContext context) async {
     if (GpsHandler().isLogging) {
       await GpsHandler().stopLogging();
-      _reloadFunction();
+      widget._eventHandler.reloadProjectFunction();
     } else {
       if (GpsHandler().hasFix()) {
         String logName =
