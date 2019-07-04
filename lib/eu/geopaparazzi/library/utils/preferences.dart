@@ -10,8 +10,6 @@ final KEY_LAST_LAT = "lastgpap_lat";
 final KEY_LAST_LON = "lastgpap_lon";
 final KEY_LAST_ZOOM = "lastgpap_zoom";
 final KEY_CENTER_ON_GPS = "center_on_gps";
-final KEY_NOTEDOGPS = 'KEY_NOTE_DOGPS';
-
 final KEY_LAST_BASEMAP = "lastbasemapinfo";
 final KEY_BASELAYERINFO_LIST = 'KEY_BASELAYERINFO_LIST';
 final KEY_MBTILES_LIST = 'KEY_MBTILES_LIST';

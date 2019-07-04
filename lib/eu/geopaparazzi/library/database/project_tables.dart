@@ -4,8 +4,8 @@
  * found in the LICENSE file.
  */
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
 import 'package:latlong/latlong.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /*
  * The metadata table name.
@@ -257,8 +257,9 @@ class Log {
       LOGS_COLUMN_STARTTS: startTime,
       LOGS_COLUMN_ENDTS: endTime,
       LOGS_COLUMN_LENGTHM: lengthm,
-      LOGS_COLUMN_TEXT:
-          text == null ? GpConstants.ISO8601_TS_FORMATTER.format(new DateTime.now()) : text,
+      LOGS_COLUMN_TEXT: text == null
+          ? GpConstants.ISO8601_TS_FORMATTER.format(new DateTime.now())
+          : text,
       LOGS_COLUMN_ISDIRTY: isDirty,
     };
     if (id != null) {
@@ -365,6 +366,83 @@ final String IMAGESDATA_COLUMN_IMAGE = "data";
  * The image thumbnail data.
  */
 final String IMAGESDATA_COLUMN_THUMBNAIL = "thumbnail";
+
+class Image {
+  int id;
+  double lon;
+  double lat;
+  double altim;
+  int timeStamp;
+  double azim;
+  String text;
+  int isDirty = 1;
+  int noteId;
+  int imageDataId;
+
+  Map<String, dynamic> toMap() {
+    var map = {
+      IMAGES_COLUMN_LAT: lat,
+      IMAGES_COLUMN_LON: lon,
+      IMAGES_COLUMN_TS: timeStamp,
+      IMAGES_COLUMN_TEXT: text,
+      IMAGES_COLUMN_ISDIRTY: isDirty,
+    };
+    if (id != null) {
+      map[IMAGES_COLUMN_ID] = id;
+    }
+    if (noteId != null) {
+      map[IMAGES_COLUMN_NOTE_ID] = noteId;
+    }
+    if (imageDataId != null) {
+      map[IMAGES_COLUMN_IMAGEDATA_ID] = imageDataId;
+    }
+    if (azim != null) {
+      map[IMAGES_COLUMN_ALTIM] = altim;
+    }
+    if (altim != null) {
+      map[IMAGES_COLUMN_AZIM] = azim;
+    }
+    return map;
+  }
+}
+
+class ImageQueryBuilder extends QueryObjectBuilder<Image> {
+  @override
+  Image fromMap(Map<String, dynamic> map) {
+    Image image = Image()
+      ..id = map[IMAGES_COLUMN_ID]
+      ..lon = map[IMAGES_COLUMN_LON]
+      ..lat = map[IMAGES_COLUMN_LAT]
+      ..altim = map[IMAGES_COLUMN_ALTIM]
+      ..timeStamp = map[IMAGES_COLUMN_TS]
+      ..azim = map[IMAGES_COLUMN_AZIM]
+      ..text = map[IMAGES_COLUMN_TEXT]
+      ..isDirty = map[IMAGES_COLUMN_ISDIRTY]
+      ..noteId = map[IMAGES_COLUMN_NOTE_ID]
+      ..imageDataId = map[IMAGES_COLUMN_IMAGEDATA_ID];
+    return image;
+  }
+
+  @override
+  String insertSql() {
+    return null;
+  }
+
+  @override
+  String querySql() {
+    return '''
+      select $IMAGES_COLUMN_ID, $IMAGES_COLUMN_LON, $IMAGES_COLUMN_LAT, $IMAGES_COLUMN_ALTIM,
+             $IMAGES_COLUMN_TS, $IMAGES_COLUMN_AZIM, $IMAGES_COLUMN_TEXT, $IMAGES_COLUMN_ISDIRTY,
+             $IMAGES_COLUMN_NOTE_ID, $IMAGES_COLUMN_IMAGEDATA_ID
+      from $TABLE_IMAGES;
+    ''';
+  }
+
+  @override
+  Map<String, dynamic> toMap(Image item) {
+    return null;
+  }
+}
 
 final String BOOKMARK_COLUMN_ID = "_id";
 final String BOOKMARK_COLUMN_LON = "lon";

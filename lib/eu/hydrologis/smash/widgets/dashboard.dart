@@ -12,7 +12,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart'
+    hide Image;
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
@@ -27,13 +28,14 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/share.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/eventhandlers.dart';
-import 'package:geopaparazzi_light/eu/hydrologis/smash/widgets/notes_ui.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/layers.dart';
 import 'package:latlong/latlong.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screen/screen.dart';
 import 'package:badges/badges.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:popup_menu/popup_menu.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -45,11 +47,11 @@ class DashboardWidget extends StatefulWidget {
 class _DashboardWidgetState extends State<DashboardWidget>
     implements PositionListener {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  GlobalKey _menuKey = GlobalKey();
   MainEventHandler _mainEventsHandler;
 
   _DashboardWidgetState() {
-    _mainEventsHandler =
-        MainEventHandler(reloadLayers, reloadProject, moveTo);
+    _mainEventsHandler = MainEventHandler(reloadLayers, reloadProject, moveTo);
   }
 
   List<Marker> _geopapMarkers;
@@ -290,43 +292,26 @@ $gpsInfo
                 makeToolbarBadge(
                     IconButton(
                       onPressed: () async {
-                        bool doInGps = await GpPreferences()
-                            .getBoolean(KEY_NOTEDOGPS, true);
-                        int ts = DateTime.now().millisecondsSinceEpoch;
-                        Position pos;
-                        double lon;
-                        double lat;
-                        if (doInGps) {
-                          pos = GpsHandler().lastPosition;
-                        } else {
-                          lon = gpProjectModel.lastCenterLon;
-                          lat = gpProjectModel.lastCenterLat;
-                        }
-                        Note note = Note()
-                          ..text = "double tap to change"
-                          ..description = "double tap to change"
-                          ..timeStamp = ts
-                          ..lon = pos != null ? pos.longitude : lon
-                          ..lat = pos != null ? pos.latitude : lat
-                          ..altim = pos != null ? pos.altitude : -1;
-                        if (pos != null) {
-                          NoteExt next = NoteExt()
-                            ..speedaccuracy = pos.speedAccuracy
-                            ..speed = pos.speed
-                            ..heading = pos.heading
-                            ..accuracy = pos.accuracy;
-                          note.noteExt = next;
-                        }
-                        var db = await gpProjectModel.getDatabase();
-                        await db.addNote(note);
+                        PopupMenu.context = context;
+                        PopupMenu menu = PopupMenu(
+                          backgroundColor: SmashColors.mainBackground,
+                          lineColor: SmashColors.mainDecorations,
+                          // maxColumn: 2,
+                          items: getMenuItems(),
+                          onClickMenu: (menuItem) async {
+                            if (menuItem.menuTitle == 'Center Note') {
+                              _addNote(context, false);
+                            } else if (menuItem.menuTitle == 'GPS Note') {
+                              _addNote(context, true);
+                            }
+                          },
+                          onDismiss: onDismissMenu,
+                        );
 
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    NotePropertiesWidget(reloadProject, note)));
+                        menu.show(widgetKey: _menuKey);
                       },
                       tooltip: 'Notes',
+                      key: _menuKey,
                       icon: Icon(
                         Icons.note,
                         color: SmashColors.mainBackground,
@@ -403,6 +388,108 @@ $gpsInfo
         });
   }
 
+  List<MenuItem> getMenuItems() {
+    var style = TextStyle(fontSize: 10, color: SmashColors.mainTextColor);
+    var size = GpConstants.SMALL_DIALOG_ICON_SIZE;
+    var list = <MenuItem>[
+      MenuItem(
+          textStyle: style,
+          title: 'Center Note',
+          image: Icon(
+            Icons.add_comment,
+            color: SmashColors.mainDecorations,
+            size: size,
+          )),
+      MenuItem(
+          textStyle: style,
+          title: 'Center Image',
+          image: Icon(
+            Icons.add_a_photo,
+            color: SmashColors.mainDecorations,
+            size: size,
+          )),
+      MenuItem(
+          textStyle: style,
+          title: 'Center Forms',
+          image: Icon(
+            Icons.menu,
+            color: SmashColors.mainDecorations,
+            size: size,
+          )),
+    ];
+    if (GpsHandler().hasFix()) {
+      list.add(
+        MenuItem(
+            textStyle: style,
+            title: 'GPS Note',
+            image: Icon(
+              Icons.add_comment,
+              color: SmashColors.mainSelection,
+              size: size,
+            )),
+      );
+      list.add(
+        MenuItem(
+            textStyle: style,
+            title: 'GPS Image',
+            image: Icon(
+              Icons.add_a_photo,
+              color: SmashColors.mainSelection,
+              size: size,
+            )),
+      );
+      list.add(
+        MenuItem(
+            textStyle: style,
+            title: 'GPS Forms',
+            image: Icon(
+              Icons.menu,
+              color: SmashColors.mainSelection,
+              size: size,
+            )),
+      );
+    }
+    return list;
+  }
+
+  void onDismissMenu() {}
+
+  void _addNote(BuildContext context, bool doInGps) async {
+    int ts = DateTime.now().millisecondsSinceEpoch;
+    Position pos;
+    double lon;
+    double lat;
+    if (doInGps) {
+      pos = GpsHandler().lastPosition;
+    } else {
+      var center = _mapController.center;
+      lon = center.longitude;
+      lat = center.latitude;
+    }
+    Note note = Note()
+      ..text = "double tap to change"
+      ..description = "POI"
+      ..timeStamp = ts
+      ..lon = pos != null ? pos.longitude : lon
+      ..lat = pos != null ? pos.latitude : lat
+      ..altim = pos != null ? pos.altitude : -1;
+    if (pos != null) {
+      NoteExt next = NoteExt()
+        ..speedaccuracy = pos.speedAccuracy
+        ..speed = pos.speed
+        ..heading = pos.heading
+        ..accuracy = pos.accuracy;
+      note.noteExt = next;
+    }
+    var db = await gpProjectModel.getDatabase();
+    await db.addNote(note);
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => NotePropertiesWidget(reloadProject, note)));
+  }
+
   Widget makeToolbarBadge(Widget widget, int badgeValue) {
     if (badgeValue > 0) {
       return Badge(
@@ -447,8 +534,7 @@ $gpsInfo
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          GeocodingPage(_mainEventsHandler)));
+                      builder: (context) => GeocodingPage(_mainEventsHandler)));
             },
           ),
           ListTile(
@@ -538,15 +624,6 @@ $gpsInfo
   Future<void> _savePosition() async {
     await GpPreferences().setLastPosition(gpProjectModel.lastCenterLon,
         gpProjectModel.lastCenterLat, gpProjectModel.lastCenterZoom);
-  }
-
-  _openAddNoteFunction(context) {
-    if (GpsHandler().hasFix()) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => AddNotePage()));
-    } else {
-      showOperationNeedsGps(context);
-    }
   }
 
   _getDrawerWidgets(BuildContext context) {
@@ -713,34 +790,124 @@ $gpsInfo
 
     List<Marker> tmp = [];
     // IMAGES
-//    List<Map<String, dynamic>> resImages =
-//        await db.query("images", columns: ['lat', 'lon']);
-//    resImages.forEach((map) {
-//      var lat = map["lat"];
-//      var lon = map["lon"];
-//      tmp.add(Marker(
-//        width: 80.0,
-//        height: 80.0,
-//        point: new LatLng(lat, lon),
-//        builder: (ctx) => new Container(
-//              child: Icon(
-//                Icons.image,
-//                size: 32,
-//                color: Colors.blue,
-//              ),
-//            ),
-//      ));
-//    });
+    var imagesList = await db.getImages(false);
+    imagesList.forEach((image) {
+      var size = 48.0;
+      var lat = image.lat;
+      var lon = image.lon;
+      var label =
+          "image: ${image.text}\nlat: ${image.lat}\nlon: ${image.lon}\naltim: ${image.altim.round()}\nts: ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
+      tmp.add(Marker(
+        width: size,
+        height: size,
+        point: new LatLng(lat, lon),
+        builder: (ctx) => new Container(
+                child: GestureDetector(
+              onTap: () {
+                _showSnackbar(SnackBar(
+                  backgroundColor: SmashColors.snackBarColor,
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            label,
+                            style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
+                            textAlign: TextAlign.start,
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            IconButton(
+                              icon: Icon(
+                                Icons.share,
+                                color: SmashColors.mainSelection,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () {
+                                shareText(label);
+                                _hideSnackbar();
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                FontAwesomeIcons.solidImages,
+                                color: SmashColors.mainSelection,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () {
+                                // TODO
+//                                Navigator.push(
+//                                    ctx,
+//                                    MaterialPageRoute(
+//                                        builder: (context) =>
+//                                            NotePropertiesWidget(
+//                                                reloadProject, note)));
+//                                _hideSnackbar();
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: SmashColors.mainDanger,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () async {
+                                var doRemove = await showConfirmDialog(
+                                    ctx,
+                                    "Remove Image",
+                                    "Are you sure you want to remove image ${image.id}?");
+                                if (doRemove) {
+                                  var db = await gpProjectModel.getDatabase();
+                                  db.deleteImage(image.id);
+                                  reloadProject();
+                                }
+                                _hideSnackbar();
+                              },
+                            ),
+                            Spacer(flex: 1),
+                            IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: SmashColors.mainDecorationsDark,
+                              ),
+                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                              onPressed: () {
+                                _hideSnackbar();
+                              },
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  duration: Duration(seconds: 5),
+                ));
+              },
+              child: Icon(
+                NOTES_ICONDATA['camera'],
+                size: size,
+                color: Colors.blue,
+              ),
+            )),
+      ));
+    });
 
     // NOTES
     List<Note> notesList = await db.getNotes(false);
     notesList.forEach((note) {
       var label =
-          "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim}\nts: ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
+          "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
       NoteExt noteExt = note.noteExt;
       tmp.add(Marker(
-        width: 80,
-        height: 80,
+        width: noteExt.size,
+        height: noteExt.size,
         point: new LatLng(note.lat, note.lon),
         builder: (ctx) => new Container(
                 child: GestureDetector(
@@ -898,8 +1065,7 @@ class GpsInfoButton extends StatefulWidget {
   GpsInfoButton(this._eventHandler);
 
   @override
-  State<StatefulWidget> createState() =>
-      GpsInfoButtonState();
+  State<StatefulWidget> createState() => GpsInfoButtonState();
 }
 
 class GpsInfoButtonState extends State<GpsInfoButton> {
@@ -965,8 +1131,7 @@ class LoggingButtonState extends State<LoggingButton> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    LogListWidget(widget._eventHandler)));
+                builder: (context) => LogListWidget(widget._eventHandler)));
       },
     );
   }

@@ -22,7 +22,7 @@ class SmashColors {
   static const int mainDecorationsDarkG = 75;
   static const int mainDecorationsDarkB = 160;
 
-  static final Color mainTextColor = ColorExt("#ff800000");
+  static final Color mainTextColor = ColorExt("#ff004ba0");
   static final Color mainTextColorNeutral = ColorExt("#ff000000");
 
   static final Color mainSelection = ColorExt("#ffbf360c");

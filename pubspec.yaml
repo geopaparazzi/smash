@@ -61,6 +61,9 @@ dependencies:
   # Apache 2
   badges: ^1.0.3
 
+  # MIT
+  popup_menu: 1.0.1
+
   mapsforge_flutter:
     path: ../../mapsforge_flutter/mapsforge_flutter
 

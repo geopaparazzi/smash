@@ -50,8 +50,11 @@ class SqliteDb {
   }
 
   /// Get a list of items defined by the [queryObj].
-  Future<List<T>> getQueryObjectsList<T>(QueryObjectBuilder<T> queryObj) async {
-    String querySql = queryObj.querySql();
+  ///
+  /// Optionally a custom [whereString] piece can be passed in. This needs to start with the word where.
+  Future<List<T>> getQueryObjectsList<T>(QueryObjectBuilder<T> queryObj,
+      {whereString: ""}) async {
+    String querySql = "${queryObj.querySql()} $whereString";
     var res = await query(querySql);
     List<T> items = [];
     for (int i = 0; i < res.length; i++) {
@@ -66,7 +69,7 @@ class SqliteDb {
     return _db.rawQuery(querySql);
   }
 
-  insert(String insertSql) async {
+  Future<int> insert(String insertSql) async {
     return _db.rawInsert(insertSql);
   }
 
@@ -74,15 +77,16 @@ class SqliteDb {
     return _db.insert(table, values);
   }
 
-  update(String updateSql) async {
+  Future<int> update(String updateSql) async {
     return _db.rawUpdate(updateSql);
   }
 
-  updateMap(String table, Map<String, dynamic> values, String where) async {
+  Future<int> updateMap(
+      String table, Map<String, dynamic> values, String where) async {
     return _db.update(table, values, where: where);
   }
 
-  delete(String deleteSql) async {
+  Future<int> delete(String deleteSql) async {
     return _db.rawDelete(deleteSql);
   }
 
@@ -249,13 +253,19 @@ class GeopaparazziProjectDb extends SqliteDb {
   Future<int> getImagesCount(bool onlyDirty) async {
     String where = !onlyDirty ? "" : " where $NOTES_COLUMN_ISDIRTY = 1";
     List<Map<String, dynamic>> resNotes =
-    await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
+        await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
     var resNote = resNotes[0];
     var count = resNote["count"];
     return count;
   }
 
+  Future<List<Image>> getImages(bool onlyDirty) async {
+    String where = !onlyDirty ? null : "where $IMAGES_COLUMN_ISDIRTY = 1";
+    var images =
+        await getQueryObjectsList(ImageQueryBuilder(), whereString: where);
+    return images;
+  }
 
 /*
  * Add a note.
@@ -289,7 +299,20 @@ class GeopaparazziProjectDb extends SqliteDb {
   Future<int> deleteNote(int noteId) async {
     var sql = "delete from $TABLE_NOTES where $NOTES_COLUMN_ID=$noteId";
     var deletedCount = await delete(sql);
+
+    await deleteImageByNoteId(noteId);
     return deletedCount;
+  }
+
+  Future<int> deleteImageByNoteId(int noteId) async {
+    var deleteSql =
+        "delete from $TABLE_IMAGES where $IMAGES_COLUMN_NOTE_ID=$noteId";
+    return await delete(deleteSql);
+  }
+
+  Future<int> deleteImage(int imageId) async {
+    String sql = "delete from $TABLE_IMAGES where $IMAGES_COLUMN_ID=$imageId";
+    return await delete(sql);
   }
 
   /// Get the count of the current logs

@@ -347,6 +347,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1"
+  popup_menu:
+    dependency: "direct main"
+    description:
+      name: popup_menu
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   positioned_tap_detector:
     dependency: transitive
     description:
