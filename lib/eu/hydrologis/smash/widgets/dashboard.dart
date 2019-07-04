@@ -13,7 +13,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart'
-    hide Image;
+    hide DbImage;
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
@@ -608,7 +608,7 @@ $gpsInfo
   }
 
   Future<void> reloadLayers() async {
-    var activeLayersInfos = await LayerManager().getActiveLayers();
+    var activeLayersInfos = LayerManager().getActiveLayers();
     _activeLayers = [];
     for (int i = 0; i < activeLayersInfos.length; i++) {
       var tl = await activeLayersInfos[i].toTileLayer();
@@ -791,7 +791,7 @@ $gpsInfo
     List<Marker> tmp = [];
     // IMAGES
     var imagesList = await db.getImages(false);
-    imagesList.forEach((image) {
+    imagesList.forEach((image) async {
       var size = 48.0;
       var lat = image.lat;
       var lon = image.lon;
@@ -803,7 +803,8 @@ $gpsInfo
         point: new LatLng(lat, lon),
         builder: (ctx) => new Container(
                 child: GestureDetector(
-              onTap: () {
+              onTap: () async {
+                var thumb = await db.getThumbnail(image.imageDataId);
                 _showSnackbar(SnackBar(
                   backgroundColor: SmashColors.snackBarColor,
                   content: Column(
@@ -819,6 +820,17 @@ $gpsInfo
                           ),
                         ],
                       ),
+                      Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: SmashColors.mainDecorations)),
+                          padding: EdgeInsets.all(5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              thumb,
+                            ],
+                          )),
                       Padding(
                         padding: EdgeInsets.only(top: 5),
                         child: Row(
@@ -841,7 +853,10 @@ $gpsInfo
                                 color: SmashColors.mainSelection,
                               ),
                               iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                              onPressed: () {
+                              onPressed: () async {
+                                var imageData =
+                                    await db.getImage(image.imageDataId);
+
                                 // TODO
 //                                Navigator.push(
 //                                    ctx,

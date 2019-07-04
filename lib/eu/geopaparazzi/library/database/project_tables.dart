@@ -6,6 +6,7 @@
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
 import 'package:latlong/latlong.dart';
+import 'dart:typed_data';
 
 /*
  * The metadata table name.
@@ -367,7 +368,7 @@ final String IMAGESDATA_COLUMN_IMAGE = "data";
  */
 final String IMAGESDATA_COLUMN_THUMBNAIL = "thumbnail";
 
-class Image {
+class DbImage {
   int id;
   double lon;
   double lat;
@@ -406,10 +407,10 @@ class Image {
   }
 }
 
-class ImageQueryBuilder extends QueryObjectBuilder<Image> {
+class ImageQueryBuilder extends QueryObjectBuilder<DbImage> {
   @override
-  Image fromMap(Map<String, dynamic> map) {
-    Image image = Image()
+  DbImage fromMap(Map<String, dynamic> map) {
+    DbImage image = DbImage()
       ..id = map[IMAGES_COLUMN_ID]
       ..lon = map[IMAGES_COLUMN_LON]
       ..lat = map[IMAGES_COLUMN_LAT]
@@ -434,12 +435,64 @@ class ImageQueryBuilder extends QueryObjectBuilder<Image> {
       select $IMAGES_COLUMN_ID, $IMAGES_COLUMN_LON, $IMAGES_COLUMN_LAT, $IMAGES_COLUMN_ALTIM,
              $IMAGES_COLUMN_TS, $IMAGES_COLUMN_AZIM, $IMAGES_COLUMN_TEXT, $IMAGES_COLUMN_ISDIRTY,
              $IMAGES_COLUMN_NOTE_ID, $IMAGES_COLUMN_IMAGEDATA_ID
-      from $TABLE_IMAGES;
+      from $TABLE_IMAGES
     ''';
   }
 
   @override
-  Map<String, dynamic> toMap(Image item) {
+  Map<String, dynamic> toMap(DbImage item) {
+    return null;
+  }
+}
+
+class DbImageData {
+  int id;
+  Uint8List data;
+  Uint8List thumb;
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      IMAGESDATA_COLUMN_IMAGE: data,
+      IMAGESDATA_COLUMN_THUMBNAIL: thumb,
+    };
+    if (id != null) {
+      map[IMAGESDATA_COLUMN_ID] = id;
+    }
+    return map;
+  }
+}
+
+class ImageDataQueryBuilder extends QueryObjectBuilder<DbImageData> {
+  bool doData;
+  bool doThumb;
+
+  ImageDataQueryBuilder({this.doData: true, this.doThumb: true});
+
+  @override
+  DbImageData fromMap(Map<String, dynamic> map) {
+    DbImageData imageData = DbImageData()..id = map[IMAGESDATA_COLUMN_ID];
+    if (doData) imageData.data = map[IMAGESDATA_COLUMN_IMAGE];
+    if (doThumb) imageData.thumb = map[IMAGESDATA_COLUMN_THUMBNAIL];
+    return imageData;
+  }
+
+  @override
+  String insertSql() {
+    return null;
+  }
+
+  @override
+  String querySql() {
+    return '''
+      select $IMAGESDATA_COLUMN_ID 
+             ${doData ? ", $IMAGESDATA_COLUMN_IMAGE" : ""} 
+             ${doThumb ? ", $IMAGESDATA_COLUMN_THUMBNAIL" : ""}
+      from $TABLE_IMAGE_DATA
+    ''';
+  }
+
+  @override
+  Map<String, dynamic> toMap(DbImageData item) {
     return null;
   }
 }

@@ -3,12 +3,16 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
+import 'dart:typed_data';
+
 import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:latlong/latlong.dart';
+import 'dart:ui';
+import 'package:flutter/material.dart';
 
 abstract class QueryObjectBuilder<T> {
   String querySql();
@@ -260,11 +264,37 @@ class GeopaparazziProjectDb extends SqliteDb {
     return count;
   }
 
-  Future<List<Image>> getImages(bool onlyDirty) async {
-    String where = !onlyDirty ? null : "where $IMAGES_COLUMN_ISDIRTY = 1";
+  Future<List<DbImage>> getImages(bool onlyDirty) async {
+    String where = !onlyDirty ? "" : "where $IMAGES_COLUMN_ISDIRTY = 1";
     var images =
         await getQueryObjectsList(ImageQueryBuilder(), whereString: where);
     return images;
+  }
+
+  /// Get the image of a given [imageDataId].
+  Future<Image> getImage(int imageDataId) async {
+    var imageDataList = await getQueryObjectsList(
+        ImageDataQueryBuilder(doData: true, doThumb: false),
+        whereString: "where $IMAGESDATA_COLUMN_ID=$imageDataId");
+    if (imageDataList.length == 1) {
+      DbImageData imgDataMap = imageDataList.first;
+      Image img = Image.memory(imgDataMap.data);
+      return img;
+    }
+    return null;
+  }
+
+  /// Get the image thumbnail of a given [imageDataId].
+  Future<Image> getThumbnail(int imageDataId) async {
+    var imageDataList = await getQueryObjectsList(
+        ImageDataQueryBuilder(doData: false, doThumb: true),
+        whereString: "where $IMAGESDATA_COLUMN_ID=$imageDataId");
+    if (imageDataList.length == 1) {
+      DbImageData imgDataMap = imageDataList.first;
+      Image img = Image.memory(imgDataMap.thumb);
+      return img;
+    }
+    return null;
   }
 
 /*

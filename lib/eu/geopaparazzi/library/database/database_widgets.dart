@@ -57,7 +57,7 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
                l.$LOGS_COLUMN_LENGTHM, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH, p.$LOGSPROP_COLUMN_VISIBLE
         FROM $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
         WHERE l.$LOGS_COLUMN_ID=p.$LOGSPROP_COLUMN_LOGID
-        ORDER BY l.$LOGS_COLUMN_ID;
+        ORDER BY l.$LOGS_COLUMN_ID
     ''';
     return sql;
   }
