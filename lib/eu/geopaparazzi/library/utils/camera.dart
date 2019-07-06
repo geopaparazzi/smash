@@ -10,7 +10,9 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:video_player/video_player.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 const bool alsoVideo = false;
 
@@ -27,20 +29,19 @@ openCamera(BuildContext context, Function onCameraFileFunction) async {
       context,
       MaterialPageRoute(
           builder: (context) =>
-              CameraExampleHome(cameras, controller, onCameraFileFunction)));
+              CameraWidget(cameras, controller, onCameraFileFunction)));
 }
 
-class CameraExampleHome extends StatefulWidget {
+class CameraWidget extends StatefulWidget {
   List<CameraDescription> _cameras;
   var _controller;
   Function _onCameraFileFunction;
 
-  CameraExampleHome(
-      this._cameras, this._controller, this._onCameraFileFunction);
+  CameraWidget(this._cameras, this._controller, this._onCameraFileFunction);
 
   @override
-  _CameraExampleHomeState createState() {
-    return _CameraExampleHomeState(_cameras, _controller);
+  _CameraWidgetState createState() {
+    return _CameraWidgetState(_cameras, _controller);
   }
 }
 
@@ -60,8 +61,11 @@ IconData getCameraLensIcon(CameraLensDirection direction) {
 void logError(String code, String message) =>
     print('Error: $code\nError Message: $message');
 
-class _CameraExampleHomeState extends State<CameraExampleHome>
+class _CameraWidgetState extends State<CameraWidget>
     with WidgetsBindingObserver {
+  static const HIGH = "high";
+  static const MEDIUM = "medium";
+  static const LOW = "low";
   CameraController _controller;
   String imagePath;
   String videoPath;
@@ -72,7 +76,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   var _cameras;
 
-  _CameraExampleHomeState(this._cameras, this._controller);
+  _CameraWidgetState(this._cameras, this._controller);
 
   @override
   void initState() {
@@ -106,14 +110,12 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String _currentPreset = MEDIUM;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text('Camera example'),
-      ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -143,6 +145,40 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
           _cameraTogglesRowWidget(),
           Spacer(flex: 1),
           _captureControlRowWidget(),
+          Spacer(flex: 1),
+          DropdownButton(
+            value: _currentPreset,
+            items: <DropdownMenuItem>[
+              DropdownMenuItem(
+                  value: HIGH,
+                  child: Text(
+                    HIGH,
+                  )),
+              DropdownMenuItem(
+                  value: MEDIUM,
+                  child: Text(
+                    MEDIUM,
+                  )),
+              DropdownMenuItem(
+                  value: LOW,
+                  child: Text(
+                    LOW,
+                  )),
+            ],
+            onChanged: (selected) {
+              if (selected == HIGH) {
+                resolutionPreset = ResolutionPreset.high;
+                _currentPreset = HIGH;
+              } else if (selected == MEDIUM) {
+                resolutionPreset = ResolutionPreset.medium;
+                _currentPreset = MEDIUM;
+              } else if (selected == LOW) {
+                resolutionPreset = ResolutionPreset.low;
+                _currentPreset = LOW;
+              }
+              setState(() {});
+            },
+          ),
         ],
       ),
     );
@@ -175,7 +211,8 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
         padding: EdgeInsets.only(right: alsoVideo ? 0.0 : 8.0),
         child: IconButton(
           icon: const Icon(Icons.camera_alt),
-          color: Colors.blue,
+          iconSize: 48.0,
+          color: SmashColors.mainDecorations,
           onPressed: _controller != null &&
                   _controller.value.isInitialized &&
                   !_controller.value.isRecordingVideo
@@ -187,7 +224,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
     if (alsoVideo) {
       widgets.add(IconButton(
         icon: const Icon(Icons.videocam),
-        color: Colors.blue,
+        color: SmashColors.mainDecorations,
         onPressed: _controller != null &&
                 _controller.value.isInitialized &&
                 !_controller.value.isRecordingVideo
@@ -197,7 +234,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
       widgets.add(IconButton(
         icon: const Icon(Icons.stop),
-        color: Colors.red,
+        color: SmashColors.mainDecorations,
         onPressed: _controller != null &&
                 _controller.value.isInitialized &&
                 _controller.value.isRecordingVideo
