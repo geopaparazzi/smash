@@ -12,8 +12,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart'
-    hide DbImage;
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
@@ -29,6 +28,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/images.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/eventhandlers.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/camera.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/layers.dart';
 import 'package:latlong/latlong.dart';
 import 'package:path/path.dart';
@@ -304,6 +304,10 @@ $gpsInfo
                               _addNote(context, false);
                             } else if (menuItem.menuTitle == 'GPS Note') {
                               _addNote(context, true);
+                            } else if (menuItem.menuTitle == 'Center Image') {
+                              _addImage(context, false);
+                            } else if (menuItem.menuTitle == 'GPS Image') {
+                              _addImage(context, true);
                             }
                           },
                           onDismiss: onDismissMenu,
@@ -489,6 +493,44 @@ $gpsInfo
         context,
         MaterialPageRoute(
             builder: (context) => NotePropertiesWidget(reloadProject, note)));
+  }
+
+  void _addImage(BuildContext context, bool doInGps) async {
+    DbImage dbImage = DbImage()
+      ..timeStamp = DateTime.now().millisecondsSinceEpoch
+      ..isDirty = 1;
+
+    if (doInGps) {
+      var pos = GpsHandler().lastPosition;
+
+      dbImage.lon = pos.longitude;
+      dbImage.lat = pos.latitude;
+      dbImage.altim = pos.altitude;
+      dbImage.azim = pos.heading;
+    } else {
+      var center = _mapController.center;
+      dbImage.lon = center.longitude;
+      dbImage.lat = center.latitude;
+      dbImage.altim = -1;
+      dbImage.azim = -1;
+    }
+
+    openCamera(context, (takenImagePath) async {
+      Navigator.of(context).pop();
+      if (takenImagePath != null) {
+        dbImage.text =
+            "IMG_${GpConstants.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
+        bool done =
+            await ImageUtilities.saveImageToSmashDb(takenImagePath, dbImage);
+        if (done) {
+          await reloadProject();
+        }
+        File file = File(takenImagePath);
+        if (file.existsSync()) {
+          file.delete();
+        }
+      }
+    });
   }
 
   Widget makeToolbarBadge(Widget widget, int badgeValue) {

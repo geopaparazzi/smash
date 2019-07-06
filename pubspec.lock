@@ -250,7 +250,7 @@ packages:
     source: hosted
     version: "3.1.3"
   image:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image
       url: "https://pub.dartlang.org"
@@ -527,6 +527,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
+  video_player:
+    dependency: "direct main"
+    description:
+      name: video_player
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.10.1+3"
   xml:
     dependency: transitive
     description:
