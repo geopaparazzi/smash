@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 
+const bool alsoVideo = false;
+
 openCamera(BuildContext context, Function onCameraFileFunction) async {
   var cameras = await availableCameras();
 
@@ -167,11 +169,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
 
   /// Display the control bar with buttons to take pictures and record videos.
   Widget _captureControlRowWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        IconButton(
+    var widgets = <Widget>[];
+    widgets.add(
+      Padding(
+        padding: EdgeInsets.only(right: alsoVideo ? 0.0 : 8.0),
+        child: IconButton(
           icon: const Icon(Icons.camera_alt),
           color: Colors.blue,
           onPressed: _controller != null &&
@@ -180,25 +182,34 @@ class _CameraExampleHomeState extends State<CameraExampleHome>
               ? onTakePictureButtonPressed
               : null,
         ),
-        IconButton(
-          icon: const Icon(Icons.videocam),
-          color: Colors.blue,
-          onPressed: _controller != null &&
-                  _controller.value.isInitialized &&
-                  !_controller.value.isRecordingVideo
-              ? onVideoRecordButtonPressed
-              : null,
-        ),
-        IconButton(
-          icon: const Icon(Icons.stop),
-          color: Colors.red,
-          onPressed: _controller != null &&
-                  _controller.value.isInitialized &&
-                  _controller.value.isRecordingVideo
-              ? onStopButtonPressed
-              : null,
-        )
-      ],
+      ),
+    );
+    if (alsoVideo) {
+      widgets.add(IconButton(
+        icon: const Icon(Icons.videocam),
+        color: Colors.blue,
+        onPressed: _controller != null &&
+                _controller.value.isInitialized &&
+                !_controller.value.isRecordingVideo
+            ? onVideoRecordButtonPressed
+            : null,
+      ));
+
+      widgets.add(IconButton(
+        icon: const Icon(Icons.stop),
+        color: Colors.red,
+        onPressed: _controller != null &&
+                _controller.value.isInitialized &&
+                _controller.value.isRecordingVideo
+            ? onStopButtonPressed
+            : null,
+      ));
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisSize: MainAxisSize.max,
+      children: widgets,
     );
   }
 
