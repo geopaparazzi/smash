@@ -25,6 +25,7 @@ import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/icons.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/share.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/images.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/eventhandlers.dart';
@@ -810,27 +811,42 @@ $gpsInfo
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            label,
-                            style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              label,
+                              style:
+                                  GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        ),
                       ),
                       Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: SmashColors.mainDecorations)),
-                          padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            border:
+                                Border.all(color: SmashColors.mainDecorations)),
+                        padding: EdgeInsets.all(5),
+                        child: GestureDetector(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               thumb,
                             ],
-                          )),
+                          ),
+                          onTap: () async {
+                            Navigator.push(
+                                ctx,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SmashImageZoomWidget(image)));
+                            _hideSnackbar();
+                          },
+                        ),
+                      ),
                       Padding(
                         padding: EdgeInsets.only(top: 5),
                         child: Row(
@@ -845,26 +861,6 @@ $gpsInfo
                               onPressed: () {
                                 shareText(label);
                                 _hideSnackbar();
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                FontAwesomeIcons.solidImages,
-                                color: SmashColors.mainSelection,
-                              ),
-                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                              onPressed: () async {
-                                var imageData =
-                                    await db.getImage(image.imageDataId);
-
-                                // TODO
-//                                Navigator.push(
-//                                    ctx,
-//                                    MaterialPageRoute(
-//                                        builder: (context) =>
-//                                            NotePropertiesWidget(
-//                                                reloadProject, note)));
-//                                _hideSnackbar();
                               },
                             ),
                             IconButton(

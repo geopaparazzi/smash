@@ -9,10 +9,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/images.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:latlong/latlong.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+
+const int MAXBLOBSIZE = 1900000;
 
 abstract class QueryObjectBuilder<T> {
   String querySql();
@@ -271,30 +274,67 @@ class GeopaparazziProjectDb extends SqliteDb {
     return images;
   }
 
-  /// Get the image of a given [imageDataId].
-  Future<Image> getImage(int imageDataId) async {
-    var imageDataList = await getQueryObjectsList(
-        ImageDataQueryBuilder(doData: true, doThumb: false),
-        whereString: "where $IMAGESDATA_COLUMN_ID=$imageDataId");
-    if (imageDataList.length == 1) {
-      DbImageData imgDataMap = imageDataList.first;
-      Image img = Image.memory(imgDataMap.data);
-      return img;
-    }
-    return null;
-  }
-
   /// Get the image thumbnail of a given [imageDataId].
   Future<Image> getThumbnail(int imageDataId) async {
     var imageDataList = await getQueryObjectsList(
         ImageDataQueryBuilder(doData: false, doThumb: true),
         whereString: "where $IMAGESDATA_COLUMN_ID=$imageDataId");
-    if (imageDataList.length == 1) {
+    if (imageDataList != null && imageDataList.length == 1) {
       DbImageData imgDataMap = imageDataList.first;
-      Image img = Image.memory(imgDataMap.thumb);
-      return img;
+      if (imgDataMap != null && imgDataMap.thumb != null) {
+        return ImageUtilities.imageFromBytes(imgDataMap.thumb);
+      }
     }
     return null;
+  }
+
+  /// Get the image of a given [imageDataId].
+  Future<Image> getImage(int imageDataId) async {
+    Uint8List imageDataBytes = await getImageDataBytes(imageDataId);
+    if (imageDataBytes != null)
+      return ImageUtilities.imageFromBytes(imageDataBytes);
+    return null;
+  }
+
+  Future<Uint8List> getImageDataBytes(int imageDataId) async {
+    Uint8List imageDataBytes;
+    var whereStr = "where $IMAGESDATA_COLUMN_ID=$imageDataId";
+    try {
+      List<DbImageData> imageDataList = await getQueryObjectsList(
+          ImageDataQueryBuilder(doData: true, doThumb: false),
+          whereString: whereStr);
+      if (imageDataList != null && imageDataList.length == 1) {
+        DbImageData imgDataMap = imageDataList.first;
+        if (imgDataMap != null && imgDataMap.data != null) {
+          imageDataBytes = imgDataMap.data;
+        }
+      }
+    } catch (ex) {
+      print(ex);
+      String sizeQuery =
+          "SELECT $IMAGESDATA_COLUMN_ID, length($IMAGESDATA_COLUMN_IMAGE) as blobsize FROM $TABLE_IMAGE_DATA $whereStr";
+      var res = await query(sizeQuery);
+      if (res.length == 1) {
+        int blobSize = res[0]['blobsize'];
+        List<int> total = List();
+        if (blobSize > MAXBLOBSIZE) {
+          for (int i = 1; i <= blobSize; i = i + MAXBLOBSIZE) {
+            int from = i;
+            int size = MAXBLOBSIZE;
+            if (from + size > blobSize) {
+              size = blobSize - from + 1;
+            }
+            String tmpQuery =
+                "SELECT substr($IMAGESDATA_COLUMN_IMAGE, $from, $size) as partialblob FROM $TABLE_IMAGE_DATA $whereStr";
+            var res2 = await query(tmpQuery);
+            var partial = res2[0]['partialblob'];
+            total.addAll(partial);
+          }
+          imageDataBytes = Uint8List.fromList(total);
+        }
+      }
+    }
+    return imageDataBytes;
   }
 
 /*

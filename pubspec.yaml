@@ -64,6 +64,9 @@ dependencies:
   # MIT
   popup_menu: 1.0.1
 
+  #MIT
+  extended_image: any
+
   mapsforge_flutter:
     path: ../../mapsforge_flutter/mapsforge_flutter
 
