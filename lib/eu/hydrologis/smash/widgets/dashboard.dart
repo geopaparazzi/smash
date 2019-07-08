@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geopaparazzi_light/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
@@ -767,7 +768,10 @@ $gpsInfo
     await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
   }
 
-  Future _openSettings(BuildContext context) async {}
+  Future _openSettings(BuildContext context) async {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SettingsWidget()));
+  }
 
   Future _openAbout(BuildContext context) async {}
 
