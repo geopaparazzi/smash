@@ -92,8 +92,9 @@ class _DashboardWidgetState extends State<DashboardWidget>
     _mapController = MapController();
 
     _mainEventsHandler.addMapCenterListener(() {
-      _mapController.move(
-          _mainEventsHandler.getMapCenter(), _mapController.zoom);
+      var newMapCenter = _mainEventsHandler.getMapCenter();
+      if (newMapCenter != null)
+        _mapController.move(newMapCenter, _mapController.zoom);
     });
 
     _checkPermissions().then((allRight) async {
@@ -334,19 +335,11 @@ $gpsInfo
                 GpsInfoButton(_mainEventsHandler),
                 Spacer(),
                 IconButton(
-                  onPressed: () {
-                    setState(() {
-                      if (_lastPosition != null)
-                        _mapController.move(
-                            LatLng(_lastPosition.latitude,
-                                _lastPosition.longitude),
-                            _mapController.zoom);
-                    });
-                  },
-                  tooltip: 'Center on GPS',
+                  // placeholder icon to keep centered
+                  onPressed: null,
                   icon: Icon(
                     Icons.center_focus_strong,
-                    color: SmashColors.mainBackground,
+                    color: SmashColors.mainDecorations,
                   ),
                 ),
                 IconButton(
@@ -829,6 +822,8 @@ $gpsInfo
     _projectName = basenameWithoutExtension(db.path);
     _projectDirName = dirname(db.path);
     _notesCount = await db.getNotesCount(false);
+    var imageNotescount = await db.getImagesCount(false);
+    _notesCount += imageNotescount;
     _logsCount = await db.getGpsLogCount(false);
 
     List<Marker> tmp = [];
@@ -1143,6 +1138,17 @@ class GpsInfoButtonState extends State<GpsInfoButton> {
         tooltip: "Check GPS Information",
         onPressed: () {
           print("GPS info Pressed...");
+          var pos = GpsHandler().lastPosition;
+          if (pos != null) {
+            var newCenter = LatLng(pos.latitude, pos.longitude);
+            if (widget._eventHandler.getMapCenter() == newCenter) {
+              // trigger a change in the handler
+              // which would not is the coord remains the same
+              widget._eventHandler.setMapCenter(LatLng(
+                  pos.latitude - 0.00000001, pos.longitude - 0.00000001));
+            }
+            widget._eventHandler.setMapCenter(newCenter);
+          }
         });
   }
 }

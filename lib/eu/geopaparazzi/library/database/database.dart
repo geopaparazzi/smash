@@ -254,16 +254,17 @@ class GeopaparazziProjectDb extends SqliteDb {
     return notes;
   }
 
-  /// Get the count of the current notes
+  /// Get the count of the current image notes (not the number of images in the db,
+  /// where multiple could be associated to the same note).
   ///
-  /// Get the count using [onlyDirty] to count only dirty notes.
+  /// Get the count using [onlyDirty] to count only dirty images.
   Future<int> getImagesCount(bool onlyDirty) async {
-    String where = !onlyDirty ? "" : " where $NOTES_COLUMN_ISDIRTY = 1";
-    List<Map<String, dynamic>> resNotes =
-        await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
+    String where = !onlyDirty ? "" : " where $IMAGES_COLUMN_ISDIRTY = 1";
+    List<Map<String, dynamic>> resImages =
+        await query("SELECT count(*) as count FROM $TABLE_IMAGES$where");
 
-    var resNote = resNotes[0];
-    var count = resNote["count"];
+    var resImage = resImages[0];
+    var count = resImage["count"];
     return count;
   }
 
@@ -310,7 +311,6 @@ class GeopaparazziProjectDb extends SqliteDb {
         }
       }
     } catch (ex) {
-      print(ex);
       String sizeQuery =
           "SELECT $IMAGESDATA_COLUMN_ID, length($IMAGESDATA_COLUMN_IMAGE) as blobsize FROM $TABLE_IMAGE_DATA $whereStr";
       var res = await query(sizeQuery);
