@@ -292,36 +292,44 @@ $gpsInfo
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 makeToolbarBadge(
-                    IconButton(
-                      onPressed: () async {
-                        PopupMenu.context = context;
-                        PopupMenu menu = PopupMenu(
-                          backgroundColor: SmashColors.mainBackground,
-                          lineColor: SmashColors.mainDecorations,
-                          // maxColumn: 2,
-                          items: getMenuItems(),
-                          onClickMenu: (menuItem) async {
-                            if (menuItem.menuTitle == 'Center Note') {
-                              _addNote(context, false);
-                            } else if (menuItem.menuTitle == 'GPS Note') {
-                              _addNote(context, true);
-                            } else if (menuItem.menuTitle == 'Center Image') {
-                              _addImage(context, false);
-                            } else if (menuItem.menuTitle == 'GPS Image') {
-                              _addImage(context, true);
-                            }
-                          },
-                          onDismiss: onDismissMenu,
-                        );
+                    GestureDetector(
+                      child: IconButton(
+                        onPressed: () async {
+                          PopupMenu.context = context;
+                          PopupMenu menu = PopupMenu(
+                            backgroundColor: SmashColors.mainBackground,
+                            lineColor: SmashColors.mainDecorations,
+                            // maxColumn: 2,
+                            items: getMenuItems(),
+                            onClickMenu: (menuItem) async {
+                              if (menuItem.menuTitle == 'Center Note') {
+                                _addNote(context, false);
+                              } else if (menuItem.menuTitle == 'GPS Note') {
+                                _addNote(context, true);
+                              } else if (menuItem.menuTitle == 'Center Image') {
+                                _addImage(context, false);
+                              } else if (menuItem.menuTitle == 'GPS Image') {
+                                _addImage(context, true);
+                              }
+                            },
+                            onDismiss: onDismissMenu,
+                          );
 
-                        menu.show(widgetKey: _menuKey);
-                      },
-                      tooltip: 'Notes',
-                      key: _menuKey,
-                      icon: Icon(
-                        Icons.note,
-                        color: SmashColors.mainBackground,
+                          menu.show(widgetKey: _menuKey);
+                        },
+                        key: _menuKey,
+                        icon: Icon(
+                          Icons.note,
+                          color: SmashColors.mainBackground,
+                        ),
                       ),
+                      onLongPress: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    NotesListWidget(_mainEventsHandler)));
+                      },
                     ),
                     _notesCount),
                 makeToolbarBadge(LoggingButton(_mainEventsHandler), _logsCount),
@@ -485,7 +493,8 @@ $gpsInfo
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => NotePropertiesWidget(reloadProject, note)));
+            builder: (context) =>
+                NotePropertiesWidget(_mainEventsHandler, note)));
   }
 
   void _addImage(BuildContext context, bool doInGps) async {
@@ -948,7 +957,7 @@ $gpsInfo
     });
 
     // NOTES
-    List<Note> notesList = await db.getNotes(false);
+    List<Note> notesList = await db.getNotes();
     notesList.forEach((note) {
       var label =
           "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
@@ -1003,7 +1012,7 @@ $gpsInfo
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             NotePropertiesWidget(
-                                                reloadProject, note)));
+                                                _mainEventsHandler, note)));
                                 _hideSnackbar();
                               },
                             ),

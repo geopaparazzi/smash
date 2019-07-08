@@ -190,7 +190,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     return count;
   }
 
-  Future<List<Note>> getNotes(bool onlyDirty) async {
+  Future<List<Note>> getNotes({bool onlyDirty: false}) async {
     String where = "";
     if (onlyDirty) {
       where = " where $NOTES_COLUMN_ISDIRTY=1";

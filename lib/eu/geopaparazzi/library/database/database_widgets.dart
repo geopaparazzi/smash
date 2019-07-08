@@ -15,6 +15,7 @@ import 'package:flutter_material_color_picker/flutter_material_color_picker.dart
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
 import 'package:latlong/latlong.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Log object dedicated to the list of logs widget.
 class Log4ListWidget {
@@ -468,9 +469,9 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 /// The notes properties page.
 class NotePropertiesWidget extends StatefulWidget {
   var _note;
-  Function _reloadFunction;
+  MainEventHandler _eventHandler;
 
-  NotePropertiesWidget(this._reloadFunction, this._note);
+  NotePropertiesWidget(this._eventHandler, this._note);
 
   @override
   State<StatefulWidget> createState() {
@@ -538,9 +539,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 
             var db = await gpProjectModel.getDatabase();
             await db.updateNote(_note);
-            if (widget._reloadFunction() != null) {
-              widget._reloadFunction();
-            }
+            widget._eventHandler.reloadProjectFunction();
           }
           return true;
         },
@@ -686,12 +685,6 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
       ),
       TableRow(
         children: [
-          _cellForString("Description"),
-          _cellForNoteDescription(context, _note),
-        ],
-      ),
-      TableRow(
-        children: [
           _cellForString("Timestamp"),
           _cellForString(GpConstants.ISO8601_TS_FORMATTER
               .format(DateTime.fromMillisecondsSinceEpoch(_note.timeStamp))),
@@ -700,7 +693,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
       TableRow(
         children: [
           _cellForString("Altitude"),
-          _cellForString(_note.altim.toString()),
+          _cellForString(_note.altim.toInt().toString()),
         ],
       ),
       TableRow(
@@ -790,5 +783,158 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
         ),
       ),
     );
+  }
+}
+
+/// The notes list widget.
+class NotesListWidget extends StatefulWidget {
+  final MainEventHandler _eventHandler;
+
+  NotesListWidget(this._eventHandler);
+
+  @override
+  State<StatefulWidget> createState() {
+    return NotesListWidgetState();
+  }
+}
+
+/// The log list widget state.
+class NotesListWidgetState extends State<NotesListWidget> {
+  List<Note> _notesList = [];
+
+  Future<bool> loadNotes() async {
+    var db = await gpProjectModel.getDatabase();
+    var itemsList = await db.getNotes();
+    if (itemsList != null) {
+      _notesList = itemsList;
+    }
+    return true;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Notes list"),
+//          actions: <Widget>[
+//            IconButton(
+//              icon: Icon(Icons.check),
+//              tooltip: "Select all",
+//              onPressed: () async {},
+//            ),
+//            IconButton(
+//              tooltip: "Unselect all",
+//              icon: Icon(Icons.check_box_outline_blank),
+//              onPressed: () async {},
+//            ),
+//            IconButton(
+//              tooltip: "Invert selection",
+//              icon: Icon(Icons.check_box),
+//              onPressed: () async {},
+//            ),
+//          ],
+        ),
+        body: FutureBuilder<void>(
+          future: loadNotes(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              // If the Future is complete, display the preview.
+              return ListView.builder(
+                  itemCount: _notesList.length,
+                  itemBuilder: (context, index) {
+                    Note note = _notesList[index];
+                    return Dismissible(
+                      confirmDismiss: _confirmNoteDismiss,
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) {
+                        gpProjectModel.getDatabase().then((db) async {
+                          await db.deleteNote(note.id);
+                          widget._eventHandler.reloadProjectFunction();
+                        });
+                      },
+                      key: Key("${note.id}"),
+                      background: Container(
+                        alignment: AlignmentDirectional.centerEnd,
+                        color: Colors.red,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      child: ListTile(
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Icon(
+                              NOTES_ICONDATA[note.noteExt.marker] ??
+                                  FontAwesomeIcons.mapMarker,
+                              color: ColorExt(note.noteExt.color),
+                              size: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                            ),
+//                            Checkbox(
+//                                value: note.isVisible == 1 ? true : false,
+//                                onChanged: (isVisible) async {
+//                                  note.isVisible = isVisible ? 1 : 0;
+//                                  var db = await gpProjectModel.getDatabase();
+//                                  await db.updateGpsLogVisibility(
+//                                      isVisible, note.id);
+//                                  widget._eventHandler.reloadProjectFunction();
+//                                  setState(() {});
+//                                }),
+                          ],
+                        ),
+                        trailing: Icon(Icons.arrow_right),
+                        title: Text('${note.text}'),
+                        subtitle: Text(
+                            '${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}'),
+                        onTap: () => _navigateToNoteProperties(context, note),
+                        onLongPress: () {
+                          LatLng position = LatLng(note.lat, note.lon);
+                          widget._eventHandler.moveToFunction(position);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    );
+                  });
+            } else {
+              // Otherwise, display a loading indicator.
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ));
+  }
+
+  Future<bool> _confirmNoteDismiss(DismissDirection direction) async {
+    return await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Confirm'),
+            content: Text('Are you sure you want to delete the note?'),
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: Text('Yes')),
+              FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                  child: Text('No')),
+            ],
+          );
+        });
+  }
+
+  _navigateToNoteProperties(BuildContext context, Note note) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                NotePropertiesWidget(widget._eventHandler, note)));
   }
 }
