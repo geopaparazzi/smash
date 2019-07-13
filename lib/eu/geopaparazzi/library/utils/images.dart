@@ -4,16 +4,14 @@
  * found in the LICENSE file.
  */
 
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:extended_image/extended_image.dart';
 import 'dart:io';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
+import 'dart:typed_data';
+
+//import 'package:extended_image/extended_image.dart';
+import 'package:flutter/material.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
+import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
 import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as IMG;
 
 class ImageUtilities {
@@ -52,7 +50,7 @@ class ImageUtilities {
       ..thumb = thumbBytes
       ..data = imageBytes;
 
-    await db.transaction((tx) async {
+    return await db.transaction((tx) async {
       int imgDataId = await tx.insert(TABLE_IMAGE_DATA, imgData.toMap());
       dbImageToCompleteAndSave.imageDataId = imgDataId;
       int imgId =
@@ -61,128 +59,134 @@ class ImageUtilities {
         GpLogger().e("Could not save image to db: $path");
         return false;
       }
+      return true;
     });
-    return true;
   }
 }
-
-class ImageZoomWidget extends StatelessWidget {
-  var _bytes;
-  var _title;
-
-  ImageZoomWidget(this._title, this._bytes);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-        child: Column(children: <Widget>[
-      AppBar(
-        title: Text(_title),
-      ),
-      Expanded(
-        child: ExtendedImage.memory(
-          _bytes,
-          fit: BoxFit.contain,
-          //enableLoadState: false,
-          mode: ExtendedImageMode.Gesture,
-          gestureConfig: GestureConfig(
-              minScale: 0.9,
-              animationMinScale: 0.7,
-              maxScale: 5.0,
-              animationMaxScale: 5.5,
-              speed: 1.0,
-              inertialSpeed: 100.0,
-              initialScale: 1.0,
-              inPageView: false),
-        ),
-      )
-    ]));
-  }
-}
-
-/// A widget to view, zoom and pan a smash image.
-class SmashImageZoomWidget extends StatelessWidget {
-  var _bytes;
-  var _title;
-  var _image;
-
-  SmashImageZoomWidget(this._image);
-
-  Future<Null> getImageData() async {
-    var db = await gpProjectModel.getDatabase();
-    _bytes = await db.getImageDataBytes(_image.id);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _title = _image.text;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_title),
-      ),
-      body: FutureBuilder<void>(
-        future: getImageData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return OrientationBuilder(builder: (context, orientation) {
-              if (orientation == Orientation.portrait) {
-                return Center(
-                    child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                      Expanded(
-                        child: ExtendedImage.memory(
-                          _bytes,
-                          fit: BoxFit.contain,
-                          //enableLoadState: false,
-                          mode: ExtendedImageMode.Gesture,
-                          gestureConfig: GestureConfig(
-                              minScale: 0.9,
-                              animationMinScale: 0.7,
-                              maxScale: 10.0,
-                              animationMaxScale: 10.5,
-                              speed: 1.0,
-                              inertialSpeed: 100.0,
-                              initialScale: 1.0,
-                              inPageView: false),
-                        ),
-                      )
-                    ]));
-              } else {
-                return Center(
-                    child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                      Expanded(
-                        child: ExtendedImage.memory(
-                          _bytes,
-                          fit: BoxFit.contain,
-                          //enableLoadState: false,
-                          mode: ExtendedImageMode.Gesture,
-                          gestureConfig: GestureConfig(
-                              minScale: 0.9,
-                              animationMinScale: 0.7,
-                              maxScale: 10.0,
-                              animationMaxScale: 10.5,
-                              speed: 1.0,
-                              inertialSpeed: 100.0,
-                              initialScale: 1.0,
-                              inPageView: false),
-                        ),
-                      )
-                    ]));
-              }
-            });
-          } else {
-            // Otherwise, display a loading indicator.
-            return Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-    );
-  }
-}
+//
+//class ImageZoomWidget extends StatelessWidget {
+//  var _bytes;
+//  var _title;
+//
+//  ImageZoomWidget(this._title, this._bytes);
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Material(
+//        child: Column(children: <Widget>[
+//      AppBar(
+//        title: Text(_title),
+//      ),
+//      Expanded(
+//        child: ExtendedImage.memory(
+//          _bytes,
+//          fit: BoxFit.contain,
+//          //enableLoadState: false,
+//          mode: ExtendedImageMode.Gesture,
+//          initGestureConfigHandler: (state) {
+//            return GestureConfig(
+//                minScale: 0.9,
+//                animationMinScale: 0.7,
+//                maxScale: 5.0,
+//                animationMaxScale: 5.5,
+//                speed: 1.0,
+//                inertialSpeed: 100.0,
+//                initialScale: 1.0,
+//                inPageView: false);
+//          },
+//        ),
+//      )
+//    ]));
+//  }
+//}
+//
+///// A widget to view, zoom and pan a smash image.
+//class SmashImageZoomWidget extends StatelessWidget {
+//  var _bytes;
+//  var _title;
+//  var _image;
+//
+//  SmashImageZoomWidget(this._image);
+//
+//  Future<Null> getImageData() async {
+//    var db = await gpProjectModel.getDatabase();
+//    _bytes = await db.getImageDataBytes(_image.id);
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    _title = _image.text;
+//
+//    return Scaffold(
+//      appBar: AppBar(
+//        title: Text(_title),
+//      ),
+//      body: FutureBuilder<void>(
+//        future: getImageData(),
+//        builder: (context, snapshot) {
+//          if (snapshot.connectionState == ConnectionState.done) {
+//            // If the Future is complete, display the preview.
+//            return OrientationBuilder(builder: (context, orientation) {
+//              if (orientation == Orientation.portrait) {
+//                return Center(
+//                    child: Column(
+//                        mainAxisSize: MainAxisSize.max,
+//                        crossAxisAlignment: CrossAxisAlignment.center,
+//                        children: <Widget>[
+//                      Expanded(
+//                        child: ExtendedImage.memory(
+//                          _bytes,
+//                          fit: BoxFit.contain,
+//                          //enableLoadState: false,
+//                          mode: ExtendedImageMode.Gesture,
+//                          initGestureConfigHandler: (state) {
+//                            return GestureConfig(
+//                                minScale: 0.9,
+//                                animationMinScale: 0.7,
+//                                maxScale: 5.0,
+//                                animationMaxScale: 5.5,
+//                                speed: 1.0,
+//                                inertialSpeed: 100.0,
+//                                initialScale: 1.0,
+//                                inPageView: false);
+//                          },
+//                        ),
+//                      )
+//                    ]));
+//              } else {
+//                return Center(
+//                    child: Row(
+//                        mainAxisSize: MainAxisSize.max,
+//                        crossAxisAlignment: CrossAxisAlignment.center,
+//                        children: <Widget>[
+//                      Expanded(
+//                        child: ExtendedImage.memory(
+//                          _bytes,
+//                          fit: BoxFit.contain,
+//                          //enableLoadState: false,
+//                          mode: ExtendedImageMode.Gesture,
+//                          initGestureConfigHandler: (state) {
+//                            return GestureConfig(
+//                                minScale: 0.9,
+//                                animationMinScale: 0.7,
+//                                maxScale: 5.0,
+//                                animationMaxScale: 5.5,
+//                                speed: 1.0,
+//                                inertialSpeed: 100.0,
+//                                initialScale: 1.0,
+//                                inPageView: false);
+//                          },
+//                        ),
+//                      )
+//                    ]));
+//              }
+//            });
+//          } else {
+//            // Otherwise, display a loading indicator.
+//            return Center(child: CircularProgressIndicator());
+//          }
+//        },
+//      ),
+//    );
+//  }
+//}

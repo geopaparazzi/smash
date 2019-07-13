@@ -25,6 +25,8 @@ import 'package:mapsforge_flutter/src/model/tile.dart';
 import 'package:mapsforge_flutter/src/renderer/rendererjob.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:flutter/foundation.dart' show DiagnosticsProperty;
+
 Future<TileLayerOptions> loadMapsforgeLayer(File file) async {
   double tileSize = 256;
   var mapsforgeTileProvider = MapsforgeTileProvider(file, tileSize: tileSize);
@@ -62,6 +64,7 @@ class MapsforgeTileProvider extends TileProvider {
     GraphicFactory graphicFactory = FlutterGraphicFactory();
     _displayModel = DisplayModel();
     _displayModel.setFixedTileSize(tileSize);
+    _displayModel.setUserScaleFactor(2.5);
     SymbolCache symbolCache = SymbolCache(graphicFactory, _displayModel);
 
     RenderThemeBuilder renderThemeBuilder =
@@ -124,15 +127,13 @@ class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
 
   @override
   ImageStreamCompleter load(MapsforgeImageProvider key) {
-    var info = (StringBuffer information) {
-      information.writeln('Image provider: $this');
-      information.write('Image key: $key');
-    };
-
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key),
       scale: 1,
-      informationCollector: info,
+      informationCollector: () sync* {
+        yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+        yield DiagnosticsProperty<MapsforgeImageProvider>('Image key', key);
+      },
     );
   }
 
@@ -193,15 +194,13 @@ class BitmapImageProvider extends ImageProvider<BitmapImageProvider> {
 
   @override
   ImageStreamCompleter load(BitmapImageProvider key) {
-    var info = (StringBuffer information) {
-      information.writeln('Image provider: $this');
-      information.write('Image key: $key');
-    };
-
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key),
       scale: 1,
-      informationCollector: info,
+      informationCollector: () sync* {
+        yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+        yield DiagnosticsProperty<BitmapImageProvider>('Image key', key);
+      },
     );
   }
 

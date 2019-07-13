@@ -888,11 +888,12 @@ $gpsInfo
                             ],
                           ),
                           onTap: () async {
-                            Navigator.push(
-                                ctx,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        SmashImageZoomWidget(image)));
+                            // FIXME when extimage works with new
+//                            Navigator.push(
+//                                ctx,
+//                                MaterialPageRoute(
+//                                    builder: (context) =>
+//                                        SmashImageZoomWidget(image)));
                             _hideSnackbar();
                           },
                         ),

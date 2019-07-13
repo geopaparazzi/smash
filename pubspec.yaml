@@ -27,8 +27,22 @@ dependencies:
   http: ^0.12.0+2
   rxdart: 0.21.0
 
-  flutter_map: 0.5.5+2
-  flutter_map_marker_cluster: 0.1.5
+  # BSD
+  #flutter_map: ^0.6.1+2
+  #flutter_map_marker_cluster: ^0.2.0+1
+
+  flutter_map:
+    path: ../../flutter_map
+#    git:
+#      url: https://github.com/johnpryan/flutter_map.git
+#      ref: dev
+
+  flutter_map_marker_cluster: #^0.2.0+1
+    path: ../../flutter_map_marker_cluster
+#  flutter_map_marker_cluster:
+#    git:
+#      url: https://github.com/lpongetti/flutter_map_marker_cluster.git
+#      ref: develop
 
   geolocator: ^5.0.0
   sqflite: ^1.1.5
@@ -39,7 +53,7 @@ dependencies:
   shared_preferences: 0.5.3+1
 
   animated_floatactionbuttons: ^0.1.0
-  flutter_svg: 0.12.4
+  #flutter_svg: 0.12.4
   screen: 0.0.5
   geocoder: 0.1.2
 
@@ -65,7 +79,7 @@ dependencies:
   popup_menu: 1.0.1
 
   #MIT
-  extended_image: any
+  #extended_image: 0.5.1
 
   #BSD
   camera: 0.5.2+1
