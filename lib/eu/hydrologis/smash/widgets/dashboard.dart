@@ -5,39 +5,16 @@
  */
 import 'dart:io';
 
+import 'package:badges/badges.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
-import 'package:smash/eu/geopaparazzi/library/database/database_widgets.dart';
-import 'package:smash/eu/geopaparazzi/library/database/project_tables.dart';
-import 'package:smash/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:smash/eu/geopaparazzi/library/maps/geocoding.dart';
-import 'package:smash/eu/geopaparazzi/library/maps/mapsforge.dart';
-import 'package:smash/eu/geopaparazzi/library/models/models.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/dialogs.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/files.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/logging.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/icons.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/share.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/images.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/utils.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/validators.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/eventhandlers.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/camera.dart';
-import 'package:smash/eu/geopaparazzi/library/maps/layers.dart';
-import 'package:latlong/latlong.dart';
+import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:screen/screen.dart';
-import 'package:badges/badges.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:popup_menu/popup_menu.dart';
+import 'package:screen/screen.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -73,7 +50,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
   Size _media;
 
   String _projectName = "No project loaded";
-  String _projectDirName = null;
+  String _projectDirName;
   int _notesCount = 0;
   int _logsCount = 0;
 
@@ -100,7 +77,9 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
     _checkPermissions().then((allRight) async {
       if (allRight) {
-        bool init = await GpLogger().init(); // init logger
+        var directory =
+            await WorkspaceUtils.getApplicationConfigurationFolder();
+        bool init = await GpLogger().init(directory.path); // init logger
         if (init) GpLogger().d("Db logger initialized.");
 
         // start gps listening
@@ -249,7 +228,7 @@ Last position:
   Accuracy: ${_lastPosition.accuracy.round()} m
   Heading: ${_lastPosition.heading}
   Speed: ${_lastPosition.speed} m/s
-  Timestamp: ${GpConstants.ISO8601_TS_FORMATTER.format(_lastPosition.timestamp)}''';
+  Timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(_lastPosition.timestamp)}''';
               }
               showInfoDialog(
                   context,
@@ -522,9 +501,9 @@ $gpsInfo
       Navigator.of(context).pop();
       if (takenImagePath != null) {
         dbImage.text =
-            "IMG_${GpConstants.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
-        bool done =
-            await ImageUtilities.saveImageToSmashDb(takenImagePath, dbImage);
+            "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
+        bool done = await ImageWidgetUtilities.saveImageToSmashDb(
+            takenImagePath, dbImage);
         if (done) {
           await reloadProject();
         }
@@ -787,7 +766,7 @@ $gpsInfo
 
   Future _createNewProject(BuildContext context) async {
     String projectName =
-        "geopaparazzi_${GpConstants.DATE_TS_FORMATTER.format(DateTime.now())}";
+        "geopaparazzi_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
 
     var userString = await showInputDialog(
       context,
@@ -799,7 +778,7 @@ $gpsInfo
     );
     if (userString != null) {
       if (userString.trim().length == 0) userString = projectName;
-      var file = await FileUtils.getDefaultStorageFolder();
+      var file = await WorkspaceUtils.getDefaultStorageFolder();
       var newPath = join(file.path, userString);
       if (!newPath.endsWith(".gpap")) {
         newPath = "$newPath.gpap";
@@ -847,7 +826,7 @@ $gpsInfo
       var lat = image.lat;
       var lon = image.lon;
       var label =
-          "image: ${image.text}\nlat: ${image.lat}\nlon: ${image.lon}\naltim: ${image.altim.round()}\nts: ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
+          "image: ${image.text}\nlat: ${image.lat}\nlon: ${image.lon}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
       tmp.add(Marker(
         width: size,
         height: size,
@@ -886,12 +865,11 @@ $gpsInfo
                         ],
                       ),
                       onTap: () async {
-                        // FIXME when extimage works with new
-//                            Navigator.push(
-//                                ctx,
-//                                MaterialPageRoute(
-//                                    builder: (context) =>
-//                                        SmashImageZoomWidget(image)));
+                        Navigator.push(
+                            ctx,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    SmashImageZoomWidget(image)));
                         _hideSnackbar();
                       },
                     ),
@@ -921,7 +899,7 @@ $gpsInfo
                           onPressed: () async {
                             var doRemove = await showConfirmDialog(
                                 ctx,
-                                "Remove Image",
+                                "Remove Imadge",
                                 "Are you sure you want to remove image ${image.id}?");
                             if (doRemove) {
                               var db = await gpProjectModel.getDatabase();
@@ -963,7 +941,7 @@ $gpsInfo
     List<Note> notesList = await db.getNotes();
     notesList.forEach((note) {
       var label =
-          "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
+          "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
       NoteExt noteExt = note.noteExt;
       tmp.add(Marker(
         width: noteExt.size,
@@ -1213,7 +1191,7 @@ class LoggingButtonState extends State<LoggingButton> {
     } else {
       if (GpsHandler().hasFix()) {
         String logName =
-            "log ${GpConstants.ISO8601_TS_FORMATTER.format(DateTime.now())}";
+            "log ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.now())}";
 
         String userString = await showInputDialog(
           context,

@@ -4,12 +4,7 @@
  * found in the LICENSE file.
  */
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/icons.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/share.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/images.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
 
 class SettingsWidget extends StatefulWidget {
 

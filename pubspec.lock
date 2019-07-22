@@ -2,7 +2,7 @@
 # See https://dart.dev/tools/pub/glossary#lockfile
 packages:
   animated_floatactionbuttons:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: animated_floatactionbuttons
       url: "https://pub.dartlang.org"
@@ -58,7 +58,7 @@ packages:
     source: hosted
     version: "1.1.0"
   camera:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: camera
       url: "https://pub.dartlang.org"
@@ -106,13 +106,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
-  datetime_picker_formfield:
-    dependency: "direct main"
-    description:
-      name: datetime_picker_formfield
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.8"
   dcache:
     dependency: transitive
     description:
@@ -123,14 +116,14 @@ packages:
     source: git
     version: "0.3.0"
   esys_flutter_share:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: esys_flutter_share
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
   extended_image:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: extended_image
       url: "https://pub.dartlang.org"
@@ -144,7 +137,7 @@ packages:
     source: hosted
     version: "0.1.4"
   file_picker:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: file_picker
       url: "https://pub.dartlang.org"
@@ -170,21 +163,21 @@ packages:
     source: hosted
     version: "2.0.0"
   flutter_map:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "../OTHERS/flutter_map"
       relative: true
     source: path
     version: "0.5.6"
   flutter_map_marker_cluster:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "../OTHERS/flutter_map_marker_cluster"
       relative: true
     source: path
     version: "0.2.0+1"
   flutter_material_color_picker:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_material_color_picker
       url: "https://pub.dartlang.org"
@@ -203,21 +196,21 @@ packages:
     source: sdk
     version: "0.0.0"
   font_awesome_flutter:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: font_awesome_flutter
       url: "https://pub.dartlang.org"
     source: hosted
     version: "8.4.0"
   geocoder:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: geocoder
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
   geolocator:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: geolocator
       url: "https://pub.dartlang.org"
@@ -231,7 +224,7 @@ packages:
     source: hosted
     version: "2.0.1"
   http:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: http
       url: "https://pub.dartlang.org"
@@ -251,8 +244,22 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.3"
-  image:
+  hydro_flutter_libs:
     dependency: "direct main"
+    description:
+      path: "../hydrolibraries/hydro_flutter_libs"
+      relative: true
+    source: path
+    version: "0.1.0"
+  hydro_libs:
+    dependency: transitive
+    description:
+      path: "../hydrolibraries/hydro_libs"
+      relative: true
+    source: path
+    version: "0.1.0"
+  image:
+    dependency: transitive
     description:
       name: image
       url: "https://pub.dartlang.org"
@@ -280,12 +287,12 @@ packages:
     source: hosted
     version: "2.0.2"
   logger:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: logger
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.0"
+    version: "0.7.0+2"
   logging:
     dependency: transitive
     description:
@@ -294,7 +301,7 @@ packages:
     source: hosted
     version: "0.11.3+2"
   mapsforge_flutter:
-    dependency: "direct main"
+    dependency: transitive
     description:
       path: "../OTHERS/mapsforge_flutter/mapsforge_flutter"
       relative: true
@@ -315,7 +322,7 @@ packages:
     source: hosted
     version: "1.1.6"
   path:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path
       url: "https://pub.dartlang.org"
@@ -343,7 +350,7 @@ packages:
     source: hosted
     version: "1.1.2"
   path_provider_ex:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: path_provider_ex
       url: "https://pub.dartlang.org"
@@ -399,28 +406,21 @@ packages:
     source: hosted
     version: "2.0.3"
   rxdart:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.21.0"
-  scoped_model:
-    dependency: "direct main"
-    description:
-      name: scoped_model
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   screen:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: screen
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.5"
   shared_preferences:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
@@ -439,7 +439,7 @@ packages:
     source: hosted
     version: "1.5.5"
   sqflite:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: sqflite
       url: "https://pub.dartlang.org"
@@ -529,13 +529,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
-  video_player:
-    dependency: "direct main"
-    description:
-      name: video_player
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.10.1+3"
   xml:
     dependency: transitive
     description:

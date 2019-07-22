@@ -23,75 +23,23 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  datetime_picker_formfield: ^0.1.3
-  http: ^0.12.0+2
-  rxdart: 0.21.0
 
-  # BSD
-  #flutter_map: ^0.6.1+2
-  #flutter_map_marker_cluster: ^0.2.0+1
+  hydro_flutter_libs:
+    path: ../hydrolibraries/hydro_flutter_libs
 
-  flutter_map:
-    path: ../OTHERS/flutter_map
-  #    git:
-  #      url: https://github.com/johnpryan/flutter_map.git
-  #      ref: dev
-
-  flutter_map_marker_cluster: #^0.2.0+1
-    path: ../OTHERS/flutter_map_marker_cluster
-  #  flutter_map_marker_cluster:
-  #    git:
-  #      url: https://github.com/lpongetti/flutter_map_marker_cluster.git
-  #      ref: develop
-
-  geolocator: ^5.0.0
-  sqflite: ^1.1.5
-  path: ^1.6.2
-  path_provider_ex: ^1.0.1
-  file_picker: ^1.3.5
-  scoped_model: ^1.0.1
-  shared_preferences: 0.5.3+1
-
-  animated_floatactionbuttons: ^0.1.0
-  #flutter_svg: 0.12.4
-  screen: 0.0.5
-  geocoder: 0.1.2
-
-  # MIT
-  flutter_material_color_picker: ^1.0.0
-
-  # BSD
-  esys_flutter_share: any #1.0.2
-
-  # MIT
-  logger: 0.6.0
+#  datetime_picker_formfield: ^0.1.3
+#  http: ^0.12.0+2
+#  rxdart: 0.21.0
+#  scoped_model: ^1.0.1
 
   # MIT
   permission_handler: '^3.2.0'
-
-  # MIT
-  font_awesome_flutter: 8.4.0
 
   # Apache 2
   badges: ^1.0.3
 
   # MIT
   popup_menu: 1.0.1
-
-  #MIT
-  extended_image: 0.5.3
-
-  #BSD
-  camera: 0.5.2+1
-
-  #BSD
-  video_player: 0.10.1+3
-
-  # Apache 2.0
-  image: 2.1.4
-
-  mapsforge_flutter:
-    path: ../OTHERS/mapsforge_flutter/mapsforge_flutter
 
 
 dev_dependencies:

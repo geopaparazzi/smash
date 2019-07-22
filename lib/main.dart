@@ -5,11 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:smash/eu/geopaparazzi/library/models/models.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:smash/eu/geopaparazzi/library/utils/utils.dart';
-import 'package:smash/eu/geopaparazzi/library/maps/layers.dart';
+import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/dashboard.dart';
 
 void main() => runApp(GeopaparazziApp());
@@ -25,6 +21,7 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
   Future<bool> loadConfiguration() async {
     var layerManager = LayerManager();
     await layerManager.initialize();
+    appGpsLoggingHandler = SmashLoggingHandler();
     gpProjectModel = GPProjectModel();
     await gpProjectModel.getDatabase();
     var pos = await GpPreferences().getLastPosition();
@@ -43,7 +40,7 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
         if (snapshot.connectionState == ConnectionState.done) {
           // If the Future is complete, display the preview.
           return MaterialApp(
-            title: GpConstants.APP_NAME,
+            title: APP_NAME,
             theme: ThemeData(
                 primarySwatch: SmashColors.mainDecorationsMc,
                 accentColor: SmashColors.mainSelectionMc,
