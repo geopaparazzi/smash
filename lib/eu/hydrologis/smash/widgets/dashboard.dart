@@ -135,31 +135,29 @@ class _DashboardWidgetState extends State<DashboardWidget>
   }
 
   Future<bool> _checkPermissions() async {
-    List<PermissionGroup> mandatory = [];
     PermissionStatus permission = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.storage);
     if (permission != PermissionStatus.granted) {
       GpLogger().d("Storage permission is not granted.");
-      mandatory.add(PermissionGroup.storage);
-    }
-    permission = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.location);
-    if (permission != PermissionStatus.granted) {
-      GpLogger().d("Location permission is not granted.");
-      mandatory.add(PermissionGroup.location);
-    }
+      Map<PermissionGroup, PermissionStatus> permissionsMap =
+          await PermissionHandler()
+              .requestPermissions([PermissionGroup.storage]);
+      if (permissionsMap[PermissionGroup.storage] != PermissionStatus.granted) {
+        GpLogger().d("Unable to grant permission: ${PermissionGroup.storage}");
+        return false;
+      }
 
-    if (mandatory.length > 0) {
-
-      PermissionHandler().requestPermissions([mandatory[i]]).then(onValue)
-      
-      
-      for (int i = 0; i < mandatory.length; i++) {
+      permission = await PermissionHandler()
+          .checkPermissionStatus(PermissionGroup.location);
+      if (permission != PermissionStatus.granted) {
+        GpLogger().d("Location permission is not granted.");
         Map<PermissionGroup, PermissionStatus> permissionsMap =
-            await PermissionHandler().requestPermissions([mandatory[i]]);
-
-        if (permissionsMap[mandatory[i]] != PermissionStatus.granted) {
-          GpLogger().d("Unable to grant permission: ${mandatory[i]}");
+            await PermissionHandler()
+                .requestPermissions([PermissionGroup.location]);
+        if (permissionsMap[PermissionGroup.location] !=
+            PermissionStatus.granted) {
+          GpLogger()
+              .d("Unable to grant permission: ${PermissionGroup.location}");
           return false;
         }
       }
