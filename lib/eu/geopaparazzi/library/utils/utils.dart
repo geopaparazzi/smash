@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 import 'package:flutter/material.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:intl/intl.dart';
 
 class GpConstants {

@@ -1,4 +1,4 @@
-# geopaparazzi_light
+# smash
 
 The open source digital field mapping app.
 

@@ -3,8 +3,8 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:smash/eu/geopaparazzi/library/database/database.dart';
 import 'package:latlong/latlong.dart';
 import 'dart:typed_data';
 

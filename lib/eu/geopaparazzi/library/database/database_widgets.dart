@@ -4,16 +4,16 @@
  * found in the LICENSE file.
  */
 import 'package:flutter/material.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/icons.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/eventhandlers.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/dialogs.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/validators.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/icons.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/eventhandlers.dart';
+import 'package:smash/eu/geopaparazzi/library/models/models.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
+import 'package:smash/eu/geopaparazzi/library/database/project_tables.dart';
+import 'package:smash/eu/geopaparazzi/library/database/database.dart';
 import 'package:latlong/latlong.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

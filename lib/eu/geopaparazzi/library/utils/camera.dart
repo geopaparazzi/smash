@@ -10,7 +10,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:video_player/video_player.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

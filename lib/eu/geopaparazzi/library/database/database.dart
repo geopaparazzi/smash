@@ -6,10 +6,10 @@
 import 'dart:typed_data';
 
 import 'package:geolocator/geolocator.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/images.dart';
+import 'package:smash/eu/geopaparazzi/library/database/project_tables.dart';
+import 'package:smash/eu/geopaparazzi/library/gps/gps.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/logging.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/images.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:latlong/latlong.dart';
 import 'dart:ui';

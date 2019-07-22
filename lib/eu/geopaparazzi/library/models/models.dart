@@ -4,9 +4,9 @@
  * found in the LICENSE file.
  */
 import 'package:flutter/material.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/preferences.dart';
+import 'package:smash/eu/geopaparazzi/library/database/database.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/logging.dart';
 
 /// The global reference to the Geopaparazzi Project Model
 GPProjectModel gpProjectModel;

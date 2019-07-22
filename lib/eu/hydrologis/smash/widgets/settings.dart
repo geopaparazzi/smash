@@ -5,11 +5,11 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/icons.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/share.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/images.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/icons.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/share.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/images.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/utils.dart';
 
 class SettingsWidget extends StatefulWidget {
 

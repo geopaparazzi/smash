@@ -56,7 +56,7 @@ packages:
       name: cached_network_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   camera:
     dependency: "direct main"
     description:
@@ -129,13 +129,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  extended_image:
+    dependency: "direct main"
+    description:
+      name: extended_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.3"
+  extended_image_library:
+    dependency: transitive
+    description:
+      name: extended_image_library
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.4"
   file_picker:
     dependency: "direct main"
     description:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.7"
+    version: "1.3.8"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -147,7 +161,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   flutter_image:
     dependency: transitive
     description:
@@ -158,14 +172,14 @@ packages:
   flutter_map:
     dependency: "direct main"
     description:
-      path: "../../flutter_map"
+      path: "../OTHERS/flutter_map"
       relative: true
     source: path
     version: "0.5.6"
   flutter_map_marker_cluster:
     dependency: "direct main"
     description:
-      path: "../../flutter_map_marker_cluster"
+      path: "../OTHERS/flutter_map_marker_cluster"
       relative: true
     source: path
     version: "0.2.0+1"
@@ -175,7 +189,7 @@ packages:
       name: flutter_material_color_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.2"
   flutter_svg:
     dependency: transitive
     description:
@@ -208,7 +222,7 @@ packages:
       name: geolocator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.1"
+    version: "5.1.0"
   google_api_availability:
     dependency: transitive
     description:
@@ -223,6 +237,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.0+2"
+  http_client_helper:
+    dependency: transitive
+    description:
+      name: http_client_helper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   http_parser:
     dependency: transitive
     description:
@@ -275,7 +296,7 @@ packages:
   mapsforge_flutter:
     dependency: "direct main"
     description:
-      path: "../../mapsforge_flutter/mapsforge_flutter"
+      path: "../OTHERS/mapsforge_flutter/mapsforge_flutter"
       relative: true
     source: path
     version: "0.0.1"
@@ -320,7 +341,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.2"
   path_provider_ex:
     dependency: "direct main"
     description:
@@ -341,7 +362,7 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.0"
   petitparser:
     dependency: transitive
     description:
@@ -362,7 +383,7 @@ packages:
       name: positioned_tap_detector
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   provider:
     dependency: transitive
     description:
@@ -423,7 +444,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.6+1"
+    version: "1.1.6+2"
   stack_trace:
     dependency: transitive
     description:

@@ -5,8 +5,8 @@
  */
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/eventhandlers.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/dialogs.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/eventhandlers.dart';
 import 'package:latlong/latlong.dart';
 
 // From a query

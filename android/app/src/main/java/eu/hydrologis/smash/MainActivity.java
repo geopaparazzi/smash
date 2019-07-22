@@ -1,4 +1,4 @@
-package eu.geopaparazzi.geopaparazzi_light;
+package eu.hydrologis.smash;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

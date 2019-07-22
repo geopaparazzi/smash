@@ -8,8 +8,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:geolocator/geolocator.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
+import 'package:smash/eu/geopaparazzi/library/database/project_tables.dart';
+import 'package:smash/eu/geopaparazzi/library/models/models.dart';
 import 'package:latlong/latlong.dart';
 import 'package:location_permissions/location_permissions.dart';
 

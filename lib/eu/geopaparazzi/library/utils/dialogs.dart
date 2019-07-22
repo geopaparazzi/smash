@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 import 'package:flutter/material.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
 
 const double SIMPLE_DIALOGS_HEIGHT = 150;
 const double SIMPLE_DIALOGS_ICONSIZE = 80;

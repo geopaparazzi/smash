@@ -8,7 +8,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_ex/path_provider_ex.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/utils.dart';
 
 /// File path and folder utilities.
 class FileUtils {

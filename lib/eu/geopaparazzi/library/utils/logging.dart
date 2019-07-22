@@ -4,8 +4,8 @@
  * found in the LICENSE file.
  */
 import 'package:logger/logger.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/files.dart';
+import 'package:smash/eu/geopaparazzi/library/database/database.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/files.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// [LogFilter] to show only errors in release mode, else the default.

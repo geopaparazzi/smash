@@ -9,9 +9,9 @@ import 'dart:typed_data';
 
 //import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
+import 'package:smash/eu/geopaparazzi/library/database/project_tables.dart';
+import 'package:smash/eu/geopaparazzi/library/models/models.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/logging.dart';
 import 'package:image/image.dart' as IMG;
 
 class ImageUtilities {

@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong/latlong.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
+import 'package:smash/eu/geopaparazzi/library/gps/gps.dart';
 
 /// Main event handler that takes care of centering on map,
 /// updating gps status and reloading projects, layers and

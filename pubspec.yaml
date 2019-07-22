@@ -1,4 +1,4 @@
-name: geopaparazzi_light
+name: smash
 description: The open source digital field mapping app.
 
 # The following defines the version and build number for your application.
@@ -32,17 +32,17 @@ dependencies:
   #flutter_map_marker_cluster: ^0.2.0+1
 
   flutter_map:
-    path: ../../flutter_map
-#    git:
-#      url: https://github.com/johnpryan/flutter_map.git
-#      ref: dev
+    path: ../OTHERS/flutter_map
+  #    git:
+  #      url: https://github.com/johnpryan/flutter_map.git
+  #      ref: dev
 
   flutter_map_marker_cluster: #^0.2.0+1
-    path: ../../flutter_map_marker_cluster
-#  flutter_map_marker_cluster:
-#    git:
-#      url: https://github.com/lpongetti/flutter_map_marker_cluster.git
-#      ref: develop
+    path: ../OTHERS/flutter_map_marker_cluster
+  #  flutter_map_marker_cluster:
+  #    git:
+  #      url: https://github.com/lpongetti/flutter_map_marker_cluster.git
+  #      ref: develop
 
   geolocator: ^5.0.0
   sqflite: ^1.1.5
@@ -67,7 +67,7 @@ dependencies:
   logger: 0.6.0
 
   # MIT
-  permission_handler: '^3.1.0'
+  permission_handler: '^3.2.0'
 
   # MIT
   font_awesome_flutter: 8.4.0
@@ -79,7 +79,7 @@ dependencies:
   popup_menu: 1.0.1
 
   #MIT
-  #extended_image: 0.5.1
+  extended_image: 0.5.3
 
   #BSD
   camera: 0.5.2+1
@@ -91,7 +91,7 @@ dependencies:
   image: 2.1.4
 
   mapsforge_flutter:
-    path: ../../mapsforge_flutter/mapsforge_flutter
+    path: ../OTHERS/mapsforge_flutter/mapsforge_flutter
 
 
 dev_dependencies:

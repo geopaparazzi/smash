@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/src/layer/tile_layer.dart' hide Tile;
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
 import 'package:mapsforge_flutter/core.dart';
 import 'package:mapsforge_flutter/datastore.dart';
 import 'package:mapsforge_flutter/maps.dart';
@@ -64,7 +64,7 @@ class MapsforgeTileProvider extends TileProvider {
     GraphicFactory graphicFactory = FlutterGraphicFactory();
     _displayModel = DisplayModel();
     _displayModel.setFixedTileSize(tileSize);
-    _displayModel.setUserScaleFactor(2.5);
+    _displayModel.setUserScaleFactor(1);
     SymbolCache symbolCache = SymbolCache(graphicFactory, _displayModel);
 
     RenderThemeBuilder renderThemeBuilder =
@@ -106,8 +106,11 @@ class MapsforgeTileProvider extends TileProvider {
     // Draw the tile
     var userScaleFactor = _displayModel.getUserScaleFactor();
 
-    RendererJob mapGeneratorJob = new RendererJob(tile, _multiMapDataStore,
-        _renderTheme, _displayModel, userScaleFactor, false, false);
+
+
+
+    RendererJob mapGeneratorJob = new RendererJob(tile,/* _multiMapDataStore,         _renderTheme, _displayModel,*/
+    userScaleFactor, false /*, false*/);
 //    Future<TileBitmap> executeJob =
 //        _dataStoreRenderer.executeJob(mapGeneratorJob);
 

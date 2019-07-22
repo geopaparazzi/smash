@@ -11,26 +11,26 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geopaparazzi_light/eu/hydrologis/smash/widgets/settings.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/database_widgets.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/database/project_tables.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/gps/gps.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/geocoding.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/mapsforge.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/models/models.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/colors.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/dialogs.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/files.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/logging.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/preferences.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/icons.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/share.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/images.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/utils.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/validators.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/eventhandlers.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/utils/camera.dart';
-import 'package:geopaparazzi_light/eu/geopaparazzi/library/maps/layers.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:smash/eu/geopaparazzi/library/database/database_widgets.dart';
+import 'package:smash/eu/geopaparazzi/library/database/project_tables.dart';
+import 'package:smash/eu/geopaparazzi/library/gps/gps.dart';
+import 'package:smash/eu/geopaparazzi/library/maps/geocoding.dart';
+import 'package:smash/eu/geopaparazzi/library/maps/mapsforge.dart';
+import 'package:smash/eu/geopaparazzi/library/models/models.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/colors.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/dialogs.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/files.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/logging.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/preferences.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/icons.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/share.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/images.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/utils.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/validators.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/eventhandlers.dart';
+import 'package:smash/eu/geopaparazzi/library/utils/camera.dart';
+import 'package:smash/eu/geopaparazzi/library/maps/layers.dart';
 import 'package:latlong/latlong.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -150,16 +150,18 @@ class _DashboardWidgetState extends State<DashboardWidget>
     }
 
     if (mandatory.length > 0) {
-      Map<PermissionGroup, PermissionStatus> permissionsMap =
-          await PermissionHandler().requestPermissions(mandatory);
-      if (permissionsMap[PermissionGroup.storage] != PermissionStatus.granted) {
-        GpLogger().d("Unable to grant storage permission");
-        return false;
-      }
-      if (permissionsMap[PermissionGroup.location] !=
-          PermissionStatus.granted) {
-        GpLogger().d("Unable to grant location permission");
-        return false;
+
+      PermissionHandler().requestPermissions([mandatory[i]]).then(onValue)
+      
+      
+      for (int i = 0; i < mandatory.length; i++) {
+        Map<PermissionGroup, PermissionStatus> permissionsMap =
+            await PermissionHandler().requestPermissions([mandatory[i]]);
+
+        if (permissionsMap[mandatory[i]] != PermissionStatus.granted) {
+          GpLogger().d("Unable to grant permission: ${mandatory[i]}");
+          return false;
+        }
       }
     }
     return true;
@@ -218,12 +220,12 @@ class _DashboardWidgetState extends State<DashboardWidget>
               point:
                   new LatLng(_lastPosition.latitude, _lastPosition.longitude),
               builder: (ctx) => new Container(
-                    child: Icon(
-                      Icons.my_location,
-                      size: 32,
-                      color: Colors.black,
-                    ),
-                  ),
+                child: Icon(
+                  Icons.my_location,
+                  size: 32,
+                  color: Colors.black,
+                ),
+              ),
             )
           ],
         ),
@@ -853,111 +855,109 @@ $gpsInfo
         height: size,
         point: new LatLng(lat, lon),
         builder: (ctx) => new Container(
-                child: GestureDetector(
-              onTap: () async {
-                var thumb = await db.getThumbnail(image.imageDataId);
-                _showSnackbar(SnackBar(
-                  backgroundColor: SmashColors.snackBarColor,
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              label,
-                              style:
-                                  GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
+            child: GestureDetector(
+          onTap: () async {
+            var thumb = await db.getThumbnail(image.imageDataId);
+            _showSnackbar(SnackBar(
+              backgroundColor: SmashColors.snackBarColor,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          label,
+                          style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
+                          textAlign: TextAlign.start,
                         ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: SmashColors.mainDecorations)),
+                    padding: EdgeInsets.all(5),
+                    child: GestureDetector(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          thumb,
+                        ],
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: SmashColors.mainDecorations)),
-                        padding: EdgeInsets.all(5),
-                        child: GestureDetector(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              thumb,
-                            ],
-                          ),
-                          onTap: () async {
-                            // FIXME when extimage works with new
+                      onTap: () async {
+                        // FIXME when extimage works with new
 //                            Navigator.push(
 //                                ctx,
 //                                MaterialPageRoute(
 //                                    builder: (context) =>
 //                                        SmashImageZoomWidget(image)));
+                        _hideSnackbar();
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.share,
+                            color: SmashColors.mainSelection,
+                          ),
+                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          onPressed: () {
+                            shareText(label);
                             _hideSnackbar();
                           },
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            IconButton(
-                              icon: Icon(
-                                Icons.share,
-                                color: SmashColors.mainSelection,
-                              ),
-                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                              onPressed: () {
-                                shareText(label);
-                                _hideSnackbar();
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.delete,
-                                color: SmashColors.mainDanger,
-                              ),
-                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                              onPressed: () async {
-                                var doRemove = await showConfirmDialog(
-                                    ctx,
-                                    "Remove Image",
-                                    "Are you sure you want to remove image ${image.id}?");
-                                if (doRemove) {
-                                  var db = await gpProjectModel.getDatabase();
-                                  db.deleteImage(image.id);
-                                  reloadProject();
-                                }
-                                _hideSnackbar();
-                              },
-                            ),
-                            Spacer(flex: 1),
-                            IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                color: SmashColors.mainDecorationsDark,
-                              ),
-                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                              onPressed: () {
-                                _hideSnackbar();
-                              },
-                            ),
-                          ],
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: SmashColors.mainDanger,
+                          ),
+                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          onPressed: () async {
+                            var doRemove = await showConfirmDialog(
+                                ctx,
+                                "Remove Image",
+                                "Are you sure you want to remove image ${image.id}?");
+                            if (doRemove) {
+                              var db = await gpProjectModel.getDatabase();
+                              db.deleteImage(image.id);
+                              reloadProject();
+                            }
+                            _hideSnackbar();
+                          },
                         ),
-                      )
-                    ],
-                  ),
-                  duration: Duration(seconds: 5),
-                ));
-              },
-              child: Icon(
-                NOTES_ICONDATA['camera'],
-                size: size,
-                color: Colors.blue,
+                        Spacer(flex: 1),
+                        IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: SmashColors.mainDecorationsDark,
+                          ),
+                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          onPressed: () {
+                            _hideSnackbar();
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
-            )),
+              duration: Duration(seconds: 5),
+            ));
+          },
+          child: Icon(
+            NOTES_ICONDATA['camera'],
+            size: size,
+            color: Colors.blue,
+          ),
+        )),
       ));
     });
 
@@ -972,99 +972,98 @@ $gpsInfo
         height: noteExt.size,
         point: new LatLng(note.lat, note.lon),
         builder: (ctx) => new Container(
-                child: GestureDetector(
-              onTap: () {
-                _showSnackbar(SnackBar(
-                  backgroundColor: SmashColors.snackBarColor,
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
+            child: GestureDetector(
+          onTap: () {
+            _showSnackbar(SnackBar(
+              backgroundColor: SmashColors.snackBarColor,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            label,
-                            style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
+                      Text(
+                        label,
+                        style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
+                        textAlign: TextAlign.start,
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            IconButton(
-                              icon: Icon(
-                                Icons.share,
-                                color: SmashColors.mainSelection,
-                              ),
-                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                              onPressed: () {
-                                shareText(label);
-                                _hideSnackbar();
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.edit,
-                                color: SmashColors.mainSelection,
-                              ),
-                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                              onPressed: () {
-                                Navigator.push(
-                                    ctx,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            NotePropertiesWidget(
-                                                _mainEventsHandler, note)));
-                                _hideSnackbar();
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.delete,
-                                color: SmashColors.mainDanger,
-                              ),
-                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                              onPressed: () async {
-                                var doRemove = await showConfirmDialog(
-                                    ctx,
-                                    "Remove Note",
-                                    "Are you sure you want to remove note ${note.id}?");
-                                if (doRemove) {
-                                  var db = await gpProjectModel.getDatabase();
-                                  db.deleteNote(note.id);
-                                  reloadProject();
-                                }
-                                _hideSnackbar();
-                              },
-                            ),
-                            Spacer(flex: 1),
-                            IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                color: SmashColors.mainDecorationsDark,
-                              ),
-                              iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                              onPressed: () {
-                                _hideSnackbar();
-                              },
-                            ),
-                          ],
-                        ),
-                      )
                     ],
                   ),
-                  duration: Duration(seconds: 5),
-                ));
-              },
-              child: Icon(
-                NOTES_ICONDATA[noteExt.marker],
-                size: noteExt.size,
-                color: ColorExt(noteExt.color),
+                  Padding(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.share,
+                            color: SmashColors.mainSelection,
+                          ),
+                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          onPressed: () {
+                            shareText(label);
+                            _hideSnackbar();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: SmashColors.mainSelection,
+                          ),
+                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          onPressed: () {
+                            Navigator.push(
+                                ctx,
+                                MaterialPageRoute(
+                                    builder: (context) => NotePropertiesWidget(
+                                        _mainEventsHandler, note)));
+                            _hideSnackbar();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: SmashColors.mainDanger,
+                          ),
+                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          onPressed: () async {
+                            var doRemove = await showConfirmDialog(
+                                ctx,
+                                "Remove Note",
+                                "Are you sure you want to remove note ${note.id}?");
+                            if (doRemove) {
+                              var db = await gpProjectModel.getDatabase();
+                              db.deleteNote(note.id);
+                              reloadProject();
+                            }
+                            _hideSnackbar();
+                          },
+                        ),
+                        Spacer(flex: 1),
+                        IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: SmashColors.mainDecorationsDark,
+                          ),
+                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          onPressed: () {
+                            _hideSnackbar();
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
-            )),
+              duration: Duration(seconds: 5),
+            ));
+          },
+          child: Icon(
+            NOTES_ICONDATA[noteExt.marker],
+            size: noteExt.size,
+            color: ColorExt(noteExt.color),
+          ),
+        )),
       ));
     });
 
