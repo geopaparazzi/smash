@@ -1,0 +1,97 @@
+PODS:
+  - camera (0.0.1):
+    - Flutter
+  - file_picker (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
+  - geocoder (0.0.1):
+    - Flutter
+  - geolocator (5.1.0):
+    - Flutter
+  - google_api_availability (2.0.1):
+    - Flutter
+  - location_permissions (2.0.2):
+    - Flutter
+  - path_provider (0.0.1):
+    - Flutter
+  - path_provider_ex (0.0.1):
+    - Flutter
+  - permission_handler (3.2.0):
+    - Flutter
+  - screen (0.0.1):
+    - Flutter
+  - shared_preferences (0.0.1):
+    - Flutter
+  - sqflite (0.0.1):
+    - Flutter
+    - FMDB (~> 2.7.2)
+
+DEPENDENCIES:
+  - camera (from `.symlinks/plugins/camera/ios`)
+  - file_picker (from `.symlinks/plugins/file_picker/ios`)
+  - Flutter (from `.symlinks/flutter/ios-release`)
+  - geocoder (from `.symlinks/plugins/geocoder/ios`)
+  - geolocator (from `.symlinks/plugins/geolocator/ios`)
+  - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
+  - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_ex (from `.symlinks/plugins/path_provider_ex/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - screen (from `.symlinks/plugins/screen/ios`)
+  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - FMDB
+
+EXTERNAL SOURCES:
+  camera:
+    :path: ".symlinks/plugins/camera/ios"
+  file_picker:
+    :path: ".symlinks/plugins/file_picker/ios"
+  Flutter:
+    :path: ".symlinks/flutter/ios-release"
+  geocoder:
+    :path: ".symlinks/plugins/geocoder/ios"
+  geolocator:
+    :path: ".symlinks/plugins/geolocator/ios"
+  google_api_availability:
+    :path: ".symlinks/plugins/google_api_availability/ios"
+  location_permissions:
+    :path: ".symlinks/plugins/location_permissions/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_ex:
+    :path: ".symlinks/plugins/path_provider_ex/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+  screen:
+    :path: ".symlinks/plugins/screen/ios"
+  shared_preferences:
+    :path: ".symlinks/plugins/shared_preferences/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
+
+SPEC CHECKSUMS:
+  camera: d56ad165545ae5a0ffb892376033760a969c68c8
+  file_picker: 408623be2125b79a4539cf703be3d4b3abe5e245
+  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
+  geolocator: d26e51a2ef57fa8a97a2630772f41206ebb9f9c9
+  google_api_availability: 163b30f802e6148c67f092aa4501c90ddd8eec8d
+  location_permissions: 67cfaff583afbb027a9f9248196f4b79c40f3cdc
+  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
+  path_provider_ex: 95397ca0c3f5f99c8538aec3736674fa9cefc1b6
+  permission_handler: d4838243e7d0f4b18911a6422d81e7e6b71ad545
+  screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
+  shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
+  sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
+
+PODFILE CHECKSUM: 7fb83752f59ead6285236625b82473f90b1cb932
+
+COCOAPODS: 1.7.5
