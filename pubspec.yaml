@@ -43,12 +43,21 @@ dependencies:
 
 
 dev_dependencies:
+
+  # MIT
+  flutter_launcher_icons: 0.7.2+1
+
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  ios: true
+  android: false
+  image_path_ios: "assets/ic_launcher_ios.png"
+  image_path_android: "assets/ic_launcher_ios.png"
+  adaptive_icon_background: "assets/ic_launcher_ios.png"
+  adaptive_icon_foreground: "assets/ic_launcher_ios.png"
 
-# For information on the generic Dart part of this file, see the
-# following page: https://www.dartlang.org/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:

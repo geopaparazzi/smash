@@ -115,13 +115,6 @@ packages:
       url: "https://github.com/mikes222/dcache"
     source: git
     version: "0.3.0"
-  esys_flutter_share:
-    dependency: transitive
-    description:
-      name: esys_flutter_share
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   extended_image:
     dependency: transitive
     description:
@@ -162,6 +155,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  flutter_launcher_icons:
+    dependency: "direct dev"
+    description:
+      name: flutter_launcher_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.2+1"
   flutter_map:
     dependency: transitive
     description:
@@ -536,6 +536,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.4.1"
+  yaml:
+    dependency: transitive
+    description:
+      name: yaml
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.16"
 sdks:
   dart: ">=2.4.0 <3.0.0"
   flutter: ">=1.5.9-pre.94 <2.0.0"
