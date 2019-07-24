@@ -57,6 +57,7 @@ flutter_icons:
   image_path_android: "assets/ic_launcher_ios.png"
   adaptive_icon_background: "assets/ic_launcher_ios.png"
   adaptive_icon_foreground: "assets/ic_launcher_ios.png"
+  # to rebuild icons run: flutter packages pub run flutter_launcher_icons:main
 
 
 # The following section is specific to Flutter.
