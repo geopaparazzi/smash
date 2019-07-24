@@ -41,5 +41,23 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>The app needs access to location when open to allow the user to map geographic data on the territory.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
+
+    <key>NSCameraUsageDescription</key>
+    <string>The app needs to use the camera to take picture notes during the field mapping activity.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>The app needs to use the camera to take vocal notes during the field mapping activity.</string>
+
+    <key>UIBackgroundModes</key>
+    <array>
+       <string>fetch</string>
+       <string>remote-notification</string>
+    </array>
 </dict>
 </plist>
