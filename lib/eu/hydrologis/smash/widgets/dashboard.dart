@@ -15,6 +15,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:screen/screen.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -723,6 +724,19 @@ $gpsInfo
               style: TextStyle(fontSize: textSize, color: c),
             ),
             onTap: () => _openSettings(context),
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.bug_report,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Run diagnostics",
+              style: TextStyle(fontSize: textSize, color: c),
+            ),
+            onTap: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => DiagnosticWidget())),
           ),
           ListTile(
             leading: new Icon(
