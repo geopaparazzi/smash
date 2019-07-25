@@ -8,16 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/dashboard.dart';
 
-void main() => runApp(GeopaparazziApp());
+void main() => runApp(SmashApp());
 
-class GeopaparazziApp extends StatefulWidget {
+class SmashApp extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return GeopaparazziAppState();
+    return SmashAppState();
   }
 }
 
-class GeopaparazziAppState extends State<GeopaparazziApp> {
+class SmashAppState extends State<SmashApp> {
   Future<bool> loadConfiguration() async {
     var layerManager = LayerManager();
     await layerManager.initialize();
@@ -30,6 +30,7 @@ class GeopaparazziAppState extends State<GeopaparazziApp> {
       gpProjectModel.lastCenterLat = pos[1];
       gpProjectModel.lastCenterZoom = pos[2];
     }
+    return true;
   }
 
   @override

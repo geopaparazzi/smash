@@ -15,7 +15,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:screen/screen.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DashboardWidget extends StatefulWidget {
   DashboardWidget({Key key}) : super(key: key);
@@ -78,8 +77,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
     _checkPermissions().then((allRight) async {
       if (allRight) {
-        var directory =
-            await WorkspaceUtils.getApplicationConfigurationFolder();
+        var directory = await Workspace.getApplicationConfigurationFolder();
         bool init = await GpLogger().init(directory.path); // init logger
         if (init) GpLogger().d("Db logger initialized.");
 
@@ -372,6 +370,7 @@ $gpsInfo
             dispose();
             return Future.value(true);
           }
+          return Future.value(false);
         });
   }
 
@@ -792,7 +791,7 @@ $gpsInfo
     );
     if (userString != null) {
       if (userString.trim().length == 0) userString = projectName;
-      var file = await WorkspaceUtils.getDefaultStorageFolder();
+      var file = await Workspace.getStorageFolder();
       var newPath = join(file.path, userString);
       if (!newPath.endsWith(".gpap")) {
         newPath = "$newPath.gpap";
