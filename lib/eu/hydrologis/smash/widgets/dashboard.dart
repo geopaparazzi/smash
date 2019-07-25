@@ -905,20 +905,20 @@ $gpsInfo
                           ),
                           iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
                           onPressed: () {
-                            shareText(label);
+                            shareImage(label);
                             _hideSnackbar();
                           },
                         ),
                         IconButton(
                           icon: Icon(
                             Icons.delete,
-                            color: SmashColors.mainDanger,
+                            color: SmashColors.mainSelection,
                           ),
                           iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
                           onPressed: () async {
                             var doRemove = await showConfirmDialog(
                                 ctx,
-                                "Remove Imadge",
+                                "Remove Image",
                                 "Are you sure you want to remove image ${image.id}?");
                             if (doRemove) {
                               var db = await gpProjectModel.getDatabase();
@@ -1018,7 +1018,7 @@ $gpsInfo
                         IconButton(
                           icon: Icon(
                             Icons.delete,
-                            color: SmashColors.mainDanger,
+                            color: SmashColors.mainSelection,
                           ),
                           iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
                           onPressed: () async {
