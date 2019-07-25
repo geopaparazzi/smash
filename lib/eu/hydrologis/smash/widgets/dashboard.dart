@@ -798,6 +798,7 @@ $gpsInfo
       }
       var gpFile = new File(newPath);
       gpProjectModel.setNewProject(this, gpFile.path);
+      reloadProject();
     }
 
     Navigator.of(context).pop();
