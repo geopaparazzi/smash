@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 import 'dart:io';
+import 'dart:async';
 
 import 'package:badges/badges.dart';
 import 'package:file_picker/file_picker.dart';
@@ -11,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
 import 'package:path/path.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:screen/screen.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
@@ -42,6 +42,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
   double _initLon;
   double _initLat;
   double _initZoom;
+  double _currentZoom;
 
   MapController _mapController;
 
@@ -67,15 +68,29 @@ class _DashboardWidgetState extends State<DashboardWidget>
       _initLat = 0;
       _initZoom = 16;
     }
+    _currentZoom = _initZoom;
     _mapController = MapController();
+
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_currentZoom != _mapController.zoom) {
+        setState(() {
+          _currentZoom = _mapController.zoom;
+        });
+      }
+    });
 
     _mainEventsHandler.addMapCenterListener(() {
       var newMapCenter = _mainEventsHandler.getMapCenter();
-      if (newMapCenter != null)
+      if (newMapCenter != null) {
         _mapController.move(newMapCenter, _mapController.zoom);
+      }
     });
 
-    _checkPermissions().then((allRight) async {
+    PermissionManager()
+        .add(PERMISSIONS.STORAGE)
+        .add(PERMISSIONS.LOCATION)
+        .check()
+        .then((allRight) async {
       if (allRight) {
         var directory = await Workspace.getApplicationConfigurationFolder();
         bool init = await GpLogger().init(directory.path); // init logger
@@ -110,37 +125,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   _hideSnackbar() {
     _scaffoldKey.currentState.hideCurrentSnackBar();
-  }
-
-  Future<bool> _checkPermissions() async {
-    PermissionStatus permission = await PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.storage);
-    if (permission != PermissionStatus.granted) {
-      GpLogger().d("Storage permission is not granted.");
-      Map<PermissionGroup, PermissionStatus> permissionsMap =
-          await PermissionHandler()
-              .requestPermissions([PermissionGroup.storage]);
-      if (permissionsMap[PermissionGroup.storage] != PermissionStatus.granted) {
-        GpLogger().d("Unable to grant permission: ${PermissionGroup.storage}");
-        return false;
-      }
-
-      permission = await PermissionHandler()
-          .checkPermissionStatus(PermissionGroup.location);
-      if (permission != PermissionStatus.granted) {
-        GpLogger().d("Location permission is not granted.");
-        Map<PermissionGroup, PermissionStatus> permissionsMap =
-            await PermissionHandler()
-                .requestPermissions([PermissionGroup.location]);
-        if (permissionsMap[PermissionGroup.location] !=
-            PermissionStatus.granted) {
-          GpLogger()
-              .d("Unable to grant permission: ${PermissionGroup.location}");
-          return false;
-        }
-      }
-    }
-    return true;
   }
 
   @override
@@ -240,6 +224,7 @@ $gpsInfo
             })
       ],
     );
+
     return WillPopScope(
         // check when the app is left
         child: new Scaffold(
@@ -329,19 +314,22 @@ $gpsInfo
                     color: SmashColors.mainDecorations,
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      var zoom = _mapController.zoom + 1;
-                      if (zoom > 19) zoom = 19;
-                      _mapController.move(_mapController.center, zoom);
-                    });
-                  },
-                  tooltip: 'Zoom in',
-                  icon: Icon(
-                    Icons.zoom_in,
-                    color: SmashColors.mainBackground,
+                makeToolbarZoomBadge(
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        var zoom = _mapController.zoom + 1;
+                        if (zoom > 19) zoom = 19;
+                        _mapController.move(_mapController.center, zoom);
+                      });
+                    },
+                    tooltip: 'Zoom in',
+                    icon: Icon(
+                      Icons.zoom_in,
+                      color: SmashColors.mainBackground,
+                    ),
                   ),
+                  _currentZoom.toInt(),
                 ),
                 IconButton(
                   onPressed: () {
@@ -519,6 +507,23 @@ $gpsInfo
     if (badgeValue > 0) {
       return Badge(
         badgeColor: SmashColors.mainSelection,
+        shape: BadgeShape.circle,
+        toAnimate: false,
+        badgeContent: Text(
+          '$badgeValue',
+          style: TextStyle(color: Colors.white),
+        ),
+        child: widget,
+      );
+    } else {
+      return widget;
+    }
+  }
+
+  Widget makeToolbarZoomBadge(Widget widget, int badgeValue) {
+    if (badgeValue > 0) {
+      return Badge(
+        badgeColor: SmashColors.mainDecorations,
         shape: BadgeShape.circle,
         toAnimate: false,
         badgeContent: Text(
