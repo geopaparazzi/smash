@@ -793,8 +793,8 @@ $gpsInfo
     File file =
         await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
     if (file != null && file.existsSync()) {
-      GPProject().setNewProject(file.path);
-      reloadProject();
+      await GPProject().setNewProject(file.path);
+      await reloadProject();
     }
     Navigator.of(context).pop();
   }
@@ -819,8 +819,8 @@ $gpsInfo
         newPath = "$newPath.gpap";
       }
       var gpFile = new File(newPath);
-      GPProject().setNewProject(gpFile.path);
-      reloadProject();
+      await GPProject().setNewProject(gpFile.path);
+      await reloadProject();
     }
 
     Navigator.of(context).pop();
@@ -939,8 +939,8 @@ $gpsInfo
                                 "Are you sure you want to remove image ${image.id}?");
                             if (doRemove) {
                               var db = await GPProject().getDatabase();
-                              db.deleteImage(image.id);
-                              reloadProject();
+                              await db.deleteImage(image.id);
+                              await reloadProject();
                             }
                             _hideSnackbar();
                           },
@@ -1045,8 +1045,8 @@ $gpsInfo
                                 "Are you sure you want to remove note ${note.id}?");
                             if (doRemove) {
                               var db = await GPProject().getDatabase();
-                              db.deleteNote(note.id);
-                              reloadProject();
+                              await db.deleteNote(note.id);
+                              await reloadProject();
                             }
                             _hideSnackbar();
                           },
