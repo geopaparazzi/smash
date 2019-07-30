@@ -23,10 +23,11 @@ class SmashAppState extends State<SmashApp> {
     await layerManager.initialize();
     appGpsLoggingHandler = SmashLoggingHandler();
     var pos = await GpPreferences().getLastPosition();
-    if (pos != null && GPProject() != null) {
-      GPProject().lastCenterLon = pos[0];
-      GPProject().lastCenterLat = pos[1];
-      GPProject().lastCenterZoom = pos[2];
+    var gpProject = GPProject();
+    if (pos != null) {
+      gpProject.lastCenterLon = pos[0];
+      gpProject.lastCenterLat = pos[1];
+      gpProject.lastCenterZoom = pos[2];
     }
     return true;
   }

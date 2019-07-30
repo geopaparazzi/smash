@@ -24,6 +24,7 @@ class DashboardWidget extends StatefulWidget {
 }
 
 class _DashboardWidgetState extends State<DashboardWidget>
+    with WidgetsBindingObserver
     implements PositionListener {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey _menuKey = GlobalKey();
@@ -59,15 +60,10 @@ class _DashboardWidgetState extends State<DashboardWidget>
   void initState() {
     Screen.keepOn(true);
 
-    if (GPProject() != null) {
-      _initLon = GPProject().lastCenterLon;
-      _initLat = GPProject().lastCenterLat;
-      _initZoom = GPProject().lastCenterZoom;
-    } else {
-      _initLon = 0;
-      _initLat = 0;
-      _initZoom = 16;
-    }
+    var gpProject = GPProject();
+    _initLon = gpProject.lastCenterLon;
+    _initLat = gpProject.lastCenterLat;
+    _initZoom = gpProject.lastCenterZoom;
     _currentZoom = _initZoom;
     _mapController = MapController();
 
@@ -117,6 +113,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
     });
 
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   _showSnackbar(snackbar) {
@@ -613,6 +610,7 @@ $gpsInfo
   @override
   void dispose() {
     updateCenterPosition();
+    WidgetsBinding.instance.removeObserver(this);
     GpsHandler().removePositionListener(this);
     if (GPProject() != null) {
       _savePosition().then((v) {
@@ -624,11 +622,29 @@ $gpsInfo
     }
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      GpLogger().d("Application suspended");
+      updateCenterPosition();
+    } else if (state == AppLifecycleState.inactive) {
+      GpLogger().d("Application inactived");
+      updateCenterPosition();
+    } else if (state == AppLifecycleState.suspending) {
+      GpLogger().d("Application suspending");
+    } else if (state == AppLifecycleState.resumed) {
+      GpLogger().d("Application resumed");
+    }
+  }
+
   void updateCenterPosition() {
     // save last position
     GPProject().lastCenterLon = _mapController.center.longitude;
     GPProject().lastCenterLat = _mapController.center.latitude;
     GPProject().lastCenterZoom = _mapController.zoom;
+
+    GpPreferences().setLastPosition(_mapController.center.longitude,
+        _mapController.center.latitude, _mapController.zoom);
   }
 
   Future<void> reloadProject() async {
@@ -777,7 +793,7 @@ $gpsInfo
     File file =
         await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
     if (file != null && file.existsSync()) {
-      GPProject().setNewProject(this, file.path);
+      GPProject().setNewProject(file.path);
       reloadProject();
     }
     Navigator.of(context).pop();
@@ -803,7 +819,7 @@ $gpsInfo
         newPath = "$newPath.gpap";
       }
       var gpFile = new File(newPath);
-      GPProject().setNewProject(this, gpFile.path);
+      GPProject().setNewProject(gpFile.path);
       reloadProject();
     }
 
