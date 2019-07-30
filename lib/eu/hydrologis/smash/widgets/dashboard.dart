@@ -59,10 +59,10 @@ class _DashboardWidgetState extends State<DashboardWidget>
   void initState() {
     Screen.keepOn(true);
 
-    if (gpProjectModel != null) {
-      _initLon = gpProjectModel.lastCenterLon;
-      _initLat = gpProjectModel.lastCenterLat;
-      _initZoom = gpProjectModel.lastCenterZoom;
+    if (GPProject() != null) {
+      _initLon = GPProject().lastCenterLon;
+      _initLat = GPProject().lastCenterLat;
+      _initZoom = GPProject().lastCenterZoom;
     } else {
       _initLon = 0;
       _initLat = 0;
@@ -455,7 +455,7 @@ $gpsInfo
         ..accuracy = pos.accuracy;
       note.noteExt = next;
     }
-    var db = await gpProjectModel.getDatabase();
+    var db = await GPProject().getDatabase();
     await db.addNote(note);
 
     Navigator.push(
@@ -614,10 +614,9 @@ $gpsInfo
   void dispose() {
     updateCenterPosition();
     GpsHandler().removePositionListener(this);
-    if (gpProjectModel != null) {
+    if (GPProject() != null) {
       _savePosition().then((v) {
-        gpProjectModel.close();
-        gpProjectModel = null;
+        GPProject().close();
         super.dispose();
       });
     } else {
@@ -627,9 +626,9 @@ $gpsInfo
 
   void updateCenterPosition() {
     // save last position
-    gpProjectModel.lastCenterLon = _mapController.center.longitude;
-    gpProjectModel.lastCenterLat = _mapController.center.latitude;
-    gpProjectModel.lastCenterZoom = _mapController.zoom;
+    GPProject().lastCenterLon = _mapController.center.longitude;
+    GPProject().lastCenterLat = _mapController.center.latitude;
+    GPProject().lastCenterZoom = _mapController.zoom;
   }
 
   Future<void> reloadProject() async {
@@ -643,6 +642,8 @@ $gpsInfo
     for (int i = 0; i < activeLayersInfos.length; i++) {
       var tl = await activeLayersInfos[i].toTileLayer();
       _activeLayers.add(tl);
+
+      GpLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
     }
     setState(() {});
   }
@@ -652,8 +653,8 @@ $gpsInfo
   }
 
   Future<void> _savePosition() async {
-    await GpPreferences().setLastPosition(gpProjectModel.lastCenterLon,
-        gpProjectModel.lastCenterLat, gpProjectModel.lastCenterZoom);
+    await GpPreferences().setLastPosition(GPProject().lastCenterLon,
+        GPProject().lastCenterLat, GPProject().lastCenterZoom);
   }
 
   _getDrawerWidgets(BuildContext context) {
@@ -760,7 +761,7 @@ $gpsInfo
   }
 
   Future doExit(BuildContext context) async {
-    await gpProjectModel.close();
+    await GPProject().close();
 
     await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
   }
@@ -776,7 +777,7 @@ $gpsInfo
     File file =
         await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
     if (file != null && file.existsSync()) {
-      gpProjectModel.setNewProject(this, file.path);
+      GPProject().setNewProject(this, file.path);
       reloadProject();
     }
     Navigator.of(context).pop();
@@ -802,7 +803,7 @@ $gpsInfo
         newPath = "$newPath.gpap";
       }
       var gpFile = new File(newPath);
-      gpProjectModel.setNewProject(this, gpFile.path);
+      GPProject().setNewProject(this, gpFile.path);
       reloadProject();
     }
 
@@ -828,7 +829,7 @@ $gpsInfo
   }
 
   loadCurrentProject() async {
-    var db = await gpProjectModel.getDatabase();
+    var db = await GPProject().getDatabase();
     if (db == null) return;
     _projectName = basenameWithoutExtension(db.path);
     _projectDirName = dirname(db.path);
@@ -921,7 +922,7 @@ $gpsInfo
                                 "Remove Image",
                                 "Are you sure you want to remove image ${image.id}?");
                             if (doRemove) {
-                              var db = await gpProjectModel.getDatabase();
+                              var db = await GPProject().getDatabase();
                               db.deleteImage(image.id);
                               reloadProject();
                             }
@@ -1027,7 +1028,7 @@ $gpsInfo
                                 "Remove Note",
                                 "Are you sure you want to remove note ${note.id}?");
                             if (doRemove) {
-                              var db = await gpProjectModel.getDatabase();
+                              var db = await GPProject().getDatabase();
                               db.deleteNote(note.id);
                               reloadProject();
                             }
