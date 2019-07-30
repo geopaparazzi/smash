@@ -97,7 +97,10 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
         // check center on gps
         bool centerOnGps = await GpPreferences().getCenterOnGps();
-        _mainEventsHandler.setCenterOnGps(centerOnGps);
+        _mainEventsHandler.setCenterOnGpsStream(centerOnGps);
+
+        bool rotateOnHeading = await GpPreferences().getRotateOnHeading();
+        _mainEventsHandler.setRotateOnHeading(rotateOnHeading);
 
         // set initial status
         bool gpsIsOn = await GpsHandler().isGpsOn();
@@ -583,14 +586,36 @@ $gpsInfo
               size: iconSize,
             ),
             title: Text(
-              "GPS on screen",
+              "Center on GPS stream",
               style: textStyle,
             ),
             trailing: Checkbox(
-                value: _mainEventsHandler.isKeepGpsOnScreen(),
+                value: _mainEventsHandler.isCenterOnGpsStream(),
                 onChanged: (value) {
-                  _mainEventsHandler.setKeepGpsOnScreen(value);
-                  GpPreferences().setBoolean(KEY_CENTER_ON_GPS, value);
+                  _mainEventsHandler.setCenterOnGpsStream(value);
+                  GpPreferences().setCenterOnGps(value);
+//                  Navigator.of(context).pop();
+                }),
+            onTap: () => _openLayers(context),
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.rotate_right,
+              color: c,
+              size: iconSize,
+            ),
+            title: Text(
+              "Rotate with GPS heading",
+              style: textStyle,
+            ),
+            trailing: Checkbox(
+                value: _mainEventsHandler.isRotateOnHeading(),
+                onChanged: (value) {
+                  _mainEventsHandler.setRotateOnHeading(value);
+                  if (!value) {
+                    _mapController.rotate(0);
+                  }
+                  GpPreferences().setRotateOnHeading(value);
 //                  Navigator.of(context).pop();
                 }),
             onTap: () => _openLayers(context),
@@ -625,15 +650,15 @@ $gpsInfo
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      GpLogger().d("Application suspended");
+//      GpLogger().d("Application suspended");
       updateCenterPosition();
     } else if (state == AppLifecycleState.inactive) {
-      GpLogger().d("Application inactived");
+//      GpLogger().d("Application inactived");
       updateCenterPosition();
     } else if (state == AppLifecycleState.suspending) {
-      GpLogger().d("Application suspending");
+//      GpLogger().d("Application suspending");
     } else if (state == AppLifecycleState.resumed) {
-      GpLogger().d("Application resumed");
+//      GpLogger().d("Application resumed");
     }
   }
 
@@ -828,11 +853,17 @@ $gpsInfo
 
   @override
   void onPositionUpdate(Position position) {
-    if (_mainEventsHandler.isKeepGpsOnScreen() &&
-        !_mapController.bounds
-            .contains(LatLng(position.latitude, position.longitude))) {
+    if (_mainEventsHandler.isCenterOnGpsStream()) {
       _mapController.move(
           LatLng(position.latitude, position.longitude), _mapController.zoom);
+      _lastPosition = position;
+    }
+    if (_mainEventsHandler.isRotateOnHeading()) {
+      var heading = position.heading;
+      if (heading < 0) {
+        heading = 360 + heading;
+      }
+      _mapController.rotate(-heading);
     }
     setState(() {
       _lastPosition = position;
