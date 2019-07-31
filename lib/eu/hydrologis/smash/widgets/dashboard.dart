@@ -199,26 +199,11 @@ class _DashboardWidgetState extends State<DashboardWidget>
         IconButton(
             icon: Icon(Icons.info_outline),
             onPressed: () {
-              String gpsInfo = "";
-              if (_lastPosition != null) {
-                gpsInfo = '''
-Last position:
-  Latitude: ${_lastPosition.latitude}
-  Longitude: ${_lastPosition.longitude}
-  Altitude: ${_lastPosition.altitude.round()} m
-  Accuracy: ${_lastPosition.accuracy.round()} m
-  Heading: ${_lastPosition.heading}
-  Speed: ${_lastPosition.speed} m/s
-  Timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(_lastPosition.timestamp)}''';
-              }
               showInfoDialog(
-                  context,
-                  '''Project: $_projectName
-${_projectDirName != null ? "Folder: $_projectDirName\n" : ""}
-$gpsInfo
-'''
-                      .trim(),
-                  dialogHeight: _media.height / 2);
+                context,
+                "Project: $_projectName\n${_projectDirName != null ? "Folder: $_projectDirName\n" : ""}"
+                    .trim(),
+              );
             })
       ],
     );
@@ -276,6 +261,18 @@ $gpsInfo
                               } else if (menuItem.menuTitle == 'GPS Image') {
                                 DataLoaderUtilities.addImage(context, true,
                                     _mapController, _mainEventsHandler);
+                              } else if (menuItem.menuTitle == 'Center Forms') {
+                                var sectionNames =
+                                    TagsManager().sectionsMap.keys.toList();
+                                var selected = await showComboDialog(context,
+                                    "Select form (center)", sectionNames);
+                                print(selected);
+                              } else if (menuItem.menuTitle == 'GPS Forms') {
+                                var sectionNames =
+                                    TagsManager().sectionsMap.keys.toList();
+                                var selected = await showComboDialog(
+                                    context, "Select form (GPS)", sectionNames);
+                                print(selected);
                               }
                             },
 //                            onDismiss:
@@ -301,6 +298,17 @@ $gpsInfo
                 DashboardUtils.makeToolbarBadge(
                     LoggingButton(_mainEventsHandler), _logsCount),
                 IconButton(
+                  // placeholder icon to keep centered
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.center_focus_strong,
+                    color: SmashColors.mainDecorations,
+                  ),
+                ),
+                Spacer(),
+                GpsInfoButton(_mainEventsHandler),
+                Spacer(),
+                IconButton(
                   icon: Icon(Icons.layers),
                   onPressed: () {
                     Navigator.push(
@@ -311,17 +319,6 @@ $gpsInfo
                   },
                   color: SmashColors.mainBackground,
                   tooltip: 'Open layers list',
-                ),
-                Spacer(),
-                GpsInfoButton(_mainEventsHandler),
-                Spacer(),
-                IconButton(
-                  // placeholder icon to keep centered
-                  onPressed: null,
-                  icon: Icon(
-                    Icons.center_focus_strong,
-                    color: SmashColors.mainDecorations,
-                  ),
                 ),
                 DashboardUtils.makeToolbarZoomBadge(
                   IconButton(
@@ -551,23 +548,154 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        icon: DashboardUtils.getGpsStatusIcon(_gpsStatus),
-        tooltip: "Check GPS Information",
-        onPressed: () {
-          print("GPS info Pressed...");
+    return GestureDetector(
+        onLongPress: () {
           var pos = GpsHandler().lastPosition;
-          if (pos != null) {
-            var newCenter = LatLng(pos.latitude, pos.longitude);
-            if (widget._eventHandler.getMapCenter() == newCenter) {
-              // trigger a change in the handler
-              // which would not is the coord remains the same
-              widget._eventHandler.setMapCenter(LatLng(
-                  pos.latitude - 0.00000001, pos.longitude - 0.00000001));
-            }
-            widget._eventHandler.setMapCenter(newCenter);
+          Widget gpsInfo;
+          if (GpsHandler().hasFix() && pos != null) {
+            gpsInfo = Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+//              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: Text(
+                    "Last GPS position",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
+                        color: SmashColors.mainDecorationsDark),
+                  ),
+                ),
+                Table(
+                  columnWidths: {
+                    0: FlexColumnWidth(0.4),
+                    1: FlexColumnWidth(0.6),
+                  },
+                  children: [
+                    TableRow(
+                      children: [
+                        TableUtilities.cellForString("Latitude"),
+                        TableUtilities.cellForString("${pos.latitude}"),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        TableUtilities.cellForString("Longitude"),
+                        TableUtilities.cellForString("${pos.longitude}"),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        TableUtilities.cellForString("Altitude"),
+                        TableUtilities.cellForString(
+                            "${pos.altitude.round()} m"),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        TableUtilities.cellForString("Accuracy"),
+                        TableUtilities.cellForString(
+                            "${pos.accuracy.round()} m"),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        TableUtilities.cellForString("Heading"),
+                        TableUtilities.cellForString("${pos.heading} m"),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        TableUtilities.cellForString("Speed"),
+                        TableUtilities.cellForString("${pos.speed} m/s"),
+                      ],
+                    ),
+                    TableRow(
+                      children: [
+                        TableUtilities.cellForString("Timestamp"),
+                        TableUtilities.cellForString(
+                            "${TimeUtilities.ISO8601_TS_FORMATTER.format(pos.timestamp)}"),
+                      ],
+                    ),
+                  ],
+                )
+              ],
+            );
+          } else {
+            gpsInfo = Text(
+              "No GPS information available...",
+              style: TextStyle(
+                  color: SmashColors.mainSelection,
+                  fontSize: GpConstants.DIALOG_TEXTSIZE),
+              textAlign: TextAlign.start,
+            );
           }
-        });
+          Scaffold.of(context).showSnackBar(SnackBar(
+            backgroundColor: SmashColors.snackBarColor,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: gpsInfo,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          Icons.content_copy,
+                          color: SmashColors.mainDecorationsDark,
+                        ),
+                        tooltip: "Copy position to clipboard.",
+                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                        onPressed: () {
+                          Clipboard.setData(
+                              ClipboardData(text: pos.toString()));
+                        },
+                      ),
+                      Spacer(
+                        flex: 1,
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: SmashColors.mainDecorationsDark,
+                        ),
+                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                        onPressed: () {
+                          Scaffold.of(context).hideCurrentSnackBar();
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            duration: Duration(seconds: 5),
+          ));
+        },
+        child: IconButton(
+          icon: DashboardUtils.getGpsStatusIcon(_gpsStatus),
+          onPressed: () {
+            var pos = GpsHandler().lastPosition;
+            if (pos != null) {
+              var newCenter = LatLng(pos.latitude, pos.longitude);
+              if (widget._eventHandler.getMapCenter() == newCenter) {
+                // trigger a change in the handler
+                // which would not is the coord remains the same
+                widget._eventHandler.setMapCenter(LatLng(
+                    pos.latitude - 0.00000001, pos.longitude - 0.00000001));
+              }
+              widget._eventHandler.setMapCenter(newCenter);
+            }
+          },
+        ));
   }
 }
 

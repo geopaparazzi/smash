@@ -501,8 +501,6 @@ class DataLoaderUtilities {
       Function _hideSnackbar) async {
     List<Note> notesList = await db.getNotes();
     notesList.forEach((note) {
-      var label =
-          "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
       NoteExt noteExt = note.noteExt;
       tmp.add(Marker(
         width: noteExt.size,
@@ -516,15 +514,59 @@ class DataLoaderUtilities {
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        label,
-                        style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
-                        textAlign: TextAlign.start,
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Table(
+                          columnWidths: {
+                            0: FlexColumnWidth(0.4),
+                            1: FlexColumnWidth(0.6),
+                          },
+                          children: [
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString("Note"),
+                                TableUtilities.cellForString(note.text),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString("Longitude"),
+                                TableUtilities.cellForString(
+                                    note.lon.toString()),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString("Latitude"),
+                                TableUtilities.cellForString(
+                                    note.lat.toString()),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString("Altitude"),
+                                TableUtilities.cellForString(
+                                    note.altim.toInt().toString()),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString("Timestamp"),
+                                TableUtilities.cellForString(TimeUtilities
+                                    .ISO8601_TS_FORMATTER
+                                    .format(DateTime.fromMillisecondsSinceEpoch(
+                                        note.timeStamp))),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 5),
@@ -538,6 +580,8 @@ class DataLoaderUtilities {
                           ),
                           iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
                           onPressed: () {
+                            var label =
+                                "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
                             shareText(label);
                             _hideSnackbar();
                           },

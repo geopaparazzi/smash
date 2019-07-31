@@ -19,6 +19,7 @@ class SmashApp extends StatefulWidget {
 
 class SmashAppState extends State<SmashApp> {
   Future<bool> loadConfiguration() async {
+    await TagsManager().readFileTags();
     var layerManager = LayerManager();
     await layerManager.initialize();
     appGpsLoggingHandler = SmashLoggingHandler();
