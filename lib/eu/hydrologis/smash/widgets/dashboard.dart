@@ -262,15 +262,29 @@ class _DashboardWidgetState extends State<DashboardWidget>
                               } else if (menuItem.menuTitle == 'Center Forms') {
                                 var sectionNames =
                                     TagsManager().sectionsMap.keys.toList();
-                                var selected = await showComboDialog(context,
-                                    "Select form (center)", sectionNames);
-                                print(selected);
+                                var selectedSection = await showComboDialog(
+                                    context,
+                                    "Select form (center)",
+                                    sectionNames);
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return MasterDetailPage(
+                                        "$selectedSection (center)",
+                                        selectedSection);
+                                  },
+                                ));
                               } else if (menuItem.menuTitle == 'GPS Forms') {
                                 var sectionNames =
                                     TagsManager().sectionsMap.keys.toList();
-                                var selected = await showComboDialog(
+                                var selectedSection = await showComboDialog(
                                     context, "Select form (GPS)", sectionNames);
-                                print(selected);
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
+                                    return MasterDetailPage(
+                                        "$selectedSection (GPS)",
+                                        selectedSection);
+                                  },
+                                ));
                               }
                             },
 //                            onDismiss:
