@@ -10,8 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
 import 'package:path/path.dart';
 import 'package:popup_menu/popup_menu.dart';
-import 'package:screen/screen.dart';
-
 import 'dashboard_utils.dart';
 
 class DashboardWidget extends StatefulWidget {
@@ -56,8 +54,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   @override
   void initState() {
-    Screen.keepOn(true);
-
     var gpProject = GPProject();
     _initLon = gpProject.lastCenterLon;
     _initLat = gpProject.lastCenterLat;
@@ -89,6 +85,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
         var directory = await Workspace.getApplicationConfigurationFolder();
         bool init = await GpLogger().init(directory.path); // init logger
         if (init) GpLogger().d("Db logger initialized.");
+
+        ScreenUtilities.keepScreenOn(await GpPreferences().getKeepScreenOn());
 
         // start gps listening
         GpsHandler().addPositionListener(this);
