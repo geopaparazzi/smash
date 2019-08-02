@@ -15,6 +15,9 @@ import 'package:path/path.dart';
 import 'package:popup_menu/popup_menu.dart';
 import 'package:screen/screen.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
 
 class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue) {
@@ -252,6 +255,24 @@ class DashboardUtils {
             style: textStyle,
           ),
           onTap: () {},
+        ),
+      )
+      ..add(
+        ListTile(
+          leading: new Icon(
+            FontAwesomeIcons.crosshairs,
+            color: c,
+            size: iconSize,
+          ),
+          title: Text(
+            "Notes in GPS position",
+            style: textStyle,
+          ),
+          trailing: Checkbox(
+              value: mainEventsHandler.getInsertInGps(),
+              onChanged: (value) {
+                mainEventsHandler.setInsertInGps(value);
+              }),
         ),
       )
       ..add(

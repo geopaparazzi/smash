@@ -23,7 +23,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
     with WidgetsBindingObserver
     implements PositionListener {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  GlobalKey _menuKey = GlobalKey();
   MainEventHandler _mainEventsHandler;
 
   _DashboardWidgetState() {
@@ -49,7 +48,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   String _projectName = "No project loaded";
   String _projectDirName;
-  int _notesCount = 0;
+  int _simpleNotesCount = 0;
+  int _formNotesCount = 0;
   int _logsCount = 0;
 
   @override
@@ -69,6 +69,10 @@ class _DashboardWidgetState extends State<DashboardWidget>
       }
     });
 
+    _mainEventsHandler.addInsertInGpsPositionListener(() {
+      bool doNoteInGps = _mainEventsHandler.getInsertInGps();
+      GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, doNoteInGps);
+    });
     _mainEventsHandler.addMapCenterListener(() {
       var newMapCenter = _mainEventsHandler.getMapCenter();
       if (newMapCenter != null) {
@@ -87,6 +91,10 @@ class _DashboardWidgetState extends State<DashboardWidget>
         if (init) GpLogger().d("Db logger initialized.");
 
         ScreenUtilities.keepScreenOn(await GpPreferences().getKeepScreenOn());
+
+        bool doNoteInGps =
+            await GpPreferences().getBoolean(KEY_DO_NOTE_IN_GPS, true);
+        _mainEventsHandler.setInsertInGps(doNoteInGps);
 
         // start gps listening
         GpsHandler().addPositionListener(this);
@@ -240,59 +248,19 @@ class _DashboardWidgetState extends State<DashboardWidget>
                     GestureDetector(
                       child: IconButton(
                         onPressed: () async {
-                          PopupMenu.context = context;
-                          PopupMenu menu = PopupMenu(
-                            backgroundColor: SmashColors.mainBackground,
-                            lineColor: SmashColors.mainDecorations,
-                            // maxColumn: 2,
-                            items: DashboardUtils.getAddNoteMenuItems(),
-                            onClickMenu: (menuItem) async {
-                              if (menuItem.menuTitle == 'Center Note') {
-                                DataLoaderUtilities.addNote(context, false,
-                                    _mapController, _mainEventsHandler);
-                              } else if (menuItem.menuTitle == 'GPS Note') {
-                                DataLoaderUtilities.addNote(context, true,
-                                    _mapController, _mainEventsHandler);
-                              } else if (menuItem.menuTitle == 'Center Image') {
-                                DataLoaderUtilities.addImage(context, false,
-                                    _mapController, _mainEventsHandler);
-                              } else if (menuItem.menuTitle == 'GPS Image') {
-                                DataLoaderUtilities.addImage(context, true,
-                                    _mapController, _mainEventsHandler);
-                              } else if (menuItem.menuTitle == 'Center Forms') {
-                                var sectionNames =
-                                    TagsManager().sectionsMap.keys.toList();
-                                var selectedSection = await showComboDialog(
-                                    context,
-                                    "Select form (center)",
-                                    sectionNames);
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return MasterDetailPage(
-                                        "$selectedSection (center)",
-                                        selectedSection);
-                                  },
-                                ));
-                              } else if (menuItem.menuTitle == 'GPS Forms') {
-                                var sectionNames =
-                                    TagsManager().sectionsMap.keys.toList();
-                                var selectedSection = await showComboDialog(
-                                    context, "Select form (GPS)", sectionNames);
-                                Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) {
-                                    return MasterDetailPage(
-                                        "$selectedSection (GPS)",
-                                        selectedSection);
-                                  },
-                                ));
-                              }
-                            },
-//                            onDismiss:
-                          );
-
-                          menu.show(widgetKey: _menuKey);
+                          var doNoteInGps =_mainEventsHandler.getInsertInGps();
+                          String pos = doNoteInGps ? " (GPS)" : " (center)";
+                          List<String> types = ["note", "image"];
+                          var selectedType = await showComboDialog(
+                              context, "Simple Notes$pos", types);
+                          if (selectedType == types[0]) {
+                            DataLoaderUtilities.addNote(context, doNoteInGps,
+                                _mapController, _mainEventsHandler);
+                          } else if (selectedType == types[1]) {
+                            DataLoaderUtilities.addImage(context, doNoteInGps,
+                                _mapController, _mainEventsHandler);
+                          }
                         },
-                        key: _menuKey,
                         icon: Icon(
                           Icons.note,
                           color: SmashColors.mainBackground,
@@ -303,20 +271,45 @@ class _DashboardWidgetState extends State<DashboardWidget>
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    NotesListWidget(_mainEventsHandler)));
+                                    NotesListWidget(_mainEventsHandler, true)));
                       },
                     ),
-                    _notesCount),
+                    _simpleNotesCount),
+                DashboardUtils.makeToolbarBadge(
+                    GestureDetector(
+                      child: IconButton(
+                        onPressed: () async {
+                          var doNoteInGps =_mainEventsHandler.getInsertInGps();
+                          String pos = doNoteInGps ? " (GPS)" : " (center)";
+                          var sectionNames =
+                              TagsManager().sectionsMap.keys.toList();
+                          var selectedSection = await showComboDialog(
+                              context, "Select form$pos", sectionNames);
+                          if (selectedSection != null) {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) {
+                                return MasterDetailPage(
+                                    "$selectedSection$pos", selectedSection);
+                              },
+                            ));
+                          }
+                        },
+                        icon: Icon(
+                          Icons.note_add,
+                          color: SmashColors.mainBackground,
+                        ),
+                      ),
+                      onLongPress: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NotesListWidget(
+                                    _mainEventsHandler, false)));
+                      },
+                    ),
+                    _formNotesCount),
                 DashboardUtils.makeToolbarBadge(
                     LoggingButton(_mainEventsHandler), _logsCount),
-                IconButton(
-                  // placeholder icon to keep centered
-                  onPressed: null,
-                  icon: Icon(
-                    Icons.center_focus_strong,
-                    color: SmashColors.mainDecorations,
-                  ),
-                ),
                 Spacer(),
                 GpsInfoButton(_mainEventsHandler),
                 Spacer(),
@@ -410,8 +403,13 @@ class _DashboardWidgetState extends State<DashboardWidget>
       ),
       new Container(
         child: new Column(
-            children: DashboardUtils.getEndDrawerListTiles(c, iconSize,
-                textStyle, context, _mapController, _mainEventsHandler)),
+            children: DashboardUtils.getEndDrawerListTiles(
+                c,
+                iconSize,
+                textStyle,
+                context,
+                _mapController,
+                _mainEventsHandler)),
       ),
     ];
   }
@@ -517,10 +515,11 @@ class _DashboardWidgetState extends State<DashboardWidget>
     if (db == null) return;
     _projectName = basenameWithoutExtension(db.path);
     _projectDirName = dirname(db.path);
-    _notesCount = await db.getNotesCount(false);
+    _simpleNotesCount = await db.getSimpleNotesCount(false);
     var imageNotescount = await db.getImagesCount(false);
-    _notesCount += imageNotescount;
+    _simpleNotesCount += imageNotescount;
     _logsCount = await db.getGpsLogCount(false);
+    _formNotesCount = await db.getFormNotesCount(false);
 
     List<Marker> tmp = [];
     DataLoaderUtilities.loadImageMarkers(
