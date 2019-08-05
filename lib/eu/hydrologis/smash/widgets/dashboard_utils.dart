@@ -189,6 +189,22 @@ class DashboardUtils {
       ),
       ListTile(
         leading: new Icon(
+          Icons.insert_emoticon,
+          color: c,
+          size: iconSize,
+        ),
+        title: Text(
+          "Available icons",
+          style: TextStyle(fontSize: textSize, color: c),
+        ),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => IconsWidget()));
+        },
+      ),
+      ListTile(
+        leading: new Icon(
           Icons.bug_report,
           color: c,
           size: iconSize,
@@ -515,7 +531,7 @@ class DataLoaderUtilities {
   }
 
   static void loadNotesMarkers(
-      var db,
+      GeopaparazziProjectDb db,
       List<Marker> tmp,
       MainEventHandler mainEventHandler,
       Function _showSnackbar,

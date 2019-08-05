@@ -500,9 +500,12 @@ class _DashboardWidgetState extends State<DashboardWidget>
       }
       _mapController.rotate(-heading);
     }
-    setState(() {
-      _lastPosition = position;
-    });
+
+    if(mounted) {
+      setState(() {
+        _lastPosition = position;
+      });
+    }
   }
 
   @override
