@@ -168,7 +168,7 @@ packages:
       path: "../OTHERS/flutter_map"
       relative: true
     source: path
-    version: "0.5.6"
+    version: "0.7.0+1"
   flutter_map_marker_cluster:
     dependency: transitive
     description:
