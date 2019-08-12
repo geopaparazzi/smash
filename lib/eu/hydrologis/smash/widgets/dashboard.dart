@@ -80,43 +80,37 @@ class _DashboardWidgetState extends State<DashboardWidget>
       }
     });
 
-    PermissionManager()
-        .add(PERMISSIONS.STORAGE)
-        .add(PERMISSIONS.LOCATION)
-        .check()
-        .then((allRight) async {
-      if (allRight) {
-        var directory = await Workspace.getApplicationConfigurationFolder();
-        bool init = await GpLogger().init(directory.path); // init logger
-        if (init) GpLogger().d("Db logger initialized.");
+    Future.delayed(Duration(seconds: 0), () async {
+      var directory = await Workspace.getApplicationConfigurationFolder();
+      bool init = await GpLogger().init(directory.path); // init logger
+      if (init) GpLogger().d("Db logger initialized.");
 
-        ScreenUtilities.keepScreenOn(await GpPreferences().getKeepScreenOn());
+      ScreenUtilities.keepScreenOn(await GpPreferences().getKeepScreenOn());
 
-        bool doNoteInGps =
-            await GpPreferences().getBoolean(KEY_DO_NOTE_IN_GPS, true);
-        _mainEventsHandler.setInsertInGps(doNoteInGps);
+      bool doNoteInGps =
+          await GpPreferences().getBoolean(KEY_DO_NOTE_IN_GPS, true);
+      _mainEventsHandler.setInsertInGps(doNoteInGps);
 
-        // start gps listening
-        GpsHandler().addPositionListener(this);
+      // start gps listening
+      GpsHandler().addPositionListener(this);
 
-        // check center on gps
-        bool centerOnGps = await GpPreferences().getCenterOnGps();
-        _mainEventsHandler.setCenterOnGpsStream(centerOnGps);
+      // check center on gps
+      bool centerOnGps = await GpPreferences().getCenterOnGps();
+      _mainEventsHandler.setCenterOnGpsStream(centerOnGps);
 
-        bool rotateOnHeading = await GpPreferences().getRotateOnHeading();
-        _mainEventsHandler.setRotateOnHeading(rotateOnHeading);
+      bool rotateOnHeading = await GpPreferences().getRotateOnHeading();
+      _mainEventsHandler.setRotateOnHeading(rotateOnHeading);
 
-        // set initial status
-        bool gpsIsOn = await GpsHandler().isGpsOn();
-        if (gpsIsOn != null) {
-          if (gpsIsOn) {
-            _mainEventsHandler.setGpsStatus(GpsStatus.ON_NO_FIX);
-          }
+      // set initial status
+      bool gpsIsOn = await GpsHandler().isGpsOn();
+      if (gpsIsOn != null) {
+        if (gpsIsOn) {
+          _mainEventsHandler.setGpsStatus(GpsStatus.ON_NO_FIX);
         }
-
-        await _loadCurrentProject();
-        await reloadLayers();
       }
+
+      await _loadCurrentProject();
+      await reloadLayers();
     });
 
     super.initState();
@@ -248,7 +242,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                     GestureDetector(
                       child: IconButton(
                         onPressed: () async {
-                          var doNoteInGps =_mainEventsHandler.getInsertInGps();
+                          var doNoteInGps = _mainEventsHandler.getInsertInGps();
                           String pos = doNoteInGps ? " (GPS)" : " (center)";
                           List<String> types = ["note", "image"];
                           var selectedType = await showComboDialog(
@@ -279,7 +273,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                     GestureDetector(
                       child: IconButton(
                         onPressed: () async {
-                          var doNoteInGps =_mainEventsHandler.getInsertInGps();
+                          var doNoteInGps = _mainEventsHandler.getInsertInGps();
                           String pos = doNoteInGps ? " (GPS)" : " (center)";
                           var sectionNames =
                               TagsManager().sectionsMap.keys.toList();
@@ -403,13 +397,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
       ),
       new Container(
         child: new Column(
-            children: DashboardUtils.getEndDrawerListTiles(
-                c,
-                iconSize,
-                textStyle,
-                context,
-                _mapController,
-                _mainEventsHandler)),
+            children: DashboardUtils.getEndDrawerListTiles(c, iconSize,
+                textStyle, context, _mapController, _mainEventsHandler)),
       ),
     ];
   }
@@ -501,7 +490,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
       _mapController.rotate(-heading);
     }
 
-    if(mounted) {
+    if (mounted) {
       setState(() {
         _lastPosition = position;
       });
