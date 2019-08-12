@@ -63,7 +63,7 @@
     <string>The app needs to access the photo library to attach media to the survey.</string>
     <key>NSMotionUsageDescription</key>
     <string>The app needs to access your motion to work on the survey.</string>
-    <key>NSAppleMusicUsageDescription </key>
+    <key>NSAppleMusicUsageDescription</key>
     <string>The app needs to access the music library to attach media to the survey.</string>
     <key>NSSpeechRecognitionUsageDescription</key>
     <string>The app needs to access the speech recognition library to enable vocal gestures.</string>
