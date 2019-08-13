@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -190,6 +191,22 @@ class _DashboardWidgetState extends State<DashboardWidget>
       );
     }
 
+    bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
+    if (showScalebar) {
+      layers.add(ScaleLayerPluginOption(
+        lineColor: Colors.black,
+        lineWidth: 3,
+        textStyle: TextStyle(color: Colors.black, fontSize: 14),
+        padding: EdgeInsets.all(10),
+      ));
+    }
+
+    layers.add(CenterCrossPluginOption(
+      crossColor: Colors.black,
+      crossSize: 30,
+      lineWidth: 3,
+    ));
+
     var bar = new AppBar(
       title: Padding(
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -220,6 +237,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
               zoom: _initZoom,
               plugins: [
                 MarkerClusterPlugin(),
+                ScaleLayerPlugin(),
+                CenterCrossPlugin(),
               ],
             ),
             layers: layers,
@@ -553,135 +572,63 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onLongPress: () {
+          var isLandscape = ScreenUtilities.isLandscape(context);
           var pos = GpsHandler().lastPosition;
-          Widget gpsInfo;
-          if (GpsHandler().hasFix() && pos != null) {
-            gpsInfo = Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-//              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12.0),
-                  child: Text(
-                    "Last GPS position",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
-                        color: SmashColors.mainDecorationsDark),
-                  ),
-                ),
-                Table(
-                  columnWidths: {
-                    0: FlexColumnWidth(0.4),
-                    1: FlexColumnWidth(0.6),
-                  },
-                  children: [
-                    TableRow(
-                      children: [
-                        TableUtilities.cellForString("Latitude"),
-                        TableUtilities.cellForString("${pos.latitude}"),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        TableUtilities.cellForString("Longitude"),
-                        TableUtilities.cellForString("${pos.longitude}"),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        TableUtilities.cellForString("Altitude"),
-                        TableUtilities.cellForString(
-                            "${pos.altitude.round()} m"),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        TableUtilities.cellForString("Accuracy"),
-                        TableUtilities.cellForString(
-                            "${pos.accuracy.round()} m"),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        TableUtilities.cellForString("Heading"),
-                        TableUtilities.cellForString("${pos.heading} m"),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        TableUtilities.cellForString("Speed"),
-                        TableUtilities.cellForString("${pos.speed} m/s"),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        TableUtilities.cellForString("Timestamp"),
-                        TableUtilities.cellForString(
-                            "${TimeUtilities.ISO8601_TS_FORMATTER.format(pos.timestamp)}"),
-                      ],
-                    ),
-                  ],
-                )
-              ],
-            );
-          } else {
-            gpsInfo = Text(
-              "No GPS information available...",
-              style: TextStyle(
-                  color: SmashColors.mainSelection,
-                  fontSize: GpConstants.DIALOG_TEXTSIZE),
-              textAlign: TextAlign.start,
-            );
-          }
-          Scaffold.of(context).showSnackBar(SnackBar(
-            backgroundColor: SmashColors.snackBarColor,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(bottom: 20),
-                  child: gpsInfo,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+
+          if (isLandscape) {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              backgroundColor: SmashColors.mainDecorations,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Row(
                     children: <Widget>[
-                      IconButton(
-                        icon: Icon(
-                          Icons.content_copy,
-                          color: SmashColors.mainDecorationsDark,
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 20),
+                          child: getGpsInfoContainer(pos),
                         ),
-                        tooltip: "Copy position to clipboard.",
-                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                        onPressed: () {
-                          Clipboard.setData(
-                              ClipboardData(text: pos.toString()));
-                        },
                       ),
-                      Spacer(
-                        flex: 1,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: SmashColors.mainDecorationsDark,
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 20),
+                          child: GpsToolsWidget(widget._eventHandler),
                         ),
-                        iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
-                        onPressed: () {
-                          Scaffold.of(context).hideCurrentSnackBar();
-                        },
                       ),
                     ],
                   ),
-                )
-              ],
-            ),
-            duration: Duration(seconds: 5),
-          ));
+                  Padding(
+                    padding: EdgeInsets.only(top: 5),
+                    child: getBottomButtons(context, pos),
+                  ),
+                ],
+              ),
+              duration: Duration(seconds: 5),
+            ));
+          } else {
+            Scaffold.of(context).showSnackBar(SnackBar(
+              backgroundColor: SmashColors.mainDecorations,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: getGpsInfoContainer(pos),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: GpsToolsWidget(widget._eventHandler),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 5),
+                    child: getBottomButtons(context, pos),
+                  ),
+                ],
+              ),
+              duration: Duration(seconds: 5),
+            ));
+          }
         },
         child: IconButton(
           icon: DashboardUtils.getGpsStatusIcon(_gpsStatus),
@@ -699,6 +646,200 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             }
           },
         ));
+  }
+
+  Widget getBottomButtons(BuildContext context, var pos) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(
+            Icons.content_copy,
+            color: SmashColors.mainBackground,
+          ),
+          tooltip: "Copy position to clipboard.",
+          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+          onPressed: () {
+            Clipboard.setData(ClipboardData(text: pos.toString()));
+          },
+        ),
+        Spacer(
+          flex: 1,
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.close,
+            color: SmashColors.mainBackground,
+          ),
+          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+          onPressed: () {
+            Scaffold.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget getGpsInfoContainer(var pos) {
+    var color = SmashColors.mainBackground;
+
+    Widget gpsInfo;
+    if (GpsHandler().hasFix() && pos != null) {
+      gpsInfo = Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+//              crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: Text(
+              "Last GPS position",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
+                  color: SmashColors.mainSelection),
+            ),
+          ),
+          Table(
+            columnWidths: {
+              0: FlexColumnWidth(0.4),
+              1: FlexColumnWidth(0.6),
+            },
+            children: [
+              TableRow(
+                children: [
+                  TableUtilities.cellForString("Latitude", color: color),
+                  TableUtilities.cellForString("${pos.latitude}", color: color),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableUtilities.cellForString("Longitude", color: color),
+                  TableUtilities.cellForString("${pos.longitude}",
+                      color: color),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableUtilities.cellForString("Altitude", color: color),
+                  TableUtilities.cellForString("${pos.altitude.round()} m",
+                      color: color),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableUtilities.cellForString("Accuracy", color: color),
+                  TableUtilities.cellForString("${pos.accuracy.round()} m",
+                      color: color),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableUtilities.cellForString("Heading", color: color),
+                  TableUtilities.cellForString("${pos.heading} m",
+                      color: color),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableUtilities.cellForString("Speed", color: color),
+                  TableUtilities.cellForString("${pos.speed.toInt()} m/s",
+                      color: color),
+                ],
+              ),
+              TableRow(
+                children: [
+                  TableUtilities.cellForString("Timestamp", color: color),
+                  TableUtilities.cellForString(
+                      "${TimeUtilities.ISO8601_TS_FORMATTER.format(pos.timestamp)}",
+                      color: color),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+    } else {
+      gpsInfo = Text(
+        "No GPS information available...",
+        style: TextStyle(
+            color: SmashColors.mainSelection,
+            fontSize: GpConstants.DIALOG_TEXTSIZE),
+        textAlign: TextAlign.start,
+      );
+    }
+
+    return Container(
+      child: gpsInfo,
+    );
+  }
+}
+
+class GpsToolsWidget extends StatefulWidget {
+  final MainEventHandler _eventHandler;
+
+  GpsToolsWidget(this._eventHandler);
+
+  @override
+  State<StatefulWidget> createState() => _GpsToolsWidgetState();
+}
+
+class _GpsToolsWidgetState extends State<GpsToolsWidget> {
+  @override
+  Widget build(BuildContext context) {
+    Widget toolsWidget = Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(bottom: 12.0),
+          child: Text(
+            "Tools",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
+                color: SmashColors.mainSelection),
+          ),
+        ),
+        CheckboxListTile(
+          value: GpPreferences().getBooleanSync(KEY_CENTER_ON_GPS, false),
+          title: Text(
+            "Center map on GPS position",
+            style: TextStyle(
+                fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
+                color: SmashColors.mainBackground),
+          ),
+          onChanged: (value) async {
+            await GpPreferences().setBoolean(KEY_CENTER_ON_GPS, value);
+            widget._eventHandler.setCenterOnGpsStream(value);
+            setState(() {});
+          },
+        ),
+        Platform.isAndroid
+            ? CheckboxListTile(
+                value: GpPreferences()
+                    .getBooleanSync(KEY_ROTATE_ON_HEADING, false),
+                title: Text(
+                  "Rotate map with GPS heading",
+                  style: TextStyle(
+                      fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
+                      color: SmashColors.mainBackground),
+                ),
+                onChanged: (value) async {
+                  await GpPreferences()
+                      .setBoolean(KEY_ROTATE_ON_HEADING, value);
+                  widget._eventHandler.setRotateOnHeading(value);
+                  setState(() {});
+                },
+              )
+            : Container(),
+      ],
+    );
+    return Container(
+      child: toolsWidget,
+    );
   }
 }
 

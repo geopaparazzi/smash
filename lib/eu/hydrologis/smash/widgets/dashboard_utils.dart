@@ -125,6 +125,9 @@ class DashboardUtils {
       BuildContext context,
       MapController mapController,
       MainEventHandler mainEventsHandler) {
+    var doDiagnostics =
+        GpPreferences().getBooleanSync(KEY_ENABLE_DIAGNOSTICS, false);
+
     return [
       ListTile(
         leading: new Icon(
@@ -203,19 +206,21 @@ class DashboardUtils {
               context, MaterialPageRoute(builder: (context) => IconsWidget()));
         },
       ),
-      ListTile(
-        leading: new Icon(
-          Icons.bug_report,
-          color: c,
-          size: iconSize,
-        ),
-        title: Text(
-          "Run diagnostics",
-          style: TextStyle(fontSize: textSize, color: c),
-        ),
-        onTap: () => Navigator.push(context,
-            MaterialPageRoute(builder: (context) => DiagnosticWidget())),
-      ),
+      doDiagnostics
+          ? ListTile(
+              leading: new Icon(
+                Icons.bug_report,
+                color: c,
+                size: iconSize,
+              ),
+              title: Text(
+                "Run diagnostics",
+                style: TextStyle(fontSize: textSize, color: c),
+              ),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => DiagnosticWidget())),
+            )
+          : Container(),
       ListTile(
         leading: new Icon(
           Icons.info_outline,
@@ -290,53 +295,8 @@ class DashboardUtils {
                 mainEventsHandler.setInsertInGps(value);
               }),
         ),
-      )
-      ..add(
-        ListTile(
-          leading: new Icon(
-            Icons.center_focus_weak,
-            color: c,
-            size: iconSize,
-          ),
-          title: Text(
-            "Center on GPS stream",
-            style: textStyle,
-          ),
-          trailing: Checkbox(
-              value: mainEventsHandler.isCenterOnGpsStream(),
-              onChanged: (value) {
-                mainEventsHandler.setCenterOnGpsStream(value);
-                GpPreferences().setCenterOnGps(value);
-//                  Navigator.of(context).pop();
-              }),
-        ),
       );
 
-    if (!Platform.isIOS) {
-      list.add(
-        ListTile(
-          leading: new Icon(
-            Icons.rotate_right,
-            color: c,
-            size: iconSize,
-          ),
-          title: Text(
-            "Rotate with GPS heading",
-            style: textStyle,
-          ),
-          trailing: Checkbox(
-              value: mainEventsHandler.isRotateOnHeading(),
-              onChanged: (value) {
-                mainEventsHandler.setRotateOnHeading(value);
-                if (!value) {
-                  mapController.rotate(0);
-                }
-                GpPreferences().setRotateOnHeading(value);
-//                  Navigator.of(context).pop();
-              }),
-        ),
-      );
-    }
     return list;
   }
 
