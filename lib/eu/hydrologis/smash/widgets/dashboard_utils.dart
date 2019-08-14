@@ -147,6 +147,26 @@ class DashboardUtils {
               context, MaterialPageRoute(builder: (context) => IconsWidget()));
         },
       ),
+      ListTile(
+        leading: new Icon(
+          Icons.map,
+          color: c,
+          size: iconSize,
+        ),
+        title: SmashUI.normalText(
+          "Offline maps",
+          bold: true,
+          color: c,
+        ),
+        onTap: () async {
+          var mapsFolder = await Workspace.getMapsFolder();
+          Navigator.pop(context);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MapsDownloadWidget(mapsFolder)));
+        },
+      ),
       doDiagnostics
           ? ListTile(
               leading: new Icon(
