@@ -54,70 +54,6 @@ class DashboardUtils {
     }
   }
 
-  static List<MenuItem> getAddNoteMenuItems() {
-    var style = TextStyle(fontSize: 10, color: SmashColors.mainTextColor);
-    var size = GpConstants.SMALL_DIALOG_ICON_SIZE;
-    var list = <MenuItem>[
-      MenuItem(
-          textStyle: style,
-          title: 'Center Note',
-          image: Icon(
-            Icons.add_comment,
-            color: SmashColors.mainDecorations,
-            size: size,
-          )),
-      MenuItem(
-          textStyle: style,
-          title: 'Center Image',
-          image: Icon(
-            Icons.add_a_photo,
-            color: SmashColors.mainDecorations,
-            size: size,
-          )),
-      MenuItem(
-          textStyle: style,
-          title: 'Center Forms',
-          image: Icon(
-            Icons.menu,
-            color: SmashColors.mainDecorations,
-            size: size,
-          )),
-    ];
-    if (GpsHandler().hasFix()) {
-      list.add(
-        MenuItem(
-            textStyle: style,
-            title: 'GPS Note',
-            image: Icon(
-              Icons.add_comment,
-              color: SmashColors.mainSelection,
-              size: size,
-            )),
-      );
-      list.add(
-        MenuItem(
-            textStyle: style,
-            title: 'GPS Image',
-            image: Icon(
-              Icons.add_a_photo,
-              color: SmashColors.mainSelection,
-              size: size,
-            )),
-      );
-      list.add(
-        MenuItem(
-            textStyle: style,
-            title: 'GPS Forms',
-            image: Icon(
-              Icons.menu,
-              color: SmashColors.mainSelection,
-              size: size,
-            )),
-      );
-    }
-    return list;
-  }
-
   static List<Widget> getDrawerTilesList(
       Color c,
       double iconSize,
@@ -236,13 +172,11 @@ class DashboardUtils {
     ];
   }
 
-  static List<Widget> getEndDrawerListTiles(
-      Color c,
-      double iconSize,
-      TextStyle textStyle,
-      BuildContext context,
-      MapController mapController,
-      MainEventHandler mainEventsHandler) {
+  static List<Widget> getEndDrawerListTiles(BuildContext context,
+      MapController mapController, MainEventHandler mainEventsHandler) {
+    Color c = SmashColors.mainDecorations;
+    var iconSize = SmashUI.MEDIUM_ICON_SIZE;
+
     List<Widget> list = []
       ..add(
         ListTile(
@@ -251,9 +185,10 @@ class DashboardUtils {
             color: c,
             size: iconSize,
           ),
-          title: Text(
+          title: SmashUI.normalText(
             "Go to",
-            style: textStyle,
+            bold: true,
+            color: c,
           ),
           onTap: () {
             Navigator.pop(context);
@@ -271,9 +206,10 @@ class DashboardUtils {
             color: c,
             size: iconSize,
           ),
-          title: Text(
+          title: SmashUI.normalText(
             "Share position",
-            style: textStyle,
+            bold: true,
+            color: c,
           ),
           onTap: () {},
         ),
@@ -285,9 +221,10 @@ class DashboardUtils {
             color: c,
             size: iconSize,
           ),
-          title: Text(
+          title: SmashUI.normalText(
             "Notes in GPS position",
-            style: textStyle,
+            bold: true,
+            color: c,
           ),
           trailing: Checkbox(
               value: mainEventsHandler.getInsertInGps(),
@@ -512,7 +449,7 @@ class DataLoaderUtilities {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.all(GpConstants.DEFAULT_PADDING),
+                    padding: SmashUI.defaultPadding(),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -575,7 +512,7 @@ class DataLoaderUtilities {
                             Icons.share,
                             color: SmashColors.mainSelection,
                           ),
-                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
                             var label =
                                 "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
@@ -588,7 +525,7 @@ class DataLoaderUtilities {
                             Icons.edit,
                             color: SmashColors.mainSelection,
                           ),
-                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
                             Navigator.push(
                                 ctx,
@@ -603,7 +540,7 @@ class DataLoaderUtilities {
                             Icons.delete,
                             color: SmashColors.mainSelection,
                           ),
-                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () async {
                             var doRemove = await showConfirmDialog(
                                 ctx,
@@ -623,7 +560,7 @@ class DataLoaderUtilities {
                             Icons.close,
                             color: SmashColors.mainDecorationsDark,
                           ),
-                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
                             _hideSnackbar();
                           },
@@ -678,11 +615,7 @@ class DataLoaderUtilities {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          label,
-                          style: GpConstants.MEDIUM_DIALOG_TEXT_STYLE_NEUTRAL,
-                          textAlign: TextAlign.start,
-                        ),
+                        SmashUI.normalText(label),
                       ],
                     ),
                   ),
@@ -717,7 +650,7 @@ class DataLoaderUtilities {
                             Icons.share,
                             color: SmashColors.mainSelection,
                           ),
-                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
                             shareImage(label);
                             _hideSnackbar();
@@ -728,7 +661,7 @@ class DataLoaderUtilities {
                             Icons.delete,
                             color: SmashColors.mainSelection,
                           ),
-                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () async {
                             var doRemove = await showConfirmDialog(
                                 ctx,
@@ -748,7 +681,7 @@ class DataLoaderUtilities {
                             Icons.close,
                             color: SmashColors.mainDecorationsDark,
                           ),
-                          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
                             _hideSnackbar();
                           },

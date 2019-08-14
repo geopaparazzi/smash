@@ -16,17 +16,12 @@ class SettingsWidget extends StatefulWidget {
 class _SettingsWidgetState extends State<SettingsWidget> {
   Widget _selectedSetting;
 
-  static const TEXT_STYLE_NORMAL = const TextStyle(
-      color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.normal);
-  static const TEXT_STYLE_SELECTED = const TextStyle(
-      color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold);
-
   @override
   Widget build(BuildContext context) {
     final ListTile cameraSettingTile = ListTile(
         leading: Icon(CameraSettingState.iconData),
-        title: Text(CameraSettingState.title, style: TEXT_STYLE_NORMAL),
-        subtitle: Text(CameraSettingState.subtitle),
+        title: SmashUI.normalText(CameraSettingState.title),
+        subtitle: SmashUI.normalText(CameraSettingState.subtitle),
         trailing: Icon(Icons.arrow_right),
         onTap: () async {
           _selectedSetting = CameraSetting();
@@ -34,8 +29,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         });
     final ListTile screenSettingTile = ListTile(
         leading: Icon(ScreenSettingState.iconData),
-        title: Text(ScreenSettingState.title, style: TEXT_STYLE_NORMAL),
-        subtitle: Text(ScreenSettingState.subtitle),
+        title: SmashUI.normalText(ScreenSettingState.title),
+        subtitle: SmashUI.normalText(ScreenSettingState.subtitle),
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = ScreenSetting();
@@ -44,8 +39,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
     final ListTile diagnosticsSettingTile = ListTile(
         leading: Icon(DiagnosticsSettingState.iconData),
-        title: Text(DiagnosticsSettingState.title, style: TEXT_STYLE_NORMAL),
-        subtitle: Text(DiagnosticsSettingState.subtitle),
+        title: SmashUI.normalText(DiagnosticsSettingState.title),
+        subtitle: SmashUI.normalText(DiagnosticsSettingState.subtitle),
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = DiagnosticsSetting();
@@ -102,9 +97,8 @@ class CameraSettingState extends State<CameraSetting> {
       body: Column(
         children: <Widget>[
           ListTile(
-            leading: Text(
+            leading: SmashUI.normalText(
               "Resolution",
-              style: _SettingsWidgetState.TEXT_STYLE_NORMAL,
             ),
             title: Padding(
               padding: const EdgeInsets.only(left: 30.0),
@@ -115,9 +109,8 @@ class CameraSettingState extends State<CameraSetting> {
                 items: [
                   DropdownMenuItem(
                     child: Container(
-                      child: Text(
+                      child: SmashUI.normalText(
                         CameraResolutions.HIGH,
-                        style: _SettingsWidgetState.TEXT_STYLE_NORMAL,
                         textAlign: TextAlign.center,
                       ),
                       width: 200,
@@ -126,9 +119,8 @@ class CameraSettingState extends State<CameraSetting> {
                   ),
                   DropdownMenuItem(
                     child: Container(
-                      child: Text(
+                      child: SmashUI.normalText(
                         CameraResolutions.MEDIUM,
-                        style: _SettingsWidgetState.TEXT_STYLE_NORMAL,
                         textAlign: TextAlign.center,
                       ),
                       width: 200,
@@ -137,9 +129,8 @@ class CameraSettingState extends State<CameraSetting> {
                   ),
                   DropdownMenuItem(
                     child: Container(
-                      child: Text(
+                      child: SmashUI.normalText(
                         CameraResolutions.LOW,
-                        style: _SettingsWidgetState.TEXT_STYLE_NORMAL,
                         textAlign: TextAlign.center,
                       ),
                       width: 200,
@@ -176,7 +167,8 @@ class ScreenSettingState extends State<ScreenSetting> {
 
   @override
   Widget build(BuildContext context) {
-    bool keepScreenOn = GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
+    bool keepScreenOn =
+        GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
     bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
     return Scaffold(
       appBar: new AppBar(
@@ -192,26 +184,42 @@ class ScreenSettingState extends State<ScreenSetting> {
       ),
       body: Column(
         children: <Widget>[
-          CheckboxListTile(
-            value: keepScreenOn,
-            onChanged: (selected) async {
-              await GpPreferences().setBoolean(KEY_KEEP_SCREEN_ON, selected);
-              setState(() {});
-            },
-            title: Text(
-              "Keep Screen On",
-              style: _SettingsWidgetState.TEXT_STYLE_NORMAL,
+          Card(
+            margin: SmashUI.defaultMargin(),
+            elevation: SmashUI.DEFAULT_ELEVATION,
+            color: SmashColors.mainBackground,
+            child: CheckboxListTile(
+              value: keepScreenOn,
+              onChanged: (selected) async {
+                await GpPreferences().setBoolean(KEY_KEEP_SCREEN_ON, selected);
+                setState(() {});
+              },
+              title: SmashUI.normalText(
+                "Keep Screen On",
+              ),
             ),
           ),
-          CheckboxListTile(
-            value: showScalebar,
-            onChanged: (selected) async {
-              await GpPreferences().setBoolean(KEY_SHOW_SCALEBAR, selected);
-              setState(() {});
-            },
-            title: Text(
-              "Show Scalebar",
-              style: _SettingsWidgetState.TEXT_STYLE_NORMAL,
+          Card(
+            margin: SmashUI.defaultMargin(),
+            elevation: SmashUI.DEFAULT_ELEVATION,
+            color: SmashColors.mainBackground,
+            child: CheckboxListTile(
+              value: showScalebar,
+              onChanged: (selected) async {
+                await GpPreferences().setBoolean(KEY_SHOW_SCALEBAR, selected);
+                setState(() {});
+              },
+              title: SmashUI.normalText(
+                "Show Scalebar",
+              ),
+            ),
+          ),
+          Card(
+            margin: SmashUI.defaultMargin(),
+            elevation: SmashUI.DEFAULT_ELEVATION,
+            color: SmashColors.mainBackground,
+            child: Column(
+              children: <Widget>[],
             ),
           ),
         ],
@@ -257,9 +265,8 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
                   .setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
               setState(() {});
             },
-            title: Text(
+            title: SmashUI.normalText(
               "Enable diagnostics menu",
-              style: _SettingsWidgetState.TEXT_STYLE_NORMAL,
             ),
           ),
         ],

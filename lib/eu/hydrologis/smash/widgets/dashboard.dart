@@ -405,9 +405,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
   }
 
   _getEndDrawerWidgets(BuildContext context) {
-    var c = SmashColors.mainDecorations;
-    var textStyle = GpConstants.MEDIUM_DIALOG_TEXT_STYLE;
-    var iconSize = GpConstants.MEDIUM_DIALOG_ICON_SIZE;
     return [
       new Container(
         margin: EdgeInsets.only(bottom: 20),
@@ -416,8 +413,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
       ),
       new Container(
         child: new Column(
-            children: DashboardUtils.getEndDrawerListTiles(c, iconSize,
-                textStyle, context, _mapController, _mainEventsHandler)),
+            children: DashboardUtils.getEndDrawerListTiles(
+                context, _mapController, _mainEventsHandler)),
       ),
     ];
   }
@@ -616,8 +613,12 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                     padding: EdgeInsets.only(bottom: 10),
                     child: getGpsInfoContainer(pos),
                   ),
+                  Divider(
+                    color: SmashColors.mainBackground,
+                    height: 5,
+                  ),
                   Padding(
-                    padding: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.only(top: 10, bottom: 5),
                     child: GpsToolsWidget(widget._eventHandler),
                   ),
                   Padding(
@@ -658,7 +659,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             color: SmashColors.mainBackground,
           ),
           tooltip: "Copy position to clipboard.",
-          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+          iconSize: SmashUI.MEDIUM_ICON_SIZE,
           onPressed: () {
             Clipboard.setData(ClipboardData(text: pos.toString()));
           },
@@ -671,7 +672,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             Icons.close,
             color: SmashColors.mainBackground,
           ),
-          iconSize: GpConstants.MEDIUM_DIALOG_ICON_SIZE,
+          iconSize: SmashUI.MEDIUM_ICON_SIZE,
           onPressed: () {
             Scaffold.of(context).hideCurrentSnackBar();
           },
@@ -692,13 +693,11 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(bottom: 12.0),
-            child: Text(
+            child: SmashUI.titleText(
               "Last GPS position",
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
-                  color: SmashColors.mainSelection),
+              bold: true,
+              color: color,
             ),
           ),
           Table(
@@ -761,12 +760,9 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         ],
       );
     } else {
-      gpsInfo = Text(
+      gpsInfo = SmashUI.titleText(
         "No GPS information available...",
-        style: TextStyle(
-            color: SmashColors.mainSelection,
-            fontSize: GpConstants.DIALOG_TEXTSIZE),
-        textAlign: TextAlign.start,
+        color: color,
       );
     }
 
@@ -794,23 +790,17 @@ class _GpsToolsWidgetState extends State<GpsToolsWidget> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
-          child: Text(
+          child: SmashUI.titleText(
             "Tools",
             textAlign: TextAlign.center,
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
-                color: SmashColors.mainSelection),
+            color: SmashColors.mainBackground,
+            bold: true,
           ),
         ),
         CheckboxListTile(
           value: GpPreferences().getBooleanSync(KEY_CENTER_ON_GPS, false),
-          title: Text(
-            "Center map on GPS position",
-            style: TextStyle(
-                fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
-                color: SmashColors.mainBackground),
-          ),
+          title: SmashUI.normalText("Center map on GPS position",
+              color: SmashColors.mainBackground),
           onChanged: (value) async {
             await GpPreferences().setBoolean(KEY_CENTER_ON_GPS, value);
             widget._eventHandler.setCenterOnGpsStream(value);
@@ -821,12 +811,8 @@ class _GpsToolsWidgetState extends State<GpsToolsWidget> {
             ? CheckboxListTile(
                 value: GpPreferences()
                     .getBooleanSync(KEY_ROTATE_ON_HEADING, false),
-                title: Text(
-                  "Rotate map with GPS heading",
-                  style: TextStyle(
-                      fontSize: GpConstants.DIALOG_TEXTSIZE_MEDIUM,
-                      color: SmashColors.mainBackground),
-                ),
+                title: SmashUI.normalText("Rotate map with GPS heading",
+                    color: SmashColors.mainBackground),
                 onChanged: (value) async {
                   await GpPreferences()
                       .setBoolean(KEY_ROTATE_ON_HEADING, value);
