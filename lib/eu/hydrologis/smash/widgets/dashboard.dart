@@ -43,7 +43,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
 
   MapController _mapController;
 
-  List<TileLayerOptions> _activeLayers = [];
+  List<LayerOptions> _activeLayers = [];
 
   Size _media;
 
@@ -471,9 +471,10 @@ class _DashboardWidgetState extends State<DashboardWidget>
     var activeLayersInfos = LayerManager().getActiveLayers();
     _activeLayers = [];
     for (int i = 0; i < activeLayersInfos.length; i++) {
-      var tl = await activeLayersInfos[i].toTileLayer();
-      _activeLayers.add(tl);
-
+      var ls = await activeLayersInfos[i].toLayer();
+      if (ls != null) {
+        _activeLayers.add(ls);
+      }
       GpLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
     }
     setState(() {});
