@@ -398,7 +398,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
       ),
       new Container(
         child: new Column(
-            children: DashboardUtils.getDrawerTilesList(c, iconSize, textSize,
+            children: DashboardUtils.getDrawerTilesList(
                 context, _mapController, _mainEventsHandler)),
       ),
     ];

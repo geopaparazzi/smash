@@ -54,16 +54,12 @@ class DashboardUtils {
     }
   }
 
-  static List<Widget> getDrawerTilesList(
-      Color c,
-      double iconSize,
-      double textSize,
-      BuildContext context,
-      MapController mapController,
-      MainEventHandler mainEventsHandler) {
+  static List<Widget> getDrawerTilesList(BuildContext context,
+      MapController mapController, MainEventHandler mainEventsHandler) {
     var doDiagnostics =
         GpPreferences().getBooleanSync(KEY_ENABLE_DIAGNOSTICS, false);
-
+    Color c = SmashColors.mainDecorations;
+    var iconSize = SmashUI.MEDIUM_ICON_SIZE;
     return [
       ListTile(
         leading: new Icon(
@@ -71,9 +67,10 @@ class DashboardUtils {
           color: c,
           size: iconSize,
         ),
-        title: Text(
+        title: SmashUI.normalText(
           "New Project",
-          style: TextStyle(fontSize: textSize, color: c),
+          bold: true,
+          color: c,
         ),
         onTap: () => _createNewProject(context, mainEventsHandler),
       ),
@@ -83,9 +80,10 @@ class DashboardUtils {
           color: c,
           size: iconSize,
         ),
-        title: Text(
+        title: SmashUI.normalText(
           "Open Project",
-          style: TextStyle(fontSize: textSize, color: c),
+          bold: true,
+          color: c,
         ),
         onTap: () => _openProject(context, mainEventsHandler),
       ),
@@ -95,9 +93,10 @@ class DashboardUtils {
           color: c,
           size: iconSize,
         ),
-        title: Text(
+        title: SmashUI.normalText(
           "Import",
-          style: TextStyle(fontSize: textSize, color: c),
+          bold: true,
+          color: c,
         ),
         onTap: () {},
       ),
@@ -107,9 +106,10 @@ class DashboardUtils {
           color: c,
           size: iconSize,
         ),
-        title: Text(
+        title: SmashUI.normalText(
           "Export",
-          style: TextStyle(fontSize: textSize, color: c),
+          bold: true,
+          color: c,
         ),
         onTap: () {},
       ),
@@ -119,9 +119,10 @@ class DashboardUtils {
           color: c,
           size: iconSize,
         ),
-        title: Text(
+        title: SmashUI.normalText(
           "Settings",
-          style: TextStyle(fontSize: textSize, color: c),
+          bold: true,
+          color: c,
         ),
         onTap: () => Navigator.push(
             context, MaterialPageRoute(builder: (context) => SettingsWidget())),
@@ -132,9 +133,10 @@ class DashboardUtils {
           color: c,
           size: iconSize,
         ),
-        title: Text(
+        title: SmashUI.normalText(
           "Available icons",
-          style: TextStyle(fontSize: textSize, color: c),
+          bold: true,
+          color: c,
         ),
         onTap: () {
           Navigator.pop(context);
@@ -149,9 +151,10 @@ class DashboardUtils {
                 color: c,
                 size: iconSize,
               ),
-              title: Text(
+              title: SmashUI.normalText(
                 "Run diagnostics",
-                style: TextStyle(fontSize: textSize, color: c),
+                bold: true,
+                color: c,
               ),
               onTap: () => Navigator.push(context,
                   MaterialPageRoute(builder: (context) => DiagnosticWidget())),
@@ -163,9 +166,10 @@ class DashboardUtils {
           color: c,
           size: iconSize,
         ),
-        title: Text(
+        title: SmashUI.normalText(
           "About",
-          style: TextStyle(fontSize: textSize, color: c),
+          bold: true,
+          color: c,
         ),
         onTap: () => print("TODO add about"),
       ),
