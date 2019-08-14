@@ -201,11 +201,14 @@ class _DashboardWidgetState extends State<DashboardWidget>
       ));
     }
 
-    layers.add(CenterCrossPluginOption(
-      crossColor: Colors.black,
-      crossSize: 30,
-      lineWidth: 3,
-    ));
+    var centerCrossStyle = CenterCrossStyle.fromPreferences();
+    if (centerCrossStyle.visible) {
+      layers.add(CenterCrossPluginOption(
+        crossColor: ColorExt(centerCrossStyle.color),
+        crossSize: centerCrossStyle.size,
+        lineWidth: centerCrossStyle.lineWidth,
+      ));
+    }
 
     var bar = new AppBar(
       title: Padding(

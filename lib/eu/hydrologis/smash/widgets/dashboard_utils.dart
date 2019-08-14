@@ -124,8 +124,11 @@ class DashboardUtils {
           bold: true,
           color: c,
         ),
-        onTap: () => Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SettingsWidget())),
+        onTap: () {
+          Navigator.of(context).pop();
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => SettingsWidget()));
+        },
       ),
       ListTile(
         leading: new Icon(

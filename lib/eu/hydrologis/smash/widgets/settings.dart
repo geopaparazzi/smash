@@ -5,6 +5,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
+import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
 class SettingsWidget extends StatefulWidget {
   SettingsWidget({Key key}) : super(key: key);
@@ -170,6 +171,8 @@ class ScreenSettingState extends State<ScreenSetting> {
     bool keepScreenOn =
         GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
     bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
+
+    CenterCrossStyle centerCrossStyle = CenterCrossStyle.fromPreferences();
     return Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -219,7 +222,105 @@ class ScreenSettingState extends State<ScreenSetting> {
             elevation: SmashUI.DEFAULT_ELEVATION,
             color: SmashColors.mainBackground,
             child: Column(
-              children: <Widget>[],
+              children: <Widget>[
+                CheckboxListTile(
+                  value: centerCrossStyle.visible,
+                  onChanged: (selected) async {
+                    centerCrossStyle.visible = selected;
+                    await centerCrossStyle.saveToPreferences();
+                    setState(() {});
+                  },
+                  title: SmashUI.normalText(
+                    "Show Center Cross",
+                  ),
+                ),
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      SmashUI.normalText("Color"),
+                      Flexible(
+                        flex: 1,
+                        child: MaterialColorPicker(
+                            allowShades: false,
+                            circleSize: 45,
+                            onColorChange: (Color color) async {
+                              centerCrossStyle.color = ColorExt.asHex(color);
+                              await centerCrossStyle.saveToPreferences();
+                              setState(() {});
+                            },
+                            onMainColorChange: (mColor) async {
+                              centerCrossStyle.color = ColorExt.asHex(mColor);
+                              await centerCrossStyle.saveToPreferences();
+                              setState(() {});
+                            },
+                            selectedColor: Color(ColorExt(centerCrossStyle.color).value)),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      SmashUI.normalText("Size"),
+                      Flexible(
+                          flex: 1,
+                          child: Slider(
+                            activeColor: SmashColors.mainSelection,
+                            min: 5.0,
+                            max: 100,
+                            divisions: 19,
+                            onChanged: (newSize) async {
+                              centerCrossStyle.size = newSize;
+                              await centerCrossStyle.saveToPreferences();
+                              setState(() {});
+                            },
+                            value: centerCrossStyle.size,
+                          )),
+                      Container(
+                        width: 50.0,
+                        alignment: Alignment.center,
+                        child: SmashUI.normalText(
+                          '${centerCrossStyle.size.toInt()}',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      SmashUI.normalText("Width"),
+                      Flexible(
+                          flex: 1,
+                          child: Slider(
+                            activeColor: SmashColors.mainSelection,
+                            min: 1,
+                            max: 20,
+                            divisions: 19,
+                            onChanged: (newSize) async {
+                              centerCrossStyle.lineWidth = newSize;
+                              await centerCrossStyle.saveToPreferences();
+                              setState(() {});
+                            },
+                            value: centerCrossStyle.lineWidth,
+                          )),
+                      Container(
+                        width: 50.0,
+                        alignment: Alignment.center,
+                        child: SmashUI.normalText(
+                          '${centerCrossStyle.lineWidth.toInt()}',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
