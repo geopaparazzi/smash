@@ -27,7 +27,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
   MainEventHandler _mainEventsHandler;
 
   _DashboardWidgetState() {
-    _mainEventsHandler = MainEventHandler(reloadLayers, reloadProject, _moveTo);
+    _mainEventsHandler = MainEventHandler(reloadLayers, reloadProject, moveTo);
   }
 
   List<Marker> _geopapMarkers;
@@ -336,7 +336,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                LayersPage(reloadLayers, _moveTo)));
+                                LayersPage(reloadLayers, moveTo)));
                   },
                   color: SmashColors.mainBackground,
                   tooltip: 'Open layers list',
@@ -471,17 +471,21 @@ class _DashboardWidgetState extends State<DashboardWidget>
     var activeLayersInfos = LayerManager().getActiveLayers();
     _activeLayers = [];
     for (int i = 0; i < activeLayersInfos.length; i++) {
-      var ls = await activeLayersInfos[i].toLayer();
+      var ls = await activeLayersInfos[i].toLayers(_showSnackbar);
       if (ls != null) {
-        _activeLayers.add(ls);
+        ls.forEach((l) => _activeLayers.add(l));
       }
       GpLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
     }
     setState(() {});
   }
 
-  Future<void> _moveTo(LatLng position) async {
-    _mapController.move(position, _mapController.zoom);
+  Future<void> moveTo(dynamic position) async {
+    if (position is LatLng) {
+      _mapController.move(position, _mapController.zoom);
+    } else if (position is LatLngBounds) {
+      _mapController.fitBounds(position);
+    }
   }
 
   Future<void> _savePosition() async {
