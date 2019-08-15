@@ -853,11 +853,10 @@ class _LoggingButtonState extends State<LoggingButton> {
 
   @override
   void initState() {
-    widget._eventHandler.addMapCenterListener(() {
-      if (this.mounted)
-        setState(() {
-          _gpsStatus = widget._eventHandler.getGpsStatus();
-        });
+    widget._eventHandler.addGpsStatusListener(() {
+      setState(() {
+        _gpsStatus = widget._eventHandler.getGpsStatus();
+      });
     });
     super.initState();
   }
@@ -881,8 +880,12 @@ class _LoggingButtonState extends State<LoggingButton> {
 
   _toggleLoggingFunction(BuildContext context) async {
     if (GpsHandler().isLogging) {
-      await GpsHandler().stopLogging();
-      widget._eventHandler.reloadProjectFunction();
+      var stopLogging = await showConfirmDialog(context, "Stop Logging?",
+          "Stop logging and close the current GPS log?");
+      if (stopLogging) {
+        await GpsHandler().stopLogging();
+        widget._eventHandler.reloadProjectFunction();
+      }
     } else {
       if (GpsHandler().hasFix()) {
         String logName =
@@ -908,5 +911,6 @@ class _LoggingButtonState extends State<LoggingButton> {
         showOperationNeedsGps(context);
       }
     }
+    setState(() {});
   }
 }
