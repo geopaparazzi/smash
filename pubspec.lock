@@ -162,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  flutter_datetime_picker:
+    dependency: transitive
+    description:
+      name: flutter_datetime_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.6"
   flutter_image:
     dependency: transitive
     description:
@@ -204,6 +211,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.13.0+2"
+  flutter_tags:
+    dependency: transitive
+    description:
+      name: flutter_tags
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter

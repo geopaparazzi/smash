@@ -75,6 +75,7 @@ flutter:
     - assets/gpicon.png
     - assets/maptools_icon.png
     - assets/smash_icon.png
+    - assets/smash_logo_64.png
     - assets/smash_text.png
     - assets/defaultrender.xml
     - packages/mapsforge_flutter/assets/patterns/coniferous.svg

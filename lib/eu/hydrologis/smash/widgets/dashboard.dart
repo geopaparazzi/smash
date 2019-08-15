@@ -566,9 +566,11 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   @override
   void initState() {
     widget._eventHandler.addGpsStatusListener(() {
-      setState(() {
-        _gpsStatus = widget._eventHandler.getGpsStatus();
-      });
+      if (this.mounted) {
+        setState(() {
+          _gpsStatus = widget._eventHandler.getGpsStatus();
+        });
+      }
     });
     super.initState();
   }
@@ -854,9 +856,11 @@ class _LoggingButtonState extends State<LoggingButton> {
   @override
   void initState() {
     widget._eventHandler.addGpsStatusListener(() {
-      setState(() {
-        _gpsStatus = widget._eventHandler.getGpsStatus();
-      });
+      if (this.mounted) {
+        setState(() {
+          _gpsStatus = widget._eventHandler.getGpsStatus();
+        });
+      }
     });
     super.initState();
   }
