@@ -87,19 +87,19 @@ class DashboardUtils {
         ),
         onTap: () => _openProject(context, mainEventsHandler),
       ),
-      ListTile(
-        leading: new Icon(
-          Icons.file_download,
-          color: c,
-          size: iconSize,
-        ),
-        title: SmashUI.normalText(
-          "Import",
-          bold: true,
-          color: c,
-        ),
-        onTap: () {},
-      ),
+//      ListTile(
+//        leading: new Icon(
+//          Icons.file_download,
+//          color: c,
+//          size: iconSize,
+//        ),
+//        title: SmashUI.normalText(
+//          "Import",
+//          bold: true,
+//          color: c,
+//        ),
+//        onTap: () {},
+//      ),
       ListTile(
         leading: new Icon(
           Icons.file_upload,
@@ -111,7 +111,11 @@ class DashboardUtils {
           bold: true,
           color: c,
         ),
-        onTap: () {},
+        onTap: () {
+          Navigator.of(context).pop();
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ExportWidget()));
+        },
       ),
       ListTile(
         leading: new Icon(
@@ -278,7 +282,7 @@ class DashboardUtils {
   static Future _createNewProject(
       BuildContext context, MainEventHandler mainEventsHandler) async {
     String projectName =
-        "geopaparazzi_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
+        "smash_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
 
     var userString = await showInputDialog(
       context,
@@ -290,7 +294,7 @@ class DashboardUtils {
     );
     if (userString != null) {
       if (userString.trim().length == 0) userString = projectName;
-      var file = await Workspace.getStorageFolder();
+      var file = await Workspace.getProjectsFolder();
       var newPath = join(file.path, userString);
       if (!newPath.endsWith(".gpap")) {
         newPath = "$newPath.gpap";
@@ -773,6 +777,41 @@ class DataLoaderUtilities {
 
     return PolylineLayerOptions(
       polylines: lines,
+    );
+  }
+}
+
+class ExportWidget extends StatefulWidget {
+  ExportWidget({Key key}) : super(key: key);
+
+  @override
+  _ExportWidgetState createState() => new _ExportWidgetState();
+}
+
+class _ExportWidgetState extends State<ExportWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Export"),
+      ),
+      body: ListView(children: <Widget>[
+        ListTile(
+            leading: Icon(FontAwesomeIcons.solidFilePdf),
+            title: Text('PDF'),
+            subtitle: Text('Export project to Portable Document Format'),
+            onTap: () async {
+              var exportsFolder = await Workspace.getExportsFolder();
+              var ts = TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now());
+              var outFilePath = FileUtilities.joinPaths(
+                  exportsFolder.path, "smash_pdf_export_$ts.pdf");
+              var db = await GPProject().getDatabase();
+              PdfExporter.exportDb(db, File(outFilePath));
+
+              showInfoDialog(context, "Exported to $outFilePath");
+//              Navigator.pop(context);
+            }),
+      ]),
     );
   }
 }

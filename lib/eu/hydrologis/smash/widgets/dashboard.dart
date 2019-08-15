@@ -82,7 +82,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
     });
 
     Future.delayed(Duration(seconds: 0), () async {
-      var directory = await Workspace.getApplicationConfigurationFolder();
+      var directory = await Workspace.getConfigurationFolder();
       bool init = await GpLogger().init(directory.path); // init logger
       if (init) GpLogger().d("Db logger initialized.");
 
@@ -886,7 +886,7 @@ class _LoggingButtonState extends State<LoggingButton> {
     } else {
       if (GpsHandler().hasFix()) {
         String logName =
-            "log ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.now())}";
+            "log_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
 
         String userString = await showInputDialog(
           context,
