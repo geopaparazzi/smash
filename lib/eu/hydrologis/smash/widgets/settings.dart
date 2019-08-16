@@ -171,6 +171,8 @@ class ScreenSettingState extends State<ScreenSetting> {
     bool keepScreenOn =
         GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
     bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
+    double currentIconSize =
+        GpPreferences().getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
 
     CenterCrossStyle centerCrossStyle = CenterCrossStyle.fromPreferences();
     return Scaffold(
@@ -185,145 +187,188 @@ class ScreenSettingState extends State<ScreenSetting> {
           ],
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Card(
-            margin: SmashUI.defaultMargin(),
-            elevation: SmashUI.DEFAULT_ELEVATION,
-            color: SmashColors.mainBackground,
-            child: CheckboxListTile(
-              value: keepScreenOn,
-              onChanged: (selected) async {
-                await GpPreferences().setBoolean(KEY_KEEP_SCREEN_ON, selected);
-                setState(() {});
-              },
-              title: SmashUI.normalText(
-                "Keep Screen On",
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Card(
+              margin: SmashUI.defaultMargin(),
+              elevation: SmashUI.DEFAULT_ELEVATION,
+              color: SmashColors.mainBackground,
+              child: CheckboxListTile(
+                value: keepScreenOn,
+                onChanged: (selected) async {
+                  await GpPreferences()
+                      .setBoolean(KEY_KEEP_SCREEN_ON, selected);
+                  setState(() {});
+                },
+                title: SmashUI.normalText(
+                  "Keep Screen On",
+                ),
               ),
             ),
-          ),
-          Card(
-            margin: SmashUI.defaultMargin(),
-            elevation: SmashUI.DEFAULT_ELEVATION,
-            color: SmashColors.mainBackground,
-            child: CheckboxListTile(
-              value: showScalebar,
-              onChanged: (selected) async {
-                await GpPreferences().setBoolean(KEY_SHOW_SCALEBAR, selected);
-                setState(() {});
-              },
-              title: SmashUI.normalText(
-                "Show Scalebar",
+            Card(
+              margin: SmashUI.defaultMargin(),
+              elevation: SmashUI.DEFAULT_ELEVATION,
+              color: SmashColors.mainBackground,
+              child: CheckboxListTile(
+                value: showScalebar,
+                onChanged: (selected) async {
+                  await GpPreferences().setBoolean(KEY_SHOW_SCALEBAR, selected);
+                  setState(() {});
+                },
+                title: SmashUI.normalText(
+                  "Show Scalebar",
+                ),
               ),
             ),
-          ),
-          Card(
-            margin: SmashUI.defaultMargin(),
-            elevation: SmashUI.DEFAULT_ELEVATION,
-            color: SmashColors.mainBackground,
-            child: Column(
-              children: <Widget>[
-                CheckboxListTile(
-                  value: centerCrossStyle.visible,
-                  onChanged: (selected) async {
-                    centerCrossStyle.visible = selected;
-                    await centerCrossStyle.saveToPreferences();
-                    setState(() {});
-                  },
-                  title: SmashUI.normalText(
-                    "Show Center Cross",
+            Card(
+              margin: SmashUI.defaultMargin(),
+              elevation: SmashUI.DEFAULT_ELEVATION,
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  CheckboxListTile(
+                    value: centerCrossStyle.visible,
+                    onChanged: (selected) async {
+                      centerCrossStyle.visible = selected;
+                      await centerCrossStyle.saveToPreferences();
+                      setState(() {});
+                    },
+                    title: SmashUI.normalText(
+                      "Show Center Cross",
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      SmashUI.normalText("Color"),
-                      Flexible(
-                        flex: 1,
-                        child: MaterialColorPicker(
-                            allowShades: false,
-                            circleSize: 45,
-                            onColorChange: (Color color) async {
-                              centerCrossStyle.color = ColorExt.asHex(color);
-                              await centerCrossStyle.saveToPreferences();
-                              setState(() {});
-                            },
-                            onMainColorChange: (mColor) async {
-                              centerCrossStyle.color = ColorExt.asHex(mColor);
-                              await centerCrossStyle.saveToPreferences();
-                              setState(() {});
-                            },
-                            selectedColor: Color(ColorExt(centerCrossStyle.color).value)),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      SmashUI.normalText("Size"),
-                      Flexible(
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        SmashUI.normalText("Color"),
+                        Flexible(
                           flex: 1,
-                          child: Slider(
-                            activeColor: SmashColors.mainSelection,
-                            min: 5.0,
-                            max: 100,
-                            divisions: 19,
-                            onChanged: (newSize) async {
-                              centerCrossStyle.size = newSize;
-                              await centerCrossStyle.saveToPreferences();
-                              setState(() {});
-                            },
-                            value: centerCrossStyle.size,
-                          )),
-                      Container(
-                        width: 50.0,
-                        alignment: Alignment.center,
-                        child: SmashUI.normalText(
-                          '${centerCrossStyle.size.toInt()}',
+                          child: MaterialColorPicker(
+                              allowShades: false,
+                              circleSize: 45,
+                              onColorChange: (Color color) async {
+                                centerCrossStyle.color = ColorExt.asHex(color);
+                                await centerCrossStyle.saveToPreferences();
+                                setState(() {});
+                              },
+                              onMainColorChange: (mColor) async {
+                                centerCrossStyle.color = ColorExt.asHex(mColor);
+                                await centerCrossStyle.saveToPreferences();
+                                setState(() {});
+                              },
+                              selectedColor: Color(
+                                  ColorExt(centerCrossStyle.color).value)),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      SmashUI.normalText("Width"),
-                      Flexible(
-                          flex: 1,
-                          child: Slider(
-                            activeColor: SmashColors.mainSelection,
-                            min: 1,
-                            max: 20,
-                            divisions: 19,
-                            onChanged: (newSize) async {
-                              centerCrossStyle.lineWidth = newSize;
-                              await centerCrossStyle.saveToPreferences();
-                              setState(() {});
-                            },
-                            value: centerCrossStyle.lineWidth,
-                          )),
-                      Container(
-                        width: 50.0,
-                        alignment: Alignment.center,
-                        child: SmashUI.normalText(
-                          '${centerCrossStyle.lineWidth.toInt()}',
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        SmashUI.normalText("Size"),
+                        Flexible(
+                            flex: 1,
+                            child: Slider(
+                              activeColor: SmashColors.mainSelection,
+                              min: 5.0,
+                              max: 100,
+                              divisions: 19,
+                              onChanged: (newSize) async {
+                                centerCrossStyle.size = newSize;
+                                await centerCrossStyle.saveToPreferences();
+                                setState(() {});
+                              },
+                              value: centerCrossStyle.size,
+                            )),
+                        Container(
+                          width: 50.0,
+                          alignment: Alignment.center,
+                          child: SmashUI.normalText(
+                            '${centerCrossStyle.size.toInt()}',
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        SmashUI.normalText("Width"),
+                        Flexible(
+                            flex: 1,
+                            child: Slider(
+                              activeColor: SmashColors.mainSelection,
+                              min: 1,
+                              max: 20,
+                              divisions: 19,
+                              onChanged: (newSize) async {
+                                centerCrossStyle.lineWidth = newSize;
+                                await centerCrossStyle.saveToPreferences();
+                                setState(() {});
+                              },
+                              value: centerCrossStyle.lineWidth,
+                            )),
+                        Container(
+                          width: 50.0,
+                          alignment: Alignment.center,
+                          child: SmashUI.normalText(
+                            '${centerCrossStyle.lineWidth.toInt()}',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Card(
+              margin: SmashUI.defaultMargin(),
+              elevation: SmashUI.DEFAULT_ELEVATION,
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  SmashUI.normalText("Map Tools Icon Size"),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Flexible(
+                            flex: 1,
+                            child: Slider(
+                              activeColor: SmashColors.mainSelection,
+                              min: 10.0,
+                              max: 100,
+                              divisions: 45,
+                              onChanged: (newSize) async {
+                                await GpPreferences()
+                                    .setDouble(KEY_MAPTOOLS_ICON_SIZE, newSize);
+                                setState(() {});
+                              },
+                              value: currentIconSize,
+                            )),
+                        Container(
+                          width: 50.0,
+                          alignment: Alignment.center,
+                          child: SmashUI.normalText(
+                            '${currentIconSize.toInt()}',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

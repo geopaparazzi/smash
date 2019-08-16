@@ -58,8 +58,8 @@ class DashboardUtils {
       MapController mapController, MainEventHandler mainEventsHandler) {
     var doDiagnostics =
         GpPreferences().getBooleanSync(KEY_ENABLE_DIAGNOSTICS, false);
+    double iconSize = SmashUI.MEDIUM_ICON_SIZE;
     Color c = SmashColors.mainDecorations;
-    var iconSize = SmashUI.MEDIUM_ICON_SIZE;
     return [
       ListTile(
         leading: new Icon(
@@ -248,7 +248,7 @@ class DashboardUtils {
       ..add(
         ListTile(
           leading: new Icon(
-            FontAwesomeIcons.crosshairs,
+            Icons.gps_fixed,
             color: c,
             size: iconSize,
           ),
@@ -307,7 +307,7 @@ class DashboardUtils {
     Navigator.of(context).pop();
   }
 
-  static Icon getGpsStatusIcon(GpsStatus status) {
+  static Icon getGpsStatusIcon(GpsStatus status, [double iconSize]) {
     Color color;
     IconData iconData;
     switch (status) {
@@ -342,10 +342,16 @@ class DashboardUtils {
           break;
         }
     }
-    return Icon(
-      iconData,
-      color: color,
-    );
+    return iconSize != null
+        ? Icon(
+            iconData,
+            color: color,
+            size: iconSize,
+          )
+        : Icon(
+            iconData,
+            color: color,
+          );
   }
 
   static Icon getLoggingIcon(GpsStatus status) {

@@ -52,6 +52,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
   int _simpleNotesCount = 0;
   int _formNotesCount = 0;
   int _logsCount = 0;
+  double _iconSize = SmashUI.MEDIUM_ICON_SIZE;
 
   @override
   void initState() {
@@ -80,6 +81,9 @@ class _DashboardWidgetState extends State<DashboardWidget>
         _mapController.move(newMapCenter, _mapController.zoom);
       }
     });
+
+    _iconSize = GpPreferences()
+        .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
 
     Future.delayed(Duration(seconds: 0), () async {
       var directory = await Workspace.getConfigurationFolder();
@@ -265,10 +269,13 @@ class _DashboardWidgetState extends State<DashboardWidget>
                       child: IconButton(
                         onPressed: () async {
                           var doNoteInGps = _mainEventsHandler.getInsertInGps();
-                          String pos = doNoteInGps ? " (GPS)" : " (center)";
+                          Widget titleWidget = getDialogTitleWithInsertionMode(
+                              "Simple Notes",
+                              doNoteInGps,
+                              SmashColors.mainSelection);
                           List<String> types = ["note", "image"];
                           var selectedType = await showComboDialog(
-                              context, "Simple Notes$pos", types);
+                              context, titleWidget, types);
                           if (selectedType == types[0]) {
                             DataLoaderUtilities.addNote(context, doNoteInGps,
                                 _mapController, _mainEventsHandler);
@@ -281,6 +288,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                           Icons.note,
                           color: SmashColors.mainBackground,
                         ),
+                        iconSize: _iconSize,
                       ),
                       onLongPress: () {
                         Navigator.push(
@@ -296,16 +304,20 @@ class _DashboardWidgetState extends State<DashboardWidget>
                       child: IconButton(
                         onPressed: () async {
                           var doNoteInGps = _mainEventsHandler.getInsertInGps();
-                          String pos = doNoteInGps ? " (GPS)" : " (center)";
+                          var title = "Select form";
+                          Widget titleWidget = getDialogTitleWithInsertionMode(
+                              title, doNoteInGps, SmashColors.mainSelection);
+                          Widget appbarWidget = getDialogTitleWithInsertionMode(
+                              title, doNoteInGps, SmashColors.mainBackground);
                           var sectionNames =
                               TagsManager().sectionsMap.keys.toList();
                           var selectedSection = await showComboDialog(
-                              context, "Select form$pos", sectionNames);
+                              context, titleWidget, sectionNames);
                           if (selectedSection != null) {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return MasterDetailPage(
-                                    "$selectedSection$pos", selectedSection);
+                                    appbarWidget, selectedSection);
                               },
                             ));
                           }
@@ -314,6 +326,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                           Icons.note_add,
                           color: SmashColors.mainBackground,
                         ),
+                        iconSize: _iconSize,
                       ),
                       onLongPress: () {
                         Navigator.push(
@@ -325,12 +338,16 @@ class _DashboardWidgetState extends State<DashboardWidget>
                     ),
                     _formNotesCount),
                 DashboardUtils.makeToolbarBadge(
-                    LoggingButton(_mainEventsHandler), _logsCount),
+                    LoggingButton(_mainEventsHandler, _iconSize), _logsCount),
                 Spacer(),
-                GpsInfoButton(_mainEventsHandler),
+                GpsInfoButton(_mainEventsHandler, _iconSize),
                 Spacer(),
                 IconButton(
-                  icon: Icon(Icons.layers),
+                  icon: Icon(
+                    Icons.layers,
+                    color: SmashColors.mainBackground,
+                  ),
+                  iconSize: _iconSize,
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -355,6 +372,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                       Icons.zoom_in,
                       color: SmashColors.mainBackground,
                     ),
+                    iconSize: _iconSize,
                   ),
                   _currentZoom.toInt(),
                 ),
@@ -371,6 +389,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                     Icons.zoom_out,
                     color: SmashColors.mainBackground,
                   ),
+                  iconSize: _iconSize,
                 ),
               ],
             ),
@@ -387,6 +406,29 @@ class _DashboardWidgetState extends State<DashboardWidget>
           }
           return Future.value(false);
         });
+  }
+
+  Widget getDialogTitleWithInsertionMode(
+      String title, bool doNoteInGps, Color color) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: SmashUI.defaultRigthPadding(),
+          child: SmashUI.titleText(title, color: color, bold: true),
+        ),
+        doNoteInGps
+            ? Icon(
+                Icons.gps_fixed,
+                color: color,
+              )
+            : Icon(
+                Icons.center_focus_weak,
+                color: color,
+              ),
+      ],
+    );
   }
 
   _getDrawerWidgets(BuildContext context) {
@@ -551,8 +593,9 @@ class _DashboardWidgetState extends State<DashboardWidget>
 ///
 class GpsInfoButton extends StatefulWidget {
   final MainEventHandler _eventHandler;
+  double _iconSize;
 
-  GpsInfoButton(this._eventHandler);
+  GpsInfoButton(this._eventHandler, this._iconSize);
 
   @override
   State<StatefulWidget> createState() => _GpsInfoButtonState();
@@ -578,71 +621,97 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onLongPress: () {
-          var isLandscape = ScreenUtilities.isLandscape(context);
-          var pos = GpsHandler().lastPosition;
+      onLongPress: () {
+        var isLandscape = ScreenUtilities.isLandscape(context);
+        var pos = GpsHandler().lastPosition;
 
-          if (isLandscape) {
-            Scaffold.of(context).showSnackBar(SnackBar(
-              backgroundColor: SmashColors.mainDecorations,
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: 20),
-                          child: getGpsInfoContainer(pos),
-                        ),
+        if (isLandscape) {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            backgroundColor: SmashColors.mainDecorations,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: getGpsInfoContainer(pos),
                       ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: 20),
-                          child: GpsToolsWidget(widget._eventHandler),
-                        ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: GpsToolsWidget(widget._eventHandler),
                       ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 5),
-                    child: getBottomButtons(context, pos),
-                  ),
-                ],
-              ),
-              duration: Duration(seconds: 5),
-            ));
-          } else {
-            Scaffold.of(context).showSnackBar(SnackBar(
-              backgroundColor: SmashColors.mainDecorations,
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: getGpsInfoContainer(pos),
-                  ),
-                  Divider(
-                    color: SmashColors.mainBackground,
-                    height: 5,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10, bottom: 5),
-                    child: GpsToolsWidget(widget._eventHandler),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 5),
-                    child: getBottomButtons(context, pos),
-                  ),
-                ],
-              ),
-              duration: Duration(seconds: 5),
-            ));
-          }
-        },
-        child: IconButton(
-          icon: DashboardUtils.getGpsStatusIcon(_gpsStatus),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: getBottomButtons(context, pos),
+                ),
+              ],
+            ),
+            duration: Duration(seconds: 5),
+          ));
+        } else {
+          Scaffold.of(context).showSnackBar(SnackBar(
+            backgroundColor: SmashColors.mainDecorations,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: getGpsInfoContainer(pos),
+                ),
+                Divider(
+                  color: SmashColors.mainBackground,
+                  height: 5,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 5),
+                  child: GpsToolsWidget(widget._eventHandler),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: getBottomButtons(context, pos),
+                ),
+              ],
+            ),
+            duration: Duration(seconds: 5),
+          ));
+        }
+      },
+//      child: RawMaterialButton(
+//        onPressed: () {
+//          var pos = GpsHandler().lastPosition;
+//          if (pos != null) {
+//            var newCenter = LatLng(pos.latitude, pos.longitude);
+//            if (widget._eventHandler.getMapCenter() == newCenter) {
+//              // trigger a change in the handler
+//              // which would not is the coord remains the same
+//              widget._eventHandler.setMapCenter(LatLng(
+//                  pos.latitude - 0.00000001, pos.longitude - 0.00000001));
+//            }
+//            widget._eventHandler.setMapCenter(newCenter);
+//          }
+//        },
+//        child: DashboardUtils.getGpsStatusIcon(_gpsStatus, widget._iconSize),
+//        shape: new CircleBorder(),
+//        elevation: 2.0,
+//        fillColor: SmashColors.mainDecorations,
+//        padding: const EdgeInsets.all(15.0),
+//      ),
+      child: Transform.scale(
+        scale: 1.3,
+        child: FloatingActionButton(
+          elevation: 1,
+          backgroundColor: SmashColors.mainDecorations,
+          child: DashboardUtils.getGpsStatusIcon(_gpsStatus),
+
+//          iconSize: widget._iconSize,
           onPressed: () {
             var pos = GpsHandler().lastPosition;
             if (pos != null) {
@@ -656,7 +725,9 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
               widget._eventHandler.setMapCenter(newCenter);
             }
           },
-        ));
+        ),
+      ),
+    );
   }
 
   Widget getBottomButtons(BuildContext context, var pos) {
@@ -843,8 +914,9 @@ class _GpsToolsWidgetState extends State<GpsToolsWidget> {
 ///
 class LoggingButton extends StatefulWidget {
   final MainEventHandler _eventHandler;
+  double _iconSize;
 
-  LoggingButton(this._eventHandler);
+  LoggingButton(this._eventHandler, this._iconSize);
 
   @override
   State<StatefulWidget> createState() => _LoggingButtonState();
@@ -870,6 +942,7 @@ class _LoggingButtonState extends State<LoggingButton> {
     return GestureDetector(
       child: IconButton(
           icon: DashboardUtils.getLoggingIcon(_gpsStatus),
+          iconSize: widget._iconSize,
           onPressed: () {
             _toggleLoggingFunction(context);
           }),
