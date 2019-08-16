@@ -319,14 +319,18 @@ class _DashboardWidgetState extends State<DashboardWidget>
                           var selectedSection = await showComboDialog(
                               context, titleWidget, sectionNames);
                           if (selectedSection != null) {
+                            var sectionMap =
+                                TagsManager().getSectionsMap()[selectedSection];
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return MasterDetailPage(
+                                    sectionMap,
                                     appbarWidget,
                                     selectedSection,
                                     doNoteInGps
                                         ? GpsHandler().lastPosition
-                                        : _mapController.center);
+                                        : _mapController.center,
+                                    null, _mainEventsHandler);
                               },
                             ));
                           }
