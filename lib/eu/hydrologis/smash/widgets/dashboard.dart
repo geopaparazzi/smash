@@ -314,13 +314,20 @@ class _DashboardWidgetState extends State<DashboardWidget>
                               title, doNoteInGps, SmashColors.mainSelection);
                           Widget appbarWidget = getDialogTitleWithInsertionMode(
                               title, doNoteInGps, SmashColors.mainBackground);
-                          var sectionNames =
-                              TagsManager().getSectionsMap().keys.toList();
+                          var allSectionsMap = TagsManager().getSectionsMap();
+                          List<String> sectionNames =
+                              allSectionsMap.keys.toList();
+                          List<String> iconNames = [];
+                          sectionNames.forEach((key) {
+                            var icon4section = TagsManager.getIcon4Section(
+                                allSectionsMap[key]);
+                            iconNames.add(icon4section);
+                          });
+
                           var selectedSection = await showComboDialog(
-                              context, titleWidget, sectionNames);
+                              context, titleWidget, sectionNames, iconNames);
                           if (selectedSection != null) {
-                            var sectionMap =
-                                TagsManager().getSectionsMap()[selectedSection];
+                            var sectionMap = allSectionsMap[selectedSection];
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return MasterDetailPage(
@@ -330,7 +337,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
                                     doNoteInGps
                                         ? GpsHandler().lastPosition
                                         : _mapController.center,
-                                    null, _mainEventsHandler);
+                                    null,
+                                    _mainEventsHandler);
                               },
                             ));
                           }
