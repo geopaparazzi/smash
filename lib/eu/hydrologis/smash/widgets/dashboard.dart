@@ -315,7 +315,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                           Widget appbarWidget = getDialogTitleWithInsertionMode(
                               title, doNoteInGps, SmashColors.mainBackground);
                           var sectionNames =
-                              TagsManager().sectionsMap.keys.toList();
+                              TagsManager().getSectionsMap().keys.toList();
                           var selectedSection = await showComboDialog(
                               context, titleWidget, sectionNames);
                           if (selectedSection != null) {
