@@ -280,8 +280,13 @@ class _DashboardWidgetState extends State<DashboardWidget>
                             DataLoaderUtilities.addNote(context, doNoteInGps,
                                 _mapController, _mainEventsHandler);
                           } else if (selectedType == types[1]) {
-                            DataLoaderUtilities.addImage(context, doNoteInGps,
-                                _mapController, _mainEventsHandler);
+                            Navigator.of(context).pop();
+                            DataLoaderUtilities.addImage(
+                                context,
+                                doNoteInGps
+                                    ? GpsHandler().lastPosition
+                                    : _mapController.center,
+                                _mainEventsHandler);
                           }
                         },
                         icon: Icon(
@@ -317,7 +322,11 @@ class _DashboardWidgetState extends State<DashboardWidget>
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return MasterDetailPage(
-                                    appbarWidget, selectedSection);
+                                    appbarWidget,
+                                    selectedSection,
+                                    doNoteInGps
+                                        ? GpsHandler().lastPosition
+                                        : _mapController.center);
                               },
                             ));
                           }
