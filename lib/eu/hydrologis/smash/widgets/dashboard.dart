@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -277,10 +278,17 @@ class _DashboardWidgetState extends State<DashboardWidget>
                           var selectedType = await showComboDialog(
                               context, titleWidget, types);
                           if (selectedType == types[0]) {
-                            DataLoaderUtilities.addNote(context, doNoteInGps,
-                                _mapController, _mainEventsHandler);
+                            Note note = await DataLoaderUtilities.addNote(
+                                context,
+                                doNoteInGps,
+                                _mapController,
+                                _mainEventsHandler);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => NotePropertiesWidget(
+                                        _mainEventsHandler, note)));
                           } else if (selectedType == types[1]) {
-                            Navigator.of(context).pop();
                             DataLoaderUtilities.addImage(
                                 context,
                                 doNoteInGps
@@ -327,7 +335,22 @@ class _DashboardWidgetState extends State<DashboardWidget>
                           var selectedSection = await showComboDialog(
                               context, titleWidget, sectionNames, iconNames);
                           if (selectedSection != null) {
+                            var selectedIndex =
+                                sectionNames.indexOf(selectedSection);
+                            var iconName = iconNames[selectedIndex];
                             var sectionMap = allSectionsMap[selectedSection];
+                            var jsonString = jsonEncode(sectionMap);
+                            Note note = await DataLoaderUtilities.addNote(
+                                context,
+                                doNoteInGps,
+                                _mapController,
+                                _mainEventsHandler,
+                                text: selectedSection,
+                                form: jsonString,
+                                iconName: iconName,
+                                color: ColorExt.asHex(
+                                    SmashColors.mainDecorationsDark));
+
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
                                 return MasterDetailPage(
@@ -337,7 +360,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                                     doNoteInGps
                                         ? GpsHandler().lastPosition
                                         : _mapController.center,
-                                    null,
+                                    note.id,
                                     _mainEventsHandler);
                               },
                             ));
@@ -575,6 +598,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
         heading = 360 + heading;
       }
       _mapController.rotate(-heading);
+    } else {
+      _mapController.rotate(0);
     }
 
     if (mounted) {

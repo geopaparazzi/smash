@@ -53,14 +53,14 @@
     <string>The app needs to use the camera to take picture notes during the field mapping activity.</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>The app needs to use the camera to take vocal notes during the field mapping activity.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>The app needs to access the photo library to attach media to the survey.</string>
 
 
     <key>NSContactsUsageDescription</key>
     <string>The app needs to access contacts to share surveyed information to selected contacts.</string>
     <key>NSCalendarsUsageDescription</key>
     <string>The app needs access to the calendar to connect information to tasks.</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>The app needs to access the photo library to attach media to the survey.</string>
     <key>NSMotionUsageDescription</key>
     <string>The app needs to access your motion to work on the survey.</string>
     <key>NSAppleMusicUsageDescription</key>

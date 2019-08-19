@@ -11,11 +11,12 @@
             "key": "description",
             "islabel": "true",
             "value": "",
+            "icon": "infoCircle",
             "type": "string",
             "mandatory": "no"
           },
           {
-            "key": "pictures of the environment around the note",
+            "key": "images",
             "value": "",
             "type": "pictures"
           }
@@ -34,6 +35,7 @@
           {
             "key": "title",
             "value": "",
+            "icon": "font",
             "islabel": "true",
             "type": "string",
             "mandatory": "no"
@@ -41,6 +43,7 @@
           {
             "key": "description",
             "value": "",
+            "icon": "infoCircle",
             "type": "string",
             "mandatory": "no"
           }
@@ -203,304 +206,6 @@
             },
             "value": "",
             "type": "stringcombo"
-          },
-          {
-            "key": "a multiple choice combo",
-            "values": {
-              "items": [
-                {
-                  "item": ""
-                },
-                {
-                  "item": "choice 1"
-                },
-                {
-                  "item": "choice 2"
-                },
-                {
-                  "item": "choice 3"
-                },
-                {
-                  "item": "choice 4"
-                },
-                {
-                  "item": "choice 5"
-                }
-              ]
-            },
-            "value": "",
-            "type": "multistringcombo"
-          },
-          {
-            "key": "two connected combos",
-            "values": {
-              "items 1": [
-                {
-                  "item": ""
-                },
-                {
-                  "item": "choice 1 of 1"
-                },
-                {
-                  "item": "choice 2 of 1"
-                },
-                {
-                  "item": "choice 3 of 1"
-                },
-                {
-                  "item": "choice 4 of 1"
-                },
-                {
-                  "item": "choice 5 of 1"
-                }
-              ],
-              "items 2": [
-                {
-                  "item": ""
-                },
-                {
-                  "item": "choice 1 of 2"
-                },
-                {
-                  "item": "choice 2 of 2"
-                },
-                {
-                  "item": "choice 3 of 2"
-                },
-                {
-                  "item": "choice 4 of 2"
-                },
-                {
-                  "item": "choice 5 of 2"
-                }
-              ]
-            },
-            "value": "",
-            "type": "connectedstringcombo"
-          },
-          {
-            "key": "two connected combos, default selected",
-            "values": {
-              "items 1": [
-                {
-                  "item": ""
-                },
-                {
-                  "item": "choice 1 of 1"
-                },
-                {
-                  "item": "choice 2 of 1"
-                },
-                {
-                  "item": "choice 3 of 1"
-                },
-                {
-                  "item": "choice 4 of 1"
-                },
-                {
-                  "item": "choice 5 of 1"
-                }
-              ],
-              "items 2": [
-                {
-                  "item": ""
-                },
-                {
-                  "item": "choice 1 of 2"
-                },
-                {
-                  "item": "choice 2 of 2"
-                },
-                {
-                  "item": "choice 3 of 2"
-                },
-                {
-                  "item": "choice 4 of 2"
-                },
-                {
-                  "item": "choice 5 of 2"
-                }
-              ]
-            },
-            "value": "items 2#choice 4 of 2",
-            "type": "connectedstringcombo"
-          },
-          {
-            "key": "a combo that is connected to two others",
-            "values": {
-              "items 1": [
-                {
-                  "itemname": "subitem 1 of item 1",
-                  "items": [
-                    {
-                      "item": ""
-                    },
-                    {
-                      "item": "choice 1/sub 1/item 1"
-                    },
-                    {
-                      "item": "choice 2/sub 1/item 1"
-                    },
-                    {
-                      "item": "choice 3/sub 1/item 1"
-                    },
-                    {
-                      "item": "choice 4/sub 1/item 1"
-                    },
-                    {
-                      "item": "choice 5/sub 1/item 1"
-                    }
-                  ]
-                },
-                {
-                  "itemname": "subitem 2 of item 1",
-                  "items": [
-                    {
-                      "item": ""
-                    },
-                    {
-                      "item": "choice 1/sub 2/item 1"
-                    },
-                    {
-                      "item": "choice 2/sub 2/item 1"
-                    },
-                    {
-                      "item": "choice 3/sub 2/item 1"
-                    },
-                    {
-                      "item": "choice 4/sub 2/item 1"
-                    },
-                    {
-                      "item": "choice 5/sub 2/item 1"
-                    }
-                  ]
-                }
-              ],
-              "items 2": [
-                {
-                  "itemname": "subitem 1 of item 2",
-                  "items": [
-                    {
-                      "item": ""
-                    },
-                    {
-                      "item": "choice 1/sub 1/item 2"
-                    },
-                    {
-                      "item": "choice 2/sub 1/item 2"
-                    },
-                    {
-                      "item": "choice 3/sub 1/item 2"
-                    },
-                    {
-                      "item": "choice 4/sub 1/item 2"
-                    },
-                    {
-                      "item": "choice 5/sub 1/item 2"
-                    }
-                  ]
-                },
-                {
-                  "itemname": "subitem 2 of item 2",
-                  "items": [
-                    {
-                      "item": ""
-                    },
-                    {
-                      "item": "choice 1/sub 2/item 2"
-                    },
-                    {
-                      "item": "choice 2/sub 2/item 2"
-                    },
-                    {
-                      "item": "choice 3/sub 2/item 2"
-                    },
-                    {
-                      "item": "choice 4/sub 2/item 2"
-                    },
-                    {
-                      "item": "choice 5/sub 2/item 2"
-                    }
-                  ]
-                }
-              ]
-            },
-            "value": "items 2#choice 1/sub 1/item 2#choice 5/sub 2/item 2",
-            "type": "onetomanystringcombo"
-          },
-          {
-            "key": "an autocomplete string combo",
-            "values": {
-              "items": [
-                {
-                  "item": ""
-                },
-                {
-                  "item": "choice 1"
-                },
-                {
-                  "item": "choice 2"
-                },
-                {
-                  "item": "choice 3"
-                },
-                {
-                  "item": "choice 4"
-                },
-                {
-                  "item": "choice 5"
-                }
-              ]
-            },
-            "value": "",
-            "type": "autocompletestringcombo"
-          },
-          {
-            "key": "two connected autocomplete combos",
-            "values": {
-              "items 1": [
-                {
-                  "item": ""
-                },
-                {
-                  "item": "choice 1 of 1"
-                },
-                {
-                  "item": "choice 2 of 1"
-                },
-                {
-                  "item": "choice 3 of 1"
-                },
-                {
-                  "item": "choice 4 of 1"
-                },
-                {
-                  "item": "choice 5 of 1"
-                }
-              ],
-              "items 2": [
-                {
-                  "item": ""
-                },
-                {
-                  "item": "choice 1 of 2"
-                },
-                {
-                  "item": "choice 2 of 2"
-                },
-                {
-                  "item": "choice 3 of 2"
-                },
-                {
-                  "item": "choice 4 of 2"
-                },
-                {
-                  "item": "choice 5 of 2"
-                }
-              ]
-            },
-            "value": "",
-            "type": "autocompleteconnectedstringcombo"
           }
         ]
       },
@@ -511,26 +216,6 @@
             "key": "a picture archive",
             "value": "",
             "type": "pictures"
-          }
-        ]
-      },
-      {
-        "formname": "sketches",
-        "formitems": [
-          {
-            "key": "a sketches archive",
-            "value": "",
-            "type": "sketch"
-          }
-        ]
-      },
-      {
-        "formname": "map",
-        "formitems": [
-          {
-            "key": "an image of the last seen map",
-            "value": "",
-            "type": "map"
           }
         ]
       }
