@@ -2,6 +2,7 @@
   {
     "sectionname": "image note",
     "sectiondescription": "note with image",
+    "sectionicon": "image",
     "forms": [
       {
         "formname": "image note",
@@ -23,54 +24,9 @@
     ]
   },
   {
-    "sectionname": "sketch note",
-    "sectiondescription": "note with sketch",
-    "forms": [
-      {
-        "formname": "sketch note",
-        "formitems": [
-          {
-            "key": "description",
-            "islabel": "true",
-            "value": "",
-            "type": "string",
-            "mandatory": "no"
-          },
-          {
-            "key": "sketches with drawings of the environment around the note",
-            "value": "",
-            "type": "sketch"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "sectionname": "map note",
-    "sectiondescription": "note with map image",
-    "forms": [
-      {
-        "formname": "map image note",
-        "formitems": [
-          {
-            "key": "description",
-            "islabel": "true",
-            "value": "",
-            "type": "string",
-            "mandatory": "no"
-          },
-          {
-            "key": "map around note",
-            "value": "",
-            "type": "map"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "sectionname": "text note",
     "sectiondescription": "a simple text note",
+    "sectionicon": "fileAlt",
     "forms": [
       {
         "formname": "text note",
@@ -95,6 +51,7 @@
   {
     "sectionname": "examples",
     "sectiondescription": "examples of supported form widgets",
+    "sectionicon": "bomb",
     "forms": [
       {
         "formname": "text",

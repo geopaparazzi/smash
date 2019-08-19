@@ -27,10 +27,20 @@ class _PermissionsWidgetState extends State<PermissionsWidget> {
       return DashboardWidget();
     } else if (_storagePermission && _locationPermission) {
       Future.delayed(Duration(seconds: 0), () async {
-        await TagsManager().readFileTags();
+        // init preferences
+        GpPreferences().initialize();
+
+        // read tags file
+        TagsManager().readFileTags();
+
+        // initi layer manager
         var layerManager = LayerManager();
         await layerManager.initialize();
+
+        // enable logging
         appGpsLoggingHandler = SmashLoggingHandler();
+
+        // set last known position
         var pos = await GpPreferences().getLastPosition();
         var gpProject = GPProject();
         if (pos != null) {
