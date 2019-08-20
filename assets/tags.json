@@ -21,6 +21,23 @@
             "type": "pictures"
           }
         ]
+      }, {
+        "formname": "image from library",
+        "formitems": [
+          {
+            "key": "description",
+            "islabel": "true",
+            "value": "",
+            "icon": "infoCircle",
+            "type": "string",
+            "mandatory": "no"
+          },
+          {
+            "key": "imagesfromlib",
+            "value": "",
+            "type": "imagelib"
+          }
+        ]
       }
     ]
   },

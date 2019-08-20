@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
 import 'package:path/path.dart';
-import 'package:popup_menu/popup_menu.dart';
+
 import 'dashboard_utils.dart';
 
 class DashboardWidget extends StatefulWidget {
@@ -225,10 +225,20 @@ class _DashboardWidgetState extends State<DashboardWidget>
             icon: Icon(Icons.info_outline),
             onPressed: () {
               showInfoDialog(
-                context,
-                "Project: $_projectName\n${_projectDirName != null ? "Folder: $_projectDirName\n" : ""}"
-                    .trim(),
-              );
+                  context,
+                  "Project: $_projectName\n${_projectDirName != null ? "Folder: $_projectDirName\n" : ""}"
+                      .trim(),
+                  widgets: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.share,
+                        color: SmashColors.mainDecorations,
+                      ),
+                      onPressed: () async {
+                        ShareHandler.shareProject();
+                      },
+                    )
+                  ]);
             })
       ],
     );
@@ -320,8 +330,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                           var title = "Select form";
                           Widget titleWidget = getDialogTitleWithInsertionMode(
                               title, doNoteInGps, SmashColors.mainSelection);
-                          Widget appbarWidget = getDialogTitleWithInsertionMode(
-                              title, doNoteInGps, SmashColors.mainBackground);
+
                           var allSectionsMap = TagsManager().getSectionsMap();
                           List<String> sectionNames =
                               allSectionsMap.keys.toList();
@@ -335,6 +344,10 @@ class _DashboardWidgetState extends State<DashboardWidget>
                           var selectedSection = await showComboDialog(
                               context, titleWidget, sectionNames, iconNames);
                           if (selectedSection != null) {
+                            Widget appbarWidget =
+                                getDialogTitleWithInsertionMode(selectedSection,
+                                    doNoteInGps, SmashColors.mainBackground);
+
                             var selectedIndex =
                                 sectionNames.indexOf(selectedSection);
                             var iconName = iconNames[selectedIndex];

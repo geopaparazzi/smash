@@ -20,7 +20,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   @override
   Widget build(BuildContext context) {
     final ListTile cameraSettingTile = ListTile(
-        leading: Icon(CameraSettingState.iconData),
+        leading: Icon(
+          CameraSettingState.iconData,
+          color: SmashColors.mainDecorations,
+        ),
         title: SmashUI.normalText(CameraSettingState.title),
         subtitle: SmashUI.normalText(CameraSettingState.subtitle),
         trailing: Icon(Icons.arrow_right),
@@ -29,7 +32,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           showSettingsSheet(context);
         });
     final ListTile screenSettingTile = ListTile(
-        leading: Icon(ScreenSettingState.iconData),
+        leading: Icon(
+          ScreenSettingState.iconData,
+          color: SmashColors.mainDecorations,
+        ),
         title: SmashUI.normalText(ScreenSettingState.title),
         subtitle: SmashUI.normalText(ScreenSettingState.subtitle),
         trailing: Icon(Icons.arrow_right),
@@ -39,7 +45,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         });
 
     final ListTile diagnosticsSettingTile = ListTile(
-        leading: Icon(DiagnosticsSettingState.iconData),
+        leading: Icon(
+          DiagnosticsSettingState.iconData,
+          color: SmashColors.mainDecorations,
+        ),
         title: SmashUI.normalText(DiagnosticsSettingState.title),
         subtitle: SmashUI.normalText(DiagnosticsSettingState.subtitle),
         trailing: Icon(Icons.arrow_right),
@@ -89,7 +98,10 @@ class CameraSettingState extends State<CameraSetting> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(iconData),
+              child: Icon(
+                iconData,
+                color: SmashColors.mainDecorations,
+              ),
             ),
             Text(subtitle),
           ],
@@ -171,8 +183,8 @@ class ScreenSettingState extends State<ScreenSetting> {
     bool keepScreenOn =
         GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
     bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
-    double currentIconSize =
-        GpPreferences().getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+    double currentIconSize = GpPreferences()
+        .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
 
     CenterCrossStyle centerCrossStyle = CenterCrossStyle.fromPreferences();
     return Scaffold(
@@ -181,7 +193,10 @@ class ScreenSettingState extends State<ScreenSetting> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(iconData),
+              child: Icon(
+                iconData,
+                color: SmashColors.mainDecorations,
+              ),
             ),
             Text(subtitle),
           ],
@@ -396,7 +411,10 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(iconData),
+              child: Icon(
+                iconData,
+                color: SmashColors.mainDecorations,
+              ),
             ),
             Text(subtitle),
           ],

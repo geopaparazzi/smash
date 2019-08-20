@@ -3,19 +3,17 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:badges/badges.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
 import 'package:path/path.dart';
-import 'package:popup_menu/popup_menu.dart';
-import 'package:screen/screen.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'about.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
 
@@ -198,7 +196,8 @@ class DashboardUtils {
           bold: true,
           color: c,
         ),
-        onTap: () => print("TODO add about"),
+        onTap: () => Navigator.push(
+            context, MaterialPageRoute(builder: (context) => AboutPage())),
       ),
     ];
   }
@@ -242,7 +241,21 @@ class DashboardUtils {
             bold: true,
             color: c,
           ),
-          onTap: () {},
+          onTap: () {
+            var pos = GpsHandler().lastPosition;
+            StringBuffer sb = StringBuffer();
+            sb.write("Latitude: ");
+            sb.write(pos.latitude.toStringAsFixed(6));
+            sb.write("\nLongitude: ");
+            sb.write(pos.longitude.toStringAsFixed(6));
+            sb.write("\nAltitude: ");
+            sb.write(pos.altitude.toStringAsFixed(0));
+            sb.write("\nAccuracy: ");
+            sb.write(pos.accuracy.toStringAsFixed(0));
+            sb.write("\nTimestamp: ");
+            sb.write(TimeUtilities.ISO8601_TS_FORMATTER.format(pos.timestamp));
+            ShareHandler.shareText(sb.toString());
+          },
         ),
       )
       ..add(
@@ -394,6 +407,24 @@ class ExportWidget extends StatefulWidget {
 }
 
 class _ExportWidgetState extends State<ExportWidget> {
+  int _buildStatus = 0;
+  String _outPath = "";
+
+  Future<void> buildPdf() async {
+    var exportsFolder = await Workspace.getExportsFolder();
+    var ts = TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now());
+    var outFilePath =
+        FileUtilities.joinPaths(exportsFolder.path, "smash_pdf_export_$ts.pdf");
+    var db = await GPProject().getDatabase();
+    await PdfExporter.exportDb(db, File(outFilePath));
+
+    setState(() {
+      _outPath = outFilePath;
+      _buildStatus = 2;
+    });
+//    showInfoDialog(context, "Exported to $outFilePath");
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -402,18 +433,26 @@ class _ExportWidgetState extends State<ExportWidget> {
       ),
       body: ListView(children: <Widget>[
         ListTile(
-            leading: Icon(FontAwesomeIcons.solidFilePdf),
-            title: Text('PDF'),
-            subtitle: Text('Export project to Portable Document Format'),
-            onTap: () async {
-              var exportsFolder = await Workspace.getExportsFolder();
-              var ts = TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now());
-              var outFilePath = FileUtilities.joinPaths(
-                  exportsFolder.path, "smash_pdf_export_$ts.pdf");
-              var db = await GPProject().getDatabase();
-              PdfExporter.exportDb(db, File(outFilePath));
-
-              showInfoDialog(context, "Exported to $outFilePath");
+            leading: _buildStatus == 0
+                ? Icon(
+                    FontAwesomeIcons.solidFilePdf,
+                    color: SmashColors.mainDecorations,
+                  )
+                : _buildStatus == 1
+                    ? CircularProgressIndicator()
+                    : Icon(
+                        Icons.check,
+                        color: SmashColors.mainDecorations,
+                      ),
+            title: Text("${_buildStatus == 2 ? 'PDF exported' : 'PDF'}"),
+            subtitle: Text(
+                "${_buildStatus == 2 ? _outPath : 'Export project to Portable Document Format'}"),
+            onTap: () {
+              setState(() {
+                _outPath = "";
+                _buildStatus = 1;
+              });
+              buildPdf();
 //              Navigator.pop(context);
             }),
       ]),
