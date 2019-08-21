@@ -166,7 +166,7 @@ class DashboardUtils {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => MapsDownloadWidget(mapsFolder)));
+                  builder: (context) => MapsDownloadWidget(mapsFolder, mainEventsHandler)));
         },
       ),
       doDiagnostics

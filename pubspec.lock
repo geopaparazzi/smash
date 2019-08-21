@@ -56,7 +56,7 @@ packages:
       name: cached_network_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   charcode:
     dependency: transitive
     description:
@@ -98,7 +98,7 @@ packages:
       name: crypto
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.6"
+    version: "2.1.2"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -154,7 +154,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   flutter_datetime_picker:
     dependency: transitive
     description:
@@ -179,24 +179,24 @@ packages:
   flutter_map:
     dependency: transitive
     description:
-      path: "../OTHERS/flutter_map"
-      relative: true
-    source: path
-    version: "0.5.6"
+      name: flutter_map
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0+2"
   flutter_map_marker_cluster:
     dependency: transitive
     description:
-      path: "../OTHERS/flutter_map_marker_cluster"
-      relative: true
-    source: path
-    version: "0.2.0+1"
+      name: flutter_map_marker_cluster
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   flutter_material_color_picker:
     dependency: transitive
     description:
       name: flutter_material_color_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   flutter_svg:
     dependency: transitive
     description:
@@ -229,14 +229,14 @@ packages:
       name: geocoder
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2"
+    version: "0.2.1"
   geolocator:
     dependency: transitive
     description:
       name: geolocator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.2"
   google_api_availability:
     dependency: transitive
     description:
@@ -264,7 +264,7 @@ packages:
       name: http_client_helper
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   http_parser:
     dependency: transitive
     description:
@@ -418,7 +418,7 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.0"
+    version: "3.2.2"
   petitparser:
     dependency: transitive
     description:
@@ -493,7 +493,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.6+2"
+    version: "1.1.6+3"
   stack_trace:
     dependency: transitive
     description:
