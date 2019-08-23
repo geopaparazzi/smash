@@ -61,6 +61,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
     _initLon = gpProject.lastCenterLon;
     _initLat = gpProject.lastCenterLat;
     _initZoom = gpProject.lastCenterZoom;
+    if (_initZoom == 0) _initZoom = 1;
     _currentZoom = _initZoom;
     _mapController = MapController();
 
@@ -244,7 +245,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
     );
 
     final MAXZOOM = 22.0;
-    final MINZOOM = 0.0;
+    final MINZOOM = 1.0;
     return WillPopScope(
         // check when the app is left
         child: new Scaffold(
@@ -573,14 +574,18 @@ class _DashboardWidgetState extends State<DashboardWidget>
   Future<void> reloadLayers() async {
     var activeLayersInfos = LayerManager().getActiveLayers();
     _activeLayers = [];
+
+    List<LayerOptions> listTmp = [];
     for (int i = 0; i < activeLayersInfos.length; i++) {
       var ls = await activeLayersInfos[i].toLayers(_showSnackbar);
       if (ls != null) {
-        ls.forEach((l) => _activeLayers.add(l));
+        ls.forEach((l) => listTmp.add(l));
       }
       GpLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
     }
-    setState(() {});
+    setState(() {
+      _activeLayers.addAll(listTmp);
+    });
   }
 
   Future<void> moveTo(dynamic position) async {
