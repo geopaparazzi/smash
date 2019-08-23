@@ -7,7 +7,7 @@ PODS:
   - FMDB/standard (2.7.5)
   - geocoder (0.0.1):
     - Flutter
-  - geolocator (5.1.0):
+  - geolocator (5.1.2):
     - Flutter
   - google_api_availability (2.0.1):
     - Flutter
@@ -21,7 +21,7 @@ PODS:
     - Flutter
   - path_provider_ex (0.0.1):
     - Flutter
-  - permission_handler (3.2.0):
+  - permission_handler (3.2.2):
     - Flutter
   - screen (0.0.1):
     - Flutter
@@ -96,14 +96,14 @@ SPEC CHECKSUMS:
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
-  geolocator: d26e51a2ef57fa8a97a2630772f41206ebb9f9c9
+  geolocator: edbb3d70409f2e70a7684dafe1fb4055588efb79
   google_api_availability: 163b30f802e6148c67f092aa4501c90ddd8eec8d
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
   location_permissions: 67cfaff583afbb027a9f9248196f4b79c40f3cdc
   package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   path_provider_ex: 95397ca0c3f5f99c8538aec3736674fa9cefc1b6
-  permission_handler: d4838243e7d0f4b18911a6422d81e7e6b71ad545
+  permission_handler: d59f41439f5bc6c4d1005f3355e98f05ddc68ece
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
