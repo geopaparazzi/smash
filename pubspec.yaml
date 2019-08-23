@@ -3,7 +3,7 @@
 # found in the LICENSE file.
 name: smash
 description: The open source digital field mapping app.
-version: 0.1.0+8
+version: 0.1.0+9
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
