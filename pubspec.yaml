@@ -51,14 +51,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #  - images/a_dot_burr.jpeg
-  #  - images/a_dot_ham.jpeg
   assets:
     - assets/tags.json
     - assets/geopaparazzi_launcher_icon.svg
     - assets/gpicon.png
+    - assets/emptytile256.png
     - assets/maptools_icon.png
     - assets/smash_icon.png
     - assets/smash_logo_64.png

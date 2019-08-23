@@ -243,6 +243,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
       ],
     );
 
+    final MAXZOOM = 22.0;
+    final MINZOOM = 0.0;
     return WillPopScope(
         // check when the app is left
         child: new Scaffold(
@@ -253,6 +255,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
             options: new MapOptions(
               center: new LatLng(_initLat, _initLon),
               zoom: _initZoom,
+              minZoom: MINZOOM,
+              maxZoom: MAXZOOM,
               plugins: [
                 MarkerClusterPlugin(),
                 ScaleLayerPlugin(),
@@ -420,7 +424,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                     onPressed: () {
                       setState(() {
                         var zoom = _mapController.zoom + 1;
-                        if (zoom > 19) zoom = 19;
+                        if (zoom > MAXZOOM) zoom = MAXZOOM;
                         _mapController.move(_mapController.center, zoom);
                       });
                     },
@@ -437,7 +441,7 @@ class _DashboardWidgetState extends State<DashboardWidget>
                   onPressed: () {
                     setState(() {
                       var zoom = _mapController.zoom - 1;
-                      if (zoom < 0) zoom = 0;
+                      if (zoom < MINZOOM) zoom = MINZOOM;
                       _mapController.move(_mapController.center, zoom);
                     });
                   },
