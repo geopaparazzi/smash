@@ -45,7 +45,11 @@ const List<String> DEFAULT_NOTES_ICONDATA = [
 ];
 
 IconData getIcon(String key) {
-  return MdiIcons.fromString(key);
+  var iconData = MdiIcons.fromString(key);
+  if (iconData == null) {
+    return MdiIcons.mapMarker;
+  }
+  return iconData;
 }
 
 /// The notes properties page.

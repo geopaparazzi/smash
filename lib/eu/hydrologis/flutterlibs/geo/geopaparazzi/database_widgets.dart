@@ -545,6 +545,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                     child: Padding(
                       padding: SmashUI.defaultPadding(),
                       child: MaterialColorPicker(
+                          shrinkWrap: true,
                           allowShades: false,
                           circleSize: 45,
                           onColorChange: (Color color) {
