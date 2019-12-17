@@ -14,21 +14,148 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
-
-  hydro_flutter_libs:
-    path: ../hydrolibraries/hydro_flutter_libs
+  cupertino_icons: ^0.1.3
 
   # Apache 2
-  badges: ^1.0.3
+  badges: ^1.1.0
 
   # BSD
-  package_info: ^0.4.0+6
+  package_info: ^0.4.0+13
+
+
+  # ON IOS TO EXPOSE STORAGE FOLLOWING KEYS ARE NEEDED
+  #    <key>LSSupportsOpeningDocumentsInPlace</key>
+  #    <true/>
+  #    <key>UIFileSharingEnabled</key>
+  #    <true/>
+
+
+  # MIT
+  geolocator: ^5.1.5
+  # on IOS heading is not supported. For rotation we should try the plugin: location: 2.3.5
+  # ON IOS NEEDS:
+  #  <key>NSLocationWhenInUseUsageDescription</key>
+  #  <string>The app needs access to location when open to allow the user to map geographic data on the territory.</string>
+  #  <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+  #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
+  #  <key>NSLocationAlwaysUsageDescription</key>
+  #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
+
+  # MIT
+  sqflite: ^1.2.0
+
+  #BSD
+  dart_jts: 0.0.4+2
+  # apache 2
+  flutter_geopackage: 0.0.1
+
+  #BSD
+  image_picker: ^0.6.2+3
+  # ON IOS NEEDS:
+  #  <key>NSPhotoLibraryUsageDescription</key>
+  #  <string>The app needs to access the photo library to attach media to the survey.</string>
+  #  <key>NSCameraUsageDescription</key>
+  #  <string>The app needs to use the camera to take picture notes during the field mapping activity.</string>
+  #  <key>NSMicrophoneUsageDescription</key>
+  #  <string>The app needs to use the camera to take vocal notes during the field mapping activity.</string>
+
+  # apache
+  latlong: 0.6.1
+
+  # MIT
+  material_design_icons_flutter: ^3.4.4795
+
+  # BSD
+  path_provider: ^1.5.1
+
+  # MIT
+  path_provider_ex: ^1.0.1
+
+  # MIT
+  screen: 0.0.5
+  # ON ANDROID NEEDS:
+  # <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+  # UNKNOWN!!!
+  geocoder: 0.2.1
+
+  # BSD
+  shared_preferences: ^0.5.6
+
+  # MIT
+  logger: 0.7.0+2
+
+  # BSD
+  #  esys_flutter_share: any #1.0.2
+
+  # UNKNOWN!!!
+  animated_floatactionbuttons: ^0.1.0
+
+  # MIT
+  flutter_material_color_picker: ^1.0.5
+
+  # BSD
+  flutter_map: #^0.8.0
+    git:
+      url: https://github.com/moovida/flutter_map.git
+
+  flutter_map_marker_cluster: #^0.2.5
+    git:
+      url: https://github.com/moovida/flutter_map_marker_cluster.git
+
+
+
+  # MIT
+  file_picker: ^1.4.3+1
+  # ON IOS NEEDS:
+  #  <key>UIBackgroundModes</key>
+  #  <array>
+  #  <string>fetch</string>
+  #  <string>remote-notification</string>
+  #  </array>
+
+  #MIT
+  extended_image: ^0.6.8
+
+  # MIT
+  permission_handler: ^4.0.0
+
+  # BSD
+  stack_trace: 1.9.3
+
+  # MIT
+  share_extend: ^1.1.0
+
+  # BSD
+  url_launcher: ^5.4.1
+
+  # MIT
+  dio: ^3.0.7
+
+  # Apache 2.0
+  gpx: ^0.0.3
+
+  # Apache 2.0
+  pdf: ^1.3.25
+
+  # MIT
+  flutter_tags: ^0.4.5
+
+  # MIT
+  flutter_datetime_picker: ^1.3.1
+
+  mapsforge_flutter:
+    git:
+      url: https://github.com/moovida/mapsforge_flutter.git
+      ref: libs_upgrade
+      path: mapsforge_flutter
+    #path: ../../OTHERS/mapsforge_flutter/mapsforge_flutter
+
 
 dev_dependencies:
 
   # MIT
-  flutter_launcher_icons: 0.7.2+1
+  flutter_launcher_icons: ^0.7.4
 
   flutter_test:
     sdk: flutter

@@ -4,7 +4,10 @@
  * found in the LICENSE file.
  */
 import 'package:flutter/material.dart';
-import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 
 class SettingsWidget extends StatefulWidget {

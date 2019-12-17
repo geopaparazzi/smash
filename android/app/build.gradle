@@ -38,6 +38,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -48,6 +49,16 @@ android {
         }
     }
 }
+
+
+// START WORKAROUND for hanging build
+// this change also brings "multiDexEnabled true" in defaultConfig
+configurations.all {
+    resolutionStrategy {
+        force 'com.google.android.gms:play-services-location:15.0.1'
+    }
+}
+// END WORKAROUND
 
 flutter {
     source '../..'

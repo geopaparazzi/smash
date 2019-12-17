@@ -9,8 +9,31 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:latlong/latlong.dart';
+
 import 'package:path/path.dart';
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/forms/forms_widgets.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/database_widgets.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/models.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/screen.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/share.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/validators.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 
 import 'dashboard_utils.dart';
 
@@ -143,8 +166,8 @@ class _DashboardWidgetState extends State<DashboardWidget>
     if (_geopapMarkers != null && _geopapMarkers.length > 0) {
       var markerCluster = MarkerClusterLayerOptions(
         maxClusterRadius: 80,
-        height: 40,
-        width: 40,
+//        height: 40,
+//        width: 40,
         fitBoundsOptions: FitBoundsOptions(
           padding: EdgeInsets.all(50),
         ),
@@ -549,8 +572,6 @@ class _DashboardWidgetState extends State<DashboardWidget>
     } else if (state == AppLifecycleState.inactive) {
 //      GpLogger().d("Application inactived");
       updateCenterPosition();
-    } else if (state == AppLifecycleState.suspending) {
-//      GpLogger().d("Application suspending");
     } else if (state == AppLifecycleState.resumed) {
 //      GpLogger().d("Application resumed");
     }

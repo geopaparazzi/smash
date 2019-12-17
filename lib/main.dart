@@ -5,7 +5,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/permissions_page.dart';
 
 void main() => runApp(SmashApp());

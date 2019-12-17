@@ -6,7 +6,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/permissions.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/models.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
+
 import 'dashboard.dart';
 
 class PermissionsWidget extends StatefulWidget {

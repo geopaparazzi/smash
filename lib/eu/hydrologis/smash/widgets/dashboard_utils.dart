@@ -9,9 +9,23 @@ import 'dart:io';
 import 'package:badges/badges.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart';
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_importexport.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/models.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/diagnostic.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/network.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/share.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/validators.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'about.dart';
 
@@ -52,10 +66,8 @@ class DashboardUtils {
     }
   }
 
-  static List<Widget> getDrawerTilesList(BuildContext context,
-      MapController mapController, MainEventHandler mainEventsHandler) {
-    var doDiagnostics =
-        GpPreferences().getBooleanSync(KEY_ENABLE_DIAGNOSTICS, false);
+  static List<Widget> getDrawerTilesList(BuildContext context, MapController mapController, MainEventHandler mainEventsHandler) {
+    var doDiagnostics = GpPreferences().getBooleanSync(KEY_ENABLE_DIAGNOSTICS, false);
     double iconSize = SmashUI.MEDIUM_ICON_SIZE;
     Color c = SmashColors.mainDecorations;
     return [
@@ -111,8 +123,7 @@ class DashboardUtils {
         ),
         onTap: () {
           Navigator.of(context).pop();
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ExportWidget()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ExportWidget()));
         },
       ),
       ListTile(
@@ -128,8 +139,7 @@ class DashboardUtils {
         ),
         onTap: () {
           Navigator.of(context).pop();
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => SettingsWidget()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsWidget()));
         },
       ),
       ListTile(
@@ -145,8 +155,7 @@ class DashboardUtils {
         ),
         onTap: () {
           Navigator.pop(context);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => IconsWidget()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => IconsWidget()));
         },
       ),
       ListTile(
@@ -163,10 +172,7 @@ class DashboardUtils {
         onTap: () async {
           var mapsFolder = await Workspace.getMapsFolder();
           Navigator.pop(context);
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MapsDownloadWidget(mapsFolder, mainEventsHandler)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MapsDownloadWidget(mapsFolder, mainEventsHandler)));
         },
       ),
       doDiagnostics
@@ -181,8 +187,7 @@ class DashboardUtils {
                 bold: true,
                 color: c,
               ),
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => DiagnosticWidget())),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DiagnosticWidget())),
             )
           : Container(),
       ListTile(
@@ -196,14 +201,12 @@ class DashboardUtils {
           bold: true,
           color: c,
         ),
-        onTap: () => Navigator.push(
-            context, MaterialPageRoute(builder: (context) => AboutPage())),
+        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AboutPage())),
       ),
     ];
   }
 
-  static List<Widget> getEndDrawerListTiles(BuildContext context,
-      MapController mapController, MainEventHandler mainEventsHandler) {
+  static List<Widget> getEndDrawerListTiles(BuildContext context, MapController mapController, MainEventHandler mainEventsHandler) {
     Color c = SmashColors.mainDecorations;
     var iconSize = SmashUI.MEDIUM_ICON_SIZE;
 
@@ -222,10 +225,7 @@ class DashboardUtils {
           ),
           onTap: () {
             Navigator.pop(context);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => GeocodingPage(mainEventsHandler)));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => GeocodingPage(mainEventsHandler)));
           },
         ),
       )
@@ -281,10 +281,8 @@ class DashboardUtils {
     return list;
   }
 
-  static Future _openProject(
-      BuildContext context, MainEventHandler mainEventsHandler) async {
-    File file =
-        await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
+  static Future _openProject(BuildContext context, MainEventHandler mainEventsHandler) async {
+    File file = await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
     if (file != null && file.existsSync()) {
       await GPProject().setNewProject(file.path);
       await mainEventsHandler.reloadProjectFunction();
@@ -292,10 +290,8 @@ class DashboardUtils {
     Navigator.of(context).pop();
   }
 
-  static Future _createNewProject(
-      BuildContext context, MainEventHandler mainEventsHandler) async {
-    String projectName =
-        "smash_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
+  static Future _createNewProject(BuildContext context, MainEventHandler mainEventsHandler) async {
+    String projectName = "smash_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
 
     var userString = await showInputDialog(
       context,
@@ -413,8 +409,7 @@ class _ExportWidgetState extends State<ExportWidget> {
   Future<void> buildPdf() async {
     var exportsFolder = await Workspace.getExportsFolder();
     var ts = TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now());
-    var outFilePath =
-        FileUtilities.joinPaths(exportsFolder.path, "smash_pdf_export_$ts.pdf");
+    var outFilePath = FileUtilities.joinPaths(exportsFolder.path, "smash_pdf_export_$ts.pdf");
     var db = await GPProject().getDatabase();
     await PdfExporter.exportDb(db, File(outFilePath));
 
@@ -435,7 +430,7 @@ class _ExportWidgetState extends State<ExportWidget> {
         ListTile(
             leading: _buildStatus == 0
                 ? Icon(
-                    FontAwesomeIcons.solidFilePdf,
+                    MdiIcons.filePdf,
                     color: SmashColors.mainDecorations,
                   )
                 : _buildStatus == 1
@@ -445,8 +440,7 @@ class _ExportWidgetState extends State<ExportWidget> {
                         color: SmashColors.mainDecorations,
                       ),
             title: Text("${_buildStatus == 2 ? 'PDF exported' : 'PDF'}"),
-            subtitle: Text(
-                "${_buildStatus == 2 ? _outPath : 'Export project to Portable Document Format'}"),
+            subtitle: Text("${_buildStatus == 2 ? _outPath : 'Export project to Portable Document Format'}"),
             onTap: () {
               setState(() {
                 _outPath = "";

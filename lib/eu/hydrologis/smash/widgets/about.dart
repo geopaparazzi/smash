@@ -4,8 +4,9 @@
  * found in the LICENSE file.
  */
 import 'package:flutter/material.dart';
-import 'package:hydro_flutter_libs/hydro_flutter_libs.dart';
 import 'package:package_info/package_info.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutPage extends StatefulWidget {
