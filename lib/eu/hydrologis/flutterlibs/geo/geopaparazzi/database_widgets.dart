@@ -6,7 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
-import 'models.dart';
+import '../../../smash/core/models.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'project_tables.dart';
 import 'package:latlong/latlong.dart';
@@ -17,6 +17,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/validators.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
+import 'package:provider/provider.dart';
 
 /// Log object dedicated to the list of logs widget.
 class Log4ListWidget {
@@ -87,8 +88,7 @@ class LogListWidget extends StatefulWidget {
 class LogListWidgetState extends State<LogListWidget> {
   List<Log4ListWidget> _logsList = [];
 
-  Future<bool> loadLogs() async {
-    var db = await GPProject().getDatabase();
+  Future<bool> loadLogs(var db) async {
     var itemsList = await db.getQueryObjectsList(Log4ListWidgetBuilder());
     if (itemsList != null) {
       _logsList = itemsList;
@@ -98,7 +98,9 @@ class LogListWidgetState extends State<LogListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<ProjectState>(builder: (context, projectState, child) {
+      var db = projectState.projectDb;
+      return Scaffold(
         appBar: AppBar(
           title: Text("GPS Logs list"),
           actions: <Widget>[
@@ -106,8 +108,7 @@ class LogListWidgetState extends State<LogListWidget> {
               icon: Icon(Icons.check),
               tooltip: "Select all",
               onPressed: () async {
-                var db = await GPProject().getDatabase();
-                db.updateGpsLogVisibility(true);
+                await db.updateGpsLogVisibility(true);
                 setState(() {});
               },
             ),
@@ -115,8 +116,7 @@ class LogListWidgetState extends State<LogListWidget> {
               tooltip: "Unselect all",
               icon: Icon(Icons.check_box_outline_blank),
               onPressed: () async {
-                var db = await GPProject().getDatabase();
-                db.updateGpsLogVisibility(false);
+                await db.updateGpsLogVisibility(false);
                 setState(() {});
               },
             ),
@@ -124,15 +124,16 @@ class LogListWidgetState extends State<LogListWidget> {
               tooltip: "Invert selection",
               icon: Icon(Icons.check_box),
               onPressed: () async {
-                var db = await GPProject().getDatabase();
-                db.invertGpsLogsVisibility();
+                await db.invertGpsLogsVisibility();
                 setState(() {});
               },
             ),
           ],
         ),
-        body: FutureBuilder<void>(
-          future: loadLogs(),
+        body:
+//         Consumer<MapState>(builder: (context, mapState, child) {
+            FutureBuilder<void>(
+          future: loadLogs(db),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               // If the Future is complete, display the preview.
@@ -143,11 +144,9 @@ class LogListWidgetState extends State<LogListWidget> {
                     return Dismissible(
                       confirmDismiss: _confirmLogDismiss,
                       direction: DismissDirection.endToStart,
-                      onDismissed: (direction) {
-                        GPProject().getDatabase().then((db) async {
-                          await db.deleteGpslog(logItem.id);
-                          widget._eventHandler.reloadProjectFunction();
-                        });
+                      onDismissed: (direction) async {
+                        await db.deleteGpslog(logItem.id);
+                        widget._eventHandler.reloadProjectFunction();
                       },
                       key: Key("${logItem.id}"),
                       background: Container(
@@ -174,7 +173,6 @@ class LogListWidgetState extends State<LogListWidget> {
                                 value: logItem.isVisible == 1 ? true : false,
                                 onChanged: (isVisible) async {
                                   logItem.isVisible = isVisible ? 1 : 0;
-                                  var db = await GPProject().getDatabase();
                                   await db.updateGpsLogVisibility(isVisible, logItem.id);
                                   widget._eventHandler.reloadProjectFunction();
                                   setState(() {});
@@ -186,7 +184,6 @@ class LogListWidgetState extends State<LogListWidget> {
                         subtitle: Text('${_getTime(logItem)} ${_getLength(logItem)}'),
                         onTap: () => _navigateToLogProperties(context, logItem),
                         onLongPress: () async {
-                          var db = await GPProject().getDatabase();
                           LatLng position = await db.getLogStartPosition(logItem.id);
                           widget._eventHandler.moveToFunction(position);
                           Navigator.of(context).pop();
@@ -199,7 +196,9 @@ class LogListWidgetState extends State<LogListWidget> {
               return Center(child: CircularProgressIndicator());
             }
           },
-        ));
+        ),
+      );
+    });
   }
 
   _getTime(Log4ListWidget item) {
@@ -295,8 +294,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
             _logItem.width = _widthSliderValue;
             _logItem.color = ColorExt.asHex(_logColor);
 
-            var db = await GPProject().getDatabase();
-            await db.updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
+            ProjectState projectState = Provider.of<ProjectState>(context);
+            await projectState.projectDb.updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
             widget._eventHandler.reloadProjectFunction();
           }
           return true;
@@ -433,8 +432,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       validationFunction: noEmptyValidator,
     );
     if (result != null) {
-      var db = await GPProject().getDatabase();
-      await db.updateGpsLogName(logItem.id, result);
+      ProjectState projectState = Provider.of<ProjectState>(context);
+      await projectState.projectDb.updateGpsLogName(logItem.id, result);
       setState(() {
         logItem.name = result;
       });
@@ -500,8 +499,8 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
             _note.noteExt.marker = _marker;
             _note.noteExt.size = _sizeSliderValue;
 
-            var db = await GPProject().getDatabase();
-            await db.updateNote(_note);
+            ProjectState projectState = Provider.of<ProjectState>(context);
+            await projectState.projectDb.updateNote(_note);
             widget._eventHandler.reloadProjectFunction();
           }
           return true;
@@ -717,9 +716,8 @@ class NotesListWidget extends StatefulWidget {
 class NotesListWidgetState extends State<NotesListWidget> {
   List<dynamic> _notesList = [];
 
-  Future<bool> loadNotes() async {
+  Future<bool> loadNotes(var db) async {
     _notesList.clear();
-    var db = await GPProject().getDatabase();
     dynamic itemsList = await db.getNotes(doSimple: widget._doSimpleNotes);
     if (itemsList != null) {
       _notesList.addAll(itemsList);
@@ -735,79 +733,79 @@ class NotesListWidgetState extends State<NotesListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget._doSimpleNotes ? "Simple Notes List" : "Form Notes List"),
-        ),
-        body: FutureBuilder<void>(
-          future: loadNotes(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future is complete, display the preview.
-              return ListView.builder(
-                  itemCount: _notesList.length,
-                  itemBuilder: (context, index) {
-                    dynamic dynNote = _notesList[index];
-                    int id;
-                    var markerName;
-                    var markerColor;
-                    String text;
-                    bool hasProperties = true;
-                    int ts;
-                    double lat;
-                    double lon;
-                    if (dynNote is Note) {
-                      id = dynNote.id;
-                      markerName = dynNote.noteExt.marker;
-                      markerColor = dynNote.noteExt.color;
-                      text = dynNote.text;
-                      ts = dynNote.timeStamp;
-                      lon = dynNote.lon;
-                      lat = dynNote.lat;
-                      if (dynNote.form != null) {
+    return Consumer<ProjectState>(builder: (context, projectState, child) {
+      var db = projectState.projectDb;
+      return Scaffold(
+          appBar: AppBar(
+            title: Text(widget._doSimpleNotes ? "Simple Notes List" : "Form Notes List"),
+          ),
+          body: FutureBuilder<void>(
+            future: loadNotes(db),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the Future is complete, display the preview.
+                return ListView.builder(
+                    itemCount: _notesList.length,
+                    itemBuilder: (context, index) {
+                      dynamic dynNote = _notesList[index];
+                      int id;
+                      var markerName;
+                      var markerColor;
+                      String text;
+                      bool hasProperties = true;
+                      int ts;
+                      double lat;
+                      double lon;
+                      if (dynNote is Note) {
+                        id = dynNote.id;
+                        markerName = dynNote.noteExt.marker;
+                        markerColor = dynNote.noteExt.color;
+                        text = dynNote.text;
+                        ts = dynNote.timeStamp;
+                        lon = dynNote.lon;
+                        lat = dynNote.lat;
+                        if (dynNote.form != null) {
+                          hasProperties = false;
+                        }
+                      } else {
                         hasProperties = false;
+                        id = dynNote.id;
+                        markerName = 'camera';
+                        markerColor = ColorExt.asHex(SmashColors.mainDecorationsDark);
+                        text = dynNote.text;
+                        ts = dynNote.timeStamp;
+                        lon = dynNote.lon;
+                        lat = dynNote.lat;
                       }
-                    } else {
-                      hasProperties = false;
-                      id = dynNote.id;
-                      markerName = 'camera';
-                      markerColor = ColorExt.asHex(SmashColors.mainDecorationsDark);
-                      text = dynNote.text;
-                      ts = dynNote.timeStamp;
-                      lon = dynNote.lon;
-                      lat = dynNote.lat;
-                    }
 
-                    return Dismissible(
-                      confirmDismiss: _confirmNoteDismiss,
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) {
-                        GPProject().getDatabase().then((db) async {
+                      return Dismissible(
+                        confirmDismiss: _confirmNoteDismiss,
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) async {
                           await db.deleteNote(id);
                           widget._eventHandler.reloadProjectFunction();
-                        });
-                      },
-                      key: Key("${id}"),
-                      background: Container(
-                        alignment: AlignmentDirectional.centerEnd,
-                        color: Colors.red,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.white,
+                        },
+                        key: Key("${id}"),
+                        background: Container(
+                          alignment: AlignmentDirectional.centerEnd,
+                          color: Colors.red,
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                      ),
-                      child: ListTile(
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(
-                              getIcon(markerName) ?? MdiIcons.mapMarker,
-                              color: ColorExt(markerColor),
-                              size: SmashUI.MEDIUM_ICON_SIZE,
-                            ),
+                        child: ListTile(
+                          leading: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Icon(
+                                getIcon(markerName) ?? MdiIcons.mapMarker,
+                                color: ColorExt(markerColor),
+                                size: SmashUI.MEDIUM_ICON_SIZE,
+                              ),
 //                            Checkbox(
 //                                value: note.isVisible == 1 ? true : false,
 //                                onChanged: (isVisible) async {
@@ -818,30 +816,31 @@ class NotesListWidgetState extends State<NotesListWidget> {
 //                                  widget._eventHandler.reloadProjectFunction();
 //                                  setState(() {});
 //                                }),
-                          ],
+                            ],
+                          ),
+                          trailing: hasProperties ? Icon(Icons.arrow_right) : SmashUI.getTransparentIcon(),
+                          title: Text('${text}'),
+                          subtitle: Text('${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
+                          onTap: () {
+                            if (hasProperties) {
+                              _navigateToNoteProperties(context, dynNote);
+                            }
+                          },
+                          onLongPress: () {
+                            LatLng position = LatLng(lat, lon);
+                            widget._eventHandler.moveToFunction(position);
+                            Navigator.of(context).pop();
+                          },
                         ),
-                        trailing: hasProperties ? Icon(Icons.arrow_right) : SmashUI.getTransparentIcon(),
-                        title: Text('${text}'),
-                        subtitle: Text('${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
-                        onTap: () {
-                          if (hasProperties) {
-                            _navigateToNoteProperties(context, dynNote);
-                          }
-                        },
-                        onLongPress: () {
-                          LatLng position = LatLng(lat, lon);
-                          widget._eventHandler.moveToFunction(position);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    );
-                  });
-            } else {
-              // Otherwise, display a loading indicator.
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        ));
+                      );
+                    });
+              } else {
+                // Otherwise, display a loading indicator.
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ));
+    });
   }
 
   Future<bool> _confirmNoteDismiss(DismissDirection direction) async {

@@ -8,7 +8,7 @@ import 'dart:io';
 
 import 'package:share_extend/share_extend.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/models.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 
 class ShareHandler {

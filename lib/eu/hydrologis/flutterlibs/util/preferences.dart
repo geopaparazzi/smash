@@ -40,7 +40,7 @@ class GpPreferences {
 
   SharedPreferences _preferences;
 
-  Future initialize() async {
+  Future<void> initialize() async {
     await _checkPreferences();
   }
 
@@ -119,7 +119,7 @@ class GpPreferences {
   }
 
   /// Save a bool [value] to the preferences using a preferences [key].
-  setBoolean(String key, bool value) async {
+  Future<void> setBoolean(String key, bool value) async {
     await _checkPreferences();
     await _preferences.setBool(key, value);
   }
@@ -142,7 +142,7 @@ class GpPreferences {
   }
 
   /// Return last saved position as [lon, lat, zoom] or null.
-  Future<List<dynamic>> getLastPosition() async {
+  Future<List<double>> getLastPosition() async {
     await _checkPreferences();
     var lat = _preferences.getDouble(KEY_LAST_LAT);
     var lon = _preferences.getDouble(KEY_LAST_LON);
@@ -159,24 +159,24 @@ class GpPreferences {
     await _preferences.setDouble(KEY_LAST_ZOOM, zoom);
   }
 
-  Future<bool> getCenterOnGps() async {
-    return getBoolean(KEY_CENTER_ON_GPS, false);
+  bool getCenterOnGps() {
+    return getBooleanSync(KEY_CENTER_ON_GPS, false);
   }
 
   void setCenterOnGps(bool centerOnGps) {
     setBoolean(KEY_CENTER_ON_GPS, centerOnGps);
   }
 
-  Future<bool> getRotateOnHeading() async {
-    return getBoolean(KEY_ROTATE_ON_HEADING, false);
+  bool getRotateOnHeading() {
+    return getBooleanSync(KEY_ROTATE_ON_HEADING, false);
   }
 
   void setRotateOnHeading(bool rotateOnHeading) {
     setBoolean(KEY_ROTATE_ON_HEADING, rotateOnHeading);
   }
 
-  Future<bool> getKeepScreenOn() async {
-    return getBoolean(KEY_KEEP_SCREEN_ON, true);
+  bool getKeepScreenOn() {
+    return getBooleanSync(KEY_KEEP_SCREEN_ON, true);
   }
 
   void setKeepScreenOn(bool keepScreenOn) {

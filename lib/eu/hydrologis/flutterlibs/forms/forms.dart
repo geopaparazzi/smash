@@ -639,7 +639,7 @@ class TagsManager {
   ///
   /// @param context the context to use.
   /// @throws Exception
-  void readFileTags([String tagsFilePath]) async {
+  Future<void> readFileTags([String tagsFilePath]) async {
     if (_tagsFileArray == null) {
       _tagsFileArray = [];
       _tagsFileArrayStrings = [];

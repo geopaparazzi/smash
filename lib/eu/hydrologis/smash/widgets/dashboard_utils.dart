@@ -16,7 +16,7 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_importexport.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/models.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/diagnostic.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';

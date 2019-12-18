@@ -11,8 +11,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
+import 'package:provider/provider.dart';
 
-import 'models.dart';
+import '../../../smash/core/models.dart';
 import 'project_tables.dart';
 
 class ImageWidgetUtilities {
@@ -25,12 +26,12 @@ class ImageWidgetUtilities {
   ///
   /// [dbImageToCompleteAndSave] is passed in with the necessary spatial data
   /// (but missing imageDataId, which will be filled here.
-  static Future<int> saveImageToSmashDb(
-      String path, DbImage dbImageToCompleteAndSave) async {
+  static Future<int> saveImageToSmashDb(BuildContext context, String path, DbImage dbImageToCompleteAndSave) async {
     var imageBytes = ImageUtilities.bytesFromImageFile(path);
     var thumbBytes = ImageUtilities.resizeImage(imageBytes, newWidth: 200);
 
-    var db = await GPProject().getDatabase();
+    ProjectState projectState = Provider.of<ProjectState>(context);
+    var db = projectState.projectDb;
 
     DbImageData imgData = DbImageData()
       ..thumb = thumbBytes
@@ -39,8 +40,7 @@ class ImageWidgetUtilities {
     return await db.transaction((tx) async {
       int imgDataId = await tx.insert(TABLE_IMAGE_DATA, imgData.toMap());
       dbImageToCompleteAndSave.imageDataId = imgDataId;
-      int imgId =
-          await tx.insert(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
+      int imgId = await tx.insert(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
       if (imgId == null) {
         GpLogger().e("Could not save image to db: $path");
       }
@@ -105,77 +105,70 @@ class SmashImageZoomWidget extends StatelessWidget {
 
   SmashImageZoomWidget(this._image);
 
-  Future<Null> getImageData() async {
-    var db = await GPProject().getDatabase();
+  Future<Null> getImageData(var db) async {
     _bytes = await db.getImageDataBytes(_image.id);
   }
 
   @override
   Widget build(BuildContext context) {
     _title = _image.text;
-
+    ProjectState projectState = Provider.of<ProjectState>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),
       ),
       body: FutureBuilder<void>(
-        future: getImageData(),
+        future: getImageData(projectState.projectDb),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             // If the Future is complete, display the preview.
             return OrientationBuilder(builder: (context, orientation) {
               if (orientation == Orientation.portrait) {
                 return Center(
-                    child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                      Expanded(
-                        child: ExtendedImage.memory(
-                          _bytes,
-                          fit: BoxFit.contain,
-                          //enableLoadState: false,
-                          mode: ExtendedImageMode.gesture,
-                          initGestureConfigHandler: (state) {
-                            return GestureConfig(
-                                minScale: 0.9,
-                                animationMinScale: 0.7,
-                                maxScale: 5.0,
-                                animationMaxScale: 5.5,
-                                speed: 1.0,
-                                inertialSpeed: 100.0,
-                                initialScale: 1.0,
-                                inPageView: false);
-                          },
-                        ),
-                      )
-                    ]));
+                    child: Column(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+                  Expanded(
+                    child: ExtendedImage.memory(
+                      _bytes,
+                      fit: BoxFit.contain,
+                      //enableLoadState: false,
+                      mode: ExtendedImageMode.gesture,
+                      initGestureConfigHandler: (state) {
+                        return GestureConfig(
+                            minScale: 0.9,
+                            animationMinScale: 0.7,
+                            maxScale: 5.0,
+                            animationMaxScale: 5.5,
+                            speed: 1.0,
+                            inertialSpeed: 100.0,
+                            initialScale: 1.0,
+                            inPageView: false);
+                      },
+                    ),
+                  )
+                ]));
               } else {
                 return Center(
-                    child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                      Expanded(
-                        child: ExtendedImage.memory(
-                          _bytes,
-                          fit: BoxFit.contain,
-                          //enableLoadState: false,
-                          mode: ExtendedImageMode.gesture,
-                          initGestureConfigHandler: (state) {
-                            return GestureConfig(
-                                minScale: 0.9,
-                                animationMinScale: 0.7,
-                                maxScale: 5.0,
-                                animationMaxScale: 5.5,
-                                speed: 1.0,
-                                inertialSpeed: 100.0,
-                                initialScale: 1.0,
-                                inPageView: false);
-                          },
-                        ),
-                      )
-                    ]));
+                    child: Row(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+                  Expanded(
+                    child: ExtendedImage.memory(
+                      _bytes,
+                      fit: BoxFit.contain,
+                      //enableLoadState: false,
+                      mode: ExtendedImageMode.gesture,
+                      initGestureConfigHandler: (state) {
+                        return GestureConfig(
+                            minScale: 0.9,
+                            animationMinScale: 0.7,
+                            maxScale: 5.0,
+                            animationMaxScale: 5.5,
+                            speed: 1.0,
+                            inertialSpeed: 100.0,
+                            initialScale: 1.0,
+                            inPageView: false);
+                      },
+                    ),
+                  )
+                ]));
               }
             });
           } else {

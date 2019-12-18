@@ -11,7 +11,7 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/images.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/models.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/media/camera.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
@@ -19,6 +19,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart' as ICONS;
 import 'package:smash/eu/hydrologis/flutterlibs/util/screen.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
 
 typedef Null ItemSelectedCallback(String selectedFormName);
 
@@ -157,7 +158,8 @@ class _MasterDetailPageState extends State<MasterDetailPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        var db = await GPProject().getDatabase();
+        ProjectState projectState = Provider.of<ProjectState>(context);
+        var db = projectState.projectDb;
         String jsonForm = jsonEncode(widget.sectionMap);
         int noteId;
         if (widget._noteId == null) {
@@ -840,8 +842,7 @@ class PicturesWidgetState extends State<PicturesWidget> {
   String IMAGE_ID_SEPARATOR = ";";
   List<String> imageSplit = [];
 
-  Future<List<Widget>> getThumbnails() async {
-    var db = await GPProject().getDatabase();
+  Future<List<Widget>> getThumbnails(var db) async {
     String value = ""; //$NON-NLS-1$
     if (widget._itemMap.containsKey(TAG_VALUE)) {
       value = widget._itemMap[TAG_VALUE].trim();
@@ -865,8 +866,9 @@ class PicturesWidgetState extends State<PicturesWidget> {
 
   @override
   Widget build(BuildContext context) {
+    ProjectState projectState = Provider.of<ProjectState>(context);
     return FutureBuilder(
-      future: getThumbnails(),
+      future: getThumbnails(projectState.projectDb),
       builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:

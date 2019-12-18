@@ -3,7 +3,7 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/models.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 
 bool DIAGNOSTIC_IS_ENABLED = true;
 

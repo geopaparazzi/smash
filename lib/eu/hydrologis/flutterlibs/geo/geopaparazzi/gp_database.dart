@@ -25,15 +25,15 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/share.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/database.dart';
 import 'package:latlong/latlong.dart';
-import 'project_tables.dart';
-import 'models.dart';
-import 'images.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/images.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:provider/provider.dart';
 
 class SmashLoggingHandler extends GpsLoggingHandler {
   @override
-  void addLogPoint(int logId, double longitude, double latitude,
-      double altitude, int timestamp) {
+  void addLogPoint(int logId, double longitude, double latitude, double altitude, int timestamp) {
     GPProject().getDatabase().then((db) {
       LogDataPoint ldp = LogDataPoint();
       ldp.logid = logId;
@@ -100,8 +100,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   /// Get the count using [onlyDirty] to count only dirty notes.
   Future<int> getNotesCount(bool onlyDirty) async {
     String where = !onlyDirty ? "" : " where $NOTES_COLUMN_ISDIRTY = 1";
-    List<Map<String, dynamic>> resNotes =
-        await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
+    List<Map<String, dynamic>> resNotes = await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
     var resNote = resNotes[0];
     var count = resNote["count"];
@@ -116,8 +115,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       where = "$where and ";
     }
     where = "$where ($NOTES_COLUMN_FORM is null or $NOTES_COLUMN_FORM='')";
-    List<Map<String, dynamic>> resNotes =
-        await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
+    List<Map<String, dynamic>> resNotes = await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
     var resNote = resNotes[0];
     var count = resNote["count"];
@@ -132,8 +130,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       where = "$where and ";
     }
     where = "$where $NOTES_COLUMN_FORM is not null and $NOTES_COLUMN_FORM<>''";
-    List<Map<String, dynamic>> resNotes =
-        await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
+    List<Map<String, dynamic>> resNotes = await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
     var resNote = resNotes[0];
     var count = resNote["count"];
@@ -154,8 +151,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       if (doSimple) {
         where = "$where ($NOTES_COLUMN_FORM is null or $NOTES_COLUMN_FORM='')";
       } else {
-        where =
-            "$where $NOTES_COLUMN_FORM is not null and $NOTES_COLUMN_FORM<>''";
+        where = "$where $NOTES_COLUMN_FORM is not null and $NOTES_COLUMN_FORM<>''";
       }
     }
 
@@ -292,8 +288,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       where = "$where and ";
     }
     where = "$where ($IMAGES_COLUMN_NOTE_ID is null)";
-    List<Map<String, dynamic>> resImages =
-        await query("SELECT count(*) as count FROM $TABLE_IMAGES$where");
+    List<Map<String, dynamic>> resImages = await query("SELECT count(*) as count FROM $TABLE_IMAGES$where");
 
     var resImage = resImages[0];
     var count = resImage["count"];
@@ -311,23 +306,19 @@ class GeopaparazziProjectDb extends SqliteDb {
       where = "$where and ";
     }
     where = "$where ($IMAGES_COLUMN_NOTE_ID is null)";
-    var images =
-        await getQueryObjectsList(ImageQueryBuilder(), whereString: where);
+    var images = await getQueryObjectsList(ImageQueryBuilder(), whereString: where);
     return images;
   }
 
   Future<DbImage> getImageById(int imageId) async {
     String where = "where $IMAGES_COLUMN_ID=$imageId";
-    var images =
-        await getQueryObjectsList(ImageQueryBuilder(), whereString: where);
+    var images = await getQueryObjectsList(ImageQueryBuilder(), whereString: where);
     return images[0];
   }
 
   /// Get the image thumbnail of a given [imageDataId].
   Future<Image> getThumbnail(int imageDataId) async {
-    var imageDataList = await getQueryObjectsList(
-        ImageDataQueryBuilder(doData: false, doThumb: true),
-        whereString: "where $IMAGESDATA_COLUMN_ID=$imageDataId");
+    var imageDataList = await getQueryObjectsList(ImageDataQueryBuilder(doData: false, doThumb: true), whereString: "where $IMAGESDATA_COLUMN_ID=$imageDataId");
     if (imageDataList != null && imageDataList.length == 1) {
       DbImageData imgDataMap = imageDataList.first;
       if (imgDataMap != null && imgDataMap.thumb != null) {
@@ -340,8 +331,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   /// Get the image of a given [imageDataId].
   Future<Image> getImage(int imageDataId) async {
     Uint8List imageDataBytes = await getImageDataBytes(imageDataId);
-    if (imageDataBytes != null)
-      return ImageWidgetUtilities.imageFromBytes(imageDataBytes);
+    if (imageDataBytes != null) return ImageWidgetUtilities.imageFromBytes(imageDataBytes);
     return null;
   }
 
@@ -349,9 +339,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     Uint8List imageDataBytes;
     var whereStr = "where $IMAGESDATA_COLUMN_ID=$imageDataId";
     try {
-      List<DbImageData> imageDataList = await getQueryObjectsList(
-          ImageDataQueryBuilder(doData: true, doThumb: false),
-          whereString: whereStr);
+      List<DbImageData> imageDataList = await getQueryObjectsList(ImageDataQueryBuilder(doData: true, doThumb: false), whereString: whereStr);
       if (imageDataList != null && imageDataList.length == 1) {
         DbImageData imgDataMap = imageDataList.first;
         if (imgDataMap != null && imgDataMap.data != null) {
@@ -359,8 +347,7 @@ class GeopaparazziProjectDb extends SqliteDb {
         }
       }
     } catch (ex) {
-      String sizeQuery =
-          "SELECT $IMAGESDATA_COLUMN_ID, length($IMAGESDATA_COLUMN_IMAGE) as blobsize FROM $TABLE_IMAGE_DATA $whereStr";
+      String sizeQuery = "SELECT $IMAGESDATA_COLUMN_ID, length($IMAGESDATA_COLUMN_IMAGE) as blobsize FROM $TABLE_IMAGE_DATA $whereStr";
       var res = await query(sizeQuery);
       if (res.length == 1) {
         int blobSize = res[0]['blobsize'];
@@ -372,8 +359,7 @@ class GeopaparazziProjectDb extends SqliteDb {
             if (from + size > blobSize) {
               size = blobSize - from + 1;
             }
-            String tmpQuery =
-                "SELECT substr($IMAGESDATA_COLUMN_IMAGE, $from, $size) as partialblob FROM $TABLE_IMAGE_DATA $whereStr";
+            String tmpQuery = "SELECT substr($IMAGESDATA_COLUMN_IMAGE, $from, $size) as partialblob FROM $TABLE_IMAGE_DATA $whereStr";
             var res2 = await query(tmpQuery);
             var partial = res2[0]['partialblob'];
             total.addAll(partial);
@@ -423,8 +409,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   }
 
   Future<int> deleteImageByNoteId(int noteId) async {
-    var deleteSql =
-        "delete from $TABLE_IMAGES where $IMAGES_COLUMN_NOTE_ID=$noteId";
+    var deleteSql = "delete from $TABLE_IMAGES where $IMAGES_COLUMN_NOTE_ID=$noteId";
     return await delete(deleteSql);
   }
 
@@ -438,8 +423,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       return 0;
     }
     var idsJoin = imageIds.join(',');
-    var updateSql =
-        "update $TABLE_IMAGES set $IMAGES_COLUMN_NOTE_ID=$noteId where $IMAGES_COLUMN_ID in (${idsJoin})";
+    var updateSql = "update $TABLE_IMAGES set $IMAGES_COLUMN_NOTE_ID=$noteId where $IMAGES_COLUMN_ID in (${idsJoin})";
     var updatedIds = await update(updateSql);
     return updatedIds;
   }
@@ -508,11 +492,9 @@ class GeopaparazziProjectDb extends SqliteDb {
       // delete log
       String sql = "delete from $TABLE_GPSLOGS where $LOGS_COLUMN_ID = $logId";
       tx.execute(sql);
-      sql =
-          "delete from $TABLE_GPSLOG_PROPERTIES where $LOGSPROP_COLUMN_LOGID = $logId";
+      sql = "delete from $TABLE_GPSLOG_PROPERTIES where $LOGSPROP_COLUMN_LOGID = $logId";
       tx.execute(sql);
-      sql =
-          "delete from $TABLE_GPSLOG_DATA where $LOGSDATA_COLUMN_LOGID = $logId";
+      sql = "delete from $TABLE_GPSLOG_DATA where $LOGSDATA_COLUMN_LOGID = $logId";
       tx.execute(sql);
       return Future.value(true);
     });
@@ -520,23 +502,21 @@ class GeopaparazziProjectDb extends SqliteDb {
 
   /// Updates the end timestamp [endTs] of a log of id [logId].
   Future<int> updateGpsLogEndts(int logId, int endTs) async {
-    var updatedId = await update(
-        "update $TABLE_GPSLOGS set $LOGS_COLUMN_ENDTS=$endTs where $LOGS_COLUMN_ID=$logId");
+    var updatedId = await update("update $TABLE_GPSLOGS set $LOGS_COLUMN_ENDTS=$endTs where $LOGS_COLUMN_ID=$logId");
     await updateLogLength(logId);
     return updatedId;
   }
 
   /// Updates the [name] of a log of id [logId].
   Future<int> updateGpsLogName(int logId, String name) async {
-    var updatedId = await update(
-        "update $TABLE_GPSLOGS set $LOGS_COLUMN_TEXT='$name' where $LOGS_COLUMN_ID=$logId");
+    var updatedId = await update("update $TABLE_GPSLOGS set $LOGS_COLUMN_TEXT='$name' where $LOGS_COLUMN_ID=$logId");
     return updatedId;
   }
 
   /// Updates the [color] and [width] of a log of id [logId].
   Future<int> updateGpsLogStyle(int logId, String color, double width) async {
-    var updatedId = await update(
-        "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_COLOR='$color', $LOGSPROP_COLUMN_WIDTH=$width where $LOGSPROP_COLUMN_LOGID=$logId");
+    var updatedId =
+        await update("update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_COLOR='$color', $LOGSPROP_COLUMN_WIDTH=$width where $LOGSPROP_COLUMN_LOGID=$logId");
     return updatedId;
   }
 
@@ -547,8 +527,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       where = " where $LOGSPROP_COLUMN_LOGID=$logId";
     }
 
-    var updatedId = await update(
-        "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_VISIBLE=${isVisible ? 1 : 0}$where");
+    var updatedId = await update("update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_VISIBLE=${isVisible ? 1 : 0}$where");
     return updatedId;
   }
 
@@ -585,8 +564,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       var ts = map[LOGSDATA_COLUMN_TS];
       LatLng pos = LatLng(lat, lon);
       if (previousPosition != null) {
-        var distanceMeters =
-            CoordinateUtilities.getDistance(pos, previousPosition);
+        var distanceMeters = CoordinateUtilities.getDistance(pos, previousPosition);
         summedDistance += distanceMeters;
       }
       previousPosition = pos;
@@ -613,8 +591,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       var extMap = note.noteExt.toMap();
       int noteExtId = extMap.remove(NOTESEXT_COLUMN_ID);
       extMap.remove(NOTESEXT_COLUMN_NOTEID);
-      count = await updateMap(
-          TABLE_NOTESEXT, extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
+      count = await updateMap(TABLE_NOTESEXT, extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
       if (count != 1) {
         print("Not updated");
       }
@@ -730,8 +707,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     if (!hasNotesExt) {
       GpLogger().w("Adding extra database table $TABLE_NOTESEXT.");
       await transaction((tx) async {
-        var split =
-            CREATE_NOTESEXT_STATEMENT.replaceAll("\n", "").trim().split(";");
+        var split = CREATE_NOTESEXT_STATEMENT.replaceAll("\n", "").trim().split(";");
         for (int i = 0; i < split.length; i++) {
           var sql = split[i].trim();
           if (sql.length > 0 && !sql.startsWith("--")) {
@@ -751,16 +727,14 @@ class GeopaparazziProjectDb extends SqliteDb {
       var tableColumns = await getTableColumns(tableName);
       for (int j = 0; j < tableColumns.length; j++) {
         var tableColumn = tableColumns[j];
-        print(
-            "    ${tableColumn[0]} ${tableColumn[1]} ${tableColumn[2] == 1 ? "isPk" : ""} ");
+        print("    ${tableColumn[0]} ${tableColumn[1]} ${tableColumn[2] == 1 ? "isPk" : ""} ");
       }
     }
   }
 }
 
 class DataLoaderUtilities {
-  static Future<Note> addNote(BuildContext context, bool doInGps,
-      MapController mapController, MainEventHandler mainEventsHandler,
+  static Future<Note> addNote(BuildContext context, bool doInGps, MapController mapController, MainEventHandler mainEventsHandler,
       {String form, String iconName, String color, String text}) async {
     int ts = DateTime.now().millisecondsSinceEpoch;
     Position pos;
@@ -798,7 +772,8 @@ class DataLoaderUtilities {
       next.color = color;
     }
     note.noteExt = next;
-    var db = await GPProject().getDatabase();
+    ProjectState projectState = Provider.of<ProjectState>(context);
+    var db = projectState.projectDb;
     await db.addNote(note);
 
     return note;
@@ -835,15 +810,11 @@ class DataLoaderUtilities {
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => TakePictureWidget("Saving image to db...",
-                    (String imagePath) async {
+            builder: (context) => TakePictureWidget("Saving image to db...", (String imagePath) async {
                   if (imagePath != null) {
-                    String imageName =
-                        FileUtilities.nameFromFile(imagePath, true);
-                    dbImage.text =
-                        "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
-                    var imageId = await ImageWidgetUtilities.saveImageToSmashDb(
-                        imagePath, dbImage);
+                    String imageName = FileUtilities.nameFromFile(imagePath, true);
+                    dbImage.text = "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
+                    var imageId = await ImageWidgetUtilities.saveImageToSmashDb(context, imagePath, dbImage);
                     if (imageId != null) {
                       mainEventsHandler?.reloadProjectFunction();
                       File file = File(imagePath);
@@ -860,11 +831,7 @@ class DataLoaderUtilities {
   }
 
   static void loadNotesMarkers(
-      GeopaparazziProjectDb db,
-      List<Marker> tmp,
-      MainEventHandler mainEventHandler,
-      Function _showSnackbar,
-      Function _hideSnackbar) async {
+      GeopaparazziProjectDb db, List<Marker> tmp, MainEventHandler mainEventHandler, Function _showSnackbar, Function _hideSnackbar) async {
     List<Note> notesList = await db.getNotes();
     notesList.forEach((note) {
       NoteExt noteExt = note.noteExt;
@@ -906,38 +873,31 @@ class DataLoaderUtilities {
                             TableRow(
                               children: [
                                 TableUtilities.cellForString("Longitude"),
-                                TableUtilities.cellForString(
-                                    note.lon.toString()),
+                                TableUtilities.cellForString(note.lon.toString()),
                               ],
                             ),
                             TableRow(
                               children: [
                                 TableUtilities.cellForString("Latitude"),
-                                TableUtilities.cellForString(
-                                    note.lat.toString()),
+                                TableUtilities.cellForString(note.lat.toString()),
                               ],
                             ),
                             TableRow(
                               children: [
                                 TableUtilities.cellForString("Altitude"),
-                                TableUtilities.cellForString(
-                                    note.altim.toInt().toString()),
+                                TableUtilities.cellForString(note.altim.toInt().toString()),
                               ],
                             ),
                             TableRow(
                               children: [
                                 TableUtilities.cellForString("Timestamp"),
-                                TableUtilities.cellForString(TimeUtilities
-                                    .ISO8601_TS_FORMATTER
-                                    .format(DateTime.fromMillisecondsSinceEpoch(
-                                        note.timeStamp))),
+                                TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))),
                               ],
                             ),
                             TableRow(
                               children: [
                                 TableUtilities.cellForString("Has Form"),
-                                TableUtilities.cellForString(
-                                    "${note.form != null}"),
+                                TableUtilities.cellForString("${note.form != null}"),
                               ],
                             ),
                           ],
@@ -985,20 +945,13 @@ class DataLoaderUtilities {
                                   MaterialPageRoute(
                                       builder: (context) => MasterDetailPage(
                                           sectionMap,
-                                          SmashUI.titleText(sectionName,
-                                              color: SmashColors.mainBackground,
-                                              bold: true),
+                                          SmashUI.titleText(sectionName, color: SmashColors.mainBackground, bold: true),
                                           sectionName,
                                           p,
                                           note.id,
                                           mainEventHandler)));
                             } else {
-                              Navigator.push(
-                                  ctx,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          NotePropertiesWidget(
-                                              mainEventHandler, note)));
+                              Navigator.push(ctx, MaterialPageRoute(builder: (context) => NotePropertiesWidget(mainEventHandler, note)));
                             }
                             _hideSnackbar();
                           },
@@ -1010,12 +963,8 @@ class DataLoaderUtilities {
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () async {
-                            var doRemove = await showConfirmDialog(
-                                ctx,
-                                "Remove Note",
-                                "Are you sure you want to remove note ${note.id}?");
+                            var doRemove = await showConfirmDialog(ctx, "Remove Note", "Are you sure you want to remove note ${note.id}?");
                             if (doRemove) {
-                              var db = await GPProject().getDatabase();
                               await db.deleteNote(note.id);
                               await mainEventHandler.reloadProjectFunction();
                             }
@@ -1052,11 +1001,7 @@ class DataLoaderUtilities {
   }
 
   static void loadImageMarkers(
-      GeopaparazziProjectDb db,
-      List<Marker> tmp,
-      MainEventHandler mainEventHandler,
-      Function _showSnackbar,
-      Function _hideSnackbar) async {
+      GeopaparazziProjectDb db, List<Marker> tmp, MainEventHandler mainEventHandler, Function _showSnackbar, Function _hideSnackbar) async {
     // IMAGES
     var imagesList = await db.getImages();
     imagesList.forEach((image) async {
@@ -1088,8 +1033,7 @@ class DataLoaderUtilities {
                     ),
                   ),
                   Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: SmashColors.mainDecorations)),
+                    decoration: BoxDecoration(border: Border.all(color: SmashColors.mainDecorations)),
                     padding: EdgeInsets.all(5),
                     child: GestureDetector(
                       child: Row(
@@ -1099,11 +1043,7 @@ class DataLoaderUtilities {
                         ],
                       ),
                       onTap: () {
-                        Navigator.push(
-                            ctx,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SmashImageZoomWidget(image)));
+                        Navigator.push(ctx, MaterialPageRoute(builder: (context) => SmashImageZoomWidget(image)));
                         _hideSnackbar();
                       },
                     ),
@@ -1132,12 +1072,8 @@ class DataLoaderUtilities {
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () async {
-                            var doRemove = await showConfirmDialog(
-                                ctx,
-                                "Remove Image",
-                                "Are you sure you want to remove image ${image.id}?");
+                            var doRemove = await showConfirmDialog(ctx, "Remove Image", "Are you sure you want to remove image ${image.id}?");
                             if (doRemove) {
-                              var db = await GPProject().getDatabase();
                               await db.deleteImage(image.id);
                               await mainEventHandler.reloadProjectFunction();
                             }
@@ -1209,8 +1145,7 @@ class DataLoaderUtilities {
       var color = list[0];
       var width = list[1];
       var points = list[2];
-      lines.add(
-          Polyline(points: points, strokeWidth: width, color: ColorExt(color)));
+      lines.add(Polyline(points: points, strokeWidth: width, color: ColorExt(color)));
     });
 
     return PolylineLayerOptions(
