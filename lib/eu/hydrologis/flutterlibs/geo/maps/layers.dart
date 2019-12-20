@@ -10,6 +10,7 @@ import 'dart:typed_data';
 import 'dart:ui' as UI;
 
 import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
+import 'package:dart_jts/dart_jts.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +23,11 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:image/image.dart' as IMG;
+import 'package:provider/provider.dart';
 
 import 'gpx.dart';
 import 'mapsforge.dart';
@@ -400,9 +403,8 @@ class LayerManager {
 
 class LayersPage extends StatefulWidget {
   Function _reloadFunction;
-  Function _moveToFunction;
 
-  LayersPage(this._reloadFunction, this._moveToFunction);
+  LayersPage(this._reloadFunction);
 
   @override
   State<StatefulWidget> createState() => LayersPageState();
@@ -471,10 +473,12 @@ class LayersPageState extends State<LayersPage> {
                     title: Text('${layerSourceItem.getLabel()}'),
                     subtitle: Text('${layerSourceItem.getAttribution()}'),
                     onLongPress: () async {
-                      var bounds = await layerSourceItem.getBounds();
-                      if (bounds != null) {
+                      LatLngBounds bb = await layerSourceItem.getBounds();
+                      if (bb != null) {
                         setLayersOnChange(_layersList);
-                        widget._moveToFunction(bounds);
+
+                        MapState mapState = Provider.of<MapState>(context);
+                        mapState.setBounds(new Envelope(bb.west, bb.east, bb.south, bb.north));
                         Navigator.of(context).pop();
                       }
                     },

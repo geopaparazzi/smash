@@ -6,10 +6,12 @@
 
 import 'dart:io';
 
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
+import 'package:provider/provider.dart';
 
 class ShareHandler {
   static Future<void> shareText(String text, {String title: ''}) async {
@@ -18,17 +20,17 @@ class ShareHandler {
 
   static Future<void> shareImage(String text, var imageData) async {
     Directory cacheFolder = await Workspace.getCacheFolder();
-    var outPath = FileUtilities.joinPaths(cacheFolder.path,
-        "smash_tmp_share_${TimeUtilities.DATE_TS_FORMATTER}.jpg");
+    var outPath = FileUtilities.joinPaths(cacheFolder.path, "smash_tmp_share_${TimeUtilities.DATE_TS_FORMATTER}.jpg");
 
     FileUtilities.writeBytesToFile(outPath, imageData);
 
     await ShareExtend.share(outPath, "image");
   }
 
-  static Future<void> shareProject() async {
-    if (GPProject().projectPath != null) {
-      File projectFile = File("${GPProject().projectPath}");
+  static Future<void> shareProject(BuildContext context) async {
+    ProjectState projectState = Provider.of<ProjectState>(context);
+    if (projectState.projectPath != null) {
+      File projectFile = File("${projectState.projectPath}");
       if (projectFile.existsSync()) {
         await ShareExtend.share(projectFile.path, "file");
       }

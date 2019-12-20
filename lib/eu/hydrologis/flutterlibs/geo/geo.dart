@@ -6,6 +6,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'package:dart_jts/dart_jts.dart' hide Position, Distance;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
@@ -13,6 +14,8 @@ import 'package:geocoder/geocoder.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
+import 'package:provider/provider.dart';
 
 /// Utilities to work with coordinates.
 class CoordinateUtilities {
@@ -48,8 +51,6 @@ abstract class GpsLoggingHandler {
   Future<void> stopLogging(int logId);
 }
 
-GpsLoggingHandler appGpsLoggingHandler;
-
 /// A central GPS handling class.
 ///
 /// This is used to:
@@ -61,40 +62,27 @@ class GpsHandler {
   static final GpsHandler _instance = GpsHandler._internal();
   Geolocator _geolocator;
   StreamSubscription<Position> _positionStreamSubscription;
-  GpsStatus _gpsStatus = GpsStatus.OFF;
-  GpsStatus _lastGpsStatusBeforeLogging;
-
-  Position _lastPosition;
-
-  List<PositionListener> positionListeners = [];
 
   bool _locationDisabled;
-  bool _isLogging = false;
-  int _currentLogId;
-  List<LatLng> _currentLogPoints = [];
+
   Timer _timer;
-  GpsLoggingHandler _loggingHandler;
+  GpsState _gpsState;
 
   /// internal handler singleton
   factory GpsHandler() => _instance;
 
   GpsHandler._internal() {
-    _init(appGpsLoggingHandler);
-
     _timer = Timer.periodic(Duration(milliseconds: 300), (timer) async {
-      if (_geolocator != null && !await _geolocator.isLocationServiceEnabled()) {
-        if (GpsStatus.OFF != _gpsStatus) {
-          _gpsStatus = GpsStatus.OFF;
-          positionListeners.forEach((PositionListener pl) {
-            pl.setStatus(_gpsStatus);
-          });
+      if (_geolocator != null && _gpsState != null && !await _geolocator.isLocationServiceEnabled()) {
+        if (GpsStatus.OFF != _gpsState.status) {
+          _gpsState.status = GpsStatus.OFF;
         }
       }
     });
   }
 
-  void _init([GpsLoggingHandler loggingHandler]) async {
-    if (loggingHandler != null) _loggingHandler = loggingHandler;
+  void init(GpsState initGpsState) async {
+    _gpsState = initGpsState;
     _geolocator = Geolocator();
 
     // TODO check back on this
@@ -112,13 +100,10 @@ class GpsHandler {
 
   /// Returns true if the gps currently has a fix or is logging.
   bool hasFix() {
-    var hasFix = _gpsStatus == GpsStatus.ON_WITH_FIX;
-    var isLogging = _gpsStatus == GpsStatus.LOGGING;
+    var hasFix = _gpsState.status == GpsStatus.ON_WITH_FIX;
+    var isLogging = _gpsState.status == GpsStatus.LOGGING;
     return hasFix || isLogging;
   }
-
-  // Getter for the last available position.
-  Position get lastPosition => _lastPosition;
 
   // Checks if the gps is on or off.
   Future<bool> isGpsOn() async {
@@ -132,41 +117,21 @@ class GpsHandler {
     if (position != null) {
       tmpStatus = GpsStatus.ON_WITH_FIX;
 
-      if (_isLogging && _currentLogId != null) {
+      if (_gpsState.isLogging && _gpsState.currentLogId != null) {
         tmpStatus = GpsStatus.LOGGING;
 //        if(_lastPosition!=null && _geolocator.distanceBetween(_lastPosition.latitude, _lastPosition.longitude, position.latitude,
 //            position.longitude) > 1)
-        _currentLogPoints.add(LatLng(position.latitude, position.longitude));
+        _gpsState.currentLogPoints.add(LatLng(position.latitude, position.longitude));
 
-        _loggingHandler?.addLogPoint(_currentLogId, position.longitude, position.latitude, position.altitude, DateTime.now().millisecondsSinceEpoch);
+        _gpsState.addLogPoint(position.longitude, position.latitude, position.altitude, DateTime.now().millisecondsSinceEpoch);
       }
     } else {
       tmpStatus = GpsStatus.ON_NO_FIX;
     }
 
     if (tmpStatus != null) {
-      _gpsStatus = tmpStatus;
-      positionListeners.forEach((PositionListener pl) {
-        pl.onPositionUpdate(position);
-        pl.setStatus(_gpsStatus);
-      });
-    }
-
-    _lastPosition = position;
-  }
-
-  /// Registers a new listener to position updates.
-  void addPositionListener(PositionListener listener) {
-    if (_locationDisabled) return;
-    if (!positionListeners.contains(listener)) {
-      positionListeners.add(listener);
-    }
-  }
-
-  /// Unregisters a listener from position updates.
-  void removePositionListener(PositionListener listener) {
-    if (positionListeners.contains(listener)) {
-      positionListeners.remove(listener);
+      _gpsState.status = tmpStatus;
+      _gpsState.lastGpsPosition = position;
     }
   }
 
@@ -179,64 +144,11 @@ class GpsHandler {
     }
     if (_locationDisabled) return;
   }
-
-  /// Start logging to database.
-  ///
-  /// This creates a new log with the name [logName] and returns
-  /// the id of the created log.
-  ///
-  /// Once logging, the [_onPositionUpdate] method adds the
-  /// points as the come.
-  Future<int> startLogging(String logName) async {
-    try {
-      var logId = await _loggingHandler?.addGpsLog(logName);
-      _currentLogId = logId;
-      _isLogging = true;
-
-      _lastGpsStatusBeforeLogging = _gpsStatus;
-      _gpsStatus = GpsStatus.LOGGING;
-      positionListeners.forEach((PositionListener pl) {
-        pl.setStatus(_gpsStatus);
-      });
-
-      return logId;
-    } catch (e) {
-      GpLogger().e("Error creating log", e);
-      return null;
-    }
-  }
-
-  /// Checks if the application is currently logging.
-  bool get isLogging => _isLogging;
-
-  /// Get the list of current log points.
-  List<LatLng> get currentLogPoints => _currentLogPoints;
-
-  /// Stop logging to database.
-  ///
-  /// This also properly closes the recorded log.
-  Future<void> stopLogging() async {
-    _isLogging = false;
-    _currentLogPoints.clear();
-
-    await _loggingHandler?.stopLogging(_currentLogId);
-
-    if (_lastGpsStatusBeforeLogging == null) _lastGpsStatusBeforeLogging = GpsStatus.ON_NO_FIX;
-    _gpsStatus = _lastGpsStatusBeforeLogging;
-    _lastGpsStatusBeforeLogging = null;
-    positionListeners.forEach((PositionListener pl) {
-      pl.setStatus(_gpsStatus);
-    });
-  }
 }
 
 /// Geocoding widget that makes use of the [MainEventHandler] to move to the
 /// chosen location.
 class GeocodingPage extends StatefulWidget {
-  MainEventHandler _eventsHandler;
-
-  GeocodingPage(this._eventsHandler);
-
   @override
   State<StatefulWidget> createState() => GeocodingPageState();
 }
@@ -282,7 +194,8 @@ class GeocodingPageState extends State<GeocodingPage> {
         leading: IconButton(
           icon: Icon(Icons.navigation),
           onPressed: () {
-            widget._eventsHandler.setMapCenter(LatLng(address.coordinates.latitude, address.coordinates.longitude));
+            MapState mapState = Provider.of<MapState>(context);
+            mapState.center = Coordinate(address.coordinates.longitude, address.coordinates.latitude);
             Navigator.pop(context);
           },
         ),

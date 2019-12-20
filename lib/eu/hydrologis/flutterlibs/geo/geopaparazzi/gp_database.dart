@@ -31,45 +31,6 @@ import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/images.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:provider/provider.dart';
 
-class SmashLoggingHandler extends GpsLoggingHandler {
-  @override
-  void addLogPoint(int logId, double longitude, double latitude, double altitude, int timestamp) {
-    GPProject().getDatabase().then((db) {
-      LogDataPoint ldp = LogDataPoint();
-      ldp.logid = logId;
-      ldp.lon = longitude;
-      ldp.lat = latitude;
-      ldp.altim = altitude;
-      ldp.ts = timestamp;
-      db.addGpsLogPoint(logId, ldp);
-    });
-  }
-
-  @override
-  Future<int> addGpsLog(String logName) async {
-    var db = await GPProject().getDatabase();
-    Log l = new Log();
-    l.text = logName;
-    l.startTime = DateTime.now().millisecondsSinceEpoch;
-    l.endTime = 0;
-    l.isDirty = 0;
-    l.lengthm = 0;
-    LogProperty lp = new LogProperty();
-    lp.isVisible = 1;
-    lp.color = "#FF0000";
-    lp.width = 3;
-    var logId = await db.addGpsLog(l, lp);
-    return logId;
-  }
-
-  @override
-  Future<void> stopLogging(int logId) async {
-    int endTs = DateTime.now().millisecondsSinceEpoch;
-    var db = await GPProject().getDatabase();
-    await db.updateGpsLogEndts(logId, endTs);
-  }
-}
-
 const int MAXBLOBSIZE = 1900000;
 
 class GeopaparazziProjectDb extends SqliteDb {
@@ -734,14 +695,14 @@ class GeopaparazziProjectDb extends SqliteDb {
 }
 
 class DataLoaderUtilities {
-  static Future<Note> addNote(BuildContext context, bool doInGps, MapController mapController, MainEventHandler mainEventsHandler,
+  static Future<Note> addNote(BuildContext context, bool doInGps, MapController mapController,
       {String form, String iconName, String color, String text}) async {
     int ts = DateTime.now().millisecondsSinceEpoch;
     Position pos;
     double lon;
     double lat;
     if (doInGps) {
-      pos = GpsHandler().lastPosition;
+      pos = Provider.of<GpsState>(context).lastPosition;
     } else {
       var center = mapController.center;
       lon = center.longitude;
@@ -784,8 +745,7 @@ class DataLoaderUtilities {
   /// If [noteId] is specified, the image is added to a specific note.
   static Future<void> addImage(
     BuildContext context,
-    dynamic position,
-    MainEventHandler mainEventsHandler, {
+    dynamic position, {
     int noteId,
   }) async {
     DbImage dbImage = DbImage()
@@ -816,7 +776,8 @@ class DataLoaderUtilities {
                     dbImage.text = "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
                     var imageId = await ImageWidgetUtilities.saveImageToSmashDb(context, imagePath, dbImage);
                     if (imageId != null) {
-                      mainEventsHandler?.reloadProjectFunction();
+                      ProjectState projectState = Provider.of<ProjectState>(context);
+                      if (projectState != null) projectState.reloadProject(context);
                       File file = File(imagePath);
                       if (file.existsSync()) {
                         await file.delete();
@@ -830,8 +791,7 @@ class DataLoaderUtilities {
                 })));
   }
 
-  static void loadNotesMarkers(
-      GeopaparazziProjectDb db, List<Marker> tmp, MainEventHandler mainEventHandler, Function _showSnackbar, Function _hideSnackbar) async {
+  static void loadNotesMarkers(GeopaparazziProjectDb db, List<Marker> tmp, ProjectState projectState, BuildContext context) async {
     List<Note> notesList = await db.getNotes();
     notesList.forEach((note) {
       NoteExt noteExt = note.noteExt;
@@ -846,7 +806,7 @@ class DataLoaderUtilities {
         builder: (ctx) => new Container(
             child: GestureDetector(
           onTap: () {
-            _showSnackbar(SnackBar(
+            Scaffold.of(context).showSnackBar(SnackBar(
               backgroundColor: SmashColors.snackBarColor,
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -920,7 +880,7 @@ class DataLoaderUtilities {
                             var label =
                                 "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
                             ShareHandler.shareText(label);
-                            _hideSnackbar();
+                            Scaffold.of(context).hideCurrentSnackBar();
                           },
                         ),
                         IconButton(
@@ -944,16 +904,16 @@ class DataLoaderUtilities {
                                   ctx,
                                   MaterialPageRoute(
                                       builder: (context) => MasterDetailPage(
-                                          sectionMap,
-                                          SmashUI.titleText(sectionName, color: SmashColors.mainBackground, bold: true),
-                                          sectionName,
-                                          p,
-                                          note.id,
-                                          mainEventHandler)));
+                                            sectionMap,
+                                            SmashUI.titleText(sectionName, color: SmashColors.mainBackground, bold: true),
+                                            sectionName,
+                                            p,
+                                            note.id,
+                                          )));
                             } else {
-                              Navigator.push(ctx, MaterialPageRoute(builder: (context) => NotePropertiesWidget(mainEventHandler, note)));
+                              Navigator.push(ctx, MaterialPageRoute(builder: (context) => NotePropertiesWidget(note)));
                             }
-                            _hideSnackbar();
+                            Scaffold.of(context).hideCurrentSnackBar();
                           },
                         ),
                         IconButton(
@@ -966,9 +926,9 @@ class DataLoaderUtilities {
                             var doRemove = await showConfirmDialog(ctx, "Remove Note", "Are you sure you want to remove note ${note.id}?");
                             if (doRemove) {
                               await db.deleteNote(note.id);
-                              await mainEventHandler.reloadProjectFunction();
+                              await projectState.reloadProject(context); // TODO check await
                             }
-                            _hideSnackbar();
+                            Scaffold.of(context).hideCurrentSnackBar();
                           },
                         ),
                         Spacer(flex: 1),
@@ -979,7 +939,7 @@ class DataLoaderUtilities {
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
-                            _hideSnackbar();
+                            Scaffold.of(context).hideCurrentSnackBar();
                           },
                         ),
                       ],
@@ -1000,8 +960,7 @@ class DataLoaderUtilities {
     });
   }
 
-  static void loadImageMarkers(
-      GeopaparazziProjectDb db, List<Marker> tmp, MainEventHandler mainEventHandler, Function _showSnackbar, Function _hideSnackbar) async {
+  static void loadImageMarkers(GeopaparazziProjectDb db, List<Marker> tmp, ProjectState projectState, BuildContext context) async {
     // IMAGES
     var imagesList = await db.getImages();
     imagesList.forEach((image) async {
@@ -1018,7 +977,7 @@ class DataLoaderUtilities {
             child: GestureDetector(
           onTap: () async {
             var thumb = await db.getThumbnail(image.imageDataId);
-            _showSnackbar(SnackBar(
+            Scaffold.of(context).showSnackBar(SnackBar(
               backgroundColor: SmashColors.snackBarColor,
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -1044,7 +1003,7 @@ class DataLoaderUtilities {
                       ),
                       onTap: () {
                         Navigator.push(ctx, MaterialPageRoute(builder: (context) => SmashImageZoomWidget(image)));
-                        _hideSnackbar();
+                        Scaffold.of(context).hideCurrentSnackBar();
                       },
                     ),
                   ),
@@ -1062,7 +1021,7 @@ class DataLoaderUtilities {
                           onPressed: () async {
                             var uint8list = await db.getImageDataBytes(image.imageDataId);
                             ShareHandler.shareImage(label, uint8list);
-                            _hideSnackbar();
+                            Scaffold.of(context).hideCurrentSnackBar();
                           },
                         ),
                         IconButton(
@@ -1075,9 +1034,9 @@ class DataLoaderUtilities {
                             var doRemove = await showConfirmDialog(ctx, "Remove Image", "Are you sure you want to remove image ${image.id}?");
                             if (doRemove) {
                               await db.deleteImage(image.id);
-                              await mainEventHandler.reloadProjectFunction();
+                              await projectState.reloadProject(context); // TODO check await
                             }
-                            _hideSnackbar();
+                            Scaffold.of(context).hideCurrentSnackBar();
                           },
                         ),
                         Spacer(flex: 1),
@@ -1088,7 +1047,7 @@ class DataLoaderUtilities {
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
-                            _hideSnackbar();
+                            Scaffold.of(context).hideCurrentSnackBar();
                           },
                         ),
                       ],

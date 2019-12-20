@@ -46,23 +46,16 @@ class DashboardWidget extends StatefulWidget {
   _DashboardWidgetState createState() => new _DashboardWidgetState();
 }
 
-class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingObserver implements PositionListener {
+class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingObserver {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  MainEventHandler _mainEventsHandler;
-
-  _DashboardWidgetState() {
-    _mainEventsHandler = MainEventHandler(reloadLayers, reloadProject, moveTo);
-  }
 
   List<Marker> _geopapMarkers;
   PolylineLayerOptions _geopapLogs;
   Polyline _currentGeopapLog = Polyline(points: [], strokeWidth: 3, color: ColorExt("red"));
-  Position _lastPosition;
 
   double _initLon;
   double _initLat;
   double _initZoom;
-  double _currentZoom;
 
   MapController _mapController;
 
@@ -82,13 +75,14 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
     super.initState();
     MapState mapState = Provider.of<MapState>(context, listen: false);
     GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
 
     _initLon = mapState.center.x;
     _initLat = mapState.center.y;
     _initZoom = mapState.zoom;
     if (_initZoom == 0) _initZoom = 1;
-    _currentZoom = _initZoom;
     _mapController = MapController();
+    mapState.mapController = _mapController;
 
     bool doNoteInGps = GpPreferences().getBooleanSync(KEY_DO_NOTE_IN_GPS, true);
     gpsState.insertInGpsQuiet = doNoteInGps;
@@ -97,24 +91,9 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
     mapState.centerOnGpsQuiet = centerOnGps;
     // check rotate on heading
     bool rotateOnHeading = GpPreferences().getRotateOnHeading();
-    mapState.rotateOnHeading = rotateOnHeading;
+    mapState.rotateOnHeadingQuiet = rotateOnHeading;
 
     ScreenUtilities.keepScreenOn(GpPreferences().getKeepScreenOn());
-
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      if (_currentZoom != _mapController.zoom) {
-        setState(() {
-          _currentZoom = _mapController.zoom;
-        });
-      }
-    });
-
-    _mainEventsHandler.addMapCenterListener(() {
-      var newMapCenter = _mainEventsHandler.getMapCenter();
-      if (newMapCenter != null) {
-        _mapController.move(newMapCenter, _mapController.zoom);
-      }
-    });
 
     _iconSize = GpPreferences().getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
 
@@ -122,9 +101,6 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
       var directory = await Workspace.getConfigurationFolder();
       bool init = await GpLogger().init(directory.path); // init logger
       if (init) GpLogger().d("Db logger initialized.");
-
-      // start gps listening
-      GpsHandler().addPositionListener(this);
 
       // set initial status
       bool gpsIsOn = await GpsHandler().isGpsOn();
@@ -134,7 +110,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
         }
       }
 
-      await _loadCurrentProject();
+      await projectState.reloadProject(context);
       await reloadLayers();
     });
 
@@ -151,6 +127,18 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
+    return consumeBuild(context);
+//    return Consumer<ProjectState>(builder: (context, projectState, child) {
+//      return consumeBuild(context);
+//    });
+  }
+
+  WillPopScope consumeBuild(BuildContext context) {
+    print("BUIIIIIILD!!!");
+
+    var mapState = Provider.of<MapState>(context);
+    mapState.mapController = _mapController;
+
     _media = MediaQuery.of(context).size;
 
     var layers = <LayerOptions>[];
@@ -160,8 +148,8 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
     if (_geopapMarkers != null && _geopapMarkers.length > 0) {
       var markerCluster = MarkerClusterLayerOptions(
         maxClusterRadius: 80,
-//        height: 40,
-//        width: 40,
+        //        height: 40,
+        //        width: 40,
         fitBoundsOptions: FitBoundsOptions(
           padding: EdgeInsets.all(50),
         ),
@@ -180,15 +168,16 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
       layers.add(markerCluster);
     }
 
-    if (GpsHandler().currentLogPoints.length > 0) {
+    var gpsState = Provider.of<GpsState>(context);
+    if (gpsState.currentLogPoints.length > 0) {
       _currentGeopapLog.points.clear();
-      _currentGeopapLog.points.addAll(GpsHandler().currentLogPoints);
+      _currentGeopapLog.points.addAll(gpsState.currentLogPoints);
       layers.add(PolylineLayerOptions(
         polylines: [_currentGeopapLog],
       ));
     }
 
-    if (_lastPosition != null) {
+    if (gpsState.lastPosition != null) {
       layers.add(
         MarkerLayerOptions(
           markers: [
@@ -196,7 +185,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
               width: 80.0,
               height: 80.0,
               anchorPos: AnchorPos.align(AnchorAlign.center),
-              point: new LatLng(_lastPosition.latitude, _lastPosition.longitude),
+              point: new LatLng(gpsState.lastPosition.latitude, gpsState.lastPosition.longitude),
               builder: (ctx) => new Container(
                 child: Icon(
                   Icons.my_location,
@@ -232,7 +221,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
     var bar = new AppBar(
       title: Padding(
         padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-        child: Image.asset("assets/smash_text.png", fit: BoxFit.cover),
+        child: Image.asset("assets/smash_text.png", fit: BoxFit.fitHeight),
       ),
       actions: <Widget>[
         IconButton(
@@ -245,7 +234,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                     color: SmashColors.mainDecorations,
                   ),
                   onPressed: () async {
-                    ShareHandler.shareProject();
+                    ShareHandler.shareProject(context);
                   },
                 )
               ]);
@@ -263,16 +252,18 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
           backgroundColor: SmashColors.mainBackground,
           body: FlutterMap(
             options: new MapOptions(
-              center: new LatLng(_initLat, _initLon),
-              zoom: _initZoom,
-              minZoom: MINZOOM,
-              maxZoom: MAXZOOM,
-              plugins: [
-                MarkerClusterPlugin(),
-                ScaleLayerPlugin(),
-                CenterCrossPlugin(),
-              ],
-            ),
+                center: new LatLng(_initLat, _initLon),
+                zoom: _initZoom,
+                minZoom: MINZOOM,
+                maxZoom: MAXZOOM,
+                plugins: [
+                  MarkerClusterPlugin(),
+                  ScaleLayerPlugin(),
+                  CenterCrossPlugin(),
+                ],
+                onPositionChanged: (newPosition, hasGesture) {
+                  mapState.setLastPosition(Coordinate(newPosition.center.longitude, newPosition.center.latitude), newPosition.zoom);
+                }),
             layers: layers,
             mapController: _mapController,
           ),
@@ -299,10 +290,10 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                           List<String> types = ["note", "image"];
                           var selectedType = await showComboDialog(context, titleWidget, types);
                           if (selectedType == types[0]) {
-                            Note note = await DataLoaderUtilities.addNote(context, doNoteInGps, _mapController, _mainEventsHandler);
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => NotePropertiesWidget(_mainEventsHandler, note)));
+                            Note note = await DataLoaderUtilities.addNote(context, doNoteInGps, _mapController);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => NotePropertiesWidget(note)));
                           } else if (selectedType == types[1]) {
-                            DataLoaderUtilities.addImage(context, doNoteInGps ? GpsHandler().lastPosition : _mapController.center, _mainEventsHandler);
+                            DataLoaderUtilities.addImage(context, doNoteInGps ? gpsState.lastPosition : _mapController.center);
                           }
                         },
                         icon: Icon(
@@ -312,7 +303,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                         iconSize: _iconSize,
                       ),
                       onLongPress: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => NotesListWidget(_mainEventsHandler, true)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => NotesListWidget(true)));
                       },
                     ),
                     _simpleNotesCount),
@@ -341,13 +332,13 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                             var iconName = iconNames[selectedIndex];
                             var sectionMap = allSectionsMap[selectedSection];
                             var jsonString = jsonEncode(sectionMap);
-                            Note note = await DataLoaderUtilities.addNote(context, doNoteInGps, _mapController, _mainEventsHandler,
+                            Note note = await DataLoaderUtilities.addNote(context, doNoteInGps, _mapController,
                                 text: selectedSection, form: jsonString, iconName: iconName, color: ColorExt.asHex(SmashColors.mainDecorationsDark));
 
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context) {
-                                return MasterDetailPage(sectionMap, appbarWidget, selectedSection,
-                                    doNoteInGps ? GpsHandler().lastPosition : _mapController.center, note.id, _mainEventsHandler);
+                                return MasterDetailPage(
+                                    sectionMap, appbarWidget, selectedSection, doNoteInGps ? gpsState.lastPosition : _mapController.center, note.id);
                               },
                             ));
                           }
@@ -359,7 +350,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                         iconSize: _iconSize,
                       ),
                       onLongPress: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => NotesListWidget(_mainEventsHandler, false)));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => NotesListWidget(false)));
                       },
                     ),
                     _formNotesCount),
@@ -374,29 +365,31 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                   ),
                   iconSize: _iconSize,
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => LayersPage(reloadLayers, moveTo)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LayersPage(reloadLayers)));
                   },
                   color: SmashColors.mainBackground,
                   tooltip: 'Open layers list',
                 ),
-                DashboardUtils.makeToolbarZoomBadge(
-                  IconButton(
-                    onPressed: () {
-                      setState(() {
-                        var zoom = _mapController.zoom + 1;
-                        if (zoom > MAXZOOM) zoom = MAXZOOM;
-                        _mapController.move(_mapController.center, zoom);
-                      });
-                    },
-                    tooltip: 'Zoom in',
-                    icon: Icon(
-                      Icons.zoom_in,
-                      color: SmashColors.mainBackground,
+                Consumer<MapState>(builder: (context, mapState, child) {
+                  return DashboardUtils.makeToolbarZoomBadge(
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          var zoom = _mapController.zoom + 1;
+                          if (zoom > MAXZOOM) zoom = MAXZOOM;
+                          _mapController.move(_mapController.center, zoom);
+                        });
+                      },
+                      tooltip: 'Zoom in',
+                      icon: Icon(
+                        Icons.zoom_in,
+                        color: SmashColors.mainBackground,
+                      ),
+                      iconSize: _iconSize,
                     ),
-                    iconSize: _iconSize,
-                  ),
-                  _currentZoom.toInt(),
-                ),
+                    mapState.zoom.toInt(),
+                  );
+                }),
                 IconButton(
                   onPressed: () {
                     setState(() {
@@ -459,7 +452,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
         color: SmashColors.mainBackground,
       ),
       new Container(
-        child: new Column(children: DashboardUtils.getDrawerTilesList(context, _mapController, _mainEventsHandler)),
+        child: new Column(children: DashboardUtils.getDrawerTilesList(context, _mapController)),
       ),
     ];
   }
@@ -472,7 +465,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
         color: SmashColors.mainBackground,
       ),
       new Container(
-        child: new Column(children: DashboardUtils.getEndDrawerListTiles(context, _mapController, _mainEventsHandler)),
+        child: new Column(children: DashboardUtils.getEndDrawerListTiles(context, _mapController)),
       ),
     ];
   }
@@ -481,17 +474,10 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
   void dispose() {
     updateCenterPosition();
     WidgetsBinding.instance.removeObserver(this);
-    GpsHandler().removePositionListener(this);
 
     ProjectState projectState = Provider.of<ProjectState>(context);
-    if (projectState != null) {
-      _savePosition().then((v) {
-        projectState.close();
-        super.dispose();
-      });
-    } else {
-      super.dispose();
-    }
+    projectState?.close();
+    super.dispose();
   }
 
   @override
@@ -515,11 +501,6 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
     }
   }
 
-  Future<void> reloadProject() async {
-    await _loadCurrentProject();
-    setState(() {});
-  }
-
   Future<void> reloadLayers() async {
     var activeLayersInfos = LayerManager().getActiveLayers();
     _activeLayers = [];
@@ -537,75 +518,10 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
     });
   }
 
-  Future<void> moveTo(dynamic position) async {
-    if (position is LatLng) {
-      _mapController.move(position, _mapController.zoom);
-    } else if (position is LatLngBounds) {
-      _mapController.fitBounds(position);
-    }
-  }
-
-  Future<void> _savePosition() async {
-    // TODO check utility
-//    await GpPreferences().setLastPosition(GPProject().lastCenterLon, GPProject().lastCenterLat, GPProject().lastCenterZoom);
-  }
-
   Future doExit(BuildContext context) async {
     ProjectState projectState = Provider.of<ProjectState>(context);
-    if (projectState != null) {
-      await projectState.close();
-    }
+    await projectState?.close();
     await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
-  }
-
-  @override
-  void onPositionUpdate(Position position) {
-    MapState mapState = Provider.of<MapState>(context);
-    if (mapState.centerOnGps) {
-      _mapController.move(LatLng(position.latitude, position.longitude), _mapController.zoom);
-      _lastPosition = position;
-    }
-    if (mapState.rotateOnHeading) {
-      var heading = position.heading;
-      if (heading < 0) {
-        heading = 360 + heading;
-      }
-      _mapController.rotate(-heading);
-    } else {
-      _mapController.rotate(0);
-    }
-
-    //
-    if (mounted) {
-      setState(() {
-        _lastPosition = position;
-      });
-    }
-  }
-
-  @override
-  void setStatus(GpsStatus currentStatus) {
-    GpsState gpsState = Provider.of<GpsState>(context);
-    gpsState.status = currentStatus;
-  }
-
-  _loadCurrentProject() async {
-    ProjectState projectState = Provider.of<ProjectState>(context);
-    var db = projectState.projectDb;
-    if (db == null) return;
-    _projectName = basenameWithoutExtension(db.path);
-    _projectDirName = dirname(db.path);
-    _simpleNotesCount = await db.getSimpleNotesCount(false);
-    var imageNotescount = await db.getImagesCount(false);
-    _simpleNotesCount += imageNotescount;
-    _logsCount = await db.getGpsLogCount(false);
-    _formNotesCount = await db.getFormNotesCount(false);
-
-    List<Marker> tmp = [];
-    DataLoaderUtilities.loadImageMarkers(db, tmp, _mainEventsHandler, _showSnackbar, _hideSnackbar);
-    DataLoaderUtilities.loadNotesMarkers(db, tmp, _mainEventsHandler, _showSnackbar, _hideSnackbar);
-    _geopapMarkers = tmp;
-    _geopapLogs = await DataLoaderUtilities.loadLogLinesLayer(db);
   }
 }
 
@@ -629,7 +545,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
       return GestureDetector(
         onLongPress: () {
           var isLandscape = ScreenUtilities.isLandscape(context);
-          var pos = GpsHandler().lastPosition;
+          var pos = gpsState.lastPosition;
 
           if (isLandscape) {
             Scaffold.of(context).showSnackBar(SnackBar(
@@ -719,7 +635,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
 
 //          iconSize: widget._iconSize,
             onPressed: () {
-              var pos = GpsHandler().lastPosition;
+              var pos = gpsState.lastPosition;
               MapState mapState = Provider.of<MapState>(context);
               if (pos != null) {
                 var newCenter = Coordinate(pos.longitude, pos.latitude);
@@ -917,22 +833,23 @@ class _LoggingButtonState extends State<LoggingButton> {
             icon: DashboardUtils.getLoggingIcon(gpsState.status),
             iconSize: widget._iconSize,
             onPressed: () {
-              GpsLoggingState gpsLoggingState = Provider.of<GpsLoggingState>(context);
+              GpsState gpsLoggingState = Provider.of<GpsState>(context);
               _toggleLoggingFunction(context, gpsLoggingState);
             }),
         onLongPress: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LogListWidget(widget._eventHandler)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LogListWidget()));
         },
       );
     });
   }
 
-  _toggleLoggingFunction(BuildContext context, GpsLoggingState gpsLoggingState) async {
+  _toggleLoggingFunction(BuildContext context, GpsState gpsLoggingState) async {
     if (gpsLoggingState.isLogging) {
       var stopLogging = await showConfirmDialog(context, "Stop Logging?", "Stop logging and close the current GPS log?");
       if (stopLogging) {
         await gpsLoggingState.stopLogging();
-        widget._eventHandler.reloadProjectFunction();
+        ProjectState projectState = Provider.of<ProjectState>(context);
+        projectState.reloadProject(context);
       }
     } else {
       if (GpsHandler().hasFix()) {
@@ -949,7 +866,7 @@ class _LoggingButtonState extends State<LoggingButton> {
 
         if (userString != null) {
           if (userString.trim().length == 0) userString = logName;
-          int logId = await GpsHandler().startLogging(logName);
+          int logId = await gpsLoggingState.startLogging(logName);
           if (logId == null) {
             // TODO show error
           }
@@ -958,6 +875,5 @@ class _LoggingButtonState extends State<LoggingButton> {
         showOperationNeedsGps(context);
       }
     }
-    setState(() {});
   }
 }

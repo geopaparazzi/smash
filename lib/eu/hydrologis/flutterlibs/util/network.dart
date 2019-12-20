@@ -25,8 +25,7 @@ class DownloadCircularProgressWidget extends StatefulWidget {
   }
 }
 
-class DownloadCircularProgressWidgetState
-    extends State<DownloadCircularProgressWidget> {
+class DownloadCircularProgressWidgetState extends State<DownloadCircularProgressWidget> {
   bool _downloading = false;
   String _progressString = "";
 
@@ -41,8 +40,7 @@ class DownloadCircularProgressWidgetState
     Dio dio = Dio();
 
     try {
-      await dio.download(widget._downloadUrl, widget._destinationFilePath,
-          onReceiveProgress: (rec, total) {
+      await dio.download(widget._downloadUrl, widget._destinationFilePath, onReceiveProgress: (rec, total) {
         setState(() {
           _downloading = true;
           _progressString = ((rec / total) * 100).toStringAsFixed(0) + "%";
@@ -55,9 +53,7 @@ class DownloadCircularProgressWidgetState
         LayerManager().addLayer(ts);
       }
     } catch (e) {
-      GpLogger().err(
-          "An error occurred while downloading from: ${widget._downloadUrl}",
-          e);
+      GpLogger().err("An error occurred while downloading from: ${widget._downloadUrl}", e);
     }
 
     setState(() {
@@ -95,10 +91,8 @@ class DownloadListTileProgressWidget extends StatefulWidget {
   final String _downloadUrl;
   final String _destinationFilePath;
   final String _name;
-  MainEventHandler _mainEventsHandler;
 
-  DownloadListTileProgressWidget(this._downloadUrl, this._destinationFilePath,
-      this._name, this._mainEventsHandler);
+  DownloadListTileProgressWidget(this._downloadUrl, this._destinationFilePath, this._name);
 
   @override
   State<StatefulWidget> createState() {
@@ -106,8 +100,7 @@ class DownloadListTileProgressWidget extends StatefulWidget {
   }
 }
 
-class DownloadListTileProgressWidgetState
-    extends State<DownloadListTileProgressWidget> {
+class DownloadListTileProgressWidgetState extends State<DownloadListTileProgressWidget> {
   bool _downloading = false;
   bool _downloadFinished = false;
   String _progressString = "";
@@ -128,8 +121,7 @@ class DownloadListTileProgressWidgetState
     }
 
     try {
-      await dio.download(widget._downloadUrl, widget._destinationFilePath,
-          onReceiveProgress: (rec, total) {
+      await dio.download(widget._downloadUrl, widget._destinationFilePath, onReceiveProgress: (rec, total) {
         setState(() {
           _downloading = true;
           _progressString = ((rec / total) * 100).toStringAsFixed(0) + "%";
@@ -141,7 +133,8 @@ class DownloadListTileProgressWidgetState
 
         var tileSource = TileSource.Mapsforge(widget._destinationFilePath);
         LayerManager().addLayer(tileSource);
-        widget._mainEventsHandler.reloadLayersFunction();
+        // TODO fix the below
+//        widget._mainEventsHandler.reloadLayersFunction();
       }
     } catch (e) {
       print(e);
@@ -150,15 +143,13 @@ class DownloadListTileProgressWidgetState
     setState(() {
       _downloading = false;
       _downloadFinished = true;
-      _progressString =
-          cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
+      _progressString = cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
     });
   }
 
   Future<void> buildCache(String mapsforgePath) async {
     setState(() {
-      _progressString =
-          "Building base cache for performance increase (might take some time...";
+      _progressString = "Building base cache for performance increase (might take some time...";
     });
     await fillBaseCache(File(mapsforgePath));
   }
@@ -203,12 +194,10 @@ class DownloadListTileProgressWidgetState
       },
       onTap: () async {
         if (_downloading) {
-          showWarningDialog(context,
-              "This file is already in the process of being downloaded.");
+          showWarningDialog(context, "This file is already in the process of being downloaded.");
           return;
         }
-        bool doDownload = await showConfirmDialog(context, "Download",
-            "Download file ${name} to the device? This can take some time.");
+        bool doDownload = await showConfirmDialog(context, "Download", "Download file ${name} to the device? This can take some time.");
         if (doDownload) {
           await downloadFile();
         }
@@ -220,9 +209,8 @@ class DownloadListTileProgressWidgetState
 /// The notes properties page.
 class MapsDownloadWidget extends StatefulWidget {
   Directory _mapsFolder;
-  MainEventHandler _mainEventsHandler;
 
-  MapsDownloadWidget(this._mapsFolder, this._mainEventsHandler);
+  MapsDownloadWidget(this._mapsFolder);
 
   @override
   State<StatefulWidget> createState() {
@@ -260,8 +248,7 @@ class MapsDownloadWidgetState extends State<MapsDownloadWidget> {
                 labelText: "Search map by name",
                 hintText: "Search map by name",
                 prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(25.0)))),
           ),
         ),
         Expanded(
@@ -271,11 +258,7 @@ class MapsDownloadWidgetState extends State<MapsDownloadWidget> {
             itemBuilder: (context, index) {
               var item = _visualizeList[index];
 
-              return DownloadListTileProgressWidget(
-                  item[1],
-                  FileUtilities.joinPaths(widget._mapsFolder.path, item[0]),
-                  item[0],
-                  widget._mainEventsHandler);
+              return DownloadListTileProgressWidget(item[1], FileUtilities.joinPaths(widget._mapsFolder.path, item[0]), item[0]);
             },
           ),
         ),

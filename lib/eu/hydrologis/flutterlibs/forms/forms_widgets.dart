@@ -137,9 +137,8 @@ class MasterDetailPage extends StatefulWidget {
   dynamic _position;
   int _noteId;
   Map<String, dynamic> sectionMap;
-  MainEventHandler _mainEventsHandler;
 
-  MasterDetailPage(this.sectionMap, this.title, this.sectionName, this._position, this._noteId, this._mainEventsHandler);
+  MasterDetailPage(this.sectionMap, this.title, this.sectionName, this._position, this._noteId);
 
   @override
   _MasterDetailPageState createState() => _MasterDetailPageState();
@@ -208,7 +207,7 @@ class _MasterDetailPageState extends State<MasterDetailPage> {
           await db.updateNote(note);
         }
 
-        widget._mainEventsHandler.reloadProjectFunction();
+        await projectState.reloadProject(context);
         return true;
       },
       child: Scaffold(
@@ -913,7 +912,7 @@ class PicturesWidgetState extends State<PicturesWidget> {
                           if (imagePath != null) {
                             var imageName = FileUtilities.nameFromFile(imagePath, true);
                             dbImage.text = "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
-                            imageId = await ImageWidgetUtilities.saveImageToSmashDb(imagePath, dbImage);
+                            imageId = await ImageWidgetUtilities.saveImageToSmashDb(context, imagePath, dbImage);
                             if (imageId != null) {
                               imageSplit.add(imageId.toString());
                               var value = imageSplit.join(IMAGE_ID_SEPARATOR);

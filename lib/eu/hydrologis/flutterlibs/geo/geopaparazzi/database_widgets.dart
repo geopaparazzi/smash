@@ -3,12 +3,13 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
+import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
-import '../../../smash/core/models.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'project_tables.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
@@ -74,9 +75,7 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
 
 /// The log list widget.
 class LogListWidget extends StatefulWidget {
-  final MainEventHandler _eventHandler;
-
-  LogListWidget(this._eventHandler);
+  LogListWidget();
 
   @override
   State<StatefulWidget> createState() {
@@ -130,9 +129,7 @@ class LogListWidgetState extends State<LogListWidget> {
             ),
           ],
         ),
-        body:
-//         Consumer<MapState>(builder: (context, mapState, child) {
-            FutureBuilder<void>(
+        body: FutureBuilder<void>(
           future: loadLogs(db),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
@@ -146,7 +143,7 @@ class LogListWidgetState extends State<LogListWidget> {
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) async {
                         await db.deleteGpslog(logItem.id);
-                        widget._eventHandler.reloadProjectFunction();
+                        await projectState.reloadProject(context);
                       },
                       key: Key("${logItem.id}"),
                       background: Container(
@@ -174,7 +171,7 @@ class LogListWidgetState extends State<LogListWidget> {
                                 onChanged: (isVisible) async {
                                   logItem.isVisible = isVisible ? 1 : 0;
                                   await db.updateGpsLogVisibility(isVisible, logItem.id);
-                                  widget._eventHandler.reloadProjectFunction();
+                                  await projectState.reloadProject(context);
                                   setState(() {});
                                 }),
                           ],
@@ -184,8 +181,9 @@ class LogListWidgetState extends State<LogListWidget> {
                         subtitle: Text('${_getTime(logItem)} ${_getLength(logItem)}'),
                         onTap: () => _navigateToLogProperties(context, logItem),
                         onLongPress: () async {
+                          MapState mapState = Provider.of<MapState>(context);
                           LatLng position = await db.getLogStartPosition(logItem.id);
-                          widget._eventHandler.moveToFunction(position);
+                          mapState.center = Coordinate(position.longitude, position.longitude);
                           Navigator.of(context).pop();
                         },
                       ),
@@ -248,16 +246,15 @@ class LogListWidgetState extends State<LogListWidget> {
   }
 
   _navigateToLogProperties(BuildContext context, Log4ListWidget logItem) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => LogPropertiesWidget(widget._eventHandler, logItem)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => LogPropertiesWidget(logItem)));
   }
 }
 
 /// The log properties page.
 class LogPropertiesWidget extends StatefulWidget {
   var _logItem;
-  final MainEventHandler _eventHandler;
 
-  LogPropertiesWidget(this._eventHandler, this._logItem);
+  LogPropertiesWidget(this._logItem);
 
   @override
   State<StatefulWidget> createState() {
@@ -296,7 +293,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 
             ProjectState projectState = Provider.of<ProjectState>(context);
             await projectState.projectDb.updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
-            widget._eventHandler.reloadProjectFunction();
+            projectState.reloadProject(context);
           }
           return true;
         },
@@ -501,7 +498,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 
             ProjectState projectState = Provider.of<ProjectState>(context);
             await projectState.projectDb.updateNote(_note);
-            widget._eventHandler.reloadProjectFunction();
+            projectState.reloadProject(context);
           }
           return true;
         },
@@ -689,9 +686,8 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 /// The notes properties page.
 class NotePropertiesWidget extends StatefulWidget {
   var _note;
-  MainEventHandler _eventHandler;
 
-  NotePropertiesWidget(this._eventHandler, this._note);
+  NotePropertiesWidget(this._note);
 
   @override
   State<StatefulWidget> createState() {
@@ -701,10 +697,9 @@ class NotePropertiesWidget extends StatefulWidget {
 
 /// The notes list widget.
 class NotesListWidget extends StatefulWidget {
-  final MainEventHandler _eventHandler;
   final bool _doSimpleNotes;
 
-  NotesListWidget(this._eventHandler, this._doSimpleNotes);
+  NotesListWidget(this._doSimpleNotes);
 
   @override
   State<StatefulWidget> createState() {
@@ -783,7 +778,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
                         direction: DismissDirection.endToStart,
                         onDismissed: (direction) async {
                           await db.deleteNote(id);
-                          widget._eventHandler.reloadProjectFunction();
+                          projectState.reloadProject(context);
                         },
                         key: Key("${id}"),
                         background: Container(
@@ -828,7 +823,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
                           },
                           onLongPress: () {
                             LatLng position = LatLng(lat, lon);
-                            widget._eventHandler.moveToFunction(position);
+                            Provider.of<MapState>(context).center = Coordinate(position.longitude, position.latitude);
                             Navigator.of(context).pop();
                           },
                         ),
@@ -867,6 +862,6 @@ class NotesListWidgetState extends State<NotesListWidget> {
   }
 
   _navigateToNoteProperties(BuildContext context, Note note) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => NotePropertiesWidget(widget._eventHandler, note)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => NotePropertiesWidget(note)));
   }
 }

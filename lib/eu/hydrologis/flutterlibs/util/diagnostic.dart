@@ -4,6 +4,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
+import 'package:provider/provider.dart';
 
 bool DIAGNOSTIC_IS_ENABLED = true;
 
@@ -43,7 +44,8 @@ class DiagnosticWidget extends StatefulWidget {
 class DiagnosticWidgetState extends State<DiagnosticWidget> {
   List<List<Widget>> _diagnosticsList = [];
 
-  Future<bool> runDiagnostics() async {
+  Future<bool> runDiagnostics(BuildContext context) async {
+    ProjectState projectState = Provider.of<ProjectState>(context);
     _diagnosticsList.clear();
 
     try {
@@ -94,15 +96,15 @@ class DiagnosticWidgetState extends State<DiagnosticWidget> {
       ]);
     }
 
-    if (GPProject().projectPath != null) {
-      String project = GPProject().projectPath;
+    if (projectState.projectPath != null) {
+      String project = projectState.projectPath;
       _diagnosticsList.add([
         Text("Smash Project"),
         Text(project),
       ]);
 
       try {
-        var db = await GPProject().getDatabase();
+        var db = projectState.projectDb;
         String value = "Is ${db.isOpen() ? '' : 'NOT'} open in path ${db.path}";
         _diagnosticsList.add([
           Text("Smash Database Status"),
@@ -174,7 +176,7 @@ class DiagnosticWidgetState extends State<DiagnosticWidget> {
               Text('${gpsHandler.hasFix()}'),
             ]);
             try {
-              var lastPosition = gpsHandler.lastPosition;
+              var lastPosition = Provider.of<GpsState>(context).lastPosition;
               _diagnosticsList.add([
                 Text("GPS Last Position"),
                 Text("$lastPosition"),
@@ -237,7 +239,7 @@ class DiagnosticWidgetState extends State<DiagnosticWidget> {
           ],
         ),
         body: FutureBuilder<void>(
-          future: runDiagnostics(),
+          future: runDiagnostics(context),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               // If the Future is complete, display the preview.

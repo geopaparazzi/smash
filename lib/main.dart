@@ -35,7 +35,7 @@ class SmashAppState extends State<SmashApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProjectState()),
-        ChangeNotifierProvider(create: (_) => GpsLoggingState()),
+        ChangeNotifierProvider(create: (_) => GpsState()),
         ChangeNotifierProvider(create: (_) => GpsState()),
         ChangeNotifierProvider(create: (_) => MapState()),
       ],
@@ -93,6 +93,8 @@ class _InitializationWidgetState extends State<InitializationWidget> {
       return DashboardWidget();
     } else if (_storagePermission && _locationPermission) {
       MapState mapState = Provider.of<MapState>(context);
+      ProjectState projectState = Provider.of<ProjectState>(context);
+      GpsState gpsState = Provider.of<GpsState>(context);
 
       Future.delayed(Duration(seconds: 0), () async {
         // init preferences
@@ -105,8 +107,10 @@ class _InitializationWidgetState extends State<InitializationWidget> {
         var layerManager = LayerManager();
         await layerManager.initialize();
 
-        // enable logging
-        appGpsLoggingHandler = SmashLoggingHandler();
+        await projectState.openDb();
+
+        GpsHandler().init(gpsState);
+        gpsState.projectState = projectState;
 
         // set last known position
         var pos = await GpPreferences().getLastPosition();

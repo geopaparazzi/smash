@@ -27,7 +27,8 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/validators.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
-import 'about.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
+import 'package:provider/provider.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
 
@@ -66,7 +67,7 @@ class DashboardUtils {
     }
   }
 
-  static List<Widget> getDrawerTilesList(BuildContext context, MapController mapController, MainEventHandler mainEventsHandler) {
+  static List<Widget> getDrawerTilesList(BuildContext context, MapController mapController) {
     var doDiagnostics = GpPreferences().getBooleanSync(KEY_ENABLE_DIAGNOSTICS, false);
     double iconSize = SmashUI.MEDIUM_ICON_SIZE;
     Color c = SmashColors.mainDecorations;
@@ -82,7 +83,7 @@ class DashboardUtils {
           bold: true,
           color: c,
         ),
-        onTap: () => _createNewProject(context, mainEventsHandler),
+        onTap: () => _createNewProject(context),
       ),
       ListTile(
         leading: new Icon(
@@ -95,7 +96,7 @@ class DashboardUtils {
           bold: true,
           color: c,
         ),
-        onTap: () => _openProject(context, mainEventsHandler),
+        onTap: () => _openProject(context),
       ),
 //      ListTile(
 //        leading: new Icon(
@@ -172,7 +173,7 @@ class DashboardUtils {
         onTap: () async {
           var mapsFolder = await Workspace.getMapsFolder();
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MapsDownloadWidget(mapsFolder, mainEventsHandler)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MapsDownloadWidget(mapsFolder)));
         },
       ),
       doDiagnostics
@@ -206,7 +207,7 @@ class DashboardUtils {
     ];
   }
 
-  static List<Widget> getEndDrawerListTiles(BuildContext context, MapController mapController, MainEventHandler mainEventsHandler) {
+  static List<Widget> getEndDrawerListTiles(BuildContext context, MapController mapController) {
     Color c = SmashColors.mainDecorations;
     var iconSize = SmashUI.MEDIUM_ICON_SIZE;
 
@@ -225,7 +226,7 @@ class DashboardUtils {
           ),
           onTap: () {
             Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (context) => GeocodingPage(mainEventsHandler)));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => GeocodingPage()));
           },
         ),
       )
@@ -242,7 +243,8 @@ class DashboardUtils {
             color: c,
           ),
           onTap: () {
-            var pos = GpsHandler().lastPosition;
+            var gpsState = Provider.of<GpsState>(context);
+            var pos = gpsState.lastPosition;
             StringBuffer sb = StringBuffer();
             sb.write("Latitude: ");
             sb.write(pos.latitude.toStringAsFixed(6));
@@ -270,27 +272,30 @@ class DashboardUtils {
             bold: true,
             color: c,
           ),
-          trailing: Checkbox(
-              value: mainEventsHandler.getInsertInGps(),
-              onChanged: (value) {
-                mainEventsHandler.setInsertInGps(value);
-              }),
+          trailing: Consumer<GpsState>(builder: (context, gpsState, child) {
+            return Checkbox(
+                value: gpsState.insertInGps,
+                onChanged: (value) {
+                  gpsState.insertInGps = value;
+                });
+          }),
         ),
       );
 
     return list;
   }
 
-  static Future _openProject(BuildContext context, MainEventHandler mainEventsHandler) async {
+  static Future _openProject(BuildContext context) async {
     File file = await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
     if (file != null && file.existsSync()) {
-      await GPProject().setNewProject(file.path);
-      await mainEventsHandler.reloadProjectFunction();
+      var projectState = Provider.of<ProjectState>(context);
+      await projectState.setNewProject(file.path);
+      await projectState.reloadProject(context);
     }
     Navigator.of(context).pop();
   }
 
-  static Future _createNewProject(BuildContext context, MainEventHandler mainEventsHandler) async {
+  static Future _createNewProject(BuildContext context) async {
     String projectName = "smash_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
 
     var userString = await showInputDialog(
@@ -309,8 +314,9 @@ class DashboardUtils {
         newPath = "$newPath.gpap";
       }
       var gpFile = new File(newPath);
-      await GPProject().setNewProject(gpFile.path);
-      await mainEventsHandler.reloadProjectFunction();
+      var projectState = Provider.of<ProjectState>(context);
+      await projectState.setNewProject(gpFile.path);
+      await projectState.reloadProject(context);
     }
 
     Navigator.of(context).pop();
@@ -406,11 +412,12 @@ class _ExportWidgetState extends State<ExportWidget> {
   int _buildStatus = 0;
   String _outPath = "";
 
-  Future<void> buildPdf() async {
+  Future<void> buildPdf(BuildContext context) async {
     var exportsFolder = await Workspace.getExportsFolder();
     var ts = TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now());
     var outFilePath = FileUtilities.joinPaths(exportsFolder.path, "smash_pdf_export_$ts.pdf");
-    var db = await GPProject().getDatabase();
+    var projectState = Provider.of<ProjectState>(context);
+    var db = projectState.projectDb;
     await PdfExporter.exportDb(db, File(outFilePath));
 
     setState(() {
@@ -446,7 +453,7 @@ class _ExportWidgetState extends State<ExportWidget> {
                 _outPath = "";
                 _buildStatus = 1;
               });
-              buildPdf();
+              buildPdf(context);
 //              Navigator.pop(context);
             }),
       ]),
