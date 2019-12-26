@@ -85,7 +85,7 @@ class LogListWidget extends StatefulWidget {
 
 /// The log list widget state.
 class LogListWidgetState extends State<LogListWidget> {
-  List<Log4ListWidget> _logsList = [];
+  List<dynamic> _logsList = [];
 
   Future<bool> loadLogs(var db) async {
     var itemsList = await db.getQueryObjectsList(Log4ListWidgetBuilder());
@@ -137,13 +137,13 @@ class LogListWidgetState extends State<LogListWidget> {
               return ListView.builder(
                   itemCount: _logsList.length,
                   itemBuilder: (context, index) {
-                    Log4ListWidget logItem = _logsList[index];
+                    Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
                     return Dismissible(
                       confirmDismiss: _confirmLogDismiss,
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) async {
                         await db.deleteGpslog(logItem.id);
-                        await projectState.reloadProject(context);
+                        await projectState.reloadProject();
                       },
                       key: Key("${logItem.id}"),
                       background: Container(
@@ -171,7 +171,7 @@ class LogListWidgetState extends State<LogListWidget> {
                                 onChanged: (isVisible) async {
                                   logItem.isVisible = isVisible ? 1 : 0;
                                   await db.updateGpsLogVisibility(isVisible, logItem.id);
-                                  await projectState.reloadProject(context);
+                                  await projectState.reloadProject();
                                   setState(() {});
                                 }),
                           ],
@@ -293,7 +293,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 
             ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
             await projectState.projectDb.updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
-            projectState.reloadProject(context);
+            projectState.reloadProject();
           }
           return true;
         },
@@ -498,7 +498,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 
             ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
             await projectState.projectDb.updateNote(_note);
-            projectState.reloadProject(context);
+            projectState.reloadProject();
           }
           return true;
         },
@@ -728,79 +728,79 @@ class NotesListWidgetState extends State<NotesListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProjectState>(builder: (context, projectState, child) {
-      var db = projectState.projectDb;
-      return Scaffold(
-          appBar: AppBar(
-            title: Text(widget._doSimpleNotes ? "Simple Notes List" : "Form Notes List"),
-          ),
-          body: FutureBuilder<void>(
-            future: loadNotes(db),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the Future is complete, display the preview.
-                return ListView.builder(
-                    itemCount: _notesList.length,
-                    itemBuilder: (context, index) {
-                      dynamic dynNote = _notesList[index];
-                      int id;
-                      var markerName;
-                      var markerColor;
-                      String text;
-                      bool hasProperties = true;
-                      int ts;
-                      double lat;
-                      double lon;
-                      if (dynNote is Note) {
-                        id = dynNote.id;
-                        markerName = dynNote.noteExt.marker;
-                        markerColor = dynNote.noteExt.color;
-                        text = dynNote.text;
-                        ts = dynNote.timeStamp;
-                        lon = dynNote.lon;
-                        lat = dynNote.lat;
-                        if (dynNote.form != null) {
-                          hasProperties = false;
-                        }
-                      } else {
+    var projectState = Provider.of<ProjectState>(context, listen: false);
+    var db = projectState.projectDb;
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(widget._doSimpleNotes ? "Simple Notes List" : "Form Notes List"),
+        ),
+        body: FutureBuilder<void>(
+          future: loadNotes(db),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              // If the Future is complete, display the preview.
+              return ListView.builder(
+                  itemCount: _notesList.length,
+                  itemBuilder: (context, index) {
+                    dynamic dynNote = _notesList[index];
+                    int id;
+                    var markerName;
+                    var markerColor;
+                    String text;
+                    bool hasProperties = true;
+                    int ts;
+                    double lat;
+                    double lon;
+                    if (dynNote is Note) {
+                      id = dynNote.id;
+                      markerName = dynNote.noteExt.marker;
+                      markerColor = dynNote.noteExt.color;
+                      text = dynNote.text;
+                      ts = dynNote.timeStamp;
+                      lon = dynNote.lon;
+                      lat = dynNote.lat;
+                      if (dynNote.form != null) {
                         hasProperties = false;
-                        id = dynNote.id;
-                        markerName = 'camera';
-                        markerColor = ColorExt.asHex(SmashColors.mainDecorationsDark);
-                        text = dynNote.text;
-                        ts = dynNote.timeStamp;
-                        lon = dynNote.lon;
-                        lat = dynNote.lat;
                       }
+                    } else {
+                      hasProperties = false;
+                      id = dynNote.id;
+                      markerName = 'camera';
+                      markerColor = ColorExt.asHex(SmashColors.mainDecorationsDark);
+                      text = dynNote.text;
+                      ts = dynNote.timeStamp;
+                      lon = dynNote.lon;
+                      lat = dynNote.lat;
+                    }
 
-                      return Dismissible(
-                        confirmDismiss: _confirmNoteDismiss,
-                        direction: DismissDirection.endToStart,
-                        onDismissed: (direction) async {
-                          await db.deleteNote(id);
-                          projectState.reloadProject(context);
-                        },
-                        key: Key("${id}"),
-                        background: Container(
-                          alignment: AlignmentDirectional.centerEnd,
-                          color: Colors.red,
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
+                    return Dismissible(
+                      confirmDismiss: _confirmNoteDismiss,
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) async {
+                        await db.deleteNote(id);
+                        projectState.reloadProject();
+                      },
+                      key: Key("${id}"),
+                      background: Container(
+                        alignment: AlignmentDirectional.centerEnd,
+                        color: Colors.red,
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.white,
                           ),
                         ),
-                        child: ListTile(
-                          leading: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Icon(
-                                getIcon(markerName) ?? MdiIcons.mapMarker,
-                                color: ColorExt(markerColor),
-                                size: SmashUI.MEDIUM_ICON_SIZE,
-                              ),
+                      ),
+                      child: ListTile(
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Icon(
+                              getIcon(markerName) ?? MdiIcons.mapMarker,
+                              color: ColorExt(markerColor),
+                              size: SmashUI.MEDIUM_ICON_SIZE,
+                            ),
 //                            Checkbox(
 //                                value: note.isVisible == 1 ? true : false,
 //                                onChanged: (isVisible) async {
@@ -811,31 +811,30 @@ class NotesListWidgetState extends State<NotesListWidget> {
 //                                  widget._eventHandler.reloadProjectFunction();
 //                                  setState(() {});
 //                                }),
-                            ],
-                          ),
-                          trailing: hasProperties ? Icon(Icons.arrow_right) : SmashUI.getTransparentIcon(),
-                          title: Text('${text}'),
-                          subtitle: Text('${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
-                          onTap: () {
-                            if (hasProperties) {
-                              _navigateToNoteProperties(context, dynNote);
-                            }
-                          },
-                          onLongPress: () {
-                            LatLng position = LatLng(lat, lon);
-                            Provider.of<SmashMapState>(context, listen: false).center = Coordinate(position.longitude, position.latitude);
-                            Navigator.of(context).pop();
-                          },
+                          ],
                         ),
-                      );
-                    });
-              } else {
-                // Otherwise, display a loading indicator.
-                return Center(child: CircularProgressIndicator());
-              }
-            },
-          ));
-    });
+                        trailing: hasProperties ? Icon(Icons.arrow_right) : SmashUI.getTransparentIcon(),
+                        title: Text('${text}'),
+                        subtitle: Text('${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
+                        onTap: () {
+                          if (hasProperties) {
+                            _navigateToNoteProperties(context, dynNote);
+                          }
+                        },
+                        onLongPress: () {
+                          LatLng position = LatLng(lat, lon);
+                          Provider.of<SmashMapState>(context, listen: false).center = Coordinate(position.longitude, position.latitude);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    );
+                  });
+            } else {
+              // Otherwise, display a loading indicator.
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ));
   }
 
   Future<bool> _confirmNoteDismiss(DismissDirection direction) async {

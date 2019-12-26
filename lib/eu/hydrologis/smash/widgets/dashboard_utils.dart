@@ -247,13 +247,13 @@ class DashboardUtils {
             var pos = gpsState.lastGpsPosition;
             StringBuffer sb = StringBuffer();
             sb.write("Latitude: ");
-            sb.write(pos.latitude.toStringAsFixed(6));
+            sb.write(pos.latitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
             sb.write("\nLongitude: ");
-            sb.write(pos.longitude.toStringAsFixed(6));
+            sb.write(pos.longitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
             sb.write("\nAltitude: ");
-            sb.write(pos.altitude.toStringAsFixed(0));
+            sb.write(pos.altitude.toStringAsFixed(KEY_ELEV_DECIMALS));
             sb.write("\nAccuracy: ");
-            sb.write(pos.accuracy.toStringAsFixed(0));
+            sb.write(pos.accuracy.toStringAsFixed(KEY_ELEV_DECIMALS));
             sb.write("\nTimestamp: ");
             sb.write(TimeUtilities.ISO8601_TS_FORMATTER.format(pos.timestamp));
             ShareHandler.shareText(sb.toString());
@@ -290,7 +290,7 @@ class DashboardUtils {
     if (file != null && file.existsSync()) {
       var projectState = Provider.of<ProjectState>(context, listen: false);
       await projectState.setNewProject(file.path);
-      await projectState.reloadProject(context);
+      await projectState.reloadProject();
     }
     Navigator.of(context).pop();
   }
@@ -316,7 +316,7 @@ class DashboardUtils {
       var gpFile = new File(newPath);
       var projectState = Provider.of<ProjectState>(context, listen: false);
       await projectState.setNewProject(gpFile.path);
-      await projectState.reloadProject(context);
+      await projectState.reloadProject();
     }
 
     Navigator.of(context).pop();

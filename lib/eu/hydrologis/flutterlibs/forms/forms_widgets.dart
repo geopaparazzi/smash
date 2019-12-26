@@ -207,7 +207,7 @@ class _MasterDetailPageState extends State<MasterDetailPage> {
           await db.updateNote(note);
         }
 
-        await projectState.reloadProject(context);
+        await projectState.reloadProject();
         return true;
       },
       child: Scaffold(

@@ -330,6 +330,9 @@ class ProjectState extends ChangeNotifierPlus {
   GeopaparazziProjectDb _db;
   ProjectData _projectData;
 
+  BuildContext context;
+  GlobalKey<ScaffoldState> scaffoldKey;
+
   String get projectPath => _projectPath;
 
   String get projectName => _projectName;
@@ -338,7 +341,8 @@ class ProjectState extends ChangeNotifierPlus {
 
   ProjectData get projectData => _projectData;
 
-  void setNewProject(String path) async {
+
+  Future<void> setNewProject(String path) async {
     GpLogger().d("Set new project: $path");
     await close();
     _projectPath = path;
@@ -379,15 +383,17 @@ class ProjectState extends ChangeNotifierPlus {
     }
     _db = null;
     _projectPath = null;
+    context = null;
+    scaffoldKey = null;
   }
 
-  Future<void> reloadProject(BuildContext context) async {
+  Future<void> reloadProject() async {
     if (projectDb == null) return;
-    await reloadProjectQuiet(context);
+    await reloadProjectQuiet();
     notifyListenersMsg('reloadProject');
   }
 
-  Future<void> reloadProjectQuiet(BuildContext context) async {
+  Future<void> reloadProjectQuiet() async {
     if (projectDb == null) return;
     ProjectData tmp = ProjectData();
     tmp.projectName = basenameWithoutExtension(projectDb.path);
@@ -399,8 +405,8 @@ class ProjectState extends ChangeNotifierPlus {
     tmp.formNotesCount = await projectDb.getFormNotesCount(false);
 
     List<Marker> tmpList = [];
-    DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, this, context);
-    DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, this, context);
+    DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, this);
+    DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, this);
     tmp.geopapMarkers = tmpList;
     tmp.geopapLogs = await DataLoaderUtilities.loadLogLinesLayer(projectDb);
     _projectData = tmp;

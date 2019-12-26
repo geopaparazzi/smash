@@ -24,6 +24,9 @@ const KEY_CENTERCROSS_STYLE = 'KEY_CENTERCROSS_STYLE';
 const KEY_MAPTOOLS_ICON_SIZE = 'KEY_MAPTOOLS_ICON_SIZE';
 const KEY_ICONS_LIST = 'KEY_ICONS_LIST';
 
+const KEY_LATLONG_DECIMALS = 6;
+const KEY_ELEV_DECIMALS = 0;
+
 class CameraResolutions {
   static const HIGH = "high";
   static const MEDIUM = "medium";
