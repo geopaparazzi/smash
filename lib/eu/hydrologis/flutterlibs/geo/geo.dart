@@ -125,25 +125,18 @@ class GpsHandler {
   void _onPositionUpdate(Position position) {
     if (!_locationServiceEnabled) return;
     _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
-    GpsStatus tmpStatus;
     if (position != null) {
-      tmpStatus = GpsStatus.ON_WITH_FIX;
-
-      if (_gpsState.isLogging && _gpsState.currentLogId != null) {
-        tmpStatus = GpsStatus.LOGGING;
-//        if(_lastPosition!=null && _geolocator.distanceBetween(_lastPosition.latitude, _lastPosition.longitude, position.latitude,
-//            position.longitude) > 1)
-        _gpsState.currentLogPoints.add(LatLng(position.latitude, position.longitude));
-
-        _gpsState.addLogPoint(position.longitude, position.latitude, position.altitude, DateTime.now().millisecondsSinceEpoch);
+      var tmpStatus = _gpsState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
+      var posLatLon = LatLng(position.latitude, position.longitude);
+      if (_gpsState.lastGpsPosition != null &&
+          CoordinateUtilities.getDistance(LatLng(_gpsState.lastGpsPosition.latitude, _gpsState.lastGpsPosition.longitude), posLatLon) > 1) {
+        if (_gpsState.isLogging && _gpsState.currentLogId != null) {
+          _gpsState.currentLogPoints.add(posLatLon);
+          _gpsState.addLogPoint(position.longitude, position.latitude, position.altitude, DateTime.now().millisecondsSinceEpoch);
+        }
+        _gpsState.status = tmpStatus;
+        _gpsState.lastGpsPosition = position;
       }
-    } else {
-      tmpStatus = GpsStatus.ON_NO_FIX;
-    }
-
-    if (tmpStatus != null) {
-      _gpsState.status = tmpStatus;
-      _gpsState.lastGpsPosition = position;
     }
   }
 

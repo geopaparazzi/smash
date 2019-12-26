@@ -183,7 +183,7 @@ class LogListWidgetState extends State<LogListWidget> {
                         onLongPress: () async {
                           SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
                           LatLng position = await db.getLogStartPosition(logItem.id);
-                          mapState.center = Coordinate(position.longitude, position.longitude);
+                          mapState.center = Coordinate(position.longitude, position.latitude);
                           Navigator.of(context).pop();
                         },
                       ),
@@ -360,17 +360,21 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       TableRow(
         children: [
           TableUtilities.cellForString("Color"),
-          MaterialColorPicker(
-              allowShades: false,
-              onColorChange: (Color color) {
-                _logColor = ColorExt.fromColor(color);
-                _somethingChanged = true;
-              },
-              onMainColorChange: (mColor) {
-                _logColor = ColorExt.fromColor(mColor);
-                _somethingChanged = true;
-              },
-              selectedColor: Color(_logColor.value)),
+          LimitedBox(
+            maxHeight: 400,
+            child: MaterialColorPicker(
+                shrinkWrap: true,
+                allowShades: false,
+                onColorChange: (Color color) {
+                  _logColor = ColorExt.fromColor(color);
+                  _somethingChanged = true;
+                },
+                onMainColorChange: (mColor) {
+                  _logColor = ColorExt.fromColor(mColor);
+                  _somethingChanged = true;
+                },
+                selectedColor: Color(_logColor.value)),
+          ),
         ],
       ),
       TableRow(

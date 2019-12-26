@@ -277,18 +277,22 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                         SmashUI.titleText("Waypoints Color"),
                         Padding(
                           padding: SmashUI.defaultPadding(),
-                          child: MaterialColorPicker(
-                              allowShades: false,
-                              circleSize: 45,
-                              onColorChange: (Color color) {
-                                _pointColor = ColorExt.fromColor(color);
-                                _somethingChanged = true;
-                              },
-                              onMainColorChange: (mColor) {
-                                _pointColor = ColorExt.fromColor(mColor);
-                                _somethingChanged = true;
-                              },
-                              selectedColor: Color(_pointColor.value)),
+                          child: LimitedBox(
+                            maxHeight: 400,
+                            child: MaterialColorPicker(
+                                shrinkWrap: true,
+                                allowShades: false,
+                                circleSize: 45,
+                                onColorChange: (Color color) {
+                                  _pointColor = ColorExt.fromColor(color);
+                                  _somethingChanged = true;
+                                },
+                                onMainColorChange: (mColor) {
+                                  _pointColor = ColorExt.fromColor(mColor);
+                                  _somethingChanged = true;
+                                },
+                                selectedColor: Color(_pointColor.value)),
+                          ),
                         ),
                         SmashUI.titleText("Waypoints Size"),
                         Row(
@@ -330,18 +334,22 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                         SmashUI.titleText("Tracks/Routes Color"),
                         Padding(
                           padding: SmashUI.defaultPadding(),
-                          child: MaterialColorPicker(
-                              allowShades: false,
-                              circleSize: 45,
-                              onColorChange: (Color color) {
-                                _lineColor = ColorExt.fromColor(color);
-                                _somethingChanged = true;
-                              },
-                              onMainColorChange: (mColor) {
-                                _lineColor = ColorExt.fromColor(mColor);
-                                _somethingChanged = true;
-                              },
-                              selectedColor: Color(_lineColor.value)),
+                          child: LimitedBox(
+                            maxHeight: 400,
+                            child: MaterialColorPicker(
+                                shrinkWrap: true,
+                                allowShades: false,
+                                circleSize: 45,
+                                onColorChange: (Color color) {
+                                  _lineColor = ColorExt.fromColor(color);
+                                  _somethingChanged = true;
+                                },
+                                onMainColorChange: (mColor) {
+                                  _lineColor = ColorExt.fromColor(mColor);
+                                  _somethingChanged = true;
+                                },
+                                selectedColor: Color(_lineColor.value)),
+                          ),
                         ),
                         SmashUI.titleText("Tracks/Routes Width"),
                         Row(

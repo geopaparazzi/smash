@@ -49,8 +49,6 @@ class DashboardWidget extends StatefulWidget {
 class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingObserver {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Polyline _currentGeopapLog = Polyline(points: [], strokeWidth: 3, color: ColorExt("red"));
-
   double _initLon;
   double _initLat;
   double _initZoom;
@@ -96,7 +94,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
       if (init) GpLogger().d("Db logger initialized.");
 
       // set initial status
-      bool gpsIsOn = await GpsHandler().isGpsOn();
+      bool gpsIsOn = GpsHandler().isGpsOn();
       if (gpsIsOn != null) {
         if (gpsIsOn) {
           gpsState.statusQuiet = GpsStatus.ON_NO_FIX;
@@ -169,14 +167,11 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
         layers.add(markerCluster);
       }
     }
-    var gpsState = Provider.of<GpsState>(projectState.context, listen: false);
-    if (gpsState.currentLogPoints.length > 0) {
-      _currentGeopapLog.points.clear();
-      _currentGeopapLog.points.addAll(gpsState.currentLogPoints);
-      layers.add(PolylineLayerOptions(
-        polylines: [_currentGeopapLog],
-      ));
-    }
+
+    layers.add(CurrentGpsLogPluginOption(
+      logColor: Colors.red,
+      logWidth: 5.0,
+    ));
 
     layers.add(GpsPositionPluginOption(
       markerColor: Colors.black,
@@ -240,6 +235,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                 MarkerClusterPlugin(),
                 ScaleLayerPlugin(),
                 CenterCrossPlugin(),
+                CurrentGpsLogPlugin(),
                 GpsPositionPlugin(),
               ],
               onPositionChanged: (newPosition, hasGesture) {

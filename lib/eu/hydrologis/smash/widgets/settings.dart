@@ -64,17 +64,12 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       appBar: new AppBar(
         title: new Text("Settings"),
       ),
-      body: ListView(children: <Widget>[
-        cameraSettingTile,
-        screenSettingTile,
-        diagnosticsSettingTile
-      ]),
+      body: ListView(children: <Widget>[cameraSettingTile, screenSettingTile, diagnosticsSettingTile]),
     );
   }
 
   Future showSettingsSheet(BuildContext context) async {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => _selectedSetting));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => _selectedSetting));
   }
 }
 
@@ -93,8 +88,7 @@ class CameraSettingState extends State<CameraSetting> {
 
   @override
   Widget build(BuildContext context) {
-    String value = GpPreferences()
-        .getStringSync(KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
+    String value = GpPreferences().getStringSync(KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
     return Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -155,8 +149,7 @@ class CameraSettingState extends State<CameraSetting> {
                   ),
                 ],
                 onChanged: (selected) async {
-                  await GpPreferences()
-                      .setString(KEY_CAMERA_RESOLUTION, selected);
+                  await GpPreferences().setString(KEY_CAMERA_RESOLUTION, selected);
                   setState(() {});
                 },
               ),
@@ -183,11 +176,9 @@ class ScreenSettingState extends State<ScreenSetting> {
 
   @override
   Widget build(BuildContext context) {
-    bool keepScreenOn =
-        GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
+    bool keepScreenOn = GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
     bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
-    double currentIconSize = GpPreferences()
-        .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+    double currentIconSize = GpPreferences().getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
 
     CenterCrossStyle centerCrossStyle = CenterCrossStyle.fromPreferences();
     return Scaffold(
@@ -215,8 +206,7 @@ class ScreenSettingState extends State<ScreenSetting> {
               child: CheckboxListTile(
                 value: keepScreenOn,
                 onChanged: (selected) async {
-                  await GpPreferences()
-                      .setBoolean(KEY_KEEP_SCREEN_ON, selected);
+                  await GpPreferences().setBoolean(KEY_KEEP_SCREEN_ON, selected);
                   setState(() {});
                 },
                 title: SmashUI.normalText(
@@ -262,9 +252,10 @@ class ScreenSettingState extends State<ScreenSetting> {
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
                         SmashUI.normalText("Color"),
-                        Flexible(
-                          flex: 1,
+                        LimitedBox(
+                          maxHeight: 400,
                           child: MaterialColorPicker(
+                              shrinkWrap: true,
                               allowShades: false,
                               circleSize: 45,
                               onColorChange: (Color color) async {
@@ -277,8 +268,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                                 await centerCrossStyle.saveToPreferences();
                                 setState(() {});
                               },
-                              selectedColor: Color(
-                                  ColorExt(centerCrossStyle.color).value)),
+                              selectedColor: Color(ColorExt(centerCrossStyle.color).value)),
                         ),
                       ],
                     ),
@@ -366,8 +356,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                               max: 100,
                               divisions: 45,
                               onChanged: (newSize) async {
-                                await GpPreferences()
-                                    .setDouble(KEY_MAPTOOLS_ICON_SIZE, newSize);
+                                await GpPreferences().setDouble(KEY_MAPTOOLS_ICON_SIZE, newSize);
                                 setState(() {});
                               },
                               value: currentIconSize,
@@ -428,8 +417,7 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
           CheckboxListTile(
             value: value,
             onChanged: (selected) async {
-              await GpPreferences()
-                  .setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
+              await GpPreferences().setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
               setState(() {});
             },
             title: SmashUI.normalText(
