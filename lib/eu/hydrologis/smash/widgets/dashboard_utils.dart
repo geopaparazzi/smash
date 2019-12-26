@@ -243,8 +243,8 @@ class DashboardUtils {
             color: c,
           ),
           onTap: () {
-            var gpsState = Provider.of<GpsState>(context);
-            var pos = gpsState.lastPosition;
+            var gpsState = Provider.of<GpsState>(context, listen: false);
+            var pos = gpsState.lastGpsPosition;
             StringBuffer sb = StringBuffer();
             sb.write("Latitude: ");
             sb.write(pos.latitude.toStringAsFixed(6));
@@ -288,7 +288,7 @@ class DashboardUtils {
   static Future _openProject(BuildContext context) async {
     File file = await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
     if (file != null && file.existsSync()) {
-      var projectState = Provider.of<ProjectState>(context);
+      var projectState = Provider.of<ProjectState>(context, listen: false);
       await projectState.setNewProject(file.path);
       await projectState.reloadProject(context);
     }
@@ -314,7 +314,7 @@ class DashboardUtils {
         newPath = "$newPath.gpap";
       }
       var gpFile = new File(newPath);
-      var projectState = Provider.of<ProjectState>(context);
+      var projectState = Provider.of<ProjectState>(context, listen: false);
       await projectState.setNewProject(gpFile.path);
       await projectState.reloadProject(context);
     }
@@ -416,7 +416,7 @@ class _ExportWidgetState extends State<ExportWidget> {
     var exportsFolder = await Workspace.getExportsFolder();
     var ts = TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now());
     var outFilePath = FileUtilities.joinPaths(exportsFolder.path, "smash_pdf_export_$ts.pdf");
-    var projectState = Provider.of<ProjectState>(context);
+    var projectState = Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
     await PdfExporter.exportDb(db, File(outFilePath));
 

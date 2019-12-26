@@ -30,7 +30,7 @@ class ImageWidgetUtilities {
     var imageBytes = ImageUtilities.bytesFromImageFile(path);
     var thumbBytes = ImageUtilities.resizeImage(imageBytes, newWidth: 200);
 
-    ProjectState projectState = Provider.of<ProjectState>(context);
+    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
 
     DbImageData imgData = DbImageData()
@@ -112,7 +112,7 @@ class SmashImageZoomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _title = _image.text;
-    ProjectState projectState = Provider.of<ProjectState>(context);
+    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),

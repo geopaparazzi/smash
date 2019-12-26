@@ -37,7 +37,7 @@ class SmashAppState extends State<SmashApp> {
         ChangeNotifierProvider(create: (_) => ProjectState()),
         ChangeNotifierProvider(create: (_) => GpsState()),
         ChangeNotifierProvider(create: (_) => GpsState()),
-        ChangeNotifierProvider(create: (_) => MapState()),
+        ChangeNotifierProvider(create: (_) => SmashMapState()),
       ],
       child: MaterialApp(
         title: APP_NAME,
@@ -92,9 +92,9 @@ class _InitializationWidgetState extends State<InitializationWidget> {
     if (_loadDashboard) {
       return DashboardWidget();
     } else if (_storagePermission && _locationPermission) {
-      MapState mapState = Provider.of<MapState>(context);
-      ProjectState projectState = Provider.of<ProjectState>(context);
-      GpsState gpsState = Provider.of<GpsState>(context);
+      SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
+      ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+      GpsState gpsState = Provider.of<GpsState>(context, listen: false);
 
       Future.delayed(Duration(seconds: 0), () async {
         // init preferences

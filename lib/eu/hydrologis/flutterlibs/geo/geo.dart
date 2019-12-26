@@ -63,25 +63,36 @@ class GpsHandler {
   Geolocator _geolocator;
   StreamSubscription<Position> _positionStreamSubscription;
 
-  bool _locationDisabled;
+  bool _locationServiceEnabled;
 
   Timer _timer;
   GpsState _gpsState;
+
+  int _lastGpsEventTs;
 
   /// internal handler singleton
   factory GpsHandler() => _instance;
 
   GpsHandler._internal() {
-    _timer = Timer.periodic(Duration(milliseconds: 300), (timer) async {
-      if (_geolocator != null && _gpsState != null && !await _geolocator.isLocationServiceEnabled()) {
-        if (GpsStatus.OFF != _gpsState.status) {
-          _gpsState.status = GpsStatus.OFF;
-        }
-      }
-    });
+    _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
   }
 
   void init(GpsState initGpsState) async {
+    _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) async {
+      _locationServiceEnabled = await _geolocator.isLocationServiceEnabled();
+      if (_geolocator == null || !_locationServiceEnabled) {
+        if (_gpsState.status != GpsStatus.OFF) {
+          _gpsState.status = GpsStatus.OFF;
+        }
+      } else if (DateTime.now().millisecondsSinceEpoch - _lastGpsEventTs > 5000) {
+        // if for 5 seconds there is no gps event, we can assume it has no fix
+        if (_gpsState.status != GpsStatus.ON_NO_FIX) {
+          _gpsState.status = GpsStatus.ON_NO_FIX;
+        }
+      }
+      // other status cases are handled by the events themselves in _onPositionUpdate
+    });
+
     _gpsState = initGpsState;
     _geolocator = Geolocator();
 
@@ -95,7 +106,7 @@ class GpsHandler {
       final Stream<Position> positionStream = _geolocator.getPositionStream(locationOptions);
       _positionStreamSubscription = positionStream.listen((Position position) => _onPositionUpdate(position));
     }
-    _locationDisabled = false;
+    _locationServiceEnabled = false;
   }
 
   /// Returns true if the gps currently has a fix or is logging.
@@ -106,13 +117,14 @@ class GpsHandler {
   }
 
   // Checks if the gps is on or off.
-  Future<bool> isGpsOn() async {
-    if (_geolocator == null) return null;
-    return await _geolocator.isLocationServiceEnabled();
+  bool isGpsOn() {
+    if (_geolocator == null) return false;
+    return _locationServiceEnabled;
   }
 
   void _onPositionUpdate(Position position) {
-    if (_locationDisabled) return;
+    if (!_locationServiceEnabled) return;
+    _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
     GpsStatus tmpStatus;
     if (position != null) {
       tmpStatus = GpsStatus.ON_WITH_FIX;
@@ -142,7 +154,7 @@ class GpsHandler {
       _positionStreamSubscription.cancel();
       _positionStreamSubscription = null;
     }
-    if (_locationDisabled) return;
+    if (_locationServiceEnabled) return;
   }
 }
 
@@ -194,7 +206,7 @@ class GeocodingPageState extends State<GeocodingPage> {
         leading: IconButton(
           icon: Icon(Icons.navigation),
           onPressed: () {
-            MapState mapState = Provider.of<MapState>(context);
+            SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
             mapState.center = Coordinate(address.coordinates.longitude, address.coordinates.latitude);
             Navigator.pop(context);
           },

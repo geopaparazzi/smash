@@ -157,7 +157,7 @@ class _MasterDetailPageState extends State<MasterDetailPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        ProjectState projectState = Provider.of<ProjectState>(context);
+        ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
         var db = projectState.projectDb;
         String jsonForm = jsonEncode(widget.sectionMap);
         int noteId;
@@ -865,7 +865,7 @@ class PicturesWidgetState extends State<PicturesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ProjectState projectState = Provider.of<ProjectState>(context);
+    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
     return FutureBuilder(
       future: getThumbnails(projectState.projectDb),
       builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {

@@ -702,7 +702,7 @@ class DataLoaderUtilities {
     double lon;
     double lat;
     if (doInGps) {
-      pos = Provider.of<GpsState>(context).lastPosition;
+      pos = Provider.of<GpsState>(context, listen: false).lastGpsPosition;
     } else {
       var center = mapController.center;
       lon = center.longitude;
@@ -733,7 +733,7 @@ class DataLoaderUtilities {
       next.color = color;
     }
     note.noteExt = next;
-    ProjectState projectState = Provider.of<ProjectState>(context);
+    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
     await db.addNote(note);
 
@@ -776,7 +776,7 @@ class DataLoaderUtilities {
                     dbImage.text = "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
                     var imageId = await ImageWidgetUtilities.saveImageToSmashDb(context, imagePath, dbImage);
                     if (imageId != null) {
-                      ProjectState projectState = Provider.of<ProjectState>(context);
+                      ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
                       if (projectState != null) projectState.reloadProject(context);
                       File file = File(imagePath);
                       if (file.existsSync()) {

@@ -477,7 +477,7 @@ class LayersPageState extends State<LayersPage> {
                       if (bb != null) {
                         setLayersOnChange(_layersList);
 
-                        MapState mapState = Provider.of<MapState>(context);
+                        SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
                         mapState.setBounds(new Envelope(bb.west, bb.east, bb.south, bb.north));
                         Navigator.of(context).pop();
                       }

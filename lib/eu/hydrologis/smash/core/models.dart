@@ -20,7 +20,7 @@ import 'package:path/path.dart';
 
 const DEBUG_NOTIFICATIONS = true;
 
-class ChangeNotifierPlus extends ChangeNotifier {
+class ChangeNotifierPlus with ChangeNotifier {
   void notifyListenersMsg([String msg]) {
     if (DEBUG_NOTIFICATIONS) {
       print("${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.now())}:: ${runtimeType.toString()}: ${msg ?? "notify triggered"}");
@@ -47,25 +47,27 @@ class GpsState extends ChangeNotifierPlus {
 
   GpsStatus get status => _status;
 
-  Position get lastPosition => _lastPosition;
+  Position get lastGpsPosition => _lastPosition;
 
-  void set lastGpsPosition(Position position) {
+  set lastGpsPosition(Position position) {
     _lastPosition = position;
-    notifyListenersMsg("lastGpsPosition");
+    notifyListeners(); //Msg("lastGpsPosition");
   }
 
-  void set lastGpsPositionQuiet(Position position) {
+  set lastGpsPositionQuiet(Position position) {
     _lastPosition = position;
   }
 
   /// Set the status without triggering a global notification.
-  void set statusQuiet(GpsStatus newStatus) {
+  set statusQuiet(GpsStatus newStatus) {
     _status = newStatus;
   }
 
-  void set status(GpsStatus newStatus) {
-    _status = newStatus;
-    notifyListenersMsg("status");
+  set status(GpsStatus newStatus) {
+    if (_status != newStatus) {
+      _status = newStatus;
+      notifyListeners(); //Msg("status");
+    }
   }
 
   bool get insertInGps => _insertInGps;
@@ -75,21 +77,24 @@ class GpsState extends ChangeNotifierPlus {
   int get currentLogId => _currentLogId;
 
   /// Set the _insertInGps without triggering a global notification.
-  void set insertInGpsQuiet(bool newInsertInGps) {
-    _insertInGps = newInsertInGps;
-    GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, newInsertInGps);
+  set insertInGpsQuiet(bool newInsertInGps) {
+    if (_insertInGps != newInsertInGps) {
+      _insertInGps = newInsertInGps;
+      GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, newInsertInGps);
+    }
   }
 
-  void set insertInGps(bool newInsertInGps) {
-    insertInGpsQuiet = newInsertInGps;
-    notifyListenersMsg("insertInGps");
+  set insertInGps(bool newInsertInGps) {
+    if (_insertInGps != newInsertInGps) {
+      insertInGpsQuiet = newInsertInGps;
+      notifyListenersMsg("insertInGps");
+    }
   }
 
-  void set projectState(ProjectState state) {
+  set projectState(ProjectState state) {
     _projectState = state;
   }
 
-  @override
   Future<void> addLogPoint(double longitude, double latitude, double altitude, int timestamp) async {
     if (_projectState != null) {
       LogDataPoint ldp = LogDataPoint();
@@ -102,7 +107,6 @@ class GpsState extends ChangeNotifierPlus {
     }
   }
 
-  @override
   Future<int> addGpsLog(String logName) async {
     if (_projectState != null) {
       Log l = new Log();
@@ -167,12 +171,18 @@ class GpsState extends ChangeNotifierPlus {
     _lastGpsStatusBeforeLogging = null;
     notifyListenersMsg("stopLogging");
   }
+
+  bool hasFix() {
+    return _status == GpsStatus.ON_WITH_FIX || _status == GpsStatus.LOGGING;
+  }
 }
 
 /// Current state of the Map view.
 ///
 /// This provides tracking of map view and general status.
-class MapState extends ChangeNotifierPlus {
+class SmashMapState extends ChangeNotifierPlus {
+  static final MAXZOOM = 22.0;
+  static final MINZOOM = 1.0;
   Coordinate _center = Coordinate(11.33140, 46.47781);
   double _zoom = 16;
   double _heading = 0;
@@ -293,17 +303,36 @@ class MapState extends ChangeNotifierPlus {
     rotateOnHeadingQuiet = newRotateOnHeading;
     notifyListenersMsg("rotateOnHeading");
   }
+
+  void zoomIn() {
+    if (mapController != null) {
+      var z = mapController.zoom + 1;
+      if (z > MAXZOOM) z = MAXZOOM;
+      zoom = z;
+    }
+  }
+
+  void zoomOut() {
+    if (mapController != null) {
+      var z = mapController.zoom - 1;
+      if (z < MINZOOM) z = MINZOOM;
+      zoom = z;
+    }
+  }
 }
 
 /// The provider object of the current project status
 ///
 /// This provides the project database and triggers notification when that changes.
 class ProjectState extends ChangeNotifierPlus {
+  String _projectName = "No project loaded";
   String _projectPath;
   GeopaparazziProjectDb _db;
   ProjectData _projectData;
 
   String get projectPath => _projectPath;
+
+  String get projectName => _projectName;
 
   GeopaparazziProjectDb get projectDb => _db;
 
@@ -340,6 +369,7 @@ class ProjectState extends ChangeNotifierPlus {
 
     await _db.createNecessaryExtraTables();
     await GpPreferences().setString(KEY_LAST_GPAPPROJECT, _projectPath);
+    _projectName = FileUtilities.nameFromFile(_projectPath, false);
   }
 
   Future<void> close() async {

@@ -181,7 +181,7 @@ class LogListWidgetState extends State<LogListWidget> {
                         subtitle: Text('${_getTime(logItem)} ${_getLength(logItem)}'),
                         onTap: () => _navigateToLogProperties(context, logItem),
                         onLongPress: () async {
-                          MapState mapState = Provider.of<MapState>(context);
+                          SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
                           LatLng position = await db.getLogStartPosition(logItem.id);
                           mapState.center = Coordinate(position.longitude, position.longitude);
                           Navigator.of(context).pop();
@@ -291,7 +291,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
             _logItem.width = _widthSliderValue;
             _logItem.color = ColorExt.asHex(_logColor);
 
-            ProjectState projectState = Provider.of<ProjectState>(context);
+            ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
             await projectState.projectDb.updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
             projectState.reloadProject(context);
           }
@@ -429,7 +429,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       validationFunction: noEmptyValidator,
     );
     if (result != null) {
-      ProjectState projectState = Provider.of<ProjectState>(context);
+      ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
       await projectState.projectDb.updateGpsLogName(logItem.id, result);
       setState(() {
         logItem.name = result;
@@ -496,7 +496,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
             _note.noteExt.marker = _marker;
             _note.noteExt.size = _sizeSliderValue;
 
-            ProjectState projectState = Provider.of<ProjectState>(context);
+            ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
             await projectState.projectDb.updateNote(_note);
             projectState.reloadProject(context);
           }
@@ -823,7 +823,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
                           },
                           onLongPress: () {
                             LatLng position = LatLng(lat, lon);
-                            Provider.of<MapState>(context).center = Coordinate(position.longitude, position.latitude);
+                            Provider.of<SmashMapState>(context, listen: false).center = Coordinate(position.longitude, position.latitude);
                             Navigator.of(context).pop();
                           },
                         ),

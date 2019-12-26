@@ -45,7 +45,7 @@ class DiagnosticWidgetState extends State<DiagnosticWidget> {
   List<List<Widget>> _diagnosticsList = [];
 
   Future<bool> runDiagnostics(BuildContext context) async {
-    ProjectState projectState = Provider.of<ProjectState>(context);
+    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
     _diagnosticsList.clear();
 
     try {
@@ -176,7 +176,7 @@ class DiagnosticWidgetState extends State<DiagnosticWidget> {
               Text('${gpsHandler.hasFix()}'),
             ]);
             try {
-              var lastPosition = Provider.of<GpsState>(context).lastPosition;
+              var lastPosition = Provider.of<GpsState>(context, listen: false).lastGpsPosition;
               _diagnosticsList.add([
                 Text("GPS Last Position"),
                 Text("$lastPosition"),
