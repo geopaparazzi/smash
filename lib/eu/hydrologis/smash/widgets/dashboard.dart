@@ -695,7 +695,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                 TableRow(
                   children: [
                     TableUtilities.cellForString("Heading", color: color),
-                    TableUtilities.cellForString("${pos.heading} deg", color: color),
+                    TableUtilities.cellForString("${pos.heading.round()} deg", color: color),
                   ],
                 ),
                 TableRow(

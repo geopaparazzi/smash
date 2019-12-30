@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
@@ -78,35 +79,43 @@ class GpsHandler {
   }
 
   void init(GpsState initGpsState) async {
+    GpLogger().d("init GpsHandler");
+    _gpsState = initGpsState;
+    _locationServiceEnabled = false;
+
     _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) async {
+      if (_geolocator == null) {
+        _geolocator = Geolocator();
+      }
       _locationServiceEnabled = await _geolocator.isLocationServiceEnabled();
+      var currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
       if (_geolocator == null || !_locationServiceEnabled) {
         if (_gpsState.status != GpsStatus.OFF) {
           _gpsState.status = GpsStatus.OFF;
         }
-      } else if (DateTime.now().millisecondsSinceEpoch - _lastGpsEventTs > 5000) {
+      } else if (currentTimeMillis - _lastGpsEventTs > 5000) {
         // if for 5 seconds there is no gps event, we can assume it has no fix
         if (_gpsState.status != GpsStatus.ON_NO_FIX) {
           _gpsState.status = GpsStatus.ON_NO_FIX;
         }
       }
+
+      if (_positionStreamSubscription == null) {
+        GpLogger().d("GpsHandler: subscribe to gps");
+        const LocationOptions locationOptions = LocationOptions(accuracy: LocationAccuracy.best, distanceFilter: 0);
+        final Stream<Position> positionStream = _geolocator.getPositionStream(locationOptions);
+        _positionStreamSubscription = positionStream.listen((Position position) => _onPositionUpdate(position));
+      }
+
+//      GpLogger().d(
+//          "${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(currentTimeMillis))}: Timer.periodic -> enabled: $_locationServiceEnabled; geoloc null: ${_geolocator == null}; gpsState: ${_gpsState.status}");
       // other status cases are handled by the events themselves in _onPositionUpdate
     });
-
-    _gpsState = initGpsState;
-    _geolocator = Geolocator();
 
     // TODO check back on this
 //    if (Platform.isAndroid) {
 //      _geolocator.forceAndroidLocationManager = true;
 //    }
-
-    if (_positionStreamSubscription == null) {
-      const LocationOptions locationOptions = LocationOptions(accuracy: LocationAccuracy.best, distanceFilter: 0);
-      final Stream<Position> positionStream = _geolocator.getPositionStream(locationOptions);
-      _positionStreamSubscription = positionStream.listen((Position position) => _onPositionUpdate(position));
-    }
-    _locationServiceEnabled = false;
   }
 
   /// Returns true if the gps currently has a fix or is logging.
@@ -134,9 +143,9 @@ class GpsHandler {
           _gpsState.currentLogPoints.add(posLatLon);
           _gpsState.addLogPoint(position.longitude, position.latitude, position.altitude, DateTime.now().millisecondsSinceEpoch);
         }
-        _gpsState.status = tmpStatus;
-        _gpsState.lastGpsPosition = position;
       }
+      _gpsState.status = tmpStatus;
+      _gpsState.lastGpsPosition = position;
     }
   }
 
