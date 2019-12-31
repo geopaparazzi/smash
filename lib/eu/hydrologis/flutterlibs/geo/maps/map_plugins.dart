@@ -176,22 +176,19 @@ class PathPainter extends CustomPainter {
     Path path = Path();
     CustomPoint posPixel = map.project(currentLogPoints[0]);
     var pixelBounds = map.getLastPixelBounds();
-    var height = pixelBounds.bottomLeft.y - pixelBounds.topLeft.y;
     CustomPoint pixelOrigin = map.getPixelOrigin();
     double centerX = posPixel.x - pixelOrigin.x;
-    double centerY = height - (posPixel.y - pixelOrigin.y);
+    double centerY = (posPixel.y - pixelOrigin.y);
     path.moveTo(centerX, centerY);
 
     for (int i = 1; i < currentLogPoints.length; i++) {
       CustomPoint posPixel = map.project(currentLogPoints[i]);
       var pixelBounds = map.getLastPixelBounds();
-      var height = pixelBounds.bottomLeft.y - pixelBounds.topLeft.y;
       CustomPoint pixelOrigin = map.getPixelOrigin();
       double centerX = posPixel.x - pixelOrigin.x;
-      double centerY = height - (posPixel.y - pixelOrigin.y);
+      double centerY =  (posPixel.y - pixelOrigin.y);
       path.lineTo(centerX, centerY);
     }
-    path.close();
     canvas.drawPath(path, cPaint);
   }
 

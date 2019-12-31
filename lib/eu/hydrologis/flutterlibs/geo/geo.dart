@@ -13,6 +13,7 @@ import 'package:latlong/latlong.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/testlog.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
@@ -132,6 +133,21 @@ class GpsHandler {
   }
 
   void _onPositionUpdate(Position position) {
+    if (DO_TEST_LOG) {
+      var c = Testlog.getNext();
+      Position newP = Position(
+        latitude: c.y,
+        longitude: c.x,
+        heading: c.z,
+        accuracy: 2,
+        altitude: 100,
+        speed: 2,
+        timestamp: DateTime.now(),
+        mocked: true,
+      );
+      position = newP;
+    }
+
     if (!_locationServiceEnabled) return;
     _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
     if (position != null) {
