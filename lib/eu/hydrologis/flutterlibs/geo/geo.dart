@@ -69,6 +69,7 @@ class GpsHandler {
 
   Timer _timer;
   GpsState _gpsState;
+  Position _previousLogPosition;
 
   int _lastGpsEventTs;
 
@@ -103,7 +104,10 @@ class GpsHandler {
 
       if (_positionStreamSubscription == null) {
         GpLogger().d("GpsHandler: subscribe to gps");
-        const LocationOptions locationOptions = LocationOptions(accuracy: LocationAccuracy.best, distanceFilter: 0);
+        const LocationOptions locationOptions = LocationOptions(
+          accuracy: LocationAccuracy.best,
+          distanceFilter: 0,
+        );
         final Stream<Position> positionStream = _geolocator.getPositionStream(locationOptions);
         _positionStreamSubscription = positionStream.listen((Position position) => _onPositionUpdate(position));
       }
@@ -149,17 +153,48 @@ class GpsHandler {
     }
 
     if (!_locationServiceEnabled) return;
+
+    // set last event ts that is used to define the 'no fix' interval
     _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
+
     if (position != null) {
       var tmpStatus = _gpsState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
-      var posLatLon = LatLng(position.latitude, position.longitude);
-      if (_gpsState.lastGpsPosition != null &&
-          CoordinateUtilities.getDistance(LatLng(_gpsState.lastGpsPosition.latitude, _gpsState.lastGpsPosition.longitude), posLatLon) > 1) {
-        if (_gpsState.isLogging && _gpsState.currentLogId != null) {
-          _gpsState.currentLogPoints.add(posLatLon);
-          _gpsState.addLogPoint(position.longitude, position.latitude, position.altitude, DateTime.now().millisecondsSinceEpoch);
+
+      var newPosLatLon = LatLng(position.latitude, position.longitude);
+
+      if (_previousLogPosition != null) {
+        // first filter out jumps using the max distance.
+        // Those points are defined as invalid and are ignored in general
+        var previousPosLatLon = LatLng(_gpsState.lastGpsPosition.latitude, _gpsState.lastGpsPosition.longitude);
+        var distanceLastEvent = CoordinateUtilities.getDistance(previousPosLatLon, newPosLatLon);
+        if (distanceLastEvent > _gpsState.gpsMaxDistance) {
+          GpLogger().d("Ignoring GPS point jump: $distanceLastEvent > ${_gpsState.gpsMaxDistance}");
+          _gpsState.lastGpsPosition = position;
+          return;
         }
+
+        // find values for filter checks
+        var previousLoggedPosLatLon = LatLng(_previousLogPosition.latitude, _previousLogPosition.longitude);
+        var distanceLastLogged = CoordinateUtilities.getDistance(previousLoggedPosLatLon, newPosLatLon);
+        var deltaSecondsLastLogged = (position.timestamp.millisecondsSinceEpoch - _previousLogPosition.timestamp.millisecondsSinceEpoch) / 1000;
+
+        GpLogger().d(
+            "distanceLastLogged > _gpsState.gpsMinDistance && deltaSeconds > _gpsState.gpsTimeInterval\n--> $distanceLastLogged > ${_gpsState.gpsMinDistance} && $deltaSecondsLastLogged > ${_gpsState.gpsTimeInterval}");
+
+        // apply filters and if ok, add point to log
+        if (distanceLastLogged > _gpsState.gpsMinDistance && deltaSecondsLastLogged > _gpsState.gpsTimeInterval) {
+          if (_gpsState.isLogging && _gpsState.currentLogId != null) {
+            _gpsState.currentLogPoints.add(newPosLatLon);
+            _gpsState.addLogPoint(position.longitude, position.latitude, position.altitude, position.timestamp.millisecondsSinceEpoch);
+            _previousLogPosition = position;
+          }
+        }
+      } else {
+        // set first 'previous'
+        _previousLogPosition = position;
       }
+
+      // gps information is set at every event
       _gpsState.status = tmpStatus;
       _gpsState.lastGpsPosition = position;
     }

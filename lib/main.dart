@@ -99,6 +99,7 @@ class _InitializationWidgetState extends State<InitializationWidget> {
       Future.delayed(Duration(seconds: 0), () async {
         // init preferences
         await GpPreferences().initialize();
+        gpsState.init();
 
         // read tags file
         await TagsManager().readFileTags();

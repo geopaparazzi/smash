@@ -9,13 +9,13 @@ import 'dart:math';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
 
-const DO_TEST_LOG = false;
+const DO_TEST_LOG = true;
 
 class Testlog {
   static int _index = 0;
 
   static Coordinate getNext() {
-    if (_index > TESTLOG.length - 1) {
+    if (_index > TESTLOG.length - 2) {
       _index = 0;
     }
     Coordinate c1 = TESTLOG[_index];

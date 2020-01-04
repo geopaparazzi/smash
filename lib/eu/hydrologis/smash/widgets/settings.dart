@@ -4,11 +4,14 @@
  * found in the LICENSE file.
  */
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 
 class SettingsWidget extends StatefulWidget {
   SettingsWidget({Key key}) : super(key: key);
@@ -28,7 +31,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           color: SmashColors.mainDecorations,
         ),
         title: SmashUI.normalText(CameraSettingState.title),
-        subtitle: SmashUI.normalText(CameraSettingState.subtitle),
+        subtitle: Text(CameraSettingState.subtitle),
         trailing: Icon(Icons.arrow_right),
         onTap: () async {
           _selectedSetting = CameraSetting();
@@ -40,10 +43,23 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           color: SmashColors.mainDecorations,
         ),
         title: SmashUI.normalText(ScreenSettingState.title),
-        subtitle: SmashUI.normalText(ScreenSettingState.subtitle),
+        subtitle: Text(ScreenSettingState.subtitle),
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = ScreenSetting();
+          showSettingsSheet(context);
+        });
+
+    final ListTile gpsSettingTile = ListTile(
+        leading: Icon(
+          GpsSettingsState.iconData,
+          color: SmashColors.mainDecorations,
+        ),
+        title: SmashUI.normalText(GpsSettingsState.title),
+        subtitle: Text(GpsSettingsState.subtitle),
+        trailing: Icon(Icons.arrow_right),
+        onTap: () {
+          _selectedSetting = GpsSettings();
           showSettingsSheet(context);
         });
 
@@ -53,7 +69,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           color: SmashColors.mainDecorations,
         ),
         title: SmashUI.normalText(DiagnosticsSettingState.title),
-        subtitle: SmashUI.normalText(DiagnosticsSettingState.subtitle),
+        subtitle: Text(DiagnosticsSettingState.subtitle),
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = DiagnosticsSetting();
@@ -64,7 +80,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       appBar: new AppBar(
         title: new Text("Settings"),
       ),
-      body: ListView(children: <Widget>[cameraSettingTile, screenSettingTile, diagnosticsSettingTile]),
+      body: ListView(children: <Widget>[gpsSettingTile, screenSettingTile, cameraSettingTile, diagnosticsSettingTile]),
     );
   }
 
@@ -82,7 +98,7 @@ class CameraSetting extends StatefulWidget {
 
 class CameraSettingState extends State<CameraSetting> {
   static final title = "Camera";
-  static final subtitle = "Camera Settings";
+  static final subtitle = "Camera & Resolution Settings";
   static final int index = 0;
   static final iconData = Icons.camera;
 
@@ -170,7 +186,7 @@ class ScreenSetting extends StatefulWidget {
 
 class ScreenSettingState extends State<ScreenSetting> {
   static final title = "Screen";
-  static final subtitle = "Screen Settings";
+  static final subtitle = "Screen, Scalebar and Icon Size Settings";
   static final int index = 1;
   static final iconData = Icons.fullscreen;
 
@@ -252,8 +268,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
                         SmashUI.normalText("Color"),
-                        LimitedBox(
-                          maxHeight: 400,
+                        Expanded(
                           child: MaterialColorPicker(
                               shrinkWrap: true,
                               allowShades: false,
@@ -381,6 +396,155 @@ class ScreenSettingState extends State<ScreenSetting> {
   }
 }
 
+class GpsSettings extends StatefulWidget {
+  @override
+  GpsSettingsState createState() {
+    return GpsSettingsState();
+  }
+}
+
+class GpsSettingsState extends State<GpsSettings> {
+  static final title = "GPS";
+  static final subtitle = "GPS and Log Settings";
+  static final int index = 1;
+  static final iconData = MdiIcons.crosshairsGps;
+
+  @override
+  Widget build(BuildContext context) {
+    int minDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, MINDISTANCES.first);
+    int maxDistance = GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, MAXDISTANCES.last);
+    int timeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS.first);
+
+    return Scaffold(
+      appBar: new AppBar(
+        title: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                iconData,
+                color: SmashColors.mainDecorations,
+              ),
+            ),
+            Text(subtitle),
+          ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Card(
+              margin: SmashUI.defaultMargin(),
+              elevation: SmashUI.DEFAULT_ELEVATION,
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Log filters", bold: true),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Min distance between 2 points."),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: DropdownButton<int>(
+                      value: minDistance,
+                      isExpanded: true,
+                      items: MINDISTANCES.map((i) {
+                        return DropdownMenuItem<int>(
+                          child: SmashUI.normalText(
+                            "$i m",
+                            textAlign: TextAlign.center,
+                          ),
+                          value: i,
+                        );
+                      }).toList(),
+                      onChanged: (selected) async {
+                        await GpPreferences().setInt(KEY_GPS_MIN_DISTANCE, selected);
+                        var gpsState = Provider.of<GpsState>(context);
+                        gpsState.gpsMinDistance = selected;
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Min timespan between 2 points."),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: DropdownButton<int>(
+                      value: timeInterval,
+                      isExpanded: true,
+                      items: TIMEINTERVALS.map((i) {
+                        return DropdownMenuItem<int>(
+                          child: SmashUI.normalText(
+                            "$i sec",
+                            textAlign: TextAlign.center,
+                          ),
+                          value: i,
+                        );
+                      }).toList(),
+                      onChanged: (selected) async {
+                        await GpPreferences().setInt(KEY_GPS_TIMEINTERVAL, selected);
+                        var gpsState = Provider.of<GpsState>(context);
+                        gpsState.gpsTimeInterval = selected;
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Card(
+              margin: SmashUI.defaultMargin(),
+              elevation: SmashUI.DEFAULT_ELEVATION,
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Other filters", bold: true),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText(
+                        "Max distance allowed between 2 subsequent points. This marks GPS points with higher 'jumps' as invalid and ignores them."),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: DropdownButton<int>(
+                      value: maxDistance,
+                      isExpanded: true,
+                      items: MAXDISTANCES.map((i) {
+                        return DropdownMenuItem<int>(
+                          child: SmashUI.normalText(
+                            "$i m",
+                            textAlign: TextAlign.center,
+                          ),
+                          value: i,
+                        );
+                      }).toList(),
+                      onChanged: (selected) async {
+                        await GpPreferences().setInt(KEY_GPS_MAX_DISTANCE, selected);
+                        var gpsState = Provider.of<GpsState>(context);
+                        gpsState.gpsMaxDistance = selected;
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class DiagnosticsSetting extends StatefulWidget {
   @override
   DiagnosticsSettingState createState() {
@@ -390,7 +554,7 @@ class DiagnosticsSetting extends StatefulWidget {
 
 class DiagnosticsSettingState extends State<DiagnosticsSetting> {
   static final title = "Diagnostics";
-  static final subtitle = "Diagnostics Settings";
+  static final subtitle = "Diagnostics & Debug Log Settings";
   static final int index = 2;
   static final iconData = Icons.bug_report;
 

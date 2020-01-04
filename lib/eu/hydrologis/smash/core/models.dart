@@ -42,8 +42,18 @@ class GpsState extends ChangeNotifierPlus {
   ProjectState _projectState;
   bool _insertInGps = true;
 
+  int gpsMinDistance = 1;
+  int gpsMaxDistance = 100;
+  int gpsTimeInterval = 1;
+
   List<LatLng> _currentLogPoints = [];
   GpsStatus _lastGpsStatusBeforeLogging;
+
+  void init() {
+    gpsMinDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, 1);
+    gpsMaxDistance = GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, 100);
+    gpsTimeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, 1);
+  }
 
   GpsStatus get status => _status;
 
@@ -340,7 +350,6 @@ class ProjectState extends ChangeNotifierPlus {
   GeopaparazziProjectDb get projectDb => _db;
 
   ProjectData get projectData => _projectData;
-
 
   Future<void> setNewProject(String path) async {
     GpLogger().d("Set new project: $path");

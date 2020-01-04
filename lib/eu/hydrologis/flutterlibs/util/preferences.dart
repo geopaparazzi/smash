@@ -20,12 +20,20 @@ const KEY_SHOW_SCALEBAR = 'KEY_SHOW_SCALEBAR';
 const KEY_CAMERA_RESOLUTION = 'KEY_CAMERA_RESOLUTION';
 const KEY_ENABLE_DIAGNOSTICS = 'KEY_ENABLE_DIAGNOSTICS';
 
+const KEY_GPS_MIN_DISTANCE = 'KEY_GPS_MIN_DISTANCE';
+const KEY_GPS_MAX_DISTANCE = 'KEY_GPS_MAX_DISTANCE';
+const KEY_GPS_TIMEINTERVAL = 'KEY_GPS_TIMEINTERVAL';
+
 const KEY_CENTERCROSS_STYLE = 'KEY_CENTERCROSS_STYLE';
 const KEY_MAPTOOLS_ICON_SIZE = 'KEY_MAPTOOLS_ICON_SIZE';
 const KEY_ICONS_LIST = 'KEY_ICONS_LIST';
 
 const KEY_LATLONG_DECIMALS = 6;
 const KEY_ELEV_DECIMALS = 0;
+
+const TIMEINTERVALS = [0, 1, 3, 5, 10, 15, 20, 30, 60];
+const MINDISTANCES = [0, 1, 3, 5, 10, 15, 20, 50, 100];
+const MAXDISTANCES = [100, 150, 200, 500, 1000, 5000, 10000, 100000];
 
 class CameraResolutions {
   static const HIGH = "high";
@@ -138,10 +146,27 @@ class GpPreferences {
     return prefValue;
   }
 
-  /// Save a bool [value] to the preferences using a preferences [key].
+  /// Save a double [value] to the preferences using a preferences [key].
   setDouble(String key, double value) async {
     await _checkPreferences();
     await _preferences.setDouble(key, value);
+  }
+
+  /// Get a int sync from the preferences.
+  ///
+  /// The method takes the preferences [key] and an optional [defaultValue]
+  /// which can be returned in case the preference doesn't exist.
+  int getIntSync(String key, [int defaultValue]) {
+    _checkPreferencesOrThrow();
+    int prefValue = _preferences.getInt(key);
+    if (prefValue == null) return defaultValue;
+    return prefValue;
+  }
+
+  /// Save an int [value] to the preferences using a preferences [key].
+  setInt(String key, int value) async {
+    await _checkPreferences();
+    await _preferences.setInt(key, value);
   }
 
   /// Return last saved position as [lon, lat, zoom] or null.
@@ -209,8 +234,7 @@ class GpPreferences {
   void setVectorLayerInfoList(List<String> vectorlayerInfoList) async {
     await _checkPreferences();
     if (vectorlayerInfoList == null) vectorlayerInfoList = [];
-    await _preferences.setStringList(
-        KEY_VECTORLAYERINFO_LIST, vectorlayerInfoList);
+    await _preferences.setStringList(KEY_VECTORLAYERINFO_LIST, vectorlayerInfoList);
   }
 
   Future<List<String>> getMbtilesFilesList() async {

@@ -123,7 +123,7 @@ class GpxSource extends VectorLayerSource {
   String toJson() {
     var json = '''
     {
-        "label": "${_name}",
+        "label": "$_name",
         "file":"$_file",
         "isvisible": $isVisible 
     }
