@@ -671,19 +671,19 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                 TableRow(
                   children: [
                     TableUtilities.cellForString("Latitude", color: color),
-                    TableUtilities.cellForString("${pos.latitude} deg", color: color),
+                    TableUtilities.cellForString("${pos.latitude.toStringAsFixed(KEY_LATLONG_DECIMALS)} deg", color: color),
                   ],
                 ),
                 TableRow(
                   children: [
                     TableUtilities.cellForString("Longitude", color: color),
-                    TableUtilities.cellForString("${pos.longitude} deg", color: color),
+                    TableUtilities.cellForString("${pos.longitude.toStringAsFixed(KEY_LATLONG_DECIMALS)} deg", color: color),
                   ],
                 ),
                 TableRow(
                   children: [
                     TableUtilities.cellForString("Altitude", color: color),
-                    TableUtilities.cellForString("${pos.altitude.round()} m", color: color),
+                    TableUtilities.cellForString("${pos.altitude.toStringAsFixed(KEY_ELEV_DECIMALS)} m", color: color),
                   ],
                 ),
                 TableRow(

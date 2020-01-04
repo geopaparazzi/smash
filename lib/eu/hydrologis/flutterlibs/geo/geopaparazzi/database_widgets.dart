@@ -643,19 +643,19 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
       TableRow(
         children: [
           TableUtilities.cellForString("Altitude"),
-          TableUtilities.cellForString(_note.altim.toInt().toString()),
+          TableUtilities.cellForString(_note.altim.toStringAsFixed(KEY_ELEV_DECIMALS)),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("Longitude"),
-          TableUtilities.cellForString(_note.lon.toString()),
+          TableUtilities.cellForString(_note.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("Latitude"),
-          TableUtilities.cellForString(_note.lat.toString()),
+          TableUtilities.cellForString(_note.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)),
         ],
       ),
     ];
