@@ -7,6 +7,7 @@ import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
@@ -98,6 +99,7 @@ class LogListWidgetState extends State<LogListWidget> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ProjectState>(builder: (context, projectState, child) {
+      GpsState gpsState = Provider.of<GpsState>(context, listen: false);
       var db = projectState.projectDb;
       return Scaffold(
         appBar: AppBar(
@@ -178,7 +180,7 @@ class LogListWidgetState extends State<LogListWidget> {
                         ),
                         trailing: Icon(Icons.arrow_right),
                         title: Text('${logItem.name}'),
-                        subtitle: Text('${_getTime(logItem)} ${_getLength(logItem)}'),
+                        subtitle: Text('${_getTime(logItem, gpsState)} ${_getLength(logItem, gpsState)}'),
                         onTap: () => _navigateToLogProperties(context, logItem),
                         onLongPress: () async {
                           SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
@@ -199,8 +201,16 @@ class LogListWidgetState extends State<LogListWidget> {
     });
   }
 
-  _getTime(Log4ListWidget item) {
+  _getTime(Log4ListWidget item, GpsState gpsState) {
     var minutes = (item.endTime - item.startTime) / 1000 / 60;
+    if (item.endTime == 0) {
+      if (gpsState.isLogging && item.id == gpsState.currentLogId) {
+        minutes = (DateTime.now().millisecondsSinceEpoch - item.startTime) / 1000 / 60;
+      } else {
+        return "";
+      }
+    }
+
     if (minutes > 60) {
       var hours = minutes / 60;
       var h = (hours * 10).toInt() / 10.0;
@@ -211,14 +221,23 @@ class LogListWidgetState extends State<LogListWidget> {
     }
   }
 
-  _getLength(Log4ListWidget item) {
-    var length = item.lengthm.toInt();
+  _getLength(Log4ListWidget item, GpsState gpsState) {
+    double length = item.lengthm;
+    if (length == 0 && item.endTime == 0 && gpsState.isLogging && item.id == gpsState.currentLogId) {
+      var points = gpsState.currentLogPoints;
+      double sum = 0;
+      for (int i = 0; i < points.length - 1; i++) {
+        double distance = CoordinateUtilities.getDistance(points[i], points[i + 1]);
+        sum += distance;
+      }
+      length = sum;
+    }
     if (length > 1000) {
       var lengthKm = length / 1000;
       var l = (lengthKm * 10).toInt() / 10.0;
-      return "Km: $l";
+      return "Km: ${l.round()}";
     } else {
-      return "Meters: $length";
+      return "Meters: ${length.round()}";
     }
   }
 

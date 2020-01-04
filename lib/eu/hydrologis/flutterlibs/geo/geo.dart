@@ -178,8 +178,8 @@ class GpsHandler {
         var distanceLastLogged = CoordinateUtilities.getDistance(previousLoggedPosLatLon, newPosLatLon);
         var deltaSecondsLastLogged = (position.timestamp.millisecondsSinceEpoch - _previousLogPosition.timestamp.millisecondsSinceEpoch) / 1000;
 
-        GpLogger().d(
-            "distanceLastLogged > _gpsState.gpsMinDistance && deltaSeconds > _gpsState.gpsTimeInterval\n--> $distanceLastLogged > ${_gpsState.gpsMinDistance} && $deltaSecondsLastLogged > ${_gpsState.gpsTimeInterval}");
+//        GpLogger().d(
+//            "distanceLastLogged > _gpsState.gpsMinDistance && deltaSeconds > _gpsState.gpsTimeInterval\n--> $distanceLastLogged > ${_gpsState.gpsMinDistance} && $deltaSecondsLastLogged > ${_gpsState.gpsTimeInterval}");
 
         // apply filters and if ok, add point to log
         if (distanceLastLogged > _gpsState.gpsMinDistance && deltaSecondsLastLogged > _gpsState.gpsTimeInterval) {
