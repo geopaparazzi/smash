@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
@@ -180,7 +181,7 @@ class LogListWidgetState extends State<LogListWidget> {
                         ),
                         trailing: Icon(Icons.arrow_right),
                         title: Text('${logItem.name}'),
-                        subtitle: Text('${_getTime(logItem, gpsState)} ${_getLength(logItem, gpsState)}'),
+                        subtitle: Text('${_getTime(logItem, gpsState, db)} ${_getLength(logItem, gpsState)}'),
                         onTap: () => _navigateToLogProperties(context, logItem),
                         onLongPress: () async {
                           SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
@@ -201,12 +202,20 @@ class LogListWidgetState extends State<LogListWidget> {
     });
   }
 
-  _getTime(Log4ListWidget item, GpsState gpsState) {
+  _getTime(Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
     var minutes = (item.endTime - item.startTime) / 1000 / 60;
     if (item.endTime == 0) {
       if (gpsState.isLogging && item.id == gpsState.currentLogId) {
         minutes = (DateTime.now().millisecondsSinceEpoch - item.startTime) / 1000 / 60;
       } else {
+        // needs to be fixed using the points. Do it and refresh.
+        db.getLogDataPointsById(item.id).then((data) {
+          var last = data.last;
+          var ts = last.ts;
+          db.updateGpsLogEndts(item.id, ts).then((i) {
+            setState(() {});
+          });
+        });
         return "";
       }
     }
@@ -466,7 +475,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
   double _sizeSliderValue = 10;
   double _maxSize = 100.0;
   ColorExt _noteColor;
-  String _marker = 'marker';
+  String _marker = 'mapMarker';
   bool _somethingChanged = false;
   var chosenIconsList = [];
 

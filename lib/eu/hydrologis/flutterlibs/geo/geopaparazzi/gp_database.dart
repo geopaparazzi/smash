@@ -422,7 +422,31 @@ class GeopaparazziProjectDb extends SqliteDb {
     return null;
   }
 
-  /// Add a new gps [Log] into teh database.
+  /// Get the start position coordinate of a log identified by [logId].
+  Future<List<LogDataPoint>> getLogDataPointsById(int logId) async {
+    var sql = '''
+      select $LOGSDATA_COLUMN_ID, $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_ALTIM, $LOGSDATA_COLUMN_TS 
+      from $TABLE_GPSLOG_DATA 
+      where $LOGSDATA_COLUMN_LOGID=$logId
+      order by $LOGSDATA_COLUMN_TS 
+    ''';
+
+    List<LogDataPoint> data = [];
+    List<Map<String, dynamic>> resList = await query(sql);
+    resList.forEach((map) {
+      LogDataPoint ldp = LogDataPoint()
+        ..id = map[LOGSDATA_COLUMN_ID]
+        ..logid = map[LOGSDATA_COLUMN_LOGID]
+        ..lon = map[LOGSDATA_COLUMN_LON]
+        ..lat = map[LOGSDATA_COLUMN_LAT]
+        ..altim = map[LOGSDATA_COLUMN_ALTIM]
+        ..ts = map[LOGSDATA_COLUMN_TS];
+      data.add(ldp);
+    });
+    return data;
+  }
+
+  /// Add a new gps [Log] into the database.
   ///
   /// The log is inserted with the properties [prop].
   /// The method returns the id of the inserted log.
