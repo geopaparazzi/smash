@@ -9,8 +9,6 @@ import 'dart:math';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
 
-const DO_TEST_LOG = true;
-
 class Testlog {
   static int _index = 0;
 

@@ -414,6 +414,7 @@ class GpsSettingsState extends State<GpsSettings> {
     int minDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, MINDISTANCES.first);
     int maxDistance = GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, MAXDISTANCES.last);
     int timeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS.first);
+    bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
 
     return Scaffold(
       appBar: new AppBar(
@@ -531,6 +532,36 @@ class GpsSettingsState extends State<GpsSettings> {
                         await GpPreferences().setInt(KEY_GPS_MAX_DISTANCE, selected);
                         var gpsState = Provider.of<GpsState>(context);
                         gpsState.gpsMaxDistance = selected;
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Card(
+              margin: SmashUI.defaultMargin(),
+              elevation: SmashUI.DEFAULT_ELEVATION,
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Mock locations", bold: true),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText(
+                        "${doTestLog ? "Disable" : "Enable"} test gps log for demo use.\n\nWARNING: This needs a working gps fix since it modifies the incoming gps points with those of the demo."),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: Checkbox(
+                      value: doTestLog,
+                      onChanged: (newValue) async {
+                        await GpPreferences().setBoolean(KEY_GPS_TESTLOG, newValue);
+                        var gpsState = Provider.of<GpsState>(context);
+                        gpsState.doTestLog = newValue;
                         setState(() {});
                       },
                     ),

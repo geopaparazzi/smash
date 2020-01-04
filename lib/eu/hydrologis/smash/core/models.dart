@@ -45,6 +45,7 @@ class GpsState extends ChangeNotifierPlus {
   int gpsMinDistance = 1;
   int gpsMaxDistance = 100;
   int gpsTimeInterval = 1;
+  bool doTestLog = false;
 
   List<LatLng> _currentLogPoints = [];
   GpsStatus _lastGpsStatusBeforeLogging;
@@ -53,6 +54,7 @@ class GpsState extends ChangeNotifierPlus {
     gpsMinDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, 1);
     gpsMaxDistance = GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, 100);
     gpsTimeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, 1);
+    doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
   }
 
   GpsStatus get status => _status;

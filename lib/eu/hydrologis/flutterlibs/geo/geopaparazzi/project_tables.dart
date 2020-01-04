@@ -121,6 +121,10 @@ class Note {
     }
     return map;
   }
+
+  bool hasForm() {
+    return form != null && form.trim().length > 0;
+  }
 }
 
 final String NOTESEXT_COLUMN_ID = "_id";
@@ -258,9 +262,7 @@ class Log {
       LOGS_COLUMN_STARTTS: startTime,
       LOGS_COLUMN_ENDTS: endTime,
       LOGS_COLUMN_LENGTHM: lengthm,
-      LOGS_COLUMN_TEXT: text == null
-          ? TimeUtilities.ISO8601_TS_FORMATTER.format(new DateTime.now())
-          : text,
+      LOGS_COLUMN_TEXT: text == null ? TimeUtilities.ISO8601_TS_FORMATTER.format(new DateTime.now()) : text,
       LOGS_COLUMN_ISDIRTY: isDirty,
     };
     if (id != null) {

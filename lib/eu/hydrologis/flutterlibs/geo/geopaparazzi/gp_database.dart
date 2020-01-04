@@ -881,7 +881,7 @@ class DataLoaderUtilities {
                             TableRow(
                               children: [
                                 TableUtilities.cellForString("Has Form"),
-                                TableUtilities.cellForString("${note.form != null}"),
+                                TableUtilities.cellForString("${note.hasForm()}"),
                               ],
                             ),
                           ],
@@ -914,7 +914,7 @@ class DataLoaderUtilities {
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
-                            if (note.form != null) {
+                            if (note.hasForm()) {
                               var sectionMap = jsonDecode(note.form);
                               var sectionName = sectionMap[ATTR_SECTIONNAME];
                               Position p = Position(

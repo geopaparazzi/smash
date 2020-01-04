@@ -28,7 +28,7 @@ class SmashUI {
   /// Create a text widget with size and color for normal text in pages.
   ///
   /// Allows to choose bold or color/neutral, [underline], [textAlign] and [overflow] (example TextOverflow.ellipsis).
-  static Text normalText(String text, {useColor = false, bold = false, color, textAlign = TextAlign.start, underline = false, overflow}) {
+  static Text normalText(String text, {useColor = false, bold = false, color, textAlign = TextAlign.justify, underline = false, overflow}) {
     Color c;
     if (useColor || color != null) {
       if (color == null) {
@@ -56,7 +56,7 @@ class SmashUI {
   /// Create a text widget with size and color for titles in pages.
   ///
   /// Allows to choose bold or color/neutral, [underline], [textAlign] and [overflow] (example TextOverflow.ellipsis).
-  static Text titleText(String text, {useColor = false, bold = false, color, textAlign = TextAlign.start}) {
+  static Text titleText(String text, {useColor = false, bold = false, color, textAlign = TextAlign.justify}) {
     Color c;
     if (useColor || color != null) {
       if (color == null) {

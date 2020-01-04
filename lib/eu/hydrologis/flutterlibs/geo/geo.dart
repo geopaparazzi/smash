@@ -137,7 +137,7 @@ class GpsHandler {
   }
 
   void _onPositionUpdate(Position position) {
-    if (DO_TEST_LOG) {
+    if (_gpsState.doTestLog) {
       var c = Testlog.getNext();
       Position newP = Position(
         latitude: c.y,
