@@ -5,19 +5,22 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 
 /// The SMASH Colors list
 ///
 /// https://material.io/tools/color/#!/?view.left=0&view.right=0&primary.color=1976D2&secondary.color=BF360C
 class SmashColors {
   static final ColorExt mainBackground = ColorExt("#ffFFFFFF");
+  static final ColorExt mainBackgroundDarkTheme = ColorExt("#00000000");
 
   static final ColorExt mainDecorations = ColorExt("#ff1976d2");
+  static final ColorExt mainDecorationsDarkTheme = ColorExt("#ffe6e6e6");
   static const int mainDecorationsR = 25;
   static const int mainDecorationsG = 118;
   static const int mainDecorationsB = 210;
 
-  static final ColorExt mainDecorationsDark = ColorExt("#ff004ba0");
+  static final ColorExt mainDecorationsDarker = ColorExt("#ff004ba0");
   static const int mainDecorationsDarkR = 0;
   static const int mainDecorationsDarkG = 75;
   static const int mainDecorationsDarkB = 160;
@@ -26,6 +29,7 @@ class SmashColors {
   static final ColorExt mainTextColorNeutral = ColorExt("#ff000000");
 
   static final ColorExt mainSelection = ColorExt("#ffbf360c");
+  static final ColorExt mainSelectionDarkTheme = ColorExt("#800000");
 
   static final ColorExt mainSelectionBorder = ColorExt("#ff870000");
   static const int mainSelectionBorderR = 135;
@@ -41,16 +45,14 @@ class SmashColors {
   static final ColorExt snackBarColor = ColorExt("#daffffff");
 
   static final MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
-  static final MaterialColor mainDecorationsMc =
-      toMaterialColor(mainDecorations);
-  static final MaterialColor mainDecorationsDarkMc =
-      toMaterialColor(mainDecorationsDark);
+  static final MaterialColor mainDecorationsMc = toMaterialColor(mainDecorations);
+  static final MaterialColor mainDecorationsMcDarkTheme = toMaterialColor(mainDecorationsDarkTheme);
+  static final MaterialColor mainDecorationsDarkerMc = toMaterialColor(mainDecorationsDarker);
   static final MaterialColor mainTextColorMc = toMaterialColor(mainTextColor);
-  static final MaterialColor mainTextColorNeutralMc =
-      toMaterialColor(mainTextColorNeutral);
+  static final MaterialColor mainTextColorNeutralMc = toMaterialColor(mainTextColorNeutral);
   static final MaterialColor mainSelectionMc = toMaterialColor(mainSelection);
-  static final MaterialColor mainSelectionBorderMc =
-      toMaterialColor(mainSelectionBorder);
+  static final MaterialColor mainSelectionMcDarkTheme = toMaterialColor(mainSelectionDarkTheme);
+  static final MaterialColor mainSelectionBorderMc = toMaterialColor(mainSelectionBorder);
 }
 
 /// The Geopaparazzi Colors list
@@ -71,16 +73,12 @@ class GeopaparazziColors {
   static final Color snackBarColor = ColorExt("#daffffff");
 
   static final MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
-  static final MaterialColor mainDecorationsMc =
-      toMaterialColor(mainDecorations);
-  static final MaterialColor mainDecorationsDarkMc =
-      toMaterialColor(mainDecorationsDark);
+  static final MaterialColor mainDecorationsMc = toMaterialColor(mainDecorations);
+  static final MaterialColor mainDecorationsDarkMc = toMaterialColor(mainDecorationsDark);
   static final MaterialColor mainTextColorMc = toMaterialColor(mainTextColor);
-  static final MaterialColor mainTextColorNeutralMc =
-      toMaterialColor(mainTextColorNeutral);
+  static final MaterialColor mainTextColorNeutralMc = toMaterialColor(mainTextColorNeutral);
   static final MaterialColor mainSelectionMc = toMaterialColor(mainSelection);
-  static final MaterialColor mainSelectionBorderMc =
-      toMaterialColor(mainSelectionBorder);
+  static final MaterialColor mainSelectionBorderMc = toMaterialColor(mainSelectionBorder);
 }
 
 /// Converts a [Color] to a [MaterialColor].

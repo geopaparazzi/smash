@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/theme.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
@@ -116,7 +117,7 @@ class CameraSettingState extends State<CameraSetting> {
                 color: SmashColors.mainDecorations,
               ),
             ),
-            Text(subtitle),
+            Text(title),
           ],
         ),
       ),
@@ -195,6 +196,11 @@ class ScreenSettingState extends State<ScreenSetting> {
     bool keepScreenOn = GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
     bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
     double currentIconSize = GpPreferences().getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+    //    String themeStr = GpPreferences().getStringSync(KEY_THEME, SmashThemes.LIGHT.toString());
+    //    SmashThemes theme = SmashThemes.LIGHT;
+    //    if (themeStr == SmashThemes.DARK.toString()) {
+    //      theme = SmashThemes.DARK;
+    //    }
 
     CenterCrossStyle centerCrossStyle = CenterCrossStyle.fromPreferences();
     return Scaffold(
@@ -208,7 +214,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                 color: SmashColors.mainDecorations,
               ),
             ),
-            Text(subtitle),
+            Text(title),
           ],
         ),
       ),
@@ -389,6 +395,42 @@ class ScreenSettingState extends State<ScreenSetting> {
                 ],
               ),
             ),
+            // TODO enable when working on dark theme
+            //            Card(
+            //              margin: SmashUI.defaultMargin(),
+            //              elevation: SmashUI.DEFAULT_ELEVATION,
+            //              color: SmashColors.mainBackground,
+            //              child: Column(
+            //                children: <Widget>[
+            //                  Padding(
+            //                    padding: SmashUI.defaultPadding(),
+            //                    child: SmashUI.normalText("Theme", bold: true),
+            //                  ),
+            //                  Padding(
+            //                    padding: SmashUI.defaultPadding(),
+            //                    child: DropdownButton<SmashThemes>(
+            //                      value: theme,
+            //                      isExpanded: true,
+            //                      items: SmashThemes.values.map((i) {
+            //                        return DropdownMenuItem<SmashThemes>(
+            //                          child: SmashUI.normalText(
+            //                            i.toString(),
+            //                            textAlign: TextAlign.center,
+            //                          ),
+            //                          value: i,
+            //                        );
+            //                      }).toList(),
+            //                      onChanged: (selected) async {
+            //                        await GpPreferences().setString(KEY_THEME, selected.toString());
+            //                        var themeState = Provider.of<ThemeState>(context);
+            //                        themeState.currentTheme = selected;
+            //                        setState(() {});
+            //                      },
+            //                    ),
+            //                  ),
+            //                ],
+            //              ),
+            //            ),
           ],
         ),
       ),
@@ -427,7 +469,7 @@ class GpsSettingsState extends State<GpsSettings> {
                 color: SmashColors.mainDecorations,
               ),
             ),
-            Text(subtitle),
+            Text(title),
           ],
         ),
       ),
@@ -603,7 +645,7 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
                 color: SmashColors.mainDecorations,
               ),
             ),
-            Text(subtitle),
+            Text(title),
           ],
         ),
       ),

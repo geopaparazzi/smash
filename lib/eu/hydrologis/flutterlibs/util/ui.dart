@@ -349,7 +349,7 @@ Future<String> showComboDialog(BuildContext context, dynamic title, List<String>
       barrierDismissible: true,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: title is String ? SmashUI.normalText(title, textAlign: TextAlign.center, color: SmashColors.mainDecorationsDark) : title,
+          title: title is String ? SmashUI.normalText(title, textAlign: TextAlign.center, color: SmashColors.mainDecorationsDarker) : title,
           children: ListTile.divideTiles(context: context, tiles: widgets).toList(),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         );

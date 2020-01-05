@@ -443,7 +443,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: GestureDetector(
-          child: SmashUI.normalText(item.name, color: SmashColors.mainDecorationsDark),
+          child: SmashUI.normalText(item.name, color: SmashColors.mainDecorationsDarker),
           onDoubleTap: () {
             _changeLogName(context, item);
           },
@@ -473,7 +473,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
   Note _note;
   double _sizeSliderValue = 10;
-  double _maxSize = 100.0;
+  double _maxSize = 500.0;
   ColorExt _noteColor;
   String _marker = 'mapMarker';
   bool _somethingChanged = false;
@@ -603,9 +603,9 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                               flex: 1,
                               child: Slider(
                                 activeColor: SmashColors.mainSelection,
-                                min: 1.0,
+                                min: 5,
                                 max: _maxSize,
-                                divisions: 20,
+                                divisions: 99,
                                 onChanged: (newRating) {
                                   _somethingChanged = true;
                                   setState(() => _sizeSliderValue = newRating);
@@ -694,7 +694,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: GestureDetector(
-          child: SmashUI.normalText(item.text, color: SmashColors.mainDecorationsDark),
+          child: SmashUI.normalText(item.text, color: SmashColors.mainDecorationsDarker),
           onDoubleTap: () async {
             String result = await showInputDialog(
               context,
@@ -798,7 +798,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
                       hasProperties = false;
                       id = dynNote.id;
                       markerName = 'camera';
-                      markerColor = ColorExt.asHex(SmashColors.mainDecorationsDark);
+                      markerColor = ColorExt.asHex(SmashColors.mainDecorationsDarker);
                       text = dynNote.text;
                       ts = dynNote.timeStamp;
                       lon = dynNote.lon;

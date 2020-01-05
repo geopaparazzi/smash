@@ -56,7 +56,7 @@ class FormSectionsWidgetState extends State<FormSectionsWidget> {
                 _selectedPosition = position;
               });
             },
-            title: SmashUI.normalText(formNames4Section[position], bold: true, color: SmashColors.mainDecorationsDark),
+            title: SmashUI.normalText(formNames4Section[position], bold: true, color: SmashColors.mainDecorationsDarker),
           ),
         );
       },
@@ -165,7 +165,7 @@ class _MasterDetailPageState extends State<MasterDetailPage> {
           // create new note in position based on form
 
           var iconName = TagsManager.getIcon4Section(widget.sectionMap);
-          String iconColor = ColorExt.asHex(SmashColors.mainDecorationsDark);
+          String iconColor = ColorExt.asHex(SmashColors.mainDecorationsDarker);
 
           int ts = DateTime.now().millisecondsSinceEpoch;
           Position pos;
@@ -369,7 +369,7 @@ ListTile getWidget(BuildContext context, int noteId, final Map<String, dynamic> 
 
         var text = Text(
           value.toString(),
-          style: TextStyle(fontSize: size, decoration: textDecoration, color: SmashColors.mainDecorationsDark),
+          style: TextStyle(fontSize: size, decoration: textDecoration, color: SmashColors.mainDecorationsDarker),
           textAlign: TextAlign.start,
         );
 
@@ -532,7 +532,7 @@ class _CheckboxWidgetState extends State<CheckboxWidget> {
     bool selected = value == 'true';
 
     return CheckboxListTile(
-      title: SmashUI.normalText(widget._label, color: SmashColors.mainDecorationsDark),
+      title: SmashUI.normalText(widget._label, color: SmashColors.mainDecorationsDarker),
       value: selected,
       onChanged: (value) {
         setState(() {
@@ -578,7 +578,7 @@ class ComboboxWidgetState extends State<ComboboxWidget> {
         Flexible(
           child: Padding(
             padding: SmashUI.defaultRigthPadding(),
-            child: SmashUI.normalText(widget._label, color: SmashColors.mainDecorationsDark),
+            child: SmashUI.normalText(widget._label, color: SmashColors.mainDecorationsDarker),
           ),
         ),
         Flexible(

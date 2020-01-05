@@ -153,12 +153,12 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
           ),
           markers: projectData.geopapMarkers,
           polygonOptions:
-              PolygonOptions(borderColor: SmashColors.mainDecorationsDark, color: SmashColors.mainDecorations.withOpacity(0.2), borderStrokeWidth: 3),
+              PolygonOptions(borderColor: SmashColors.mainDecorationsDarker, color: SmashColors.mainDecorations.withOpacity(0.2), borderStrokeWidth: 3),
           builder: (context, markers) {
             return FloatingActionButton(
               child: Text(markers.length.toString()),
               onPressed: null,
-              backgroundColor: SmashColors.mainDecorationsDark,
+              backgroundColor: SmashColors.mainDecorationsDarker,
               foregroundColor: SmashColors.mainBackground,
               heroTag: null,
             );
@@ -312,7 +312,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                           var sectionMap = allSectionsMap[selectedSection];
                           var jsonString = jsonEncode(sectionMap);
                           Note note = await DataLoaderUtilities.addNote(projectState, doNoteInGps, _mapController,
-                              text: selectedSection, form: jsonString, iconName: iconName, color: ColorExt.asHex(SmashColors.mainDecorationsDark));
+                              text: selectedSection, form: jsonString, iconName: iconName, color: ColorExt.asHex(SmashColors.mainDecorationsDarker));
 
                           Navigator.push(projectState.context, MaterialPageRoute(
                             builder: (context) {

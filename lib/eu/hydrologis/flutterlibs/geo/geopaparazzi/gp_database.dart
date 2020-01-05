@@ -959,7 +959,7 @@ class DataLoaderUtilities {
                         IconButton(
                           icon: Icon(
                             Icons.close,
-                            color: SmashColors.mainDecorationsDark,
+                            color: SmashColors.mainDecorationsDarker,
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
@@ -992,7 +992,7 @@ class DataLoaderUtilities {
       var lat = image.lat;
       var lon = image.lon;
       var label =
-          "image: ${image.text}\nlat: ${image.lat}\nlon: ${image.lon}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
+          "image: ${image.text}\nlat: ${image.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)}\nlon: ${image.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
       tmp.add(Marker(
         width: size,
         height: size,
@@ -1067,7 +1067,7 @@ class DataLoaderUtilities {
                         IconButton(
                           icon: Icon(
                             Icons.close,
-                            color: SmashColors.mainDecorationsDark,
+                            color: SmashColors.mainDecorationsDarker,
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
@@ -1085,7 +1085,7 @@ class DataLoaderUtilities {
           child: Icon(
             getIcon('camera'),
             size: size,
-            color: SmashColors.mainDecorationsDark,
+            color: SmashColors.mainDecorationsDarker,
           ),
         )),
       ));

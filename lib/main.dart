@@ -9,17 +9,25 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/permissions.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/theme.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/dashboard.dart';
-import 'package:provider/provider.dart';
 
-void main() => runApp(SmashApp());
+void main() => runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProjectState()),
+        ChangeNotifierProvider(create: (_) => ThemeState()),
+        ChangeNotifierProvider(create: (_) => GpsState()),
+        ChangeNotifierProvider(create: (_) => GpsState()),
+        ChangeNotifierProvider(create: (_) => SmashMapState()),
+      ],
+      child: SmashApp(),
+    ));
 
 class SmashApp extends StatefulWidget {
   @override
@@ -32,45 +40,13 @@ class SmashAppState extends State<SmashApp> {
   @override
   Widget build(BuildContext context) {
     // If the Future is complete, display the preview.
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ProjectState()),
-        ChangeNotifierProvider(create: (_) => GpsState()),
-        ChangeNotifierProvider(create: (_) => GpsState()),
-        ChangeNotifierProvider(create: (_) => SmashMapState()),
-      ],
-      child: MaterialApp(
-        title: APP_NAME,
-        theme: ThemeData(
-            primarySwatch: SmashColors.mainDecorationsMc,
-            accentColor: SmashColors.mainSelectionMc,
-            canvasColor: SmashColors.mainBackground,
-            brightness: Brightness.light,
-            inputDecorationTheme: InputDecorationTheme(
-              border: const OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Color.fromARGB(255, SmashColors.mainDecorationsDarkR, SmashColors.mainDecorationsDarkG, SmashColors.mainDecorationsDarkB)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Color.fromARGB(255, SmashColors.mainDecorationsDarkR, SmashColors.mainDecorationsDarkG, SmashColors.mainDecorationsDarkB)),
-              ),
-              disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromARGB(255, 128, 128, 128)),
-              ),
-              focusedBorder: const OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Color.fromARGB(255, SmashColors.mainSelectionBorderR, SmashColors.mainSelectionBorderG, SmashColors.mainSelectionBorderB)),
-              ),
-//            labelStyle: const TextStyle(
-//              color: Color.fromARGB(255, 128, 128, 128),
-//            ),
-            )),
-        debugShowMaterialGrid: false,
-        debugShowCheckedModeBanner: false,
-        showPerformanceOverlay: false,
-        home: InitializationWidget(),
-      ),
+    return MaterialApp(
+      title: APP_NAME,
+      theme: Provider.of<ThemeState>(context).currentThemeData,
+      debugShowMaterialGrid: false,
+      debugShowCheckedModeBanner: false,
+      showPerformanceOverlay: false,
+      home: InitializationWidget(),
     );
   }
 }
@@ -99,6 +75,15 @@ class _InitializationWidgetState extends State<InitializationWidget> {
       Future.delayed(Duration(seconds: 0), () async {
         // init preferences
         await GpPreferences().initialize();
+
+        // TODO enable dark theme one day
+        //        String themeStr = await GpPreferences().getString(KEY_THEME, SmashThemes.LIGHT.toString());
+        //        SmashThemes theme = SmashThemes.LIGHT;
+        //        if (themeStr == SmashThemes.DARK.toString()) {
+        //          theme = SmashThemes.DARK;
+        //        }
+        //        Provider.of<ThemeState>(context).currentTheme = theme;
+
         gpsState.init();
 
         // read tags file
