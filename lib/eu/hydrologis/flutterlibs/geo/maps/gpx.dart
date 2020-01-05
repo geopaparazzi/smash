@@ -16,9 +16,10 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 
 class GpxSource extends VectorLayerSource {
-  String _file;
+  String _absolutePath;
   String _name;
   Gpx _gpx;
   Color pointFillColor = Colors.red;
@@ -35,19 +36,20 @@ class GpxSource extends VectorLayerSource {
 
   GpxSource.fromMap(Map<String, dynamic> map) {
     _name = map['label'];
-    _file = map['file'];
+    String relativePath = map['file'];
+    _absolutePath = Workspace.makeAbsolute(relativePath);
     isVisible = map['isvisible'];
 
     readGpx();
   }
 
-  GpxSource(this._file) {
+  GpxSource(this._absolutePath) {
     readGpx();
   }
 
   void readGpx() {
-    _name = FileUtilities.nameFromFile(_file, false);
-    var xml = FileUtilities.readFile(_file);
+    _name = FileUtilities.nameFromFile(_absolutePath, false);
+    var xml = FileUtilities.readFile(_absolutePath);
     _gpx = GpxReader().fromString(xml);
 
     int count = 1;
@@ -96,8 +98,8 @@ class GpxSource extends VectorLayerSource {
     return _wayPoints.isNotEmpty || _tracksRoutes.isNotEmpty;
   }
 
-  String getFile() {
-    return _file;
+  String getAbsolutePath() {
+    return _absolutePath;
   }
 
   String getUrl() {
@@ -121,10 +123,11 @@ class GpxSource extends VectorLayerSource {
   }
 
   String toJson() {
+    var relativePath = Workspace.makeRelative(_absolutePath);
     var json = '''
     {
         "label": "$_name",
-        "file":"$_file",
+        "file":"$relativePath",
         "isvisible": $isVisible 
     }
     ''';

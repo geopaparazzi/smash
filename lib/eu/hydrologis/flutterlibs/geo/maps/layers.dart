@@ -11,23 +11,24 @@ import 'dart:ui' as UI;
 
 import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
 import 'package:dart_jts/dart_jts.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
+
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/filebrowser.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:image/image.dart' as IMG;
-import 'package:provider/provider.dart';
 
 import 'gpx.dart';
 import 'mapsforge.dart';
@@ -41,7 +42,7 @@ abstract class LayerSource {
 
   void setActive(bool active);
 
-  String getFile();
+  String getAbsolutePath();
 
   String getUrl();
 
@@ -52,15 +53,15 @@ abstract class LayerSource {
   Future<LatLngBounds> getBounds();
 
   bool isMapsforge() {
-    return getFile() != null && getFile().toLowerCase().endsWith("map");
+    return getAbsolutePath() != null && getAbsolutePath().toLowerCase().endsWith("map");
   }
 
   bool isMbtiles() {
-    return getFile() != null && getFile().toLowerCase().endsWith("mbtiles");
+    return getAbsolutePath() != null && getAbsolutePath().toLowerCase().endsWith("mbtiles");
   }
 
   bool isGpx() {
-    return getFile() != null && getFile().toLowerCase().endsWith("gpx");
+    return getAbsolutePath() != null && getAbsolutePath().toLowerCase().endsWith("gpx");
   }
 
   bool isOnlineService() {
@@ -69,7 +70,7 @@ abstract class LayerSource {
 
   bool operator ==(dynamic other) {
     if (other is LayerSource) {
-      if (getFile() != null && getFile() == other.getFile()) {
+      if (getAbsolutePath() != null && getAbsolutePath() == other.getAbsolutePath()) {
         return true;
       } else if (getUrl() != null && getUrl() == other.getUrl()) {
         return true;
@@ -104,7 +105,7 @@ abstract class VectorLayerSource extends LayerSource {}
 
 class TileSource extends LayerSource {
   String label;
-  String file;
+  String absolutePath;
   String url;
   int minZoom;
   int maxZoom;
@@ -116,7 +117,7 @@ class TileSource extends LayerSource {
 
   TileSource({
     this.label,
-    this.file,
+    this.absolutePath,
     this.url,
     this.minZoom,
     this.maxZoom,
@@ -128,7 +129,10 @@ class TileSource extends LayerSource {
 
   TileSource.fromMap(Map<String, dynamic> map) {
     this.label = map['label'];
-    this.file = map['file'];
+    var relativePath = map['file'];
+    if (relativePath != null) {
+      absolutePath = Workspace.makeAbsolute(relativePath);
+    }
     this.url = map['url'];
     this.minZoom = map['minzoom'];
     this.maxZoom = map['maxzoom'];
@@ -203,7 +207,7 @@ class TileSource extends LayerSource {
 
   TileSource.Mapsforge(String filePath) {
     this.label = FileUtilities.nameFromFile(filePath, false);
-    this.file = filePath;
+    this.absolutePath = Workspace.makeAbsolute(filePath);
     this.attribution = "Map tiles by Mapsforge, Data by OpenStreetMap, under ODbL";
     this.minZoom = 0;
     this.maxZoom = 22;
@@ -213,7 +217,7 @@ class TileSource extends LayerSource {
 
   TileSource.Mbtiles(String filePath) {
     this.label = FileUtilities.nameFromFile(filePath, false);
-    this.file = filePath;
+    this.absolutePath = Workspace.makeAbsolute(filePath);
     this.attribution = "";
     this.minZoom = 0;
     this.maxZoom = 22;
@@ -221,8 +225,8 @@ class TileSource extends LayerSource {
     this.isTms = true;
   }
 
-  String getFile() {
-    return file;
+  String getAbsolutePath() {
+    return absolutePath;
   }
 
   String getUrl() {
@@ -247,9 +251,9 @@ class TileSource extends LayerSource {
 
   Future<LatLngBounds> getBounds() async {
     if (this.isMapsforge()) {
-      return await getMapsforgeBounds(File(file));
+      return await getMapsforgeBounds(File(absolutePath));
     } else if (this.isMbtiles()) {
-      var prov = SmashMBTilesImageProvider(File(file));
+      var prov = SmashMBTilesImageProvider(File(absolutePath));
       await prov.open();
       var bounds = prov.bounds;
       prov.dispose();
@@ -262,7 +266,7 @@ class TileSource extends LayerSource {
     if (this.isMapsforge()) {
       // mapsforge
       double tileSize = 256;
-      var mapsforgeTileProvider = MapsforgeTileProvider(File(file), tileSize: tileSize);
+      var mapsforgeTileProvider = MapsforgeTileProvider(File(absolutePath), tileSize: tileSize);
       await mapsforgeTileProvider.open();
       return [
         TileLayerOptions(
@@ -275,9 +279,16 @@ class TileSource extends LayerSource {
         )
       ];
     } else if (this.isMbtiles()) {
-      var tileProvider = SmashMBTilesImageProvider(File(file));
+      var tileProvider = SmashMBTilesImageProvider(File(absolutePath));
       // mbtiles
-      return [TileLayerOptions(tileProvider: tileProvider, maxZoom: maxZoom.toDouble(), backgroundColor: Colors.white, tms: true)];
+      return [
+        TileLayerOptions(
+          tileProvider: tileProvider,
+          maxZoom: maxZoom.toDouble(),
+          backgroundColor: Colors.white,
+          tms: true,
+        )
+      ];
     } else if (this.isOnlineService()) {
       return [
         TileLayerOptions(
@@ -289,15 +300,20 @@ class TileSource extends LayerSource {
         )
       ];
     } else {
-      throw Exception("Type not supported: ${file != null ? file : url}");
+      throw Exception("Type not supported: ${absolutePath != null ? absolutePath : url}");
     }
   }
 
   String toJson() {
+    String savePath;
+    if (absolutePath != null) {
+      savePath = Workspace.makeRelative(absolutePath);
+    }
+
     var json = '''
     {
         "label": "${label}",
-        ${file != null ? "\"file\": \"$file\"," : ""}
+        ${savePath != null ? "\"file\": \"$savePath\"," : ""}
         ${url != null ? "\"url\": \"$url\"," : ""}
         "minzoom": $minZoom,
         "maxzoom": $maxZoom,
@@ -316,7 +332,6 @@ final List<TileSource> onlinesTilesSources = [
   TileSource.Open_Street_Map_HOT(),
   TileSource.Stamen_Watercolor(),
   TileSource.Wikimedia_Map(),
-  TileSource.Esri_Satellite(),
 ];
 
 class LayerManager {
@@ -354,7 +369,7 @@ class LayerManager {
     var list = <LayerSource>[];
     List<LayerSource> where = _baseLayers.where((ts) {
       if (ts.isActive()) {
-        String file = ts.getFile();
+        String file = ts.getAbsolutePath();
         if (file != null && file.isNotEmpty) {
           if (!File(file).existsSync()) {
             return false;
@@ -455,10 +470,10 @@ class LayersPageState extends State<LayersPage> {
                   ),
                   child: ListTile(
                     leading: Icon(
-                      layerSourceItem.getFile() != null
-                          ? layerSourceItem.getFile().endsWith("map")
+                      layerSourceItem.getAbsolutePath() != null
+                          ? layerSourceItem.getAbsolutePath().endsWith("map")
                               ? MdiIcons.map
-                              : layerSourceItem.getFile().endsWith("gpx") ? MdiIcons.mapMarker : MdiIcons.database
+                              : layerSourceItem.getAbsolutePath().endsWith("gpx") ? MdiIcons.mapMarker : MdiIcons.database
                           : MdiIcons.earth,
                       color: SmashColors.mainDecorations,
                       size: SmashUI.MEDIUM_ICON_SIZE,
@@ -495,31 +510,12 @@ class LayersPageState extends State<LayersPage> {
                 Container(
                   child: FloatingActionButton(
                     onPressed: () async {
-                      File file = await FilePicker.getFile(type: FileType.ANY);
-                      if (file != null) {
-                        if (file.path.endsWith(".map")) {
-                          TileSource ts = TileSource.Mapsforge(file.path);
-                          LayerManager().addLayer(ts);
-                          _somethingChanged = true;
-                          setState(() {});
-                        } else if (file.path.endsWith(".mbtiles")) {
-                          TileSource ts = TileSource.Mbtiles(file.path);
-                          LayerManager().addLayer(ts);
-                          _somethingChanged = true;
-                          setState(() {});
-                        } else if (file.path.endsWith(".gpx")) {
-                          GpxSource gpxLayer = GpxSource(file.path);
-                          if (gpxLayer.hasData()) {
-                            LayerManager().addLayer(gpxLayer);
-                            _somethingChanged = true;
-                            setState(() {});
-                          }
-                        } else {
-                          showWarningDialog(context, "File format not supported.");
-                        }
-                      }
+//                      Navigator.of(context).pop();
+                      var lastUsedFolder = await Workspace.getLastUsedFolder();
+                      var allowed = <String>[]..addAll(ALLOWED_VECTOR_DATA_EXT)..addAll(ALLOWED_TILE_DATA_EXT);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FileBrowser(false, allowed, lastUsedFolder, loadLayer)));
                     },
-                    tooltip: "Load map/mbtiles files",
+                    tooltip: "Load spatial datasets",
                     child: Icon(MdiIcons.map),
                     heroTag: null,
                   ),
@@ -545,6 +541,29 @@ class LayersPageState extends State<LayersPage> {
               animatedIconData: AnimatedIcons.menu_close //To principal button
               ),
         ));
+  }
+
+  loadLayer(BuildContext context, String filePath) {
+    if (filePath.endsWith(".map")) {
+      TileSource ts = TileSource.Mapsforge(filePath);
+      LayerManager().addLayer(ts);
+      _somethingChanged = true;
+      setState(() {});
+    } else if (filePath.endsWith(".mbtiles")) {
+      TileSource ts = TileSource.Mbtiles(filePath);
+      LayerManager().addLayer(ts);
+      _somethingChanged = true;
+      setState(() {});
+    } else if (filePath.endsWith(".gpx")) {
+      GpxSource gpxLayer = GpxSource(filePath);
+      if (gpxLayer.hasData()) {
+        LayerManager().addLayer(gpxLayer);
+        _somethingChanged = true;
+        setState(() {});
+      }
+    } else {
+      showWarningDialog(context, "File format not supported.");
+    }
   }
 
   void setLayersOnChange(List<LayerSource> _layersList) {

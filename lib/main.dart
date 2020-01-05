@@ -76,6 +76,8 @@ class _InitializationWidgetState extends State<InitializationWidget> {
         // init preferences
         await GpPreferences().initialize();
 
+        await Workspace.init();
+
         // TODO enable dark theme one day
         //        String themeStr = await GpPreferences().getString(KEY_THEME, SmashThemes.LIGHT.toString());
         //        SmashThemes theme = SmashThemes.LIGHT;

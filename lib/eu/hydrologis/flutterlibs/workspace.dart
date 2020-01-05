@@ -20,6 +20,26 @@ const EXPORT_FOLDER = "export";
 
 /// Application workspace utilities.
 class Workspace {
+  static String _rootFolder;
+
+  static Future<void> init() async {
+    var rootDir = await getRootFolder();
+    _rootFolder = rootDir.path;
+  }
+
+  /// Make an [absolutePath] relative to the current rootfolder.
+  static String makeRelative(String absolutePath) {
+    var relativePath = absolutePath.replaceFirst(_rootFolder, "");
+    return relativePath;
+  }
+
+  /// Make a [relativePath] absolute using to the current rootfolder.
+  static String makeAbsolute(String relativePath) {
+    if (relativePath.startsWith(_rootFolder)) return relativePath;
+    var absolutePath = FileUtilities.joinPaths(_rootFolder, relativePath);
+    return absolutePath;
+  }
+
   /// Get the folder into which user created data can be saved.
   ///
   /// These are for example project databases, the configuration folder
