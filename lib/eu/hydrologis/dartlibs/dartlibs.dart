@@ -11,6 +11,12 @@ import 'package:logger/logger.dart';
 /// File path and folder utilities.
 class FileUtilities {
   static String joinPaths(String path1, String path2) {
+    if (path2.startsWith("/")) {
+      path2 = path2.substring(1);
+      if (!path1.endsWith("/")) {
+        path1 = path1 + "/";
+      }
+    }
     return join(path1, path2);
   }
 
@@ -20,6 +26,10 @@ class FileUtilities {
     } else {
       return basenameWithoutExtension(filePath);
     }
+  }
+
+  static String parentFolderFromFile(String filePath) {
+    return dirname(filePath);
   }
 
   static String readFile(String filePath) {
@@ -58,6 +68,51 @@ class FileUtilities {
     }
     return filenameList;
   }
+
+  static List<List<dynamic>> listFiles(String parentPath,
+      {bool doOnlyFolder = false, List<String> allowedExtensions, bool doHidden = false, bool order = true}) {
+    List<List<dynamic>> pathAndNameList = [];
+
+    try {
+      var list = Directory(parentPath).listSync();
+      for (var fse in list) {
+        String path = fse.path;
+        String filename = basename(path);
+        if (filename.startsWith(".")) {
+          continue;
+        }
+        String parentname = dirname(path);
+
+        var isDirectory = FileSystemEntity.isDirectorySync(path);
+        if (doOnlyFolder && !isDirectory) {
+          continue;
+        }
+
+        if (isDirectory) {
+          pathAndNameList.add(<dynamic>[parentname, filename, isDirectory]);
+        } else if (allowedExtensions != null) {
+          for (var ext in allowedExtensions) {
+            if (filename.endsWith(ext)) {
+              pathAndNameList.add(<dynamic>[parentname, filename, isDirectory]);
+              break;
+            }
+          }
+        } else {
+          pathAndNameList.add(<dynamic>[parentname, filename, isDirectory]);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    pathAndNameList.sort((o1, o2) {
+      String n1 = o1[1];
+      String n2 = o2[1];
+      return n1.compareTo(n2);
+    });
+
+    return pathAndNameList;
+  }
 }
 
 /// Image utilities
@@ -79,8 +134,7 @@ class ImageUtilities {
     return imgFile.readAsBytesSync();
   }
 
-  static List<int> resizeImage(Uint8List bytes,
-      {int newWidth: 100, int longestSizeTo}) {
+  static List<int> resizeImage(Uint8List bytes, {int newWidth: 100, int longestSizeTo}) {
     IMG.Image image = IMG.decodeImage(bytes);
 
     IMG.Image thumbnail;
@@ -110,8 +164,7 @@ class ImageUtilities {
 /// Time related utilities
 class TimeUtilities {
   /// An ISO8601 date formatter (yyyy-MM-dd HH:mm:ss).
-  static final DateFormat ISO8601_TS_FORMATTER =
-      DateFormat("yyyy-MM-dd HH:mm:ss");
+  static final DateFormat ISO8601_TS_FORMATTER = DateFormat("yyyy-MM-dd HH:mm:ss");
 
   /// An ISO8601 time formatter (HH:mm:ss).
   static final DateFormat ISO8601_TS_TIME_FORMATTER = DateFormat("HH:mm:ss");
@@ -129,8 +182,7 @@ class TimeUtilities {
   static final DateFormat DAYHOUR_TS_FORMATTER = DateFormat("yyyyMMdd_HH");
 
   /// A date formatter (yyyyMMdd_HHmm) useful for file names (it contains no spaces).
-  static final DateFormat DAYHOURMINUTE_TS_FORMATTER =
-      DateFormat("yyyyMMdd_HHmm");
+  static final DateFormat DAYHOURMINUTE_TS_FORMATTER = DateFormat("yyyyMMdd_HHmm");
 }
 
 /// Network related utilities
@@ -244,8 +296,7 @@ class MercatorUtils {
   /// @param tileSize tile size.
   /// @return [minx, miny, maxx, maxy]
   static List<double> tileLatLonBounds(int tx, int ty, int zoom, int tileSize) {
-    List<double> bounds =
-        tileBounds3857(tx.toDouble(), ty.toDouble(), zoom, tileSize);
+    List<double> bounds = tileBounds3857(tx.toDouble(), ty.toDouble(), zoom, tileSize);
     List<double> mins = metersToLatLon(bounds[0], bounds[1]);
     List<double> maxs = metersToLatLon(bounds[2], bounds[3]);
     return [mins[1], maxs[0], maxs[1], mins[0]];
@@ -258,13 +309,10 @@ class MercatorUtils {
   /// @param zoom     zoomlevel.
   /// @param tileSize tile size.
   /// @return [minx, miny, maxx, maxy]
-  static List<double> tileBounds3857(
-      double tx, double ty, int zoom, int tileSize) {
-    List<double> min =
-        pixelsToMeters(tx * tileSize, ty * tileSize, zoom, tileSize);
+  static List<double> tileBounds3857(double tx, double ty, int zoom, int tileSize) {
+    List<double> min = pixelsToMeters(tx * tileSize, ty * tileSize, zoom, tileSize);
     double minx = min[0], miny = min[1];
-    List<double> max = pixelsToMeters(
-        (tx + 1) * tileSize, (ty + 1) * tileSize, zoom, tileSize);
+    List<double> max = pixelsToMeters((tx + 1) * tileSize, (ty + 1) * tileSize, zoom, tileSize);
     double maxx = max[0], maxy = max[1];
     return [minx, miny, maxx, maxy];
   }
@@ -276,14 +324,9 @@ class MercatorUtils {
   ///
   /// @param zoom
   /// @return [\zoom, xtile, ytile_osm]
-  static List<int> getTileNumber(
-      final double lat, final double lon, final int zoom) {
+  static List<int> getTileNumber(final double lat, final double lon, final int zoom) {
     int xtile = ((lon + 180) / 360 * (1 << zoom)).floor();
-    int ytile_osm =
-        ((1 - log(tan(degToRadian(lat)) + 1 / cos(degToRadian(lat))) / pi) /
-                2 *
-                (1 << zoom))
-            .floor();
+    int ytile_osm = ((1 - log(tan(degToRadian(lat)) + 1 / cos(degToRadian(lat))) / pi) / 2 * (1 << zoom)).floor();
     if (xtile < 0) xtile = 0;
     if (xtile >= (1 << zoom)) xtile = ((1 << zoom) - 1);
     if (ytile_osm < 0) ytile_osm = 0;
@@ -351,10 +394,8 @@ class MercatorUtils {
   /// @param east_longitude longitude in degrees
   /// @param west_longitude longitude in degrees
   /// @return meters in spherical mercator projection
-  static double longitudeToMeters(
-      double east_longitude, double west_longitude) {
-    return longitudeToMetersX(east_longitude) -
-        longitudeToMetersX(west_longitude);
+  static double longitudeToMeters(double east_longitude, double west_longitude) {
+    return longitudeToMetersX(east_longitude) - longitudeToMetersX(west_longitude);
   }
 
   /// Convert a north-latitude,south-latitude coordinate (in degrees) to distance in meters
@@ -363,8 +404,7 @@ class MercatorUtils {
   /// @param south_latitude latitude in degrees
   /// @return meters in spherical mercator projection
   static double latitudeToMeters(double north_latitude, double south_latitude) {
-    return latitudeToMetersY(north_latitude) -
-        latitudeToMetersY(south_latitude);
+    return latitudeToMetersY(north_latitude) - latitudeToMetersY(south_latitude);
   }
 
   /// Converts given lat/lon in WGS84 Datum to XY in Spherical Mercator
@@ -387,8 +427,7 @@ class MercatorUtils {
   /// @param zoom     zoomlevel.
   /// @param tileSize tile size.
   /// @return converted coordinate.
-  static List<double> pixelsToMeters(
-      double px, double py, int zoom, int tileSize) {
+  static List<double> pixelsToMeters(double px, double py, int zoom, int tileSize) {
     double res = getResolution(zoom, tileSize);
     double mx = px * res - originShift;
     double my = py * res - originShift;
@@ -411,8 +450,7 @@ class MercatorUtils {
   /// @param my
   /// @param zoom
   /// @return
-  static List<int> metersToPixels(
-      double mx, double my, int zoom, int tileSize) {
+  static List<int> metersToPixels(double mx, double my, int zoom, int tileSize) {
     double res = getResolution(zoom, tileSize);
     int px = ((mx + originShift) / res).round();
     int py = ((my + originShift) / res).round();

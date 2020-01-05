@@ -145,21 +145,25 @@ void showWarningDialog(BuildContext context, String prompt, {String title: "Warn
             title,
             textAlign: TextAlign.center,
           ),
-          content: Container(
-            height: SIMPLE_DIALOGS_HEIGHT,
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Icon(
-                    Icons.warning,
-                    color: Colors.orange,
-                    size: SIMPLE_DIALOGS_ICONSIZE,
-                  ),
+          content: Wrap(
+            children: <Widget>[
+              Container(
+//            height: SIMPLE_DIALOGS_HEIGHT,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Icon(
+                        Icons.warning,
+                        color: Colors.orange,
+                        size: SIMPLE_DIALOGS_ICONSIZE,
+                      ),
+                    ),
+                    Text(prompt),
+                  ],
                 ),
-                Text(prompt),
-              ],
-            ),
+              ),
+            ],
           ),
           actions: <Widget>[
             FlatButton(
@@ -183,21 +187,24 @@ void showErrorDialog(BuildContext context, String prompt, {String title: "Error"
             title,
             textAlign: TextAlign.center,
           ),
-          content: Container(
-            height: SIMPLE_DIALOGS_HEIGHT,
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                    size: SIMPLE_DIALOGS_ICONSIZE,
-                  ),
+          content: Wrap(
+            children: <Widget>[
+              Container(
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: SIMPLE_DIALOGS_ICONSIZE,
+                      ),
+                    ),
+                    Text(prompt),
+                  ],
                 ),
-                Text(prompt),
-              ],
-            ),
+              ),
+            ],
           ),
           actions: <Widget>[
             FlatButton(

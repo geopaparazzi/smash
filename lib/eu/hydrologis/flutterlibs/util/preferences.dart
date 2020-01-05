@@ -5,6 +5,8 @@
  */
 import 'package:shared_preferences/shared_preferences.dart';
 
+const KEY_LAST_USED_FOLDER = "KEY_LAST_USED_FOLDER";
+
 const KEY_LAST_GPAPPROJECT = "lastgpapProject";
 const KEY_LAST_LAT = "lastgpap_lat";
 const KEY_LAST_LON = "lastgpap_lon";

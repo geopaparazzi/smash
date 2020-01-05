@@ -16,6 +16,7 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_importexport.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/filebrowser.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/diagnostic.dart';
@@ -31,6 +32,19 @@ import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
 import 'package:provider/provider.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
+
+_openProject(BuildContext context, String selectedPath) async {
+  var projectState = Provider.of<ProjectState>(context, listen: false);
+  await projectState.setNewProject(selectedPath);
+  await projectState.reloadProject();
+
+//    File file = await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
+//    if (file != null && file.existsSync()) {
+//      var projectState = Provider.of<ProjectState>(context, listen: false);
+//      await projectState.setNewProject(file.path);
+//      await projectState.reloadProject();
+//    }
+}
 
 class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue) {
@@ -96,7 +110,11 @@ class DashboardUtils {
           bold: true,
           color: c,
         ),
-        onTap: () => _openProject(context),
+        onTap: () async {
+          Navigator.of(context).pop();
+          var lastUsedFolder = await Workspace.getLastUsedFolder();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => FileBrowser(false, ALLOWED_PROJECT_EXT, lastUsedFolder, _openProject)));
+        },
       ),
 //      ListTile(
 //        leading: new Icon(
@@ -283,16 +301,6 @@ class DashboardUtils {
       );
 
     return list;
-  }
-
-  static Future _openProject(BuildContext context) async {
-    File file = await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
-    if (file != null && file.existsSync()) {
-      var projectState = Provider.of<ProjectState>(context, listen: false);
-      await projectState.setNewProject(file.path);
-      await projectState.reloadProject();
-    }
-    Navigator.of(context).pop();
   }
 
   static Future _createNewProject(BuildContext context) async {

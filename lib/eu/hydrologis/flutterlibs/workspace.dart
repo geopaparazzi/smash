@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_ex/path_provider_ex.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 
 /// The name of the app, used to handle project folders and similar.
 const APP_NAME = "smash";
@@ -54,8 +55,7 @@ class Workspace {
   /// Returns the file of the folder to use.
   static Future<Directory> getApplicationFolder() async {
     var rootFolder = await getRootFolder();
-    var applicationFolderPath =
-        FileUtilities.joinPaths(rootFolder.path, APP_NAME);
+    var applicationFolderPath = FileUtilities.joinPaths(rootFolder.path, APP_NAME);
     Directory configFolder = Directory(applicationFolderPath);
     if (!configFolder.existsSync()) {
       configFolder.createSync();
@@ -68,8 +68,7 @@ class Workspace {
   /// Returns the file of the folder to use.
   static Future<Directory> getProjectsFolder() async {
     var applicationFolder = await getApplicationFolder();
-    var projectsFolderPath =
-        FileUtilities.joinPaths(applicationFolder.path, PROJECTS_FOLDER);
+    var projectsFolderPath = FileUtilities.joinPaths(applicationFolder.path, PROJECTS_FOLDER);
     Directory configFolder = Directory(projectsFolderPath);
     if (!configFolder.existsSync()) {
       configFolder.createSync();
@@ -82,8 +81,7 @@ class Workspace {
   /// Returns the file of the folder to use.
   static Future<Directory> getConfigurationFolder() async {
     var applicationFolder = await getApplicationFolder();
-    var configFolderPath =
-        FileUtilities.joinPaths(applicationFolder.path, CONFIG_FOLDER);
+    var configFolderPath = FileUtilities.joinPaths(applicationFolder.path, CONFIG_FOLDER);
     Directory configFolder = Directory(configFolderPath);
     if (!configFolder.existsSync()) {
       configFolder.createSync();
@@ -96,8 +94,7 @@ class Workspace {
   /// Returns the file of the folder to use.
   static Future<Directory> getMapsFolder() async {
     var applicationFolder = await getApplicationFolder();
-    var mapsFolderPath =
-        FileUtilities.joinPaths(applicationFolder.path, MAPS_FOLDER);
+    var mapsFolderPath = FileUtilities.joinPaths(applicationFolder.path, MAPS_FOLDER);
     Directory mapsFolder = Directory(mapsFolderPath);
     if (!mapsFolder.existsSync()) {
       mapsFolder.createSync();
@@ -110,8 +107,7 @@ class Workspace {
   /// Returns the file of the folder to use.
   static Future<Directory> getExportsFolder() async {
     var applicationFolder = await getApplicationFolder();
-    var mapsFolderPath =
-        FileUtilities.joinPaths(applicationFolder.path, EXPORT_FOLDER);
+    var mapsFolderPath = FileUtilities.joinPaths(applicationFolder.path, EXPORT_FOLDER);
     Directory mapsFolder = Directory(mapsFolderPath);
     if (!mapsFolder.existsSync()) {
       mapsFolder.createSync();
@@ -137,8 +133,7 @@ class Workspace {
     }
   }
 
-  static List<String> _getAndroidInternalStorage(
-      List<StorageInfo> storageInfo) {
+  static List<String> _getAndroidInternalStorage(List<StorageInfo> storageInfo) {
     String rootDir;
     String appFilesDir;
     if (storageInfo.isNotEmpty) {
@@ -147,6 +142,32 @@ class Workspace {
     }
     if (rootDir == null || appFilesDir == null) return null;
     return [rootDir, appFilesDir];
+  }
+
+  /// Return the last used folder from the preferences.
+  ///
+  /// The paths are kept in the preferences as relative paths.
+  /// This is neccessary, since on IOS systems the launch root
+  /// changes at every application launch and the ApplicationDocumentsDirectory
+  /// changes.
+  static Future<String> getLastUsedFolder() async {
+    var rootDir = await getRootFolder();
+    var rootPath = rootDir.path;
+    var lastFolder = await GpPreferences().getString(KEY_LAST_USED_FOLDER, "");
+    if (lastFolder.length == 0) {
+      lastFolder = rootPath;
+    } else {
+      // add the root folder
+      lastFolder = FileUtilities.joinPaths(rootPath, lastFolder);
+    }
+    return lastFolder;
+  }
+
+  static Future<void> setLastUsedFolder(String absolutePath) async {
+    var rootDir = await getRootFolder();
+    var rootPath = rootDir.path;
+    String relativePath = absolutePath.replaceFirst(rootPath, "");
+    await GpPreferences().setString(KEY_LAST_USED_FOLDER, relativePath);
   }
 
   /// Get the folder into which the app can create data, which are
