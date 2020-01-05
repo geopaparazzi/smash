@@ -7,19 +7,17 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:badges/badges.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_importexport.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/filebrowser.dart';
-import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/diagnostic.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/filebrowser.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/network.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
@@ -27,9 +25,9 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/share.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/validators.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
-import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
 
@@ -37,13 +35,6 @@ _openProject(BuildContext context, String selectedPath) async {
   var projectState = Provider.of<ProjectState>(context, listen: false);
   await projectState.setNewProject(selectedPath);
   await projectState.reloadProject();
-
-//    File file = await FilePicker.getFile(type: FileType.ANY, fileExtension: 'gpap');
-//    if (file != null && file.existsSync()) {
-//      var projectState = Provider.of<ProjectState>(context, listen: false);
-//      await projectState.setNewProject(file.path);
-//      await projectState.reloadProject();
-//    }
 }
 
 class DashboardUtils {

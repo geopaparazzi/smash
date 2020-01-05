@@ -83,7 +83,7 @@ dependencies:
   shared_preferences: ^0.5.6
 
   # MIT
-  logger: 0.7.0+2
+  logger: ^0.8.2
 
   # BSD
   #  esys_flutter_share: any #1.0.2
@@ -95,7 +95,7 @@ dependencies:
   flutter_material_color_picker: ^1.0.5
 
   # BSD
-  flutter_map: #^0.8.0
+  flutter_map: #^0.8.1
     git:
       url: https://github.com/moovida/flutter_map.git
 
@@ -105,8 +105,9 @@ dependencies:
 
 
 
+  ## USING OWN FILEPICKER TO AVOID PATHS CAOS
   # MIT
-  file_picker: ^1.4.3+1
+  #  file_picker: ^1.4.3+1
   # ON IOS NEEDS:
   #  <key>UIBackgroundModes</key>
   #  <array>
@@ -130,7 +131,7 @@ dependencies:
   url_launcher: ^5.4.1
 
   # MIT
-  dio: ^3.0.7
+  dio: ^3.0.8
 
   # Apache 2.0
   gpx: ^0.0.3

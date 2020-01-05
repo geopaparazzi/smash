@@ -121,7 +121,7 @@ packages:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.7"
+    version: "3.0.8"
   extended_image:
     dependency: "direct main"
     description:
@@ -136,13 +136,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.9"
-  file_picker:
-    dependency: "direct main"
-    description:
-      name: file_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.4.3+1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -329,7 +322,7 @@ packages:
       name: logger
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.0+2"
+    version: "0.8.2"
   logging:
     dependency: transitive
     description:
