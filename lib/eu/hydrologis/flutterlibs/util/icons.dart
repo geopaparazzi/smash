@@ -3,8 +3,12 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
+import 'dart:io';
+
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/filemanagement.dart';
 import 'ui.dart';
 import 'preferences.dart';
 import 'colors.dart';
@@ -43,6 +47,27 @@ const List<String> DEFAULT_NOTES_ICONDATA = [
   'thumbUp',
   'thumbDown',
 ];
+
+class SmashIcons {
+  /// Get the right icon for a given path or url or file name  or extension.
+  static IconData forPath(String pathOrUrlOrNameOrExtension) {
+    if (pathOrUrlOrNameOrExtension.endsWith(FileManager.MAPSFORGE_EXT)) {
+      return MdiIcons.map;
+    } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.GPX_EXT)) {
+      return MdiIcons.mapMarker;
+    } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.GEOPACKAGE_EXT)) {
+      return MdiIcons.packageVariant;
+    } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.GEOPAPARAZZI_EXT)) {
+      return MdiIcons.database;
+    } else if (FileSystemEntity.isDirectorySync(pathOrUrlOrNameOrExtension)) {
+      return MdiIcons.folderOutline;
+    } else if (pathOrUrlOrNameOrExtension.toLowerCase().startsWith("http")) {
+      return MdiIcons.earth;
+    } else {
+      return MdiIcons.fileOutline;
+    }
+  }
+}
 
 IconData getIcon(String key) {
   var iconData = MdiIcons.fromString(key);

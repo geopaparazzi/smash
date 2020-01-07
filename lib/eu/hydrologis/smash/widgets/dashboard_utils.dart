@@ -17,7 +17,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_importexport.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/diagnostic.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/filebrowser.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/filemanagement.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/network.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
@@ -104,7 +104,15 @@ class DashboardUtils {
         onTap: () async {
           Navigator.of(context).pop();
           var lastUsedFolder = await Workspace.getLastUsedFolder();
-          Navigator.push(context, MaterialPageRoute(builder: (context) => FileBrowser(false, ALLOWED_PROJECT_EXT, lastUsedFolder, _openProject)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FileBrowser(
+                        false,
+                        FileManager.ALLOWED_PROJECT_EXT,
+                        lastUsedFolder,
+                        _openProject,
+                      )));
         },
       ),
 //      ListTile(

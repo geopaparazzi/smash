@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms_widgets.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';

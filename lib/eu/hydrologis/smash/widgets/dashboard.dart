@@ -17,7 +17,6 @@ import 'package:latlong/latlong.dart';
 
 import 'package:path/path.dart' hide context;
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms_widgets.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
@@ -477,7 +476,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
   }
 
   Future<void> reloadLayers() async {
-    var activeLayersInfos = LayerManager().getActiveLayers();
+    List<LayerSource> activeLayersInfos = LayerManager().getActiveLayers();
     _activeLayers = [];
 
     List<LayerOptions> listTmp = [];

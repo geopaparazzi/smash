@@ -15,14 +15,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/widgets.dart';
+import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/geopackage.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/filebrowser.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/filemanagement.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
@@ -46,7 +49,7 @@ abstract class LayerSource {
 
   String getUrl();
 
-  String getLabel();
+  String getName();
 
   String getAttribution();
 
@@ -70,12 +73,12 @@ abstract class LayerSource {
 
   bool operator ==(dynamic other) {
     if (other is LayerSource) {
-      if (getAbsolutePath() != null && getAbsolutePath() == other.getAbsolutePath()) {
-        return true;
-      } else if (getUrl() != null && getUrl() == other.getUrl()) {
-        return true;
-      } else {
+      if (getUrl() != null && getUrl() != other.getUrl()) {
         return false;
+      } else if (getAbsolutePath() != null && (getName() != other.getName() || getAbsolutePath() != other.getAbsolutePath())) {
+        return false;
+      } else {
+        return true;
       }
     } else {
       return false;
@@ -90,6 +93,9 @@ abstract class LayerSource {
       if (file != null && file.endsWith("gpx")) {
         GpxSource gpx = GpxSource.fromMap(map);
         return [gpx];
+      } else if (file != null && file.endsWith("gpkg")) {
+        GeopackageSource gpkg = GeopackageSource.fromMap(map);
+        return [gpkg];
       } else {
         TileSource ts = TileSource.fromMap(map);
         return [ts];
@@ -101,7 +107,9 @@ abstract class LayerSource {
   }
 }
 
-abstract class VectorLayerSource extends LayerSource {}
+abstract class VectorLayerSource extends LayerSource {
+  Future<void> load();
+}
 
 class TileSource extends LayerSource {
   String label;
@@ -233,7 +241,7 @@ class TileSource extends LayerSource {
     return url;
   }
 
-  String getLabel() {
+  String getName() {
     return label;
   }
 
@@ -390,7 +398,7 @@ class LayerManager {
   void addLayer(LayerSource layerData) {
     if (layerData is TileSource && !_baseLayers.contains(layerData)) {
       _baseLayers.add(layerData);
-    } else if (layerData is GpxSource && !_vectorLayers.contains(layerData)) {
+    } else if (layerData is VectorLayerSource && !_vectorLayers.contains(layerData)) {
       _vectorLayers.add(layerData);
     }
   }
@@ -470,11 +478,7 @@ class LayersPageState extends State<LayersPage> {
                   ),
                   child: ListTile(
                     leading: Icon(
-                      layerSourceItem.getAbsolutePath() != null
-                          ? layerSourceItem.getAbsolutePath().endsWith("map")
-                              ? MdiIcons.map
-                              : layerSourceItem.getAbsolutePath().endsWith("gpx") ? MdiIcons.mapMarker : MdiIcons.database
-                          : MdiIcons.earth,
+                      SmashIcons.forPath(layerSourceItem.getAbsolutePath() ?? layerSourceItem.getUrl()),
                       color: SmashColors.mainDecorations,
                       size: SmashUI.MEDIUM_ICON_SIZE,
                     ),
@@ -485,7 +489,7 @@ class LayersPageState extends State<LayersPage> {
                           _somethingChanged = true;
                           setState(() {});
                         }),
-                    title: Text('${layerSourceItem.getLabel()}'),
+                    title: Text('${layerSourceItem.getName()}'),
                     subtitle: Text('${layerSourceItem.getAttribution()}'),
                     onLongPress: () async {
                       LatLngBounds bb = await layerSourceItem.getBounds();
@@ -512,7 +516,7 @@ class LayersPageState extends State<LayersPage> {
                     onPressed: () async {
 //                      Navigator.of(context).pop();
                       var lastUsedFolder = await Workspace.getLastUsedFolder();
-                      var allowed = <String>[]..addAll(ALLOWED_VECTOR_DATA_EXT)..addAll(ALLOWED_TILE_DATA_EXT);
+                      var allowed = <String>[]..addAll(FileManager.ALLOWED_VECTOR_DATA_EXT)..addAll(FileManager.ALLOWED_TILE_DATA_EXT);
                       Navigator.push(context, MaterialPageRoute(builder: (context) => FileBrowser(false, allowed, lastUsedFolder, loadLayer)));
                     },
                     tooltip: "Load spatial datasets",
@@ -543,22 +547,42 @@ class LayersPageState extends State<LayersPage> {
         ));
   }
 
-  loadLayer(BuildContext context, String filePath) {
-    if (filePath.endsWith(".map")) {
+  loadLayer(BuildContext context, String filePath) async {
+    if (filePath.endsWith(".${FileManager.MAPSFORGE_EXT}")) {
       TileSource ts = TileSource.Mapsforge(filePath);
       LayerManager().addLayer(ts);
       _somethingChanged = true;
       setState(() {});
-    } else if (filePath.endsWith(".mbtiles")) {
+    } else if (filePath.endsWith(".${FileManager.MBTILES_EXT}")) {
       TileSource ts = TileSource.Mbtiles(filePath);
       LayerManager().addLayer(ts);
       _somethingChanged = true;
       setState(() {});
-    } else if (filePath.endsWith(".gpx")) {
+    } else if (filePath.endsWith(".${FileManager.GPX_EXT}")) {
       GpxSource gpxLayer = GpxSource(filePath);
       if (gpxLayer.hasData()) {
         LayerManager().addLayer(gpxLayer);
         _somethingChanged = true;
+        setState(() {});
+      }
+    } else if (filePath.endsWith(".${FileManager.GEOPACKAGE_EXT}")) {
+      GeopackageDb db;
+      try {
+        db = GeopackageDb(filePath);
+        db.doRtreeTestCheck = GeopackageSource.DO_RTREE_CHECK;
+        await db.openOrCreate();
+        List<FeatureEntry> features = await db.features();
+        features.forEach((f) {
+          GeopackageSource gps = GeopackageSource(filePath, f.tableName);
+          LayerManager().addLayer(gps);
+          _somethingChanged = true;
+        });
+
+        // TODO make tiles part
+      } finally {
+        db?.close();
+      }
+      if (_somethingChanged) {
         setState(() {});
       }
     } else {

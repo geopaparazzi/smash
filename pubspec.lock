@@ -158,9 +158,11 @@ packages:
   flutter_geopackage:
     dependency: "direct main"
     description:
-      name: flutter_geopackage
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "65273d7fd379ceef6fefa34201b6a0a2ca46f2c6"
+      url: "https://github.com/moovida/flutter_geopackage.git"
+    source: git
     version: "0.0.1"
   flutter_image:
     dependency: transitive

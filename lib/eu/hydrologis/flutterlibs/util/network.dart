@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/mapsforge.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart' as ICONS;
-import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/eventhandlers.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/mapsforge.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart' as ICONS;
+import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 
 import 'offline_maps.dart';
 

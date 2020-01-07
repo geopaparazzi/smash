@@ -47,7 +47,9 @@ dependencies:
   #BSD
   dart_jts: 0.0.4+2
   # apache 2
-  flutter_geopackage: 0.0.1
+  flutter_geopackage: #0.0.1
+    git:
+      url: https://github.com/moovida/flutter_geopackage.git
 
   #BSD
   image_picker: ^0.6.2+3

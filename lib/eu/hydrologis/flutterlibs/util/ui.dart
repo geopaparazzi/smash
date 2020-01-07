@@ -378,4 +378,26 @@ class TableUtilities {
       ),
     );
   }
+
+  static Table fromMap(Map<String, dynamic> map) {
+    List<TableRow> rows = [];
+
+    map.forEach((key, value) {
+      var row = TableRow(
+        children: [
+          cellForString(key),
+          cellForString(value.toString()),
+        ],
+      );
+      rows.add(row);
+    });
+
+    return Table(
+      columnWidths: {
+        0: FlexColumnWidth(0.4),
+        1: FlexColumnWidth(0.6),
+      },
+      children: rows,
+    );
+  }
 }

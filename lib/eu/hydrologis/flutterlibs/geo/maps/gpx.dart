@@ -33,64 +33,64 @@ class GpxSource extends VectorLayerSource {
   List<String> _wayPointNames = [];
   List<List<LatLng>> _tracksRoutes = [];
   LatLngBounds _gpxBounds = LatLngBounds();
+  bool loaded = false;
 
   GpxSource.fromMap(Map<String, dynamic> map) {
     _name = map['label'];
     String relativePath = map['file'];
     _absolutePath = Workspace.makeAbsolute(relativePath);
     isVisible = map['isvisible'];
-
-    readGpx();
   }
 
-  GpxSource(this._absolutePath) {
-    readGpx();
-  }
+  GpxSource(this._absolutePath);
 
-  void readGpx() {
-    _name = FileUtilities.nameFromFile(_absolutePath, false);
-    var xml = FileUtilities.readFile(_absolutePath);
-    _gpx = GpxReader().fromString(xml);
+  Future<void> load() {
+    if (!loaded) {
+      _name = FileUtilities.nameFromFile(_absolutePath, false);
+      var xml = FileUtilities.readFile(_absolutePath);
+      _gpx = GpxReader().fromString(xml);
 
-    int count = 1;
-    _gpx.wpts.forEach((wpt) {
-      var latLng = LatLng(wpt.lat, wpt.lon);
-      _gpxBounds.extend(latLng);
-      _wayPoints.add(latLng);
-      var name = wpt.name;
-      if (name == null) {
-        name = "Point $count";
+      int count = 1;
+      _gpx.wpts.forEach((wpt) {
+        var latLng = LatLng(wpt.lat, wpt.lon);
+        _gpxBounds.extend(latLng);
+        _wayPoints.add(latLng);
+        var name = wpt.name;
+        if (name == null) {
+          name = "Point $count";
+        }
+        count++;
+        _wayPointNames.add(name);
+      });
+
+      if (_gpx.wpts.isNotEmpty) {
+        _attribution = _attribution + "Wpts(${_gpx.wpts.length}) ";
       }
-      count++;
-      _wayPointNames.add(name);
-    });
 
-    if (_gpx.wpts.isNotEmpty) {
-      _attribution = _attribution + "Wpts(${_gpx.wpts.length}) ";
-    }
-
-    _gpx.trks.forEach((trk) {
-      trk.trksegs.forEach((trkSeg) {
-        List<LatLng> points = trkSeg.trkpts.map((wpt) {
+      _gpx.trks.forEach((trk) {
+        trk.trksegs.forEach((trkSeg) {
+          List<LatLng> points = trkSeg.trkpts.map((wpt) {
+            var latLng = LatLng(wpt.lat, wpt.lon);
+            _gpxBounds.extend(latLng);
+            return latLng;
+          }).toList();
+          _tracksRoutes.add(points);
+        });
+      });
+      if (_gpx.trks.isNotEmpty) {
+        _attribution = _attribution + "Trks(${_gpx.trks.length}) ";
+      }
+      _gpx.rtes.forEach((rt) {
+        List<LatLng> points = rt.rtepts.map((wpt) {
           var latLng = LatLng(wpt.lat, wpt.lon);
           _gpxBounds.extend(latLng);
-          return latLng;
         }).toList();
         _tracksRoutes.add(points);
       });
-    });
-    if (_gpx.trks.isNotEmpty) {
-      _attribution = _attribution + "Trks(${_gpx.trks.length}) ";
-    }
-    _gpx.rtes.forEach((rt) {
-      List<LatLng> points = rt.rtepts.map((wpt) {
-        var latLng = LatLng(wpt.lat, wpt.lon);
-        _gpxBounds.extend(latLng);
-      }).toList();
-      _tracksRoutes.add(points);
-    });
-    if (_gpx.rtes.isNotEmpty) {
-      _attribution = _attribution + "Rtes(${_gpx.rtes.length}) ";
+      if (_gpx.rtes.isNotEmpty) {
+        _attribution = _attribution + "Rtes(${_gpx.rtes.length}) ";
+      }
+      loaded = true;
     }
   }
 
@@ -106,7 +106,7 @@ class GpxSource extends VectorLayerSource {
     return null;
   }
 
-  String getLabel() {
+  String getName() {
     return _name;
   }
 
@@ -135,7 +135,9 @@ class GpxSource extends VectorLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>> toLayers(Function showSnackbar) {
+  Future<List<LayerOptions>> toLayers(Function showSnackbar) async {
+    await load();
+
     List<LayerOptions> layers = [];
 
     if (_tracksRoutes.isNotEmpty) {
@@ -198,7 +200,7 @@ class GpxSource extends VectorLayerSource {
       );
       layers.add(waypointsCluster);
     }
-    return Future.value(layers);
+    return layers;
   }
 
   @override

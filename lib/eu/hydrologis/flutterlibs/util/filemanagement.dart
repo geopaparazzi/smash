@@ -10,29 +10,39 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 
-const ALLOWED_PROJECT_EXT = ["gpap"];
-const ALLOWED_VECTOR_DATA_EXT = ["gpx", "gpkg"];
-const ALLOWED_TILE_DATA_EXT = ["gpkg", "mbtiles", "map"];
+/// Handler ov everything related to files supported in SMASH.
+class FileManager {
+  static final ALLOWED_PROJECT_EXT = [GEOPAPARAZZI_EXT];
+  static final ALLOWED_VECTOR_DATA_EXT = [GPX_EXT, GEOPACKAGE_EXT];
+  static final ALLOWED_TILE_DATA_EXT = [GEOPACKAGE_EXT, MBTILES_EXT, MAPSFORGE_EXT];
 
-bool isProjectFile(String path) {
-  return path.endsWith(ALLOWED_PROJECT_EXT[0]);
-}
+  static final GEOPAPARAZZI_EXT = "gpap";
+  static final GPX_EXT = "gpx";
+  static final GEOPACKAGE_EXT = "gpkg";
+  static final MAPSFORGE_EXT = "map";
+  static final MBTILES_EXT = "mbtiles";
 
-bool isVectordataFile(String path) {
-  for (var ext in ALLOWED_VECTOR_DATA_EXT) {
-    if (path.endsWith(ext)) return true;
+  static bool isProjectFile(String path) {
+    return path.endsWith(ALLOWED_PROJECT_EXT[0]);
   }
-  return false;
-}
 
-bool isTiledataFile(String path) {
-  for (var ext in ALLOWED_TILE_DATA_EXT) {
-    if (path.endsWith(ext)) return true;
+  static bool isVectordataFile(String path) {
+    for (var ext in ALLOWED_VECTOR_DATA_EXT) {
+      if (path.endsWith(ext)) return true;
+    }
+    return false;
   }
-  return false;
+
+  static bool isTiledataFile(String path) {
+    for (var ext in ALLOWED_TILE_DATA_EXT) {
+      if (path.endsWith(ext)) return true;
+    }
+    return false;
+  }
 }
 
 class FileBrowser extends StatefulWidget {
@@ -113,19 +123,9 @@ class FileBrowserState extends State<FileBrowser> {
                 String parentPath = pathName[0];
                 String name = pathName[1];
                 bool isDir = pathName[2];
-                IconData iconData = MdiIcons.folderOutline;
-                if (!isDir) {
-                  if (isProjectFile(name)) {
-                    iconData = MdiIcons.database;
-                  } else if (isVectordataFile(name)) {
-                    iconData = MdiIcons.vectorPolyline;
-                  } else if (isTiledataFile(name)) {
-                    iconData = MdiIcons.checkerboard;
-                  } else {
-                    iconData = MdiIcons.fileOutline;
-                  }
-                }
+                var fullPath = FileUtilities.joinPaths(parentPath, name);
 
+                IconData iconData = SmashIcons.forPath(fullPath);
                 Widget trailingWidget;
                 if (isDir) {
                   if (widget._doFolderMode) {
