@@ -201,9 +201,10 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
         child: new Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
+//            title: Image.asset("assets/smash_text.png", fit: BoxFit.fitHeight),
             title: Padding(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-              child: Image.asset("assets/smash_text.png", fit: BoxFit.fitHeight),
+              padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+              child: Image.asset("assets/smash_text.png", fit: BoxFit.cover, height: 32,),
             ),
             actions: <Widget>[
               IconButton(
