@@ -52,7 +52,7 @@ dependencies:
       url: https://github.com/moovida/flutter_geopackage.git
 
   #BSD
-  image_picker: ^0.6.2+3
+  image_picker: ^0.6.3
   # ON IOS NEEDS:
   #  <key>NSPhotoLibraryUsageDescription</key>
   #  <string>The app needs to access the photo library to attach media to the survey.</string>

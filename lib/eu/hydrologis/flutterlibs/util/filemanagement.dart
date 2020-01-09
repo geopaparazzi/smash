@@ -16,32 +16,48 @@ import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 
 /// Handler ov everything related to files supported in SMASH.
 class FileManager {
-  static final ALLOWED_PROJECT_EXT = [GEOPAPARAZZI_EXT];
-  static final ALLOWED_VECTOR_DATA_EXT = [GPX_EXT, GEOPACKAGE_EXT];
-  static final ALLOWED_TILE_DATA_EXT = [GEOPACKAGE_EXT, MBTILES_EXT, MAPSFORGE_EXT];
+  static const ALLOWED_PROJECT_EXT = [GEOPAPARAZZI_EXT];
+  static const ALLOWED_VECTOR_DATA_EXT = [GPX_EXT, GEOPACKAGE_EXT];
+  static const ALLOWED_TILE_DATA_EXT = [GEOPACKAGE_EXT, MBTILES_EXT, MAPSFORGE_EXT];
 
-  static final GEOPAPARAZZI_EXT = "gpap";
-  static final GPX_EXT = "gpx";
-  static final GEOPACKAGE_EXT = "gpkg";
-  static final MAPSFORGE_EXT = "map";
-  static final MBTILES_EXT = "mbtiles";
+  static const GEOPAPARAZZI_EXT = "gpap";
+  static const GPX_EXT = "gpx";
+  static const GEOPACKAGE_EXT = "gpkg";
+  static const MAPSFORGE_EXT = "map";
+  static const MBTILES_EXT = "mbtiles";
 
   static bool isProjectFile(String path) {
-    return path.endsWith(ALLOWED_PROJECT_EXT[0]);
+    return path.toLowerCase().endsWith(ALLOWED_PROJECT_EXT[0]);
   }
 
   static bool isVectordataFile(String path) {
     for (var ext in ALLOWED_VECTOR_DATA_EXT) {
-      if (path.endsWith(ext)) return true;
+      if (path.toLowerCase().endsWith(ext)) return true;
     }
     return false;
   }
 
   static bool isTiledataFile(String path) {
     for (var ext in ALLOWED_TILE_DATA_EXT) {
-      if (path.endsWith(ext)) return true;
+      if (path.toLowerCase().endsWith(ext)) return true;
     }
     return false;
+  }
+
+  static bool isMapsforge(String path) {
+    return path != null && path.toLowerCase().endsWith(MAPSFORGE_EXT);
+  }
+
+  static bool isMbtiles(String path) {
+    return path != null && path.toLowerCase().endsWith(MBTILES_EXT);
+  }
+
+  static bool isGpx(String path) {
+    return path != null && path.toLowerCase().endsWith(GPX_EXT);
+  }
+
+  static bool isGeopackage(String path) {
+    return path != null && path.toLowerCase().endsWith(GEOPACKAGE_EXT);
   }
 }
 

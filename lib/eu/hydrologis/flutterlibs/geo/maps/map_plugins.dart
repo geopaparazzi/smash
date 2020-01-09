@@ -98,14 +98,28 @@ class GpsPositionLayer extends StatelessWidget {
         CustomPoint pixelOrigin = map.getPixelOrigin();
         double centerX = posPixel.x - pixelOrigin.x - gpsPositionLayerOpts.markerSize / 2;
         double centerY = height - (posPixel.y - pixelOrigin.y) - gpsPositionLayerOpts.markerSize / 2;
-        return Positioned(
-          left: centerX,
-          bottom: centerY,
-          child: Icon(
-            Icons.my_location,
-            size: gpsPositionLayerOpts.markerSize,
-            color: color,
-          ),
+        double delta = 3;
+        return Stack(
+          children: <Widget>[
+            Positioned(
+              left: centerX - delta / 2.0,
+              bottom: centerY - delta / 2.0,
+              child: Icon(
+                Icons.my_location,
+                size: gpsPositionLayerOpts.markerSize + delta,
+                color: Colors.white,
+              ),
+            ),
+            Positioned(
+              left: centerX,
+              bottom: centerY,
+              child: Icon(
+                Icons.my_location,
+                size: gpsPositionLayerOpts.markerSize,
+                color: color,
+              ),
+            ),
+          ],
         );
       }
     });
@@ -186,7 +200,7 @@ class PathPainter extends CustomPainter {
       var pixelBounds = map.getLastPixelBounds();
       CustomPoint pixelOrigin = map.getPixelOrigin();
       double centerX = posPixel.x - pixelOrigin.x;
-      double centerY =  (posPixel.y - pixelOrigin.y);
+      double centerY = (posPixel.y - pixelOrigin.y);
       path.lineTo(centerX, centerY);
     }
     canvas.drawPath(path, cPaint);

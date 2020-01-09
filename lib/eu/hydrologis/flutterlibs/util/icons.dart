@@ -55,6 +55,8 @@ class SmashIcons {
       return MdiIcons.map;
     } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.GPX_EXT)) {
       return MdiIcons.mapMarker;
+    } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.MBTILES_EXT)) {
+      return MdiIcons.checkerboard;
     } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.GEOPACKAGE_EXT)) {
       return MdiIcons.packageVariant;
     } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.GEOPAPARAZZI_EXT)) {

@@ -55,18 +55,6 @@ abstract class LayerSource {
 
   Future<LatLngBounds> getBounds();
 
-  bool isMapsforge() {
-    return getAbsolutePath() != null && getAbsolutePath().toLowerCase().endsWith("map");
-  }
-
-  bool isMbtiles() {
-    return getAbsolutePath() != null && getAbsolutePath().toLowerCase().endsWith("mbtiles");
-  }
-
-  bool isGpx() {
-    return getAbsolutePath() != null && getAbsolutePath().toLowerCase().endsWith("gpx");
-  }
-
   bool isOnlineService() {
     return getUrl() != null;
   }
@@ -90,12 +78,18 @@ abstract class LayerSource {
       var map = jsonDecode(json);
 
       String file = map['file'];
-      if (file != null && file.endsWith("gpx")) {
+      if (file != null && file.endsWith(FileManager.GPX_EXT)) {
         GpxSource gpx = GpxSource.fromMap(map);
         return [gpx];
-      } else if (file != null && file.endsWith("gpkg")) {
-        GeopackageSource gpkg = GeopackageSource.fromMap(map);
-        return [gpkg];
+      } else if (file != null && file.endsWith(FileManager.GEOPACKAGE_EXT)) {
+        bool isVector = map['isVector'];
+        if (isVector == null || !isVector) {
+          TileSource ts = TileSource.fromMap(map);
+          return [ts];
+        } else {
+          GeopackageSource gpkg = GeopackageSource.fromMap(map);
+          return [gpkg];
+        }
       } else {
         TileSource ts = TileSource.fromMap(map);
         return [ts];
@@ -112,7 +106,7 @@ abstract class VectorLayerSource extends LayerSource {
 }
 
 class TileSource extends LayerSource {
-  String label;
+  String name;
   String absolutePath;
   String url;
   int minZoom;
@@ -124,7 +118,7 @@ class TileSource extends LayerSource {
   bool isTms = false;
 
   TileSource({
-    this.label,
+    this.name,
     this.absolutePath,
     this.url,
     this.minZoom,
@@ -136,7 +130,7 @@ class TileSource extends LayerSource {
   });
 
   TileSource.fromMap(Map<String, dynamic> map) {
-    this.label = map['label'];
+    this.name = map['label'];
     var relativePath = map['file'];
     if (relativePath != null) {
       absolutePath = Workspace.makeAbsolute(relativePath);
@@ -154,7 +148,7 @@ class TileSource extends LayerSource {
   }
 
   TileSource.Open_Street_Map_Standard({
-    this.label: "Open Street Map",
+    this.name: "Open Street Map",
     this.url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
     this.minZoom: 0,
@@ -165,7 +159,7 @@ class TileSource extends LayerSource {
   });
 
   TileSource.Open_Stree_Map_Cicle({
-    this.label: "Open Cicle Map",
+    this.name: "Open Cicle Map",
     this.url: "https://tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
     this.minZoom: 0,
@@ -174,7 +168,7 @@ class TileSource extends LayerSource {
   });
 
   TileSource.Open_Street_Map_HOT({
-    this.label: "Open Street Map H.O.T.",
+    this.name: "Open Street Map H.O.T.",
     this.url: "https://tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
     this.minZoom: 0,
@@ -184,7 +178,7 @@ class TileSource extends LayerSource {
   });
 
   TileSource.Stamen_Watercolor({
-    this.label: "Stamen Watercolor",
+    this.name: "Stamen Watercolor",
     this.url: "https://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
     this.attribution: "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL",
     this.minZoom: 0,
@@ -194,7 +188,7 @@ class TileSource extends LayerSource {
   });
 
   TileSource.Wikimedia_Map({
-    this.label: "Wikimedia Map",
+    this.name: "Wikimedia Map",
     this.url: "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap contributors, under ODbL",
     this.minZoom: 0,
@@ -204,7 +198,7 @@ class TileSource extends LayerSource {
   });
 
   TileSource.Esri_Satellite({
-    this.label: "Esri Satellite",
+    this.name: "Esri Satellite",
     this.url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     this.attribution: "Esri",
     this.minZoom: 0,
@@ -214,7 +208,7 @@ class TileSource extends LayerSource {
   });
 
   TileSource.Mapsforge(String filePath) {
-    this.label = FileUtilities.nameFromFile(filePath, false);
+    this.name = FileUtilities.nameFromFile(filePath, false);
     this.absolutePath = Workspace.makeAbsolute(filePath);
     this.attribution = "Map tiles by Mapsforge, Data by OpenStreetMap, under ODbL";
     this.minZoom = 0;
@@ -224,7 +218,17 @@ class TileSource extends LayerSource {
   }
 
   TileSource.Mbtiles(String filePath) {
-    this.label = FileUtilities.nameFromFile(filePath, false);
+    this.name = FileUtilities.nameFromFile(filePath, false);
+    this.absolutePath = Workspace.makeAbsolute(filePath);
+    this.attribution = "";
+    this.minZoom = 0;
+    this.maxZoom = 22;
+    this.isVisible = true;
+    this.isTms = true;
+  }
+
+  TileSource.Geopackage(String filePath, String tableName) {
+    this.name = tableName;
     this.absolutePath = Workspace.makeAbsolute(filePath);
     this.attribution = "";
     this.minZoom = 0;
@@ -242,7 +246,7 @@ class TileSource extends LayerSource {
   }
 
   String getName() {
-    return label;
+    return name;
   }
 
   String getAttribution() {
@@ -258,10 +262,16 @@ class TileSource extends LayerSource {
   }
 
   Future<LatLngBounds> getBounds() async {
-    if (this.isMapsforge()) {
+    if (FileManager.isMapsforge(getAbsolutePath())) {
       return await getMapsforgeBounds(File(absolutePath));
-    } else if (this.isMbtiles()) {
+    } else if (FileManager.isMbtiles(getAbsolutePath())) {
       var prov = SmashMBTilesImageProvider(File(absolutePath));
+      await prov.open();
+      var bounds = prov.bounds;
+      prov.dispose();
+      return bounds;
+    } else if (FileManager.isGeopackage(getAbsolutePath())) {
+      var prov = GeopackageImageProvider(File(absolutePath), name);
       await prov.open();
       var bounds = prov.bounds;
       prov.dispose();
@@ -271,7 +281,7 @@ class TileSource extends LayerSource {
   }
 
   Future<List<LayerOptions>> toLayers(Function showSnackbar) async {
-    if (this.isMapsforge()) {
+    if (FileManager.isMapsforge(getAbsolutePath())) {
       // mapsforge
       double tileSize = 256;
       var mapsforgeTileProvider = MapsforgeTileProvider(File(absolutePath), tileSize: tileSize);
@@ -286,9 +296,21 @@ class TileSource extends LayerSource {
           tms: isTms,
         )
       ];
-    } else if (this.isMbtiles()) {
+    } else if (FileManager.isMbtiles(getAbsolutePath())) {
       var tileProvider = SmashMBTilesImageProvider(File(absolutePath));
+      await tileProvider.open();
       // mbtiles
+      return [
+        TileLayerOptions(
+          tileProvider: tileProvider,
+          maxZoom: maxZoom.toDouble(),
+          backgroundColor: Colors.white,
+          tms: true,
+        )
+      ];
+    } else if (FileManager.isGeopackage(getAbsolutePath())) {
+      var tileProvider = GeopackageImageProvider(File(absolutePath), name);
+      await tileProvider.open();
       return [
         TileLayerOptions(
           tileProvider: tileProvider,
@@ -320,7 +342,7 @@ class TileSource extends LayerSource {
 
     var json = '''
     {
-        "label": "${label}",
+        "label": "${name}",
         ${savePath != null ? "\"file\": \"$savePath\"," : ""}
         ${url != null ? "\"url\": \"$url\"," : ""}
         "minzoom": $minZoom,
@@ -527,9 +549,9 @@ class LayersPageState extends State<LayersPage> {
                 Container(
                   child: FloatingActionButton(
                     onPressed: () async {
-                      var selected = await showComboDialog(context, "Select online tile source", onlinesTilesSources.map((ts) => ts.label).toList());
+                      var selected = await showComboDialog(context, "Select online tile source", onlinesTilesSources.map((ts) => ts.name).toList());
                       if (selected != null) {
-                        var selectedTs = onlinesTilesSources.where((ts) => ts.label == selected).first;
+                        var selectedTs = onlinesTilesSources.where((ts) => ts.name == selected).first;
                         LayerManager().addLayer(selectedTs);
                         setState(() {});
                       }
@@ -578,7 +600,12 @@ class LayersPageState extends State<LayersPage> {
           _somethingChanged = true;
         });
 
-        // TODO make tiles part
+        List<TileEntry> tiles = await db.tiles();
+        tiles.forEach((t) {
+          var ts = TileSource.Geopackage(filePath, t.tableName);
+          LayerManager().addLayer(ts);
+          _somethingChanged = true;
+        });
       } finally {
         db?.close();
       }
@@ -634,15 +661,12 @@ class LayersPageState extends State<LayersPage> {
 class SmashMBTilesImageProvider extends TileProvider {
   final File mbtilesFile;
 
-  Future<Database> database;
   Database _loadedDb;
   bool isDisposed = false;
   LatLngBounds _bounds;
   Uint8List _emptyImageBytes;
 
-  SmashMBTilesImageProvider(this.mbtilesFile) {
-    database = open();
-  }
+  SmashMBTilesImageProvider(this.mbtilesFile);
 
   Future<Database> open() async {
     if (_loadedDb == null) {
@@ -696,12 +720,12 @@ class SmashMBTilesImageProvider extends TileProvider {
     var y = options.tms ? invertY(coords.y.round(), coords.z.round()) : coords.y.round();
     var z = coords.z.round();
 
-    return SmashMBTileImage(database, Coords<int>(x, y)..z = z, _emptyImageBytes);
+    return SmashMBTileImage(_loadedDb, Coords<int>(x, y)..z = z, _emptyImageBytes);
   }
 }
 
 class SmashMBTileImage extends ImageProvider<SmashMBTileImage> {
-  final Future<Database> database;
+  final Database database;
   final Coords<int> coords;
   Uint8List _emptyImageBytes;
 
@@ -722,7 +746,7 @@ class SmashMBTileImage extends ImageProvider<SmashMBTileImage> {
   Future<UI.Codec> _loadAsync(SmashMBTileImage key) async {
     assert(key == this);
 
-    final db = await key.database;
+    final db = key.database;
     List<Map> result = await db.rawQuery('select tile_data from tiles '
         'where zoom_level = ${coords.z} AND '
         'tile_column = ${coords.x} AND '
@@ -750,5 +774,127 @@ class SmashMBTileImage extends ImageProvider<SmashMBTileImage> {
   @override
   bool operator ==(other) {
     return other is SmashMBTileImage && coords == other.coords;
+  }
+}
+
+class GeopackageImageProvider extends TileProvider {
+  final File geopackageFile;
+  final String tableName;
+
+  GeopackageDb _loadedDb;
+  bool isDisposed = false;
+  LatLngBounds _bounds;
+  Uint8List _emptyImageBytes;
+
+  GeopackageImageProvider(this.geopackageFile, this.tableName);
+
+  Future<GeopackageDb> open() async {
+    if (_loadedDb == null || isDisposed) {
+      _loadedDb = GeopackageDb(geopackageFile.path);
+      _loadedDb.doRtreeTestCheck = GeopackageSource.DO_RTREE_CHECK;
+      await _loadedDb.openOrCreate();
+
+      try {
+        TileEntry tile = await _loadedDb.tile(tableName);
+        Envelope bounds = tile.getBounds();
+        Envelope bounds4326 = MercatorUtils.convert3857To4326Env(bounds);
+        var w = bounds4326.getMinX();
+        var e = bounds4326.getMaxX();
+        var s = bounds4326.getMinY();
+        var n = bounds4326.getMaxY();
+
+        LatLngBounds b = LatLngBounds();
+        b.extend(LatLng(s, w));
+        b.extend(LatLng(n, e));
+        _bounds = b;
+
+        ByteData imageData = await rootBundle.load('assets/emptytile256.png');
+        _emptyImageBytes = imageData.buffer.asUint8List();
+
+//        UI.Image _emptyImage = await ImageWidgetUtilities.transparentImage();
+//        var byteData = await _emptyImage.toByteData(format: UI.ImageByteFormat.png);
+//        _emptyImageBytes = byteData.buffer.asUint8List();
+
+      } catch (e) {
+        GpLogger().err("Error getting geopackage bounds or empty image.", e);
+      }
+
+      isDisposed = false;
+    }
+
+    return _loadedDb;
+  }
+
+  LatLngBounds get bounds => this._bounds;
+
+  @override
+  void dispose() {
+    if (_loadedDb != null) {
+      _loadedDb.close();
+      _loadedDb = null;
+    }
+    isDisposed = true;
+  }
+
+  @override
+  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
+    var x = coords.x.round();
+    var y = options.tms ? invertY(coords.y.round(), coords.z.round()) : coords.y.round();
+    var z = coords.z.round();
+
+    return GeopackageImage(_loadedDb, tableName, Coords<int>(x, y)..z = z, _emptyImageBytes);
+  }
+}
+
+class GeopackageImage extends ImageProvider<GeopackageImage> {
+  final GeopackageDb database;
+  String tableName;
+  final Coords<int> coords;
+  Uint8List _emptyImageBytes;
+
+  GeopackageImage(this.database, this.tableName, this.coords, this._emptyImageBytes);
+
+  @override
+  ImageStreamCompleter load(GeopackageImage key, DecoderCallback decoder) {
+    // TODo check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
+    return MultiFrameImageStreamCompleter(
+        codec: _loadAsync(key),
+        scale: 1,
+        informationCollector: () sync* {
+          yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+          yield DiagnosticsProperty<ImageProvider>('Image key', key);
+        });
+  }
+
+  Future<UI.Codec> _loadAsync(GeopackageImage key) async {
+    assert(key == this);
+
+    final db = key.database;
+    var tileBytes = await db.getTile(tableName, coords.x, coords.y, coords.z);
+    if (tileBytes != null) {
+      Uint8List bytes = tileBytes;
+      return await PaintingBinding.instance.instantiateImageCodec(bytes);
+    } else {
+      // TODO get from other zoomlevels
+      if (_emptyImageBytes != null) {
+        var bytes = _emptyImageBytes;
+        return await PaintingBinding.instance.instantiateImageCodec(bytes);
+      } else {
+        return Future<UI.Codec>.error('Failed to load tile for coords: $coords');
+      }
+    }
+  }
+
+  @override
+  Future<GeopackageImage> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture(this);
+  }
+
+  @override
+  int get hashCode => coords.hashCode;
+
+  @override
+  bool operator ==(other) {
+    return other is GeopackageImage && coords == other.coords;
   }
 }

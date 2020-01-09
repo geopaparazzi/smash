@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:math';
+import 'package:dart_jts/dart_jts.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:image/image.dart' as IMG;
@@ -288,34 +289,6 @@ class MercatorUtils {
     return quadKey.toString();
   }
 
-  /// Get lat-long bounds from tile index.
-  ///
-  /// @param tx       tile x.
-  /// @param ty       tile y.
-  /// @param zoom     zoomlevel.
-  /// @param tileSize tile size.
-  /// @return [minx, miny, maxx, maxy]
-  static List<double> tileLatLonBounds(int tx, int ty, int zoom, int tileSize) {
-    List<double> bounds = tileBounds3857(tx.toDouble(), ty.toDouble(), zoom, tileSize);
-    List<double> mins = metersToLatLon(bounds[0], bounds[1]);
-    List<double> maxs = metersToLatLon(bounds[2], bounds[3]);
-    return [mins[1], maxs[0], maxs[1], mins[0]];
-  }
-
-  /// Returns bounds of the given tile in EPSG:3857 coordinates
-  ///
-  /// @param tx       tile x.
-  /// @param ty       tile y.
-  /// @param zoom     zoomlevel.
-  /// @param tileSize tile size.
-  /// @return [minx, miny, maxx, maxy]
-  static List<double> tileBounds3857(double tx, double ty, int zoom, int tileSize) {
-    List<double> min = pixelsToMeters(tx * tileSize, ty * tileSize, zoom, tileSize);
-    double minx = min[0], miny = min[1];
-    List<double> max = pixelsToMeters((tx + 1) * tileSize, (ty + 1) * tileSize, zoom, tileSize);
-    double maxx = max[0], maxy = max[1];
-    return [minx, miny, maxx, maxy];
-  }
 
   /// <p>Code copied from: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Lon..2Flat._to_tile_numbers </p>
   /// 20131128: corrections added to correct going over or under max/min extent
@@ -487,4 +460,116 @@ class MercatorUtils {
   static double degToRadian(final double deg) => deg * (pi / 180.0);
 
   static double radianToDeg(final double rad) => rad * (180.0 / pi);
+
+
+  static Coordinate convert3857To4326(Coordinate coordinate3857) {
+    List<double> latLon = metersToLatLon(coordinate3857.x, coordinate3857.y);
+    return new Coordinate(latLon[1], latLon[0]);
+  }
+
+  static Coordinate convert4326To3857(Coordinate coordinate4326) {
+    List<double> xy = latLonToMeters(coordinate4326.y, coordinate4326.x);
+    return new Coordinate(xy[0], xy[1]);
+  }
+
+  static Envelope convert3857To4326Env(Envelope envelope3857) {
+    Coordinate ll3857 = new Coordinate(envelope3857.getMinX(), envelope3857.getMinY());
+    Coordinate ur3857 = new Coordinate(envelope3857.getMaxX(), envelope3857.getMaxY());
+
+    Coordinate ll4326 = convert3857To4326(ll3857);
+    Coordinate ur4326 = convert3857To4326(ur3857);
+
+    Envelope env4326 = new Envelope.fromCoordinates(ll4326, ur4326);
+    return env4326;
+  }
+
+  static Envelope convert4326To3857Env(Envelope envelope4326) {
+    Coordinate ll4326 = new Coordinate(envelope4326.getMinX(), envelope4326.getMinY());
+    Coordinate ur4326 = new Coordinate(envelope4326.getMaxX(), envelope4326.getMaxY());
+
+    Coordinate ll3857 = convert4326To3857(ll4326);
+    Coordinate ur3857 = convert4326To3857(ur4326);
+
+    Envelope env3857 = new Envelope.fromCoordinates(ll3857, ur3857);
+    return env3857;
+  }
+
+  static List<int> getTileNumberFrom3857Coord(Coordinate coord3857, int zoom) {
+    Coordinate coord4326 = convert3857To4326(coord3857);
+    return getTileNumber(coord4326.y, coord4326.x, zoom);
+  }
+
+  static List<int> getTileNumberFrom4326Coord(Coordinate coord4326, int zoom) {
+    return getTileNumber(coord4326.y, coord4326.x, zoom);
+  }
+
+  /**
+   * Returns bounds of the given tile in EPSG:4326 coordinates
+   *
+   * @param tx       tile x.
+   * @param ty       tile y.
+   * @param zoom     zoomlevel.
+   * @return the Envelope.
+   */
+  static Envelope tileBounds4326(final int x, final int y, final int zoom) {
+    double north = tile2lat(y, zoom);
+    double south = tile2lat(y + 1, zoom);
+    double west = tile2lon(x, zoom);
+    double east = tile2lon(x + 1, zoom);
+    Envelope envelope = new Envelope(west, east, south, north);
+    return envelope;
+  }
+
+  /// Returns bounds of the given tile in EPSG:3857 coordinates
+  ///
+  /// @param tx       tile x.
+  /// @param ty       tile y.
+  /// @param zoom     zoomlevel.
+  /// @return the Envelope.
+  static Envelope tileBounds3857(final int x, final int y, final int zoom) {
+    Envelope env4326 = tileBounds4326(x, y, zoom);
+    Coordinate ll4326 = new Coordinate(env4326.getMinX(), env4326.getMinY());
+    Coordinate ur4326 = new Coordinate(env4326.getMaxX(), env4326.getMaxY());
+
+    Coordinate ll3857transf = MercatorUtils.convert4326To3857(ll4326);
+    Coordinate ur3857transf = MercatorUtils.convert4326To3857(ur4326);
+
+    return new Envelope.fromCoordinates(ll3857transf, ur3857transf);
+  }
+
+  /// Get the tiles that fit into a given tile at lower zoomlevel.
+  ///
+  /// @param origTx the original tile x.
+  /// @param origTy the original tile y.
+  /// @param origZoom the original tile zoom.
+  /// @param higherZoom the requested zoom.
+  /// @param tileSize the used tile size.
+  /// @return the ordered list of tiles.
+  static List<List<int>> getTilesAtHigherZoom(int origTx, int origTy, int origZoom, int higherZoom, int tileSize) {
+    Envelope boundsLL = tileBounds4326(origTx, origTy, origZoom);
+
+    int delta = higherZoom - origZoom;
+    int splits = pow(2, delta).toInt();
+
+    double intervalX = boundsLL.getWidth() / splits;
+    double intervalY = boundsLL.getHeight() / splits;
+
+    List<List<int>> tilesList = [];
+    for (double y = boundsLL.getMaxY() - intervalY / 2.0; y > boundsLL.getMinY(); y = y - intervalY) {
+      for (double x = boundsLL.getMinX() + intervalX / 2.0; x < boundsLL.getMaxX(); x = x + intervalX) {
+        List<int> tileNumber = getTileNumber(y, x, higherZoom);
+        tilesList.add(tileNumber);
+      }
+    }
+    return tilesList;
+  }
+
+  static double tile2lon(int x, int z) {
+    return x / pow(2.0, z) * 360.0 - 180.0;
+  }
+
+  static double tile2lat(int y, int z) {
+    double n = pi - (2.0 * pi * y) / pow(2.0, z);
+    return radianToDeg(atan(sinh(n)));
+  }
 }

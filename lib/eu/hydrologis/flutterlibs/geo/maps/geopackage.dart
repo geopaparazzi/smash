@@ -105,6 +105,7 @@ class GeopackageSource extends VectorLayerSource {
     {
         "label": "$_tableName",
         "file":"$relativePath",
+        "isVector": true,
         "isvisible": $isVisible 
     }
     ''';
