@@ -428,7 +428,6 @@ class LayerManager {
   List<LayerSource> getAllLayers() {
     var list = <LayerSource>[];
     list.addAll(_baseLayers);
-//    list.addAll(_mbtilesLayers);
     list.addAll(_vectorLayers);
     return list;
   }
@@ -436,12 +435,15 @@ class LayerManager {
   void removeLayerSource(LayerSource sourceItem) {
     if (_baseLayers.contains(sourceItem)) {
       _baseLayers.remove(sourceItem);
+      if (sourceItem is TileSource) {
+        ConnectionsHandler().close(sourceItem.getAbsolutePath(), tableName: sourceItem.getName());
+      }
     }
-//    if (_mbtilesLayers.contains(sourceItem)) {
-//      _mbtilesLayers.remove(sourceItem);
-//    }
     if (_vectorLayers.contains(sourceItem)) {
       _vectorLayers.remove(sourceItem);
+      if (sourceItem is GeopackageSource) {
+        ConnectionsHandler().close(sourceItem.getAbsolutePath(), tableName: sourceItem.getName());
+      }
     }
   }
 }
@@ -588,11 +590,9 @@ class LayersPageState extends State<LayersPage> {
         setState(() {});
       }
     } else if (filePath.endsWith(".${FileManager.GEOPACKAGE_EXT}")) {
-      GeopackageDb db;
+      var ch = ConnectionsHandler();
       try {
-        db = GeopackageDb(filePath);
-        db.doRtreeTestCheck = GeopackageSource.DO_RTREE_CHECK;
-        await db.openOrCreate();
+        var db = await ch.open(filePath);
         List<FeatureEntry> features = await db.features();
         features.forEach((f) {
           GeopackageSource gps = GeopackageSource(filePath, f.tableName);
@@ -607,7 +607,7 @@ class LayersPageState extends State<LayersPage> {
           _somethingChanged = true;
         });
       } finally {
-        db?.close();
+        await ch?.close(filePath);
       }
       if (_somethingChanged) {
         setState(() {});
@@ -624,7 +624,7 @@ class LayersPageState extends State<LayersPage> {
       if (layer is TileSource) {
         baseLayers.add(layer.toJson());
       }
-      if (layer is GpxSource) {
+      if (layer is VectorLayerSource) {
         vectorLayers.add(layer.toJson());
       }
     });
@@ -782,16 +782,18 @@ class GeopackageImageProvider extends TileProvider {
   final String tableName;
 
   GeopackageDb _loadedDb;
-  bool isDisposed = false;
+  bool isDisposed = true;
   LatLngBounds _bounds;
   Uint8List _emptyImageBytes;
 
   GeopackageImageProvider(this.geopackageFile, this.tableName);
 
   Future<GeopackageDb> open() async {
-    if (_loadedDb == null || isDisposed) {
-      _loadedDb = GeopackageDb(geopackageFile.path);
-      _loadedDb.doRtreeTestCheck = GeopackageSource.DO_RTREE_CHECK;
+    if (_loadedDb == null || !_loadedDb.isOpen()) {
+      var ch = ConnectionsHandler();
+      _loadedDb = await ch.open(geopackageFile.path, tableName: tableName);
+    }
+    if (isDisposed) {
       await _loadedDb.openOrCreate();
 
       try {
@@ -829,11 +831,7 @@ class GeopackageImageProvider extends TileProvider {
 
   @override
   void dispose() {
-    if (_loadedDb != null) {
-      _loadedDb.close();
-      _loadedDb = null;
-    }
-    isDisposed = true;
+    // dispose of db connections is done when layers are removed
   }
 
   @override
@@ -842,17 +840,17 @@ class GeopackageImageProvider extends TileProvider {
     var y = options.tms ? invertY(coords.y.round(), coords.z.round()) : coords.y.round();
     var z = coords.z.round();
 
-    return GeopackageImage(_loadedDb, tableName, Coords<int>(x, y)..z = z, _emptyImageBytes);
+    return GeopackageImage(geopackageFile.path, tableName, Coords<int>(x, y)..z = z, _emptyImageBytes);
   }
 }
 
 class GeopackageImage extends ImageProvider<GeopackageImage> {
-  final GeopackageDb database;
+  final String databasePath;
   String tableName;
   final Coords<int> coords;
   Uint8List _emptyImageBytes;
 
-  GeopackageImage(this.database, this.tableName, this.coords, this._emptyImageBytes);
+  GeopackageImage(this.databasePath, this.tableName, this.coords, this._emptyImageBytes);
 
   @override
   ImageStreamCompleter load(GeopackageImage key, DecoderCallback decoder) {
@@ -869,7 +867,7 @@ class GeopackageImage extends ImageProvider<GeopackageImage> {
   Future<UI.Codec> _loadAsync(GeopackageImage key) async {
     assert(key == this);
 
-    final db = key.database;
+    final db = await ConnectionsHandler().open(key.databasePath, tableName: key.tableName);
     var tileBytes = await db.getTile(tableName, coords.x, coords.y, coords.z);
     if (tileBytes != null) {
       Uint8List bytes = tileBytes;

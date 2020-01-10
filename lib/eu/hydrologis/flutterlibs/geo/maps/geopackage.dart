@@ -49,10 +49,9 @@ class GeopackageSource extends VectorLayerSource {
 
   Future<void> load() async {
     if (!loaded) {
-      db = new GeopackageDb(_absolutePath);
-      db.doRtreeTestCheck = DO_RTREE_CHECK;
-      await db.openOrCreate();
-
+      var ch = ConnectionsHandler();
+      ch.DO_RTREE_CHECK = DO_RTREE_CHECK;
+      db = await ch.open(_absolutePath, tableName: _tableName);
       _geometryColumn = await db.getGeometryColumnsForTable(_tableName);
 
 //      _tableBounds = db.getTableBounds(_tableName);
