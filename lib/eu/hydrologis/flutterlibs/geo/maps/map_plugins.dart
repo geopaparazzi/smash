@@ -2,12 +2,17 @@ import 'dart:math';
 import 'dart:convert' as JSON;
 import 'dart:ui' as ui;
 
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart' hide Path;
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/geopackage.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:provider/provider.dart';
@@ -575,4 +580,95 @@ LatLng calculateEndingGlobalCoordinates(LatLng start, double startBearing, doubl
   longitude = longitude < -180 ? -180 : longitude;
   longitude = longitude > 180 ? 180 : longitude;
   return LatLng(latitude, longitude);
+}
+
+/// A plugin that handles tap info from vector layers
+class FeatureInfoPlugin implements MapPlugin {
+  @override
+  Widget createLayer(LayerOptions options, MapState mapState, Stream<Null> stream) {
+    if (options is FeatureInfoPluginOption) {
+      return FeatureInfoLayer(options, mapState, stream);
+    }
+    throw Exception('Unknown options type for FeatureInfoPlugin: $options');
+  }
+
+  @override
+  bool supportsLayer(LayerOptions options) {
+    return options is FeatureInfoPluginOption;
+  }
+}
+
+class FeatureInfoPluginOption extends LayerOptions {
+  Color tapAreaColor = SmashColors.mainSelectionBorder;
+  double tapAreaPixelSize;
+
+  FeatureInfoPluginOption({this.tapAreaPixelSize = 10});
+}
+
+class FeatureInfoLayer extends StatelessWidget {
+  final FeatureInfoPluginOption featureInfoLayerOpts;
+  final MapState map;
+  final Stream<Null> stream;
+
+  FeatureInfoLayer(this.featureInfoLayerOpts, this.map, this.stream) {}
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<InfoToolState>(builder: (context, infoToolState, child) {
+      double radius = featureInfoLayerOpts.tapAreaPixelSize / 2.0;
+
+      ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+
+      var tapCircle = Container(
+        width: featureInfoLayerOpts.tapAreaPixelSize,
+        height: featureInfoLayerOpts.tapAreaPixelSize,
+        decoration: new BoxDecoration(
+          color: featureInfoLayerOpts.tapAreaColor.withAlpha(128),
+          shape: BoxShape.circle,
+        ),
+      );
+
+      return Stack(
+        children: <Widget>[
+          GestureDetector(
+            child: InkWell(),
+            onTapDown: (e) async {
+              ui.Offset p = e.localPosition;
+              var pixelBounds = map.getLastPixelBounds();
+              var height = pixelBounds.bottomLeft.y - pixelBounds.topLeft.y;
+
+              CustomPoint pixelOrigin = map.getPixelOrigin();
+              var ll = map.unproject(CustomPoint(pixelOrigin.x + p.dx - radius, pixelOrigin.y + (p.dy - radius)));
+              var ur = map.unproject(CustomPoint(pixelOrigin.x + p.dx + radius, pixelOrigin.y + (p.dy + radius)));
+              var envelope = Envelope.fromCoordinates(Coordinate(ll.longitude, ll.latitude), Coordinate(ur.longitude, ur.latitude));
+
+              infoToolState.isSearching = true;
+              infoToolState.setTapAreaCenter(p.dx - radius, height - p.dy - radius);
+              queryLayers(envelope, infoToolState, projectState, context);
+            },
+          ),
+          infoToolState.isEnabled && infoToolState.xTapPosition != null
+              ? Positioned(
+                  child: tapCircle,
+                  left: infoToolState.xTapPosition,
+                  bottom: infoToolState.yTapPosition,
+                )
+              : Container(),
+        ],
+      );
+    });
+  }
+
+  void queryLayers(Envelope env, InfoToolState state,ProjectState projectState, BuildContext context) async {
+    List<LayerSource> visibleVectorLayers = LayerManager().getActiveLayers().where((l) => l is VectorLayerSource && l.isActive()).toList();
+    for (var vLayer in visibleVectorLayers) {
+      if (vLayer is GeopackageSource) {
+        var db = await ConnectionsHandler().open(vLayer.getAbsolutePath());
+        QueryResult queryResult = await db.getTableData(vLayer.getName(), envelope: env);
+        if (queryResult.data.isNotEmpty) {
+          print("Found data for: " + vLayer.getName());
+        }
+      }
+    }
+  }
 }

@@ -39,7 +39,7 @@ import 'mapsforge.dart';
 abstract class LayerSource {
   String toJson();
 
-  Future<List<LayerOptions>> toLayers(Function showSnackbar);
+  Future<List<LayerOptions>> toLayers(BuildContext context);
 
   bool isActive();
 
@@ -102,7 +102,7 @@ abstract class LayerSource {
 }
 
 abstract class VectorLayerSource extends LayerSource {
-  Future<void> load();
+  Future<void> load(BuildContext context);
 }
 
 class TileSource extends LayerSource {
@@ -280,7 +280,7 @@ class TileSource extends LayerSource {
     return null;
   }
 
-  Future<List<LayerOptions>> toLayers(Function showSnackbar) async {
+  Future<List<LayerOptions>> toLayers(BuildContext context) async {
     if (FileManager.isMapsforge(getAbsolutePath())) {
       // mapsforge
       double tileSize = 256;

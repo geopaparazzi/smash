@@ -44,7 +44,7 @@ class GpxSource extends VectorLayerSource {
 
   GpxSource(this._absolutePath);
 
-  Future<void> load() {
+  Future<void> load(BuildContext context) async {
     if (!loaded) {
       _name = FileUtilities.nameFromFile(_absolutePath, false);
       var xml = FileUtilities.readFile(_absolutePath);
@@ -135,8 +135,8 @@ class GpxSource extends VectorLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>> toLayers(Function showSnackbar) async {
-    await load();
+  Future<List<LayerOptions>> toLayers(BuildContext context) async {
+    await load(context);
 
     List<LayerOptions> layers = [];
 
@@ -155,27 +155,17 @@ class GpxSource extends VectorLayerSource {
       List<Marker> waypoints = [];
       int index = 0;
       _wayPoints.forEach((ll) {
-        var text = _wayPointNames[index];
         Marker m = Marker(
           width: pointsSize,
           height: pointsSize,
           point: ll,
           builder: (ctx) => new Container(
-              child: GestureDetector(
-            onTap: () {
-              var snack = SnackBar(
-                backgroundColor: SmashColors.mainDecorations,
-                content: SmashUI.normalText(text, bold: true, color: SmashColors.mainBackground),
-                duration: Duration(seconds: 2),
-              );
-              showSnackbar(snack);
-            },
             child: Icon(
               MdiIcons.circle,
               size: pointsSize,
               color: pointFillColor,
             ),
-          )),
+          ),
         );
         waypoints.add(m);
         index++;

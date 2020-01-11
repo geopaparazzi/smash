@@ -5,12 +5,16 @@
  */
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
+import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
+import 'package:mapsforge_flutter/core.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/geopackage.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
@@ -432,4 +436,60 @@ class ProjectData {
   int formNotesCount;
   List<Marker> geopapMarkers;
   PolylineLayerOptions geopapLogs;
+}
+
+class MapTapState extends ChangeNotifier {
+  LatLng tappedLatLong;
+
+  tap(LatLng newTapPosition) {
+    tappedLatLong = newTapPosition;
+    notifyListeners();
+  }
+}
+
+class InfoToolState extends ChangeNotifier {
+  bool isEnabled = false;
+  bool isSearching = false;
+
+  double xTapPosition;
+  double yTapPosition;
+  double tapRadius;
+
+  void setTapAreaCenter(double x, double y) {
+    xTapPosition = x;
+    yTapPosition = y;
+    notifyListeners();
+  }
+
+  void setEnabled(bool isEnabled) {
+    this.isEnabled = isEnabled;
+    if (isEnabled) {
+      // when enabled the tap position is reset
+      xTapPosition = null;
+      yTapPosition = null;
+    }
+    notifyListeners();
+  }
+
+  void setSearching(bool isSearching) {
+    this.isSearching = isSearching;
+    notifyListeners();
+  }
+
+  void tappedOn(LatLng tapLatLong, BuildContext context) async {
+    if (isEnabled) {
+      var env = Envelope.fromCoordinate(Coordinate(tapLatLong.longitude, tapLatLong.latitude));
+      env.expandByDistance(0.001);
+      List<LayerSource> visibleVectorLayers = LayerManager().getActiveLayers().where((l) => l is VectorLayerSource && l.isActive()).toList();
+      for (var vLayer in visibleVectorLayers) {
+        if (vLayer is GeopackageSource) {
+          var db = await ConnectionsHandler().open(vLayer.getAbsolutePath());
+          QueryResult queryResult = await db.getTableData(vLayer.getName(), envelope: env);
+          if (queryResult.data.isNotEmpty) {
+            print("Found data for: " + vLayer.getName());
+          }
+        }
+      }
+    }
+  }
 }

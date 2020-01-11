@@ -196,6 +196,11 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
       ));
     }
 
+    int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);
+    layers.add(FeatureInfoPluginOption(
+      tapAreaPixelSize: tapAreaPixels.toDouble(),
+    ));
+
     return WillPopScope(
         // check when the app is left
         child: new Scaffold(
@@ -204,7 +209,11 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
 //            title: Image.asset("assets/smash_text.png", fit: BoxFit.fitHeight),
             title: Padding(
               padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-              child: Image.asset("assets/smash_text.png", fit: BoxFit.cover, height: 32,),
+              child: Image.asset(
+                "assets/smash_text.png",
+                fit: BoxFit.cover,
+                height: 32,
+              ),
             ),
             actions: <Widget>[
               IconButton(
@@ -237,6 +246,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                 CenterCrossPlugin(),
                 CurrentGpsLogPlugin(),
                 GpsPositionPlugin(),
+                FeatureInfoPlugin(),
               ],
               onPositionChanged: (newPosition, hasGesture) {
                 mapState.setLastPosition(Coordinate(newPosition.center.longitude, newPosition.center.latitude), newPosition.zoom);
@@ -482,7 +492,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
 
     List<LayerOptions> listTmp = [];
     for (int i = 0; i < activeLayersInfos.length; i++) {
-      var ls = await activeLayersInfos[i].toLayers(_showSnackbar);
+      var ls = await activeLayersInfos[i].toLayers(context);
       if (ls != null) {
         ls.forEach((l) => listTmp.add(l));
       }

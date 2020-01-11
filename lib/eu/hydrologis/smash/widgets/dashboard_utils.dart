@@ -196,7 +196,7 @@ class DashboardUtils {
       doDiagnostics
           ? ListTile(
               leading: new Icon(
-                Icons.bug_report,
+                MdiIcons.bugOutline,
                 color: c,
                 size: iconSize,
               ),
@@ -210,7 +210,7 @@ class DashboardUtils {
           : Container(),
       ListTile(
         leading: new Icon(
-          Icons.info_outline,
+          MdiIcons.informationOutline,
           color: c,
           size: iconSize,
         ),
@@ -232,7 +232,7 @@ class DashboardUtils {
       ..add(
         ListTile(
           leading: new Icon(
-            Icons.navigation,
+            MdiIcons.navigation,
             color: c,
             size: iconSize,
           ),
@@ -250,7 +250,7 @@ class DashboardUtils {
       ..add(
         ListTile(
           leading: new Icon(
-            Icons.share,
+            MdiIcons.shareVariant,
             color: c,
             size: iconSize,
           ),
@@ -280,7 +280,7 @@ class DashboardUtils {
       ..add(
         ListTile(
           leading: new Icon(
-            Icons.gps_fixed,
+            MdiIcons.crosshairsGps,
             color: c,
             size: iconSize,
           ),
@@ -294,6 +294,27 @@ class DashboardUtils {
                 value: gpsState.insertInGps,
                 onChanged: (value) {
                   gpsState.insertInGps = value;
+                });
+          }),
+        ),
+      )
+      ..add(
+        ListTile(
+          leading: new Icon(
+            MdiIcons.crosshairsQuestion,
+            color: c,
+            size: iconSize,
+          ),
+          title: SmashUI.normalText(
+            "Query vector layers",
+            bold: true,
+            color: c,
+          ),
+          trailing: Consumer<InfoToolState>(builder: (context, infoState, child) {
+            return Checkbox(
+                value: infoState.isEnabled,
+                onChanged: (value) {
+                  infoState.setEnabled(value);
                 });
           }),
         ),

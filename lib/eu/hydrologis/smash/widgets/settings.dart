@@ -64,6 +64,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           showSettingsSheet(context);
         });
 
+    final ListTile vectorLayerSettingTile = ListTile(
+        leading: Icon(
+          VectorLayerSettingsState.iconData,
+          color: SmashColors.mainDecorations,
+        ),
+        title: SmashUI.normalText(VectorLayerSettingsState.title),
+        subtitle: Text(VectorLayerSettingsState.subtitle),
+        trailing: Icon(Icons.arrow_right),
+        onTap: () {
+          _selectedSetting = VectorLayerSettings();
+          showSettingsSheet(context);
+        });
+
     final ListTile diagnosticsSettingTile = ListTile(
         leading: Icon(
           DiagnosticsSettingState.iconData,
@@ -81,7 +94,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
       appBar: new AppBar(
         title: new Text("Settings"),
       ),
-      body: ListView(children: <Widget>[gpsSettingTile, screenSettingTile, cameraSettingTile, diagnosticsSettingTile]),
+      body: ListView(children: <Widget>[gpsSettingTile, screenSettingTile, cameraSettingTile, vectorLayerSettingTile, diagnosticsSettingTile]),
     );
   }
 
@@ -99,7 +112,7 @@ class CameraSetting extends StatefulWidget {
 
 class CameraSettingState extends State<CameraSetting> {
   static final title = "Camera";
-  static final subtitle = "Camera & Resolution Settings";
+  static final subtitle = "Camera Resolution";
   static final int index = 0;
   static final iconData = Icons.camera;
 
@@ -187,7 +200,7 @@ class ScreenSetting extends StatefulWidget {
 
 class ScreenSettingState extends State<ScreenSetting> {
   static final title = "Screen";
-  static final subtitle = "Screen, Scalebar and Icon Size Settings";
+  static final subtitle = "Screen, Scalebar and Icon Size";
   static final int index = 1;
   static final iconData = Icons.fullscreen;
 
@@ -447,7 +460,7 @@ class GpsSettings extends StatefulWidget {
 
 class GpsSettingsState extends State<GpsSettings> {
   static final title = "GPS";
-  static final subtitle = "GPS and Log Settings";
+  static final subtitle = "GPS filters and mock locations";
   static final int index = 1;
   static final iconData = MdiIcons.crosshairsGps;
 
@@ -618,6 +631,138 @@ class GpsSettingsState extends State<GpsSettings> {
   }
 }
 
+class VectorLayerSettings extends StatefulWidget {
+  @override
+  VectorLayerSettingsState createState() {
+    return VectorLayerSettingsState();
+  }
+}
+
+class VectorLayerSettingsState extends State<VectorLayerSettings> {
+  static final title = "Vector Layers";
+  static final subtitle = "Loading Options and Info Tool";
+  static final int index = 1;
+  static final iconData = MdiIcons.vectorPolyline;
+
+  @override
+  Widget build(BuildContext context) {
+    bool loadOnlyVisible = GpPreferences().getBooleanSync(KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
+    int maxFeaturesToLoad = GpPreferences().getIntSync(KEY_VECTOR_MAX_FEATURES, -1);
+    int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);
+
+    return Scaffold(
+      appBar: new AppBar(
+        title: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                iconData,
+                color: SmashColors.mainDecorations,
+              ),
+            ),
+            Text(title),
+          ],
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Card(
+              margin: SmashUI.defaultMargin(),
+              elevation: SmashUI.DEFAULT_ELEVATION,
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Data loading", bold: true),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Max number of features to load per layer. To apply remove and add layer back."),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: DropdownButton<int>(
+                      value: maxFeaturesToLoad,
+                      isExpanded: true,
+                      items: MAXFEATURESTOLOAD.map((i) {
+                        return DropdownMenuItem<int>(
+                          child: SmashUI.normalText(
+                            i > 0 ? "$i" : "all",
+                            textAlign: TextAlign.center,
+                          ),
+                          value: i,
+                        );
+                      }).toList(),
+                      onChanged: (selected) async {
+                        await GpPreferences().setInt(KEY_VECTOR_MAX_FEATURES, selected);
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Load only on the last visible map area. To apply remove and add layer back."),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: Checkbox(
+                      value: loadOnlyVisible,
+                      onChanged: (newValue) async {
+                        await GpPreferences().setBoolean(KEY_VECTOR_LOAD_ONLY_VISIBLE, newValue);
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Card(
+              margin: SmashUI.defaultMargin(),
+              elevation: SmashUI.DEFAULT_ELEVATION,
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Info Tool", bold: true),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Tap size of the info tool in pixels."),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: DropdownButton<int>(
+                      value: tapAreaPixels,
+                      isExpanded: true,
+                      items: TAPAREASIZES.map((i) {
+                        return DropdownMenuItem<int>(
+                          child: SmashUI.normalText(
+                            "$i px",
+                            textAlign: TextAlign.center,
+                          ),
+                          value: i,
+                        );
+                      }).toList(),
+                      onChanged: (selected) async {
+                        await GpPreferences().setInt(KEY_VECTOR_TAPAREA_SIZE, selected);
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class DiagnosticsSetting extends StatefulWidget {
   @override
   DiagnosticsSettingState createState() {
@@ -627,7 +772,7 @@ class DiagnosticsSetting extends StatefulWidget {
 
 class DiagnosticsSettingState extends State<DiagnosticsSetting> {
   static final title = "Diagnostics";
-  static final subtitle = "Diagnostics & Debug Log Settings";
+  static final subtitle = "Diagnostics & Debug Log";
   static final int index = 2;
   static final iconData = Icons.bug_report;
 

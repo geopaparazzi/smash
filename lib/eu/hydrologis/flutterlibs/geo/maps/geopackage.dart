@@ -17,8 +17,11 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
+import 'package:provider/provider.dart';
 
 class GeopackageSource extends VectorLayerSource {
   static final bool DO_RTREE_CHECK = false;
@@ -30,7 +33,7 @@ class GeopackageSource extends VectorLayerSource {
   bool isVisible = true;
   String _attribution = "";
 
-  QueryResult _tableData;
+  List<Geometry> _tableGeoms;
   Envelope _tableBounds;
   GeometryColumn _geometryColumn;
   BasicStyle _basicStyle;
@@ -47,8 +50,24 @@ class GeopackageSource extends VectorLayerSource {
 
   GeopackageSource(this._absolutePath, this._tableName);
 
-  Future<void> load() async {
+  Future<void> load(BuildContext context) async {
     if (!loaded) {
+      int maxFeaturesToLoad = GpPreferences().getIntSync(KEY_VECTOR_MAX_FEATURES, -1);
+      bool loadOnlyVisible = GpPreferences().getBooleanSync(KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
+
+      Envelope limitBounds = null;
+      if (loadOnlyVisible) {
+        var mapState = Provider.of<SmashMapState>(context);
+        if (mapState.mapController != null) {
+          var bounds = mapState.mapController.bounds;
+          var n = bounds.north;
+          var s = bounds.south;
+          var e = bounds.east;
+          var w = bounds.west;
+          limitBounds = Envelope.fromCoordinates(Coordinate(w, s), Coordinate(e, n));
+        }
+      }
+
       var ch = ConnectionsHandler();
       ch.DO_RTREE_CHECK = DO_RTREE_CHECK;
       db = await ch.open(_absolutePath, tableName: _tableName);
@@ -56,13 +75,13 @@ class GeopackageSource extends VectorLayerSource {
 
 //      _tableBounds = db.getTableBounds(_tableName);
 
-      _tableData = await db.getTableData(_tableName);
+      _tableGeoms = await db.getGeometriesIn(_tableName, limit: maxFeaturesToLoad, envelope: limitBounds);
       _tableBounds = Envelope.empty();
-      _tableData.geoms.forEach((g) {
+      _tableGeoms.forEach((g) {
         _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
       });
 
-      _attribution = _attribution + "${_geometryColumn.geometryType.getTypeName()} (${_tableData.geoms.length}) ";
+      _attribution = _attribution + "${_geometryColumn.geometryType.getTypeName()} (${_tableGeoms.length}) ";
 
       _basicStyle = await db.getBasicStyle(_tableName);
 
@@ -71,7 +90,7 @@ class GeopackageSource extends VectorLayerSource {
   }
 
   bool hasData() {
-    return _tableData != null && _tableData.geoms.length > 0;
+    return _tableGeoms != null && _tableGeoms.length > 0;
   }
 
   String getAbsolutePath() {
@@ -112,8 +131,8 @@ class GeopackageSource extends VectorLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>> toLayers(Function showSnackbar) async {
-    await load();
+  Future<List<LayerOptions>> toLayers(BuildContext context) async {
+    await load(context);
 
     List<LayerOptions> layers = [];
 
@@ -121,7 +140,7 @@ class GeopackageSource extends VectorLayerSource {
       case EGeometryType.LINESTRING:
       case EGeometryType.MULTILINESTRING:
         List<Polyline> lines = [];
-        _tableData.geoms.forEach((lineGeom) {
+        _tableGeoms.forEach((lineGeom) {
           Color strokeColor = ColorExt(_basicStyle.strokecolor).withOpacity(_basicStyle.strokealpha);
           for (int i = 0; i < lineGeom.getNumGeometries(); i++) {
             var geometryN = lineGeom.getGeometryN(i);
@@ -140,9 +159,9 @@ class GeopackageSource extends VectorLayerSource {
         Color fillColorAlpha = ColorExt(_basicStyle.fillcolor).withOpacity(_basicStyle.fillalpha);
         Color fillColor = ColorExt(_basicStyle.fillcolor);
         double size = _basicStyle.size * POINT_SIZE_FACTOR;
-        var dataSize = _tableData.geoms.length;
+        var dataSize = _tableGeoms.length;
         for (int j = 0; j < dataSize; j++) {
-          var pointGeom = _tableData.geoms[j];
+          var pointGeom = _tableGeoms[j];
           for (int i = 0; i < pointGeom.getNumGeometries(); i++) {
             var geometryN = pointGeom.getGeometryN(i);
             var c = geometryN.getCoordinate();
@@ -151,22 +170,12 @@ class GeopackageSource extends VectorLayerSource {
               height: size,
               point: LatLng(c.y, c.x),
               builder: (ctx) => new Container(
-                  child: GestureDetector(
-                onTap: () async {
-                  var dataMap = _tableData.data[j];
-                  var snack = SnackBar(
-                    backgroundColor: SmashColors.mainDecorations,
-                    content: TableUtilities.fromMap(dataMap),
-                    duration: Duration(seconds: 5),
-                  );
-                  showSnackbar(snack);
-                },
                 child: Icon(
                   MdiIcons.circle,
                   size: size,
                   color: fillColorAlpha,
                 ),
-              )),
+              ),
             );
             points.add(m);
           }
@@ -197,7 +206,7 @@ class GeopackageSource extends VectorLayerSource {
         List<Polygon> polygons = [];
         Color strokeColor = ColorExt(_basicStyle.strokecolor).withOpacity(_basicStyle.strokealpha);
         Color fillColor = ColorExt(_basicStyle.fillcolor).withOpacity(_basicStyle.fillalpha);
-        _tableData.geoms.forEach((polyGeom) {
+        _tableGeoms.forEach((polyGeom) {
           for (int i = 0; i < polyGeom.getNumGeometries(); i++) {
             var geometryN = polyGeom.getGeometryN(i);
             List<LatLng> polyPoints = geometryN.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
