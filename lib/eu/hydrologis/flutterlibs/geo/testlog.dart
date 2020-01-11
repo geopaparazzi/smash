@@ -7,6 +7,7 @@
 import 'dart:math';
 
 import 'package:dart_jts/dart_jts.dart';
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
 
 class Testlog {
@@ -54,25 +55,25 @@ class Testlog {
     if (c1.x < c2.x && c1.y < c2.y) {
       double tanA = (c2.x - c1.x) / (c2.y - c1.y);
       double atanD = atan(tanA);
-      return toDegrees(atanD);
+      return MercatorUtils.radianToDeg(atanD);
     }
     // -> \
     if (c1.x < c2.x && c1.y > c2.y) {
       double tanA = (c1.y - c2.y) / (c2.x - c1.x);
       double atanD = atan(tanA);
-      return toDegrees(atanD) + 90.0;
+      return MercatorUtils.radianToDeg(atanD) + 90.0;
     }
     // <- /
     if (c1.x > c2.x && c1.y > c2.y) {
       double tanA = (c1.x - c2.x) / (c1.y - c2.y);
       double atanD = atan(tanA);
-      return toDegrees(atanD) + 180;
+      return MercatorUtils.radianToDeg(atanD) + 180;
     }
     // <- \
     if (c1.x > c2.x && c1.y < c2.y) {
       double tanA = (c2.y - c1.y) / (c1.x - c2.x);
       double atanD = atan(tanA);
-      return toDegrees(atanD) + 270;
+      return MercatorUtils.radianToDeg(atanD) + 270;
     }
 
     return double.nan;

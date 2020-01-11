@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart' hide Path;
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
@@ -461,16 +462,6 @@ class ScalePainter extends CustomPainter {
   }
 }
 
-const double piOver180 = PI / 180.0;
-
-double toDegrees(double radians) {
-  return radians / piOver180;
-}
-
-double toRadians(double degrees) {
-  return degrees * piOver180;
-}
-
 LatLng calculateEndingGlobalCoordinates(LatLng start, double startBearing, double distance) {
   var mSemiMajorAxis = 6378137.0; //WGS84 major axis
   var mSemiMinorAxis = (1.0 - 1.0 / 298.257223563) * 6378137.0;
@@ -482,8 +473,8 @@ LatLng calculateEndingGlobalCoordinates(LatLng start, double startBearing, doubl
   var aSquared = a * a;
   var bSquared = b * b;
   var f = mFlattening;
-  var phi1 = toRadians(start.latitude);
-  var alpha1 = toRadians(startBearing);
+  var phi1 = MercatorUtils.degToRadian(start.latitude);
+  var alpha1 = MercatorUtils.degToRadian(startBearing);
   var cosAlpha1 = cos(alpha1);
   var sinAlpha1 = sin(alpha1);
   var s = distance;
@@ -572,8 +563,8 @@ LatLng calculateEndingGlobalCoordinates(LatLng start, double startBearing, doubl
   // cosSigma * cosAlpha1);
 
   // build result
-  var latitude = toDegrees(phi2);
-  var longitude = start.longitude + toDegrees(L);
+  var latitude = MercatorUtils.radianToDeg(phi2);
+  var longitude = start.longitude + MercatorUtils.radianToDeg(L);
 
   // if ((endBearing != null) && (endBearing.length > 0)) {
   // endBearing[0] = toDegrees(alpha2);
