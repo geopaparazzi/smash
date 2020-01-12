@@ -11,6 +11,7 @@ import 'package:latlong/latlong.dart' hide Path;
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/feature_attributes_viewer.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/geopackage.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
@@ -624,29 +625,31 @@ class FeatureInfoLayer extends StatelessWidget {
         height: featureInfoLayerOpts.tapAreaPixelSize,
         decoration: new BoxDecoration(
           color: featureInfoLayerOpts.tapAreaColor.withAlpha(128),
-          shape: BoxShape.circle,
+          shape: BoxShape.rectangle,
         ),
       );
 
       return Stack(
         children: <Widget>[
-          GestureDetector(
-            child: InkWell(),
-            onTapDown: (e) async {
-              ui.Offset p = e.localPosition;
-              var pixelBounds = map.getLastPixelBounds();
-              var height = pixelBounds.bottomLeft.y - pixelBounds.topLeft.y;
+          infoToolState.isEnabled
+              ? GestureDetector(
+                  child: InkWell(),
+                  onTapDown: (e) async {
+                    ui.Offset p = e.localPosition;
+                    var pixelBounds = map.getLastPixelBounds();
+                    var height = pixelBounds.bottomLeft.y - pixelBounds.topLeft.y;
 
-              CustomPoint pixelOrigin = map.getPixelOrigin();
-              var ll = map.unproject(CustomPoint(pixelOrigin.x + p.dx - radius, pixelOrigin.y + (p.dy - radius)));
-              var ur = map.unproject(CustomPoint(pixelOrigin.x + p.dx + radius, pixelOrigin.y + (p.dy + radius)));
-              var envelope = Envelope.fromCoordinates(Coordinate(ll.longitude, ll.latitude), Coordinate(ur.longitude, ur.latitude));
+                    CustomPoint pixelOrigin = map.getPixelOrigin();
+                    var ll = map.unproject(CustomPoint(pixelOrigin.x + p.dx - radius, pixelOrigin.y + (p.dy - radius)));
+                    var ur = map.unproject(CustomPoint(pixelOrigin.x + p.dx + radius, pixelOrigin.y + (p.dy + radius)));
+                    var envelope = Envelope.fromCoordinates(Coordinate(ll.longitude, ll.latitude), Coordinate(ur.longitude, ur.latitude));
 
-              infoToolState.isSearching = true;
-              infoToolState.setTapAreaCenter(p.dx - radius, height - p.dy - radius);
-              queryLayers(envelope, infoToolState, projectState, context);
-            },
-          ),
+                    infoToolState.isSearching = true;
+                    infoToolState.setTapAreaCenter(p.dx - radius, height - p.dy - radius);
+                    queryLayers(envelope, infoToolState, projectState, context);
+                  },
+                )
+              : Container(),
           infoToolState.isEnabled && infoToolState.xTapPosition != null
               ? Positioned(
                   child: tapCircle,
@@ -659,16 +662,33 @@ class FeatureInfoLayer extends StatelessWidget {
     });
   }
 
-  void queryLayers(Envelope env, InfoToolState state,ProjectState projectState, BuildContext context) async {
+  void queryLayers(Envelope env, InfoToolState state, ProjectState projectState, BuildContext context) async {
+    var boundsGeom = GeometryUtilities.fromEnvelope(env);
+
     List<LayerSource> visibleVectorLayers = LayerManager().getActiveLayers().where((l) => l is VectorLayerSource && l.isActive()).toList();
+    QueryResult totalQueryResult = QueryResult();
+    totalQueryResult.ids = [];
     for (var vLayer in visibleVectorLayers) {
       if (vLayer is GeopackageSource) {
         var db = await ConnectionsHandler().open(vLayer.getAbsolutePath());
-        QueryResult queryResult = await db.getTableData(vLayer.getName(), envelope: env);
+        QueryResult queryResult = await db.getTableData(vLayer.getName(), geometry: boundsGeom);
         if (queryResult.data.isNotEmpty) {
-          print("Found data for: " + vLayer.getName());
+          var layerName = vLayer.getName();
+          print("Found data for: " + layerName);
+
+          queryResult.geoms.forEach((g) {
+            totalQueryResult.ids.add(layerName);
+            totalQueryResult.geoms.add(g);
+          });
+          queryResult.data.forEach((d) {
+            totalQueryResult.data.add(d);
+          });
         }
       }
+    }
+
+    if (totalQueryResult.data.isNotEmpty) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => FeatureAttributesViewer(totalQueryResult)));
     }
   }
 }

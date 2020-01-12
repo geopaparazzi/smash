@@ -120,9 +120,6 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
   Widget build(BuildContext context) {
     print("BUIIIIIILD!!!");
 
-//    return Center(
-//      child: Text("TEst"),
-//    );
     return Consumer<ProjectState>(builder: (context, projectState, child) {
       projectState.context = context;
       projectState.scaffoldKey = _scaffoldKey;

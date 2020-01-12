@@ -160,7 +160,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "13ee9e2842adbd007a268fc7cca103d827e8000f"
+      resolved-ref: "18022289117a2020ba3db4fad5e10ad855e8cfca"
       url: "https://github.com/moovida/flutter_geopackage.git"
     source: git
     version: "0.0.1"

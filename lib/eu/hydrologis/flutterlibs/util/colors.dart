@@ -44,6 +44,8 @@ class SmashColors {
   static final ColorExt gpsOff = ColorExt("#ffff8484");
   static final ColorExt snackBarColor = ColorExt("#daffffff");
 
+  static final ColorExt tableBorder = mainDecorations;
+
   static final MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
   static final MaterialColor mainDecorationsMc = toMaterialColor(mainDecorations);
   static final MaterialColor mainDecorationsMcDarkTheme = toMaterialColor(mainDecorationsDarkTheme);

@@ -379,7 +379,7 @@ class TableUtilities {
     );
   }
 
-  static Table fromMap(Map<String, dynamic> map) {
+  static Table fromMap(Map<String, dynamic> map, {bool withBorder = false, Color borderColor = Colors.blueAccent}) {
     List<TableRow> rows = [];
 
     map.forEach((key, value) {
@@ -393,6 +393,16 @@ class TableUtilities {
     });
 
     return Table(
+      border: withBorder
+          ? TableBorder(
+              bottom: BorderSide(color: borderColor, width: 2),
+              left: BorderSide(color: borderColor, width: 2),
+              right: BorderSide(color: borderColor, width: 2),
+              top: BorderSide(color: borderColor, width: 2),
+              horizontalInside: BorderSide(color: borderColor, width: 1),
+              verticalInside: BorderSide(color: borderColor, width: 1),
+            )
+          : null,
       columnWidths: {
         0: FlexColumnWidth(0.4),
         1: FlexColumnWidth(0.6),

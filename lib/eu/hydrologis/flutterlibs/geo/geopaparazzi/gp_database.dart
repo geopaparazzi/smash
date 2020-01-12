@@ -990,8 +990,6 @@ class DataLoaderUtilities {
       var size = 48.0;
       var lat = image.lat;
       var lon = image.lon;
-      var label =
-          "image: ${image.text}\nlat: ${image.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)}\nlon: ${image.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
       tmp.add(Marker(
         width: size,
         height: size,
@@ -1007,10 +1005,42 @@ class DataLoaderUtilities {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(bottom: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        SmashUI.normalText(label),
+                    child: Table(
+                      columnWidths: {
+                        0: FlexColumnWidth(0.4),
+                        1: FlexColumnWidth(0.6),
+                      },
+                      children: [
+                        TableRow(
+                          children: [
+                            TableUtilities.cellForString("Image"),
+                            TableUtilities.cellForString(image.text),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableUtilities.cellForString("Longitude"),
+                            TableUtilities.cellForString(image.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableUtilities.cellForString("Latitude"),
+                            TableUtilities.cellForString(image.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableUtilities.cellForString("Altitude"),
+                            TableUtilities.cellForString(image.altim.toStringAsFixed(KEY_ELEV_DECIMALS)),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableUtilities.cellForString("Timestamp"),
+                            TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -1042,6 +1072,8 @@ class DataLoaderUtilities {
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () async {
+                            var label =
+                                "image: ${image.text}\nlat: ${image.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)}\nlon: ${image.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
                             var uint8list = await db.getImageDataBytes(image.imageDataId);
                             ShareHandler.shareImage(label, uint8list);
                             projectState.scaffoldKey.currentState.hideCurrentSnackBar();

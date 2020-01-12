@@ -410,9 +410,25 @@ class LayerManager {
       return false;
     }).toList();
     if (where.isNotEmpty) list.addAll(where.toList());
-//    where = _mbtilesLayers.where((ts) => ts.isActive()).toList();
-//    if (where.isNotEmpty) list.addAll(where.toList());
     where = _vectorLayers.where((ts) => ts.isActive()).toList();
+    if (where.isNotEmpty) list.addAll(where.toList());
+    return list;
+  }
+
+  List<LayerSource> getActiveBaseLayers() {
+    var list = <LayerSource>[];
+    List<LayerSource> where = _baseLayers.where((ts) {
+      if (ts.isActive()) {
+        String file = ts.getAbsolutePath();
+        if (file != null && file.isNotEmpty) {
+          if (!File(file).existsSync()) {
+            return false;
+          }
+        }
+        return true;
+      }
+      return false;
+    }).toList();
     if (where.isNotEmpty) list.addAll(where.toList());
     return list;
   }
