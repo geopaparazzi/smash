@@ -2,8 +2,8 @@
 # Use of this source code is governed by a GPL3 license that can be
 # found in the LICENSE file.
 name: smash
-description: The open source digital field mapping app.
-version: 0.2.0+0
+description: The Smart Mobile Application for Surveyor's Happyness.
+version: 1.0.0
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
