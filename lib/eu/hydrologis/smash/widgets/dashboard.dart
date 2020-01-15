@@ -730,7 +730,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         );
       } else {
         gpsInfo = SmashUI.titleText(
-          "No GPS information available...",
+          "No GPS info available...",
           color: color,
         );
       }
@@ -768,15 +768,15 @@ class _GpsToolsWidgetState extends State<GpsToolsWidget> {
           ),
           CheckboxListTile(
             value: mapState.centerOnGps,
-            title: SmashUI.normalText("Center map on GPS position", color: SmashColors.mainBackground),
+            title: SmashUI.normalText("Center on GPS", color: SmashColors.mainBackground),
             onChanged: (value) {
               mapState.centerOnGps = value;
             },
           ),
-          Platform.isAndroid
+          Platform.isAndroid && false // TODO enable this once the rotation issue has been sorted out
               ? CheckboxListTile(
                   value: mapState.rotateOnHeading,
-                  title: SmashUI.normalText("Rotate map with GPS heading", color: SmashColors.mainBackground),
+                  title: SmashUI.normalText("Rotate map with GPS", color: SmashColors.mainBackground),
                   onChanged: (value) {
                     mapState.rotateOnHeading = value;
                   },

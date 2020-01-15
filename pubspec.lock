@@ -102,12 +102,10 @@ packages:
   dart_jts:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "78c487bdb4c684a883e87a21beb5636380a0221f"
-      url: "https://github.com/moovida/dart_jts.git"
-    source: git
-    version: "0.0.5"
+      name: dart_jts
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5+1"
   dcache:
     dependency: transitive
     description:
@@ -160,12 +158,10 @@ packages:
   flutter_geopackage:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "5a3a759c0c3508add7167ce2a0e6733afb1a5406"
-      url: "https://github.com/moovida/flutter_geopackage.git"
-    source: git
-    version: "0.0.1"
+      name: flutter_geopackage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   flutter_image:
     dependency: transitive
     description:

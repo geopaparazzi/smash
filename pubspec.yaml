@@ -31,7 +31,7 @@ dependencies:
 
 
   # MIT
-  geolocator: ^5.1.5
+  geolocator: ^5.2.0
   # on IOS heading is not supported. For rotation we should try the plugin: location: 2.3.5
   # ON IOS NEEDS:
   #  <key>NSLocationWhenInUseUsageDescription</key>
@@ -45,17 +45,17 @@ dependencies:
   sqflite: ^1.2.0
 
   #BSD
-  dart_jts: #^0.0.5
-    git:
-      url: https://github.com/moovida/dart_jts.git
+  dart_jts: ^0.0.5+1
+#    git:
+#      url: https://github.com/moovida/dart_jts.git
 
   # apache 2
-  flutter_geopackage: #0.0.1
-    git:
-      url: https://github.com/moovida/flutter_geopackage.git
+  flutter_geopackage: 0.0.2
+#    git:
+#      url: https://github.com/moovida/flutter_geopackage.git
 
   #BSD
-  image_picker: ^0.6.3
+  image_picker: ^0.6.3+1
   # ON IOS NEEDS:
   #  <key>NSPhotoLibraryUsageDescription</key>
   #  <string>The app needs to access the photo library to attach media to the survey.</string>
@@ -88,7 +88,7 @@ dependencies:
   shared_preferences: ^0.5.6
 
   # MIT
-  logger: ^0.8.2
+  logger: ^0.8.3
 
   # BSD
   #  esys_flutter_share: any #1.0.2
@@ -124,7 +124,7 @@ dependencies:
   extended_image: ^0.6.8
 
   # MIT
-  permission_handler: ^4.0.0
+  permission_handler: ^4.1.0
 
   # BSD
   stack_trace: 1.9.3
@@ -142,13 +142,13 @@ dependencies:
   gpx: ^0.0.3
 
   # Apache 2.0
-  pdf: ^1.3.25
+  pdf: ^1.4.1
 
   # MIT
   flutter_tags: ^0.4.5
 
   # MIT
-  flutter_datetime_picker: ^1.3.1
+  flutter_datetime_picker: ^1.3.2
 
   mapsforge_flutter:
     git:
