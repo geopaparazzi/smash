@@ -45,7 +45,10 @@ dependencies:
   sqflite: ^1.2.0
 
   #BSD
-  dart_jts: 0.0.4+2
+  dart_jts: #^0.0.5
+    git:
+      url: https://github.com/moovida/dart_jts.git
+
   # apache 2
   flutter_geopackage: #0.0.1
     git:
@@ -160,8 +163,8 @@ dev_dependencies:
   # MIT
   flutter_launcher_icons: ^0.7.4
 
-  flutter_test:
-    sdk: flutter
+#  flutter_test:
+#    sdk: flutter
 
 flutter_icons:
   ios: true

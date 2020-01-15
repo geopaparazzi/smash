@@ -217,6 +217,48 @@ class TileSource extends LayerSource {
     this.isTms = false;
   }
 
+  TileSource.Mapurl(String filePath) {
+    //        url=http://tile.openstreetmap.org/ZZZ/XXX/YYY.png
+    //        minzoom=0
+    //        maxzoom=19
+    //        center=11.42 46.8
+    //        type=google
+    //        format=png
+    //        defaultzoom=13
+    //        mbtiles=defaulttiles/_mapnik.mbtiles
+    //        description=Mapnik - Openstreetmap Slippy Map Tileserver - Data, imagery and map information provided by MapQuest, OpenStreetMap and contributors, ODbL.
+
+    this.name = FileUtilities.nameFromFile(filePath, false);
+
+    var paramsMap = FileUtilities.readFileToHashMap(filePath);
+
+    String type = paramsMap["type"] ?? "tms";
+    if (type.toLowerCase() == "wms") {
+      throw ArgumentError("WMS mapurls are not supported at the time.");
+    }
+
+    String url = paramsMap["url"];
+    if (url == null) {
+      throw ArgumentError("The url for the service needs to be defined.");
+    }
+    url = url.replaceFirst("ZZZ", "{z}");
+    url = url.replaceFirst("YYY", "{y}");
+    url = url.replaceFirst("XXX", "{x}");
+
+    String maxZoomStr = paramsMap["maxzoom"] ?? "19";
+    int maxZoom = double.parse(maxZoomStr).toInt();
+    String minZoomStr = paramsMap["minzoom"] ?? "0";
+    int minZoom = double.parse(minZoomStr).toInt();
+    String descr = paramsMap["description"] ?? "no description";
+
+    this.url = url;
+    this.attribution = descr;
+    this.minZoom = minZoom;
+    this.maxZoom = maxZoom;
+    this.isVisible = true;
+    this.isTms = type == "tms";
+  }
+
   TileSource.Mbtiles(String filePath) {
     this.name = FileUtilities.nameFromFile(filePath, false);
     this.absolutePath = Workspace.makeAbsolute(filePath);
@@ -291,7 +333,7 @@ class TileSource extends LayerSource {
           tileProvider: mapsforgeTileProvider,
           tileSize: tileSize,
           keepBuffer: 2,
-          backgroundColor: SmashColors.mainBackground,
+          backgroundColor: Colors.white.withOpacity(0),
           maxZoom: 21,
           tms: isTms,
         )
@@ -304,7 +346,7 @@ class TileSource extends LayerSource {
         TileLayerOptions(
           tileProvider: tileProvider,
           maxZoom: maxZoom.toDouble(),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.white.withOpacity(0),
           tms: true,
         )
       ];
@@ -315,7 +357,7 @@ class TileSource extends LayerSource {
         TileLayerOptions(
           tileProvider: tileProvider,
           maxZoom: maxZoom.toDouble(),
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.white.withOpacity(0),
           tms: true,
         )
       ];
@@ -324,7 +366,7 @@ class TileSource extends LayerSource {
         TileLayerOptions(
           tms: isTms,
           urlTemplate: url,
-          backgroundColor: SmashColors.mainBackground,
+          backgroundColor: Colors.white.withOpacity(0),
           maxZoom: maxZoom.toDouble(),
           subdomains: subdomains,
         )
@@ -595,6 +637,11 @@ class LayersPageState extends State<LayersPage> {
       setState(() {});
     } else if (filePath.endsWith(".${FileManager.MBTILES_EXT}")) {
       TileSource ts = TileSource.Mbtiles(filePath);
+      LayerManager().addLayer(ts);
+      _somethingChanged = true;
+      setState(() {});
+    } else if (filePath.endsWith(".${FileManager.MAPURL_EXT}")) {
+      TileSource ts = TileSource.Mapurl(filePath);
       LayerManager().addLayer(ts);
       _somethingChanged = true;
       setState(() {});

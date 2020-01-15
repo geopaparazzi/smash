@@ -438,11 +438,13 @@ class ProjectData {
   PolylineLayerOptions geopapLogs;
 }
 
-class MapTapState extends ChangeNotifier {
-  LatLng tappedLatLong;
+class MapProgressState extends ChangeNotifier {
+  bool _inProgress = false;
 
-  tap(LatLng newTapPosition) {
-    tappedLatLong = newTapPosition;
+  bool get inProgress => _inProgress;
+
+  setInProgress(bool progress) {
+    _inProgress = progress;
     notifyListeners();
   }
 }

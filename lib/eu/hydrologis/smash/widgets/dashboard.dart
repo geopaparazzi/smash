@@ -231,26 +231,33 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
             ],
           ),
           backgroundColor: SmashColors.mainBackground,
-          body: FlutterMap(
-            options: new MapOptions(
-              center: new LatLng(_initLat, _initLon),
-              zoom: _initZoom,
-              minZoom: SmashMapState.MINZOOM,
-              maxZoom: SmashMapState.MAXZOOM,
-              plugins: [
-                MarkerClusterPlugin(),
-                ScaleLayerPlugin(),
-                CenterCrossPlugin(),
-                CurrentGpsLogPlugin(),
-                GpsPositionPlugin(),
-                FeatureInfoPlugin(),
-              ],
-              onPositionChanged: (newPosition, hasGesture) {
-                mapState.setLastPosition(Coordinate(newPosition.center.longitude, newPosition.center.latitude), newPosition.zoom);
-              },
-            ),
-            layers: layers,
-            mapController: _mapController,
+          body: Stack(
+            children: <Widget>[
+              FlutterMap(
+                options: new MapOptions(
+                  center: new LatLng(_initLat, _initLon),
+                  zoom: _initZoom,
+                  minZoom: SmashMapState.MINZOOM,
+                  maxZoom: SmashMapState.MAXZOOM,
+                  plugins: [
+                    MarkerClusterPlugin(),
+                    ScaleLayerPlugin(),
+                    CenterCrossPlugin(),
+                    CurrentGpsLogPlugin(),
+                    GpsPositionPlugin(),
+                    FeatureInfoPlugin(),
+                  ],
+                  onPositionChanged: (newPosition, hasGesture) {
+                    mapState.setLastPosition(Coordinate(newPosition.center.longitude, newPosition.center.latitude), newPosition.zoom);
+                  },
+                ),
+                layers: layers,
+                mapController: _mapController,
+              ),
+              Center(
+                child: Provider.of<MapProgressState>(context).inProgress ? CircularProgressIndicator() : Container(),
+              )
+            ],
           ),
           drawer: Drawer(
               child: ListView(

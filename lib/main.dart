@@ -23,10 +23,9 @@ void main() => runApp(MultiProvider(
         ChangeNotifierProvider(create: (_) => ProjectState()),
         ChangeNotifierProvider(create: (_) => ThemeState()),
         ChangeNotifierProvider(create: (_) => GpsState()),
-        ChangeNotifierProvider(create: (_) => GpsState()),
         ChangeNotifierProvider(create: (_) => SmashMapState()),
         ChangeNotifierProvider(create: (_) => InfoToolState()),
-        ChangeNotifierProvider(create: (_) => MapTapState()),
+        ChangeNotifierProvider(create: (_) => MapProgressState()),
       ],
       child: SmashApp(),
     ));

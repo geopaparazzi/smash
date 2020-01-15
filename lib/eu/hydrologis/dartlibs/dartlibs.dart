@@ -50,9 +50,37 @@ class FileUtilities {
     from.copySync(toPath);
   }
 
-  /*
-   * Get the list of files names from a given [parentPath] and optionally filtered by [ext].
-   */
+  /// Method to read a properties [file] into a hashmap.
+  ///
+  /// Empty lines are ignored, as well as lines that do not contain the separator.
+  static Map<String, String> readFileToHashMap(String filePath, {String separator = "=", bool valueFirst = false}) {
+    var fileTxt = readFile(filePath);
+    var lines = fileTxt.split("\n");
+
+    Map<String, String> propertiesMap = {};
+    for (String line in lines) {
+      line = line.trim();
+      if (line.length == 0) {
+        continue;
+      }
+      int firstSep = line.indexOf(separator);
+      if (firstSep == -1) {
+        continue;
+      }
+
+      String first = line.substring(0, firstSep);
+      String second = line.substring(firstSep + 1);
+
+      if (!valueFirst) {
+        propertiesMap[first] = second;
+      } else {
+        propertiesMap[second] = first;
+      }
+    }
+    return propertiesMap;
+  }
+
+  /// Get the list of files names from a given [parentPath] and optionally filtered by [ext].
   static List<String> getFilesInPathByExt(String parentPath, [String ext]) {
     List<String> filenameList = List();
 
@@ -289,7 +317,6 @@ class MercatorUtils {
     return quadKey.toString();
   }
 
-
   /// <p>Code copied from: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Lon..2Flat._to_tile_numbers </p>
   /// 20131128: corrections added to correct going over or under max/min extent
   /// - was causing http 400 Bad Requests
@@ -460,7 +487,6 @@ class MercatorUtils {
   static double degToRadian(final double deg) => deg * (pi / 180.0);
 
   static double radianToDeg(final double rad) => rad * (180.0 / pi);
-
 
   static Coordinate convert3857To4326(Coordinate coordinate3857) {
     List<double> latLon = metersToLatLon(coordinate3857.x, coordinate3857.y);

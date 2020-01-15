@@ -11,6 +11,7 @@ import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
@@ -133,11 +134,15 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
         polylines: lines,
       );
       layers.add(lineLayer);
-    } else if (gType.isPolygon()) {}
+    } else if (gType.isPolygon()) {
+      // TODO add polygon
+    }
+
+    var env = geometry.getEnvelopeInternal();
+    var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()), LatLng(env.getMaxY(), env.getMaxX()));
 
     Timer(Duration(milliseconds: 300), () {
-      var env = geometry.getEnvelopeInternal();
-      _mapController.fitBounds(LatLngBounds(LatLng(env.getMinY(), env.getMinX()), LatLng(env.getMaxY(), env.getMaxX())));
+      _mapController.fitBounds(latLngBounds);
     });
 
     return Scaffold(
@@ -193,8 +198,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
             width: double.infinity,
             child: FlutterMap(
               options: new MapOptions(
-                center: LatLng(centroid.y, centroid.x),
-                zoom: 15,
+                center: LatLng(centroid.y, centroid.x), // TODO getCenterFromBounds(latLngBounds, mapState),
+                zoom: 15, // TODO getZoomFromBounds(latLngBounds, mapState),
                 minZoom: 7,
                 maxZoom: 19,
               ),
@@ -212,5 +217,15 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
         ],
       ),
     );
+  }
+
+  LatLng getCenterFromBounds(LatLngBounds bounds, MapState mapState) {
+    var centerZoom = mapState.getBoundsCenterZoom(bounds, FitBoundsOptions());
+    return centerZoom.center;
+  }
+
+  double getZoomFromBounds(LatLngBounds bounds, MapState mapState) {
+    var centerZoom = mapState.getBoundsCenterZoom(bounds, FitBoundsOptions());
+    return centerZoom.zoom;
   }
 }

@@ -18,12 +18,13 @@ import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 class FileManager {
   static const ALLOWED_PROJECT_EXT = [GEOPAPARAZZI_EXT];
   static const ALLOWED_VECTOR_DATA_EXT = [GPX_EXT, GEOPACKAGE_EXT];
-  static const ALLOWED_TILE_DATA_EXT = [GEOPACKAGE_EXT, MBTILES_EXT, MAPSFORGE_EXT];
+  static const ALLOWED_TILE_DATA_EXT = [GEOPACKAGE_EXT, MBTILES_EXT, MAPSFORGE_EXT, MAPURL_EXT];
 
   static const GEOPAPARAZZI_EXT = "gpap";
   static const GPX_EXT = "gpx";
   static const GEOPACKAGE_EXT = "gpkg";
   static const MAPSFORGE_EXT = "map";
+  static const MAPURL_EXT = "mapurl";
   static const MBTILES_EXT = "mbtiles";
 
   static bool isProjectFile(String path) {
@@ -46,6 +47,10 @@ class FileManager {
 
   static bool isMapsforge(String path) {
     return path != null && path.toLowerCase().endsWith(MAPSFORGE_EXT);
+  }
+
+  static bool isMapurl(String path) {
+    return path != null && path.toLowerCase().endsWith(MAPURL_EXT);
   }
 
   static bool isMbtiles(String path) {

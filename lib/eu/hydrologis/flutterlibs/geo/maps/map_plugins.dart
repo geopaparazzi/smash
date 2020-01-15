@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:convert' as JSON;
 import 'dart:ui' as ui;
@@ -620,41 +621,38 @@ class FeatureInfoLayer extends StatelessWidget {
 
       ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
 
-      var tapCircle = Container(
-        width: featureInfoLayerOpts.tapAreaPixelSize,
-        height: featureInfoLayerOpts.tapAreaPixelSize,
-        decoration: new BoxDecoration(
-          color: featureInfoLayerOpts.tapAreaColor.withAlpha(128),
-          shape: BoxShape.rectangle,
-        ),
-      );
-
       return Stack(
         children: <Widget>[
+          infoToolState.isEnabled && infoToolState.xTapPosition != null
+              ? Positioned(
+                  child: TapSelectionCircle(
+                    size: featureInfoLayerOpts.tapAreaPixelSize,
+                    color: featureInfoLayerOpts.tapAreaColor.withAlpha(128),
+                    shape: BoxShape.circle,
+                  ),
+                  left: infoToolState.xTapPosition,
+                  bottom: infoToolState.yTapPosition,
+                )
+              : Container(),
           infoToolState.isEnabled
               ? GestureDetector(
                   child: InkWell(),
-                  onTapDown: (e) async {
-                    ui.Offset p = e.localPosition;
+
+                  onTapUp: (e) async {
+                    Provider.of<MapProgressState>(context, listen: false).setInProgress(true);
+                    var p = e.localPosition;
                     var pixelBounds = map.getLastPixelBounds();
-                    var height = pixelBounds.bottomLeft.y - pixelBounds.topLeft.y;
 
                     CustomPoint pixelOrigin = map.getPixelOrigin();
                     var ll = map.unproject(CustomPoint(pixelOrigin.x + p.dx - radius, pixelOrigin.y + (p.dy - radius)));
                     var ur = map.unproject(CustomPoint(pixelOrigin.x + p.dx + radius, pixelOrigin.y + (p.dy + radius)));
                     var envelope = Envelope.fromCoordinates(Coordinate(ll.longitude, ll.latitude), Coordinate(ur.longitude, ur.latitude));
 
+                    var height = pixelBounds.bottomLeft.y - pixelBounds.topLeft.y;
                     infoToolState.isSearching = true;
                     infoToolState.setTapAreaCenter(p.dx - radius, height - p.dy - radius);
                     queryLayers(envelope, infoToolState, projectState, context);
                   },
-                )
-              : Container(),
-          infoToolState.isEnabled && infoToolState.xTapPosition != null
-              ? Positioned(
-                  child: tapCircle,
-                  left: infoToolState.xTapPosition,
-                  bottom: infoToolState.yTapPosition,
                 )
               : Container(),
         ],
@@ -663,7 +661,7 @@ class FeatureInfoLayer extends StatelessWidget {
   }
 
   void queryLayers(Envelope env, InfoToolState state, ProjectState projectState, BuildContext context) async {
-    var boundsGeom = GeometryUtilities.fromEnvelope(env);
+    var boundsGeom = GeometryUtilities.fromEnvelope(env, makeCircle: true);
 
     List<LayerSource> visibleVectorLayers = LayerManager().getActiveLayers().where((l) => l is VectorLayerSource && l.isActive()).toList();
     QueryResult totalQueryResult = QueryResult();
@@ -687,8 +685,54 @@ class FeatureInfoLayer extends StatelessWidget {
       }
     }
 
+    Provider.of<MapProgressState>(context, listen: false).setInProgress(false);
     if (totalQueryResult.data.isNotEmpty) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => FeatureAttributesViewer(totalQueryResult)));
     }
+  }
+}
+
+class TapSelectionCircle extends StatefulWidget {
+  double size;
+  var shape;
+  var color;
+
+  TapSelectionCircle({this.shape = BoxShape.rectangle, this.size = 30, this.color = Colors.redAccent});
+
+  @override
+  _TapSelectionCircleState createState() => _TapSelectionCircleState();
+}
+
+class _TapSelectionCircleState extends State<TapSelectionCircle> {
+  double size;
+  var shape;
+  var color;
+
+  @override
+  void initState() {
+    size = widget.size;
+    shape = widget.shape;
+    color = widget.color;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (Provider.of<MapProgressState>(context).inProgress) {
+      size = widget.size;
+    } else {
+      size = 0;
+    }
+
+    return AnimatedContainer(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: color,
+        shape: shape,
+      ),
+      duration: Duration(milliseconds: 300),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 }
