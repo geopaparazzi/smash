@@ -45,12 +45,12 @@ dependencies:
   sqflite: ^1.2.0
 
   #BSD
-  dart_jts: ^0.0.5+1
+  dart_jts: ^0.0.5+2
 #    git:
 #      url: https://github.com/moovida/dart_jts.git
 
   # apache 2
-  flutter_geopackage: 0.0.2
+  flutter_geopackage: 0.0.2+1
 #    git:
 #      url: https://github.com/moovida/flutter_geopackage.git
 

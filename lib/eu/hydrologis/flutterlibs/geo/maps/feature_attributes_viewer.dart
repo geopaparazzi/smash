@@ -7,10 +7,10 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:dart_jts/dart_jts.dart';
+import 'package:dart_jts/dart_jts.dart' as DJ;
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/flutter_map.dart' as FM;
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -76,7 +76,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     var isLandscape = ScreenUtilities.isLandscape(context);
 
     Color border = Colors.black;
-    Color fill = Colors.yellow;
+    Color borderFill = Colors.yellow;
+    Color fillPoly = Colors.yellow.withOpacity(0.3);
 
     QueryResult f = widget.features;
     var layers = <LayerOptions>[];
@@ -85,7 +86,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
       layers.add(baseLayer);
     }
     _total = f.geoms.length;
-    Geometry geometry = f.geoms[_index];
+    var geometry = f.geoms[_index];
     Map<String, dynamic> data = f.data[_index];
     var centroid = geometry.getCentroid().getCoordinate();
 
@@ -112,7 +113,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                 Center(
                   child: Icon(
                     MdiIcons.circle,
-                    color: fill,
+                    color: borderFill,
                     size: size * 0.8,
                   ),
                 ),
@@ -128,14 +129,27 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
         var geometryN = geometry.getGeometryN(i);
         List<LatLng> linePoints = geometryN.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
         lines.add(Polyline(points: linePoints, strokeWidth: 5, color: border));
-        lines.add(Polyline(points: linePoints, strokeWidth: 3, color: fill));
+        lines.add(Polyline(points: linePoints, strokeWidth: 3, color: borderFill));
       }
       var lineLayer = PolylineLayerOptions(
         polylines: lines,
       );
       layers.add(lineLayer);
     } else if (gType.isPolygon()) {
-      // TODO add polygon
+      List<FM.Polygon> polygons = [];
+      for (int i = 0; i < geometry.getNumGeometries(); i++) {
+        var geometryN = geometry.getGeometryN(i);
+        if (geometryN is DJ.Polygon) {
+          var exteriorRing = geometryN.getExteriorRing();
+          List<LatLng> polyPoints = exteriorRing.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
+          polygons.add(FM.Polygon(points: polyPoints, borderStrokeWidth: 5, borderColor: border, color: border.withOpacity(0)));
+          polygons.add(FM.Polygon(points: polyPoints, borderStrokeWidth: 3, borderColor: borderFill, color: fillPoly));
+        }
+      }
+      var polyLayer = PolygonLayerOptions(
+        polygons: polygons,
+      );
+      layers.add(polyLayer);
     }
 
     var env = geometry.getEnvelopeInternal();
@@ -182,40 +196,75 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
               ]
             : [],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: SmashColors.tableBorder,
-                width: 2,
-              ),
+      body: isLandscape
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: SmashColors.tableBorder,
+                      width: 2,
+                    ),
+                  ),
+                  width: MediaQuery.of(context).size.height / 2,
+                  height: double.infinity,
+                  child: FlutterMap(
+                    options: new MapOptions(
+                      center: LatLng(centroid.y, centroid.x), // TODO getCenterFromBounds(latLngBounds, mapState),
+                      zoom: 15, // TODO getZoomFromBounds(latLngBounds, mapState),
+                      minZoom: 7,
+                      maxZoom: 19,
+                    ),
+                    layers: layers,
+                    mapController: _mapController,
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: TableUtilities.fromMap(data, withBorder: true, borderColor: SmashColors.tableBorder),
+                  ),
+                ),
+              ],
+            )
+          : Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: SmashColors.tableBorder,
+                      width: 2,
+                    ),
+                  ),
+                  height: MediaQuery.of(context).size.height / 3,
+                  width: double.infinity,
+                  child: FlutterMap(
+                    options: new MapOptions(
+                      center: LatLng(centroid.y, centroid.x), // TODO getCenterFromBounds(latLngBounds, mapState),
+                      zoom: 15, // TODO getZoomFromBounds(latLngBounds, mapState),
+                      minZoom: 7,
+                      maxZoom: 19,
+                    ),
+                    layers: layers,
+                    mapController: _mapController,
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: TableUtilities.fromMap(data, withBorder: true, borderColor: SmashColors.tableBorder),
+                  ),
+                ),
+              ],
             ),
-            height: MediaQuery.of(context).size.height / 3,
-            width: double.infinity,
-            child: FlutterMap(
-              options: new MapOptions(
-                center: LatLng(centroid.y, centroid.x), // TODO getCenterFromBounds(latLngBounds, mapState),
-                zoom: 15, // TODO getZoomFromBounds(latLngBounds, mapState),
-                minZoom: 7,
-                maxZoom: 19,
-              ),
-              layers: layers,
-              mapController: _mapController,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: TableUtilities.fromMap(data, withBorder: true, borderColor: SmashColors.tableBorder),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

@@ -105,7 +105,7 @@ packages:
       name: dart_jts
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.5+1"
+    version: "0.0.5+2"
   dcache:
     dependency: transitive
     description:
@@ -161,7 +161,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.2+1"
   flutter_image:
     dependency: transitive
     description:
