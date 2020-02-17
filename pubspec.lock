@@ -115,6 +115,13 @@ packages:
       url: "https://github.com/mikes222/dcache"
     source: git
     version: "0.3.0"
+  device_info:
+    dependency: "direct main"
+    description:
+      name: device_info
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.1+4"
   dio:
     dependency: "direct main"
     description:

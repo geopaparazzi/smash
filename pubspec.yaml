@@ -157,6 +157,9 @@ dependencies:
       path: mapsforge_flutter
     #path: ../../OTHERS/mapsforge_flutter/mapsforge_flutter
 
+  # BSD
+  device_info: 0.4.1+4
+
 
 dev_dependencies:
 

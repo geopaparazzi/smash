@@ -6,6 +6,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/device.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/theme.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
@@ -77,6 +78,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           showSettingsSheet(context);
         });
 
+    final ListTile deviceSettingTile = ListTile(
+        leading: Icon(
+          DeviceSettingsState.iconData,
+          color: SmashColors.mainDecorations,
+        ),
+        title: SmashUI.normalText(DeviceSettingsState.title),
+        subtitle: Text(DeviceSettingsState.subtitle),
+        trailing: Icon(Icons.arrow_right),
+        onTap: () {
+          _selectedSetting = DeviceSettings();
+          showSettingsSheet(context);
+        });
+
     final ListTile diagnosticsSettingTile = ListTile(
         leading: Icon(
           DiagnosticsSettingState.iconData,
@@ -90,11 +104,32 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           showSettingsSheet(context);
         });
 
+    final ListTile gssSettingTile = ListTile(
+        leading: Icon(
+          GssSettingsState.iconData,
+          color: SmashColors.mainDecorations,
+        ),
+        title: SmashUI.normalText(GssSettingsState.title),
+        subtitle: Text(GssSettingsState.subtitle),
+        trailing: Icon(Icons.arrow_right),
+        onTap: () {
+          _selectedSetting = GssSettings();
+          showSettingsSheet(context);
+        });
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Settings"),
       ),
-      body: ListView(children: <Widget>[gpsSettingTile, screenSettingTile, cameraSettingTile, vectorLayerSettingTile, diagnosticsSettingTile]),
+      body: ListView(children: <Widget>[
+        gpsSettingTile,
+        screenSettingTile,
+        cameraSettingTile,
+        vectorLayerSettingTile,
+        deviceSettingTile,
+        gssSettingTile,
+        diagnosticsSettingTile,
+      ]),
     );
   }
 
@@ -113,7 +148,6 @@ class CameraSetting extends StatefulWidget {
 class CameraSettingState extends State<CameraSetting> {
   static final title = "Camera";
   static final subtitle = "Camera Resolution";
-  static final int index = 0;
   static final iconData = Icons.camera;
 
   @override
@@ -461,7 +495,6 @@ class GpsSettings extends StatefulWidget {
 class GpsSettingsState extends State<GpsSettings> {
   static final title = "GPS";
   static final subtitle = "GPS filters and mock locations";
-  static final int index = 1;
   static final iconData = MdiIcons.crosshairsGps;
 
   @override
@@ -641,7 +674,6 @@ class VectorLayerSettings extends StatefulWidget {
 class VectorLayerSettingsState extends State<VectorLayerSettings> {
   static final title = "Vector Layers";
   static final subtitle = "Loading Options and Info Tool";
-  static final int index = 1;
   static final iconData = MdiIcons.vectorPolyline;
 
   @override
@@ -773,7 +805,6 @@ class DiagnosticsSetting extends StatefulWidget {
 class DiagnosticsSettingState extends State<DiagnosticsSetting> {
   static final title = "Diagnostics";
   static final subtitle = "Diagnostics & Debug Log";
-  static final int index = 2;
   static final iconData = Icons.bug_report;
 
   @override
@@ -808,6 +839,225 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class DeviceSettings extends StatefulWidget {
+  @override
+  DeviceSettingsState createState() {
+    return DeviceSettingsState();
+  }
+}
+
+class DeviceSettingsState extends State<DeviceSettings> {
+  static final title = "Device";
+  static final subtitle = "Device identifier";
+  static final iconData = MdiIcons.tabletCellphone;
+
+  String _deviceId;
+  String _overrideId;
+
+  @override
+  void initState() {
+    getIds();
+    super.initState();
+  }
+
+  Future<void> getIds() async {
+    String id = await Device().getDeviceId();
+    String overrideId = await GpPreferences().getString(DEVICE_ID_OVERRIDE, id);
+
+    setState(() {
+      _deviceId = id;
+      _overrideId = overrideId;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: new AppBar(
+        title: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                iconData,
+                color: SmashColors.mainDecorations,
+              ),
+            ),
+            Text(title),
+          ],
+        ),
+      ),
+      body: _deviceId == null
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      elevation: SmashUI.DEFAULT_ELEVATION,
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText("Device Id", bold: true),
+                          ),
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(_deviceId),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      elevation: SmashUI.DEFAULT_ELEVATION,
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText("Override Device Id", bold: true),
+                          ),
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(_overrideId),
+                          ),
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: RaisedButton(
+                              child: SmashUI.normalText("Change"),
+                              onPressed: () async {
+                                var res = await showInputDialog(context, "Override id", "Insert override id", defaultText: _overrideId);
+                                if (res == null || res.trim().length == 0) {
+                                  res = _deviceId;
+                                }
+                                await GpPreferences().setString(DEVICE_ID_OVERRIDE, res);
+                                setState(() {
+                                  _overrideId = res;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
+}
+
+class GssSettings extends StatefulWidget {
+  @override
+  GssSettingsState createState() {
+    return GssSettingsState();
+  }
+}
+
+class GssSettingsState extends State<GssSettings> {
+  static final title = "GSS";
+  static final subtitle = "Geopaparazzi Survey Server";
+  static final iconData = MdiIcons.cloudLock;
+
+  String _gssUrl;
+  String _gssUser;
+  String _gssPwd;
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
+  Future<void> getData() async {
+    String gssUrl = await GpPreferences().getString(KEY_GSS_SERVER_URL, "");
+    String gssUser = await GpPreferences().getString(KEY_GSS_SERVER_USER, "");
+    String gssPwd = await GpPreferences().getString(KEY_GSS_SERVER_PWD, "");
+
+    setState(() {
+      _gssUrl = gssUrl;
+      _gssUser = gssUser;
+      _gssPwd = gssPwd;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: new AppBar(
+        title: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                iconData,
+                color: SmashColors.mainDecorations,
+              ),
+            ),
+            Text(title),
+          ],
+        ),
+      ),
+      body: _gssUrl == null
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      elevation: SmashUI.DEFAULT_ELEVATION,
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText("Server URL", bold: true),
+                          ),
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(_gssUrl),
+                          ),
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: RaisedButton(
+                              child: SmashUI.normalText("Change"),
+                              onPressed: () async {
+                                var res = await showInputDialog(context, "Set url", "Set GSS server url", defaultText: _gssUrl);
+                                if (res == null || res.trim().length == 0) {
+                                  res = _gssUrl;
+                                }
+                                await GpPreferences().setString(KEY_GSS_SERVER_URL, res);
+                                setState(() {
+                                  _gssUrl = res;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
