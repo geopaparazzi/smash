@@ -33,6 +33,7 @@ class CoordinateUtilities {
 }
 
 enum GpsStatus { OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
+const MAX_DELTA_FOR_FIX = 15000.0;
 
 /// Interface to handle position updates
 abstract class PositionListener {
@@ -91,11 +92,12 @@ class GpsHandler {
       _locationServiceEnabled = await _geolocator.isLocationServiceEnabled();
       var currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
       printGps("Current time: $currentTimeMillis");
+
       if (_geolocator == null || !_locationServiceEnabled) {
         if (_gpsState.status != GpsStatus.OFF) {
           _gpsState.status = GpsStatus.OFF;
         }
-      } else if (currentTimeMillis - _lastGpsEventTs > 5000) {
+      } else if (currentTimeMillis - _lastGpsEventTs > MAX_DELTA_FOR_FIX) {
         printGps("Delta for fix was: ${currentTimeMillis - _lastGpsEventTs}");
         // if for 5 seconds there is no gps event, we can assume it has no fix
         if (_gpsState.status != GpsStatus.ON_NO_FIX) {
