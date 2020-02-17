@@ -167,7 +167,7 @@ class DiagnosticWidgetState extends State<DiagnosticWidget> {
         try {
           _diagnosticsList.add([
             Text("GPS enabled"),
-            Text("${await gpsHandler.isGpsOn()}"),
+            Text("${gpsHandler.isGpsOn()}"),
           ]);
 
           try {

@@ -80,7 +80,7 @@ class GpsHandler {
   }
 
   void init(GpsState initGpsState) async {
-    GpLogger().d("init GpsHandler");
+    printGps("init GpsHandler");
     _gpsState = initGpsState;
     _locationServiceEnabled = false;
 
@@ -91,23 +91,22 @@ class GpsHandler {
       }
       _locationServiceEnabled = await _geolocator.isLocationServiceEnabled();
       var currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
-      printGps("Current time: $currentTimeMillis");
+//      printGps("Current time: $currentTimeMillis");
 
       if (_geolocator == null || !_locationServiceEnabled) {
         if (_gpsState.status != GpsStatus.OFF) {
           _gpsState.status = GpsStatus.OFF;
         }
       } else if (currentTimeMillis - _lastGpsEventTs > MAX_DELTA_FOR_FIX) {
-        printGps("Delta for fix was: ${currentTimeMillis - _lastGpsEventTs}");
+        printGps("Setting NO FIX due to delta: ${currentTimeMillis - _lastGpsEventTs}");
         // if for 5 seconds there is no gps event, we can assume it has no fix
         if (_gpsState.status != GpsStatus.ON_NO_FIX) {
           _gpsState.status = GpsStatus.ON_NO_FIX;
-          printGps("Setting no fix.");
         }
       }
 
       if (_positionStreamSubscription == null) {
-        GpLogger().d("GpsHandler: subscribe to gps");
+        printGps("GpsHandler: subscribe to gps");
         const LocationOptions locationOptions = LocationOptions(
           accuracy: LocationAccuracy.best,
           distanceFilter: 0,
@@ -141,7 +140,7 @@ class GpsHandler {
   }
 
   void _onPositionUpdate(Position position) {
-    printGps("Incoming position $position");
+//    printGps("Incoming position $position");
 
     if (_gpsState.doTestLog) {
 
@@ -157,7 +156,7 @@ class GpsHandler {
         mocked: true,
       );
       position = newP;
-      printGps("Modify with testing position: $position");
+//      printGps("Modify with testing position: $position");
     }
 
     if (!_locationServiceEnabled) {
@@ -167,11 +166,11 @@ class GpsHandler {
 
     // set last event ts that is used to define the 'no fix' interval
     _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
-    printGps("Setting _lastGpsEventTs: $_lastGpsEventTs");
+//    printGps("Setting _lastGpsEventTs: $_lastGpsEventTs");
 
     if (position != null) {
       var tmpStatus = _gpsState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
-      printGps("Tmp status: $tmpStatus");
+//      printGps("Tmp status: $tmpStatus");
 
       var newPosLatLon = LatLng(position.latitude, position.longitude);
 
@@ -181,7 +180,7 @@ class GpsHandler {
         var previousPosLatLon = LatLng(_gpsState.lastGpsPosition.latitude, _gpsState.lastGpsPosition.longitude);
         var distanceLastEvent = CoordinateUtilities.getDistance(previousPosLatLon, newPosLatLon);
         if (distanceLastEvent > _gpsState.gpsMaxDistance) {
-          GpLogger().d("Ignoring GPS point jump: $distanceLastEvent > ${_gpsState.gpsMaxDistance}");
+          printGps("Ignoring GPS point jump: $distanceLastEvent > ${_gpsState.gpsMaxDistance}");
           _gpsState.lastGpsPosition = position;
           return;
         }
@@ -225,8 +224,7 @@ class GpsHandler {
 
 
   printGps(String msg){
-//    print(msg);
-    GpLogger().internalLogger.d(msg);
+    GpLogger().d(msg);
   }
 }
 
