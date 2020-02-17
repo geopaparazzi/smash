@@ -86,17 +86,21 @@ class GpsHandler {
     _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) async {
       if (_geolocator == null) {
         _geolocator = Geolocator();
+        printGps("Initialize geolocator");
       }
       _locationServiceEnabled = await _geolocator.isLocationServiceEnabled();
       var currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
+      printGps("Current time: $currentTimeMillis");
       if (_geolocator == null || !_locationServiceEnabled) {
         if (_gpsState.status != GpsStatus.OFF) {
           _gpsState.status = GpsStatus.OFF;
         }
       } else if (currentTimeMillis - _lastGpsEventTs > 5000) {
+        printGps("Delta for fix was: ${currentTimeMillis - _lastGpsEventTs}");
         // if for 5 seconds there is no gps event, we can assume it has no fix
         if (_gpsState.status != GpsStatus.ON_NO_FIX) {
           _gpsState.status = GpsStatus.ON_NO_FIX;
+          printGps("Setting no fix.");
         }
       }
 
@@ -135,7 +139,10 @@ class GpsHandler {
   }
 
   void _onPositionUpdate(Position position) {
+    printGps("Incoming position $position");
+
     if (_gpsState.doTestLog) {
+
       var c = Testlog.getNext();
       Position newP = Position(
         latitude: c.y,
@@ -148,15 +155,21 @@ class GpsHandler {
         mocked: true,
       );
       position = newP;
+      printGps("Modify with testing position: $position");
     }
 
-    if (!_locationServiceEnabled) return;
+    if (!_locationServiceEnabled) {
+      printGps("Location service is disabled.");
+      return;
+    }
 
     // set last event ts that is used to define the 'no fix' interval
     _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
+    printGps("Setting _lastGpsEventTs: $_lastGpsEventTs");
 
     if (position != null) {
       var tmpStatus = _gpsState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
+      printGps("Tmp status: $tmpStatus");
 
       var newPosLatLon = LatLng(position.latitude, position.longitude);
 
@@ -206,6 +219,12 @@ class GpsHandler {
       _positionStreamSubscription = null;
     }
     if (_locationServiceEnabled) return;
+  }
+
+
+  printGps(String msg){
+//    print(msg);
+    GpLogger().internalLogger.d(msg);
   }
 }
 

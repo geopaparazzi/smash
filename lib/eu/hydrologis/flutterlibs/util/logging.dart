@@ -114,7 +114,7 @@ class LogDb {
 class GpLogger {
   static final GpLogger _instance = GpLogger._internal();
 
-  Logger _logger;
+  Logger internalLogger;
   LogDb _logDb;
   String _folder;
 
@@ -123,14 +123,14 @@ class GpLogger {
   GpLogger._internal();
 
   Future<bool> init(String folder) async {
-    if (_logger != null) return false;
+    if (internalLogger != null) return false;
     _folder = folder;
     d("Initializing GpLogger with folder: $_folder");
 
     _logDb = LogDb();
     await _logDb.init(_folder).then((ok) {
       if (ok) {
-        _logger = Logger(
+        internalLogger = Logger(
           printer: PrettyPrinter(
               methodCount: 2,
               // number of method calls to be displayed
@@ -157,16 +157,16 @@ class GpLogger {
   String get dbPath => _logDb?.path;
 
   v(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) {
-      _logger.v(message, error, stackTrace);
+    if (internalLogger != null) {
+      internalLogger.v(message, error, stackTrace);
     } else {
       print("PRELOGGER v: ${message.toString()}");
     }
   }
 
   d(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) {
-      _logger.d(message, error, stackTrace);
+    if (internalLogger != null) {
+      internalLogger.d(message, error, stackTrace);
     } else {
       print("PRELOGGER d: ${message.toString()}");
     }
@@ -177,8 +177,8 @@ class GpLogger {
   }
 
   i(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) {
-      _logger.i(message, error, stackTrace);
+    if (internalLogger != null) {
+      internalLogger.i(message, error, stackTrace);
     } else {
       print("PRELOGGER i: ${message.toString()}");
     }
@@ -189,8 +189,8 @@ class GpLogger {
   }
 
   w(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) {
-      _logger.w(message, error, stackTrace);
+    if (internalLogger != null) {
+      internalLogger.w(message, error, stackTrace);
     } else {
       print("PRELOGGER w: ${message.toString()}");
     }
@@ -201,8 +201,8 @@ class GpLogger {
   }
 
   e(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) {
-      _logger.e(message, error, stackTrace);
+    if (internalLogger != null) {
+      internalLogger.e(message, error, stackTrace);
     } else {
       print("PRELOGGER e: ${message.toString()}");
     }
@@ -217,8 +217,8 @@ class GpLogger {
   }
 
   err(dynamic message, StackTrace stackTrace) {
-    if (_logger != null) {
-      _logger.e(message, "ERROR", stackTrace);
+    if (internalLogger != null) {
+      internalLogger.e(message, "ERROR", stackTrace);
     } else {
       print("PRELOGGER err: ${message.toString()}");
     }
@@ -230,8 +230,8 @@ class GpLogger {
   }
 
   wtf(dynamic message, [dynamic error, StackTrace stackTrace]) {
-    if (_logger != null) {
-      _logger.wtf(message, error, stackTrace);
+    if (internalLogger != null) {
+      internalLogger.wtf(message, error, stackTrace);
     } else {
       print("PRELOGGER wtf: ${message.toString()}");
     }
