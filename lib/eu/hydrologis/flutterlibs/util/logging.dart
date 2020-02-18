@@ -210,6 +210,9 @@ class GpLogger {
       if (error is StackTrace) {
         stackTrace = error;
       }
+      if (error is Exception) {
+        message = "$message\n${error.toString()}";
+      }
       var formatted = stackTrace != null ? Trace.format(stackTrace) : "";
       addToDiagnostic("ERROR", "$message\n$formatted",
           bgColor: Colors.red[100], iconColor: Colors.black);

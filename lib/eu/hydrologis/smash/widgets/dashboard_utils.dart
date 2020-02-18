@@ -627,7 +627,9 @@ class _GssImportWidgetState extends State<GssImportWidget> {
         _status = 1;
       });
     } catch (e) {
-      _status = 12;
+      setState(() {
+        _status = 12;
+      });
       GpLogger().e("An error occurred while downloading GSS data list.", e);
     }
   }
