@@ -31,7 +31,7 @@ dependencies:
 
 
   # MIT
-  geolocator: ^5.2.0
+  geolocator: ^5.2.1
   # on IOS heading is not supported. For rotation we should try the plugin: location: 2.3.5
   # ON IOS NEEDS:
   #  <key>NSLocationWhenInUseUsageDescription</key>
@@ -42,7 +42,7 @@ dependencies:
   #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
 
   # MIT
-  sqflite: ^1.2.0
+  sqflite: ^1.2.1
 
   #BSD
   dart_jts: ^0.0.5+2
@@ -68,10 +68,10 @@ dependencies:
   latlong: 0.6.1
 
   # MIT
-  material_design_icons_flutter: ^3.4.4795
+  material_design_icons_flutter: ^3.4.4995
 
   # BSD
-  path_provider: ^1.5.1
+  path_provider: ^1.6.0
 
   # MIT
   path_provider_ex: ^1.0.1
@@ -85,7 +85,7 @@ dependencies:
   geocoder: 0.2.1
 
   # BSD
-  shared_preferences: ^0.5.6
+  shared_preferences: ^0.5.6+1
 
   # MIT
   logger: ^0.8.3
@@ -100,11 +100,11 @@ dependencies:
   flutter_material_color_picker: ^1.0.5
 
   # BSD
-  flutter_map: #^0.8.1
+  flutter_map: #^0.8.2
     git:
       url: https://github.com/moovida/flutter_map.git
 
-  flutter_map_marker_cluster: #^0.2.5
+  flutter_map_marker_cluster: #^0.2.7
     git:
       url: https://github.com/moovida/flutter_map_marker_cluster.git
 
@@ -121,16 +121,16 @@ dependencies:
   #  </array>
 
   #MIT
-  extended_image: ^0.6.8
+  extended_image: ^0.7.1
 
   # MIT
-  permission_handler: ^4.1.0
+  permission_handler: ^4.2.0+hotfix.3
 
   # BSD
   stack_trace: 1.9.3
 
   # MIT
-  share_extend: ^1.1.0
+  share_extend: ^1.1.1
 
   # BSD
   url_launcher: ^5.4.1
@@ -148,7 +148,7 @@ dependencies:
   flutter_tags: ^0.4.5
 
   # MIT
-  flutter_datetime_picker: ^1.3.2
+  flutter_datetime_picker: ^1.3.4
 
   mapsforge_flutter:
     git:

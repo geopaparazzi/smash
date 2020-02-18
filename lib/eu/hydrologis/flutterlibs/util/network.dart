@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/mapsforge.dart';
@@ -86,20 +87,20 @@ class DownloadCircularProgressWidgetState extends State<DownloadCircularProgress
   }
 }
 
-class DownloadListTileProgressWidget extends StatefulWidget {
+class DownloadMapFromListTileProgressWidget extends StatefulWidget {
   final String _downloadUrl;
   final String _destinationFilePath;
   final String _name;
 
-  DownloadListTileProgressWidget(this._downloadUrl, this._destinationFilePath, this._name);
+  DownloadMapFromListTileProgressWidget(this._downloadUrl, this._destinationFilePath, this._name);
 
   @override
   State<StatefulWidget> createState() {
-    return DownloadListTileProgressWidgetState();
+    return DownloadMapFromListTileProgressWidgetState();
   }
 }
 
-class DownloadListTileProgressWidgetState extends State<DownloadListTileProgressWidget> {
+class DownloadMapFromListTileProgressWidgetState extends State<DownloadMapFromListTileProgressWidget> {
   bool _downloading = false;
   bool _downloadFinished = false;
   String _progressString = "";
@@ -257,7 +258,7 @@ class MapsDownloadWidgetState extends State<MapsDownloadWidget> {
             itemBuilder: (context, index) {
               var item = _visualizeList[index];
 
-              return DownloadListTileProgressWidget(item[1], FileUtilities.joinPaths(widget._mapsFolder.path, item[0]), item[0]);
+              return DownloadMapFromListTileProgressWidget(item[1], FileUtilities.joinPaths(widget._mapsFolder.path, item[0]), item[0]);
             },
           ),
         ),
@@ -282,5 +283,123 @@ class MapsDownloadWidgetState extends State<MapsDownloadWidget> {
         _visualizeList = []..addAll(_completeList);
       });
     }
+  }
+}
+
+class FileDownloadListTileProgressWidget extends StatefulWidget {
+  final String _downloadUrl;
+  final String _destinationFilePath;
+  final String _name;
+  final bool showUrl;
+  final String authHeader;
+
+  FileDownloadListTileProgressWidget(this._downloadUrl, this._destinationFilePath, this._name, {this.showUrl = false, this.authHeader});
+
+  @override
+  State<StatefulWidget> createState() {
+    return FileDownloadListTileProgressWidgetState();
+  }
+}
+
+class FileDownloadListTileProgressWidgetState extends State<FileDownloadListTileProgressWidget> {
+  bool _downloading = false;
+  bool _downloadFinished = false;
+  String _progressString = "";
+  CancelToken cancelToken = CancelToken();
+
+  @override
+  void initState() {
+    _progressString = widget._downloadUrl;
+    super.initState();
+  }
+
+  Future<void> downloadFile() async {
+    Dio dio = Dio();
+
+    File file = File(widget._destinationFilePath);
+    if (!file.parent.existsSync()) {
+      await file.parent.create(recursive: true);
+    }
+
+    Options options;
+    if (widget.authHeader != null) {
+      options = Options(headers: {"Authorization": widget.authHeader});
+    }
+
+    try {
+      await dio.download(widget._downloadUrl, widget._destinationFilePath, onReceiveProgress: (rec, total) {
+        setState(() {
+          _downloading = true;
+          _progressString = ((rec / total) * 100).toStringAsFixed(0) + "%";
+        });
+      }, cancelToken: cancelToken, options: options);
+    } catch (e) {
+      print(e);
+    }
+
+    setState(() {
+      _downloading = false;
+      _downloadFinished = true;
+      _progressString = cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var name = widget._name;
+    if (name == null) {
+      name = FileUtilities.nameFromFile(widget._destinationFilePath, true);
+    }
+    if (!_downloading && !_downloadFinished) {
+      _progressString = widget._downloadUrl;
+      if (!widget.showUrl) {
+        _progressString = null;
+      }
+    }
+
+    File dFile = File(widget._destinationFilePath);
+    var fileExists = dFile.existsSync();
+    return ListTile(
+      leading: _downloading
+          ? CircularProgressIndicator()
+          : fileExists
+              ? Icon(
+                  MdiIcons.cloudCheck,
+                  color: SmashColors.mainSelection,
+                )
+              : Icon(
+                  ICONS.SmashIcons.forPath(name),
+                  color: SmashColors.mainDecorations,
+                ),
+      title: Text(name),
+      subtitle: _progressString != null ? Text(_progressString) : Container(),
+      trailing: Icon(
+        Icons.file_download,
+        color: SmashColors.mainDecorations,
+      ),
+      onLongPress: () {
+        if (_downloading) {
+          cancelToken.cancel("cancelled");
+          if (dFile.existsSync()) {
+            dFile.deleteSync();
+          }
+        }
+      },
+      onTap: () async {
+        if (dFile.existsSync()) {
+          showWarningDialog(context, "This file already exists, will not overwrite.");
+          return;
+        }
+
+        if (_downloading) {
+          showWarningDialog(context, "This file is already in the process of being downloaded.");
+          return;
+        }
+        bool doDownload = await showConfirmDialog(context, "Download", "Download file $name to the device? This can take some time.");
+        if (doDownload) {
+          await downloadFile();
+        }
+      },
+    );
   }
 }

@@ -5,8 +5,10 @@
  */
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:badges/badges.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -19,6 +21,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/diagnostic.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/filemanagement.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/network.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/share.dart';
@@ -26,6 +29,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/validators.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
+import 'package:smash/eu/hydrologis/smash/gss.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 
@@ -115,19 +119,22 @@ class DashboardUtils {
                       )));
         },
       ),
-//      ListTile(
-//        leading: new Icon(
-//          Icons.file_download,
-//          color: c,
-//          size: iconSize,
-//        ),
-//        title: SmashUI.normalText(
-//          "Import",
-//          bold: true,
-//          color: c,
-//        ),
-//        onTap: () {},
-//      ),
+      ListTile(
+        leading: new Icon(
+          Icons.file_download,
+          color: c,
+          size: iconSize,
+        ),
+        title: SmashUI.normalText(
+          "Import",
+          bold: true,
+          color: c,
+        ),
+        onTap: () {
+          Navigator.of(context).pop();
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ImportWidget()));
+        },
+      ),
       ListTile(
         leading: new Icon(
           Icons.file_upload,
@@ -437,7 +444,7 @@ class ExportWidget extends StatefulWidget {
 }
 
 class _ExportWidgetState extends State<ExportWidget> {
-  int _buildStatus = 0;
+  int _pdfBuildStatus = 0;
   String _outPath = "";
 
   Future<void> buildPdf(BuildContext context) async {
@@ -450,7 +457,7 @@ class _ExportWidgetState extends State<ExportWidget> {
 
     setState(() {
       _outPath = outFilePath;
-      _buildStatus = 2;
+      _pdfBuildStatus = 2;
     });
 //    showInfoDialog(context, "Exported to $outFilePath");
   }
@@ -463,28 +470,195 @@ class _ExportWidgetState extends State<ExportWidget> {
       ),
       body: ListView(children: <Widget>[
         ListTile(
-            leading: _buildStatus == 0
+            leading: _pdfBuildStatus == 0
                 ? Icon(
                     MdiIcons.filePdf,
                     color: SmashColors.mainDecorations,
                   )
-                : _buildStatus == 1
+                : _pdfBuildStatus == 1
                     ? CircularProgressIndicator()
                     : Icon(
                         Icons.check,
                         color: SmashColors.mainDecorations,
                       ),
-            title: Text("${_buildStatus == 2 ? 'PDF exported' : 'PDF'}"),
-            subtitle: Text("${_buildStatus == 2 ? _outPath : 'Export project to Portable Document Format'}"),
+            title: Text("${_pdfBuildStatus == 2 ? 'PDF exported' : 'PDF'}"),
+            subtitle: Text("${_pdfBuildStatus == 2 ? _outPath : 'Export project to Portable Document Format'}"),
             onTap: () {
               setState(() {
                 _outPath = "";
-                _buildStatus = 1;
+                _pdfBuildStatus = 1;
               });
               buildPdf(context);
 //              Navigator.pop(context);
             }),
       ]),
+    );
+  }
+}
+
+class ImportWidget extends StatefulWidget {
+  ImportWidget({Key key}) : super(key: key);
+
+  @override
+  _ImportWidgetState createState() => new _ImportWidgetState();
+}
+
+class _ImportWidgetState extends State<ImportWidget> {
+  int _buildStatus = 0;
+  String _outPath = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Import"),
+      ),
+      body: ListView(children: <Widget>[
+        ListTile(
+            leading: Icon(
+              MdiIcons.cloudLock,
+              color: SmashColors.mainDecorations,
+            ),
+            title: Text("GSS"),
+            subtitle: Text("Import from Geopaparazzi Survey Server"),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => new GssImportWidget()));
+            }),
+      ]),
+    );
+  }
+}
+
+class GssImportWidget extends StatefulWidget {
+  GssImportWidget({Key key}) : super(key: key);
+
+  @override
+  _GssImportWidgetState createState() => new _GssImportWidgetState();
+}
+
+class _GssImportWidgetState extends State<GssImportWidget> {
+  /*
+   * 0 = waiting
+   * 1 = has data
+   *
+   * 11 = no server url available
+   * 12 = download list error
+   */
+  int _status = 0;
+  String _outPath = "";
+
+  String mapsFolderPath;
+  String _serverUrl;
+  String _authHeader;
+  List<String> _baseMapsList = [];
+
+  @override
+  void initState() {
+    init();
+
+    super.initState();
+  }
+
+  Future<void> init() async {
+    Directory mapsFolder = await Workspace.getMapsFolder();
+    mapsFolderPath = mapsFolder.path;
+
+    _serverUrl = GpPreferences().getStringSync(KEY_GSS_SERVER_URL);
+    if (_serverUrl == null) {
+      setState(() {
+        _status = 11;
+      });
+      return;
+    }
+    String downloadListUrl = _serverUrl + GssUtilities.DATA_DOWNLOAD_PATH;
+    _authHeader = await GssUtilities.getAuthHeader();
+
+    try {
+      Dio dio = new Dio();
+
+      var response = await dio.get(downloadListUrl, options: Options(headers: {"Authorization": _authHeader}));
+      var responseMap = response.data;
+      List<dynamic> baseMaps = responseMap[GssUtilities.DATA_DOWNLOAD_BASEMAP];
+      _baseMapsList.clear();
+      baseMaps.forEach((bm) {
+        var name = bm[GssUtilities.DATA_DOWNLOAD_NAME];
+        _baseMapsList.add(name);
+      });
+      setState(() {
+        _status = 1;
+      });
+    } catch (e) {
+      _status = 12;
+      GpLogger().e("An error occurred while downloading GSS data list.", e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("GSS Import"),
+      ),
+      body: _status == 0
+          ? Center(
+              child: SmashCircularProgress(label: "Downloading data list..."),
+            )
+          : _status == 12
+              ? Center(
+                  child: Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.errorWidget("Unable to download data list, check diagnostics."),
+                  ),
+                )
+              : _status == 11
+                  ? Center(
+                      child: Padding(
+                        padding: SmashUI.defaultPadding(),
+                        child: SmashUI.titleText("No GSS server url has been set. Check your settings."),
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: double.infinity,
+                            child: Card(
+                              margin: SmashUI.defaultMargin(),
+                              elevation: SmashUI.DEFAULT_ELEVATION,
+                              color: SmashColors.mainBackground,
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(
+                                    padding: SmashUI.defaultPadding(),
+                                    child: SmashUI.normalText("Data", bold: true),
+                                  ),
+                                  Padding(
+                                    padding: SmashUI.defaultPadding(),
+                                    child: SmashUI.normalText("Data are downloaded into the maps folder."),
+                                  ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: _baseMapsList.length,
+                                    itemBuilder: (context, index) {
+                                      var name = _baseMapsList[index];
+
+                                      String downloadUrl = _serverUrl + GssUtilities.DATA_DOWNLOAD_PATH + "?" + GssUtilities.DATA_DOWNLOAD_NAME + "=" + name;
+
+                                      return FileDownloadListTileProgressWidget(
+                                        downloadUrl,
+                                        FileUtilities.joinPaths(mapsFolderPath, name),
+                                        name,
+                                        authHeader: _authHeader,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
     );
   }
 }

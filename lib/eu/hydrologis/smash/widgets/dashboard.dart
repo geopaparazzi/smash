@@ -88,7 +88,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
     _iconSize = GpPreferences().getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
 
     Future.delayed(Duration.zero, () async {
-      var directory = await Workspace.getConfigurationFolder();
+      var directory = await Workspace.getConfigFolder();
       bool init = await GpLogger().init(directory.path); // init logger
       if (init) GpLogger().d("Db logger initialized.");
 

@@ -135,14 +135,14 @@ packages:
       name: extended_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.8"
+    version: "0.7.1"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.9"
+    version: "0.2.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -161,7 +161,7 @@ packages:
       name: flutter_datetime_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.2"
+    version: "1.3.4"
   flutter_geopackage:
     dependency: "direct main"
     description:
@@ -188,19 +188,19 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "1ebac5ba0ac7bc3e97c3c031d66a447e284a0449"
+      resolved-ref: a639b6d72fd69d7c4918e37cca0e12b79c4334eb
       url: "https://github.com/moovida/flutter_map.git"
     source: git
-    version: "0.8.0"
+    version: "0.8.2"
   flutter_map_marker_cluster:
     dependency: "direct main"
     description:
       path: "."
       ref: HEAD
-      resolved-ref: aeb8ff8d6ef97e61f9ba41311f34639dbcedf35b
+      resolved-ref: "427a4ddc084c1a3ba94ba0109ced468bf5d9e36b"
       url: "https://github.com/moovida/flutter_map_marker_cluster.git"
     source: git
-    version: "0.2.5"
+    version: "0.2.7"
   flutter_material_color_picker:
     dependency: "direct main"
     description:
@@ -247,7 +247,7 @@ packages:
       name: geolocator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.0"
+    version: "5.2.1"
   google_api_availability:
     dependency: transitive
     description:
@@ -368,7 +368,7 @@ packages:
       name: material_design_icons_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.4.4795"
+    version: "3.4.4995"
   meta:
     dependency: transitive
     description:
@@ -410,7 +410,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.1"
+    version: "1.6.0"
   path_provider_ex:
     dependency: "direct main"
     description:
@@ -438,7 +438,7 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.0+hotfix.3"
   petitparser:
     dependency: transitive
     description:
@@ -508,14 +508,14 @@ packages:
       name: share_extend
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   shared_preferences:
     dependency: "direct main"
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.6"
+    version: "0.5.6+1"
   shared_preferences_macos:
     dependency: transitive
     description:
@@ -555,7 +555,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   stack_trace:
     dependency: "direct main"
     description:

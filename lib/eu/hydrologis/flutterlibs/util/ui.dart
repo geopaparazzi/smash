@@ -75,6 +75,39 @@ class SmashUI {
     );
   }
 
+  /// Create a  widget with size and color for errors in pages.
+  ///
+  /// Allows to choose bold or color/neutral, [underline], [textAlign] and [overflow] (example TextOverflow.ellipsis).
+  static Widget errorWidget(String text, {useColor = false, bold = true, color = Colors.redAccent, textAlign = TextAlign.center}) {
+    Color c;
+    if (useColor || color != null) {
+      if (color == null) {
+        c = SmashColors.mainSelection;
+      } else {
+        c = color;
+      }
+    } else {
+      c = SmashColors.mainTextColorNeutral;
+    }
+    return Container(
+      width: double.infinity,
+      child: Card(
+        margin: SmashUI.defaultMargin(),
+        elevation: SmashUI.DEFAULT_ELEVATION,
+        color: SmashColors.mainBackground,
+        child: Padding(
+          padding: EdgeInsets.all(DEFAULT_PADDING * 3),
+          child: Text(
+            text,
+            textAlign: textAlign,
+            overflow: null,
+            style: TextStyle(color: c, fontWeight: bold ? FontWeight.bold : FontWeight.normal, fontSize: NORMAL_SIZE),
+          ),
+        ),
+      ),
+    );
+  }
+
   static EdgeInsets defaultMargin() {
     return EdgeInsets.all(DEFAULT_PADDING);
   }
@@ -409,5 +442,33 @@ class TableUtilities {
       },
       children: rows,
     );
+  }
+}
+
+class SmashCircularProgress extends StatelessWidget {
+  String label;
+
+  SmashCircularProgress({this.label, Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (label != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(),
+            SizedBox(
+              height: 10,
+            ),
+            SmashUI.normalText(label),
+          ],
+        ),
+      );
+    } else {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
   }
 }

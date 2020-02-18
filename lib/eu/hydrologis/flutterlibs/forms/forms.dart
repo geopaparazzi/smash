@@ -632,11 +632,11 @@ class TagsManager {
     if (tagsFilePath != null) {
       _tagsFileArray.add(tagsFilePath);
     } else {
-      Directory configFolder = await Workspace.getConfigurationFolder();
-      List<String> fileNames = FileUtilities.getFilesInPathByExt(configFolder.path, TAGSFILENAME_ENDPATTERN);
-      _tagsFileArray = fileNames.map((fn) => FileUtilities.joinPaths(configFolder.path, fn)).toList();
+      Directory formsFolder = await Workspace.getFormsFolder();
+      List<String> fileNames = FileUtilities.getFilesInPathByExt(formsFolder.path, TAGSFILENAME_ENDPATTERN);
+      _tagsFileArray = fileNames.map((fn) => FileUtilities.joinPaths(formsFolder.path, fn)).toList();
       if (_tagsFileArray == null || _tagsFileArray.isEmpty) {
-        String tagsFile = FileUtilities.joinPaths(configFolder.path, "tags.json");
+        String tagsFile = FileUtilities.joinPaths(formsFolder.path, "tags.json");
         if (!File(tagsFile).existsSync()) {
           var tagsString = await rootBundle.loadString("assets/tags.json");
           FileUtilities.writeStringToFile(tagsFile, tagsString);

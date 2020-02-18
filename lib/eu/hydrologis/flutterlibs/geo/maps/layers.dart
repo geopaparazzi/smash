@@ -116,6 +116,7 @@ class TileSource extends LayerSource {
   List<String> subdomains = [];
   bool isVisible = true;
   bool isTms = false;
+  bool isWms = false;
 
   TileSource({
     this.name,
@@ -235,6 +236,12 @@ class TileSource extends LayerSource {
     String type = paramsMap["type"] ?? "tms";
     if (type.toLowerCase() == "wms") {
       throw ArgumentError("WMS mapurls are not supported at the time.");
+      // TODO work on fixing WMS support, needs more love
+//      String layer = paramsMap["layer"];
+//      if (layer != null) {
+//        this.name = layer;
+//        this.isWms = true;
+//      }
     }
 
     String url = paramsMap["url"];
@@ -362,15 +369,28 @@ class TileSource extends LayerSource {
         )
       ];
     } else if (this.isOnlineService()) {
-      return [
-        TileLayerOptions(
-          tms: isTms,
-          urlTemplate: url,
-          backgroundColor: Colors.white.withOpacity(0),
-          maxZoom: maxZoom.toDouble(),
-          subdomains: subdomains,
-        )
-      ];
+      if (isWms) {
+        return [
+          TileLayerOptions(
+            wmsOptions: WMSTileLayerOptions(
+              baseUrl: url,
+              layers: [name],
+            ),
+            backgroundColor: Colors.white.withOpacity(0),
+            maxZoom: maxZoom.toDouble(),
+          )
+        ];
+      } else {
+        return [
+          TileLayerOptions(
+            tms: isTms,
+            urlTemplate: url,
+            backgroundColor: Colors.white.withOpacity(0),
+            maxZoom: maxZoom.toDouble(),
+            subdomains: subdomains,
+          )
+        ];
+      }
     } else {
       throw Exception("Type not supported: ${absolutePath != null ? absolutePath : url}");
     }

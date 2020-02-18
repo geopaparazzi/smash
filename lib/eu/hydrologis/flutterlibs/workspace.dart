@@ -15,6 +15,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 const APP_NAME = "smash";
 const MAPS_FOLDER = "maps";
 const CONFIG_FOLDER = "config";
+const FORMS_FOLDER = "forms";
 const PROJECTS_FOLDER = "projects";
 const EXPORT_FOLDER = "export";
 
@@ -99,7 +100,7 @@ class Workspace {
   /// Get the application configuration folder.
   ///
   /// Returns the file of the folder to use.
-  static Future<Directory> getConfigurationFolder() async {
+  static Future<Directory> getConfigFolder() async {
     var applicationFolder = await getApplicationFolder();
     var configFolderPath = FileUtilities.joinPaths(applicationFolder.path, CONFIG_FOLDER);
     Directory configFolder = Directory(configFolderPath);
@@ -107,6 +108,19 @@ class Workspace {
       configFolder.createSync();
     }
     return configFolder;
+  }
+
+  /// Get the application configuration folder.
+  ///
+  /// Returns the file of the folder to use.
+  static Future<Directory> getFormsFolder() async {
+    var applicationFolder = await getApplicationFolder();
+    var formsFolderPath = FileUtilities.joinPaths(applicationFolder.path, FORMS_FOLDER);
+    Directory formsFolder = Directory(formsFolderPath);
+    if (!formsFolder.existsSync()) {
+      formsFolder.createSync();
+    }
+    return formsFolder;
   }
 
   /// Get the maps folder.

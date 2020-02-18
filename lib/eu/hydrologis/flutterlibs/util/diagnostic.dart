@@ -65,7 +65,7 @@ class DiagnosticWidgetState extends State<DiagnosticWidget> {
     }
 
     try {
-      var appConfigFolder = await Workspace.getConfigurationFolder();
+      var appConfigFolder = await Workspace.getConfigFolder();
       _diagnosticsList.add([
         Text("App config folder"),
         Text(appConfigFolder.path),

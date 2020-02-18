@@ -974,7 +974,7 @@ class GssSettingsState extends State<GssSettings> {
   static final iconData = MdiIcons.cloudLock;
 
   String _gssUrl;
-  String _gssUser;
+  String _gssUser; // TODO when server supports them
   String _gssPwd;
 
   @override
