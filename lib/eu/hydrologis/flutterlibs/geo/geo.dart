@@ -98,7 +98,7 @@ class GpsHandler {
           _gpsState.status = GpsStatus.OFF;
         }
       } else if (currentTimeMillis - _lastGpsEventTs > MAX_DELTA_FOR_FIX) {
-        printGps("Setting NO FIX due to delta: ${currentTimeMillis - _lastGpsEventTs}");
+//        printGps("Setting NO FIX due to delta: ${currentTimeMillis - _lastGpsEventTs}");
         // if for 5 seconds there is no gps event, we can assume it has no fix
         if (_gpsState.status != GpsStatus.ON_NO_FIX) {
           _gpsState.status = GpsStatus.ON_NO_FIX;

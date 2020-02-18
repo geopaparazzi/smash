@@ -53,6 +53,34 @@ class SmashUI {
     );
   }
 
+  /// Create a text widget with size and color for small text in pages.
+  ///
+  /// Allows to choose bold or color/neutral, [underline], [textAlign] and [overflow] (example TextOverflow.ellipsis).
+  static Text smallText(String text, {useColor = false, bold = false, color, textAlign = TextAlign.justify, underline = false, overflow}) {
+    Color c;
+    if (useColor || color != null) {
+      if (color == null) {
+        c = SmashColors.mainTextColor;
+      } else {
+        c = color;
+      }
+    } else {
+      c = SmashColors.mainTextColorNeutral;
+    }
+    var textDecoration = underline ? TextDecoration.underline : TextDecoration.none;
+    return Text(
+      text,
+      textAlign: textAlign,
+      overflow: null,
+      style: TextStyle(
+        color: c,
+        decoration: textDecoration,
+        fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+        fontSize: SMALL_SIZE,
+      ),
+    );
+  }
+
   /// Create a text widget with size and color for titles in pages.
   ///
   /// Allows to choose bold or color/neutral, [underline], [textAlign] and [overflow] (example TextOverflow.ellipsis).

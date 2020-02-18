@@ -500,7 +500,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
       if (ls != null) {
         ls.forEach((l) => listTmp.add(l));
       }
-      GpLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
+      //GpLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
     }
     setState(() {
       _activeLayers.addAll(listTmp);
