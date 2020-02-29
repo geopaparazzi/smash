@@ -330,7 +330,10 @@ class FileDownloadListTileProgressWidgetState extends State<FileDownloadListTile
       await dio.download(widget._downloadUrl, widget._destinationFilePath, onReceiveProgress: (rec, total) {
         setState(() {
           _downloading = true;
-          _progressString = total <= 0 ? "Downloading... please wait..." : ((rec / total) * 100).toStringAsFixed(0) + "%";
+
+          double recMb = rec/1024/1024;
+
+          _progressString = total <= 0 ? "Downloading ${recMb.round()}MB, please wait..." : ((rec / total) * 100).toStringAsFixed(0) + "%";
         });
       }, cancelToken: cancelToken, options: options);
     } catch (e) {
@@ -379,10 +382,19 @@ class FileDownloadListTileProgressWidgetState extends State<FileDownloadListTile
       ),
       onLongPress: () {
         if (_downloading) {
-          cancelToken.cancel("cancelled");
-          if (dFile.existsSync()) {
-            dFile.deleteSync();
+          setState(() {
+            _downloading = false;
+            _downloadFinished = true;
+            _progressString =  "Cancelled by user.";
+          });
+          try {
+            if (dFile.existsSync()) {
+              dFile.deleteSync();
+            }
+          } catch (e) {
+            print(e);
           }
+          cancelToken.cancel("cancelled");
         }
       },
       onTap: () async {

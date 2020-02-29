@@ -142,6 +142,10 @@ class FileBrowserState extends State<FileBrowser> {
             return ListView(
               children: data.map((pathName) {
                 String parentPath = pathName[0];
+                String labelParentPath = parentPath;
+                if(Platform.isIOS){
+                  labelParentPath = IOS_DOCUMENTSFOLDER + Workspace.makeRelative(parentPath);
+                }
                 String name = pathName[1];
                 bool isDir = pathName[2];
                 var fullPath = FileUtilities.joinPaths(parentPath, name);
@@ -203,7 +207,7 @@ class FileBrowserState extends State<FileBrowser> {
                     color: SmashColors.mainDecorations,
                   ),
                   title: Text(name),
-                  subtitle: Text(parentPath),
+                  subtitle: Text(labelParentPath),
                   trailing: trailingWidget,
                 );
               }).toList(),

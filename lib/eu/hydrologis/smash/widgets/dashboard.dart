@@ -216,7 +216,12 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
               IconButton(
                   icon: Icon(Icons.info_outline),
                   onPressed: () {
-                    showInfoDialog(projectState.context, "Project: ${projectState.projectName}\nDatabase: ${projectState.projectPath}".trim(), widgets: [
+                    String projectPath = projectState.projectPath;
+                    if(Platform.isIOS){
+                      projectPath = IOS_DOCUMENTSFOLDER + Workspace.makeRelative(projectPath);
+                    }
+
+                    showInfoDialog(projectState.context, "Project: ${projectState.projectName}\nDatabase: $projectPath".trim(), widgets: [
                       IconButton(
                         icon: Icon(
                           Icons.share,

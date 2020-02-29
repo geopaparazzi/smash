@@ -19,6 +19,8 @@ const FORMS_FOLDER = "forms";
 const PROJECTS_FOLDER = "projects";
 const EXPORT_FOLDER = "export";
 
+const IOS_DOCUMENTSFOLDER = "Documents";
+
 /// Application workspace utilities.
 class Workspace {
   static String _rootFolder;

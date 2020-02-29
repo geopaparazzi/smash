@@ -21,10 +21,18 @@ class AboutPageState extends State<AboutPage> {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     String appName = packageInfo.appName;
+    if(appName == null){
+      appName = "SMASH";
+    }
     String version = packageInfo.version;
     String buildNumber = packageInfo.buildNumber;
+    if(version != buildNumber){
+      buildNumber = ", build $buildNumber";
+    }else{
+      buildNumber="";
+    }
 
-    return "$appName ($version, build $buildNumber)";
+    return "$appName $version$buildNumber";
   }
 
   @override
