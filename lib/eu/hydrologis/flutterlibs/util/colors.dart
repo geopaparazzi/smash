@@ -47,14 +47,72 @@ class SmashColors {
   static final ColorExt tableBorder = mainDecorations;
 
   static final MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
-  static final MaterialColor mainDecorationsMc = toMaterialColor(mainDecorations);
-  static final MaterialColor mainDecorationsMcDarkTheme = toMaterialColor(mainDecorationsDarkTheme);
-  static final MaterialColor mainDecorationsDarkerMc = toMaterialColor(mainDecorationsDarker);
+  static final MaterialColor mainDecorationsMc =
+      toMaterialColor(mainDecorations);
+  static final MaterialColor mainDecorationsMcDarkTheme =
+      toMaterialColor(mainDecorationsDarkTheme);
+  static final MaterialColor mainDecorationsDarkerMc =
+      toMaterialColor(mainDecorationsDarker);
   static final MaterialColor mainTextColorMc = toMaterialColor(mainTextColor);
-  static final MaterialColor mainTextColorNeutralMc = toMaterialColor(mainTextColorNeutral);
+  static final MaterialColor mainTextColorNeutralMc =
+      toMaterialColor(mainTextColorNeutral);
   static final MaterialColor mainSelectionMc = toMaterialColor(mainSelection);
-  static final MaterialColor mainSelectionMcDarkTheme = toMaterialColor(mainSelectionDarkTheme);
-  static final MaterialColor mainSelectionBorderMc = toMaterialColor(mainSelectionBorder);
+  static final MaterialColor mainSelectionMcDarkTheme =
+      toMaterialColor(mainSelectionDarkTheme);
+  static final MaterialColor mainSelectionBorderMc =
+      toMaterialColor(mainSelectionBorder);
+}
+
+class SmashColorPalette {
+  static const NAVY = const SmashColorPalette._("#001f3f");
+  static const BLUE = const SmashColorPalette._("#0074D9");
+  static const AQUA = const SmashColorPalette._("#7FDBFF");
+  static const TEAL = const SmashColorPalette._("#39CCCC");
+  static const OLIVE = const SmashColorPalette._("#3D9970");
+  static const GREEN = const SmashColorPalette._("#2ECC40");
+  static const LIME = const SmashColorPalette._("#01FF70");
+  static const YELLOW = const SmashColorPalette._("#FFDC00");
+  static const ORANGE = const SmashColorPalette._("#FF851B");
+  static const RED = const SmashColorPalette._("#FF4136");
+  static const MAROON = const SmashColorPalette._("#85144b");
+  static const FUCHSIA = const SmashColorPalette._("#F012BE");
+  static const PURPLE = const SmashColorPalette._("#B10DC9");
+  static const BLACK = const SmashColorPalette._("#000000");
+  static const GRAY = const SmashColorPalette._("#AAAAAA");
+  static const SILVER = const SmashColorPalette._("#DDDDDD");
+  static const WHITE = const SmashColorPalette._("#FFFFFF");
+
+  static get values => [
+        WHITE,
+        YELLOW,
+        ORANGE,
+        RED,
+        FUCHSIA,
+        PURPLE,
+        MAROON,
+        LIME,
+        GREEN,
+        OLIVE,
+        TEAL,
+        AQUA,
+        BLUE,
+        NAVY,
+        SILVER,
+        GRAY,
+        BLACK,
+      ];
+
+  static List<ColorSwatch> getColorSwatchValues() {
+    List<ColorSwatch> colors = [];
+    for (var o in values) {
+      colors.add(toMaterialColor(ColorExt(o.colorHex)));
+    }
+    return colors;
+  }
+
+  final String colorHex;
+
+  const SmashColorPalette._(this.colorHex);
 }
 
 /// The Geopaparazzi Colors list
@@ -75,12 +133,16 @@ class GeopaparazziColors {
   static final Color snackBarColor = ColorExt("#daffffff");
 
   static final MaterialColor mainBackgroundMc = toMaterialColor(mainBackground);
-  static final MaterialColor mainDecorationsMc = toMaterialColor(mainDecorations);
-  static final MaterialColor mainDecorationsDarkMc = toMaterialColor(mainDecorationsDark);
+  static final MaterialColor mainDecorationsMc =
+      toMaterialColor(mainDecorations);
+  static final MaterialColor mainDecorationsDarkMc =
+      toMaterialColor(mainDecorationsDark);
   static final MaterialColor mainTextColorMc = toMaterialColor(mainTextColor);
-  static final MaterialColor mainTextColorNeutralMc = toMaterialColor(mainTextColorNeutral);
+  static final MaterialColor mainTextColorNeutralMc =
+      toMaterialColor(mainTextColorNeutral);
   static final MaterialColor mainSelectionMc = toMaterialColor(mainSelection);
-  static final MaterialColor mainSelectionBorderMc = toMaterialColor(mainSelectionBorder);
+  static final MaterialColor mainSelectionBorderMc =
+      toMaterialColor(mainSelectionBorder);
 }
 
 /// Converts a [Color] to a [MaterialColor].

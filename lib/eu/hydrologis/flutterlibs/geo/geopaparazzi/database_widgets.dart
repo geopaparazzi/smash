@@ -472,7 +472,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
   Note _note;
   double _sizeSliderValue = 10;
-  double _maxSize = 500.0;
+  double _maxSize = 100.0;
   ColorExt _noteColor;
   String _marker = 'mapMarker';
   bool _somethingChanged = false;
@@ -583,7 +583,11 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                             _noteColor = ColorExt.fromColor(mColor);
                             _somethingChanged = true;
                           },
-                          selectedColor: Color(_noteColor.value)),
+                          selectedColor: Color(_noteColor.value),
+                         colors: SmashColorPalette.getColorSwatchValues(),
+
+                      ),
+
                     ),
                   ),
                 ),
@@ -845,7 +849,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
                           ],
                         ),
                         trailing: hasProperties ? Icon(Icons.arrow_right) : SmashUI.getTransparentIcon(),
-                        title: Text('${text}'),
+                        title: Text('$text'),
                         subtitle: Text('${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
                         onTap: () {
                           if (hasProperties) {
