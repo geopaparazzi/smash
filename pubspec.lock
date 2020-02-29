@@ -42,7 +42,7 @@ packages:
       name: badges
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   barcode:
     dependency: transitive
     description:
@@ -121,14 +121,21 @@ packages:
       name: device_info
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.1+4"
+    version: "0.4.1+5"
   dio:
     dependency: "direct main"
     description:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.8"
+    version: "3.0.9"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   extended_image:
     dependency: "direct main"
     description:
@@ -228,7 +235,7 @@ packages:
       name: flutter_tags
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.5"
+    version: "0.4.7"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -247,7 +254,7 @@ packages:
       name: geolocator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.1"
+    version: "5.3.0"
   google_api_availability:
     dependency: transitive
     description:
@@ -303,7 +310,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.3+1"
+    version: "0.6.3+4"
   intl:
     dependency: transitive
     description:
@@ -382,7 +389,7 @@ packages:
       name: package_info
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0+13"
+    version: "0.4.0+14"
   path:
     dependency: transitive
     description:
@@ -410,7 +417,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.0"
+    version: "1.6.1"
   path_provider_ex:
     dependency: "direct main"
     description:
@@ -424,7 +431,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.1"
+    version: "1.5.0"
   pedantic:
     dependency: transitive
     description:
@@ -438,7 +445,7 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.0+hotfix.3"
+    version: "4.3.0"
   petitparser:
     dependency: transitive
     description:
@@ -515,7 +522,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.6+1"
+    version: "0.5.6+2"
   shared_preferences_macos:
     dependency: transitive
     description:
@@ -611,7 +618,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.4.1"
+    version: "5.4.2"
   url_launcher_macos:
     dependency: transitive
     description:

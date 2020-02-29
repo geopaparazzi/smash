@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:flutter_tags/tag.dart';
+import 'package:flutter_tags/flutter_tags.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -665,15 +665,17 @@ class DynamicStringWidgetState extends State<DynamicStringWidget> {
           color: SmashColors.mainDecorations,
           textActiveColor: SmashColors.mainBackground,
           textColor: SmashColors.mainBackground,
-          removeButton: ItemTagsRemoveButton(),
-          onRemoved: () {
-            // Remove the item from the data source.
-            setState(() {
-              valuesSplit.removeAt(index);
-              String saveValue = valuesSplit.join(";");
-              widget._itemMap[TAG_VALUE] = saveValue;
-            });
-          },
+          removeButton: ItemTagsRemoveButton(
+            onRemoved: () {
+              // Remove the item from the data source.
+              setState(() {
+                valuesSplit.removeAt(index);
+                String saveValue = valuesSplit.join(";");
+                widget._itemMap[TAG_VALUE] = saveValue;
+              });
+              return true;
+            },
+          ),
           onPressed: (item) {
 //            var removed = valuesSplit.removeAt(index);
 //            valuesSplit.insert(0, removed);
