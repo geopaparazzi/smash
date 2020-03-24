@@ -1,11 +1,11 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/smash/SOFTWARE/FLUTTER/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/smash/development/smash"
-export "FLUTTER_TARGET=/Users/smash/development/smash/lib/main.dart"
+export "FLUTTER_ROOT=/Users/hydrologis/SOFTWARE/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/hydrologis/development/smash"
+export "FLUTTER_TARGET=lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "SYMROOT=${SOURCE_ROOT}/../build/ios"
-export "FLUTTER_FRAMEWORK_DIR=/Users/smash/SOFTWARE/FLUTTER/flutter/bin/cache/artifacts/engine/ios"
+export "OTHER_LDFLAGS=$(inherited) -framework Flutter"
+export "FLUTTER_FRAMEWORK_DIR=/Users/hydrologis/SOFTWARE/flutter/bin/cache/artifacts/engine/ios"
 export "FLUTTER_BUILD_NAME=1.0.0"
 export "FLUTTER_BUILD_NUMBER=1.0.0"
-export "TRACK_WIDGET_CREATION=true"
