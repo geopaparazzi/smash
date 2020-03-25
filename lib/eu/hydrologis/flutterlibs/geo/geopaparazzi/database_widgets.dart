@@ -5,21 +5,22 @@
  */
 import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
+import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/database.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
-import 'package:smash/eu/hydrologis/smash/core/models.dart';
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
-import 'package:latlong/latlong.dart';
-import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/logs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/notes.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/database.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/validators.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
-import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 
 /// Log object dedicated to the list of logs widget.
 class Log4ListWidget {
@@ -172,7 +173,8 @@ class LogListWidgetState extends State<LogListWidget> {
                                 value: logItem.isVisible == 1 ? true : false,
                                 onChanged: (isVisible) async {
                                   logItem.isVisible = isVisible ? 1 : 0;
-                                  await db.updateGpsLogVisibility(isVisible, logItem.id);
+                                  await db.updateGpsLogVisibility(
+                                      isVisible, logItem.id);
                                   await projectState.reloadProject();
                                   setState(() {});
                                 }),
@@ -180,12 +182,17 @@ class LogListWidgetState extends State<LogListWidget> {
                         ),
                         trailing: Icon(Icons.arrow_right),
                         title: Text('${logItem.name}'),
-                        subtitle: Text('${_getTime(logItem, gpsState, db)} ${_getLength(logItem, gpsState)}'),
+                        subtitle: Text(
+                            '${_getTime(logItem, gpsState, db)} ${_getLength(logItem, gpsState)}'),
                         onTap: () => _navigateToLogProperties(context, logItem),
                         onLongPress: () async {
-                          SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
-                          LatLng position = await db.getLogStartPosition(logItem.id);
-                          mapState.center = Coordinate(position.longitude, position.latitude);
+                          SmashMapState mapState = Provider.of<SmashMapState>(
+                              context,
+                              listen: false);
+                          LatLng position =
+                              await db.getLogStartPosition(logItem.id);
+                          mapState.center =
+                              Coordinate(position.longitude, position.latitude);
                           Navigator.of(context).pop();
                         },
                       ),
@@ -205,7 +212,9 @@ class LogListWidgetState extends State<LogListWidget> {
     var minutes = (item.endTime - item.startTime) / 1000 / 60;
     if (item.endTime == 0) {
       if (gpsState.isLogging && item.id == gpsState.currentLogId) {
-        minutes = (DateTime.now().millisecondsSinceEpoch - item.startTime) / 1000 / 60;
+        minutes = (DateTime.now().millisecondsSinceEpoch - item.startTime) /
+            1000 /
+            60;
       } else {
         // needs to be fixed using the points. Do it and refresh.
         db.getLogDataPointsById(item.id).then((data) {
@@ -231,11 +240,15 @@ class LogListWidgetState extends State<LogListWidget> {
 
   _getLength(Log4ListWidget item, GpsState gpsState) {
     double length = item.lengthm;
-    if (length == 0 && item.endTime == 0 && gpsState.isLogging && item.id == gpsState.currentLogId) {
+    if (length == 0 &&
+        item.endTime == 0 &&
+        gpsState.isLogging &&
+        item.id == gpsState.currentLogId) {
       var points = gpsState.currentLogPoints;
       double sum = 0;
       for (int i = 0; i < points.length - 1; i++) {
-        double distance = CoordinateUtilities.getDistance(points[i], points[i + 1]);
+        double distance =
+            CoordinateUtilities.getDistance(points[i], points[i + 1]);
         sum += distance;
       }
       length = sum;
@@ -273,7 +286,8 @@ class LogListWidgetState extends State<LogListWidget> {
   }
 
   _navigateToLogProperties(BuildContext context, Log4ListWidget logItem) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => LogPropertiesWidget(logItem)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => LogPropertiesWidget(logItem)));
   }
 }
 
@@ -318,8 +332,10 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
             _logItem.width = _widthSliderValue;
             _logItem.color = ColorExt.asHex(_logColor);
 
-            ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
-            await projectState.projectDb.updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
+            ProjectState projectState =
+                Provider.of<ProjectState>(context, listen: false);
+            await projectState.projectDb
+                .updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
             projectState.reloadProject();
           }
           return true;
@@ -375,13 +391,17 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       TableRow(
         children: [
           TableUtilities.cellForString("Start"),
-          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER.format(new DateTime.fromMillisecondsSinceEpoch(_logItem.startTime))),
+          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
+              .format(
+                  new DateTime.fromMillisecondsSinceEpoch(_logItem.startTime))),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("End"),
-          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER.format(new DateTime.fromMillisecondsSinceEpoch(_logItem.endTime))),
+          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
+              .format(
+                  new DateTime.fromMillisecondsSinceEpoch(_logItem.endTime))),
         ],
       ),
       TableRow(
@@ -442,7 +462,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: GestureDetector(
-          child: SmashUI.normalText(item.name, color: SmashColors.mainDecorationsDarker),
+          child: SmashUI.normalText(item.name,
+              color: SmashColors.mainDecorationsDarker),
           onDoubleTap: () {
             _changeLogName(context, item);
           },
@@ -460,7 +481,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       validationFunction: noEmptyValidator,
     );
     if (result != null) {
-      ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+      ProjectState projectState =
+          Provider.of<ProjectState>(context, listen: false);
       await projectState.projectDb.updateGpsLogName(logItem.id, result);
       setState(() {
         logItem.name = result;
@@ -489,7 +511,8 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
     _noteColor = ColorExt(_note.noteExt.color);
     _marker = _note.noteExt.marker;
 
-    chosenIconsList.addAll(GpPreferences().getStringListSync(KEY_ICONS_LIST, DEFAULT_NOTES_ICONDATA));
+    chosenIconsList.addAll(GpPreferences()
+        .getStringListSync(KEY_ICONS_LIST, DEFAULT_NOTES_ICONDATA));
     if (!chosenIconsList.contains(_marker)) {
       chosenIconsList.insert(0, _marker);
     }
@@ -527,7 +550,8 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
             _note.noteExt.marker = _marker;
             _note.noteExt.size = _sizeSliderValue;
 
-            ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+            ProjectState projectState =
+                Provider.of<ProjectState>(context, listen: false);
             await projectState.projectDb.updateNote(_note);
             projectState.reloadProject();
           }
@@ -572,22 +596,20 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                     child: Padding(
                       padding: SmashUI.defaultPadding(),
                       child: MaterialColorPicker(
-                          shrinkWrap: true,
-                          allowShades: false,
-                          circleSize: 45,
-                          onColorChange: (Color color) {
-                            _noteColor = ColorExt.fromColor(color);
-                            _somethingChanged = true;
-                          },
-                          onMainColorChange: (mColor) {
-                            _noteColor = ColorExt.fromColor(mColor);
-                            _somethingChanged = true;
-                          },
-                          selectedColor: Color(_noteColor.value),
-                         colors: SmashColorPalette.getColorSwatchValues(),
-
+                        shrinkWrap: true,
+                        allowShades: false,
+                        circleSize: 45,
+                        onColorChange: (Color color) {
+                          _noteColor = ColorExt.fromColor(color);
+                          _somethingChanged = true;
+                        },
+                        onMainColorChange: (mColor) {
+                          _noteColor = ColorExt.fromColor(mColor);
+                          _somethingChanged = true;
+                        },
+                        selectedColor: Color(_noteColor.value),
+                        colors: SmashColorPalette.getColorSwatchValues(),
                       ),
-
                     ),
                   ),
                 ),
@@ -639,7 +661,8 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                           return GridView.count(
                             shrinkWrap: true,
                             physics: BouncingScrollPhysics(),
-                            crossAxisCount: orientation == Orientation.portrait ? 5 : 10,
+                            crossAxisCount:
+                                orientation == Orientation.portrait ? 5 : 10,
                             childAspectRatio: 1,
                             padding: EdgeInsets.all(5),
                             mainAxisSpacing: 2,
@@ -668,25 +691,29 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
       TableRow(
         children: [
           TableUtilities.cellForString("Timestamp"),
-          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(_note.timeStamp))),
+          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
+              .format(DateTime.fromMillisecondsSinceEpoch(_note.timeStamp))),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("Altitude"),
-          TableUtilities.cellForString(_note.altim.toStringAsFixed(KEY_ELEV_DECIMALS)),
+          TableUtilities.cellForString(
+              _note.altim.toStringAsFixed(KEY_ELEV_DECIMALS)),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("Longitude"),
-          TableUtilities.cellForString(_note.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)),
+          TableUtilities.cellForString(
+              _note.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("Latitude"),
-          TableUtilities.cellForString(_note.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)),
+          TableUtilities.cellForString(
+              _note.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)),
         ],
       ),
     ];
@@ -697,7 +724,8 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: GestureDetector(
-          child: SmashUI.normalText(item.text, color: SmashColors.mainDecorationsDarker),
+          child: SmashUI.normalText(item.text,
+              color: SmashColors.mainDecorationsDarker),
           onDoubleTap: () async {
             String result = await showInputDialog(
               context,
@@ -767,7 +795,8 @@ class NotesListWidgetState extends State<NotesListWidget> {
     var db = projectState.projectDb;
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget._doSimpleNotes ? "Simple Notes List" : "Form Notes List"),
+          title: Text(
+              widget._doSimpleNotes ? "Simple Notes List" : "Form Notes List"),
         ),
         body: FutureBuilder<void>(
           future: loadNotes(db),
@@ -801,7 +830,8 @@ class NotesListWidgetState extends State<NotesListWidget> {
                       hasProperties = false;
                       id = dynNote.id;
                       markerName = 'camera';
-                      markerColor = ColorExt.asHex(SmashColors.mainDecorationsDarker);
+                      markerColor =
+                          ColorExt.asHex(SmashColors.mainDecorationsDarker);
                       text = dynNote.text;
                       ts = dynNote.timeStamp;
                       lon = dynNote.lon;
@@ -848,9 +878,12 @@ class NotesListWidgetState extends State<NotesListWidget> {
 //                                }),
                           ],
                         ),
-                        trailing: hasProperties ? Icon(Icons.arrow_right) : SmashUI.getTransparentIcon(),
+                        trailing: hasProperties
+                            ? Icon(Icons.arrow_right)
+                            : SmashUI.getTransparentIcon(),
                         title: Text('$text'),
-                        subtitle: Text('${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
+                        subtitle: Text(
+                            '${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
                         onTap: () {
                           if (hasProperties) {
                             _navigateToNoteProperties(context, dynNote);
@@ -858,7 +891,9 @@ class NotesListWidgetState extends State<NotesListWidget> {
                         },
                         onLongPress: () {
                           LatLng position = LatLng(lat, lon);
-                          Provider.of<SmashMapState>(context, listen: false).center = Coordinate(position.longitude, position.latitude);
+                          Provider.of<SmashMapState>(context, listen: false)
+                                  .center =
+                              Coordinate(position.longitude, position.latitude);
                           Navigator.of(context).pop();
                         },
                       ),
@@ -896,6 +931,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
   }
 
   _navigateToNoteProperties(BuildContext context, Note note) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => NotePropertiesWidget(note)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => NotePropertiesWidget(note)));
   }
 }

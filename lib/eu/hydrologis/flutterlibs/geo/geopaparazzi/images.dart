@@ -10,11 +10,11 @@ import 'dart:ui' as UI;
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/images.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:provider/provider.dart';
 
 import '../../../smash/core/models.dart';
-import 'project_tables.dart';
 
 class ImageWidgetUtilities {
   static Image imageFromBytes(Uint8List bytes) {
@@ -26,11 +26,13 @@ class ImageWidgetUtilities {
   ///
   /// [dbImageToCompleteAndSave] is passed in with the necessary spatial data
   /// (but missing imageDataId, which will be filled here.
-  static Future<int> saveImageToSmashDb(BuildContext context, String path, DbImage dbImageToCompleteAndSave) async {
+  static Future<int> saveImageToSmashDb(BuildContext context, String path,
+      DbImage dbImageToCompleteAndSave) async {
     var imageBytes = ImageUtilities.bytesFromImageFile(path);
     var thumbBytes = ImageUtilities.resizeImage(imageBytes, newWidth: 200);
 
-    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+    ProjectState projectState =
+        Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
 
     DbImageData imgData = DbImageData()
@@ -40,7 +42,8 @@ class ImageWidgetUtilities {
     return await db.transaction((tx) async {
       int imgDataId = await tx.insert(TABLE_IMAGE_DATA, imgData.toMap());
       dbImageToCompleteAndSave.imageDataId = imgDataId;
-      int imgId = await tx.insert(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
+      int imgId =
+          await tx.insert(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
       if (imgId == null) {
         GpLogger().e("Could not save image to db: $path");
       }
@@ -112,7 +115,8 @@ class SmashImageZoomWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _title = _image.text;
-    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+    ProjectState projectState =
+        Provider.of<ProjectState>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),
@@ -125,50 +129,56 @@ class SmashImageZoomWidget extends StatelessWidget {
             return OrientationBuilder(builder: (context, orientation) {
               if (orientation == Orientation.portrait) {
                 return Center(
-                    child: Column(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-                  Expanded(
-                    child: ExtendedImage.memory(
-                      _bytes,
-                      fit: BoxFit.contain,
-                      //enableLoadState: false,
-                      mode: ExtendedImageMode.gesture,
-                      initGestureConfigHandler: (state) {
-                        return GestureConfig(
-                            minScale: 0.9,
-                            animationMinScale: 0.7,
-                            maxScale: 5.0,
-                            animationMaxScale: 5.5,
-                            speed: 1.0,
-                            inertialSpeed: 100.0,
-                            initialScale: 1.0,
-                            inPageView: false);
-                      },
-                    ),
-                  )
-                ]));
+                    child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                      Expanded(
+                        child: ExtendedImage.memory(
+                          _bytes,
+                          fit: BoxFit.contain,
+                          //enableLoadState: false,
+                          mode: ExtendedImageMode.gesture,
+                          initGestureConfigHandler: (state) {
+                            return GestureConfig(
+                                minScale: 0.9,
+                                animationMinScale: 0.7,
+                                maxScale: 5.0,
+                                animationMaxScale: 5.5,
+                                speed: 1.0,
+                                inertialSpeed: 100.0,
+                                initialScale: 1.0,
+                                inPageView: false);
+                          },
+                        ),
+                      )
+                    ]));
               } else {
                 return Center(
-                    child: Row(mainAxisSize: MainAxisSize.max, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-                  Expanded(
-                    child: ExtendedImage.memory(
-                      _bytes,
-                      fit: BoxFit.contain,
-                      //enableLoadState: false,
-                      mode: ExtendedImageMode.gesture,
-                      initGestureConfigHandler: (state) {
-                        return GestureConfig(
-                            minScale: 0.9,
-                            animationMinScale: 0.7,
-                            maxScale: 5.0,
-                            animationMaxScale: 5.5,
-                            speed: 1.0,
-                            inertialSpeed: 100.0,
-                            initialScale: 1.0,
-                            inPageView: false);
-                      },
-                    ),
-                  )
-                ]));
+                    child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                      Expanded(
+                        child: ExtendedImage.memory(
+                          _bytes,
+                          fit: BoxFit.contain,
+                          //enableLoadState: false,
+                          mode: ExtendedImageMode.gesture,
+                          initGestureConfigHandler: (state) {
+                            return GestureConfig(
+                                minScale: 0.9,
+                                animationMinScale: 0.7,
+                                maxScale: 5.0,
+                                animationMaxScale: 5.5,
+                                speed: 1.0,
+                                inertialSpeed: 100.0,
+                                initialScale: 1.0,
+                                inPageView: false);
+                          },
+                        ),
+                      )
+                    ]));
               }
             });
           } else {

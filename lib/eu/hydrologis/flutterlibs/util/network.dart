@@ -1,15 +1,21 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/images.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/logs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/notes.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/mapsforge.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart' as ICONS;
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
+import 'package:smash/eu/hydrologis/smash/gss.dart';
 
 import 'offline_maps.dart';
 
@@ -25,7 +31,8 @@ class DownloadCircularProgressWidget extends StatefulWidget {
   }
 }
 
-class DownloadCircularProgressWidgetState extends State<DownloadCircularProgressWidget> {
+class DownloadCircularProgressWidgetState
+    extends State<DownloadCircularProgressWidget> {
   bool _downloading = false;
   String _progressString = "";
 
@@ -40,7 +47,8 @@ class DownloadCircularProgressWidgetState extends State<DownloadCircularProgress
     Dio dio = Dio();
 
     try {
-      await dio.download(widget._downloadUrl, widget._destinationFilePath, onReceiveProgress: (rec, total) {
+      await dio.download(widget._downloadUrl, widget._destinationFilePath,
+          onReceiveProgress: (rec, total) {
         setState(() {
           _downloading = true;
           _progressString = ((rec / total) * 100).toStringAsFixed(0) + "%";
@@ -53,7 +61,9 @@ class DownloadCircularProgressWidgetState extends State<DownloadCircularProgress
         LayerManager().addLayer(ts);
       }
     } catch (e) {
-      GpLogger().err("An error occurred while downloading from: ${widget._downloadUrl}", e);
+      GpLogger().err(
+          "An error occurred while downloading from: ${widget._downloadUrl}",
+          e);
     }
 
     setState(() {
@@ -92,7 +102,8 @@ class DownloadMapFromListTileProgressWidget extends StatefulWidget {
   final String _destinationFilePath;
   final String _name;
 
-  DownloadMapFromListTileProgressWidget(this._downloadUrl, this._destinationFilePath, this._name);
+  DownloadMapFromListTileProgressWidget(
+      this._downloadUrl, this._destinationFilePath, this._name);
 
   @override
   State<StatefulWidget> createState() {
@@ -100,7 +111,8 @@ class DownloadMapFromListTileProgressWidget extends StatefulWidget {
   }
 }
 
-class DownloadMapFromListTileProgressWidgetState extends State<DownloadMapFromListTileProgressWidget> {
+class DownloadMapFromListTileProgressWidgetState
+    extends State<DownloadMapFromListTileProgressWidget> {
   bool _downloading = false;
   bool _downloadFinished = false;
   String _progressString = "";
@@ -121,7 +133,8 @@ class DownloadMapFromListTileProgressWidgetState extends State<DownloadMapFromLi
     }
 
     try {
-      await dio.download(widget._downloadUrl, widget._destinationFilePath, onReceiveProgress: (rec, total) {
+      await dio.download(widget._downloadUrl, widget._destinationFilePath,
+          onReceiveProgress: (rec, total) {
         setState(() {
           _downloading = true;
           _progressString = ((rec / total) * 100).toStringAsFixed(0) + "%";
@@ -143,13 +156,15 @@ class DownloadMapFromListTileProgressWidgetState extends State<DownloadMapFromLi
     setState(() {
       _downloading = false;
       _downloadFinished = true;
-      _progressString = cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
+      _progressString =
+          cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
     });
   }
 
   Future<void> buildCache(String mapsforgePath) async {
     setState(() {
-      _progressString = "Building base cache for performance increase (might take some time...";
+      _progressString =
+          "Building base cache for performance increase (might take some time...";
     });
     await fillBaseCache(File(mapsforgePath));
   }
@@ -194,10 +209,12 @@ class DownloadMapFromListTileProgressWidgetState extends State<DownloadMapFromLi
       },
       onTap: () async {
         if (_downloading) {
-          showWarningDialog(context, "This file is already in the process of being downloaded.");
+          showWarningDialog(context,
+              "This file is already in the process of being downloaded.");
           return;
         }
-        bool doDownload = await showConfirmDialog(context, "Download", "Download file ${name} to the device? This can take some time.");
+        bool doDownload = await showConfirmDialog(context, "Download",
+            "Download file ${name} to the device? This can take some time.");
         if (doDownload) {
           await downloadFile();
         }
@@ -248,7 +265,8 @@ class MapsDownloadWidgetState extends State<MapsDownloadWidget> {
                 labelText: "Search map by name",
                 hintText: "Search map by name",
                 prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)))),
           ),
         ),
         Expanded(
@@ -258,7 +276,10 @@ class MapsDownloadWidgetState extends State<MapsDownloadWidget> {
             itemBuilder: (context, index) {
               var item = _visualizeList[index];
 
-              return DownloadMapFromListTileProgressWidget(item[1], FileUtilities.joinPaths(widget._mapsFolder.path, item[0]), item[0]);
+              return DownloadMapFromListTileProgressWidget(
+                  item[1],
+                  FileUtilities.joinPaths(widget._mapsFolder.path, item[0]),
+                  item[0]);
             },
           ),
         ),
@@ -293,7 +314,9 @@ class FileDownloadListTileProgressWidget extends StatefulWidget {
   final bool showUrl;
   final String authHeader;
 
-  FileDownloadListTileProgressWidget(this._downloadUrl, this._destinationFilePath, this._name, {this.showUrl = false, this.authHeader});
+  FileDownloadListTileProgressWidget(
+      this._downloadUrl, this._destinationFilePath, this._name,
+      {this.showUrl = false, this.authHeader});
 
   @override
   State<StatefulWidget> createState() {
@@ -301,7 +324,8 @@ class FileDownloadListTileProgressWidget extends StatefulWidget {
   }
 }
 
-class FileDownloadListTileProgressWidgetState extends State<FileDownloadListTileProgressWidget> {
+class FileDownloadListTileProgressWidgetState
+    extends State<FileDownloadListTileProgressWidget> {
   bool _downloading = false;
   bool _downloadFinished = false;
   String _progressString = "";
@@ -327,13 +351,16 @@ class FileDownloadListTileProgressWidgetState extends State<FileDownloadListTile
     }
 
     try {
-      await dio.download(widget._downloadUrl, widget._destinationFilePath, onReceiveProgress: (rec, total) {
+      await dio.download(widget._downloadUrl, widget._destinationFilePath,
+          onReceiveProgress: (rec, total) {
         setState(() {
           _downloading = true;
 
-          double recMb = rec/1024/1024;
+          double recMb = rec / 1024 / 1024;
 
-          _progressString = total <= 0 ? "Downloading ${recMb.round()}MB, please wait..." : ((rec / total) * 100).toStringAsFixed(0) + "%";
+          _progressString = total <= 0
+              ? "Downloading ${recMb.round()}MB, please wait..."
+              : ((rec / total) * 100).toStringAsFixed(0) + "%";
         });
       }, cancelToken: cancelToken, options: options);
     } catch (e) {
@@ -343,7 +370,8 @@ class FileDownloadListTileProgressWidgetState extends State<FileDownloadListTile
     setState(() {
       _downloading = false;
       _downloadFinished = true;
-      _progressString = cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
+      _progressString =
+          cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
     });
   }
 
@@ -385,7 +413,7 @@ class FileDownloadListTileProgressWidgetState extends State<FileDownloadListTile
           setState(() {
             _downloading = false;
             _downloadFinished = true;
-            _progressString =  "Cancelled by user.";
+            _progressString = "Cancelled by user.";
           });
           try {
             if (dFile.existsSync()) {
@@ -399,19 +427,297 @@ class FileDownloadListTileProgressWidgetState extends State<FileDownloadListTile
       },
       onTap: () async {
         if (dFile.existsSync()) {
-          showWarningDialog(context, "This file already exists, will not overwrite.");
+          showWarningDialog(
+              context, "This file already exists, will not overwrite.");
           return;
         }
 
         if (_downloading) {
-          showWarningDialog(context, "This file is already in the process of being downloaded.");
+          showWarningDialog(context,
+              "This file is already in the process of being downloaded.");
           return;
         }
-        bool doDownload = await showConfirmDialog(context, "Download", "Download file $name to the device? This can take some time.");
+        bool doDownload = await showConfirmDialog(context, "Download",
+            "Download file $name to the device? This can take some time.");
         if (doDownload) {
           await downloadFile();
         }
       },
+    );
+  }
+}
+
+/// Widget to trace upload of geopaparazzi items upload.
+///
+/// These can be notes, images or gpslogs.
+class ProjectDataUploadListTileProgressWidget extends StatefulWidget {
+  final String _uploadUrl;
+  final dynamic _item;
+  final String authHeader;
+  final GeopaparazziProjectDb _projectDb;
+  final Dio _dio;
+  final ValueNotifier orderNotifier;
+  final int order;
+
+  ProjectDataUploadListTileProgressWidget(
+      this._dio, this._projectDb, this._uploadUrl, this._item,
+      {this.authHeader, this.orderNotifier, this.order});
+
+  @override
+  State<StatefulWidget> createState() {
+    return ProjectDataUploadListTileProgressWidgetState();
+  }
+}
+
+class ProjectDataUploadListTileProgressWidgetState
+    extends State<ProjectDataUploadListTileProgressWidget> {
+  bool _uploading = true;
+  dynamic _item;
+  String _progressString = "";
+  String _errorString = "";
+  CancelToken cancelToken = CancelToken();
+
+  @override
+  void initState() {
+    _item = widget._item;
+    super.initState();
+
+    if (widget.orderNotifier == null) {
+      // if no order notifier is available, start the upload directly
+      upload();
+    } else {
+      if (widget.orderNotifier.value == widget.order) {
+        upload();
+      } else {
+        widget.orderNotifier.addListener(() {
+          if (widget.orderNotifier.value == widget.order) {
+            upload();
+          }
+        });
+      }
+    }
+  }
+
+  Future<void> upload() async {
+    Options options;
+    if (widget.authHeader != null) {
+      options = Options(headers: {"Authorization": widget.authHeader});
+    }
+
+    try {
+      if (_item is Note) {
+        Note note = _item;
+        var formData = FormData();
+        formData.fields
+          ..add(MapEntry("type", GssUtilities.NOTE_OBJID))
+          ..add(MapEntry("id", "${note.id}"))
+          ..add(MapEntry("text", note.text))
+          ..add(MapEntry("description", note.description))
+          ..add(MapEntry("timeStamp", "${note.timeStamp}"))
+          ..add(MapEntry("lon", "${note.lon}"))
+          ..add(MapEntry("lat", "${note.lat}"))
+          ..add(MapEntry("altim", "${note.altim}"));
+        if (note.style != null) {
+          formData.fields.add(MapEntry("style", note.style));
+        }
+        if (note.form != null) {
+          formData.fields.add(MapEntry("form", note.form));
+        }
+        // TODO add note ext data
+
+        await widget._dio.post(
+          widget._uploadUrl,
+          data: formData,
+          options: options,
+          onSendProgress: (received, total) {
+            var msg;
+            if (total <= 0) {
+              msg =
+                  "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
+            } else {
+              msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
+            }
+            setState(() {
+              _uploading = true;
+              _progressString = msg;
+            });
+          },
+          cancelToken: cancelToken,
+        ).catchError((err) {
+          print(err);
+          _errorString = err.toString();
+        });
+        if (!cancelToken.isCancelled) {
+          widget._projectDb.updateNoteDirty(note.id, false);
+        }
+      } else if (_item is DbImage) {
+        DbImage image = _item;
+        var formData = FormData();
+        formData.fields
+          ..add(MapEntry("type", GssUtilities.IMAGE_OBJID))
+          ..add(MapEntry("id", "${image.id}"))
+          ..add(MapEntry("text", image.text))
+          ..add(MapEntry("imagedataid", "${image.imageDataId}"))
+          ..add(MapEntry("timeStamp", "${image.timeStamp}"))
+          ..add(MapEntry("lon", "${image.lon}"))
+          ..add(MapEntry("lat", "${image.lat}"))
+          ..add(MapEntry("altim", "${image.altim}"));
+        if (image.noteId != null) {
+          formData.fields..add(MapEntry("noteId", "${image.noteId}"));
+        }
+        var imageBytes =
+            await widget._projectDb.getImageDataBytes(image.imageDataId);
+        formData.files.add(MapEntry(
+          "imageData",
+          MultipartFile.fromBytes(imageBytes, filename: image.text),
+        ));
+
+        await widget._dio.post(
+          widget._uploadUrl,
+          data: formData,
+          options: options,
+          onSendProgress: (received, total) {
+            print("$received / $total");
+            var msg;
+            if (total <= 0) {
+              msg =
+                  "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
+            } else {
+              msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
+            }
+            setState(() {
+              _uploading = true;
+              _progressString = msg;
+            });
+          },
+          cancelToken: cancelToken,
+        ).catchError((err) {
+          print(err);
+          _errorString = err.toString();
+        });
+        if (!cancelToken.isCancelled) {
+          image.isDirty = 0;
+          widget._projectDb.updateImageDirty(image.id, false);
+        }
+      } else if (_item is Log) {
+        Log log = _item;
+        LogProperty props = await widget._projectDb.getLogProperties(log.id);
+
+        var formData = FormData();
+        formData.fields
+          ..add(MapEntry("type", GssUtilities.LOG_OBJID))
+          ..add(MapEntry("id", "${log.id}"))
+          ..add(MapEntry("text", log.text))
+          ..add(MapEntry("startTime", "${log.startTime}"))
+          ..add(MapEntry("endTime", "${log.endTime}"))
+          ..add(MapEntry("width", "${props.width ?? 3}"))
+          ..add(MapEntry("isVisible", "${props.isVisible ?? 1}"))
+          ..add(MapEntry("color", "${props.color ?? "#FF0000"}"));
+
+        List<LogDataPoint> logPoints =
+            await widget._projectDb.getLogDataPoints(log.id);
+        List<Map<String, dynamic>> logPointsList = [];
+        for (var logPoint in logPoints) {
+          logPointsList.add(logPoint.toMap());
+        }
+        var logsJson = jsonEncode(logPointsList);
+        formData.fields.add(MapEntry("points", logsJson));
+
+        await widget._dio.post(
+          widget._uploadUrl,
+          data: formData,
+          options: options,
+          onSendProgress: (received, total) {
+            var msg;
+            if (total <= 0) {
+              msg =
+                  "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
+            } else {
+              msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
+            }
+            setState(() {
+              _uploading = true;
+              _progressString = msg;
+            });
+          },
+          cancelToken: cancelToken,
+        ).catchError((err) {
+          print(err);
+          _errorString = err.toString();
+        });
+        if (!cancelToken.isCancelled) {
+          log.isDirty = 0;
+          widget._projectDb.updateLogDirty(log.id, false);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+    if (widget.orderNotifier == null) {
+      setState(() {
+        _uploading = false;
+        _progressString =
+            cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
+      });
+    } else {
+      _uploading = false;
+      _progressString =
+          cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
+      widget.orderNotifier.value = widget.orderNotifier.value + 1;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String name;
+    String description;
+    if (_item is Note) {
+      name = _item.form == null || _item.form.length == 0
+          ? "simple note"
+          : "form note";
+      description = _item.text;
+    } else if (_item is DbImage) {
+      name = "image";
+      description = _item.text;
+    } else if (_item is Log) {
+      name = "gps log";
+      description = _item.text;
+    }
+    if (widget.orderNotifier == null) {
+      return getTile(name, description);
+    } else {
+      return ValueListenableBuilder(
+        valueListenable: widget.orderNotifier,
+        builder: (context, value, child) {
+          return getTile(name, description);
+        },
+      );
+    }
+  }
+
+  Widget getTile(String name, String description) {
+    return ListTile(
+      leading: _uploading
+          ? CircularProgressIndicator()
+          : _errorString.length > 0
+              ? Icon(
+                  ICONS.SmashIcons.finishedError,
+                  color: SmashColors.mainSelection,
+                )
+              : Icon(
+                  ICONS.SmashIcons.finishedOk,
+                  color: SmashColors.mainDecorations,
+                ),
+      title: Text(name),
+      subtitle: _errorString.length == 0
+          ? (_uploading ? Text(_progressString) : Text(description))
+          : SmashUI.normalText(_errorString,
+              bold: true, color: SmashColors.mainSelection),
+//      trailing: Icon(
+//        ICONS.SmashIcons.upload,
+//        color: SmashColors.mainDecorations,
+//      ),
+      onTap: () {},
     );
   }
 }

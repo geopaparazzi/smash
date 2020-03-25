@@ -10,8 +10,9 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/images.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/images.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/core/models.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/media/camera.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart' as ICONS;

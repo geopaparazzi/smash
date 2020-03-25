@@ -144,6 +144,87 @@ class FileUtilities {
   }
 }
 
+/// Class to handle int conversions.
+class ByteConversionUtilities {
+  /// Convert a 32 bit integer [number] to its int representation.
+  static List<int> bytesFromInt32(int number) {
+    var tmp = Uint8List.fromList([0, 0, 0, 0]);
+    ByteData bdata = ByteData.view(tmp.buffer);
+    bdata.setInt32(0, number);
+    return tmp;
+  }
+
+  /// Convert a 16 bit integer [number] to its int representation.
+  static List<int> bytesFromInt16(int number) {
+    var tmp = Uint8List.fromList([0, 0]);
+    ByteData bdata = ByteData.view(tmp.buffer);
+    bdata.setInt16(0, number);
+    return tmp;
+  }
+
+  /// Get an int from a list of 4 bytes.
+  static int getInt32(Uint8List list) {
+    var bdata = new ByteData.view(list.buffer);
+    return bdata.getInt32(0);
+  }
+
+  /// Get an int from a list of 2 bytes.
+  static int getInt16(Uint8List list) {
+    var bdata = new ByteData.view(list.buffer);
+    return bdata.getInt16(0);
+  }
+
+  /// Get an int from a list of 1 byte.
+  static int getInt8(Uint8List list) {
+    var bdata = new ByteData.view(list.buffer);
+    return bdata.getInt8(0);
+  }
+
+  /// Convert a 64 bit integer [number] to its int representation.
+  static List<int> bytesFromInt64(int number) {
+    var tmp = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
+    ByteData bdata = ByteData.view(tmp.buffer);
+    bdata.setInt64(0, number);
+    return tmp;
+  }
+
+  /// Convert a 64 bit double [number] to its int representation.
+  static List<int> bytesFromDouble(double number) {
+    var tmp = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
+    ByteData bdata = ByteData.view(tmp.buffer);
+    bdata.setFloat64(0, number);
+    return tmp;
+  }
+
+  /// Read a file from [path] into a bytes list.
+  static Uint8List bytesFromFile(String path) {
+    File outputFile = File(path);
+    return outputFile.readAsBytesSync();
+  }
+
+  /// Write a list of [bytes] to file and return the written file [path].
+  static String bytesToFile(String path, List<int> bytes) {
+    File outputFile = File(path);
+    outputFile.writeAsBytesSync(bytes);
+    return outputFile.path;
+  }
+
+  /// Convert a [name] into a list of bytes.
+  static List<int> bytesFromString(String fileName) {
+    return fileName.codeUnits;
+  }
+
+  static void addPadding(List<int> data, int requiredSize) {
+    if (data.length < requiredSize) {
+      // add padding to complete the mtu
+      var add = requiredSize - data.length;
+      for (int i = 0; i < add; i++) {
+        data.add(0);
+      }
+    }
+  }
+}
+
 /// Image utilities
 class ImageUtilities {
   static IMG.Image imageFromBytes(List<int> bytes) {

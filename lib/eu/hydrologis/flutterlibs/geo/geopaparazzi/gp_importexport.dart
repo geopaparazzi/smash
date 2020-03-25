@@ -6,7 +6,8 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/images.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/notes.dart';
 import 'gp_database.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:flutter/services.dart' show rootBundle;
@@ -15,7 +16,8 @@ class PdfExporter {
   static final String novalue = "-nv-";
   static final int EXPORT_IMG_LONGSIZE = 280;
 
-  static Future<void> exportDb(GeopaparazziProjectDb db, File outputFile) async {
+  static Future<void> exportDb(
+      GeopaparazziProjectDb db, File outputFile) async {
     var dbName = FileUtilities.nameFromFile(db.path, false);
     final Document pdf = Document(
       author: "Smash User",
@@ -26,7 +28,8 @@ class PdfExporter {
     );
 
     ByteData smashLogoBytes = await rootBundle.load("assets/smash_logo_64.png");
-    IMG.Image image = await IMG.decodeImage(smashLogoBytes.buffer.asUint8List());
+    IMG.Image image =
+        await IMG.decodeImage(smashLogoBytes.buffer.asUint8List());
     final smashLogo = PdfImage(
       pdf.document,
       image: image.data.buffer.asUint8List(),
@@ -46,7 +49,8 @@ class PdfExporter {
       row.add(note.lat.toStringAsFixed(6));
       row.add("${note.altim.toInt()}m");
       row.add(note.text);
-      row.add(TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp)));
+      row.add(TimeUtilities.ISO8601_TS_FORMATTER
+          .format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp)));
       var noteExt = note.noteExt;
 
       if (noteExt != null) {
@@ -113,12 +117,16 @@ class PdfExporter {
               for (var i = 0; i < idSplit.length; i++) {
                 var imageId = int.parse(idSplit[i]);
                 DbImage image = await db.getImageById(imageId);
-                var p = Paragraph(text: image.text, textAlign: TextAlign.center);
+                var p =
+                    Paragraph(text: image.text, textAlign: TextAlign.center);
                 formWidgetList.add(p);
 
-                Uint8List imageDataBytes = await db.getImageDataBytes(image.imageDataId);
-                List<int> resizeImage = ImageUtilities.resizeImage(imageDataBytes, longestSizeTo: EXPORT_IMG_LONGSIZE);
-                IMG.Image img = await IMG.decodeImage(resizeImage);
+                Uint8List imageDataBytes =
+                    await db.getImageDataBytes(image.imageDataId);
+                List<int> resizeImage = ImageUtilities.resizeImage(
+                    imageDataBytes,
+                    longestSizeTo: EXPORT_IMG_LONGSIZE);
+                IMG.Image img = IMG.decodeImage(resizeImage);
 
                 final pdfImage = PdfImage(
                   pdf.document,
@@ -126,9 +134,11 @@ class PdfExporter {
                   width: img.width,
                   height: img.height,
                 );
-                var c = Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                  Center(child: Image(pdfImage, fit: BoxFit.none)),
-                ]);
+                var c = Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Center(child: Image(pdfImage, fit: BoxFit.none)),
+                    ]);
                 formWidgetList.add(c);
               }
             } catch (e) {
@@ -178,10 +188,14 @@ class PdfExporter {
           Bullet(text: "longitude: ${image.lon}"),
           Bullet(text: "altimetry: ${image.altim}m"),
           Bullet(text: "azimuth: ${image.azim}"),
-          Bullet(text: "timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}"),
+          Bullet(
+              text:
+                  "timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}"),
         ]);
-        Uint8List imageDataBytes = await db.getImageDataBytes(image.imageDataId);
-        List<int> resizeImage = ImageUtilities.resizeImage(imageDataBytes, longestSizeTo: EXPORT_IMG_LONGSIZE);
+        Uint8List imageDataBytes =
+            await db.getImageDataBytes(image.imageDataId);
+        List<int> resizeImage = ImageUtilities.resizeImage(imageDataBytes,
+            longestSizeTo: EXPORT_IMG_LONGSIZE);
         IMG.Image img = await IMG.decodeImage(resizeImage);
 
         final pdfImage = PdfImage(
@@ -190,15 +204,18 @@ class PdfExporter {
           width: img.width,
           height: img.height,
         );
-        var c = Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-          Center(child: Image(pdfImage, fit: BoxFit.none)),
-        ]);
+        var c = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Center(child: Image(pdfImage, fit: BoxFit.none)),
+            ]);
         formWidgetList.add(c);
       }
     }
 
     pdf.addPage(MultiPage(
-        pageFormat: PdfPageFormat.a4.copyWith(marginBottom: 1.5 * PdfPageFormat.cm),
+        pageFormat:
+            PdfPageFormat.a4.copyWith(marginBottom: 1.5 * PdfPageFormat.cm),
         crossAxisAlignment: CrossAxisAlignment.start,
         header: (Context context) {
           if (context.pageNumber == 1) {
@@ -208,22 +225,33 @@ class PdfExporter {
               alignment: Alignment.centerRight,
               margin: const EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
               padding: const EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
-              decoration: const BoxDecoration(border: BoxBorder(bottom: true, width: 0.5, color: PdfColors.grey)),
-              child: Text('Report of project $dbName', style: Theme.of(context).defaultTextStyle.copyWith(color: PdfColors.grey)));
+              decoration: const BoxDecoration(
+                  border: BoxBorder(
+                      bottom: true, width: 0.5, color: PdfColors.grey)),
+              child: Text('Report of project $dbName',
+                  style: Theme.of(context)
+                      .defaultTextStyle
+                      .copyWith(color: PdfColors.grey)));
         },
         footer: (Context context) {
           return Container(
               alignment: Alignment.centerRight,
               margin: const EdgeInsets.only(top: 1.0 * PdfPageFormat.cm),
-              child: Text('Page ${context.pageNumber} of ${context.pagesCount}', style: Theme.of(context).defaultTextStyle.copyWith(color: PdfColors.grey)));
+              child: Text('Page ${context.pageNumber} of ${context.pagesCount}',
+                  style: Theme.of(context)
+                      .defaultTextStyle
+                      .copyWith(color: PdfColors.grey)));
         },
         build: (Context context) => <Widget>[
               Header(
                   level: 0,
-                  child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: <Widget>[
-                    Image(smashLogo, fit: BoxFit.scaleDown),
-                    Text('Project: $dbName', textScaleFactor: 2, softWrap: true),
-                  ])),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Image(smashLogo, fit: BoxFit.scaleDown),
+                        Text('Project: $dbName',
+                            textScaleFactor: 2, softWrap: true),
+                      ])),
               Header(level: 1, text: 'Simple Notes'),
               Table.fromTextArray(
                 context: context,

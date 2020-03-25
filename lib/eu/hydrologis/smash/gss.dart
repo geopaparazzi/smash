@@ -6,6 +6,7 @@
 
 import 'dart:convert';
 
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/device.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 
@@ -27,8 +28,7 @@ class GssUtilities {
   static final String DATA_DOWNLOAD_PATH = "/datadownload";
   static final String TAGS_DOWNLOAD_PATH = "/tagsdownload";
 
-  static final String DATA_DOWNLOAD_BASEMAP = "basemaps";
-  static final String DATA_DOWNLOAD_OVERLAYS = "overlays";
+  static final String DATA_DOWNLOAD_MAPS = "maps";
   static final String DATA_DOWNLOAD_PROJECTS = "projects";
   static final String DATA_DOWNLOAD_NAME = "name";
 
@@ -45,7 +45,8 @@ class GssUtilities {
   static Future<String> getAuthHeader() async {
     String deviceId = GpPreferences().getStringSync(DEVICE_ID_OVERRIDE);
     if (deviceId == null) {
-      deviceId = GpPreferences().getStringSync(DEVICE_ID, await Device().getDeviceId());
+      deviceId = GpPreferences()
+          .getStringSync(DEVICE_ID, await Device().getDeviceId());
     }
     if (deviceId == null) {
       return null;
@@ -54,4 +55,8 @@ class GssUtilities {
     String authHeader = "Basic " + Base64Encoder().convert(authCode.codeUnits);
     return authHeader;
   }
+
+  static final String NOTE_OBJID = "note";
+  static final String IMAGE_OBJID = "image";
+  static final String LOG_OBJID = "gpslog";
 }

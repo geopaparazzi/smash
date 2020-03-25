@@ -9,18 +9,17 @@ import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
-import 'package:mapsforge_flutter/core.dart';
+import 'package:path/path.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/logs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/geopackage.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/dashboard_utils.dart';
-import 'package:path/path.dart';
 
 const DEBUG_NOTIFICATIONS = true;
 

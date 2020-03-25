@@ -49,6 +49,20 @@ const List<String> DEFAULT_NOTES_ICONDATA = [
 ];
 
 class SmashIcons {
+  static IconData simpleNotesIcon= MdiIcons.note;
+  static IconData formNotesIcon = MdiIcons.notePlus;
+  static IconData imagesNotesIcon = MdiIcons.image;
+  static IconData logIcon = MdiIcons.vectorPolyline;
+  static IconData layersIcon = MdiIcons.layers;
+  static IconData zoomInIcon = MdiIcons.magnifyPlusOutline;
+  static IconData zoomOutIcon = MdiIcons.magnifyMinusOutline;
+
+  static IconData upload = MdiIcons.upload;
+  static IconData download = MdiIcons.download;
+
+  static IconData finishedOk = MdiIcons.checkBold;
+  static IconData finishedError = MdiIcons.closeCircle;
+
   /// Get the right icon for a given path or url or file name  or extension.
   static IconData forPath(String pathOrUrlOrNameOrExtension) {
     if (pathOrUrlOrNameOrExtension.endsWith(FileManager.MAPSFORGE_EXT)) {
@@ -71,6 +85,9 @@ class SmashIcons {
       return MdiIcons.fileOutline;
     }
   }
+
+
+
 }
 
 IconData getIcon(String key) {

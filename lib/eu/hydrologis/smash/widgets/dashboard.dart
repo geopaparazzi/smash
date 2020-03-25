@@ -12,21 +12,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
-
-import 'package:path/path.dart' hide context;
+import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/forms/forms_widgets.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/database_widgets.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
-import 'package:smash/eu/hydrologis/smash/core/models.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/project_tables.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/notes.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/screen.dart';
@@ -34,7 +32,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/util/share.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/validators.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
-import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/core/models.dart';
 
 import 'dashboard_utils.dart';
 
@@ -294,7 +292,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                         }
                       },
                       icon: Icon(
-                        Icons.note,
+                        SmashIcons.simpleNotesIcon,
                         color: SmashColors.mainBackground,
                       ),
                       iconSize: _iconSize,
@@ -342,7 +340,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                         }
                       },
                       icon: Icon(
-                        Icons.note_add,
+                        SmashIcons.formNotesIcon,
                         color: SmashColors.mainBackground,
                       ),
                       iconSize: _iconSize,
@@ -362,7 +360,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                 Spacer(),
                 IconButton(
                   icon: Icon(
-                    Icons.layers,
+                    SmashIcons.layersIcon,
                     color: SmashColors.mainBackground,
                   ),
                   iconSize: _iconSize,
@@ -380,7 +378,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                       },
                       tooltip: 'Zoom in',
                       icon: Icon(
-                        Icons.zoom_in,
+                        SmashIcons.zoomInIcon,
                         color: SmashColors.mainBackground,
                       ),
                       iconSize: _iconSize,
@@ -394,7 +392,7 @@ class _DashboardWidgetState extends State<DashboardWidget> with WidgetsBindingOb
                   },
                   tooltip: 'Zoom out',
                   icon: Icon(
-                    Icons.zoom_out,
+                    SmashIcons.zoomOutIcon,
                     color: SmashColors.mainBackground,
                   ),
                   iconSize: _iconSize,

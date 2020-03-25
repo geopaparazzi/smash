@@ -195,7 +195,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: a639b6d72fd69d7c4918e37cca0e12b79c4334eb
+      resolved-ref: "1f6e04bfa5f76cb66d55a0435090f1011361a729"
       url: "https://github.com/moovida/flutter_map.git"
     source: git
     version: "0.8.2"
@@ -204,7 +204,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "427a4ddc084c1a3ba94ba0109ced468bf5d9e36b"
+      resolved-ref: feed966e017b7c5ec4f8551ff1ce7c470d0d3936
       url: "https://github.com/moovida/flutter_map_marker_cluster.git"
     source: git
     version: "0.2.7"
@@ -332,6 +332,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.1"
+  lists:
+    dependency: transitive
+    description:
+      name: lists
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.3"
   location_permissions:
     dependency: transitive
     description:
@@ -383,6 +390,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.8"
+  mgrs_dart:
+    dependency: transitive
+    description:
+      name: mgrs_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   package_info:
     dependency: "direct main"
     description:
@@ -495,6 +509,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  proj4dart:
+    dependency: transitive
+    description:
+      name: proj4dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.4"
   provider:
     dependency: transitive
     description:
@@ -640,6 +661,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.6"
+  unicode:
+    dependency: transitive
+    description:
+      name: unicode
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   url_launcher:
     dependency: "direct main"
     description:
@@ -696,6 +724,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
+  wkt_parser:
+    dependency: transitive
+    description:
+      name: wkt_parser
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.7"
   xml:
     dependency: transitive
     description:
