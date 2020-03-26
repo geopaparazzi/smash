@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/gp_database.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/images.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/logs.dart';
@@ -501,6 +502,7 @@ class ProjectDataUploadListTileProgressWidgetState
       options = Options(headers: {"Authorization": widget.authHeader});
     }
 
+    bool hasError = false;
     try {
       if (_item is Note) {
         Note note = _item;
@@ -519,6 +521,23 @@ class ProjectDataUploadListTileProgressWidgetState
         }
         if (note.form != null) {
           formData.fields.add(MapEntry("form", note.form));
+
+          List<String> imageIds = FormUtilities.getImageIds(note.form);
+          if (imageIds.isNotEmpty) {
+            List<MapEntry<String, MultipartFile>> mapEntriesList = [];
+            for (var imageId in imageIds) {
+              var dbImage =
+                  await widget._projectDb.getImageById(int.parse(imageId));
+              var imageBytes = await widget._projectDb
+                  .getImageDataBytes(dbImage.imageDataId);
+
+              MapEntry<String, MultipartFile> multipartFile = MapEntry(
+                  "files[]",
+                  MultipartFile.fromBytes(imageBytes, filename: dbImage.text));
+              mapEntriesList.add(multipartFile);
+            }
+            formData.files.addAll(mapEntriesList);
+          }
         }
         // TODO add note ext data
 
@@ -541,10 +560,10 @@ class ProjectDataUploadListTileProgressWidgetState
           },
           cancelToken: cancelToken,
         ).catchError((err) {
-          print(err);
-          _errorString = err.toString();
+          hasError = true;
+          handleError(err);
         });
-        if (!cancelToken.isCancelled) {
+        if (!cancelToken.isCancelled && !hasError) {
           widget._projectDb.updateNoteDirty(note.id, false);
         }
       } else if (_item is DbImage) {
@@ -589,10 +608,10 @@ class ProjectDataUploadListTileProgressWidgetState
           },
           cancelToken: cancelToken,
         ).catchError((err) {
-          print(err);
-          _errorString = err.toString();
+          hasError = true;
+          handleError(err);
         });
-        if (!cancelToken.isCancelled) {
+        if (!cancelToken.isCancelled && !hasError) {
           image.isDirty = 0;
           widget._projectDb.updateImageDirty(image.id, false);
         }
@@ -639,16 +658,17 @@ class ProjectDataUploadListTileProgressWidgetState
           },
           cancelToken: cancelToken,
         ).catchError((err) {
-          print(err);
-          _errorString = err.toString();
+          hasError = true;
+          handleError(err);
         });
-        if (!cancelToken.isCancelled) {
+        if (!cancelToken.isCancelled && !hasError) {
           log.isDirty = 0;
           widget._projectDb.updateLogDirty(log.id, false);
         }
       }
     } catch (e) {
-      print(e);
+      hasError = true;
+      handleError(e);
     }
     if (widget.orderNotifier == null) {
       setState(() {
@@ -660,7 +680,23 @@ class ProjectDataUploadListTileProgressWidgetState
       _uploading = false;
       _progressString =
           cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
-      widget.orderNotifier.value = widget.orderNotifier.value + 1;
+      if (!hasError) {
+        widget.orderNotifier.value = widget.orderNotifier.value + 1;
+      } else {
+        setState(() {});
+      }
+    }
+  }
+
+  void handleError(err) {
+    if (err is DioError) {
+      if (err.message.contains("403")) {
+        _errorString = "Permission on server denied.";
+      } else {
+        _errorString = err.message;
+      }
+    } else {
+      _errorString = err.toString();
     }
   }
 

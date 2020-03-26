@@ -53,7 +53,8 @@ class FileUtilities {
   /// Method to read a properties [file] into a hashmap.
   ///
   /// Empty lines are ignored, as well as lines that do not contain the separator.
-  static Map<String, String> readFileToHashMap(String filePath, {String separator = "=", bool valueFirst = false}) {
+  static Map<String, String> readFileToHashMap(String filePath,
+      {String separator = "=", bool valueFirst = false}) {
     var fileTxt = readFile(filePath);
     var lines = fileTxt.split("\n");
 
@@ -99,7 +100,10 @@ class FileUtilities {
   }
 
   static List<List<dynamic>> listFiles(String parentPath,
-      {bool doOnlyFolder = false, List<String> allowedExtensions, bool doHidden = false, bool order = true}) {
+      {bool doOnlyFolder = false,
+      List<String> allowedExtensions,
+      bool doHidden = false,
+      bool order = true}) {
     List<List<dynamic>> pathAndNameList = [];
 
     try {
@@ -244,7 +248,8 @@ class ImageUtilities {
     return imgFile.readAsBytesSync();
   }
 
-  static List<int> resizeImage(Uint8List bytes, {int newWidth: 100, int longestSizeTo}) {
+  static List<int> resizeImage(Uint8List bytes,
+      {int newWidth: 100, int longestSizeTo}) {
     IMG.Image image = IMG.decodeImage(bytes);
 
     IMG.Image thumbnail;
@@ -274,7 +279,8 @@ class ImageUtilities {
 /// Time related utilities
 class TimeUtilities {
   /// An ISO8601 date formatter (yyyy-MM-dd HH:mm:ss).
-  static final DateFormat ISO8601_TS_FORMATTER = DateFormat("yyyy-MM-dd HH:mm:ss");
+  static final DateFormat ISO8601_TS_FORMATTER =
+      DateFormat("yyyy-MM-dd HH:mm:ss");
 
   /// An ISO8601 time formatter (HH:mm:ss).
   static final DateFormat ISO8601_TS_TIME_FORMATTER = DateFormat("HH:mm:ss");
@@ -292,11 +298,21 @@ class TimeUtilities {
   static final DateFormat DAYHOUR_TS_FORMATTER = DateFormat("yyyyMMdd_HH");
 
   /// A date formatter (yyyyMMdd_HHmm) useful for file names (it contains no spaces).
-  static final DateFormat DAYHOURMINUTE_TS_FORMATTER = DateFormat("yyyyMMdd_HHmm");
+  static final DateFormat DAYHOURMINUTE_TS_FORMATTER =
+      DateFormat("yyyyMMdd_HHmm");
 }
 
 /// Network related utilities
 class NetworkUtilities {
+  static Future<bool> isConnected() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
+    }
+  }
+
   /// Get the first ip address found in the [NetworkInterface.list()].
   static Future<String> getFirstIpAddress() async {
     for (var interface in await NetworkInterface.list()) {
@@ -405,9 +421,14 @@ class MercatorUtils {
   ///
   /// @param zoom
   /// @return [\zoom, xtile, ytile_osm]
-  static List<int> getTileNumber(final double lat, final double lon, final int zoom) {
+  static List<int> getTileNumber(
+      final double lat, final double lon, final int zoom) {
     int xtile = ((lon + 180) / 360 * (1 << zoom)).floor();
-    int ytile_osm = ((1 - log(tan(degToRadian(lat)) + 1 / cos(degToRadian(lat))) / pi) / 2 * (1 << zoom)).floor();
+    int ytile_osm =
+        ((1 - log(tan(degToRadian(lat)) + 1 / cos(degToRadian(lat))) / pi) /
+                2 *
+                (1 << zoom))
+            .floor();
     if (xtile < 0) xtile = 0;
     if (xtile >= (1 << zoom)) xtile = ((1 << zoom) - 1);
     if (ytile_osm < 0) ytile_osm = 0;
@@ -475,8 +496,10 @@ class MercatorUtils {
   /// @param east_longitude longitude in degrees
   /// @param west_longitude longitude in degrees
   /// @return meters in spherical mercator projection
-  static double longitudeToMeters(double east_longitude, double west_longitude) {
-    return longitudeToMetersX(east_longitude) - longitudeToMetersX(west_longitude);
+  static double longitudeToMeters(
+      double east_longitude, double west_longitude) {
+    return longitudeToMetersX(east_longitude) -
+        longitudeToMetersX(west_longitude);
   }
 
   /// Convert a north-latitude,south-latitude coordinate (in degrees) to distance in meters
@@ -485,7 +508,8 @@ class MercatorUtils {
   /// @param south_latitude latitude in degrees
   /// @return meters in spherical mercator projection
   static double latitudeToMeters(double north_latitude, double south_latitude) {
-    return latitudeToMetersY(north_latitude) - latitudeToMetersY(south_latitude);
+    return latitudeToMetersY(north_latitude) -
+        latitudeToMetersY(south_latitude);
   }
 
   /// Converts given lat/lon in WGS84 Datum to XY in Spherical Mercator
@@ -508,7 +532,8 @@ class MercatorUtils {
   /// @param zoom     zoomlevel.
   /// @param tileSize tile size.
   /// @return converted coordinate.
-  static List<double> pixelsToMeters(double px, double py, int zoom, int tileSize) {
+  static List<double> pixelsToMeters(
+      double px, double py, int zoom, int tileSize) {
     double res = getResolution(zoom, tileSize);
     double mx = px * res - originShift;
     double my = py * res - originShift;
@@ -531,7 +556,8 @@ class MercatorUtils {
   /// @param my
   /// @param zoom
   /// @return
-  static List<int> metersToPixels(double mx, double my, int zoom, int tileSize) {
+  static List<int> metersToPixels(
+      double mx, double my, int zoom, int tileSize) {
     double res = getResolution(zoom, tileSize);
     int px = ((mx + originShift) / res).round();
     int py = ((my + originShift) / res).round();
@@ -580,8 +606,10 @@ class MercatorUtils {
   }
 
   static Envelope convert3857To4326Env(Envelope envelope3857) {
-    Coordinate ll3857 = new Coordinate(envelope3857.getMinX(), envelope3857.getMinY());
-    Coordinate ur3857 = new Coordinate(envelope3857.getMaxX(), envelope3857.getMaxY());
+    Coordinate ll3857 =
+        new Coordinate(envelope3857.getMinX(), envelope3857.getMinY());
+    Coordinate ur3857 =
+        new Coordinate(envelope3857.getMaxX(), envelope3857.getMaxY());
 
     Coordinate ll4326 = convert3857To4326(ll3857);
     Coordinate ur4326 = convert3857To4326(ur3857);
@@ -591,8 +619,10 @@ class MercatorUtils {
   }
 
   static Envelope convert4326To3857Env(Envelope envelope4326) {
-    Coordinate ll4326 = new Coordinate(envelope4326.getMinX(), envelope4326.getMinY());
-    Coordinate ur4326 = new Coordinate(envelope4326.getMaxX(), envelope4326.getMaxY());
+    Coordinate ll4326 =
+        new Coordinate(envelope4326.getMinX(), envelope4326.getMinY());
+    Coordinate ur4326 =
+        new Coordinate(envelope4326.getMaxX(), envelope4326.getMaxY());
 
     Coordinate ll3857 = convert4326To3857(ll4326);
     Coordinate ur3857 = convert4326To3857(ur4326);
@@ -652,7 +682,8 @@ class MercatorUtils {
   /// @param higherZoom the requested zoom.
   /// @param tileSize the used tile size.
   /// @return the ordered list of tiles.
-  static List<List<int>> getTilesAtHigherZoom(int origTx, int origTy, int origZoom, int higherZoom, int tileSize) {
+  static List<List<int>> getTilesAtHigherZoom(
+      int origTx, int origTy, int origZoom, int higherZoom, int tileSize) {
     Envelope boundsLL = tileBounds4326(origTx, origTy, origZoom);
 
     int delta = higherZoom - origZoom;
@@ -662,8 +693,12 @@ class MercatorUtils {
     double intervalY = boundsLL.getHeight() / splits;
 
     List<List<int>> tilesList = [];
-    for (double y = boundsLL.getMaxY() - intervalY / 2.0; y > boundsLL.getMinY(); y = y - intervalY) {
-      for (double x = boundsLL.getMinX() + intervalX / 2.0; x < boundsLL.getMaxX(); x = x + intervalX) {
+    for (double y = boundsLL.getMaxY() - intervalY / 2.0;
+        y > boundsLL.getMinY();
+        y = y - intervalY) {
+      for (double x = boundsLL.getMinX() + intervalX / 2.0;
+          x < boundsLL.getMaxX();
+          x = x + intervalX) {
         List<int> tileNumber = getTileNumber(y, x, higherZoom);
         tilesList.add(tileNumber);
       }

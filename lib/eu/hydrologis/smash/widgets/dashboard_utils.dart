@@ -495,7 +495,7 @@ class _ExportWidgetState extends State<ExportWidget> {
                     color: SmashColors.mainDecorations,
                   )
                 : _pdfBuildStatus == 1
-                    ? SmashCircularProgress(label: "Exporting PDF...")
+                    ? SmashCircularProgress()
                     : Icon(
                         Icons.check,
                         color: SmashColors.mainDecorations,
@@ -1029,7 +1029,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                                             color: SmashColors.mainDecorations,
                                           ),
                                           title: SmashUI.normalText(
-                                              "Simple Notes: $_imagesCount"),
+                                              "Images: $_imagesCount"),
                                         ),
                                       ],
                                     ),
@@ -1050,7 +1050,11 @@ class _GssExportWidgetState extends State<GssExportWidget> {
           ? FloatingActionButton.extended(
               icon: Icon(SmashIcons.upload),
               onPressed: () async {
-                await uploadProjectData();
+                if (!await NetworkUtilities.isConnected()) {
+                  showOperationNeedsNetwork(context);
+                } else {
+                  await uploadProjectData();
+                }
               },
               label: Text("Upload"))
           : null,

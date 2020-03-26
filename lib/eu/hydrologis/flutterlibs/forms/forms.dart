@@ -486,7 +486,7 @@ class FormUtilities {
       for (int j = 0; j < formsNames.length; j++) {
         String formName = formsNames[j];
         Map<String, dynamic> form4Name = TagsManager.getForm4Name(formName, sectionObject);
-        List<Map<String, dynamic>> formItems = TagsManager.getFormItems(form4Name);
+        var formItems = TagsManager.getFormItems(form4Name);
         for (int i = 0; i < formItems.length; i++) {
           Map<String, dynamic> formItem = formItems[i];
           if (!formItem.containsKey(TAG_KEY)) {

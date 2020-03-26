@@ -85,7 +85,7 @@ class TakePictureWidgetState extends State<TakePictureWidget> {
                   color: SmashColors.mainDecorations, bold: true),
               Padding(
                 padding: SmashUI.defaultPadding(),
-                child: SmashCircularProgress(label: "Saving image..."),
+                child: SmashCircularProgress(),
               )
             ]))
           : Center(

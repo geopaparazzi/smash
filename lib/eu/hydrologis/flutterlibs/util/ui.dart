@@ -485,6 +485,10 @@ showOperationNeedsGps(context) {
   showWarningDialog(
       context, "This option is available only when the GPS has a fix.");
 }
+showOperationNeedsNetwork(context) {
+  showWarningDialog(
+      context, "A working network connection is necessary to perform the action.");
+}
 
 class TableUtilities {
   static TableCell cellForString(String data, {color: Colors.black}) {
