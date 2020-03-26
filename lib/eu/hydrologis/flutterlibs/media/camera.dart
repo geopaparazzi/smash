@@ -78,24 +78,26 @@ class TakePictureWidgetState extends State<TakePictureWidget> {
     return Container(
       color: SmashColors.mainBackground,
       padding: SmashUI.defaultPadding(),
-      child:
-      !_isDone
+      child: !_isDone
           ? Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            SmashUI.normalText(
-                widget._text, color: SmashColors.mainDecorations, bold: true),
-            Padding(padding: SmashUI.defaultPadding(),
-              child: CircularProgressIndicator(),
-            )
-          ]))
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+              SmashUI.normalText(widget._text,
+                  color: SmashColors.mainDecorations, bold: true),
+              Padding(
+                padding: SmashUI.defaultPadding(),
+                child: SmashCircularProgress(label: "Saving image..."),
+              )
+            ]))
           : Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          SmashUI.normalText(
-              widget._text, color: SmashColors.mainDecorations, bold: true),
-          Padding(padding: SmashUI.defaultPadding(),
-            child: CircularProgressIndicator(),
-          )
-        ]),
-      ),);
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                SmashUI.normalText(widget._text,
+                    color: SmashColors.mainDecorations, bold: true),
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: CircularProgressIndicator(),
+                )
+              ]),
+            ),
+    );
   }
 }

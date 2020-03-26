@@ -18,7 +18,12 @@ import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
 class FileManager {
   static const ALLOWED_PROJECT_EXT = [GEOPAPARAZZI_EXT];
   static const ALLOWED_VECTOR_DATA_EXT = [GPX_EXT, GEOPACKAGE_EXT];
-  static const ALLOWED_TILE_DATA_EXT = [GEOPACKAGE_EXT, MBTILES_EXT, MAPSFORGE_EXT, MAPURL_EXT];
+  static const ALLOWED_TILE_DATA_EXT = [
+    GEOPACKAGE_EXT,
+    MBTILES_EXT,
+    MAPSFORGE_EXT,
+    MAPURL_EXT
+  ];
 
   static const GEOPAPARAZZI_EXT = "gpap";
   static const GPX_EXT = "gpx";
@@ -75,7 +80,8 @@ class FileBrowser extends StatefulWidget {
 
   Function onSelectionFunction;
 
-  FileBrowser(this._doFolderMode, this._allowedExtensions, this._startFolder, this.onSelectionFunction);
+  FileBrowser(this._doFolderMode, this._allowedExtensions, this._startFolder,
+      this.onSelectionFunction);
 
   @override
   FileBrowserState createState() {
@@ -92,7 +98,9 @@ class FileBrowserState extends State<FileBrowser> {
       currentPath = widget._startFolder;
     }
 
-    List<List<dynamic>> files = FileUtilities.listFiles(currentPath, doOnlyFolder: widget._doFolderMode, allowedExtensions: widget._allowedExtensions);
+    List<List<dynamic>> files = FileUtilities.listFiles(currentPath,
+        doOnlyFolder: widget._doFolderMode,
+        allowedExtensions: widget._allowedExtensions);
     return files;
   }
 
@@ -105,7 +113,8 @@ class FileBrowserState extends State<FileBrowser> {
       onPressed: () async {
         var rootDir = await Workspace.getRootFolder();
         if (currentPath == rootDir.path) {
-          showWarningDialog(context, "The top level folder has already been reached.");
+          showWarningDialog(
+              context, "The top level folder has already been reached.");
         } else {
           setState(() {
             currentPath = FileUtilities.parentFolderFromFile(currentPath);
@@ -118,7 +127,9 @@ class FileBrowserState extends State<FileBrowser> {
       appBar: new AppBar(
         actions: <Widget>[
           IconButton(
-            icon: Icon(onlyFiles ? MdiIcons.folderMultipleOutline : MdiIcons.fileOutline),
+            icon: Icon(onlyFiles
+                ? MdiIcons.folderMultipleOutline
+                : MdiIcons.fileOutline),
             tooltip: onlyFiles ? "View only Files" : "View everything",
             onPressed: () {
               setState(() {
@@ -143,8 +154,9 @@ class FileBrowserState extends State<FileBrowser> {
               children: data.map((pathName) {
                 String parentPath = pathName[0];
                 String labelParentPath = parentPath;
-                if(Platform.isIOS){
-                  labelParentPath = IOS_DOCUMENTSFOLDER + Workspace.makeRelative(parentPath);
+                if (Platform.isIOS) {
+                  labelParentPath =
+                      IOS_DOCUMENTSFOLDER + Workspace.makeRelative(parentPath);
                 }
                 String name = pathName[1];
                 bool isDir = pathName[2];
@@ -159,11 +171,13 @@ class FileBrowserState extends State<FileBrowser> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         IconButton(
-                          icon: Icon(MdiIcons.checkCircleOutline, color: SmashColors.mainDecorations),
+                          icon: Icon(MdiIcons.checkCircleOutline,
+                              color: SmashColors.mainDecorations),
                           tooltip: "Select folder",
                           onPressed: () async {
                             await Workspace.setLastUsedFolder(parentPath);
-                            await widget.onSelectionFunction(context, FileUtilities.joinPaths(parentPath, name));
+                            await widget.onSelectionFunction(context,
+                                FileUtilities.joinPaths(parentPath, name));
                             Navigator.of(context).pop();
                           },
                         ),
@@ -172,7 +186,8 @@ class FileBrowserState extends State<FileBrowser> {
                           tooltip: "Enter folder",
                           onPressed: () {
                             setState(() {
-                              currentPath = FileUtilities.joinPaths(parentPath, name);
+                              currentPath =
+                                  FileUtilities.joinPaths(parentPath, name);
                             });
                           },
                         )
@@ -183,7 +198,8 @@ class FileBrowserState extends State<FileBrowser> {
                       icon: Icon(Icons.arrow_right),
                       onPressed: () {
                         setState(() {
-                          currentPath = FileUtilities.joinPaths(parentPath, name);
+                          currentPath =
+                              FileUtilities.joinPaths(parentPath, name);
                         });
                       },
                     );
@@ -191,11 +207,13 @@ class FileBrowserState extends State<FileBrowser> {
                 } else {
                   // if it gets here, then it is sure no folder mode
                   trailingWidget = IconButton(
-                    icon: Icon(MdiIcons.checkCircleOutline, color: SmashColors.mainDecorations),
+                    icon: Icon(MdiIcons.checkCircleOutline,
+                        color: SmashColors.mainDecorations),
                     tooltip: "Select file",
                     onPressed: () async {
                       await Workspace.setLastUsedFolder(parentPath);
-                      await widget.onSelectionFunction(context, FileUtilities.joinPaths(parentPath, name));
+                      await widget.onSelectionFunction(
+                          context, FileUtilities.joinPaths(parentPath, name));
                       Navigator.of(context).pop();
                     },
                   );
@@ -213,7 +231,8 @@ class FileBrowserState extends State<FileBrowser> {
               }).toList(),
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child: SmashCircularProgress(label: "Loading files list..."));
           }
         },
       ),

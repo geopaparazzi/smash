@@ -84,11 +84,8 @@ class DownloadCircularProgressWidgetState
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      CircularProgressIndicator(),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SmashUI.normalText("Downloading file: $_progressString"),
+                      SmashCircularProgress(
+                          label: "Downloading file: $_progressString"),
                     ],
                   ),
                 ),

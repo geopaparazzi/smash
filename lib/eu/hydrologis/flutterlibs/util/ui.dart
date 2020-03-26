@@ -28,7 +28,13 @@ class SmashUI {
   /// Create a text widget with size and color for normal text in pages.
   ///
   /// Allows to choose bold or color/neutral, [underline], [textAlign] and [overflow] (example TextOverflow.ellipsis).
-  static Text normalText(String text, {useColor = false, bold = false, color, textAlign = TextAlign.justify, underline = false, overflow}) {
+  static Text normalText(String text,
+      {useColor = false,
+      bold = false,
+      color,
+      textAlign = TextAlign.justify,
+      underline = false,
+      overflow}) {
     Color c;
     if (useColor || color != null) {
       if (color == null) {
@@ -39,7 +45,8 @@ class SmashUI {
     } else {
       c = SmashColors.mainTextColorNeutral;
     }
-    var textDecoration = underline ? TextDecoration.underline : TextDecoration.none;
+    var textDecoration =
+        underline ? TextDecoration.underline : TextDecoration.none;
     return Text(
       text,
       textAlign: textAlign,
@@ -56,7 +63,13 @@ class SmashUI {
   /// Create a text widget with size and color for small text in pages.
   ///
   /// Allows to choose bold or color/neutral, [underline], [textAlign] and [overflow] (example TextOverflow.ellipsis).
-  static Text smallText(String text, {useColor = false, bold = false, color, textAlign = TextAlign.justify, underline = false, overflow}) {
+  static Text smallText(String text,
+      {useColor = false,
+      bold = false,
+      color,
+      textAlign = TextAlign.justify,
+      underline = false,
+      overflow}) {
     Color c;
     if (useColor || color != null) {
       if (color == null) {
@@ -67,7 +80,8 @@ class SmashUI {
     } else {
       c = SmashColors.mainTextColorNeutral;
     }
-    var textDecoration = underline ? TextDecoration.underline : TextDecoration.none;
+    var textDecoration =
+        underline ? TextDecoration.underline : TextDecoration.none;
     return Text(
       text,
       textAlign: textAlign,
@@ -84,7 +98,8 @@ class SmashUI {
   /// Create a text widget with size and color for titles in pages.
   ///
   /// Allows to choose bold or color/neutral, [underline], [textAlign] and [overflow] (example TextOverflow.ellipsis).
-  static Text titleText(String text, {useColor = false, bold = false, color, textAlign = TextAlign.justify}) {
+  static Text titleText(String text,
+      {useColor = false, bold = false, color, textAlign = TextAlign.justify}) {
     Color c;
     if (useColor || color != null) {
       if (color == null) {
@@ -99,14 +114,21 @@ class SmashUI {
       text,
       textAlign: textAlign,
       overflow: null,
-      style: TextStyle(color: c, fontWeight: bold ? FontWeight.bold : FontWeight.normal, fontSize: BIG_SIZE),
+      style: TextStyle(
+          color: c,
+          fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+          fontSize: BIG_SIZE),
     );
   }
 
   /// Create a  widget with size and color for errors in pages.
   ///
   /// Allows to choose bold or color/neutral, [underline], [textAlign] and [overflow] (example TextOverflow.ellipsis).
-  static Widget errorWidget(String text, {useColor = false, bold = true, color = Colors.redAccent, textAlign = TextAlign.center}) {
+  static Widget errorWidget(String text,
+      {useColor = false,
+      bold = true,
+      color = Colors.redAccent,
+      textAlign = TextAlign.center}) {
     Color c;
     if (useColor || color != null) {
       if (color == null) {
@@ -129,7 +151,10 @@ class SmashUI {
             text,
             textAlign: textAlign,
             overflow: null,
-            style: TextStyle(color: c, fontWeight: bold ? FontWeight.bold : FontWeight.normal, fontSize: NORMAL_SIZE),
+            style: TextStyle(
+                color: c,
+                fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+                fontSize: NORMAL_SIZE),
           ),
         ),
       ),
@@ -171,7 +196,9 @@ class SmashUI {
 ///         }
 ///     });
 ///
-Future<bool> showConfirmDialog(BuildContext context, String title, String prompt, {trueText: 'Yes', falseText: 'No'}) async {
+Future<bool> showConfirmDialog(
+    BuildContext context, String title, String prompt,
+    {trueText: 'Yes', falseText: 'No'}) async {
   return await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -197,7 +224,8 @@ Future<bool> showConfirmDialog(BuildContext context, String title, String prompt
 }
 
 /// Show a warning dialog, adding an optional [title] and a [prompt] for the user.
-void showWarningDialog(BuildContext context, String prompt, {String title: "Warning"}) async {
+void showWarningDialog(BuildContext context, String prompt,
+    {String title: "Warning"}) async {
   await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -239,7 +267,8 @@ void showWarningDialog(BuildContext context, String prompt, {String title: "Warn
 }
 
 /// Show an error dialog, adding an optional [title] and a [prompt] for the user.
-void showErrorDialog(BuildContext context, String prompt, {String title: "Error"}) async {
+void showErrorDialog(BuildContext context, String prompt,
+    {String title: "Error"}) async {
   await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -280,7 +309,10 @@ void showErrorDialog(BuildContext context, String prompt, {String title: "Error"
 }
 
 /// Show an info dialog, adding an optional [title] and a [prompt] for the user.
-void showInfoDialog(BuildContext context, String prompt, {String title, double dialogHeight: SIMPLE_DIALOGS_HEIGHT, List<Widget> widgets}) async {
+void showInfoDialog(BuildContext context, String prompt,
+    {String title,
+    double dialogHeight: SIMPLE_DIALOGS_HEIGHT,
+    List<Widget> widgets}) async {
   await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -326,12 +358,17 @@ void showInfoDialog(BuildContext context, String prompt, {String title, double d
 ///
 /// If the user pushes the cancel button, null will be returned, if user pushes ok without entering anything the empty string '' is returned.
 Future<String> showInputDialog(BuildContext context, String title, String label,
-    {defaultText: '', hintText: '', okText: 'Ok', cancelText: 'Cancel', Function validationFunction}) async {
+    {defaultText: '',
+    hintText: '',
+    okText: 'Ok',
+    cancelText: 'Cancel',
+    Function validationFunction}) async {
   String userInput = defaultText;
   String errorText;
 
   var textEditingController = new TextEditingController(text: defaultText);
-  var inputDecoration = new InputDecoration(labelText: label, hintText: hintText);
+  var inputDecoration =
+      new InputDecoration(labelText: label, hintText: hintText);
   var _textWidget = new TextFormField(
     controller: textEditingController,
     autofocus: true,
@@ -355,9 +392,16 @@ Future<String> showInputDialog(BuildContext context, String title, String label,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text(title),
-        content: new Row(
-          children: <Widget>[new Expanded(child: _textWidget)],
-        ),
+        content: Builder(builder: (context) {
+          var width = MediaQuery.of(context).size.width;
+          return Container(
+            width: width,
+            child: new Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[new Expanded(child: _textWidget)],
+            ),
+          );
+        }),
         actions: <Widget>[
           FlatButton(
             child: Text(cancelText),
@@ -384,7 +428,9 @@ Future<String> showInputDialog(BuildContext context, String title, String label,
 /// [title] can be either a String or a Widget.
 ///
 /// Returns the selected item.
-Future<String> showComboDialog(BuildContext context, dynamic title, List<String> items, [List<String> iconNames]) async {
+Future<String> showComboDialog(
+    BuildContext context, dynamic title, List<String> items,
+    [List<String> iconNames]) async {
   List<ListTile> widgets = [];
   for (var i = 0; i < items.length; ++i) {
     widgets.add(ListTile(
@@ -394,7 +440,7 @@ Future<String> showComboDialog(BuildContext context, dynamic title, List<String>
       title: Container(
         padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             iconNames != null
                 ? Padding(
@@ -405,7 +451,10 @@ Future<String> showComboDialog(BuildContext context, dynamic title, List<String>
                     ),
                   )
                 : Container(),
-            SmashUI.normalText(items[i], textAlign: TextAlign.center, bold: true, color: SmashColors.mainDecorations)
+            SmashUI.normalText(items[i],
+                textAlign: TextAlign.center,
+                bold: true,
+                color: SmashColors.mainDecorations)
           ],
         ),
       ),
@@ -417,9 +466,15 @@ Future<String> showComboDialog(BuildContext context, dynamic title, List<String>
       barrierDismissible: true,
       builder: (BuildContext context) {
         return SimpleDialog(
-          title: title is String ? SmashUI.normalText(title, textAlign: TextAlign.center, color: SmashColors.mainDecorationsDarker) : title,
-          children: ListTile.divideTiles(context: context, tiles: widgets).toList(),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: title is String
+              ? SmashUI.normalText(title,
+                  textAlign: TextAlign.center,
+                  color: SmashColors.mainDecorationsDarker)
+              : title,
+          children:
+              ListTile.divideTiles(context: context, tiles: widgets).toList(),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         );
       });
   return selection;
@@ -427,7 +482,8 @@ Future<String> showComboDialog(BuildContext context, dynamic title, List<String>
 
 /// Show a warning dialog about the need of a GPS fix to proceed with the action.
 showOperationNeedsGps(context) {
-  showWarningDialog(context, "This option is available only when the GPS has a fix.");
+  showWarningDialog(
+      context, "This option is available only when the GPS has a fix.");
 }
 
 class TableUtilities {
@@ -440,7 +496,8 @@ class TableUtilities {
     );
   }
 
-  static Table fromMap(Map<String, dynamic> map, {bool withBorder = false, Color borderColor = Colors.blueAccent}) {
+  static Table fromMap(Map<String, dynamic> map,
+      {bool withBorder = false, Color borderColor = Colors.blueAccent}) {
     List<TableRow> rows = [];
 
     map.forEach((key, value) {

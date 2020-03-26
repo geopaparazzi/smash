@@ -13,6 +13,7 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/geo/geopaparazzi/objects/images.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/util/logging.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
 
 import '../../../smash/core/models.dart';
 
@@ -183,7 +184,7 @@ class SmashImageZoomWidget extends StatelessWidget {
             });
           } else {
             // Otherwise, display a loading indicator.
-            return Center(child: CircularProgressIndicator());
+            return Center(child: SmashCircularProgress(label:"Loading image..."));
           }
         },
       ),

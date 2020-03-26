@@ -321,7 +321,7 @@ class GeocodingPageState extends State<GeocodingPage> {
               ),
             ),
             searching
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: SmashCircularProgress(label: "Searching..."))
                 : Container(
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),

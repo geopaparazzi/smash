@@ -200,7 +200,8 @@ class LogListWidgetState extends State<LogListWidget> {
                   });
             } else {
               // Otherwise, display a loading indicator.
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                  child: SmashCircularProgress(label: "Loading logs..."));
             }
           },
         ),
@@ -901,7 +902,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
                   });
             } else {
               // Otherwise, display a loading indicator.
-              return Center(child: CircularProgressIndicator());
+              return Center(child: SmashCircularProgress(label:"Loading notes..."));
             }
           },
         ));

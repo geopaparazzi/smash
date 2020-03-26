@@ -134,7 +134,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   }
 
   Future showSettingsSheet(BuildContext context) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => _selectedSetting));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => _selectedSetting));
   }
 }
 
@@ -152,7 +153,8 @@ class CameraSettingState extends State<CameraSetting> {
 
   @override
   Widget build(BuildContext context) {
-    String value = GpPreferences().getStringSync(KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
+    String value = GpPreferences()
+        .getStringSync(KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
     return Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -213,7 +215,8 @@ class CameraSettingState extends State<CameraSetting> {
                   ),
                 ],
                 onChanged: (selected) async {
-                  await GpPreferences().setString(KEY_CAMERA_RESOLUTION, selected);
+                  await GpPreferences()
+                      .setString(KEY_CAMERA_RESOLUTION, selected);
                   setState(() {});
                 },
               ),
@@ -240,9 +243,11 @@ class ScreenSettingState extends State<ScreenSetting> {
 
   @override
   Widget build(BuildContext context) {
-    bool keepScreenOn = GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
+    bool keepScreenOn =
+        GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
     bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
-    double currentIconSize = GpPreferences().getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+    double currentIconSize = GpPreferences()
+        .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
     //    String themeStr = GpPreferences().getStringSync(KEY_THEME, SmashThemes.LIGHT.toString());
     //    SmashThemes theme = SmashThemes.LIGHT;
     //    if (themeStr == SmashThemes.DARK.toString()) {
@@ -275,7 +280,8 @@ class ScreenSettingState extends State<ScreenSetting> {
               child: CheckboxListTile(
                 value: keepScreenOn,
                 onChanged: (selected) async {
-                  await GpPreferences().setBoolean(KEY_KEEP_SCREEN_ON, selected);
+                  await GpPreferences()
+                      .setBoolean(KEY_KEEP_SCREEN_ON, selected);
                   setState(() {});
                 },
                 title: SmashUI.normalText(
@@ -336,7 +342,8 @@ class ScreenSettingState extends State<ScreenSetting> {
                                 await centerCrossStyle.saveToPreferences();
                                 setState(() {});
                               },
-                              selectedColor: Color(ColorExt(centerCrossStyle.color).value)),
+                              selectedColor: Color(
+                                  ColorExt(centerCrossStyle.color).value)),
                         ),
                       ],
                     ),
@@ -424,7 +431,8 @@ class ScreenSettingState extends State<ScreenSetting> {
                               max: 100,
                               divisions: 45,
                               onChanged: (newSize) async {
-                                await GpPreferences().setDouble(KEY_MAPTOOLS_ICON_SIZE, newSize);
+                                await GpPreferences()
+                                    .setDouble(KEY_MAPTOOLS_ICON_SIZE, newSize);
                                 setState(() {});
                               },
                               value: currentIconSize,
@@ -499,9 +507,12 @@ class GpsSettingsState extends State<GpsSettings> {
 
   @override
   Widget build(BuildContext context) {
-    int minDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, MINDISTANCES.first);
-    int maxDistance = GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, MAXDISTANCES.last);
-    int timeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS.first);
+    int minDistance =
+        GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, MINDISTANCES.first);
+    int maxDistance =
+        GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, MAXDISTANCES.last);
+    int timeInterval =
+        GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS.first);
     bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
 
     return Scaffold(
@@ -551,7 +562,8 @@ class GpsSettingsState extends State<GpsSettings> {
                         );
                       }).toList(),
                       onChanged: (selected) async {
-                        await GpPreferences().setInt(KEY_GPS_MIN_DISTANCE, selected);
+                        await GpPreferences()
+                            .setInt(KEY_GPS_MIN_DISTANCE, selected);
                         var gpsState = Provider.of<GpsState>(context);
                         gpsState.gpsMinDistance = selected;
                         setState(() {});
@@ -577,7 +589,8 @@ class GpsSettingsState extends State<GpsSettings> {
                         );
                       }).toList(),
                       onChanged: (selected) async {
-                        await GpPreferences().setInt(KEY_GPS_TIMEINTERVAL, selected);
+                        await GpPreferences()
+                            .setInt(KEY_GPS_TIMEINTERVAL, selected);
                         var gpsState = Provider.of<GpsState>(context);
                         gpsState.gpsTimeInterval = selected;
                         setState(() {});
@@ -617,7 +630,8 @@ class GpsSettingsState extends State<GpsSettings> {
                         );
                       }).toList(),
                       onChanged: (selected) async {
-                        await GpPreferences().setInt(KEY_GPS_MAX_DISTANCE, selected);
+                        await GpPreferences()
+                            .setInt(KEY_GPS_MAX_DISTANCE, selected);
                         var gpsState = Provider.of<GpsState>(context);
                         gpsState.gpsMaxDistance = selected;
                         setState(() {});
@@ -647,7 +661,8 @@ class GpsSettingsState extends State<GpsSettings> {
                     child: Checkbox(
                       value: doTestLog,
                       onChanged: (newValue) async {
-                        await GpPreferences().setBoolean(KEY_GPS_TESTLOG, newValue);
+                        await GpPreferences()
+                            .setBoolean(KEY_GPS_TESTLOG, newValue);
                         var gpsState = Provider.of<GpsState>(context);
                         gpsState.doTestLog = newValue;
                         setState(() {});
@@ -678,8 +693,10 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
 
   @override
   Widget build(BuildContext context) {
-    bool loadOnlyVisible = GpPreferences().getBooleanSync(KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
-    int maxFeaturesToLoad = GpPreferences().getIntSync(KEY_VECTOR_MAX_FEATURES, -1);
+    bool loadOnlyVisible =
+        GpPreferences().getBooleanSync(KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
+    int maxFeaturesToLoad =
+        GpPreferences().getIntSync(KEY_VECTOR_MAX_FEATURES, -1);
     int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);
 
     return Scaffold(
@@ -712,7 +729,8 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                   ),
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Max number of features to load per layer. To apply remove and add layer back."),
+                    child: SmashUI.normalText(
+                        "Max number of features to load per layer. To apply remove and add layer back."),
                   ),
                   Padding(
                     padding: SmashUI.defaultPadding(),
@@ -729,21 +747,24 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                         );
                       }).toList(),
                       onChanged: (selected) async {
-                        await GpPreferences().setInt(KEY_VECTOR_MAX_FEATURES, selected);
+                        await GpPreferences()
+                            .setInt(KEY_VECTOR_MAX_FEATURES, selected);
                         setState(() {});
                       },
                     ),
                   ),
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Load only on the last visible map area. To apply remove and add layer back."),
+                    child: SmashUI.normalText(
+                        "Load only on the last visible map area. To apply remove and add layer back."),
                   ),
                   Padding(
                     padding: SmashUI.defaultPadding(),
                     child: Checkbox(
                       value: loadOnlyVisible,
                       onChanged: (newValue) async {
-                        await GpPreferences().setBoolean(KEY_VECTOR_LOAD_ONLY_VISIBLE, newValue);
+                        await GpPreferences()
+                            .setBoolean(KEY_VECTOR_LOAD_ONLY_VISIBLE, newValue);
                         setState(() {});
                       },
                     ),
@@ -763,7 +784,8 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                   ),
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Tap size of the info tool in pixels."),
+                    child: SmashUI.normalText(
+                        "Tap size of the info tool in pixels."),
                   ),
                   Padding(
                     padding: SmashUI.defaultPadding(),
@@ -780,7 +802,8 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                         );
                       }).toList(),
                       onChanged: (selected) async {
-                        await GpPreferences().setInt(KEY_VECTOR_TAPAREA_SIZE, selected);
+                        await GpPreferences()
+                            .setInt(KEY_VECTOR_TAPAREA_SIZE, selected);
                         setState(() {});
                       },
                     ),
@@ -830,7 +853,8 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
           CheckboxListTile(
             value: value,
             onChanged: (selected) async {
-              await GpPreferences().setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
+              await GpPreferences()
+                  .setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
               setState(() {});
             },
             title: SmashUI.normalText(
@@ -893,7 +917,7 @@ class DeviceSettingsState extends State<DeviceSettings> {
       ),
       body: _deviceId == null
           ? Center(
-              child: CircularProgressIndicator(),
+              child: SmashCircularProgress(),
             )
           : SingleChildScrollView(
               child: Column(
@@ -928,7 +952,8 @@ class DeviceSettingsState extends State<DeviceSettings> {
                         children: <Widget>[
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText("Override Device Id", bold: true),
+                            child: SmashUI.normalText("Override Device Id",
+                                bold: true),
                           ),
                           Padding(
                             padding: SmashUI.defaultPadding(),
@@ -939,11 +964,14 @@ class DeviceSettingsState extends State<DeviceSettings> {
                             child: RaisedButton(
                               child: SmashUI.normalText("Change"),
                               onPressed: () async {
-                                var res = await showInputDialog(context, "Override id", "Insert override id", defaultText: _overrideId);
+                                var res = await showInputDialog(context,
+                                    "Override id", "Insert override id",
+                                    defaultText: _overrideId);
                                 if (res == null || res.trim().length == 0) {
                                   res = _deviceId;
                                 }
-                                await GpPreferences().setString(DEVICE_ID_OVERRIDE, res);
+                                await GpPreferences()
+                                    .setString(DEVICE_ID_OVERRIDE, res);
                                 setState(() {
                                   _overrideId = res;
                                 });
@@ -1014,7 +1042,7 @@ class GssSettingsState extends State<GssSettings> {
       ),
       body: _gssUrl == null
           ? Center(
-              child: CircularProgressIndicator(),
+              child: SmashCircularProgress(),
             )
           : SingleChildScrollView(
               child: Column(
@@ -1040,11 +1068,22 @@ class GssSettingsState extends State<GssSettings> {
                             child: RaisedButton(
                               child: SmashUI.normalText("Change"),
                               onPressed: () async {
-                                var res = await showInputDialog(context, "Set url", "Set GSS server url", defaultText: _gssUrl);
+                                var res = await showInputDialog(
+                                    context, "Set url", "Set GSS server url",
+                                    defaultText: _gssUrl,
+                                    validationFunction: (text) {
+                                  if (text.startsWith("http://") ||
+                                      text.startsWith("https://")) {
+                                    return null;
+                                  } else {
+                                    return "Server url needs to start with http or https.";
+                                  }
+                                });
                                 if (res == null || res.trim().length == 0) {
                                   res = _gssUrl;
                                 }
-                                await GpPreferences().setString(KEY_GSS_SERVER_URL, res);
+                                await GpPreferences()
+                                    .setString(KEY_GSS_SERVER_URL, res);
                                 setState(() {
                                   _gssUrl = res;
                                 });

@@ -45,9 +45,9 @@ class AboutPageState extends State<AboutPage> {
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return Center(child: CircularProgressIndicator());
+            return Center(child: SmashCircularProgress());
           case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator());
+            return Center(child: SmashCircularProgress());
           default:
             if (snapshot.hasError) {
               return new Text(

@@ -873,9 +873,8 @@ class PicturesWidgetState extends State<PicturesWidget> {
       builder: (BuildContext context, AsyncSnapshot<List<Widget>> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
-            return Center(child: CircularProgressIndicator());
           case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator());
+            return Center(child: SmashCircularProgress(label: "Loading pictures..."));
           default:
             if (snapshot.hasError) {
               return new Text(

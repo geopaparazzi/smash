@@ -25,7 +25,8 @@ class FeatureAttributesViewer extends StatefulWidget {
   FeatureAttributesViewer(this.features, {Key key}) : super(key: key);
 
   @override
-  _FeatureAttributesViewerState createState() => _FeatureAttributesViewerState();
+  _FeatureAttributesViewerState createState() =>
+      _FeatureAttributesViewerState();
 }
 
 class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
@@ -63,7 +64,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
           if (snapshot.connectionState == ConnectionState.done) {
             return buildInFuture(snapshot.data, context);
           } else {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+                child: SmashCircularProgress(label: "Loading data..."));
           }
         },
       );
@@ -127,9 +129,11 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
       List<Polyline> lines = [];
       for (int i = 0; i < geometry.getNumGeometries(); i++) {
         var geometryN = geometry.getGeometryN(i);
-        List<LatLng> linePoints = geometryN.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
+        List<LatLng> linePoints =
+            geometryN.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
         lines.add(Polyline(points: linePoints, strokeWidth: 5, color: border));
-        lines.add(Polyline(points: linePoints, strokeWidth: 3, color: borderFill));
+        lines.add(
+            Polyline(points: linePoints, strokeWidth: 3, color: borderFill));
       }
       var lineLayer = PolylineLayerOptions(
         polylines: lines,
@@ -141,9 +145,20 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
         var geometryN = geometry.getGeometryN(i);
         if (geometryN is DJ.Polygon) {
           var exteriorRing = geometryN.getExteriorRing();
-          List<LatLng> polyPoints = exteriorRing.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
-          polygons.add(FM.Polygon(points: polyPoints, borderStrokeWidth: 5, borderColor: border, color: border.withOpacity(0)));
-          polygons.add(FM.Polygon(points: polyPoints, borderStrokeWidth: 3, borderColor: borderFill, color: fillPoly));
+          List<LatLng> polyPoints = exteriorRing
+              .getCoordinates()
+              .map((c) => LatLng(c.y, c.x))
+              .toList();
+          polygons.add(FM.Polygon(
+              points: polyPoints,
+              borderStrokeWidth: 5,
+              borderColor: border,
+              color: border.withOpacity(0)));
+          polygons.add(FM.Polygon(
+              points: polyPoints,
+              borderStrokeWidth: 3,
+              borderColor: borderFill,
+              color: fillPoly));
         }
       }
       var polyLayer = PolygonLayerOptions(
@@ -153,7 +168,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     }
 
     var env = geometry.getEnvelopeInternal();
-    var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()), LatLng(env.getMaxY(), env.getMaxX()));
+    var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
+        LatLng(env.getMaxY(), env.getMaxX()));
 
     Timer(Duration(milliseconds: 300), () {
       _mapController.fitBounds(latLngBounds);
@@ -174,7 +190,9 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                     setState(() {
                       _index = newIndex;
                       var env = f.geoms[_index].getEnvelopeInternal();
-                      _mapController.fitBounds(LatLngBounds(LatLng(env.getMinY(), env.getMinX()), LatLng(env.getMaxY(), env.getMaxX())));
+                      _mapController.fitBounds(LatLngBounds(
+                          LatLng(env.getMinY(), env.getMinX()),
+                          LatLng(env.getMaxY(), env.getMaxX())));
                     });
                   },
                 ),
@@ -189,7 +207,9 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                     setState(() {
                       _index = newIndex;
                       var env = f.geoms[_index].getEnvelopeInternal();
-                      _mapController.fitBounds(LatLngBounds(LatLng(env.getMinY(), env.getMinX()), LatLng(env.getMaxY(), env.getMaxX())));
+                      _mapController.fitBounds(LatLngBounds(
+                          LatLng(env.getMinY(), env.getMinX()),
+                          LatLng(env.getMaxY(), env.getMaxX())));
                     });
                   },
                 ),
@@ -213,8 +233,10 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   height: double.infinity,
                   child: FlutterMap(
                     options: new MapOptions(
-                      center: LatLng(centroid.y, centroid.x), // TODO getCenterFromBounds(latLngBounds, mapState),
-                      zoom: 15, // TODO getZoomFromBounds(latLngBounds, mapState),
+                      center: LatLng(centroid.y, centroid.x),
+                      // TODO getCenterFromBounds(latLngBounds, mapState),
+                      zoom: 15,
+                      // TODO getZoomFromBounds(latLngBounds, mapState),
                       minZoom: 7,
                       maxZoom: 19,
                     ),
@@ -226,7 +248,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   flex: 1,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: TableUtilities.fromMap(data, withBorder: true, borderColor: SmashColors.tableBorder),
+                    child: TableUtilities.fromMap(data,
+                        withBorder: true, borderColor: SmashColors.tableBorder),
                   ),
                 ),
               ],
@@ -247,8 +270,10 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   width: double.infinity,
                   child: FlutterMap(
                     options: new MapOptions(
-                      center: LatLng(centroid.y, centroid.x), // TODO getCenterFromBounds(latLngBounds, mapState),
-                      zoom: 15, // TODO getZoomFromBounds(latLngBounds, mapState),
+                      center: LatLng(centroid.y, centroid.x),
+                      // TODO getCenterFromBounds(latLngBounds, mapState),
+                      zoom: 15,
+                      // TODO getZoomFromBounds(latLngBounds, mapState),
                       minZoom: 7,
                       maxZoom: 19,
                     ),
@@ -260,7 +285,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   flex: 1,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: TableUtilities.fromMap(data, withBorder: true, borderColor: SmashColors.tableBorder),
+                    child: TableUtilities.fromMap(data,
+                        withBorder: true, borderColor: SmashColors.tableBorder),
                   ),
                 ),
               ],
