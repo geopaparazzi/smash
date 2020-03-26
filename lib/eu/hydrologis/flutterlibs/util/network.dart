@@ -505,166 +505,11 @@ class ProjectDataUploadListTileProgressWidgetState
     bool hasError = false;
     try {
       if (_item is Note) {
-        Note note = _item;
-        var formData = FormData();
-        formData.fields
-          ..add(MapEntry("type", GssUtilities.NOTE_OBJID))
-          ..add(MapEntry("id", "${note.id}"))
-          ..add(MapEntry("text", note.text))
-          ..add(MapEntry("description", note.description))
-          ..add(MapEntry("timeStamp", "${note.timeStamp}"))
-          ..add(MapEntry("lon", "${note.lon}"))
-          ..add(MapEntry("lat", "${note.lat}"))
-          ..add(MapEntry("altim", "${note.altim}"));
-        if (note.style != null) {
-          formData.fields.add(MapEntry("style", note.style));
-        }
-        if (note.form != null) {
-          formData.fields.add(MapEntry("form", note.form));
-
-          List<String> imageIds = FormUtilities.getImageIds(note.form);
-          if (imageIds.isNotEmpty) {
-            List<MapEntry<String, MultipartFile>> mapEntriesList = [];
-            for (var imageId in imageIds) {
-              var dbImage =
-                  await widget._projectDb.getImageById(int.parse(imageId));
-              var imageBytes = await widget._projectDb
-                  .getImageDataBytes(dbImage.imageDataId);
-
-              MapEntry<String, MultipartFile> multipartFile = MapEntry(
-                  "files[]",
-                  MultipartFile.fromBytes(imageBytes, filename: dbImage.text));
-              mapEntriesList.add(multipartFile);
-            }
-            formData.files.addAll(mapEntriesList);
-          }
-        }
-        // TODO add note ext data
-
-        await widget._dio.post(
-          widget._uploadUrl,
-          data: formData,
-          options: options,
-          onSendProgress: (received, total) {
-            var msg;
-            if (total <= 0) {
-              msg =
-                  "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
-            } else {
-              msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
-            }
-            setState(() {
-              _uploading = true;
-              _progressString = msg;
-            });
-          },
-          cancelToken: cancelToken,
-        ).catchError((err) {
-          hasError = true;
-          handleError(err);
-        });
-        if (!cancelToken.isCancelled && !hasError) {
-          widget._projectDb.updateNoteDirty(note.id, false);
-        }
+        hasError = await handleNote(options, hasError);
       } else if (_item is DbImage) {
-        DbImage image = _item;
-        var formData = FormData();
-        formData.fields
-          ..add(MapEntry("type", GssUtilities.IMAGE_OBJID))
-          ..add(MapEntry("id", "${image.id}"))
-          ..add(MapEntry("text", image.text))
-          ..add(MapEntry("imagedataid", "${image.imageDataId}"))
-          ..add(MapEntry("timeStamp", "${image.timeStamp}"))
-          ..add(MapEntry("lon", "${image.lon}"))
-          ..add(MapEntry("lat", "${image.lat}"))
-          ..add(MapEntry("altim", "${image.altim}"));
-        if (image.noteId != null) {
-          formData.fields..add(MapEntry("noteId", "${image.noteId}"));
-        }
-        var imageBytes =
-            await widget._projectDb.getImageDataBytes(image.imageDataId);
-        formData.files.add(MapEntry(
-          "imageData",
-          MultipartFile.fromBytes(imageBytes, filename: image.text),
-        ));
-
-        await widget._dio.post(
-          widget._uploadUrl,
-          data: formData,
-          options: options,
-          onSendProgress: (received, total) {
-            print("$received / $total");
-            var msg;
-            if (total <= 0) {
-              msg =
-                  "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
-            } else {
-              msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
-            }
-            setState(() {
-              _uploading = true;
-              _progressString = msg;
-            });
-          },
-          cancelToken: cancelToken,
-        ).catchError((err) {
-          hasError = true;
-          handleError(err);
-        });
-        if (!cancelToken.isCancelled && !hasError) {
-          image.isDirty = 0;
-          widget._projectDb.updateImageDirty(image.id, false);
-        }
+        hasError = await handleImage(options, hasError);
       } else if (_item is Log) {
-        Log log = _item;
-        LogProperty props = await widget._projectDb.getLogProperties(log.id);
-
-        var formData = FormData();
-        formData.fields
-          ..add(MapEntry("type", GssUtilities.LOG_OBJID))
-          ..add(MapEntry("id", "${log.id}"))
-          ..add(MapEntry("text", log.text))
-          ..add(MapEntry("startTime", "${log.startTime}"))
-          ..add(MapEntry("endTime", "${log.endTime}"))
-          ..add(MapEntry("width", "${props.width ?? 3}"))
-          ..add(MapEntry("isVisible", "${props.isVisible ?? 1}"))
-          ..add(MapEntry("color", "${props.color ?? "#FF0000"}"));
-
-        List<LogDataPoint> logPoints =
-            await widget._projectDb.getLogDataPoints(log.id);
-        List<Map<String, dynamic>> logPointsList = [];
-        for (var logPoint in logPoints) {
-          logPointsList.add(logPoint.toMap());
-        }
-        var logsJson = jsonEncode(logPointsList);
-        formData.fields.add(MapEntry("points", logsJson));
-
-        await widget._dio.post(
-          widget._uploadUrl,
-          data: formData,
-          options: options,
-          onSendProgress: (received, total) {
-            var msg;
-            if (total <= 0) {
-              msg =
-                  "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
-            } else {
-              msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
-            }
-            setState(() {
-              _uploading = true;
-              _progressString = msg;
-            });
-          },
-          cancelToken: cancelToken,
-        ).catchError((err) {
-          hasError = true;
-          handleError(err);
-        });
-        if (!cancelToken.isCancelled && !hasError) {
-          log.isDirty = 0;
-          widget._projectDb.updateLogDirty(log.id, false);
-        }
+        hasError = await handleLog(options, hasError);
       }
     } catch (e) {
       hasError = true;
@@ -685,18 +530,6 @@ class ProjectDataUploadListTileProgressWidgetState
       } else {
         setState(() {});
       }
-    }
-  }
-
-  void handleError(err) {
-    if (err is DioError) {
-      if (err.message.contains("403")) {
-        _errorString = "Permission on server denied.";
-      } else {
-        _errorString = err.message;
-      }
-    } else {
-      _errorString = err.toString();
     }
   }
 
@@ -752,5 +585,186 @@ class ProjectDataUploadListTileProgressWidgetState
 //      ),
       onTap: () {},
     );
+  }
+
+  Future<bool> handleLog(Options options, bool hasError) async {
+    Log log = _item;
+    LogProperty props = await widget._projectDb.getLogProperties(log.id);
+
+    var formData = FormData();
+    formData.fields
+      ..add(MapEntry(GssUtilities.OBJID_TYPE_KEY, GssUtilities.LOG_OBJID))
+      ..add(MapEntry(LOGS_COLUMN_ID, "${log.id}"))
+      ..add(MapEntry(LOGS_COLUMN_TEXT, log.text))
+      ..add(MapEntry(LOGS_COLUMN_STARTTS, "${log.startTime}"))
+      ..add(MapEntry(LOGS_COLUMN_ENDTS, "${log.endTime}"))
+      ..add(MapEntry(LOGSPROP_COLUMN_WIDTH, "${props.width ?? 3}"))
+      ..add(MapEntry(LOGSPROP_COLUMN_VISIBLE, "${props.isVisible ?? 1}"))
+      ..add(MapEntry(LOGSPROP_COLUMN_COLOR, "${props.color ?? "#FF0000"}"));
+
+    List<LogDataPoint> logPoints =
+        await widget._projectDb.getLogDataPoints(log.id);
+    List<Map<String, dynamic>> logPointsList = [];
+    for (var logPoint in logPoints) {
+      logPointsList.add(logPoint.toMap());
+    }
+    var logsJson = jsonEncode(logPointsList);
+    formData.fields.add(MapEntry(TABLE_GPSLOG_DATA, logsJson));
+
+    await widget._dio.post(
+      widget._uploadUrl,
+      data: formData,
+      options: options,
+      onSendProgress: (received, total) {
+        var msg;
+        if (total <= 0) {
+          msg =
+              "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
+        } else {
+          msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
+        }
+        setState(() {
+          _uploading = true;
+          _progressString = msg;
+        });
+      },
+      cancelToken: cancelToken,
+    ).catchError((err) {
+      hasError = true;
+      handleError(err);
+    });
+    if (!cancelToken.isCancelled && !hasError) {
+      log.isDirty = 0;
+      widget._projectDb.updateLogDirty(log.id, false);
+    }
+    return hasError;
+  }
+
+  Future<bool> handleImage(Options options, bool hasError) async {
+    DbImage image = _item;
+    var formData = FormData();
+    formData.fields
+      ..add(MapEntry(GssUtilities.OBJID_TYPE_KEY, GssUtilities.IMAGE_OBJID))
+      ..add(MapEntry(IMAGES_COLUMN_ID, "${image.id}"))
+      ..add(MapEntry(IMAGES_COLUMN_TEXT, image.text))
+      ..add(MapEntry(IMAGES_COLUMN_IMAGEDATA_ID, "${image.imageDataId}"))
+      ..add(MapEntry(IMAGES_COLUMN_TS, "${image.timeStamp}"))
+      ..add(MapEntry(IMAGES_COLUMN_LON, "${image.lon}"))
+      ..add(MapEntry(IMAGES_COLUMN_LAT, "${image.lat}"))
+      ..add(MapEntry(IMAGES_COLUMN_ALTIM, "${image.altim}"));
+    if (image.noteId != null) {
+      formData.fields..add(MapEntry(IMAGES_COLUMN_NOTE_ID, "${image.noteId}"));
+    }
+    var imageBytes =
+        await widget._projectDb.getImageDataBytes(image.imageDataId);
+    formData.files.add(MapEntry(
+      TABLE_IMAGE_DATA,
+      MultipartFile.fromBytes(imageBytes, filename: image.text),
+    ));
+
+    await widget._dio.post(
+      widget._uploadUrl,
+      data: formData,
+      options: options,
+      onSendProgress: (received, total) {
+        print("$received / $total");
+        var msg;
+        if (total <= 0) {
+          msg =
+              "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
+        } else {
+          msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
+        }
+        setState(() {
+          _uploading = true;
+          _progressString = msg;
+        });
+      },
+      cancelToken: cancelToken,
+    ).catchError((err) {
+      hasError = true;
+      handleError(err);
+    });
+    if (!cancelToken.isCancelled && !hasError) {
+      image.isDirty = 0;
+      widget._projectDb.updateImageDirty(image.id, false);
+    }
+    return hasError;
+  }
+
+  Future<bool> handleNote(Options options, bool hasError) async {
+    Note note = _item;
+    var formData = FormData();
+    formData.fields
+      ..add(MapEntry(GssUtilities.OBJID_TYPE_KEY, GssUtilities.NOTE_OBJID))
+      ..add(MapEntry(NOTES_COLUMN_ID, "${note.id}"))
+      ..add(MapEntry(NOTES_COLUMN_TEXT, note.text))
+      ..add(MapEntry(NOTES_COLUMN_DESCRIPTION, note.description))
+      ..add(MapEntry(NOTES_COLUMN_TS, "${note.timeStamp}"))
+      ..add(MapEntry(NOTES_COLUMN_LON, "${note.lon}"))
+      ..add(MapEntry(NOTES_COLUMN_LAT, "${note.lat}"))
+      ..add(MapEntry(NOTES_COLUMN_ALTIM, "${note.altim}"));
+    if (note.style != null) {
+      formData.fields.add(MapEntry(NOTES_COLUMN_STYLE, note.style));
+    }
+    if (note.form != null) {
+      formData.fields.add(MapEntry(NOTES_COLUMN_FORM, note.form));
+
+      List<String> imageIds = FormUtilities.getImageIds(note.form);
+      if (imageIds.isNotEmpty) {
+        List<MapEntry<String, MultipartFile>> mapEntriesList = [];
+        for (var imageId in imageIds) {
+          var dbImage =
+              await widget._projectDb.getImageById(int.parse(imageId));
+          var imageBytes =
+              await widget._projectDb.getImageDataBytes(dbImage.imageDataId);
+
+          MapEntry<String, MultipartFile> multipartFile = MapEntry("files[]",
+              MultipartFile.fromBytes(imageBytes, filename: dbImage.text));
+          mapEntriesList.add(multipartFile);
+        }
+        formData.files.addAll(mapEntriesList);
+      }
+    }
+    // TODO add note ext data
+
+    await widget._dio.post(
+      widget._uploadUrl,
+      data: formData,
+      options: options,
+      onSendProgress: (received, total) {
+        var msg;
+        if (total <= 0) {
+          msg =
+              "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
+        } else {
+          msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
+        }
+        setState(() {
+          _uploading = true;
+          _progressString = msg;
+        });
+      },
+      cancelToken: cancelToken,
+    ).catchError((err) {
+      hasError = true;
+      handleError(err);
+    });
+    if (!cancelToken.isCancelled && !hasError) {
+      widget._projectDb.updateNoteDirty(note.id, false);
+    }
+    return hasError;
+  }
+
+  void handleError(err) {
+    if (err is DioError) {
+      if (err.message.contains("403")) {
+        _errorString = "Permission on server denied.";
+      } else {
+        _errorString = err.message;
+      }
+    } else {
+      _errorString = err.toString();
+    }
   }
 }

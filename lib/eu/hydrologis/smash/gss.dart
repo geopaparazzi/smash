@@ -59,4 +59,5 @@ class GssUtilities {
   static final String NOTE_OBJID = "note";
   static final String IMAGE_OBJID = "image";
   static final String LOG_OBJID = "gpslog";
+  static final String OBJID_TYPE_KEY = "type";
 }
