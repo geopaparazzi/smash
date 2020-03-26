@@ -712,18 +712,17 @@ class ProjectDataUploadListTileProgressWidgetState
 
       List<String> imageIds = FormUtilities.getImageIds(note.form);
       if (imageIds.isNotEmpty) {
-        List<MapEntry<String, MultipartFile>> mapEntriesList = [];
         for (var imageId in imageIds) {
           var dbImage =
               await widget._projectDb.getImageById(int.parse(imageId));
           var imageBytes =
               await widget._projectDb.getImageDataBytes(dbImage.imageDataId);
-
-          MapEntry<String, MultipartFile> multipartFile = MapEntry("files[]",
-              MultipartFile.fromBytes(imageBytes, filename: dbImage.text));
-          mapEntriesList.add(multipartFile);
+          var key = "$TABLE_IMAGE_DATA${dbImage.id}";
+          formData.files.add(MapEntry(
+            key,
+            MultipartFile.fromBytes(imageBytes, filename: dbImage.text),
+          ));
         }
-        formData.files.addAll(mapEntriesList);
       }
     }
     // TODO add note ext data
