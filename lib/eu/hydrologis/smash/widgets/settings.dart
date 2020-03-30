@@ -5,15 +5,16 @@
  */
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/device.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/theme.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/map_plugins.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/device.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/core/models.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 
 class SettingsWidget extends StatefulWidget {
   SettingsWidget({Key key}) : super(key: key);

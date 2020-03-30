@@ -7,16 +7,20 @@
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/forms/forms.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/geo.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/geo/maps/layers.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/permissions.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/preferences.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/util/theme.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/workspace.dart';
-import 'package:smash/eu/hydrologis/smash/core/models.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/dashboard.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/theme/theme.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/permissions.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers.dart';
+import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/mainview.dart';
+import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
+import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
 
 void main() => runApp(MultiProvider(
       providers: [
@@ -67,10 +71,12 @@ class _InitializationWidgetState extends State<InitializationWidget> {
   @override
   Widget build(BuildContext context) {
     if (_loadDashboard) {
-      return DashboardWidget();
+      return MainViewWidget();
     } else if (_storagePermission && _locationPermission) {
-      SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
-      ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+      SmashMapState mapState =
+          Provider.of<SmashMapState>(context, listen: false);
+      ProjectState projectState =
+          Provider.of<ProjectState>(context, listen: false);
       GpsState gpsState = Provider.of<GpsState>(context, listen: false);
 
       Future.delayed(Duration(seconds: 0), () async {
@@ -112,7 +118,10 @@ class _InitializationWidgetState extends State<InitializationWidget> {
       });
     } else {
       if (!_locationPermission) {
-        PermissionManager().add(PERMISSIONS.LOCATION).check().then((allRight) async {
+        PermissionManager()
+            .add(PERMISSIONS.LOCATION)
+            .check()
+            .then((allRight) async {
           if (allRight) {
             setState(() {
               _locationPermission = true;
@@ -122,7 +131,10 @@ class _InitializationWidgetState extends State<InitializationWidget> {
       } else {
         // location is ok, ask for storage
         if (!_storagePermission) {
-          PermissionManager().add(PERMISSIONS.STORAGE).check().then((allRight) async {
+          PermissionManager()
+              .add(PERMISSIONS.STORAGE)
+              .check()
+              .then((allRight) async {
             if (allRight) {
               setState(() {
                 _storagePermission = true;
