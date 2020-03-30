@@ -10,6 +10,11 @@ import 'package:dart_jts/dart_jts.dart' hide Position, Distance;
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:provider/provider.dart';
+/*
+ * Copyright (c) 2019-2020. Antonello Andrea (www.hydrologis.com). All rights reserved.
+ * Use of this source code is governed by a GPL3 license that can be
+ * found in the LICENSE file.
+ */
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
