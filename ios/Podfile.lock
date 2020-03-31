@@ -23,7 +23,9 @@ PODS:
     - Flutter
   - path_provider_ex (0.0.1):
     - Flutter
-  - permission_handler (4.3.0):
+  - path_provider_macos (0.0.1):
+    - Flutter
+  - "permission_handler (4.4.0+hotfix.2)":
     - Flutter
   - screen (0.0.1):
     - Flutter
@@ -57,6 +59,7 @@ DEPENDENCIES:
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_ex (from `.symlinks/plugins/path_provider_ex/ios`)
+  - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - share_extend (from `.symlinks/plugins/share_extend/ios`)
@@ -95,6 +98,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider/ios"
   path_provider_ex:
     :path: ".symlinks/plugins/path_provider_ex/ios"
+  path_provider_macos:
+    :path: ".symlinks/plugins/path_provider_macos/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
   screen:
@@ -129,7 +134,8 @@ SPEC CHECKSUMS:
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   path_provider_ex: 95397ca0c3f5f99c8538aec3736674fa9cefc1b6
-  permission_handler: 5c75cfde1229eb85f22d367c093900fac03c6c9e
+  path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
+  permission_handler: d5d46b2ca93671e8dcf870b949e304c7ddb65ad0
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
