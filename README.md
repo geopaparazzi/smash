@@ -1,16 +1,23 @@
-# smash
+# SMASH - Smart Mobile App for Surveyor's Happiness
 
-The open source digital field mapping app.
+SMASH is a digital field mapping application developed to perform fast qualitative engineering/geologic surveys and GIS data collection.
 
-## Getting Started
+The main aim of SMASH is to have a tool that:
 
-This project is a starting point for a Flutter application.
+* fits in any pocket and can be always at hand, when needed
+* gives the possibility to take geo-referenced and possibly orientated pictures during a survey, with further possibility to import them into GIS applications like gvSIG
+* is able to easily exploit an Internet connection, if available
+* is extremely easy to use and intuitive, providing just few important functions
 
-A few resources to get you started if this is your first Flutter project:
+The main features available in SMASH are:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+* geo-referenced notes
+* geo-referenced and oriented pictures
+* gps track logging
+* form-based data surveys
+* easy export of collected data
+* a map view for navigation with support for raster tiles and gpx vector data
+* geopackage (OGC standard) support
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+
+[More info on the SMASH homepage](https://www.geopaparazzi.org)
