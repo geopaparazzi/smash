@@ -30,6 +30,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
 import 'package:smash/eu/hydrologis/smash/maps/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -763,10 +764,10 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
     }
   } else if (FileManager.isWorldImage(filePath)) {
     var worldFile = WorldImageSource.getWorldFile(filePath);
-    var prjFile = WorldImageSource.getPrjFile(filePath);
+    var prjFile = SmashPrj.getPrjForImage(filePath);
     if (worldFile == null) {
-      showWarningDialog(
-          context, "Only image files with world file definition are supported.");
+      showWarningDialog(context,
+          "Only image files with world file definition are supported.");
     } else if (prjFile == null) {
       showWarningDialog(
           context, "Only image files with prj file definition are supported.");

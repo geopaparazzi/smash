@@ -17,6 +17,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers.dart';
 
 class WorldImageSource extends RasterLayerSource {
@@ -62,17 +63,6 @@ class WorldImageSource extends RasterLayerSource {
     return null;
   }
 
-  static String getPrjFile(String imagePath) {
-    String folder = FileUtilities.parentFolderFromFile(imagePath);
-    var name = FileUtilities.nameFromFile(imagePath, false);
-    var prjPath = FileUtilities.joinPaths(folder, name + ".prj");
-    var prjFile = File(prjPath);
-    if (prjFile.existsSync()) {
-      return prjPath;
-    }
-    return null;
-  }
-
   Future<void> load(BuildContext context) async {
     if (!loaded) {
       // print("LOAD WORLD FILE");
@@ -81,7 +71,7 @@ class WorldImageSource extends RasterLayerSource {
 
       var ext = FileUtilities.getExtension(_absolutePath);
       IMG.Image _decodedImage;
-        var bytes = imageFile.readAsBytesSync();
+      var bytes = imageFile.readAsBytesSync();
       if (ext == FileManager.JPG_EXT) {
         _decodedImage = IMG.decodeJpg(bytes);
         _memoryImage = MemoryImage(bytes);
@@ -108,16 +98,12 @@ class WorldImageSource extends RasterLayerSource {
       var east = west + xExtent;
       var south = north - yExtent;
 
-      var prjFile = getPrjFile(_absolutePath);
-      var wktPrj = FileUtilities.readFile(prjFile);
-
-      var originPrj = proj4dart.Projection.parse(wktPrj);
-      var destPrj = proj4dart.Projection.WGS84;
+      var originPrj = SmashPrj.fromImageFile(_absolutePath);
 
       var ll = proj4dart.Point(x: west, y: south);
       var ur = proj4dart.Point(x: east, y: north);
-      var llDest = originPrj.transform(destPrj, ll);
-      var urDest = originPrj.transform(destPrj, ur);
+      var llDest = SmashPrj.transformToWgs84(originPrj, ll);
+      var urDest = SmashPrj.transformToWgs84(originPrj, ur);
 
       _imageBounds = LatLngBounds(
         LatLng(llDest.y, llDest.x),
