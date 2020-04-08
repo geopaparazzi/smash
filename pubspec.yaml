@@ -111,7 +111,8 @@ dependencies:
     git:
       url: https://github.com/moovida/flutter_map_marker_cluster.git
 
-
+  # MIT
+  proj4dart: 1.0.4
 
   ## USING OWN FILEPICKER TO AVOID PATHS CAOS
   # MIT

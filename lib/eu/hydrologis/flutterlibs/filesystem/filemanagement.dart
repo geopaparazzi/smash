@@ -28,6 +28,7 @@ class FileManager {
 
   static const GEOPAPARAZZI_EXT = "gpap";
   static const GPX_EXT = "gpx";
+  static const TIFF_EXT = "tiff";
   static const GEOPACKAGE_EXT = "gpkg";
   static const MAPSFORGE_EXT = "map";
   static const MAPURL_EXT = "mapurl";

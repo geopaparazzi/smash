@@ -698,6 +698,7 @@ class LayersPageState extends State<LayersPage> {
       setState(() {});
     } else if (filePath.endsWith(".${FileManager.GPX_EXT}")) {
       GpxSource gpxLayer = GpxSource(filePath);
+      await gpxLayer.load(context);
       if (gpxLayer.hasData()) {
         LayerManager().addLayer(gpxLayer);
         _somethingChanged = true;
