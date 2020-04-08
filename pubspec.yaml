@@ -127,6 +127,9 @@ dependencies:
   #MIT
   extended_image: ^0.7.2
 
+  # Apache 2.0
+  image: 2.1.12
+
   # MIT
   permission_handler: ^4.4.0+hotfix.2
 

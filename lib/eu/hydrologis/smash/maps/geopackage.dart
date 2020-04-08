@@ -255,6 +255,11 @@ class GeopackageSource extends VectorLayerSource {
     LatLngBounds b = LatLngBounds(LatLng(s, w), LatLng(n, e));
     return Future.value(b);
   }
+
+  @override
+  void disposeSource() {
+    ConnectionsHandler().close(getAbsolutePath(), tableName: getName());
+  }
 }
 
 ///// The notes properties page.

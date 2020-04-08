@@ -27,6 +27,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/maps/geopackage.dart';
@@ -35,6 +36,7 @@ import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'gpx.dart';
+import 'tiff.dart';
 import 'mapsforge.dart';
 
 abstract class LayerSource {
@@ -55,6 +57,8 @@ abstract class LayerSource {
   String getAttribution();
 
   Future<LatLngBounds> getBounds();
+
+  void disposeSource();
 
   bool isOnlineService() {
     return getUrl() != null;
@@ -81,10 +85,13 @@ abstract class LayerSource {
       var map = jsonDecode(json);
 
       String file = map['file'];
-      if (file != null && file.endsWith(FileManager.GPX_EXT)) {
+      if (file != null && FileManager.isGpx(file)) {
         GpxSource gpx = GpxSource.fromMap(map);
         return [gpx];
-      } else if (file != null && file.endsWith(FileManager.GEOPACKAGE_EXT)) {
+      } else if (file != null && FileManager.isTiff(file)) {
+        TiffSource tiff = TiffSource.fromMap(map);
+        return [tiff];
+      } else if (file != null && FileManager.isGeopackage(file)) {
         bool isVector = map['isVector'];
         if (isVector == null || !isVector) {
           TileSource ts = TileSource.fromMap(map);
@@ -105,6 +112,10 @@ abstract class LayerSource {
 }
 
 abstract class VectorLayerSource extends LayerSource {
+  Future<void> load(BuildContext context);
+}
+
+abstract class RasterLayerSource extends LayerSource {
   Future<void> load(BuildContext context);
 }
 
@@ -412,7 +423,7 @@ class TileSource extends LayerSource {
 
     var json = '''
     {
-        "label": "${name}",
+        "label": "$name",
         ${savePath != null ? "\"file\": \"$savePath\"," : ""}
         ${url != null ? "\"url\": \"$url\"," : ""}
         "minzoom": $minZoom,
@@ -423,6 +434,11 @@ class TileSource extends LayerSource {
     }
     ''';
     return json;
+  }
+
+  @override
+  void disposeSource() {
+    ConnectionsHandler().close(getAbsolutePath(), tableName: getName());
   }
 }
 
@@ -504,7 +520,8 @@ class LayerManager {
   }
 
   void addLayer(LayerSource layerData) {
-    if (layerData is TileSource && !_baseLayers.contains(layerData)) {
+    if ((layerData is TileSource || layerData is TiffSource) &&
+        !_baseLayers.contains(layerData)) {
       _baseLayers.add(layerData);
     } else if (layerData is VectorLayerSource &&
         !_vectorLayers.contains(layerData)) {
@@ -520,19 +537,12 @@ class LayerManager {
   }
 
   void removeLayerSource(LayerSource sourceItem) {
+    sourceItem.disposeSource();
     if (_baseLayers.contains(sourceItem)) {
       _baseLayers.remove(sourceItem);
-      if (sourceItem is TileSource) {
-        ConnectionsHandler().close(sourceItem.getAbsolutePath(),
-            tableName: sourceItem.getName());
-      }
     }
     if (_vectorLayers.contains(sourceItem)) {
       _vectorLayers.remove(sourceItem);
-      if (sourceItem is GeopackageSource) {
-        ConnectionsHandler().close(sourceItem.getAbsolutePath(),
-            tableName: sourceItem.getName());
-      }
     }
   }
 }
@@ -572,10 +582,11 @@ class LayersPageState extends State<LayersPage> {
                   confirmDismiss: _confirmLogDismiss,
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
-                    LayerManager().removeLayerSource(layerSourceItem);
                     if (layerSourceItem.isActive()) {
                       _somethingChanged = true;
                     }
+                    _layersList.removeAt(index);
+                    LayerManager().removeLayerSource(layerSourceItem);
                   },
                   key: ValueKey(layerSourceItem),
                   background: Container(
@@ -624,6 +635,12 @@ class LayersPageState extends State<LayersPage> {
                             MaterialPageRoute(
                                 builder: (context) => GpxPropertiesWidget(
                                     layerSourceItem, widget._reloadFunction)));
+                      } else if (layerSourceItem is TiffSource) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TiffPropertiesWidget(
+                                    layerSourceItem, widget._reloadFunction)));
                       }
                     },
                   ),
@@ -634,10 +651,11 @@ class LayersPageState extends State<LayersPage> {
                 Container(
                   child: FloatingActionButton(
                     onPressed: () async {
-//                      Navigator.of(context).pop();
+                      //Navigator.of(context).pop();
                       var lastUsedFolder = await Workspace.getLastUsedFolder();
                       var allowed = <String>[]
                         ..addAll(FileManager.ALLOWED_VECTOR_DATA_EXT)
+                        ..addAll(FileManager.ALLOWED_RASTER_DATA_EXT)
                         ..addAll(FileManager.ALLOWED_TILE_DATA_EXT);
                       var selectedPath = await Navigator.push(
                           context,
@@ -645,7 +663,9 @@ class LayersPageState extends State<LayersPage> {
                               builder: (context) =>
                                   FileBrowser(false, allowed, lastUsedFolder)));
 
-                      loadLayer(context, selectedPath);
+                      if (selectedPath != null) {
+                        await loadLayer(context, selectedPath);
+                      }
                     },
                     tooltip: "Load spatial datasets",
                     child: Icon(MdiIcons.map),
@@ -678,58 +698,6 @@ class LayersPageState extends State<LayersPage> {
               animatedIconData: AnimatedIcons.menu_close //To principal button
               ),
         ));
-  }
-
-  loadLayer(BuildContext context, String filePath) async {
-    if (filePath.endsWith(".${FileManager.MAPSFORGE_EXT}")) {
-      TileSource ts = TileSource.Mapsforge(filePath);
-      LayerManager().addLayer(ts);
-      _somethingChanged = true;
-      setState(() {});
-    } else if (filePath.endsWith(".${FileManager.MBTILES_EXT}")) {
-      TileSource ts = TileSource.Mbtiles(filePath);
-      LayerManager().addLayer(ts);
-      _somethingChanged = true;
-      setState(() {});
-    } else if (filePath.endsWith(".${FileManager.MAPURL_EXT}")) {
-      TileSource ts = TileSource.Mapurl(filePath);
-      LayerManager().addLayer(ts);
-      _somethingChanged = true;
-      setState(() {});
-    } else if (filePath.endsWith(".${FileManager.GPX_EXT}")) {
-      GpxSource gpxLayer = GpxSource(filePath);
-      await gpxLayer.load(context);
-      if (gpxLayer.hasData()) {
-        LayerManager().addLayer(gpxLayer);
-        _somethingChanged = true;
-        setState(() {});
-      }
-    } else if (filePath.endsWith(".${FileManager.GEOPACKAGE_EXT}")) {
-      var ch = ConnectionsHandler();
-      try {
-        var db = await ch.open(filePath);
-        List<FeatureEntry> features = await db.features();
-        features.forEach((f) {
-          GeopackageSource gps = GeopackageSource(filePath, f.tableName);
-          LayerManager().addLayer(gps);
-          _somethingChanged = true;
-        });
-
-        List<TileEntry> tiles = await db.tiles();
-        tiles.forEach((t) {
-          var ts = TileSource.Geopackage(filePath, t.tableName);
-          LayerManager().addLayer(ts);
-          _somethingChanged = true;
-        });
-      } finally {
-        await ch?.close(filePath);
-      }
-      if (_somethingChanged) {
-        setState(() {});
-      }
-    } else {
-      showWarningDialog(context, "File format not supported.");
-    }
   }
 
   void setLayersOnChange(List<LayerSource> _layersList) {
@@ -771,6 +739,69 @@ class LayersPageState extends State<LayersPage> {
           );
         });
   }
+}
+
+Future<bool> loadLayer(BuildContext context, String filePath) async {
+  if (FileManager.isMapsforge(filePath)) {
+    TileSource ts = TileSource.Mapsforge(filePath);
+    LayerManager().addLayer(ts);
+    return true;
+  } else if (FileManager.isMbtiles(filePath)) {
+    TileSource ts = TileSource.Mbtiles(filePath);
+    LayerManager().addLayer(ts);
+    return true;
+  } else if (FileManager.isMapurl(filePath)) {
+    TileSource ts = TileSource.Mapurl(filePath);
+    LayerManager().addLayer(ts);
+    return true;
+  } else if (FileManager.isGpx(filePath)) {
+    GpxSource gpxLayer = GpxSource(filePath);
+    await gpxLayer.load(context);
+    if (gpxLayer.hasData()) {
+      LayerManager().addLayer(gpxLayer);
+      return true;
+    }
+  } else if (FileManager.isTiff(filePath)) {
+    var worldFile = TiffSource.getWorldFile(filePath);
+    var prjFile = TiffSource.getPrjFile(filePath);
+    if (worldFile == null) {
+      showWarningDialog(
+          context, "Only tiff files with world file definition are supported.");
+    } else if (prjFile == null) {
+      showWarningDialog(
+          context, "Only tiff files with prj file definition are supported.");
+    } else {
+      TiffSource tiffLayer = TiffSource(filePath);
+      await tiffLayer.load(context);
+      if (tiffLayer.hasData()) {
+        LayerManager().addLayer(tiffLayer);
+        return true;
+      }
+    }
+  } else if (FileManager.isGeopackage(filePath)) {
+    var ch = ConnectionsHandler();
+    try {
+      var db = await ch.open(filePath);
+      List<FeatureEntry> features = await db.features();
+      features.forEach((f) {
+        GeopackageSource gps = GeopackageSource(filePath, f.tableName);
+        LayerManager().addLayer(gps);
+        return true;
+      });
+
+      List<TileEntry> tiles = await db.tiles();
+      tiles.forEach((t) {
+        var ts = TileSource.Geopackage(filePath, t.tableName);
+        LayerManager().addLayer(ts);
+        return true;
+      });
+    } finally {
+      await ch?.close(filePath);
+    }
+  } else {
+    showWarningDialog(context, "File format not supported.");
+  }
+  return false;
 }
 
 class SmashMBTilesImageProvider extends TileProvider {

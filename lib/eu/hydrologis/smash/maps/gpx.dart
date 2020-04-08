@@ -144,7 +144,10 @@ class GpxSource extends VectorLayerSource {
     if (_tracksRoutes.isNotEmpty) {
       List<Polyline> lines = [];
       _tracksRoutes.forEach((linePoints) {
-        lines.add(Polyline(points: linePoints, strokeWidth: lineWidth, color: lineStrokeColor));
+        lines.add(Polyline(
+            points: linePoints,
+            strokeWidth: lineWidth,
+            color: lineStrokeColor));
       });
 
       var lineLayer = PolylineLayerOptions(
@@ -178,7 +181,10 @@ class GpxSource extends VectorLayerSource {
           padding: EdgeInsets.all(50),
         ),
         markers: waypoints,
-        polygonOptions: PolygonOptions(borderColor: pointFillColor, color: pointFillColor.withOpacity(0.2), borderStrokeWidth: 3),
+        polygonOptions: PolygonOptions(
+            borderColor: pointFillColor,
+            color: pointFillColor.withOpacity(0.2),
+            borderStrokeWidth: 3),
         builder: (context, markers) {
           return FloatingActionButton(
             child: Text(markers.length.toString()),
@@ -197,6 +203,18 @@ class GpxSource extends VectorLayerSource {
   @override
   Future<LatLngBounds> getBounds() {
     return Future.value(_gpxBounds);
+  }
+
+  @override
+  void disposeSource() {
+    _wayPoints = [];
+    _wayPointNames = [];
+    _tracksRoutes = [];
+    _gpxBounds = LatLngBounds();
+    _gpx = null;
+    _name = null;
+    _absolutePath = null;
+    loaded = false;
   }
 }
 
@@ -303,7 +321,8 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                   divisions: 20,
                                   onChanged: (newRating) {
                                     _somethingChanged = true;
-                                    setState(() => _pointSizeSliderValue = newRating);
+                                    setState(() =>
+                                        _pointSizeSliderValue = newRating);
                                   },
                                   value: _pointSizeSliderValue,
                                 )),
@@ -360,7 +379,8 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                   divisions: 20,
                                   onChanged: (newRating) {
                                     _somethingChanged = true;
-                                    setState(() => _lineWidthSliderValue = newRating);
+                                    setState(() =>
+                                        _lineWidthSliderValue = newRating);
                                   },
                                   value: _lineWidthSliderValue,
                                 )),

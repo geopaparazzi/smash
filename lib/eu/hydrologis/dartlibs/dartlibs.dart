@@ -42,6 +42,12 @@ class FileUtilities {
     return File(filePath).readAsStringSync();
   }
 
+  static List<String> readFileToList(String filePath) {
+    var fileText = readFile(filePath);
+    List<String> split = fileText.split("\n");
+    return split;
+  }
+
   static void writeStringToFile(String filePath, String stringToWrite) {
     return File(filePath).writeAsStringSync(stringToWrite);
   }

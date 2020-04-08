@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 
 class SmashCircularProgress extends StatelessWidget {
-  String label;
+  final String label;
 
   SmashCircularProgress({this.label, Key key}) : super(key: key);
 

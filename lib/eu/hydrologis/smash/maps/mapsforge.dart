@@ -6,16 +6,20 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart' show SynchronousFuture;
+import 'package:flutter/foundation.dart' show DiagnosticsProperty;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_map/flutter_map.dart' as FM;
 import 'package:flutter_map/src/layer/tile_layer.dart' hide Tile;
+import 'package:http/http.dart' as http;
+import 'package:latlong/latlong.dart';
 import 'package:mapsforge_flutter/core.dart';
 import 'package:mapsforge_flutter/datastore.dart';
 import 'package:mapsforge_flutter/maps.dart';
@@ -23,11 +27,6 @@ import 'package:mapsforge_flutter/src/graphics/tilebitmap.dart';
 import 'package:mapsforge_flutter/src/implementation/graphics/fluttertilebitmap.dart';
 import 'package:mapsforge_flutter/src/model/tile.dart';
 import 'package:mapsforge_flutter/src/renderer/rendererjob.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_map/flutter_map.dart' as FM;
-import 'package:latlong/latlong.dart';
-
-import 'package:flutter/foundation.dart' show DiagnosticsProperty;
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/database/database.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';

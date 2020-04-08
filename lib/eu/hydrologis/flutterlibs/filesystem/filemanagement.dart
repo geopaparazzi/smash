@@ -19,6 +19,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 class FileManager {
   static const ALLOWED_PROJECT_EXT = [GEOPAPARAZZI_EXT];
   static const ALLOWED_VECTOR_DATA_EXT = [GPX_EXT, GEOPACKAGE_EXT];
+  static const ALLOWED_RASTER_DATA_EXT = [TIFF_EXT];
   static const ALLOWED_TILE_DATA_EXT = [
     GEOPACKAGE_EXT,
     MBTILES_EXT,
@@ -51,6 +52,13 @@ class FileManager {
     }
     return false;
   }
+  
+  static bool isRasterdataFile(String path) {
+    for (var ext in ALLOWED_RASTER_DATA_EXT) {
+      if (path.toLowerCase().endsWith(ext)) return true;
+    }
+    return false;
+  }
 
   static bool isMapsforge(String path) {
     return path != null && path.toLowerCase().endsWith(MAPSFORGE_EXT);
@@ -66,6 +74,10 @@ class FileManager {
 
   static bool isGpx(String path) {
     return path != null && path.toLowerCase().endsWith(GPX_EXT);
+  }
+  
+  static bool isTiff(String path) {
+    return path != null && path.toLowerCase().endsWith(TIFF_EXT);
   }
 
   static bool isGeopackage(String path) {
