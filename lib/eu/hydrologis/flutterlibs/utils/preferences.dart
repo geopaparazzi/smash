@@ -4,6 +4,8 @@
  * found in the LICENSE file.
  */
 
+import 'dart:io';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 const KEY_LAST_USED_FOLDER = "KEY_LAST_USED_FOLDER";
@@ -22,6 +24,7 @@ const KEY_KEEP_SCREEN_ON = 'KEY_KEEP_SCREEN_ON';
 const KEY_SHOW_SCALEBAR = 'KEY_SHOW_SCALEBAR';
 const KEY_CAMERA_RESOLUTION = 'KEY_CAMERA_RESOLUTION';
 const KEY_ENABLE_DIAGNOSTICS = 'KEY_ENABLE_DIAGNOSTICS';
+const KEY_RECENTSPROJECTS_LIST = 'KEY_RECENTSPROJECTS_LIST';
 
 const KEY_GPS_MIN_DISTANCE = 'KEY_GPS_MIN_DISTANCE';
 const KEY_GPS_MAX_DISTANCE = 'KEY_GPS_MAX_DISTANCE';
@@ -188,6 +191,26 @@ class GpPreferences {
     await _preferences.setInt(key, value);
   }
 
+  List<String> getRecentProjectsListSync() {
+    var list = _preferences.getStringList(KEY_RECENTSPROJECTS_LIST);
+    if (list == null) list = [];
+    // remove non existing files
+    list.removeWhere((p) => !new File(p).existsSync());
+    return list;
+  }
+
+  Future addRecentProject(String projectPath) async {
+    await _checkPreferences();
+    var list = _preferences.getStringList(KEY_RECENTSPROJECTS_LIST);
+    if (list == null) list = [];
+    list.removeWhere((p) => p == projectPath);
+    if (list.length >= 10) {
+      list.removeLast();
+    }
+    list.insert(0, projectPath);
+    _preferences.setStringList(KEY_RECENTSPROJECTS_LIST, list);
+  }
+
   /// Return last saved position as [lon, lat, zoom] or null.
   Future<List<double>> getLastPosition() async {
     await _checkPreferences();
@@ -253,7 +276,8 @@ class GpPreferences {
   void setVectorLayerInfoList(List<String> vectorlayerInfoList) async {
     await _checkPreferences();
     if (vectorlayerInfoList == null) vectorlayerInfoList = [];
-    await _preferences.setStringList(KEY_VECTORLAYERINFO_LIST, vectorlayerInfoList);
+    await _preferences.setStringList(
+        KEY_VECTORLAYERINFO_LIST, vectorlayerInfoList);
   }
 
   Future<List<String>> getMbtilesFilesList() async {

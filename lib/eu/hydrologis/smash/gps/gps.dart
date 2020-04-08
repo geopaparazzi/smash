@@ -85,7 +85,7 @@ class GpsHandler {
     _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
   }
 
-  void init(GpsState initGpsState) async {
+  Future<void> init(GpsState initGpsState) async {
     printGps("init GpsHandler");
     _gpsState = initGpsState;
     _locationServiceEnabled = false;

@@ -3,24 +3,24 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/theme.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/permissions.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/mainview.dart';
-import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
+import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
+import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 void main() => runApp(MultiProvider(
       providers: [
@@ -33,122 +33,212 @@ void main() => runApp(MultiProvider(
       ],
       child: SmashApp(),
     ));
+// void main() => runApp(SmashApp());
 
-class SmashApp extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return SmashAppState();
-  }
-}
-
-class SmashAppState extends State<SmashApp> {
+class SmashApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // If the Future is complete, display the preview.
     return MaterialApp(
       title: APP_NAME,
-      theme: Provider.of<ThemeState>(context).currentThemeData,
+      //theme: Provider.of<ThemeState>(context).currentThemeData,
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       showPerformanceOverlay: false,
-      home: InitializationWidget(),
+      home: WelcomeWidget(),
     );
   }
 }
 
-class InitializationWidget extends StatefulWidget {
-  InitializationWidget({Key key}) : super(key: key);
+class WelcomeWidget extends StatefulWidget {
+  WelcomeWidget({Key key}) : super(key: key);
 
   @override
-  _InitializationWidgetState createState() => new _InitializationWidgetState();
+  _WelcomeWidgetState createState() => _WelcomeWidgetState();
 }
 
-class _InitializationWidgetState extends State<InitializationWidget> {
-  bool _locationPermission = false;
-  bool _storagePermission = false;
-  bool _loadDashboard = false;
+class _WelcomeWidgetState extends State<WelcomeWidget> {
+  ValueNotifier<int> orderNotifier = ValueNotifier<int>(0);
+  var finalOrder = 7;
+
+  bool _initFinished = false;
+
+  @override
+  void initState() {
+    super.initState();
+    orderNotifier.addListener(() {
+      if (orderNotifier.value == finalOrder) {
+        _initFinished = true;
+        setState(() {});
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (_loadDashboard) {
-      return MainViewWidget();
-    } else if (_storagePermission && _locationPermission) {
-      SmashMapState mapState =
-          Provider.of<SmashMapState>(context, listen: false);
-      ProjectState projectState =
-          Provider.of<ProjectState>(context, listen: false);
-      GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-
-      Future.delayed(Duration(seconds: 0), () async {
-        // init preferences
-        await GpPreferences().initialize();
-
-        await Workspace.init();
-
-        // TODO enable dark theme one day
-        //        String themeStr = await GpPreferences().getString(KEY_THEME, SmashThemes.LIGHT.toString());
-        //        SmashThemes theme = SmashThemes.LIGHT;
-        //        if (themeStr == SmashThemes.DARK.toString()) {
-        //          theme = SmashThemes.DARK;
-        //        }
-        //        Provider.of<ThemeState>(context).currentTheme = theme;
-
-        gpsState.init();
-
-        // read tags file
-        await TagsManager().readFileTags();
-
-        // init layer manager
-        var layerManager = LayerManager();
-        await layerManager.initialize();
-
-        await projectState.openDb();
-
-        GpsHandler().init(gpsState);
-        gpsState.projectState = projectState;
-
-        // set last known position
-        var pos = await GpPreferences().getLastPosition();
-        if (pos != null) {
-          mapState.init(Coordinate(pos[0], pos[1]), pos[2]);
-        }
-        setState(() {
-          _loadDashboard = true;
-        });
-      });
+    Widget widgetToLoad;
+    if (_initFinished) {
+      // load projects page
+      widgetToLoad = ProjectView(
+        isOpeningPage: true,
+      );
     } else {
-      if (!_locationPermission) {
-        PermissionManager()
-            .add(PERMISSIONS.LOCATION)
-            .check()
-            .then((allRight) async {
-          if (allRight) {
-            setState(() {
-              _locationPermission = true;
-            });
-          }
-        });
-      } else {
-        // location is ok, ask for storage
-        if (!_storagePermission) {
-          PermissionManager()
-              .add(PERMISSIONS.STORAGE)
-              .check()
-              .then((allRight) async {
-            if (allRight) {
-              setState(() {
-                _storagePermission = true;
-              });
-            }
-          });
-        }
-      }
+      // show ongoing progress
+      widgetToLoad = Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "Welcome to SMASH!",
+            textAlign: TextAlign.center,
+          ),
+        ),
+        body: ListView(
+          children: <Widget>[
+            ProgressTile(
+                MdiIcons.crosshairsGps,
+                "Checking location permission...",
+                "Location permission granted.",
+                orderNotifier,
+                0,
+                handleLocationPermission),
+            ProgressTile(
+                MdiIcons.database,
+                "Checking storage permission...",
+                "Storage permission granted.",
+                orderNotifier,
+                1,
+                handleStoragePermission),
+            ProgressTile(MdiIcons.cog, "Loading preferences...",
+                "Preferences loaded.", orderNotifier, 2, handlePreferences),
+            ProgressTile(MdiIcons.folderCog, "Loading workspace...",
+                "Workspace loaded.", orderNotifier, 3, handleWorkspace),
+            ProgressTile(MdiIcons.crosshairsGps, "Initializing GPS...",
+                "GPS initialized.", orderNotifier, 4, handleGps),
+            ProgressTile(MdiIcons.notePlus, "Loading tags list...",
+                "Tags list loaded.", orderNotifier, 5, handleTags),
+            ProgressTile(MdiIcons.layers, "Loading layers list...",
+                "Layers list loaded.", orderNotifier, 6, handleLayers),
+          ],
+        ),
+      );
     }
-    return Container(
-      color: SmashColors.mainBackground,
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
+
+    return widgetToLoad;
+  }
+}
+
+Future<String> handleLayers(BuildContext context) async {
+  // init layer manager
+  var layerManager = LayerManager();
+  await layerManager.initialize();
+  return null;
+}
+
+Future<String> handleTags(BuildContext context) async {
+  // read tags file
+  await TagsManager().readFileTags();
+  return null;
+}
+
+Future<String> handleGps(BuildContext context) async {
+  GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+  gpsState.init();
+  await GpsHandler().init(gpsState);
+  return null;
+}
+
+Future<String> handlePreferences(BuildContext context) async {
+  await GpPreferences().initialize();
+
+  SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
+  var pos = await GpPreferences().getLastPosition();
+  if (pos != null) {
+    mapState.init(Coordinate(pos[0], pos[1]), pos[2]);
+  }
+  return null;
+}
+
+Future<String> handleWorkspace(BuildContext context) async {
+  await Workspace.init();
+  var directory = await Workspace.getConfigFolder();
+  bool init = await GpLogger().init(directory.path); // init logger
+  if (init) GpLogger().d("Db logger initialized.");
+  return null;
+}
+
+Future<String> handleLocationPermission(BuildContext context) async {
+  var locationPermission =
+      await PermissionManager().add(PERMISSIONS.LOCATION).check();
+  if (!locationPermission) {
+    return "Location permission is mandatory to open SMASH.";
+  }
+  return null;
+}
+
+Future<String> handleStoragePermission(BuildContext context) async {
+  var storagePermission =
+      await PermissionManager().add(PERMISSIONS.STORAGE).check();
+  if (!storagePermission) {
+    return "Storage permission is mandatory to open SMASH.";
+  }
+  return null;
+}
+
+class ProgressTile extends StatefulWidget {
+  final ValueNotifier orderNotifier;
+  final int order;
+
+  final doneMsg;
+
+  final iconData;
+
+  final initMsg;
+  Future<String> Function(BuildContext) processFunction;
+
+  ProgressTile(this.iconData, this.initMsg, this.doneMsg, this.orderNotifier,
+      this.order, this.processFunction);
+
+  @override
+  _ProgressTileState createState() => _ProgressTileState();
+}
+
+class _ProgressTileState extends State<ProgressTile> {
+  bool isDone = false;
+  String error;
+
+  @override
+  void initState() {
+    if (widget.orderNotifier.value == widget.order) {
+      process();
+    } else {
+      widget.orderNotifier.addListener(() {
+        if (widget.orderNotifier.value == widget.order) {
+          process();
+        }
+      });
+    }
+    super.initState();
+  }
+
+  process() async {
+    error = await widget.processFunction(context);
+    if (error == null) {
+      // we can move on
+      widget.orderNotifier.value = widget.orderNotifier.value + 1;
+    }
+    setState(() {
+      isDone = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(widget.iconData),
+      title: error == null
+          ? Text(isDone ? widget.doneMsg : widget.initMsg)
+          : Text(
+              error,
+              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+            ),
     );
   }
 }

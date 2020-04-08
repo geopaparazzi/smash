@@ -30,18 +30,13 @@ import 'package:smash/eu/hydrologis/smash/import/import_widget.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smash/eu/hydrologis/smash/util/diagnostic.dart';
 import 'package:smash/eu/hydrologis/smash/util/network.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
-
-_openProject(BuildContext context, String selectedPath) async {
-  var projectState = Provider.of<ProjectState>(context, listen: false);
-  await projectState.setNewProject(selectedPath);
-  await projectState.reloadProject();
-}
 
 class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue) {
@@ -85,40 +80,19 @@ class DashboardUtils {
     return [
       ListTile(
         leading: new Icon(
-          Icons.create_new_folder,
-          color: c,
-          size: iconSize,
-        ),
-        title: SmashUI.normalText(
-          "New Project",
-          bold: true,
-          color: c,
-        ),
-        onTap: () => _createNewProject(context),
-      ),
-      ListTile(
-        leading: new Icon(
           Icons.folder_open,
           color: c,
           size: iconSize,
         ),
         title: SmashUI.normalText(
-          "Open Project",
+          "Projects",
           bold: true,
           color: c,
         ),
         onTap: () async {
           Navigator.of(context).pop();
-          var lastUsedFolder = await Workspace.getLastUsedFolder();
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => FileBrowser(
-                        false,
-                        FileManager.ALLOWED_PROJECT_EXT,
-                        lastUsedFolder,
-                        _openProject,
-                      )));
+              context, MaterialPageRoute(builder: (context) => ProjectView()));
         },
       ),
       ListTile(

@@ -79,10 +79,7 @@ class FileBrowser extends StatefulWidget {
 
   String _startFolder;
 
-  Function onSelectionFunction;
-
-  FileBrowser(this._doFolderMode, this._allowedExtensions, this._startFolder,
-      this.onSelectionFunction);
+  FileBrowser(this._doFolderMode, this._allowedExtensions, this._startFolder);
 
   @override
   FileBrowserState createState() {
@@ -177,9 +174,9 @@ class FileBrowserState extends State<FileBrowser> {
                           tooltip: "Select folder",
                           onPressed: () async {
                             await Workspace.setLastUsedFolder(parentPath);
-                            await widget.onSelectionFunction(context,
-                                FileUtilities.joinPaths(parentPath, name));
-                            Navigator.of(context).pop();
+                            var resultPath =
+                                FileUtilities.joinPaths(parentPath, name);
+                            Navigator.pop(context, resultPath);
                           },
                         ),
                         IconButton(
@@ -214,9 +211,9 @@ class FileBrowserState extends State<FileBrowser> {
                     tooltip: "Select file",
                     onPressed: () async {
                       await Workspace.setLastUsedFolder(parentPath);
-                      await widget.onSelectionFunction(
-                          context, FileUtilities.joinPaths(parentPath, name));
-                      Navigator.of(context).pop();
+                      var resultPath =
+                          FileUtilities.joinPaths(parentPath, name);
+                      Navigator.pop(context, resultPath);
                     },
                   );
                 }

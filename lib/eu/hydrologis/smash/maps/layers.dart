@@ -639,11 +639,13 @@ class LayersPageState extends State<LayersPage> {
                       var allowed = <String>[]
                         ..addAll(FileManager.ALLOWED_VECTOR_DATA_EXT)
                         ..addAll(FileManager.ALLOWED_TILE_DATA_EXT);
-                      Navigator.push(
+                      var selectedPath = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => FileBrowser(
-                                  false, allowed, lastUsedFolder, loadLayer)));
+                              builder: (context) =>
+                                  FileBrowser(false, allowed, lastUsedFolder)));
+
+                      loadLayer(context, selectedPath);
                     },
                     tooltip: "Load spatial datasets",
                     child: Icon(MdiIcons.map),

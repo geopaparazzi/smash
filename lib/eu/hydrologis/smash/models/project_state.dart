@@ -40,7 +40,7 @@ class ProjectState extends ChangeNotifierPlus {
     await close();
     _projectPath = path;
     await openDb(_projectPath);
-
+    GpPreferences().addRecentProject(path);
     notifyListenersMsg("setNewProject");
   }
 

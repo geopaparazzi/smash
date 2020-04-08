@@ -66,9 +66,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
   List<LayerOptions> _activeLayers = [];
 
-  Size _media;
-
-  double _iconSize = SmashUI.MEDIUM_ICON_SIZE;
+  double _iconSize;
 
   @override
   void initState() {
@@ -99,33 +97,21 @@ class _MainViewWidgetState extends State<MainViewWidget>
     _iconSize = GpPreferences()
         .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
 
-    Future.delayed(Duration.zero, () async {
-      var directory = await Workspace.getConfigFolder();
-      bool init = await GpLogger().init(directory.path); // init logger
-      if (init) GpLogger().d("Db logger initialized.");
-
-      // set initial status
-      bool gpsIsOn = GpsHandler().isGpsOn();
-      if (gpsIsOn != null) {
-        if (gpsIsOn) {
-          gpsState.statusQuiet = GpsStatus.ON_NO_FIX;
-        }
+    // set initial status
+    bool gpsIsOn = GpsHandler().isGpsOn();
+    if (gpsIsOn != null) {
+      if (gpsIsOn) {
+        gpsState.statusQuiet = GpsStatus.ON_NO_FIX;
       }
+    }
 
+    Future.delayed(Duration.zero, () async {
       projectState.context = context;
       await projectState.reloadProject();
       await reloadLayers();
     });
 
     WidgetsBinding.instance.addObserver(this);
-  }
-
-  _showSnackbar(snackbar) {
-    _scaffoldKey.currentState.showSnackBar(snackbar);
-  }
-
-  _hideSnackbar() {
-    _scaffoldKey.currentState.hideCurrentSnackBar();
   }
 
   @override
@@ -140,7 +126,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
   }
 
   WillPopScope consumeBuild(ProjectState projectState) {
-    _media = MediaQuery.of(projectState.context).size;
     var layers = <LayerOptions>[];
 
     var mapState =
@@ -219,7 +204,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
         child: new Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-//            title: Image.asset("assets/smash_text.png", fit: BoxFit.fitHeight),
             title: Padding(
               padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
               child: Image.asset(
@@ -481,10 +465,10 @@ class _MainViewWidgetState extends State<MainViewWidget>
         onWillPop: () async {
           bool doExit = await showConfirmDialog(
               projectState.context,
-              "Are you sure you want to exit?",
+              "Are you sure you want to close the project?",
               "Active operations will be stopped.");
           if (doExit) {
-            dispose();
+            await disposeProject(context);
             return Future.value(true);
           }
           return Future.value(false);
@@ -551,39 +535,14 @@ class _MainViewWidgetState extends State<MainViewWidget>
     ];
   }
 
-  @override
-  void dispose() {
-    updateCenterPosition();
+  Future disposeProject(BuildContext context) async {
     WidgetsBinding.instance.removeObserver(this);
 
     ProjectState projectState =
         Provider.of<ProjectState>(context, listen: false);
     projectState?.close();
-    super.dispose();
-  }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-//      GpLogger().d("Application suspended");
-      updateCenterPosition();
-    } else if (state == AppLifecycleState.inactive) {
-//      GpLogger().d("Application inactived");
-      updateCenterPosition();
-    } else if (state == AppLifecycleState.resumed) {
-//      GpLogger().d("Application resumed");
-    }
-  }
-
-  void updateCenterPosition() {
-    // save last position
-    SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
-    if (mapState != null) {
-      mapState.setLastPosition(
-          Coordinate(
-              _mapController.center.longitude, _mapController.center.latitude),
-          _mapController.zoom);
-    }
+    await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
   }
 
   Future<void> reloadLayers() async {
@@ -601,12 +560,5 @@ class _MainViewWidgetState extends State<MainViewWidget>
     setState(() {
       _activeLayers.addAll(listTmp);
     });
-  }
-
-  Future doExit(BuildContext context) async {
-    ProjectState projectState =
-        Provider.of<ProjectState>(context, listen: false);
-    await projectState?.close();
-    await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
   }
 }
