@@ -9,20 +9,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
-import 'package:gpx/gpx.dart';
+import 'package:image/image.dart' as IMG;
 import 'package:latlong/latlong.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:proj4dart/proj4dart.dart' as proj4dart;
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers.dart';
-import 'package:proj4dart/proj4dart.dart' as proj4dart;
-import 'package:image/image.dart' as IMG;
 
-class TiffSource extends RasterLayerSource {
+class WorldImageSource extends RasterLayerSource {
   String _absolutePath;
   String _name;
   double opacityPercentage = 100;
@@ -31,7 +28,7 @@ class TiffSource extends RasterLayerSource {
   bool loaded = false;
   MemoryImage _memoryImage;
 
-  TiffSource.fromMap(Map<String, dynamic> map) {
+  WorldImageSource.fromMap(Map<String, dynamic> map) {
     String relativePath = map['file'];
     _name = FileUtilities.nameFromFile(relativePath, false);
     _absolutePath = Workspace.makeAbsolute(relativePath);
@@ -40,15 +37,27 @@ class TiffSource extends RasterLayerSource {
     opacityPercentage = map['opacity'] ?? 100;
   }
 
-  TiffSource(this._absolutePath);
+  WorldImageSource(this._absolutePath);
 
   static String getWorldFile(String imagePath) {
     String folder = FileUtilities.parentFolderFromFile(imagePath);
     var name = FileUtilities.nameFromFile(imagePath, false);
-    var tfwPath = FileUtilities.joinPaths(folder, name + ".tfw");
-    var tfwFile = File(tfwPath);
-    if (tfwFile.existsSync()) {
-      return tfwPath;
+    var ext = FileUtilities.getExtension(imagePath);
+    var wldExt;
+    if (ext == FileManager.JPG_EXT) {
+      wldExt = FileManager.JPG_WLD_EXT;
+    } else if (ext == FileManager.PNG_EXT) {
+      wldExt = FileManager.PNG_WLD_EXT;
+    } else if (ext == FileManager.TIF_EXT) {
+      wldExt = FileManager.TIF_WLD_EXT;
+    } else {
+      return null;
+    }
+
+    var wldPath = FileUtilities.joinPaths(folder, name + "." + wldExt);
+    var wldFile = File(wldPath);
+    if (wldFile.existsSync()) {
+      return wldPath;
     }
     return null;
   }
@@ -69,7 +78,20 @@ class TiffSource extends RasterLayerSource {
       print("LOAD TIFF");
       _name = FileUtilities.nameFromFile(_absolutePath, false);
       File imageFile = new File(_absolutePath);
-      var _decodedImage = IMG.decodeTiff(imageFile.readAsBytesSync());
+
+      var ext = FileUtilities.getExtension(_absolutePath);
+      IMG.Image _decodedImage;
+      if (ext == FileManager.JPG_EXT) {
+        _decodedImage = IMG.decodeJpg(imageFile.readAsBytesSync());
+        _memoryImage = MemoryImage(IMG.encodeJpg(_decodedImage));
+      } else if (ext == FileManager.PNG_EXT) {
+        _decodedImage = IMG.decodePng(imageFile.readAsBytesSync());
+        _memoryImage = MemoryImage(IMG.encodePng(_decodedImage));
+      } else if (ext == FileManager.TIF_EXT) {
+        _decodedImage = IMG.decodeTiff(imageFile.readAsBytesSync());
+        _memoryImage = MemoryImage(IMG.encodePng(_decodedImage));
+      }
+
       var width = _decodedImage.width;
       var height = _decodedImage.height;
 
@@ -101,8 +123,6 @@ class TiffSource extends RasterLayerSource {
         LatLng(urDest.y, urDest.x),
       );
 
-      var encodedPng = IMG.encodePng(_decodedImage);
-      _memoryImage = MemoryImage(encodedPng);
       loaded = true;
     }
   }
@@ -183,7 +203,7 @@ class TiffSource extends RasterLayerSource {
 
 /// The tiff properties page.
 class TiffPropertiesWidget extends StatefulWidget {
-  TiffSource _source;
+  WorldImageSource _source;
   Function _reloadLayersFunction;
 
   TiffPropertiesWidget(this._source, this._reloadLayersFunction);
@@ -195,7 +215,7 @@ class TiffPropertiesWidget extends StatefulWidget {
 }
 
 class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
-  TiffSource _source;
+  WorldImageSource _source;
   double _opacitySliderValue = 100;
   bool _somethingChanged = false;
 

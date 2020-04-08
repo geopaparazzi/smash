@@ -31,12 +31,12 @@ import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/maps/geopackage.dart';
+import 'package:smash/eu/hydrologis/smash/maps/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'gpx.dart';
-import 'tiff.dart';
 import 'mapsforge.dart';
 
 abstract class LayerSource {
@@ -88,9 +88,9 @@ abstract class LayerSource {
       if (file != null && FileManager.isGpx(file)) {
         GpxSource gpx = GpxSource.fromMap(map);
         return [gpx];
-      } else if (file != null && FileManager.isTiff(file)) {
-        TiffSource tiff = TiffSource.fromMap(map);
-        return [tiff];
+      } else if (file != null && FileManager.isWorldImage(file)) {
+        WorldImageSource world = WorldImageSource.fromMap(map);
+        return [world];
       } else if (file != null && FileManager.isGeopackage(file)) {
         bool isVector = map['isVector'];
         if (isVector == null || !isVector) {
@@ -520,7 +520,7 @@ class LayerManager {
   }
 
   void addLayer(LayerSource layerData) {
-    if ((layerData is TileSource || layerData is TiffSource) &&
+    if ((layerData is TileSource || layerData is WorldImageSource) &&
         !_baseLayers.contains(layerData)) {
       _baseLayers.add(layerData);
     } else if (layerData is VectorLayerSource &&
@@ -635,7 +635,7 @@ class LayersPageState extends State<LayersPage> {
                             MaterialPageRoute(
                                 builder: (context) => GpxPropertiesWidget(
                                     layerSourceItem, widget._reloadFunction)));
-                      } else if (layerSourceItem is TiffSource) {
+                      } else if (layerSourceItem is WorldImageSource) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -761,20 +761,20 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       LayerManager().addLayer(gpxLayer);
       return true;
     }
-  } else if (FileManager.isTiff(filePath)) {
-    var worldFile = TiffSource.getWorldFile(filePath);
-    var prjFile = TiffSource.getPrjFile(filePath);
+  } else if (FileManager.isWorldImage(filePath)) {
+    var worldFile = WorldImageSource.getWorldFile(filePath);
+    var prjFile = WorldImageSource.getPrjFile(filePath);
     if (worldFile == null) {
       showWarningDialog(
-          context, "Only tiff files with world file definition are supported.");
+          context, "Only image files with world file definition are supported.");
     } else if (prjFile == null) {
       showWarningDialog(
-          context, "Only tiff files with prj file definition are supported.");
+          context, "Only image files with prj file definition are supported.");
     } else {
-      TiffSource tiffLayer = TiffSource(filePath);
-      await tiffLayer.load(context);
-      if (tiffLayer.hasData()) {
-        LayerManager().addLayer(tiffLayer);
+      WorldImageSource worldLayer = WorldImageSource(filePath);
+      await worldLayer.load(context);
+      if (worldLayer.hasData()) {
+        LayerManager().addLayer(worldLayer);
         return true;
       }
     }

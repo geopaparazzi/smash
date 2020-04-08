@@ -34,6 +34,15 @@ class FileUtilities {
     }
   }
 
+  static String getExtension(String filePath) {
+    var lastDot = filePath.lastIndexOf(".");
+    if (lastDot > 0) {
+      return filePath.substring(lastDot + 1);
+    } else {
+      return null;
+    }
+  }
+
   static String parentFolderFromFile(String filePath) {
     return dirname(filePath);
   }

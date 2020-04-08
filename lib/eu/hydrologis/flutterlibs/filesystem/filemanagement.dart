@@ -19,7 +19,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 class FileManager {
   static const ALLOWED_PROJECT_EXT = [GEOPAPARAZZI_EXT];
   static const ALLOWED_VECTOR_DATA_EXT = [GPX_EXT, GEOPACKAGE_EXT];
-  static const ALLOWED_RASTER_DATA_EXT = [TIFF_EXT];
+  static const ALLOWED_RASTER_DATA_EXT = [TIF_EXT, JPG_EXT, PNG_EXT];
   static const ALLOWED_TILE_DATA_EXT = [
     GEOPACKAGE_EXT,
     MBTILES_EXT,
@@ -29,7 +29,13 @@ class FileManager {
 
   static const GEOPAPARAZZI_EXT = "gpap";
   static const GPX_EXT = "gpx";
-  static const TIFF_EXT = "tiff";
+  static const TIF_EXT = "tiff";
+  static const TIF_WLD_EXT = "tfw";
+  static const JPG_EXT = "jpg";
+  static const JPG_WLD_EXT = "jgw";
+  static const PNG_EXT = "png";
+  static const PNG_WLD_EXT = "pgw";
+
   static const GEOPACKAGE_EXT = "gpkg";
   static const MAPSFORGE_EXT = "map";
   static const MAPURL_EXT = "mapurl";
@@ -52,7 +58,7 @@ class FileManager {
     }
     return false;
   }
-  
+
   static bool isRasterdataFile(String path) {
     for (var ext in ALLOWED_RASTER_DATA_EXT) {
       if (path.toLowerCase().endsWith(ext)) return true;
@@ -75,9 +81,12 @@ class FileManager {
   static bool isGpx(String path) {
     return path != null && path.toLowerCase().endsWith(GPX_EXT);
   }
-  
-  static bool isTiff(String path) {
-    return path != null && path.toLowerCase().endsWith(TIFF_EXT);
+
+  static bool isWorldImage(String path) {
+    return path != null &&
+        (path.toLowerCase().endsWith(TIF_EXT) ||
+            path.toLowerCase().endsWith(JPG_EXT) ||
+            path.toLowerCase().endsWith(PNG_EXT));
   }
 
   static bool isGeopackage(String path) {
