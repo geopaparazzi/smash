@@ -75,20 +75,21 @@ class WorldImageSource extends RasterLayerSource {
 
   Future<void> load(BuildContext context) async {
     if (!loaded) {
-      print("LOAD TIFF");
+      // print("LOAD WORLD FILE");
       _name = FileUtilities.nameFromFile(_absolutePath, false);
       File imageFile = new File(_absolutePath);
 
       var ext = FileUtilities.getExtension(_absolutePath);
       IMG.Image _decodedImage;
+        var bytes = imageFile.readAsBytesSync();
       if (ext == FileManager.JPG_EXT) {
-        _decodedImage = IMG.decodeJpg(imageFile.readAsBytesSync());
-        _memoryImage = MemoryImage(IMG.encodeJpg(_decodedImage));
+        _decodedImage = IMG.decodeJpg(bytes);
+        _memoryImage = MemoryImage(bytes);
       } else if (ext == FileManager.PNG_EXT) {
-        _decodedImage = IMG.decodePng(imageFile.readAsBytesSync());
-        _memoryImage = MemoryImage(IMG.encodePng(_decodedImage));
+        _decodedImage = IMG.decodePng(bytes);
+        _memoryImage = MemoryImage(bytes);
       } else if (ext == FileManager.TIF_EXT) {
-        _decodedImage = IMG.decodeTiff(imageFile.readAsBytesSync());
+        _decodedImage = IMG.decodeTiff(bytes);
         _memoryImage = MemoryImage(IMG.encodePng(_decodedImage));
       }
 
