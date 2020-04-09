@@ -30,12 +30,12 @@ class WorldImageSource extends RasterLayerSource {
   MemoryImage _memoryImage;
 
   WorldImageSource.fromMap(Map<String, dynamic> map) {
-    String relativePath = map['file'];
+    String relativePath = map[LAYERSKEY_FILE];
     _name = FileUtilities.nameFromFile(relativePath, false);
     _absolutePath = Workspace.makeAbsolute(relativePath);
-    isVisible = map['isvisible'];
+    isVisible = map[LAYERSKEY_ISVISIBLE ];
 
-    opacityPercentage = map['opacity'] ?? 100;
+    opacityPercentage = map[LAYERSKEY_OPACITY] ?? 100;
   }
 
   WorldImageSource(this._absolutePath);
@@ -146,10 +146,10 @@ class WorldImageSource extends RasterLayerSource {
     var relativePath = Workspace.makeRelative(_absolutePath);
     var json = '''
     {
-        "label": "$_name",
-        "file":"$relativePath",
-        "isvisible": $isVisible,
-        "opacity": $opacityPercentage
+        "$LAYERSKEY_LABEL": "$_name",
+        "$LAYERSKEY_FILE":"$relativePath",
+        "$LAYERSKEY_ISVISIBLE": $isVisible,
+        "$LAYERSKEY_OPACITY": $opacityPercentage
     }
     ''';
     return json;

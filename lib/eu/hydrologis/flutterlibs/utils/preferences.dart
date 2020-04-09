@@ -280,16 +280,4 @@ class GpPreferences {
         KEY_VECTORLAYERINFO_LIST, vectorlayerInfoList);
   }
 
-  Future<List<String>> getMbtilesFilesList() async {
-    await _checkPreferences();
-    var list = _preferences.getStringList(KEY_MBTILES_LIST);
-    if (list == null) list = [];
-    return list;
-  }
-
-  void setMbtilesFilesList(List<String> mbtilesList) async {
-    await _checkPreferences();
-    if (mbtilesList == null) mbtilesList = [];
-    await _preferences.setStringList(KEY_MBTILES_LIST, mbtilesList);
-  }
 }

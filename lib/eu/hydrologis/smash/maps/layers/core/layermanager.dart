@@ -12,8 +12,6 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 
-
-
 class LayerManager {
   static final LayerManager _instance = LayerManager._internal();
 
@@ -22,8 +20,9 @@ class LayerManager {
   List<LayerSource> _baseLayers = onlinesTilesSources;
   List<LayerSource> _vectorLayers = [];
 
-  LayerManager._internal() {}
+  LayerManager._internal();
 
+  /// Initialize the LayerManager by retrieving the layers from teh preferences.
   Future<void> initialize() async {
     List<String> blList = await GpPreferences().getBaseLayerInfoList();
     if (blList.isNotEmpty) {
@@ -45,26 +44,25 @@ class LayerManager {
     }
   }
 
-  List<LayerSource> getActiveLayers() {
+  /// Get the list of layer sources. 
+  /// 
+  /// By default only the active list is supplied.
+  List<LayerSource> getLayers({onlyActive: true}) {
     var list = <LayerSource>[];
-    List<LayerSource> where = _baseLayers.where((ts) {
-      if (ts.isActive()) {
-        String file = ts.getAbsolutePath();
-        if (file != null && file.isNotEmpty) {
-          if (!File(file).existsSync()) {
-            return false;
-          }
-        }
-        return true;
-      }
-      return false;
-    }).toList();
-    if (where.isNotEmpty) list.addAll(where.toList());
-    where = _vectorLayers.where((ts) => ts.isActive()).toList();
-    if (where.isNotEmpty) list.addAll(where.toList());
+    if (onlyActive) {
+      var activeBaseLayers = getActiveBaseLayers();
+      list.addAll(activeBaseLayers);
+      List<LayerSource> where =
+          _vectorLayers.where((ts) => ts.isActive()).toList();
+      if (where.isNotEmpty) list.addAll(where.toList());
+    } else {
+      list.addAll(_baseLayers);
+      list.addAll(_vectorLayers);
+    }
     return list;
   }
 
+  /// Get the list of active base layer sources.
   List<LayerSource> getActiveBaseLayers() {
     var list = <LayerSource>[];
     List<LayerSource> where = _baseLayers.where((ts) {
@@ -83,6 +81,7 @@ class LayerManager {
     return list;
   }
 
+  /// Add a new layersource to the layer list.
   void addLayer(LayerSource layerData) {
     if ((layerData is TileSource || layerData is WorldImageSource) &&
         !_baseLayers.contains(layerData)) {
@@ -93,13 +92,7 @@ class LayerManager {
     }
   }
 
-  List<LayerSource> getAllLayers() {
-    var list = <LayerSource>[];
-    list.addAll(_baseLayers);
-    list.addAll(_vectorLayers);
-    return list;
-  }
-
+  /// Remove a layersource form the available layers list.
   void removeLayerSource(LayerSource sourceItem) {
     sourceItem.disposeSource();
     if (_baseLayers.contains(sourceItem)) {
@@ -110,4 +103,3 @@ class LayerManager {
     }
   }
 }
-

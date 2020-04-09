@@ -17,16 +17,6 @@ import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 
 /// Handler ov everything related to files supported in SMASH.
 class FileManager {
-  static const ALLOWED_PROJECT_EXT = [GEOPAPARAZZI_EXT];
-  static const ALLOWED_VECTOR_DATA_EXT = [GPX_EXT, GEOPACKAGE_EXT];
-  static const ALLOWED_RASTER_DATA_EXT = [TIF_EXT, JPG_EXT, PNG_EXT];
-  static const ALLOWED_TILE_DATA_EXT = [
-    GEOPACKAGE_EXT,
-    MBTILES_EXT,
-    MAPSFORGE_EXT,
-    MAPURL_EXT
-  ];
-
   static const GEOPAPARAZZI_EXT = "gpap";
   static const GPX_EXT = "gpx";
   static const TIF_EXT = "tiff";
@@ -40,6 +30,17 @@ class FileManager {
   static const MAPSFORGE_EXT = "map";
   static const MAPURL_EXT = "mapurl";
   static const MBTILES_EXT = "mbtiles";
+
+  static const ALLOWED_PROJECT_EXT = [GEOPAPARAZZI_EXT];
+  static const ALLOWED_VECTOR_DATA_EXT = [GPX_EXT, GEOPACKAGE_EXT];
+  static const ALLOWED_RASTER_DATA_EXT = [TIF_EXT, JPG_EXT, PNG_EXT];
+  static const ALLOWED_TILE_DATA_EXT = [
+    GEOPACKAGE_EXT,
+    MBTILES_EXT,
+    MAPSFORGE_EXT,
+    MAPURL_EXT
+  ];
+
 
   static bool isProjectFile(String path) {
     return path.toLowerCase().endsWith(ALLOWED_PROJECT_EXT[0]);

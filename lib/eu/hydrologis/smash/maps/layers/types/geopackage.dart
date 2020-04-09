@@ -47,10 +47,10 @@ class GeopackageSource extends VectorLayerSource {
   GeopackageDb db;
 
   GeopackageSource.fromMap(Map<String, dynamic> map) {
-    _tableName = map['label'];
-    String relativePath = map['file'];
+    _tableName = map[LAYERSKEY_LABEL];
+    String relativePath = map[LAYERSKEY_FILE];
     _absolutePath = Workspace.makeAbsolute(relativePath);
-    isVisible = map['isvisible'];
+    isVisible = map[LAYERSKEY_ISVISIBLE];
   }
 
   GeopackageSource(this._absolutePath, this._tableName);
@@ -62,7 +62,7 @@ class GeopackageSource extends VectorLayerSource {
       bool loadOnlyVisible =
           GpPreferences().getBooleanSync(KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
 
-      Envelope limitBounds = null;
+      Envelope limitBounds;
       if (loadOnlyVisible) {
         var mapState = Provider.of<SmashMapState>(context);
         if (mapState.mapController != null) {
@@ -131,10 +131,10 @@ class GeopackageSource extends VectorLayerSource {
     var relativePath = Workspace.makeRelative(_absolutePath);
     var json = '''
     {
-        "label": "$_tableName",
-        "file":"$relativePath",
-        "isVector": true,
-        "isvisible": $isVisible 
+        "$LAYERSKEY_LABEL": "$_tableName",
+        "$LAYERSKEY_FILE":"$relativePath",
+        "$LAYERSKEY_ISVECTOR": true,
+        "$LAYERSKEY_ISVISIBLE": $isVisible 
     }
     ''';
     return json;

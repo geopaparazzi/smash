@@ -547,7 +547,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
   }
 
   Future<void> reloadLayers() async {
-    List<LayerSource> activeLayersInfos = LayerManager().getActiveLayers();
+    List<LayerSource> activeLayersInfos = LayerManager().getLayers();
     _activeLayers = [];
 
     List<LayerOptions> listTmp = [];

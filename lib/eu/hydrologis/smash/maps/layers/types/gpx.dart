@@ -37,10 +37,10 @@ class GpxSource extends VectorLayerSource {
   bool loaded = false;
 
   GpxSource.fromMap(Map<String, dynamic> map) {
-    _name = map['label'];
-    String relativePath = map['file'];
+    _name = map[LAYERSKEY_LABEL];
+    String relativePath = map[LAYERSKEY_FILE];
     _absolutePath = Workspace.makeAbsolute(relativePath);
-    isVisible = map['isvisible'];
+    isVisible = map[LAYERSKEY_ISVISIBLE];
   }
 
   GpxSource(this._absolutePath);
@@ -127,9 +127,9 @@ class GpxSource extends VectorLayerSource {
     var relativePath = Workspace.makeRelative(_absolutePath);
     var json = '''
     {
-        "label": "$_name",
-        "file":"$relativePath",
-        "isvisible": $isVisible 
+        "$LAYERSKEY_LABEL": "$_name",
+        "$LAYERSKEY_FILE":"$relativePath",
+        "$LAYERSKEY_ISVISIBLE": $isVisible 
     }
     ''';
     return json;

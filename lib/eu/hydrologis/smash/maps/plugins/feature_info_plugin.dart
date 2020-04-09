@@ -111,7 +111,7 @@ class FeatureInfoLayer extends StatelessWidget {
     var boundsGeom = GeometryUtilities.fromEnvelope(env, makeCircle: true);
 
     List<LayerSource> visibleVectorLayers = LayerManager()
-        .getActiveLayers()
+        .getLayers()
         .where((l) => l is VectorLayerSource && l.isActive())
         .toList();
     QueryResult totalQueryResult = QueryResult();

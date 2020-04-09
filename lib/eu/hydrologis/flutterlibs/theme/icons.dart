@@ -50,7 +50,7 @@ const List<String> DEFAULT_NOTES_ICONDATA = [
 ];
 
 class SmashIcons {
-  static IconData simpleNotesIcon= MdiIcons.note;
+  static IconData simpleNotesIcon = MdiIcons.note;
   static IconData formNotesIcon = MdiIcons.notePlus;
   static IconData imagesNotesIcon = MdiIcons.image;
   static IconData logIcon = MdiIcons.vectorPolyline;
@@ -66,7 +66,9 @@ class SmashIcons {
 
   /// Get the right icon for a given path or url or file name  or extension.
   static IconData forPath(String pathOrUrlOrNameOrExtension) {
-    if (pathOrUrlOrNameOrExtension.endsWith(FileManager.MAPSFORGE_EXT)) {
+    if (pathOrUrlOrNameOrExtension.toLowerCase().startsWith("http")) {
+      return MdiIcons.earth;
+    } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.MAPSFORGE_EXT)) {
       return MdiIcons.map;
     } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.GPX_EXT)) {
       return MdiIcons.mapMarker;
@@ -74,21 +76,20 @@ class SmashIcons {
       return MdiIcons.checkerboard;
     } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.MAPURL_EXT)) {
       return MdiIcons.checkerboard;
-    } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.GEOPACKAGE_EXT)) {
+    } else if (FileManager.isWorldImage(pathOrUrlOrNameOrExtension)) {
+      return MdiIcons.checkerboard;
+    } else if (pathOrUrlOrNameOrExtension
+        .endsWith(FileManager.GEOPACKAGE_EXT)) {
       return MdiIcons.packageVariant;
-    } else if (pathOrUrlOrNameOrExtension.endsWith(FileManager.GEOPAPARAZZI_EXT)) {
+    } else if (pathOrUrlOrNameOrExtension
+        .endsWith(FileManager.GEOPAPARAZZI_EXT)) {
       return MdiIcons.database;
     } else if (FileSystemEntity.isDirectorySync(pathOrUrlOrNameOrExtension)) {
       return MdiIcons.folderOutline;
-    } else if (pathOrUrlOrNameOrExtension.toLowerCase().startsWith("http")) {
-      return MdiIcons.earth;
     } else {
       return MdiIcons.fileOutline;
     }
   }
-
-
-
 }
 
 IconData getIcon(String key) {
@@ -116,7 +117,8 @@ class IconsWidgetState extends State<IconsWidget> {
 
   @override
   void initState() {
-    chosenIconsList.addAll(GpPreferences().getStringListSync(KEY_ICONS_LIST, DEFAULT_NOTES_ICONDATA));
+    chosenIconsList.addAll(GpPreferences()
+        .getStringListSync(KEY_ICONS_LIST, DEFAULT_NOTES_ICONDATA));
 
     MdiIcons.getIconsName().forEach((name) {
       _completeList.add([name, MdiIcons.fromString(name)]);
@@ -183,7 +185,8 @@ class IconsWidgetState extends State<IconsWidget> {
                     labelText: "Search icon by name",
                     hintText: "Search icon by name",
                     prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
               ),
             ),
             Expanded(

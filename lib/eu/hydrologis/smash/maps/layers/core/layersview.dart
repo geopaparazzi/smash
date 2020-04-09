@@ -45,7 +45,7 @@ class LayersPageState extends State<LayersPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<LayerSource> _layersList = LayerManager().getAllLayers();
+    List<LayerSource> _layersList = LayerManager().getLayers(onlyActive: false);
 
     return WillPopScope(
         onWillPop: () async {
@@ -188,7 +188,7 @@ class LayersPageState extends State<LayersPage> {
     List<String> baseLayers = [];
     List<String> vectorLayers = [];
     _layersList.forEach((layer) {
-      if (layer is TileSource) {
+      if (layer is TileSource || layer is RasterLayerSource) {
         baseLayers.add(layer.toJson());
       }
       if (layer is VectorLayerSource) {
