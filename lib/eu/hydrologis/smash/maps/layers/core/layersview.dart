@@ -175,42 +175,71 @@ class LayersPageState extends State<LayersPage> {
             color: SmashColors.mainDecorations,
             size: SmashUI.MEDIUM_ICON_SIZE,
           ),
-          trailing: Checkbox(
-              value: layerSourceItem.isActive(),
-              onChanged: (isVisible) async {
-                layerSourceItem.setActive(isVisible);
-                _somethingChanged = true;
-                setState(() {});
-              }),
-          title: Text('${layerSourceItem.getName()}'),
-          subtitle: Text('${layerSourceItem.getAttribution()}'),
-          // onLongPress: () async {
-          //   LatLngBounds bb = await layerSourceItem.getBounds();
-          //   if (bb != null) {
-          //     setLayersOnChange(_layersList);
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              layerSourceItem.isZoomable()
+                  ? IconButton(
+                      icon: Icon(MdiIcons.magnifyScan,
+                          color: SmashColors.mainDecorations),
+                      onPressed: () async {
+                        LatLngBounds bb = await layerSourceItem.getBounds();
+                        if (bb != null) {
+                          setLayersOnChange(_layersList);
 
-          //     SmashMapState mapState =
-          //         Provider.of<SmashMapState>(context, listen: false);
-          //     mapState.setBounds(
-          //         new Envelope(bb.west, bb.east, bb.south, bb.north));
-          //     Navigator.of(context).pop();
-          //   }
-          // },
-          onTap: () async {
-            if (layerSourceItem is GpxSource) {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          GpxPropertiesWidget(layerSourceItem)));
-            } else if (layerSourceItem is WorldImageSource) {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          TiffPropertiesWidget(layerSourceItem)));
-            }
-          },
+                          SmashMapState mapState = Provider.of<SmashMapState>(
+                              context,
+                              listen: false);
+                          mapState.setBounds(new Envelope(
+                              bb.west, bb.east, bb.south, bb.north));
+                          Navigator.of(context).pop();
+                        }
+                      })
+                  : Container(),
+              layerSourceItem.hasProperties()
+                  ? IconButton(
+                      icon: Icon(MdiIcons.palette,
+                          color: SmashColors.mainDecorations),
+                      onPressed: () async {
+                        if (layerSourceItem is GpxSource) {
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      GpxPropertiesWidget(layerSourceItem)));
+                        } else if (layerSourceItem is WorldImageSource) {
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      TiffPropertiesWidget(layerSourceItem)));
+                        } else if (layerSourceItem is TileSource) {
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      TileSourcePropertiesWidget(
+                                          layerSourceItem)));
+                        }
+                      })
+                  : Container(),
+              Checkbox(
+                  value: layerSourceItem.isActive(),
+                  onChanged: (isVisible) async {
+                    layerSourceItem.setActive(isVisible);
+                    _somethingChanged = true;
+                    setState(() {});
+                  }),
+            ],
+          ),
+          title: SingleChildScrollView(
+            child: Text('${layerSourceItem.getName()}'),
+            scrollDirection: Axis.horizontal,
+          ),
+          subtitle: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text('${layerSourceItem.getAttribution()}'),
+          ),
         ),
       );
     }).toList();

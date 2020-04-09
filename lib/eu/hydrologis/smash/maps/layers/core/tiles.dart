@@ -14,6 +14,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/mapsforge.dart';
@@ -31,6 +33,9 @@ class TileSource extends LayerSource {
   bool isVisible = true;
   bool isTms = false;
   bool isWms = false;
+  double opacityPercentage = 100;
+
+  bool canDoProperties = false;
 
   TileSource({
     this.name,
@@ -42,6 +47,7 @@ class TileSource extends LayerSource {
     this.subdomains: const <String>[],
     this.isVisible: true,
     this.isTms: false,
+    this.opacityPercentage: 100,
   });
 
   TileSource.fromMap(Map<String, dynamic> map) {
@@ -55,11 +61,13 @@ class TileSource extends LayerSource {
     this.maxZoom = map[LAYERSKEY_MAXZOOM];
     this.attribution = map[LAYERSKEY_ATTRIBUTION];
     this.isVisible = map[LAYERSKEY_ISVISIBLE];
+    this.opacityPercentage = map[LAYERSKEY_OPACITY] ?? 100;
 
     var subDomains = map['subdomains'] as String;
     if (subDomains != null) {
       this.subdomains = subDomains.split(",");
     }
+    getBounds();
   }
 
   TileSource.Open_Street_Map_Standard({
@@ -71,6 +79,7 @@ class TileSource extends LayerSource {
     this.subdomains: const ['a', 'b', 'c'],
     this.isVisible: true,
     this.isTms: false,
+    this.canDoProperties = true,
   });
 
   TileSource.Open_Stree_Map_Cicle({
@@ -80,6 +89,7 @@ class TileSource extends LayerSource {
     this.minZoom: 0,
     this.maxZoom: 19,
     this.isVisible: true,
+    this.canDoProperties = true,
   });
 
   TileSource.Open_Street_Map_HOT({
@@ -90,6 +100,7 @@ class TileSource extends LayerSource {
     this.maxZoom: 19,
     this.isVisible: true,
     this.isTms: false,
+    this.canDoProperties = true,
   });
 
   TileSource.Stamen_Watercolor({
@@ -101,6 +112,7 @@ class TileSource extends LayerSource {
     this.maxZoom: 20,
     this.isVisible: true,
     this.isTms: false,
+    this.canDoProperties = true,
   });
 
   TileSource.Wikimedia_Map({
@@ -111,6 +123,7 @@ class TileSource extends LayerSource {
     this.maxZoom: 20,
     this.isVisible: true,
     this.isTms: false,
+    this.canDoProperties = true,
   });
 
   TileSource.Esri_Satellite({
@@ -122,6 +135,7 @@ class TileSource extends LayerSource {
     this.maxZoom: 19,
     this.isVisible: true,
     this.isTms: true,
+    this.canDoProperties = true,
   });
 
   TileSource.Mapsforge(String filePath) {
@@ -133,6 +147,7 @@ class TileSource extends LayerSource {
     this.maxZoom = 22;
     this.isVisible = true;
     this.isTms = false;
+    this.canDoProperties = true;
   }
 
   TileSource.Mapurl(String filePath) {
@@ -181,6 +196,7 @@ class TileSource extends LayerSource {
     this.maxZoom = maxZoom;
     this.isVisible = true;
     this.isTms = type == "tms";
+    this.canDoProperties = true;
   }
 
   TileSource.Mbtiles(String filePath) {
@@ -191,6 +207,8 @@ class TileSource extends LayerSource {
     this.maxZoom = 22;
     this.isVisible = true;
     this.isTms = true;
+    this.canDoProperties = true;
+    getBounds();
   }
 
   TileSource.Geopackage(String filePath, String tableName) {
@@ -201,6 +219,8 @@ class TileSource extends LayerSource {
     this.maxZoom = 22;
     this.isVisible = true;
     this.isTms = true;
+    this.canDoProperties = false;
+    getBounds();
   }
 
   String getAbsolutePath() {
@@ -228,22 +248,22 @@ class TileSource extends LayerSource {
   }
 
   Future<LatLngBounds> getBounds() async {
-    if (FileManager.isMapsforge(getAbsolutePath())) {
-      return await getMapsforgeBounds(File(absolutePath));
-    } else if (FileManager.isMbtiles(getAbsolutePath())) {
-      var prov = SmashMBTilesImageProvider(File(absolutePath));
-      await prov.open();
-      var bounds = prov.bounds;
-      prov.dispose();
-      return bounds;
-    } else if (FileManager.isGeopackage(getAbsolutePath())) {
-      var prov = GeopackageImageProvider(File(absolutePath), name);
-      await prov.open();
-      var bounds = prov.bounds;
-      prov.dispose();
-      return bounds;
+    if (bounds == null) {
+      if (FileManager.isMapsforge(getAbsolutePath())) {
+        bounds = await getMapsforgeBounds(File(absolutePath));
+      } else if (FileManager.isMbtiles(getAbsolutePath())) {
+        var prov = SmashMBTilesImageProvider(File(absolutePath));
+        await prov.open();
+        bounds = prov.bounds;
+        prov.dispose();
+      } else if (FileManager.isGeopackage(getAbsolutePath())) {
+        var prov = GeopackageImageProvider(File(absolutePath), name);
+        await prov.open();
+        bounds = prov.bounds;
+        prov.dispose();
+      }
     }
-    return null;
+    return bounds;
   }
 
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
@@ -258,9 +278,10 @@ class TileSource extends LayerSource {
           tileProvider: mapsforgeTileProvider,
           tileSize: tileSize,
           keepBuffer: 2,
-          backgroundColor: Colors.white.withOpacity(0),
           maxZoom: 21,
           tms: isTms,
+          backgroundColor: Colors.transparent,
+          opacity: opacityPercentage / 100.0,
         )
       ];
     } else if (FileManager.isMbtiles(getAbsolutePath())) {
@@ -271,8 +292,9 @@ class TileSource extends LayerSource {
         TileLayerOptions(
           tileProvider: tileProvider,
           maxZoom: maxZoom.toDouble(),
-          backgroundColor: Colors.white.withOpacity(0),
           tms: true,
+          backgroundColor: Colors.transparent,
+          opacity: opacityPercentage / 100.0,
         )
       ];
     } else if (FileManager.isGeopackage(getAbsolutePath())) {
@@ -282,8 +304,9 @@ class TileSource extends LayerSource {
         TileLayerOptions(
           tileProvider: tileProvider,
           maxZoom: maxZoom.toDouble(),
-          backgroundColor: Colors.white.withOpacity(0),
           tms: true,
+          backgroundColor: Colors.transparent,
+          opacity: opacityPercentage / 100.0,
         )
       ];
     } else if (isOnlineService()) {
@@ -294,7 +317,8 @@ class TileSource extends LayerSource {
               baseUrl: url,
               layers: [name],
             ),
-            backgroundColor: Colors.white.withOpacity(0),
+            backgroundColor: Colors.transparent,
+            opacity: opacityPercentage / 100.0,
             maxZoom: maxZoom.toDouble(),
           )
         ];
@@ -303,7 +327,8 @@ class TileSource extends LayerSource {
           TileLayerOptions(
             tms: isTms,
             urlTemplate: url,
-            backgroundColor: Colors.white.withOpacity(0),
+            backgroundColor: Colors.transparent,
+            opacity: opacityPercentage / 100.0,
             maxZoom: maxZoom.toDouble(),
             subdomains: subdomains,
           )
@@ -332,7 +357,8 @@ class TileSource extends LayerSource {
         $urlLine
         "$LAYERSKEY_MINZOOM": $minZoom,
         "$LAYERSKEY_MAXZOOM": $maxZoom,
-        "$LAYERSKEY_ATTRIBUTION: "$attribution",
+        "$LAYERSKEY_OPACITY": $opacityPercentage,
+        "$LAYERSKEY_ATTRIBUTION": "$attribution",
         "$LAYERSKEY_TYPE": "$LAYERSTYPE_TMS",
         "$LAYERSKEY_ISVISIBLE": $isVisible ${subdomains.isNotEmpty ? "," : ""}
         ${subdomains.isNotEmpty ? "\"subdomains\": \"${subdomains.join(',')}\"" : ""}
@@ -344,5 +370,108 @@ class TileSource extends LayerSource {
   @override
   void disposeSource() {
     ConnectionsHandler().close(getAbsolutePath(), tableName: getName());
+  }
+
+  @override
+  bool hasProperties() {
+    return canDoProperties;
+  }
+
+  @override
+  bool isZoomable() {
+    return bounds != null;
+  }
+}
+
+/// The tiff properties page.
+class TileSourcePropertiesWidget extends StatefulWidget {
+  TileSource _source;
+  TileSourcePropertiesWidget(this._source);
+
+  @override
+  State<StatefulWidget> createState() {
+    return TileSourcePropertiesWidgetState(_source);
+  }
+}
+
+class TileSourcePropertiesWidgetState
+    extends State<TileSourcePropertiesWidget> {
+  TileSource _source;
+  double _opacitySliderValue = 100;
+  bool _somethingChanged = false;
+
+  TileSourcePropertiesWidgetState(this._source);
+
+  @override
+  void initState() {
+    _opacitySliderValue = _source.opacityPercentage;
+    if (_opacitySliderValue > 100) {
+      _opacitySliderValue = 100;
+    }
+    if (_opacitySliderValue < 0) {
+      _opacitySliderValue = 0;
+    }
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+        onWillPop: () async {
+          if (_somethingChanged) {
+            _source.opacityPercentage = _opacitySliderValue;
+          }
+          return true;
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Tile Properties"),
+          ),
+          body: Center(
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Card(
+                    elevation: SmashUI.DEFAULT_ELEVATION,
+                    shape: SmashUI.defaultShapeBorder(),
+                    child: Column(
+                      children: <Widget>[
+                        SmashUI.titleText("Opacity"),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Flexible(
+                                flex: 1,
+                                child: Slider(
+                                  activeColor: SmashColors.mainSelection,
+                                  min: 0.0,
+                                  max: 100,
+                                  divisions: 10,
+                                  onChanged: (newRating) {
+                                    _somethingChanged = true;
+                                    setState(
+                                        () => _opacitySliderValue = newRating);
+                                  },
+                                  value: _opacitySliderValue,
+                                )),
+                            Container(
+                              width: 50.0,
+                              alignment: Alignment.center,
+                              child: SmashUI.normalText(
+                                '${_opacitySliderValue.toInt()}',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }

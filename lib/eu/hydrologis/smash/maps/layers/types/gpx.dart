@@ -214,6 +214,16 @@ class GpxSource extends VectorLayerSource {
     _absolutePath = null;
     loaded = false;
   }
+
+  @override
+  bool hasProperties() {
+    return true;
+  }
+
+  @override
+  bool isZoomable() {
+    return true;
+  }
 }
 
 /// The notes properties page.

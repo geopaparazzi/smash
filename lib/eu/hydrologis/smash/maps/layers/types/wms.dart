@@ -17,6 +17,7 @@ class WmsSource extends RasterLayerSource {
   String imageFormat;
   bool isVisible = true;
   LatLngBounds _serviceBounds = LatLngBounds();
+  bool _hasBounds = false;
   String attribution = "";
 
   bool loaded = false;
@@ -28,6 +29,8 @@ class WmsSource extends RasterLayerSource {
     opacityPercentage = map[LAYERSKEY_OPACITY] ?? 100;
     imageFormat = map[LAYERSKEY_FORMAT] ?? LAYERSTYPE_FORMAT_JPG;
     attribution = map[LAYERSKEY_ATTRIBUTION] ?? "";
+
+    // TODO get bounds
   }
 
   WmsSource(this._getCapabilitiesUrl, this._layerName,
@@ -107,6 +110,16 @@ class WmsSource extends RasterLayerSource {
 
   @override
   void disposeSource() {
+  }
+
+  @override
+  bool hasProperties() {
+    return true;
+  }
+
+  @override
+  bool isZoomable() {
+    return _hasBounds;
   }
 }
 

@@ -256,17 +256,31 @@ class GeopackageSource extends VectorLayerSource {
 
   @override
   Future<LatLngBounds> getBounds() {
-    var s = _tableBounds.getMinY();
-    var n = _tableBounds.getMaxY();
-    var w = _tableBounds.getMinX();
-    var e = _tableBounds.getMaxX();
-    LatLngBounds b = LatLngBounds(LatLng(s, w), LatLng(n, e));
-    return Future.value(b);
+    if (_tableBounds != null) {
+      var s = _tableBounds.getMinY();
+      var n = _tableBounds.getMaxY();
+      var w = _tableBounds.getMinX();
+      var e = _tableBounds.getMaxX();
+      LatLngBounds b = LatLngBounds(LatLng(s, w), LatLng(n, e));
+      return Future.value(b);
+    } else {
+      Future.value(null);
+    }
   }
 
   @override
   void disposeSource() {
     ConnectionsHandler().close(getAbsolutePath(), tableName: getName());
+  }
+
+  @override
+  bool hasProperties() {
+    return false; // TODO at the moment they are fixed.
+  }
+
+  @override
+  bool isZoomable() {
+    return _tableBounds != null;
   }
 }
 

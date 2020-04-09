@@ -69,6 +69,12 @@ abstract class LayerSource {
     return getUrl() != null;
   }
 
+  /// Return true if the layersource supports zooming to bounds.
+  bool isZoomable();
+
+  /// Returns true if the layersource can be styled or configured.
+  bool hasProperties();
+
   /// Convert the source to json for persistence.
   String toJson();
 

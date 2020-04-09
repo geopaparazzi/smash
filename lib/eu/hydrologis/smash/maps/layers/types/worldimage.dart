@@ -186,6 +186,16 @@ class WorldImageSource extends RasterLayerSource {
     loaded = false;
     _memoryImage = null;
   }
+
+  @override
+  bool hasProperties() {
+    return true;
+  }
+
+  @override
+  bool isZoomable() {
+    return true;
+  }
 }
 
 /// The tiff properties page.
