@@ -18,7 +18,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/tables.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/screen.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 
 class FeatureAttributesViewer extends StatefulWidget {
   final QueryResult features;

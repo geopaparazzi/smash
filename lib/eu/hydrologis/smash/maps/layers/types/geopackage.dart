@@ -5,20 +5,28 @@
  */
 
 import 'dart:core';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as UI;
 
 import 'package:dart_jts/dart_jts.dart' hide Polygon;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers.dart';
+import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 class GeopackageSource extends VectorLayerSource {
   static final bool DO_RTREE_CHECK = false;
@@ -259,6 +267,132 @@ class GeopackageSource extends VectorLayerSource {
   @override
   void disposeSource() {
     ConnectionsHandler().close(getAbsolutePath(), tableName: getName());
+  }
+}
+
+class GeopackageImageProvider extends TileProvider {
+  final File geopackageFile;
+  final String tableName;
+
+  GeopackageDb _loadedDb;
+  bool isDisposed = true;
+  LatLngBounds _bounds;
+  Uint8List _emptyImageBytes;
+
+  GeopackageImageProvider(this.geopackageFile, this.tableName);
+
+  Future<GeopackageDb> open() async {
+    if (_loadedDb == null || !_loadedDb.isOpen()) {
+      var ch = ConnectionsHandler();
+      _loadedDb = await ch.open(geopackageFile.path, tableName: tableName);
+    }
+    if (isDisposed) {
+      await _loadedDb.openOrCreate();
+
+      try {
+        TileEntry tile = await _loadedDb.tile(tableName);
+        Envelope bounds = tile.getBounds();
+        Envelope bounds4326 = MercatorUtils.convert3857To4326Env(bounds);
+        var w = bounds4326.getMinX();
+        var e = bounds4326.getMaxX();
+        var s = bounds4326.getMinY();
+        var n = bounds4326.getMaxY();
+
+        LatLngBounds b = LatLngBounds();
+        b.extend(LatLng(s, w));
+        b.extend(LatLng(n, e));
+        _bounds = b;
+
+        ByteData imageData = await rootBundle.load('assets/emptytile256.png');
+        _emptyImageBytes = imageData.buffer.asUint8List();
+
+//        UI.Image _emptyImage = await ImageWidgetUtilities.transparentImage();
+//        var byteData = await _emptyImage.toByteData(format: UI.ImageByteFormat.png);
+//        _emptyImageBytes = byteData.buffer.asUint8List();
+
+      } catch (e) {
+        GpLogger().err("Error getting geopackage bounds or empty image.", e);
+      }
+
+      isDisposed = false;
+    }
+
+    return _loadedDb;
+  }
+
+  LatLngBounds get bounds => this._bounds;
+
+  @override
+  void dispose() {
+    // dispose of db connections is done when layers are removed
+  }
+
+  @override
+  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
+    var x = coords.x.round();
+    var y = options.tms
+        ? invertY(coords.y.round(), coords.z.round())
+        : coords.y.round();
+    var z = coords.z.round();
+
+    return GeopackageImage(geopackageFile.path, tableName,
+        Coords<int>(x, y)..z = z, _emptyImageBytes);
+  }
+}
+
+class GeopackageImage extends ImageProvider<GeopackageImage> {
+  final String databasePath;
+  String tableName;
+  final Coords<int> coords;
+  Uint8List _emptyImageBytes;
+
+  GeopackageImage(
+      this.databasePath, this.tableName, this.coords, this._emptyImageBytes);
+
+  @override
+  ImageStreamCompleter load(GeopackageImage key, DecoderCallback decoder) {
+    // TODo check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
+    return MultiFrameImageStreamCompleter(
+        codec: _loadAsync(key),
+        scale: 1,
+        informationCollector: () sync* {
+          yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+          yield DiagnosticsProperty<ImageProvider>('Image key', key);
+        });
+  }
+
+  Future<UI.Codec> _loadAsync(GeopackageImage key) async {
+    assert(key == this);
+
+    final db = await ConnectionsHandler()
+        .open(key.databasePath, tableName: key.tableName);
+    var tileBytes = await db.getTile(tableName, coords.x, coords.y, coords.z);
+    if (tileBytes != null) {
+      Uint8List bytes = tileBytes;
+      return await PaintingBinding.instance.instantiateImageCodec(bytes);
+    } else {
+      // TODO get from other zoomlevels
+      if (_emptyImageBytes != null) {
+        var bytes = _emptyImageBytes;
+        return await PaintingBinding.instance.instantiateImageCodec(bytes);
+      } else {
+        return Future<UI.Codec>.error(
+            'Failed to load tile for coords: $coords');
+      }
+    }
+  }
+
+  @override
+  Future<GeopackageImage> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture(this);
+  }
+
+  @override
+  int get hashCode => coords.hashCode;
+
+  @override
+  bool operator ==(other) {
+    return other is GeopackageImage && coords == other.coords;
   }
 }
 

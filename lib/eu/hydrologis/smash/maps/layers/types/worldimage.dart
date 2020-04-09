@@ -18,7 +18,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
 class WorldImageSource extends RasterLayerSource {
   String _absolutePath;
@@ -80,7 +80,7 @@ class WorldImageSource extends RasterLayerSource {
         _memoryImage = MemoryImage(bytes);
       } else if (ext == FileManager.TIF_EXT) {
         _decodedImage = IMG.decodeTiff(bytes);
-        _memoryImage = MemoryImage(IMG.encodePng(_decodedImage));
+        _memoryImage = MemoryImage(IMG.encodeJpg(_decodedImage));
       }
 
       var width = _decodedImage.width;

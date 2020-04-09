@@ -17,7 +17,7 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
 class GpxSource extends VectorLayerSource {
   String _absolutePath;
@@ -157,7 +157,6 @@ class GpxSource extends VectorLayerSource {
     }
     if (_wayPoints.isNotEmpty) {
       List<Marker> waypoints = [];
-      int index = 0;
       _wayPoints.forEach((ll) {
         Marker m = Marker(
           width: pointsSize,
@@ -172,7 +171,6 @@ class GpxSource extends VectorLayerSource {
           ),
         );
         waypoints.add(m);
-        index++;
       });
       var waypointsCluster = MarkerClusterLayerOptions(
         maxClusterRadius: 20,

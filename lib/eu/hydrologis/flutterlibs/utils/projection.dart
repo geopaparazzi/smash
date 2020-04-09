@@ -11,7 +11,7 @@ class SmashPrj {
   static Projection fromWkt(String wkt) {
     if (wkt
         .replaceAll(" ", "")
-        .toLowerCase()
+        .toUpperCase()
         .contains("AUTHORITY[\"EPSG\",\"3857\"]")) {
       // this is a temporary fix due to a proj4dart issue
       return EPSG3857;
