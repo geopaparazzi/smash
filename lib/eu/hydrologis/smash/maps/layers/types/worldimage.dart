@@ -212,8 +212,8 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
     if (_opacitySliderValue > 100) {
       _opacitySliderValue = 100;
     }
-    if (_opacitySliderValue < 100) {
-      _opacitySliderValue = 100;
+    if (_opacitySliderValue < 0) {
+      _opacitySliderValue = 0;
     }
 
     super.initState();
