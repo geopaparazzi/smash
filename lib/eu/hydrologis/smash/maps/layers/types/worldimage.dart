@@ -33,7 +33,7 @@ class WorldImageSource extends RasterLayerSource {
     String relativePath = map[LAYERSKEY_FILE];
     _name = FileUtilities.nameFromFile(relativePath, false);
     _absolutePath = Workspace.makeAbsolute(relativePath);
-    isVisible = map[LAYERSKEY_ISVISIBLE ];
+    isVisible = map[LAYERSKEY_ISVISIBLE];
 
     opacityPercentage = map[LAYERSKEY_OPACITY] ?? 100;
   }
@@ -191,9 +191,7 @@ class WorldImageSource extends RasterLayerSource {
 /// The tiff properties page.
 class TiffPropertiesWidget extends StatefulWidget {
   WorldImageSource _source;
-  Function _reloadLayersFunction;
-
-  TiffPropertiesWidget(this._source, this._reloadLayersFunction);
+  TiffPropertiesWidget(this._source);
 
   @override
   State<StatefulWidget> createState() {
@@ -227,7 +225,6 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
         onWillPop: () async {
           if (_somethingChanged) {
             _source.opacityPercentage = _opacitySliderValue;
-            widget._reloadLayersFunction();
           }
           return true;
         },

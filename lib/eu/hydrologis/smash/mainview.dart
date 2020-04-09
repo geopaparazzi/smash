@@ -28,7 +28,6 @@ import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms_widgets.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersview.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/current_log_plugin.dart';
@@ -109,7 +108,12 @@ class _MainViewWidgetState extends State<MainViewWidget>
     Future.delayed(Duration.zero, () async {
       projectState.context = context;
       await projectState.reloadProject();
-      await reloadLayers();
+
+      _activeLayers.clear();
+      var layers = await LayerManager().loadLayers(context);
+      setState(() {
+        _activeLayers.addAll(layers);
+      });
     });
 
     WidgetsBinding.instance.addObserver(this);
@@ -423,11 +427,15 @@ class _MainViewWidgetState extends State<MainViewWidget>
                     color: SmashColors.mainBackground,
                   ),
                   iconSize: _iconSize,
-                  onPressed: () {
-                    Navigator.push(
-                        projectState.context,
-                        MaterialPageRoute(
-                            builder: (context) => LayersPage(reloadLayers)));
+                  onPressed: () async {
+                    await Navigator.push(projectState.context,
+                        MaterialPageRoute(builder: (context) => LayersPage()));
+
+                    var layers = await LayerManager().loadLayers(context);
+                    _activeLayers.clear();
+                    setState(() {
+                      _activeLayers.addAll(layers);
+                    });
                   },
                   color: SmashColors.mainBackground,
                   tooltip: 'Open layers list',
@@ -544,22 +552,5 @@ class _MainViewWidgetState extends State<MainViewWidget>
     projectState?.close();
 
     await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
-  }
-
-  Future<void> reloadLayers() async {
-    List<LayerSource> activeLayersInfos = LayerManager().getLayers();
-    _activeLayers = [];
-
-    List<LayerOptions> listTmp = [];
-    for (int i = 0; i < activeLayersInfos.length; i++) {
-      var ls = await activeLayersInfos[i].toLayers(context);
-      if (ls != null) {
-        ls.forEach((l) => listTmp.add(l));
-      }
-      //GpLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
-    }
-    setState(() {
-      _activeLayers.addAll(listTmp);
-    });
   }
 }

@@ -32,9 +32,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 
 class LayersPage extends StatefulWidget {
-  Function _reloadFunction;
-
-  LayersPage(this._reloadFunction);
+  LayersPage();
 
   @override
   State<StatefulWidget> createState() => LayersPageState();
@@ -45,7 +43,7 @@ class LayersPageState extends State<LayersPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<LayerSource> _layersList = LayerManager().getLayers(onlyActive: false);
+    List<LayerSource> _layersList = LayerManager().getLayerSources(onlyActive: false);
 
     return WillPopScope(
         onWillPop: () async {
@@ -112,19 +110,19 @@ class LayersPageState extends State<LayersPage> {
                         Navigator.of(context).pop();
                       }
                     },
-                    onTap: () {
+                    onTap: () async {
                       if (layerSourceItem is GpxSource) {
-                        Navigator.push(
+                        await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => GpxPropertiesWidget(
-                                    layerSourceItem, widget._reloadFunction)));
+                                builder: (context) =>
+                                    GpxPropertiesWidget(layerSourceItem)));
                       } else if (layerSourceItem is WorldImageSource) {
-                        Navigator.push(
+                        await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => TiffPropertiesWidget(
-                                    layerSourceItem, widget._reloadFunction)));
+                                builder: (context) =>
+                                    TiffPropertiesWidget(layerSourceItem)));
                       }
                     },
                   ),
@@ -167,7 +165,7 @@ class LayersPageState extends State<LayersPage> {
                         var selectedTs = onlinesTilesSources
                             .where((ts) => ts.name == selected)
                             .first;
-                        LayerManager().addLayer(selectedTs);
+                        LayerManager().addLayerSource(selectedTs);
                         setState(() {});
                       }
                     },
@@ -198,7 +196,6 @@ class LayersPageState extends State<LayersPage> {
 
     GpPreferences().setBaseLayerInfoList(baseLayers);
     GpPreferences().setVectorLayerInfoList(vectorLayers);
-    widget._reloadFunction();
   }
 
   Future<bool> _confirmLogDismiss(DismissDirection direction) async {
@@ -228,21 +225,21 @@ class LayersPageState extends State<LayersPage> {
 Future<bool> loadLayer(BuildContext context, String filePath) async {
   if (FileManager.isMapsforge(filePath)) {
     TileSource ts = TileSource.Mapsforge(filePath);
-    LayerManager().addLayer(ts);
+    LayerManager().addLayerSource(ts);
     return true;
   } else if (FileManager.isMbtiles(filePath)) {
     TileSource ts = TileSource.Mbtiles(filePath);
-    LayerManager().addLayer(ts);
+    LayerManager().addLayerSource(ts);
     return true;
   } else if (FileManager.isMapurl(filePath)) {
     TileSource ts = TileSource.Mapurl(filePath);
-    LayerManager().addLayer(ts);
+    LayerManager().addLayerSource(ts);
     return true;
   } else if (FileManager.isGpx(filePath)) {
     GpxSource gpxLayer = GpxSource(filePath);
     await gpxLayer.load(context);
     if (gpxLayer.hasData()) {
-      LayerManager().addLayer(gpxLayer);
+      LayerManager().addLayerSource(gpxLayer);
       return true;
     }
   } else if (FileManager.isWorldImage(filePath)) {
@@ -258,7 +255,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       WorldImageSource worldLayer = WorldImageSource(filePath);
       await worldLayer.load(context);
       if (worldLayer.hasData()) {
-        LayerManager().addLayer(worldLayer);
+        LayerManager().addLayerSource(worldLayer);
         return true;
       }
     }
@@ -269,14 +266,14 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       List<FeatureEntry> features = await db.features();
       features.forEach((f) {
         GeopackageSource gps = GeopackageSource(filePath, f.tableName);
-        LayerManager().addLayer(gps);
+        LayerManager().addLayerSource(gps);
         return true;
       });
 
       List<TileEntry> tiles = await db.tiles();
       tiles.forEach((t) {
         var ts = TileSource.Geopackage(filePath, t.tableName);
-        LayerManager().addLayer(ts);
+        LayerManager().addLayerSource(ts);
         return true;
       });
     } finally {

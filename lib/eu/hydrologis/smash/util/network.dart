@@ -73,7 +73,7 @@ class DownloadMapFromListTileProgressWidgetState
         await buildCache(widget._destinationFilePath);
 
         var tileSource = TileSource.Mapsforge(widget._destinationFilePath);
-        LayerManager().addLayer(tileSource);
+        LayerManager().addLayerSource(tileSource);
         // TODO fix the below
 //        widget._mainEventsHandler.reloadLayersFunction();
       }

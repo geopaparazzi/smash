@@ -219,9 +219,8 @@ class GpxSource extends VectorLayerSource {
 /// The notes properties page.
 class GpxPropertiesWidget extends StatefulWidget {
   GpxSource _source;
-  Function _reloadLayersFunction;
 
-  GpxPropertiesWidget(this._source, this._reloadLayersFunction);
+  GpxPropertiesWidget(this._source);
 
   @override
   State<StatefulWidget> createState() {
@@ -267,8 +266,6 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
             _source.pointsSize = _pointSizeSliderValue;
             _source.lineStrokeColor = _lineColor;
             _source.lineWidth = _lineWidthSliderValue;
-
-            widget._reloadLayersFunction();
           }
           return true;
         },

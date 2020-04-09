@@ -7,6 +7,8 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/tiles.dart';
@@ -44,13 +46,13 @@ class LayerManager {
     }
   }
 
-  /// Get the list of layer sources. 
-  /// 
+  /// Get the list of layer sources. Note that this doesn't call the load of actual data.
+  ///
   /// By default only the active list is supplied.
-  List<LayerSource> getLayers({onlyActive: true}) {
+  List<LayerSource> getLayerSources({onlyActive: true}) {
     var list = <LayerSource>[];
     if (onlyActive) {
-      var activeBaseLayers = getActiveBaseLayers();
+      var activeBaseLayers = getActiveBaseLayerSources();
       list.addAll(activeBaseLayers);
       List<LayerSource> where =
           _vectorLayers.where((ts) => ts.isActive()).toList();
@@ -63,7 +65,7 @@ class LayerManager {
   }
 
   /// Get the list of active base layer sources.
-  List<LayerSource> getActiveBaseLayers() {
+  List<LayerSource> getActiveBaseLayerSources() {
     var list = <LayerSource>[];
     List<LayerSource> where = _baseLayers.where((ts) {
       if (ts.isActive()) {
@@ -82,7 +84,7 @@ class LayerManager {
   }
 
   /// Add a new layersource to the layer list.
-  void addLayer(LayerSource layerData) {
+  void addLayerSource(LayerSource layerData) {
     if ((layerData is TileSource || layerData is WorldImageSource) &&
         !_baseLayers.contains(layerData)) {
       _baseLayers.add(layerData);
@@ -101,5 +103,19 @@ class LayerManager {
     if (_vectorLayers.contains(sourceItem)) {
       _vectorLayers.remove(sourceItem);
     }
+  }
+
+  /// Load the layers as map [LayerOptions]. This reads and load the data.
+  Future<List<LayerOptions>> loadLayers(BuildContext context) async {
+    List<LayerSource> activeLayerSources = LayerManager().getLayerSources();
+    List<LayerOptions> layerOptions = [];
+    for (int i = 0; i < activeLayerSources.length; i++) {
+      var ls = await activeLayerSources[i].toLayers(context);
+      if (ls != null) {
+        ls.forEach((l) => layerOptions.add(l));
+      }
+      //GpLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
+    }
+    return layerOptions;
   }
 }

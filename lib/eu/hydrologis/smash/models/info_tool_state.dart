@@ -47,7 +47,7 @@ class InfoToolState extends ChangeNotifier {
           Coordinate(tapLatLong.longitude, tapLatLong.latitude));
       env.expandByDistance(0.001);
       List<LayerSource> visibleVectorLayers = LayerManager()
-          .getLayers()
+          .getLayerSources()
           .where((l) => l is VectorLayerSource)
           .toList();
       for (var vLayer in visibleVectorLayers) {
