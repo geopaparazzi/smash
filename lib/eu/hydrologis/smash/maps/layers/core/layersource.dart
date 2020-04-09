@@ -18,54 +18,54 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 const LAYERSKEY_FILE = 'file';
+const LAYERSKEY_URL = 'url';
 const LAYERSKEY_ISVECTOR = 'isVector';
 const LAYERSKEY_LABEL = 'label';
 const LAYERSKEY_ISVISIBLE = 'isvisible';
 const LAYERSKEY_OPACITY = 'opacity';
+const LAYERSKEY_ATTRIBUTION = 'attribution';
+const LAYERSKEY_MINZOOM = 'minzoom';
+const LAYERSKEY_MAXZOOM = 'maxzoom';
 
 /// A generic persistable layer source.
 abstract class LayerSource {
-  /// Convert the source to json for persistence.
-  String toJson();
-
-  Future<List<LayerOptions>> toLayers(BuildContext context);
-
-  bool isActive();
-
-  void setActive(bool active);
-
+  /// Get the optional absolute file path, if file based.
   String getAbsolutePath();
 
+  /// Get the optional URL if URL based.
   String getUrl();
 
+  /// Get the name for this layerSource.
   String getName();
 
+  /// Get the optional attribution of the dataset.
   String getAttribution();
 
+  /// Convert the current layer source to an array of layers
+  /// with their data loaded and ready to be displayed in map.
+  Future<List<LayerOptions>> toLayers(BuildContext context);
+
+  /// Returns the active flag of the layer (usually visible/non visible).
+  bool isActive();
+
+  /// Toggle the active flag.
+  void setActive(bool active);
+
+  /// Get the bounds for the resource.
   Future<LatLngBounds> getBounds();
 
+  /// Dispose the current layeresource.
   void disposeSource();
 
+  /// Check if the layersource is online.
   bool isOnlineService() {
     return getUrl() != null;
   }
 
-  bool operator ==(dynamic other) {
-    if (other is LayerSource) {
-      if (getUrl() != null && getUrl() != other.getUrl()) {
-        return false;
-      } else if (getAbsolutePath() != null &&
-          (getName() != other.getName() ||
-              getAbsolutePath() != other.getAbsolutePath())) {
-        return false;
-      } else {
-        return true;
-      }
-    } else {
-      return false;
-    }
-  }
+  /// Convert the source to json for persistence.
+  String toJson();
 
+  /// Create a layersource from a presistence [json].
   static List<LayerSource> fromJson(String json) {
     try {
       var map = jsonDecode(json);
@@ -95,16 +95,44 @@ abstract class LayerSource {
       return [];
     }
   }
+
+  bool operator ==(dynamic other) {
+    if (other is LayerSource) {
+      if (getUrl() != null && getUrl() != other.getUrl()) {
+        return false;
+      } else if (getAbsolutePath() != null &&
+          (getName() != other.getName() ||
+              getAbsolutePath() != other.getAbsolutePath())) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  int get hashCode {
+    if (getUrl() != null) {
+      return getUrl().hashCode;
+    } else if (getAbsolutePath() != null) {
+      return getAbsolutePath().hashCode;
+    }
+    return getName().hashCode;
+  }
 }
 
+/// Interface for vector data based layersources.
 abstract class VectorLayerSource extends LayerSource {
   Future<void> load(BuildContext context);
 }
 
+/// Interface for raster data based layersources.
 abstract class RasterLayerSource extends LayerSource {
   Future<void> load(BuildContext context);
 }
 
+/// List of default online tile layer sources.
 final List<TileSource> onlinesTilesSources = [
   TileSource.Open_Street_Map_Standard(),
   TileSource.Open_Stree_Map_Cicle(),

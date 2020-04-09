@@ -45,16 +45,16 @@ class TileSource extends LayerSource {
   });
 
   TileSource.fromMap(Map<String, dynamic> map) {
-    this.name = map['label'];
-    var relativePath = map['file'];
+    this.name = map[LAYERSKEY_LABEL];
+    var relativePath = map[LAYERSKEY_FILE];
     if (relativePath != null) {
       absolutePath = Workspace.makeAbsolute(relativePath);
     }
-    this.url = map['url'];
-    this.minZoom = map['minzoom'];
-    this.maxZoom = map['maxzoom'];
-    this.attribution = map['attribution'];
-    this.isVisible = map['isvisible'];
+    this.url = map[LAYERSKEY_URL];
+    this.minZoom = map[LAYERSKEY_MINZOOM];
+    this.maxZoom = map[LAYERSKEY_MAXZOOM];
+    this.attribution = map[LAYERSKEY_ATTRIBUTION];
+    this.isVisible = map[LAYERSKEY_ISVISIBLE];
 
     var subDomains = map['subdomains'] as String;
     if (subDomains != null) {
@@ -321,15 +321,19 @@ class TileSource extends LayerSource {
       savePath = Workspace.makeRelative(absolutePath);
     }
 
+    var pathLine =
+        savePath != null ? "\"$LAYERSKEY_FILE\": \"$savePath\"," : "";
+    var urlLine = url != null ? "\"$LAYERSKEY_URL\": \"$url\"," : "";
+
     var json = '''
     {
-        "label": "$name",
-        ${savePath != null ? "\"file\": \"$savePath\"," : ""}
-        ${url != null ? "\"url\": \"$url\"," : ""}
-        "minzoom": $minZoom,
-        "maxzoom": $maxZoom,
-        "attribution": "$attribution",
-        "isvisible": $isVisible ${subdomains.isNotEmpty ? "," : ""}
+        "$LAYERSKEY_LABEL": "$name",
+        $pathLine
+        $urlLine
+        "$LAYERSKEY_MINZOOM": $minZoom,
+        "$LAYERSKEY_MAXZOOM": $maxZoom,
+        "$LAYERSKEY_ATTRIBUTION: "$attribution",
+        "$LAYERSKEY_ISVISIBLE": $isVisible ${subdomains.isNotEmpty ? "," : ""}
         ${subdomains.isNotEmpty ? "\"subdomains\": \"${subdomains.join(',')}\"" : ""}
     }
     ''';
