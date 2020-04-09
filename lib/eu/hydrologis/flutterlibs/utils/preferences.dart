@@ -17,8 +17,7 @@ const KEY_LAST_ZOOM = "lastgpap_zoom";
 const KEY_CENTER_ON_GPS = "center_on_gps";
 const KEY_ROTATE_ON_HEADING = "rotate_on_heading";
 const KEY_LAST_BASEMAP = "lastbasemapinfo";
-const KEY_BASELAYERINFO_LIST = 'KEY_BASELAYERINFO_LIST';
-const KEY_VECTORLAYERINFO_LIST = 'KEY_VECTORLAYERINFO_LIST';
+const KEY_LAYERINFO_LIST = 'KEY_LAYERINFO_LIST';
 const KEY_MBTILES_LIST = 'KEY_MBTILES_LIST';
 const KEY_KEEP_SCREEN_ON = 'KEY_KEEP_SCREEN_ON';
 const KEY_SHOW_SCALEBAR = 'KEY_SHOW_SCALEBAR';
@@ -253,31 +252,16 @@ class GpPreferences {
     setBoolean(KEY_KEEP_SCREEN_ON, keepScreenOn);
   }
 
-  Future<List<String>> getBaseLayerInfoList() async {
+  Future<List<String>> getLayerInfoList() async {
     await _checkPreferences();
-    var list = _preferences.getStringList(KEY_BASELAYERINFO_LIST);
+    var list = _preferences.getStringList(KEY_LAYERINFO_LIST);
     if (list == null) list = [];
     return list;
   }
 
-  void setBaseLayerInfoList(List<String> baselayerInfoList) async {
+  void setLayerInfoList(List<String> layerInfoList) async {
     await _checkPreferences();
-    if (baselayerInfoList == null) baselayerInfoList = [];
-    await _preferences.setStringList(KEY_BASELAYERINFO_LIST, baselayerInfoList);
+    if (layerInfoList == null) layerInfoList = [];
+    await _preferences.setStringList(KEY_LAYERINFO_LIST, layerInfoList);
   }
-
-  Future<List<String>> getVectorLayerInfoList() async {
-    await _checkPreferences();
-    var list = _preferences.getStringList(KEY_VECTORLAYERINFO_LIST);
-    if (list == null) list = [];
-    return list;
-  }
-
-  void setVectorLayerInfoList(List<String> vectorlayerInfoList) async {
-    await _checkPreferences();
-    if (vectorlayerInfoList == null) vectorlayerInfoList = [];
-    await _preferences.setStringList(
-        KEY_VECTORLAYERINFO_LIST, vectorlayerInfoList);
-  }
-
 }

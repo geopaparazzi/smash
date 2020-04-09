@@ -333,6 +333,7 @@ class TileSource extends LayerSource {
         "$LAYERSKEY_MINZOOM": $minZoom,
         "$LAYERSKEY_MAXZOOM": $maxZoom,
         "$LAYERSKEY_ATTRIBUTION: "$attribution",
+        "$LAYERSKEY_TYPE": "$LAYERSTYPE_TMS",
         "$LAYERSKEY_ISVISIBLE": $isVisible ${subdomains.isNotEmpty ? "," : ""}
         ${subdomains.isNotEmpty ? "\"subdomains\": \"${subdomains.join(',')}\"" : ""}
     }

@@ -12,37 +12,27 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/tiles.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 
 class LayerManager {
   static final LayerManager _instance = LayerManager._internal();
 
   factory LayerManager() => _instance;
 
-  List<LayerSource> _baseLayers = onlinesTilesSources;
-  List<LayerSource> _vectorLayers = [];
+  List<LayerSource> _layerSources = [onlinesTilesSources[0]];
 
   LayerManager._internal();
 
   /// Initialize the LayerManager by retrieving the layers from teh preferences.
   Future<void> initialize() async {
-    List<String> blList = await GpPreferences().getBaseLayerInfoList();
-    if (blList.isNotEmpty) {
-      _baseLayers = [];
-      blList.forEach((json) {
+    List<String> layerSourcesList = await GpPreferences().getLayerInfoList();
+    if (layerSourcesList.isNotEmpty) {
+      _layerSources = [];
+      layerSourcesList.forEach((json) {
         var fromJson = LayerSource.fromJson(json);
-        _baseLayers.addAll(fromJson);
+        _layerSources.addAll(fromJson);
       });
     } else {
-      _baseLayers = [TileSource.Open_Street_Map_Standard()..isVisible = true];
-    }
-    List<String> vlList = await GpPreferences().getVectorLayerInfoList();
-    if (vlList.isNotEmpty) {
-      _vectorLayers = [];
-      vlList.forEach((json) {
-        var fromJson = LayerSource.fromJson(json);
-        _vectorLayers.addAll(fromJson);
-      });
+      _layerSources = [TileSource.Open_Street_Map_Standard()..isVisible = true];
     }
   }
 
@@ -51,57 +41,48 @@ class LayerManager {
   /// By default only the active list is supplied.
   List<LayerSource> getLayerSources({onlyActive: true}) {
     var list = <LayerSource>[];
-    if (onlyActive) {
-      var activeBaseLayers = getActiveBaseLayerSources();
-      list.addAll(activeBaseLayers);
-      List<LayerSource> where =
-          _vectorLayers.where((ts) => ts.isActive()).toList();
-      if (where.isNotEmpty) list.addAll(where.toList());
+    if (!onlyActive) {
+      list.addAll(_layerSources);
     } else {
-      list.addAll(_baseLayers);
-      list.addAll(_vectorLayers);
-    }
-    return list;
-  }
-
-  /// Get the list of active base layer sources.
-  List<LayerSource> getActiveBaseLayerSources() {
-    var list = <LayerSource>[];
-    List<LayerSource> where = _baseLayers.where((ts) {
-      if (ts.isActive()) {
-        String file = ts.getAbsolutePath();
-        if (file != null && file.isNotEmpty) {
-          if (!File(file).existsSync()) {
-            return false;
+      List<LayerSource> where = _layerSources.where((ts) {
+        if (ts.isActive()) {
+          String file = ts.getAbsolutePath();
+          if (file != null && file.isNotEmpty) {
+            if (!File(file).existsSync()) {
+              return false;
+            }
           }
+          return true;
         }
-        return true;
-      }
-      return false;
-    }).toList();
-    if (where.isNotEmpty) list.addAll(where.toList());
+        return false;
+      }).toList();
+      if (where.isNotEmpty) list.addAll(where.toList());
+    }
     return list;
   }
 
   /// Add a new layersource to the layer list.
   void addLayerSource(LayerSource layerData) {
-    if ((layerData is TileSource || layerData is WorldImageSource) &&
-        !_baseLayers.contains(layerData)) {
-      _baseLayers.add(layerData);
-    } else if (layerData is VectorLayerSource &&
-        !_vectorLayers.contains(layerData)) {
-      _vectorLayers.add(layerData);
+    if (!_layerSources.contains(layerData)) {
+      _layerSources.add(layerData);
     }
   }
 
   /// Remove a layersource form the available layers list.
   void removeLayerSource(LayerSource sourceItem) {
     sourceItem.disposeSource();
-    if (_baseLayers.contains(sourceItem)) {
-      _baseLayers.remove(sourceItem);
+    if (_layerSources.contains(sourceItem)) {
+      _layerSources.remove(sourceItem);
     }
-    if (_vectorLayers.contains(sourceItem)) {
-      _vectorLayers.remove(sourceItem);
+  }
+
+  /// Move a layer from its previous order to a new one.
+  void moveLayer(int oldIndex, int newIndex) {
+    var removed = _layerSources.removeAt(oldIndex);
+    if (newIndex < oldIndex) {
+      _layerSources.insert(newIndex, removed);
+    } else if (newIndex > oldIndex) {
+      _layerSources.insert(newIndex - 1, removed);
     }
   }
 

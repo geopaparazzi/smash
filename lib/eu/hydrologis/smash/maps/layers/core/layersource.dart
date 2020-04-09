@@ -19,6 +19,8 @@ import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 const LAYERSKEY_FILE = 'file';
 const LAYERSKEY_URL = 'url';
+const LAYERSKEY_TYPE = 'type';
+const LAYERSKEY_FORMAT = 'format';
 const LAYERSKEY_ISVECTOR = 'isVector';
 const LAYERSKEY_LABEL = 'label';
 const LAYERSKEY_ISVISIBLE = 'isvisible';
@@ -26,6 +28,11 @@ const LAYERSKEY_OPACITY = 'opacity';
 const LAYERSKEY_ATTRIBUTION = 'attribution';
 const LAYERSKEY_MINZOOM = 'minzoom';
 const LAYERSKEY_MAXZOOM = 'maxzoom';
+
+const LAYERSTYPE_WMS = 'wms';
+const LAYERSTYPE_TMS = 'tms';
+const LAYERSTYPE_FORMAT_JPG = '"image/jpeg"';
+const LAYERSTYPE_FORMAT_PNG = '"image/png"';
 
 /// A generic persistable layer source.
 abstract class LayerSource {

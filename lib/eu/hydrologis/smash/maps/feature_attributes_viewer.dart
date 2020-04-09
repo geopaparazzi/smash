@@ -45,7 +45,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
   }
 
   Future<LayerOptions> getBaseLayer() async {
-    var activeBaseLayers = LayerManager().getActiveBaseLayerSources();
+    var activeBaseLayers = LayerManager().getLayerSources(onlyActive: true);
     if (activeBaseLayers.isNotEmpty) {
       var baseLayers = await activeBaseLayers[0].toLayers(context);
       if (baseLayers.isNotEmpty) {

@@ -28,6 +28,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 
@@ -43,7 +44,10 @@ class LayersPageState extends State<LayersPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<LayerSource> _layersList = LayerManager().getLayerSources(onlyActive: false);
+    List<LayerSource> _layersList =
+        LayerManager().getLayerSources(onlyActive: false);
+
+    List<Dismissible> listItems = createLayersList(_layersList, context);
 
     return WillPopScope(
         onWillPop: () async {
@@ -56,78 +60,17 @@ class LayersPageState extends State<LayersPage> {
           appBar: AppBar(
             title: Text("Layer List"),
           ),
-          body: ListView.builder(
-              itemCount: _layersList.length,
-              itemBuilder: (context, index) {
-                LayerSource layerSourceItem = _layersList[index];
-                return Dismissible(
-                  confirmDismiss: _confirmLogDismiss,
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) {
-                    if (layerSourceItem.isActive()) {
-                      _somethingChanged = true;
-                    }
-                    _layersList.removeAt(index);
-                    LayerManager().removeLayerSource(layerSourceItem);
-                  },
-                  key: ValueKey(layerSourceItem),
-                  background: Container(
-                    alignment: AlignmentDirectional.centerEnd,
-                    color: Colors.red,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  child: ListTile(
-                    leading: Icon(
-                      SmashIcons.forPath(layerSourceItem.getAbsolutePath() ??
-                          layerSourceItem.getUrl()),
-                      color: SmashColors.mainDecorations,
-                      size: SmashUI.MEDIUM_ICON_SIZE,
-                    ),
-                    trailing: Checkbox(
-                        value: layerSourceItem.isActive(),
-                        onChanged: (isVisible) async {
-                          layerSourceItem.setActive(isVisible);
-                          _somethingChanged = true;
-                          setState(() {});
-                        }),
-                    title: Text('${layerSourceItem.getName()}'),
-                    subtitle: Text('${layerSourceItem.getAttribution()}'),
-                    onLongPress: () async {
-                      LatLngBounds bb = await layerSourceItem.getBounds();
-                      if (bb != null) {
-                        setLayersOnChange(_layersList);
-
-                        SmashMapState mapState =
-                            Provider.of<SmashMapState>(context, listen: false);
-                        mapState.setBounds(
-                            new Envelope(bb.west, bb.east, bb.south, bb.north));
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    onTap: () async {
-                      if (layerSourceItem is GpxSource) {
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    GpxPropertiesWidget(layerSourceItem)));
-                      } else if (layerSourceItem is WorldImageSource) {
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    TiffPropertiesWidget(layerSourceItem)));
-                      }
-                    },
-                  ),
-                );
-              }),
+          body: ReorderableListView(
+            children: listItems,
+            onReorder: (oldIndex, newIndex) {
+              if (oldIndex != newIndex) {
+                setState(() {
+                  LayerManager().moveLayer(oldIndex, newIndex);
+                  _somethingChanged = true;
+                });
+              }
+            },
+          ),
           floatingActionButton: AnimatedFloatingActionButton(
               fabButtons: <Widget>[
                 Container(
@@ -174,6 +117,24 @@ class LayersPageState extends State<LayersPage> {
                     heroTag: null,
                   ),
                 ),
+                Container(
+                  child: FloatingActionButton(
+                    onPressed: () async {
+                      var wmsLayerSource = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => WmsLayersPage()));
+
+                      if (wmsLayerSource != null) {
+                        LayerManager().addLayerSource(wmsLayerSource);
+                        setState(() {});
+                      }
+                    },
+                    tooltip: "Online Sources",
+                    child: Icon(MdiIcons.earth),
+                    heroTag: null,
+                  ),
+                ),
               ],
               colorStartAnimation: SmashColors.mainSelection,
               colorEndAnimation: SmashColors.mainSelectionBorder,
@@ -182,20 +143,82 @@ class LayersPageState extends State<LayersPage> {
         ));
   }
 
-  void setLayersOnChange(List<LayerSource> _layersList) {
-    List<String> baseLayers = [];
-    List<String> vectorLayers = [];
-    _layersList.forEach((layer) {
-      if (layer is TileSource || layer is RasterLayerSource) {
-        baseLayers.add(layer.toJson());
-      }
-      if (layer is VectorLayerSource) {
-        vectorLayers.add(layer.toJson());
-      }
-    });
+  List<Dismissible> createLayersList(
+      List<LayerSource> _layersList, BuildContext context) {
+    return _layersList.map((layerSourceItem) {
+      return Dismissible(
+        confirmDismiss: _confirmLogDismiss,
+        direction: DismissDirection.endToStart,
+        onDismissed: (direction) {
+          if (layerSourceItem.isActive()) {
+            _somethingChanged = true;
+          }
+          _layersList.remove(layerSourceItem);
+          LayerManager().removeLayerSource(layerSourceItem);
+        },
+        key: ValueKey(layerSourceItem),
+        background: Container(
+          alignment: AlignmentDirectional.centerEnd,
+          color: Colors.red,
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        child: ListTile(
+          leading: Icon(
+            SmashIcons.forPath(
+                layerSourceItem.getAbsolutePath() ?? layerSourceItem.getUrl()),
+            color: SmashColors.mainDecorations,
+            size: SmashUI.MEDIUM_ICON_SIZE,
+          ),
+          trailing: Checkbox(
+              value: layerSourceItem.isActive(),
+              onChanged: (isVisible) async {
+                layerSourceItem.setActive(isVisible);
+                _somethingChanged = true;
+                setState(() {});
+              }),
+          title: Text('${layerSourceItem.getName()}'),
+          subtitle: Text('${layerSourceItem.getAttribution()}'),
+          // onLongPress: () async {
+          //   LatLngBounds bb = await layerSourceItem.getBounds();
+          //   if (bb != null) {
+          //     setLayersOnChange(_layersList);
 
-    GpPreferences().setBaseLayerInfoList(baseLayers);
-    GpPreferences().setVectorLayerInfoList(vectorLayers);
+          //     SmashMapState mapState =
+          //         Provider.of<SmashMapState>(context, listen: false);
+          //     mapState.setBounds(
+          //         new Envelope(bb.west, bb.east, bb.south, bb.north));
+          //     Navigator.of(context).pop();
+          //   }
+          // },
+          onTap: () async {
+            if (layerSourceItem is GpxSource) {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          GpxPropertiesWidget(layerSourceItem)));
+            } else if (layerSourceItem is WorldImageSource) {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          TiffPropertiesWidget(layerSourceItem)));
+            }
+          },
+        ),
+      );
+    }).toList();
+  }
+
+  void setLayersOnChange(List<LayerSource> _layersList) {
+    List<String> layers = _layersList.map((ls) => ls.toJson()).toList();
+    GpPreferences().setLayerInfoList(layers);
   }
 
   Future<bool> _confirmLogDismiss(DismissDirection direction) async {
