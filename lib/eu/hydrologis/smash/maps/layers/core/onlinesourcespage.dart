@@ -12,6 +12,8 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'dart:convert';
 
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
+
 class OnlineSourcesPage extends StatefulWidget {
   OnlineSourcesPage({Key key}) : super(key: key);
 
@@ -22,6 +24,8 @@ class OnlineSourcesPage extends StatefulWidget {
 class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
   List<Widget> _tmsCardsList = [];
   List<String> _tmsSourcesList = [];
+  List<Widget> _wmsCardsList = [];
+  List<String> _wmsSourcesList = [];
   ValueNotifier<int> reloadNotifier = ValueNotifier<int>(0);
 
   @override
@@ -81,7 +85,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
                     ),
                   ],
                 ),
-          _tmsCardsList == null
+          _wmsCardsList == null
               ? Center(
                   child: SmashCircularProgress(label: "Loading WMS layers..."),
                 )
@@ -92,14 +96,24 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: _tmsCardsList,
+                        children: _wmsCardsList,
                       ),
                     ),
                     Positioned(
                       right: 20,
                       bottom: 20,
                       child: FloatingActionButton(
-                          child: Icon(MdiIcons.plus), onPressed: () {}),
+                          child: Icon(MdiIcons.plus),
+                          onPressed: () async {
+                            String layerJson = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AddWmsStepper()));
+                            if (layerJson != null) {
+                              await GpPreferences().addNewWms(layerJson);
+                              setState(() {});
+                            }
+                          }),
                     ),
                   ],
                 ),
@@ -109,6 +123,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
   }
 
   Future getList() async {
+    // TMS
     var tmsList = GpPreferences().getTmsListSync();
     _tmsSourcesList.clear();
     _tmsCardsList.clear();
@@ -134,6 +149,28 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
         var layerSource = TileSource.fromMap(map);
         var layers = await layerSource.toLayers(context);
         _tmsCardsList.add(OnlineSourceCard(
+            type, layerSource, layers, _tmsSourcesList, i, reloadNotifier));
+      }
+    }
+    // WMS
+    var wmsList = GpPreferences().getWmsListSync();
+    _wmsSourcesList.clear();
+    _wmsCardsList.clear();
+    if (wmsList.isNotEmpty) {
+      // load from preferences
+      for (var i = 0; i < wmsList.length; i++) {
+        var json = wmsList[i];
+        _wmsSourcesList.add(json);
+      }
+    }
+    for (var i = 0; i < _wmsSourcesList.length; i++) {
+      var json = _wmsSourcesList[i];
+      var map = jsonDecode(json);
+      var type = map[LAYERSKEY_TYPE];
+      if (type == LAYERSTYPE_WMS) {
+        var layerSource = WmsSource.fromMap(map);
+        var layers = await layerSource.toLayers(context);
+        _wmsCardsList.add(OnlineSourceCard(
             type, layerSource, layers, _tmsSourcesList, i, reloadNotifier));
       }
     }
@@ -196,7 +233,11 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                   ),
                   onPressed: () async {
                     widget.sourcesList.removeAt(widget.index);
-                    await GpPreferences().setTmsList(widget.sourcesList);
+                    if (widget.type == LAYERSTYPE_TMS) {
+                      await GpPreferences().setTmsList(widget.sourcesList);
+                    } else {
+                      await GpPreferences().setWmsList(widget.sourcesList);
+                    }
                     widget.reloadNotifier.value =
                         widget.reloadNotifier.value + 1;
                   },
@@ -204,8 +245,7 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                 FlatButton(
                   child: const Text('ADD TO LAYERS'),
                   onPressed: () {
-                    LayerManager().addLayerSource(widget.layerSource);
-                    Navigator.pop(context);
+                    Navigator.pop(context, widget.layerSource);
                   },
                 ),
               ],
@@ -434,7 +474,243 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("New Online Service"),
+        title: Text("New TMS Online Service"),
+      ),
+      body: new Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Stepper(
+                steps: steps,
+                currentStep: currentStep,
+                onStepContinue: next,
+                onStepCancel: cancel,
+                onStepTapped: (step) => goTo(step),
+              ),
+            ),
+            Padding(
+              padding: SmashUI.defaultPadding(),
+              child: new RaisedButton(
+                child: Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: SmashUI.titleText("Save",
+                      color: SmashColors.mainBackground),
+                ),
+                onPressed: _submitDetails,
+                color: SmashColors.mainDecorations,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class WmsData {
+  String layer;
+  String url;
+  String attribution;
+  String minZoom;
+  String maxZoom;
+}
+
+class AddWmsStepper extends StatefulWidget {
+  AddWmsStepper({Key key}) : super(key: key);
+
+  @override
+  _AddWmsStepperState createState() => _AddWmsStepperState();
+}
+
+class _AddWmsStepperState extends State<AddWmsStepper> {
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  static WmsData wmsData = WmsData();
+  List<Step> steps = [
+    Step(
+      title: const Text("Set WMS layer name"),
+      isActive: true,
+      state: StepState.indexed,
+      content: Column(
+        children: <Widget>[
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: "enter layer to load",
+              icon: const Icon(MdiIcons.text),
+            ),
+            keyboardType: TextInputType.text,
+            autocorrect: false,
+            onSaved: (String value) {
+              wmsData.layer = value;
+            },
+            validator: (value) {
+              if (value.isEmpty || value.length < 1) {
+                return 'Please enter a valid layer';
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
+    ),
+    Step(
+      title: const Text("Insert the url of the service."),
+      subtitle: Text(
+          "The base url ending with question mark."),
+      isActive: true,
+      state: StepState.indexed,
+      content: Column(
+        children: <Widget>[
+          TextFormField(
+            keyboardType: TextInputType.text,
+            autocorrect: false,
+            onSaved: (String value) {
+              print(value);
+              wmsData.url = value;
+            },
+            validator: (value) {
+              if (value.isEmpty ||
+                  value.length < 1 ||
+                  !value.toLowerCase().startsWith("http")) {
+                return 'Please enter a valid WMS URL';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "enter URL",
+              icon: const Icon(MdiIcons.link),
+            ),
+          ),
+        ],
+      ),
+    ),
+    Step(
+      title: const Text("Add an attribution."),
+      isActive: true,
+      state: StepState.indexed,
+      content: Column(
+        children: <Widget>[
+          TextFormField(
+            keyboardType: TextInputType.text,
+            autocorrect: false,
+            onSaved: (String value) {
+              wmsData.attribution = value;
+            },
+            decoration: InputDecoration(
+              labelText: "enter attribution",
+              icon: const Icon(MdiIcons.license),
+            ),
+          ),
+        ],
+      ),
+    ),
+    Step(
+      title: const Text("Set min and max zoom."),
+      isActive: true,
+      state: StepState.indexed,
+      content: Column(
+        children: <Widget>[
+          TextFormField(
+            keyboardType: TextInputType.number,
+            onSaved: (String value) {
+              wmsData.minZoom = value;
+            },
+            initialValue: "0",
+            decoration: InputDecoration(labelText: "min zoom"),
+          ),
+          TextFormField(
+            keyboardType: TextInputType.number,
+            onSaved: (String value) {
+              wmsData.maxZoom = value;
+            },
+            initialValue: "19",
+            decoration: InputDecoration(labelText: "max zoom"),
+          ),
+        ],
+      ),
+    ),
+  ];
+
+  int currentStep = 0;
+
+  next() {
+    currentStep + 1 != steps.length ? goTo(currentStep + 1) : _submitDetails();
+  }
+
+  goTo(int step) {
+    setState(() => currentStep = step);
+  }
+
+  cancel() {
+    if (currentStep > 0) {
+      goTo(currentStep - 1);
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  void _submitDetails() async {
+    final FormState formState = _formKey.currentState;
+    if (!formState.validate()) {
+      showWarningDialog(context, 'Please check your data');
+    } else {
+      formState.save();
+      bool okToGo = await showDialog(
+          context: context,
+          child: new AlertDialog(
+            title: new Text("Details"),
+            content: new SingleChildScrollView(
+              child: new ListBody(
+                children: <Widget>[
+                  new Text("Layer: " + wmsData.layer),
+                  new Text("URL: " + wmsData.url),
+                  new Text("Attribution: " + wmsData.attribution ?? "- nv -"),
+                  new Text("Min zoom: ${wmsData.minZoom ?? ""}"),
+                  new Text("Max zoom: ${wmsData.maxZoom ?? ""}"),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('CANCEL'),
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+              ),
+              new FlatButton(
+                child: new Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+              ),
+            ],
+          ));
+
+      if (okToGo != null && okToGo) {
+        var json = '''
+        {
+            "$LAYERSKEY_LABEL": "${wmsData.layer}",
+            "$LAYERSKEY_URL": "${wmsData.url}",
+            "$LAYERSKEY_MINZOOM": ${wmsData.minZoom ?? 0},
+            "$LAYERSKEY_MAXZOOM": ${wmsData.maxZoom ?? 19},
+            "$LAYERSKEY_OPACITY": 100,
+            "$LAYERSKEY_ATTRIBUTION": "${wmsData.attribution ?? ""}",
+            "$LAYERSKEY_TYPE": "$LAYERSTYPE_WMS",
+            "$LAYERSKEY_ISVISIBLE": true
+        }
+        ''';
+        Navigator.pop(context, json);
+      } else if (okToGo != null && !okToGo) {
+        Navigator.pop(context);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("New WMS Online Service"),
       ),
       body: new Form(
         key: _formKey,

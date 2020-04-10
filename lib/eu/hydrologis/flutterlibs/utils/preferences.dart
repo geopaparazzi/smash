@@ -217,6 +217,10 @@ class GpPreferences {
     return list;
   }
 
+  Future setWmsList(List<String> list) async {
+    await _preferences.setStringList(KEY_SAVED_WMS_LIST, list);
+  }
+
   Future addNewWms(String jsonDefinition) async {
     var wmsList = getWmsListSync();
     if (!wmsList.contains(jsonDefinition)) {

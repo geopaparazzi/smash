@@ -194,6 +194,12 @@ class LayersPageState extends State<LayersPage> {
                               MaterialPageRoute(
                                   builder: (context) =>
                                       TiffPropertiesWidget(layerSourceItem)));
+                        } else if (layerSourceItem is WmsSource) {
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      WmsPropertiesWidget(layerSourceItem)));
                         } else if (layerSourceItem is TileSource) {
                           await Navigator.push(
                               context,

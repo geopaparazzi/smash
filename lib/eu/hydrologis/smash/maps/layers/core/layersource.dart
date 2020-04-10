@@ -32,8 +32,8 @@ const LAYERSKEY_MAXZOOM = 'maxzoom';
 
 const LAYERSTYPE_WMS = 'wms';
 const LAYERSTYPE_TMS = 'tms';
-const LAYERSTYPE_FORMAT_JPG = '"image/jpeg"';
-const LAYERSTYPE_FORMAT_PNG = '"image/png"';
+const LAYERSTYPE_FORMAT_JPG = "image/jpeg";
+const LAYERSTYPE_FORMAT_PNG = "image/png";
 
 /// A generic persistable layer source.
 abstract class LayerSource {
@@ -112,7 +112,8 @@ abstract class LayerSource {
 
   bool operator ==(dynamic other) {
     if (other is LayerSource) {
-      if (getUrl() != null && getUrl() != other.getUrl()) {
+      if (getUrl() != null &&
+          (getName() != other.getName() || getUrl() != other.getUrl())) {
         return false;
       } else if (getAbsolutePath() != null &&
           (getName() != other.getName() ||
@@ -147,8 +148,7 @@ abstract class RasterLayerSource extends LayerSource {
 }
 
 /// Interface for raster data based layersources.
-abstract class TiledRasterLayerSource extends RasterLayerSource {
-}
+abstract class TiledRasterLayerSource extends RasterLayerSource {}
 
 /// List of default online tile layer sources.
 final List<TileSource> onlinesTilesSources = [
