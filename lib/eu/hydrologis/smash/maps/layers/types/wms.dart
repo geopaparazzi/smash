@@ -122,19 +122,3 @@ class WmsSource extends RasterLayerSource {
     return _hasBounds;
   }
 }
-
-class WmsLayersPage extends StatefulWidget {
-  WmsLayersPage({Key key}) : super(key: key);
-
-  @override
-  _WmsLayersPageState createState() => _WmsLayersPageState();
-}
-
-class _WmsLayersPageState extends State<WmsLayersPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-       child: Container(),
-    );
-  }
-}

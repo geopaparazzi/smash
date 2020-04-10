@@ -25,6 +25,9 @@ const KEY_CAMERA_RESOLUTION = 'KEY_CAMERA_RESOLUTION';
 const KEY_ENABLE_DIAGNOSTICS = 'KEY_ENABLE_DIAGNOSTICS';
 const KEY_RECENTSPROJECTS_LIST = 'KEY_RECENTSPROJECTS_LIST';
 
+const KEY_SAVED_TMS_LIST = 'KEY_SAVED_TMS_LIST';
+const KEY_SAVED_WMS_LIST = 'KEY_SAVED_WMS_LIST';
+
 const KEY_GPS_MIN_DISTANCE = 'KEY_GPS_MIN_DISTANCE';
 const KEY_GPS_MAX_DISTANCE = 'KEY_GPS_MAX_DISTANCE';
 const KEY_GPS_TIMEINTERVAL = 'KEY_GPS_TIMEINTERVAL';
@@ -190,6 +193,38 @@ class GpPreferences {
     await _preferences.setInt(key, value);
   }
 
+  List<String> getTmsListSync() {
+    var list = _preferences.getStringList(KEY_SAVED_TMS_LIST);
+    if (list == null) list = [];
+    return list;
+  }
+
+  Future setTmsList(List<String> list) async {
+    await _preferences.setStringList(KEY_SAVED_TMS_LIST, list);
+  }
+
+  Future addNewTms(String jsonDefinition) async {
+    var tmsList = getTmsListSync();
+    if (!tmsList.contains(jsonDefinition)) {
+      tmsList.add(jsonDefinition);
+      await _preferences.setStringList(KEY_SAVED_TMS_LIST, tmsList);
+    }
+  }
+
+  List<String> getWmsListSync() {
+    var list = _preferences.getStringList(KEY_SAVED_WMS_LIST);
+    if (list == null) list = [];
+    return list;
+  }
+
+  Future addNewWms(String jsonDefinition) async {
+    var wmsList = getWmsListSync();
+    if (!wmsList.contains(jsonDefinition)) {
+      wmsList.add(jsonDefinition);
+      await _preferences.setStringList(KEY_SAVED_WMS_LIST, wmsList);
+    }
+  }
+
   List<String> getRecentProjectsListSync() {
     var list = _preferences.getStringList(KEY_RECENTSPROJECTS_LIST);
     if (list == null) list = [];
@@ -207,7 +242,7 @@ class GpPreferences {
       list.removeLast();
     }
     list.insert(0, projectPath);
-    _preferences.setStringList(KEY_RECENTSPROJECTS_LIST, list);
+    await _preferences.setStringList(KEY_RECENTSPROJECTS_LIST, list);
   }
 
   /// Return last saved position as [lon, lat, zoom] or null.
@@ -232,24 +267,24 @@ class GpPreferences {
     return getBooleanSync(KEY_CENTER_ON_GPS, false);
   }
 
-  void setCenterOnGps(bool centerOnGps) {
-    setBoolean(KEY_CENTER_ON_GPS, centerOnGps);
+  Future<void> setCenterOnGps(bool centerOnGps) async {
+    await setBoolean(KEY_CENTER_ON_GPS, centerOnGps);
   }
 
   bool getRotateOnHeading() {
     return getBooleanSync(KEY_ROTATE_ON_HEADING, false);
   }
 
-  void setRotateOnHeading(bool rotateOnHeading) {
-    setBoolean(KEY_ROTATE_ON_HEADING, rotateOnHeading);
+  Future<void> setRotateOnHeading(bool rotateOnHeading) async {
+    await setBoolean(KEY_ROTATE_ON_HEADING, rotateOnHeading);
   }
 
   bool getKeepScreenOn() {
     return getBooleanSync(KEY_KEEP_SCREEN_ON, true);
   }
 
-  void setKeepScreenOn(bool keepScreenOn) {
-    setBoolean(KEY_KEEP_SCREEN_ON, keepScreenOn);
+  Future<void> setKeepScreenOn(bool keepScreenOn) async {
+    await setBoolean(KEY_KEEP_SCREEN_ON, keepScreenOn);
   }
 
   Future<List<String>> getLayerInfoList() async {

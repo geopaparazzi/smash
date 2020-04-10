@@ -25,9 +25,10 @@ import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/tiles.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -100,30 +101,10 @@ class LayersPageState extends State<LayersPage> {
                 Container(
                   child: FloatingActionButton(
                     onPressed: () async {
-                      var selected = await showComboDialog(
-                          context,
-                          "Select online tile source",
-                          onlinesTilesSources.map((ts) => ts.name).toList());
-                      if (selected != null) {
-                        var selectedTs = onlinesTilesSources
-                            .where((ts) => ts.name == selected)
-                            .first;
-                        LayerManager().addLayerSource(selectedTs);
-                        setState(() {});
-                      }
-                    },
-                    tooltip: "Online Sources",
-                    child: Icon(MdiIcons.earth),
-                    heroTag: null,
-                  ),
-                ),
-                Container(
-                  child: FloatingActionButton(
-                    onPressed: () async {
                       var wmsLayerSource = await Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => WmsLayersPage()));
+                              builder: (context) => OnlineSourcesPage()));
 
                       if (wmsLayerSource != null) {
                         LayerManager().addLayerSource(wmsLayerSource);

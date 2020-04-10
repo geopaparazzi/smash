@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/tiles.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 
 class LayerManager {
   static final LayerManager _instance = LayerManager._internal();
@@ -42,10 +42,10 @@ class LayerManager {
   List<LayerSource> getLayerSources({onlyActive: true}) {
     var list = <LayerSource>[];
     if (!onlyActive) {
-      list.addAll(_layerSources);
+      list.addAll(_layerSources.where((ts) => ts != null));
     } else {
       List<LayerSource> where = _layerSources.where((ts) {
-        if (ts.isActive()) {
+        if (ts != null && ts.isActive()) {
           String file = ts.getAbsolutePath();
           if (file != null && file.isNotEmpty) {
             if (!File(file).existsSync()) {

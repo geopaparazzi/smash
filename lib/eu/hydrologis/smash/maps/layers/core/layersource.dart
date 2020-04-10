@@ -11,9 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
@@ -26,6 +26,7 @@ const LAYERSKEY_LABEL = 'label';
 const LAYERSKEY_ISVISIBLE = 'isvisible';
 const LAYERSKEY_OPACITY = 'opacity';
 const LAYERSKEY_ATTRIBUTION = 'attribution';
+const LAYERSKEY_SUBDOMAINS = 'subdomains';
 const LAYERSKEY_MINZOOM = 'minzoom';
 const LAYERSKEY_MAXZOOM = 'maxzoom';
 
@@ -145,11 +146,16 @@ abstract class RasterLayerSource extends LayerSource {
   Future<void> load(BuildContext context);
 }
 
+/// Interface for raster data based layersources.
+abstract class TiledRasterLayerSource extends RasterLayerSource {
+}
+
 /// List of default online tile layer sources.
 final List<TileSource> onlinesTilesSources = [
   TileSource.Open_Street_Map_Standard(),
-  TileSource.Open_Stree_Map_Cicle(),
-  TileSource.Open_Street_Map_HOT(),
-  TileSource.Stamen_Watercolor(),
   TileSource.Wikimedia_Map(),
+  TileSource.Opnvkarte_Transport(),
+  TileSource.Stamen_Watercolor(),
+  TileSource.OpenTopoMap(),
+  TileSource.Esri_Satellite(),
 ];

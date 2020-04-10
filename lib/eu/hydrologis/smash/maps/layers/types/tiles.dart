@@ -21,7 +21,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/mapsforge.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/mbtiles.dart';
 
-class TileSource extends LayerSource {
+class TileSource extends TiledRasterLayerSource {
   String name;
   String absolutePath;
   String url;
@@ -61,7 +61,7 @@ class TileSource extends LayerSource {
     this.maxZoom = map[LAYERSKEY_MAXZOOM];
     this.attribution = map[LAYERSKEY_ATTRIBUTION];
     this.isVisible = map[LAYERSKEY_ISVISIBLE];
-    this.opacityPercentage = map[LAYERSKEY_OPACITY] ?? 100;
+    this.opacityPercentage = (map[LAYERSKEY_OPACITY] ?? 100).toDouble();
 
     var subDomains = map['subdomains'] as String;
     if (subDomains != null) {
@@ -82,10 +82,11 @@ class TileSource extends LayerSource {
     this.canDoProperties = true,
   });
 
-  TileSource.Open_Stree_Map_Cicle({
-    this.name: "Open Cicle Map",
-    this.url: "https://tile.opencyclemap.org/cycle/{z}/{x}/{y}.png",
+  TileSource.OpenTopoMap({
+    this.name: "OpenTopoMap",
+    this.url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
+     this.subdomains: const ['a', 'b', 'c'],
     this.minZoom: 0,
     this.maxZoom: 19,
     this.isVisible: true,
@@ -94,8 +95,9 @@ class TileSource extends LayerSource {
 
   TileSource.Open_Street_Map_HOT({
     this.name: "Open Street Map H.O.T.",
-    this.url: "https://tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+    this.url: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
+    this.subdomains: const ['a', 'b'],
     this.minZoom: 0,
     this.maxZoom: 19,
     this.isVisible: true,
@@ -105,9 +107,21 @@ class TileSource extends LayerSource {
 
   TileSource.Stamen_Watercolor({
     this.name: "Stamen Watercolor",
-    this.url: "https://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+    this.url: "http://c.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
     this.attribution:
         "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL",
+    this.minZoom: 0,
+    this.maxZoom: 20,
+    this.isVisible: true,
+    this.isTms: false,
+    this.canDoProperties = true,
+  });
+
+  TileSource.Opnvkarte_Transport({
+    this.name: "Opnvkarte Transport",
+    this.url: "http://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
+    this.attribution:
+        "OpenStreetMap, ODbL",
     this.minZoom: 0,
     this.maxZoom: 20,
     this.isVisible: true,
@@ -381,11 +395,16 @@ class TileSource extends LayerSource {
   bool isZoomable() {
     return bounds != null;
   }
+
+  @override
+  Future<void> load(BuildContext context) async {
+    await getBounds();
+  }
 }
 
 /// The tiff properties page.
 class TileSourcePropertiesWidget extends StatefulWidget {
-  TileSource _source;
+  final TileSource _source;
   TileSourcePropertiesWidget(this._source);
 
   @override
