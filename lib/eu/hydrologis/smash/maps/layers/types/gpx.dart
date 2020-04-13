@@ -17,6 +17,7 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
 class GpxSource extends VectorLayerSource {
@@ -29,6 +30,7 @@ class GpxSource extends VectorLayerSource {
   double lineWidth = 3;
   bool isVisible = true;
   String _attribution = "GPX: ";
+  int _srid = SmashPrj.EPSG4326_INT;
 
   List<LatLng> _wayPoints = [];
   List<String> _wayPointNames = [];
@@ -41,6 +43,7 @@ class GpxSource extends VectorLayerSource {
     String relativePath = map[LAYERSKEY_FILE];
     _absolutePath = Workspace.makeAbsolute(relativePath);
     isVisible = map[LAYERSKEY_ISVISIBLE];
+    _srid = map[LAYERSKEY_SRID] ?? _srid;
   }
 
   GpxSource(this._absolutePath);
@@ -129,6 +132,7 @@ class GpxSource extends VectorLayerSource {
     {
         "$LAYERSKEY_LABEL": "$_name",
         "$LAYERSKEY_FILE":"$relativePath",
+        "$LAYERSKEY_SRID": $_srid,
         "$LAYERSKEY_ISVISIBLE": $isVisible 
     }
     ''';
@@ -223,6 +227,11 @@ class GpxSource extends VectorLayerSource {
   @override
   bool isZoomable() {
     return true;
+  }
+
+  @override
+  int getSrid() {
+    return _srid;
   }
 }
 

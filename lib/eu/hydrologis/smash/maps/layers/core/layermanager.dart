@@ -27,10 +27,16 @@ class LayerManager {
     List<String> layerSourcesList = await GpPreferences().getLayerInfoList();
     if (layerSourcesList.isNotEmpty) {
       _layerSources = [];
-      layerSourcesList.forEach((json) {
+      for (var json in layerSourcesList) {
         var fromJson = LayerSource.fromJson(json);
+        for (var source in fromJson) {
+          if (source.getSrid() == null) {
+            await source.calculateSrid();
+          }
+        }
         _layerSources.addAll(fromJson);
-      });
+      }
+      ;
     } else {
       _layerSources = [TileSource.Open_Street_Map_Standard()..isVisible = true];
     }

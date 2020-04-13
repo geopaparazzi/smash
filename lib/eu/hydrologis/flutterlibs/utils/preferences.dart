@@ -50,6 +50,8 @@ const KEY_GSS_SERVER_URL = 'KEY_GSS_SERVER_URL';
 const KEY_GSS_SERVER_USER = 'KEY_GSS_SERVER_USER';
 const KEY_GSS_SERVER_PWD = 'KEY_GSS_SERVER_PWD';
 
+const KEY_PROJECTIONS = 'KEY_PROJECTIONS';
+
 const KEY_LATLONG_DECIMALS = 6;
 const KEY_ELEV_DECIMALS = 0;
 
@@ -121,6 +123,14 @@ class GpPreferences {
 
   List<String> getStringListSync(String key, [List<String> defaultValue]) {
     _checkPreferencesOrThrow();
+    List<String> prefValue = _preferences.getStringList(key);
+    if (prefValue == null) return defaultValue;
+    return prefValue;
+  }
+
+  Future<List<String>> getStringList(String key,
+      [List<String> defaultValue]) async {
+    await _checkPreferences();
     List<String> prefValue = _preferences.getStringList(key);
     if (prefValue == null) return defaultValue;
     return prefValue;
@@ -302,5 +312,18 @@ class GpPreferences {
     await _checkPreferences();
     if (layerInfoList == null) layerInfoList = [];
     await _preferences.setStringList(KEY_LAYERINFO_LIST, layerInfoList);
+  }
+
+  Future<List<String>> getProjections() async {
+    await _checkPreferences();
+    var list = _preferences.getStringList(KEY_PROJECTIONS);
+    if (list == null) list = [];
+    return list;
+  }
+
+  Future<void> setProjections(List<String> projectionsList) async {
+    await _checkPreferences();
+    if (projectionsList == null) projectionsList = [];
+    await _preferences.setStringList(KEY_PROJECTIONS, projectionsList);
   }
 }

@@ -90,6 +90,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     }
     _total = f.geoms.length;
     var geometry = f.geoms[_index];
+    
     Map<String, dynamic> data = f.data[_index];
     var centroid = geometry.getCentroid().getCoordinate();
 

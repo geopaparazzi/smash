@@ -24,6 +24,7 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/util/logging.dart';
@@ -45,12 +46,15 @@ class GeopackageSource extends VectorLayerSource {
 
   bool loaded = false;
   GeopackageDb db;
+  int _srid;
 
   GeopackageSource.fromMap(Map<String, dynamic> map) {
     _tableName = map[LAYERSKEY_LABEL];
     String relativePath = map[LAYERSKEY_FILE];
     _absolutePath = Workspace.makeAbsolute(relativePath);
     isVisible = map[LAYERSKEY_ISVISIBLE];
+
+    _srid = map[LAYERSKEY_SRID];
   }
 
   GeopackageSource(this._absolutePath, this._tableName);
@@ -76,15 +80,17 @@ class GeopackageSource extends VectorLayerSource {
         }
       }
 
-      var ch = ConnectionsHandler();
-      ch.DO_RTREE_CHECK = DO_RTREE_CHECK;
-      db = await ch.open(_absolutePath, tableName: _tableName);
+      await getDatabase();
       _geometryColumn = await db.getGeometryColumnsForTable(_tableName);
+      _srid = _geometryColumn.srid;
 
 //      _tableBounds = db.getTableBounds(_tableName);
 
       _tableGeoms = await db.getGeometriesIn(_tableName,
           limit: maxFeaturesToLoad, envelope: limitBounds);
+
+      var fromPrj = SmashPrj.fromSrid(_srid);
+      SmashPrj.transformListToWgs84(fromPrj, _tableGeoms);
       _tableBounds = Envelope.empty();
       _tableGeoms.forEach((g) {
         _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
@@ -96,6 +102,14 @@ class GeopackageSource extends VectorLayerSource {
       _basicStyle = await db.getBasicStyle(_tableName);
 
       loaded = true;
+    }
+  }
+
+  Future getDatabase() async {
+    var ch = ConnectionsHandler();
+    ch.doRtreeCheck = DO_RTREE_CHECK;
+    if (db == null) {
+      db = await ch.open(_absolutePath, tableName: _tableName);
     }
   }
 
@@ -134,6 +148,7 @@ class GeopackageSource extends VectorLayerSource {
         "$LAYERSKEY_LABEL": "$_tableName",
         "$LAYERSKEY_FILE":"$relativePath",
         "$LAYERSKEY_ISVECTOR": true,
+        "$LAYERSKEY_SRID": $_srid,
         "$LAYERSKEY_ISVISIBLE": $isVisible 
     }
     ''';
@@ -281,6 +296,25 @@ class GeopackageSource extends VectorLayerSource {
   @override
   bool isZoomable() {
     return _tableBounds != null;
+  }
+
+  @override
+  int getSrid() {
+    return _srid;
+  }
+
+  @override
+  Future<void> calculateSrid() async {
+    if (_srid == null) {
+      if (db == null) {
+        await getDatabase();
+      }
+      if (_srid == null) {
+        _geometryColumn = await db.getGeometryColumnsForTable(_tableName);
+        _srid = _geometryColumn.srid;
+      }
+    }
+    return;
   }
 }
 

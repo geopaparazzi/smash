@@ -23,6 +23,7 @@ const LAYERSKEY_TYPE = 'type';
 const LAYERSKEY_FORMAT = 'format';
 const LAYERSKEY_ISVECTOR = 'isVector';
 const LAYERSKEY_LABEL = 'label';
+const LAYERSKEY_SRID = 'srid';
 const LAYERSKEY_ISVISIBLE = 'isvisible';
 const LAYERSKEY_OPACITY = 'opacity';
 const LAYERSKEY_ATTRIBUTION = 'attribution';
@@ -78,6 +79,18 @@ abstract class LayerSource {
 
   /// Convert the source to json for persistence.
   String toJson();
+
+  /// Get the srid integer.
+  /// 
+  /// For sources that only read the srid onLoad, calculateSrid might be necessary before to avoid loading all data.
+  int getSrid();
+
+  /// This can be used to calculate the srid if an async moment can be exploited and is necessary.
+  /// 
+  /// After this getSrid is assured to have the right srid.
+  Future<void> calculateSrid() async {
+    return;
+  }
 
   /// Create a layersource from a presistence [json].
   static List<LayerSource> fromJson(String json) {

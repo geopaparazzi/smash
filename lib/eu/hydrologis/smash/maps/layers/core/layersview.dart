@@ -32,6 +32,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 
 class LayersPage extends StatefulWidget {
   LayersPage();
@@ -91,6 +92,7 @@ class LayersPageState extends State<LayersPage> {
 
                       if (selectedPath != null) {
                         await loadLayer(context, selectedPath);
+                        setState(() {});
                       }
                     },
                     tooltip: "Load spatial datasets",
@@ -127,6 +129,10 @@ class LayersPageState extends State<LayersPage> {
   List<Dismissible> createLayersList(
       List<LayerSource> _layersList, BuildContext context) {
     return _layersList.map((layerSourceItem) {
+      var srid = layerSourceItem.getSrid();
+      var projection = SmashPrj.fromSrid(srid);
+      bool prjSupported = projection != null;
+
       return Dismissible(
         confirmDismiss: _confirmLogDismiss,
         direction: DismissDirection.endToStart,
@@ -150,6 +156,18 @@ class LayersPageState extends State<LayersPage> {
           ),
         ),
         child: ListTile(
+          onTap: () {
+            if (!prjSupported) {
+              // showWarningDialog(context, "Need to add prj: $srid");
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProjectionsSettings(
+                            epsgToDownload: srid,
+                          )));
+            }
+          },
           leading: Icon(
             SmashIcons.forPath(
                 layerSourceItem.getAbsolutePath() ?? layerSourceItem.getUrl()),
@@ -223,10 +241,16 @@ class LayersPageState extends State<LayersPage> {
             child: Text('${layerSourceItem.getName()}'),
             scrollDirection: Axis.horizontal,
           ),
-          subtitle: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Text('${layerSourceItem.getAttribution()}'),
-          ),
+          subtitle: prjSupported
+              ? SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Text(
+                      'EPSG:$srid ${layerSourceItem.getAttribution()}'),
+                )
+              : Text(
+                  "The proj is not supported. Tap to solve.",
+                  style: TextStyle(color: SmashColors.mainDanger),
+                ),
         ),
       );
     }).toList();
@@ -303,11 +327,11 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
     try {
       var db = await ch.open(filePath);
       List<FeatureEntry> features = await db.features();
-      features.forEach((f) {
+      for (var f in features) {
         GeopackageSource gps = GeopackageSource(filePath, f.tableName);
+        await gps.calculateSrid();
         LayerManager().addLayerSource(gps);
-        return true;
-      });
+      }
 
       List<TileEntry> tiles = await db.tiles();
       tiles.forEach((t) {

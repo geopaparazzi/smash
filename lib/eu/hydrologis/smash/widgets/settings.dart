@@ -4,7 +4,9 @@
  * found in the LICENSE file.
  */
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';

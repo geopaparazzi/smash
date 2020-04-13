@@ -6,6 +6,7 @@
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/theme.dart';
@@ -58,7 +59,7 @@ class WelcomeWidget extends StatefulWidget {
 
 class _WelcomeWidgetState extends State<WelcomeWidget> {
   ValueNotifier<int> orderNotifier = ValueNotifier<int>(0);
-  var finalOrder = 7;
+  var finalOrder = 8;
 
   bool _initFinished = false;
 
@@ -114,8 +115,15 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                 "GPS initialized.", orderNotifier, 4, handleGps),
             ProgressTile(MdiIcons.notePlus, "Loading tags list...",
                 "Tags list loaded.", orderNotifier, 5, handleTags),
+            ProgressTile(
+                MdiIcons.earthBox,
+                "Loading known projections...",
+                "Known projections loaded.",
+                orderNotifier,
+                6,
+                handleProjections),
             ProgressTile(MdiIcons.layers, "Loading layers list...",
-                "Layers list loaded.", orderNotifier, 6, handleLayers),
+                "Layers list loaded.", orderNotifier, 7, handleLayers),
           ],
         ),
       );
@@ -129,6 +137,23 @@ Future<String> handleLayers(BuildContext context) async {
   // init layer manager
   var layerManager = LayerManager();
   await layerManager.initialize();
+  return null;
+}
+
+Future<String> handleProjections(BuildContext context) async {
+  // read tags file
+  List<String> projList = await GpPreferences().getProjections();
+  for (var projDef in projList) {
+    var firstDot = projDef.indexOf(":");
+    var epsg = projDef.substring(0, firstDot);
+    var def = projDef.substring(firstDot + 1, projDef.length);
+    try {
+      int.parse(epsg);
+      Projection.add('EPSG:$epsg', def);
+    } catch (e) {
+      print(e);
+    }
+  }
   return null;
 }
 

@@ -16,6 +16,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/mapsforge.dart';
@@ -34,6 +35,7 @@ class TileSource extends TiledRasterLayerSource {
   bool isTms = false;
   bool isWms = false;
   double opacityPercentage = 100;
+  int _srid = SmashPrj.EPSG3857_INT;
 
   bool canDoProperties = false;
 
@@ -63,6 +65,8 @@ class TileSource extends TiledRasterLayerSource {
     this.isVisible = map[LAYERSKEY_ISVISIBLE];
     this.opacityPercentage = (map[LAYERSKEY_OPACITY] ?? 100).toDouble();
 
+    _srid = map[LAYERSKEY_SRID] ?? _srid;
+
     var subDomains = map['subdomains'] as String;
     if (subDomains != null) {
       this.subdomains = subDomains.split(",");
@@ -86,7 +90,7 @@ class TileSource extends TiledRasterLayerSource {
     this.name: "OpenTopoMap",
     this.url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
-     this.subdomains: const ['a', 'b', 'c'],
+    this.subdomains: const ['a', 'b', 'c'],
     this.minZoom: 0,
     this.maxZoom: 19,
     this.isVisible: true,
@@ -120,8 +124,7 @@ class TileSource extends TiledRasterLayerSource {
   TileSource.Opnvkarte_Transport({
     this.name: "Opnvkarte Transport",
     this.url: "http://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
-    this.attribution:
-        "OpenStreetMap, ODbL",
+    this.attribution: "OpenStreetMap, ODbL",
     this.minZoom: 0,
     this.maxZoom: 20,
     this.isVisible: true,
@@ -373,6 +376,7 @@ class TileSource extends TiledRasterLayerSource {
         "$LAYERSKEY_MAXZOOM": $maxZoom,
         "$LAYERSKEY_OPACITY": $opacityPercentage,
         "$LAYERSKEY_ATTRIBUTION": "$attribution",
+        "$LAYERSKEY_SRID": $_srid,
         "$LAYERSKEY_TYPE": "$LAYERSTYPE_TMS",
         "$LAYERSKEY_ISVISIBLE": $isVisible ${subdomains.isNotEmpty ? "," : ""}
         ${subdomains.isNotEmpty ? "\"subdomains\": \"${subdomains.join(',')}\"" : ""}
@@ -399,6 +403,11 @@ class TileSource extends TiledRasterLayerSource {
   @override
   Future<void> load(BuildContext context) async {
     await getBounds();
+  }
+
+  @override
+  int getSrid() {
+    return _srid;
   }
 }
 

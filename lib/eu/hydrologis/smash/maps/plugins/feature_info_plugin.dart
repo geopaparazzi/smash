@@ -12,6 +12,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
 import 'package:smash/eu/hydrologis/smash/maps/feature_attributes_viewer.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
@@ -19,6 +20,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:proj4dart/proj4dart.dart' as PROJ;
 
 /// A plugin that handles tap info from vector layers
 class FeatureInfoPlugin implements MapPlugin {
@@ -109,6 +111,7 @@ class FeatureInfoLayer extends StatelessWidget {
   void queryLayers(Envelope env, InfoToolState state, ProjectState projectState,
       BuildContext context) async {
     var boundsGeom = GeometryUtilities.fromEnvelope(env, makeCircle: true);
+    var boundMap = {4326: boundsGeom};
 
     List<LayerSource> visibleVectorLayers = LayerManager()
         .getLayerSources()
@@ -118,15 +121,29 @@ class FeatureInfoLayer extends StatelessWidget {
     totalQueryResult.ids = [];
     for (var vLayer in visibleVectorLayers) {
       if (vLayer is GeopackageSource) {
+        var srid = vLayer.getSrid();
+        var boundsGeomInSrid = boundMap[srid];
         var db = await ConnectionsHandler().open(vLayer.getAbsolutePath());
+        if (boundsGeomInSrid == null) {
+          // create the env
+          var tmp = GeometryUtilities.fromEnvelope(env, makeCircle: true);
+          var dataPrj = SmashPrj.fromSrid(srid);
+          SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, tmp);
+          boundsGeomInSrid = tmp;
+          boundMap[srid] = boundsGeomInSrid;
+        }
         QueryResult queryResult =
-            await db.getTableData(vLayer.getName(), geometry: boundsGeom);
+            await db.getTableData(vLayer.getName(), geometry: boundsGeomInSrid);
         if (queryResult.data.isNotEmpty) {
           var layerName = vLayer.getName();
           print("Found data for: " + layerName);
 
+          var dataPrj = SmashPrj.fromSrid(srid);
           queryResult.geoms.forEach((g) {
             totalQueryResult.ids.add(layerName);
+            if (srid != SmashPrj.EPSG4326_INT) {
+              SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, g);
+            }
             totalQueryResult.geoms.add(g);
           });
           queryResult.data.forEach((d) {

@@ -22,6 +22,7 @@ class WmsSource extends RasterLayerSource {
   LatLngBounds _serviceBounds = LatLngBounds();
   bool _hasBounds = false;
   String attribution = "";
+  int _srid = SmashPrj.EPSG3857_INT;
 
   bool loaded = false;
 
@@ -32,6 +33,8 @@ class WmsSource extends RasterLayerSource {
     opacityPercentage = (map[LAYERSKEY_OPACITY] ?? 100).toDouble();
     imageFormat = map[LAYERSKEY_FORMAT] ?? LAYERSTYPE_FORMAT_JPG;
     attribution = map[LAYERSKEY_ATTRIBUTION] ?? "";
+
+    _srid = map[LAYERSKEY_SRID];
 
     // TODO get bounds
   }
@@ -78,6 +81,7 @@ class WmsSource extends RasterLayerSource {
         "$LAYERSKEY_OPACITY": $opacityPercentage,
         "$LAYERSKEY_FORMAT": "$imageFormat",
         "$LAYERSKEY_ATTRIBUTION": "$attribution",
+        "$LAYERSKEY_SRID": $_srid,
         "$LAYERSKEY_TYPE": "$LAYERSTYPE_WMS"
     }
     ''';
@@ -150,6 +154,11 @@ class WmsSource extends RasterLayerSource {
   @override
   bool isZoomable() {
     return _hasBounds;
+  }
+
+  @override
+  int getSrid() {
+    return _srid;
   }
 }
 

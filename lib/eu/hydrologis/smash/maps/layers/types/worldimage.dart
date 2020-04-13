@@ -28,11 +28,21 @@ class WorldImageSource extends RasterLayerSource {
   LatLngBounds _imageBounds = LatLngBounds();
   bool loaded = false;
   MemoryImage _memoryImage;
+  proj4dart.Projection originPrj;
+  int _srid;
 
   WorldImageSource.fromMap(Map<String, dynamic> map) {
     String relativePath = map[LAYERSKEY_FILE];
     _name = FileUtilities.nameFromFile(relativePath, false);
     _absolutePath = Workspace.makeAbsolute(relativePath);
+
+    _srid = map[LAYERSKEY_SRID];
+    if (_srid == null) {
+      originPrj = SmashPrj.fromImageFile(_absolutePath);
+      _srid = SmashPrj.getSrid(originPrj);
+    } else {
+      originPrj = SmashPrj.fromSrid(_srid);
+    }
     isVisible = map[LAYERSKEY_ISVISIBLE];
 
     opacityPercentage = map[LAYERSKEY_OPACITY] ?? 100;
@@ -98,8 +108,6 @@ class WorldImageSource extends RasterLayerSource {
       var east = west + xExtent;
       var south = north - yExtent;
 
-      var originPrj = SmashPrj.fromImageFile(_absolutePath);
-
       var ll = proj4dart.Point(x: west, y: south);
       var ur = proj4dart.Point(x: east, y: north);
       var llDest = SmashPrj.transformToWgs84(originPrj, ll);
@@ -149,6 +157,7 @@ class WorldImageSource extends RasterLayerSource {
         "$LAYERSKEY_LABEL": "$_name",
         "$LAYERSKEY_FILE":"$relativePath",
         "$LAYERSKEY_ISVISIBLE": $isVisible,
+        "$LAYERSKEY_SRID": $_srid,
         "$LAYERSKEY_OPACITY": $opacityPercentage
     }
     ''';
@@ -196,11 +205,16 @@ class WorldImageSource extends RasterLayerSource {
   bool isZoomable() {
     return true;
   }
+
+  @override
+  int getSrid() {
+    return _srid;
+  }
 }
 
 /// The tiff properties page.
 class TiffPropertiesWidget extends StatefulWidget {
-  WorldImageSource _source;
+  final WorldImageSource _source;
   TiffPropertiesWidget(this._source);
 
   @override

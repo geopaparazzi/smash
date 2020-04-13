@@ -30,7 +30,7 @@ class ProjectView extends StatelessWidget {
     var recentProjectsList = GpPreferences().getRecentProjectsListSync();
 
     const inset = 15.0;
-    const iconSize = 96.0;
+    const iconSize = 80.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +58,7 @@ class ProjectView extends StatelessWidget {
                 width: double.infinity,
                 child: OutlineButton(
                   borderSide:
-                      BorderSide(color: SmashColors.mainDecorations, width: 5),
+                      BorderSide(color: SmashColors.mainDecorations, width: 3),
                   shape: StadiumBorder(),
                   onPressed: () async {
                     var lastUsedFolder = await Workspace.getLastUsedFolder();
@@ -74,7 +74,7 @@ class ProjectView extends StatelessWidget {
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SmashUI.titleText("Open an existing project",
+                    child: SmashUI.normalText("Open an existing project",
                         bold: false, color: SmashColors.mainDecorations),
                   ),
                 ),
@@ -94,14 +94,14 @@ class ProjectView extends StatelessWidget {
                 width: double.infinity,
                 child: OutlineButton(
                   borderSide:
-                      BorderSide(color: SmashColors.mainDecorations, width: 5),
+                      BorderSide(color: SmashColors.mainDecorations, width: 3),
                   shape: StadiumBorder(),
                   onPressed: () async {
                     _createNewProjectAndOpenMainView(context);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SmashUI.titleText("Create a new project",
+                    child: SmashUI.normalText("Create a new project",
                         bold: false, color: SmashColors.mainDecorations),
                   ),
                 ),
@@ -129,7 +129,7 @@ class ProjectView extends StatelessWidget {
                                   BorderRadius.all(Radius.circular(15)),
                               border: Border.all(
                                   color: SmashColors.mainDecorations,
-                                  width: 5)),
+                                  width: 3)),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: recentProjectsList.map((path) {
@@ -168,7 +168,7 @@ class ProjectView extends StatelessWidget {
                               padding:
                                   const EdgeInsets.only(left: 8.0, right: 8.0),
                               child: SmashUI.normalText("Recent projects",
-                                  color: SmashColors.mainTextColor),
+                                  color: SmashColors.mainDecorations),
                             ),
                           ))
                     ],
