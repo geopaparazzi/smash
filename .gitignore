@@ -30,12 +30,18 @@
 # Android related
 **/android/**/gradle-wrapper.jar
 **/android/.gradle
+**/android/.project
+**/android/.settings/
 **/android/captures/
 **/android/gradlew
 **/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
 **/android/key.properties
+
+**/android/app/.project
+**/android/app/.classpath
+**/android/app/.settings/
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
