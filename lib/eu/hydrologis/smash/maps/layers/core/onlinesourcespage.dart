@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
@@ -36,7 +38,6 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
 
     reloadNotifier.addListener(() async {
       await getList();
-      setState(() {});
     });
 
     getList();
@@ -159,7 +160,36 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
                 bold: true,
                 color: c,
               ),
-              onTap: () {},
+              onTap: () async {
+                var exportsFolder = await Workspace.getExportsFolder();
+                var importFilePath = FileUtilities.joinPaths(
+                    exportsFolder.path, "onlinesources.json");
+
+                var rel = Workspace.makeRelative(importFilePath);
+                if (!File(importFilePath).existsSync()) {
+                  showWarningDialog(context, "The file $rel doesn't exist");
+                } else {
+                  var json = FileUtilities.readFile(importFilePath);
+                  var mapList = jsonDecode(json);
+                  if (mapList is List) {
+                    for (var i = 0; i < mapList.length; i++) {
+                      var map = mapList[i];
+                      var type = map[LAYERSKEY_TYPE];
+                      if (type == LAYERSTYPE_TMS) {
+                        var layerSource = TileSource.fromMap(map);
+                        await GpPreferences().addNewTms(layerSource.toJson());
+                      } else if (type == LAYERSTYPE_WMS) {
+                        var layerSource = WmsSource.fromMap(map);
+                        await GpPreferences().addNewWms(layerSource.toJson());
+                      }
+                    }
+                    await getList();
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text("Online sources imported."),
+                    ));
+                  }
+                }
+              },
             ),
             ListTile(
               leading: Icon(
@@ -193,7 +223,6 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
                 Navigator.pop(context);
 
                 var rel = Workspace.makeRelative(exportFilePath);
-                // showToast(context, "Exported to: $rel");
                 Scaffold.of(context).showSnackBar(SnackBar(
                   content: Text("Exported to: $rel"),
                 ));
@@ -254,7 +283,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
         var layerSource = WmsSource.fromMap(map);
         var layers = await layerSource.toLayers(context);
         _wmsCardsList.add(OnlineSourceCard(
-            type, layerSource, layers, _tmsSourcesList, i, reloadNotifier));
+            type, layerSource, layers, _wmsSourcesList, i, reloadNotifier));
       }
     }
 
