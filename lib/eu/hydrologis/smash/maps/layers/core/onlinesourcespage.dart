@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'dart:convert';
@@ -51,6 +53,11 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
             Tab(text: "TMS"),
             Tab(text: "WMS"),
           ]),
+        ),
+        endDrawer: Builder(
+          builder: (BuildContext context) {
+            return buildDrawer(context);
+          },
         ),
         body: TabBarView(children: [
           _tmsCardsList == null
@@ -120,6 +127,82 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
         ]),
       ),
     );
+  }
+
+  Drawer buildDrawer(BuildContext context) {
+    double iconSize = SmashUI.MEDIUM_ICON_SIZE;
+    Color c = SmashColors.mainDecorations;
+    return Drawer(
+        child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        new Container(
+          margin: EdgeInsets.only(bottom: 20),
+          child: new DrawerHeader(
+            child: Image.asset(
+              "assets/maptools_icon.png",
+            ),
+          ),
+          color: SmashColors.mainBackground,
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              leading: Icon(
+                MdiIcons.import,
+                color: c,
+                size: iconSize,
+              ),
+              title: SmashUI.normalText(
+                "Import from file",
+                bold: true,
+                color: c,
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(
+                MdiIcons.export,
+                color: c,
+                size: iconSize,
+              ),
+              title: SmashUI.normalText(
+                "Export to file",
+                bold: true,
+                color: c,
+              ),
+              onTap: () async {
+                List<dynamic> exportList = [];
+                _tmsSourcesList.forEach((tmsStr) {
+                  var map = jsonDecode(tmsStr);
+                  exportList.add(map);
+                });
+                _wmsSourcesList.forEach((wmsStr) {
+                  var map = jsonDecode(wmsStr);
+                  exportList.add(map);
+                });
+
+                var exportJson =
+                    JsonEncoder.withIndent("  ").convert(exportList);
+
+                var exportsFolder = await Workspace.getExportsFolder();
+                var exportFilePath = FileUtilities.joinPaths(
+                    exportsFolder.path, "onlinesources.json");
+                FileUtilities.writeStringToFile(exportFilePath, exportJson);
+                Navigator.pop(context);
+
+                var rel = Workspace.makeRelative(exportFilePath);
+                // showToast(context, "Exported to: $rel");
+                Scaffold.of(context).showSnackBar(SnackBar(
+                  content: Text("Exported to: $rel"),
+                ));
+              },
+            ),
+          ],
+        ),
+      ],
+    ));
   }
 
   Future getList() async {
@@ -555,8 +638,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
     ),
     Step(
       title: const Text("Insert the url of the service."),
-      subtitle: Text(
-          "The base url ending with question mark."),
+      subtitle: Text("The base url ending with question mark."),
       isActive: true,
       state: StepState.indexed,
       content: Column(

@@ -57,6 +57,9 @@ class SmashIcons {
   static IconData layersIcon = MdiIcons.layers;
   static IconData zoomInIcon = MdiIcons.magnifyPlusOutline;
   static IconData zoomOutIcon = MdiIcons.magnifyMinusOutline;
+  
+  static IconData importIcon = MdiIcons.import;
+  static IconData exportIcon = MdiIcons.export;
 
   static IconData upload = MdiIcons.upload;
   static IconData download = MdiIcons.download;

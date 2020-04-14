@@ -97,7 +97,7 @@ class DashboardUtils {
       ),
       ListTile(
         leading: new Icon(
-          Icons.file_download,
+          SmashIcons.importIcon,
           color: c,
           size: iconSize,
         ),
@@ -114,7 +114,7 @@ class DashboardUtils {
       ),
       ListTile(
         leading: new Icon(
-          Icons.file_upload,
+          SmashIcons.exportIcon,
           color: c,
           size: iconSize,
         ),
