@@ -32,7 +32,39 @@ class SmashPrj {
   static int getSrid(Projection projection) {
     String sridStr =
         projection.projName.toLowerCase().replaceFirst("epsg:", "");
-    return int.parse(sridStr);
+    try {
+      return int.parse(sridStr);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// This method should not exist.
+  ///
+  /// Until proj4dart is not able to get the srid from a WKT,
+  /// we try to guess from wkt toi allow sidecar files.
+  ///
+  /// This will work only for few epsgs.
+  static int getSridFromWktTheUglyWay(String wkt) {
+    var lastEpsg = wkt.toUpperCase().lastIndexOf("\"EPSG\"");
+    if (lastEpsg != -1) {
+      var lastComma = wkt.indexOf(",", lastEpsg + 1);
+      if (lastComma != -1) {
+        var openEpsgIndex = wkt.indexOf("\"", lastComma + 1);
+        if (openEpsgIndex != -1) {
+          var closeEpsgIndex = wkt.indexOf("\"", openEpsgIndex + 1);
+          if (closeEpsgIndex != -1) {
+            var epsgString = wkt.substring(openEpsgIndex + 1, closeEpsgIndex);
+            try {
+              return int.parse(epsgString);
+            } catch (e) {
+              return null;
+            }
+          }
+        }
+      }
+    }
+    return null;
   }
 
   static Projection fromSrid(int srid) {

@@ -130,8 +130,11 @@ class LayersPageState extends State<LayersPage> {
       List<LayerSource> _layersList, BuildContext context) {
     return _layersList.map((layerSourceItem) {
       var srid = layerSourceItem.getSrid();
-      var projection = SmashPrj.fromSrid(srid);
-      bool prjSupported = projection != null;
+      bool prjSupported;
+      if (srid != null) {
+        var projection = SmashPrj.fromSrid(srid);
+        prjSupported = projection != null;
+      }
 
       return Dismissible(
         confirmDismiss: _confirmLogDismiss,
@@ -241,16 +244,21 @@ class LayersPageState extends State<LayersPage> {
             child: Text('${layerSourceItem.getName()}'),
             scrollDirection: Axis.horizontal,
           ),
-          subtitle: prjSupported
-              ? SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Text(
-                      'EPSG:$srid ${layerSourceItem.getAttribution()}'),
-                )
-              : Text(
-                  "The proj is not supported. Tap to solve.",
+          subtitle: prjSupported == null
+              ? Text(
+                  "The proj could not be recognised. Will try to load anyway.",
                   style: TextStyle(color: SmashColors.mainDanger),
-                ),
+                )
+              : prjSupported
+                  ? SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Text(
+                          'EPSG:$srid ${layerSourceItem.getAttribution()}'),
+                    )
+                  : Text(
+                      "The proj is not supported. Tap to solve.",
+                      style: TextStyle(color: SmashColors.mainDanger),
+                    ),
         ),
       );
     }).toList();
@@ -316,7 +324,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
           context, "Only image files with prj file definition are supported.");
     } else {
       WorldImageSource worldLayer = WorldImageSource(filePath);
-      await worldLayer.load(context);
+      // await worldLayer.load(context);
       if (worldLayer.hasData()) {
         LayerManager().addLayerSource(worldLayer);
         return true;

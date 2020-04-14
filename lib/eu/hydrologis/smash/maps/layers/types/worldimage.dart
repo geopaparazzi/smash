@@ -47,12 +47,21 @@ class WorldImageSource extends RasterLayerSource {
   }
 
   WorldImageSource(this._absolutePath) {
+    _name = FileUtilities.nameFromFile(_absolutePath, false);
     getSridFromPath();
   }
 
   void getSridFromPath() {
     originPrj = SmashPrj.fromImageFile(_absolutePath);
     _srid = SmashPrj.getSrid(originPrj);
+    if (_srid == null) {
+      var prjPath = SmashPrj.getPrjForImage(_absolutePath);
+      var prjFile = File(prjPath);
+      if (prjFile.existsSync()) {
+        var wktPrj = FileUtilities.readFile(prjPath);
+        _srid = SmashPrj.getSridFromWktTheUglyWay(wktPrj);
+      }
+    }
   }
 
   static String getWorldFile(String imagePath) {
