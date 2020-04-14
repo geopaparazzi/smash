@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:latlong/latlong.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4dart;
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
@@ -28,8 +29,8 @@ class WorldImageSource extends RasterLayerSource {
   LatLngBounds _imageBounds = LatLngBounds();
   bool loaded = false;
   MemoryImage _memoryImage;
-  proj4dart.Projection originPrj;
   int _srid;
+  var originPrj;
 
   WorldImageSource.fromMap(Map<String, dynamic> map) {
     String relativePath = map[LAYERSKEY_FILE];
@@ -37,18 +38,22 @@ class WorldImageSource extends RasterLayerSource {
     _absolutePath = Workspace.makeAbsolute(relativePath);
 
     _srid = map[LAYERSKEY_SRID];
-    if (_srid == null) {
-      originPrj = SmashPrj.fromImageFile(_absolutePath);
-      _srid = SmashPrj.getSrid(originPrj);
-    } else {
-      originPrj = SmashPrj.fromSrid(_srid);
-    }
     isVisible = map[LAYERSKEY_ISVISIBLE];
 
     opacityPercentage = map[LAYERSKEY_OPACITY] ?? 100;
+    if (_srid == null) {
+      getSridFromPath();
+    }
   }
 
-  WorldImageSource(this._absolutePath);
+  WorldImageSource(this._absolutePath) {
+    getSridFromPath();
+  }
+
+  void getSridFromPath() {
+    originPrj = SmashPrj.fromImageFile(_absolutePath);
+    _srid = SmashPrj.getSrid(originPrj);
+  }
 
   static String getWorldFile(String imagePath) {
     String folder = FileUtilities.parentFolderFromFile(imagePath);
@@ -78,6 +83,12 @@ class WorldImageSource extends RasterLayerSource {
       // print("LOAD WORLD FILE");
       _name = FileUtilities.nameFromFile(_absolutePath, false);
       File imageFile = new File(_absolutePath);
+
+      if (_srid == null) {
+        getSridFromPath();
+      } else {
+        originPrj = SmashPrj.fromSrid(_srid);
+      }
 
       var ext = FileUtilities.getExtension(_absolutePath);
       IMG.Image _decodedImage;
@@ -256,18 +267,22 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
           appBar: AppBar(
             title: Text("Tiff Properties"),
           ),
-          body: Center(
-            child: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Card(
-                    elevation: SmashUI.DEFAULT_ELEVATION,
-                    shape: SmashUI.defaultShapeBorder(),
-                    child: Column(
-                      children: <Widget>[
-                        SmashUI.titleText("Opacity"),
-                        Row(
+          body: ListView(
+            children: <Widget>[
+              Padding(
+                padding: SmashUI.defaultPadding(),
+                child: Card(
+                  shape: SmashUI.defaultShapeBorder(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(MdiIcons.opacity),
+                        title: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text("Opacity"),
+                        ),
+                        subtitle: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
                             Flexible(
@@ -293,12 +308,12 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ));
   }

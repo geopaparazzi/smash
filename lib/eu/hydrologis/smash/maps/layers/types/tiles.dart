@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
@@ -456,18 +457,22 @@ class TileSourcePropertiesWidgetState
           appBar: AppBar(
             title: Text("Tile Properties"),
           ),
-          body: Center(
-            child: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Card(
-                    elevation: SmashUI.DEFAULT_ELEVATION,
-                    shape: SmashUI.defaultShapeBorder(),
-                    child: Column(
-                      children: <Widget>[
-                        SmashUI.titleText("Opacity"),
-                        Row(
+          body: ListView(
+            children: <Widget>[
+              Padding(
+                padding: SmashUI.defaultPadding(),
+                child: Card(
+                  shape: SmashUI.defaultShapeBorder(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(MdiIcons.opacity),
+                        title: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text("Opacity"),
+                        ),
+                        subtitle: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
                             Flexible(
@@ -479,8 +484,8 @@ class TileSourcePropertiesWidgetState
                                   divisions: 10,
                                   onChanged: (newRating) {
                                     _somethingChanged = true;
-                                    setState(
-                                        () => _opacitySliderValue = newRating);
+                                    setState(() =>
+                                        _opacitySliderValue = newRating);
                                   },
                                   value: _opacitySliderValue,
                                 )),
@@ -493,12 +498,12 @@ class TileSourcePropertiesWidgetState
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ));
   }

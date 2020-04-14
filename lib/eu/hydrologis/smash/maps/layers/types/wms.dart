@@ -8,6 +8,7 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
@@ -206,18 +207,22 @@ class WmsPropertiesWidgetState extends State<WmsPropertiesWidget> {
           appBar: AppBar(
             title: Text("WMS Properties"),
           ),
-          body: Center(
-            child: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Card(
-                    elevation: SmashUI.DEFAULT_ELEVATION,
-                    shape: SmashUI.defaultShapeBorder(),
-                    child: Column(
-                      children: <Widget>[
-                        SmashUI.titleText("Opacity"),
-                        Row(
+          body: ListView(
+            children: <Widget>[
+              Padding(
+                padding: SmashUI.defaultPadding(),
+                child: Card(
+                  shape: SmashUI.defaultShapeBorder(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ListTile(
+                        leading: Icon(MdiIcons.opacity),
+                        title: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text("Opacity"),
+                        ),
+                        subtitle: Row(
                           mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
                             Flexible(
@@ -243,12 +248,12 @@ class WmsPropertiesWidgetState extends State<WmsPropertiesWidget> {
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ));
   }
