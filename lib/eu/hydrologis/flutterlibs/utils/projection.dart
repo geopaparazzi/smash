@@ -171,6 +171,7 @@ class ProjectionsSettingsState extends State<ProjectionsSettings> {
 
   Future<void> getData() async {
     List<String> projList = await GpPreferences().getProjections();
+    projList = projList.toSet().toList();
     _projList = projList.map((prj) {
       var firstColon = prj.indexOf(":");
       var epsgStr = prj.substring(0, firstColon);
@@ -179,11 +180,11 @@ class ProjectionsSettingsState extends State<ProjectionsSettings> {
 
     _projList.sort();
 
-    if (!_projList.contains(SmashPrj.EPSG4326_INT)) {
-      _projList.insert(0, SmashPrj.EPSG4326_INT);
-    }
     if (!_projList.contains(SmashPrj.EPSG3857_INT)) {
       _projList.insert(0, SmashPrj.EPSG3857_INT);
+    }
+    if (!_projList.contains(SmashPrj.EPSG4326_INT)) {
+      _projList.insert(0, SmashPrj.EPSG4326_INT);
     }
   }
 
@@ -191,18 +192,7 @@ class ProjectionsSettingsState extends State<ProjectionsSettings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
-        title: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(
-                iconData,
-                color: SmashColors.mainDecorations,
-              ),
-            ),
-            Text("Registered Projections"),
-          ],
-        ),
+        title: Text("Registered Projections"),
       ),
       body: _projList == null
           ? Center(

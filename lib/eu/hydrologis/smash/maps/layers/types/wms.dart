@@ -34,7 +34,7 @@ class WmsSource extends RasterLayerSource {
     imageFormat = map[LAYERSKEY_FORMAT] ?? LAYERSTYPE_FORMAT_JPG;
     attribution = map[LAYERSKEY_ATTRIBUTION] ?? "";
 
-    _srid = map[LAYERSKEY_SRID];
+    _srid = map[LAYERSKEY_SRID] ?? SmashPrj.EPSG3857_INT;
 
     // TODO get bounds
   }
