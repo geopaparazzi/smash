@@ -92,33 +92,33 @@ class WmsSource extends RasterLayerSource {
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
     await load(context);
 
-    final resolutions = <double>[
-      134217728, // 20
-      67108864,
-      33554432,
-      16777216,
-      8388608,
-      4194304, //15
-      2097152,
-      1048576,
-      524288,
-      262144,
-      131072, // 10
-      65536,
-      32768,
-      16384,
-      8192,
-      4096, // 5
-      2048,
-      1024,
-      512,
-      256,
-      128, // 0
-    ];
-    var crs = Proj4Crs.fromFactory(
-        code: 'EPSG:3857',
-        proj4Projection: SmashPrj.EPSG3857,
-        resolutions: resolutions);
+    // final resolutions = <double>[
+    //   134217728, // 20
+    //   67108864,
+    //   33554432,
+    //   16777216,
+    //   8388608,
+    //   4194304, //15
+    //   2097152,
+    //   1048576,
+    //   524288,
+    //   262144,
+    //   131072, // 10
+    //   65536,
+    //   32768,
+    //   16384,
+    //   8192,
+    //   4096, // 5
+    //   2048,
+    //   1024,
+    //   512,
+    //   256,
+    //   128, // 0
+    // ];
+    // var crs = Proj4Crs.fromFactory(
+    //     code: 'EPSG:3857',
+    //     proj4Projection: SmashPrj.EPSG3857,
+    //     resolutions: resolutions);
 
     List<LayerOptions> layers = [
       TileLayerOptions(

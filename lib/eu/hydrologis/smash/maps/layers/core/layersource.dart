@@ -14,6 +14,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
@@ -30,6 +31,8 @@ const LAYERSKEY_ATTRIBUTION = 'attribution';
 const LAYERSKEY_SUBDOMAINS = 'subdomains';
 const LAYERSKEY_MINZOOM = 'minzoom';
 const LAYERSKEY_MAXZOOM = 'maxzoom';
+const DEFAULT_MINZOOM = 1;
+const DEFAULT_MAXZOOM = 19;
 
 const LAYERSTYPE_WMS = 'wms';
 const LAYERSTYPE_TMS = 'tms';
@@ -81,12 +84,12 @@ abstract class LayerSource {
   String toJson();
 
   /// Get the srid integer.
-  /// 
+  ///
   /// For sources that only read the srid onLoad, calculateSrid might be necessary before to avoid loading all data.
   int getSrid();
 
   /// This can be used to calculate the srid if an async moment can be exploited and is necessary.
-  /// 
+  ///
   /// After this getSrid is assured to have the right srid.
   Future<void> calculateSrid() async {
     return;
@@ -98,7 +101,11 @@ abstract class LayerSource {
       var map = jsonDecode(json);
 
       String file = map[LAYERSKEY_FILE];
-      if (file != null && FileManager.isGpx(file)) {
+      String type = map[LAYERSKEY_TYPE];
+      if (type != null && type == LAYERSTYPE_WMS) {
+        var wms = WmsSource.fromMap(map);
+        return [wms];
+      } else if (file != null && FileManager.isGpx(file)) {
         GpxSource gpx = GpxSource.fromMap(map);
         return [gpx];
       } else if (file != null && FileManager.isWorldImage(file)) {

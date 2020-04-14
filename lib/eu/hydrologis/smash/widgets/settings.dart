@@ -167,7 +167,7 @@ class CameraSettingState extends State<CameraSetting> {
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(
                 iconData,
-                color: SmashColors.mainDecorations,
+                color: SmashColors.mainBackground,
               ),
             ),
             Text(title),
@@ -176,53 +176,65 @@ class CameraSettingState extends State<CameraSetting> {
       ),
       body: Column(
         children: <Widget>[
-          ListTile(
-            leading: SmashUI.normalText(
-              "Resolution",
-            ),
-            title: Padding(
-              padding: const EdgeInsets.only(left: 30.0),
-              child: DropdownButton(
-                value: value,
-                isExpanded: true,
-                hint: Text("Camera Resolution"),
-                items: [
-                  DropdownMenuItem(
-                    child: Container(
-                      child: SmashUI.normalText(
-                        CameraResolutions.HIGH,
-                        textAlign: TextAlign.center,
-                      ),
-                      width: 200,
+          Card(
+            margin: SmashUI.defaultMargin(),
+            // elevation: SmashUI.DEFAULT_ELEVATION,
+            color: SmashColors.mainBackground,
+            child: ListTile(
+              leading: Icon(MdiIcons.camera),
+              title: Text("Resolution"),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultTBPadding(),
+                    child: Text(
+                      "The camera resolution",
+                      textAlign: TextAlign.justify,
                     ),
-                    value: CameraResolutions.HIGH,
                   ),
-                  DropdownMenuItem(
-                    child: Container(
-                      child: SmashUI.normalText(
-                        CameraResolutions.MEDIUM,
-                        textAlign: TextAlign.center,
+                  DropdownButton(
+                    value: value,
+                    isExpanded: false,
+                    items: [
+                      DropdownMenuItem(
+                        child: Container(
+                          child: Text(
+                            CameraResolutions.HIGH,
+                            textAlign: TextAlign.center,
+                          ),
+                          width: 200,
+                        ),
+                        value: CameraResolutions.HIGH,
                       ),
-                      width: 200,
-                    ),
-                    value: CameraResolutions.MEDIUM,
-                  ),
-                  DropdownMenuItem(
-                    child: Container(
-                      child: SmashUI.normalText(
-                        CameraResolutions.LOW,
-                        textAlign: TextAlign.center,
+                      DropdownMenuItem(
+                        child: Container(
+                          child: Text(
+                            CameraResolutions.MEDIUM,
+                            textAlign: TextAlign.center,
+                          ),
+                          width: 200,
+                        ),
+                        value: CameraResolutions.MEDIUM,
                       ),
-                      width: 200,
-                    ),
-                    value: CameraResolutions.LOW,
+                      DropdownMenuItem(
+                        child: Container(
+                          child: Text(
+                            CameraResolutions.LOW,
+                            textAlign: TextAlign.center,
+                          ),
+                          width: 200,
+                        ),
+                        value: CameraResolutions.LOW,
+                      ),
+                    ],
+                    onChanged: (selected) async {
+                      await GpPreferences()
+                          .setString(KEY_CAMERA_RESOLUTION, selected);
+                      setState(() {});
+                    },
                   ),
                 ],
-                onChanged: (selected) async {
-                  await GpPreferences()
-                      .setString(KEY_CAMERA_RESOLUTION, selected);
-                  setState(() {});
-                },
               ),
             ),
           ),
@@ -267,7 +279,7 @@ class ScreenSettingState extends State<ScreenSetting> {
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(
                 iconData,
-                color: SmashColors.mainDecorations,
+                color: SmashColors.mainBackground,
               ),
             ),
             Text(title),
@@ -279,7 +291,6 @@ class ScreenSettingState extends State<ScreenSetting> {
           children: <Widget>[
             Card(
               margin: SmashUI.defaultMargin(),
-              elevation: SmashUI.DEFAULT_ELEVATION,
               color: SmashColors.mainBackground,
               child: CheckboxListTile(
                 value: keepScreenOn,
@@ -295,7 +306,6 @@ class ScreenSettingState extends State<ScreenSetting> {
             ),
             Card(
               margin: SmashUI.defaultMargin(),
-              elevation: SmashUI.DEFAULT_ELEVATION,
               color: SmashColors.mainBackground,
               child: CheckboxListTile(
                 value: showScalebar,
@@ -310,7 +320,6 @@ class ScreenSettingState extends State<ScreenSetting> {
             ),
             Card(
               margin: SmashUI.defaultMargin(),
-              elevation: SmashUI.DEFAULT_ELEVATION,
               color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
@@ -417,7 +426,6 @@ class ScreenSettingState extends State<ScreenSetting> {
             ),
             Card(
               margin: SmashUI.defaultMargin(),
-              elevation: SmashUI.DEFAULT_ELEVATION,
               color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
@@ -527,7 +535,7 @@ class GpsSettingsState extends State<GpsSettings> {
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(
                 iconData,
-                color: SmashColors.mainDecorations,
+                color: SmashColors.mainBackground,
               ),
             ),
             Text(title),
@@ -539,66 +547,69 @@ class GpsSettingsState extends State<GpsSettings> {
           children: <Widget>[
             Card(
               margin: SmashUI.defaultMargin(),
-              elevation: SmashUI.DEFAULT_ELEVATION,
+              // elevation: SmashUI.DEFAULT_ELEVATION,
               color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Log filters", bold: true),
+                    child: SmashUI.normalText("Log filters",
+                        bold: true, textAlign: TextAlign.start),
                   ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Min distance between 2 points."),
-                  ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: DropdownButton<int>(
-                      value: minDistance,
-                      isExpanded: true,
-                      items: MINDISTANCES.map((i) {
-                        return DropdownMenuItem<int>(
-                          child: SmashUI.normalText(
-                            "$i m",
-                            textAlign: TextAlign.center,
-                          ),
-                          value: i,
-                        );
-                      }).toList(),
-                      onChanged: (selected) async {
-                        await GpPreferences()
-                            .setInt(KEY_GPS_MIN_DISTANCE, selected);
-                        var gpsState = Provider.of<GpsState>(context);
-                        gpsState.gpsMinDistance = selected;
-                        setState(() {});
-                      },
+                  ListTile(
+                    leading: Icon(MdiIcons.ruler),
+                    title: Text("Min distance between 2 points."),
+                    subtitle: Wrap(
+                      children: <Widget>[
+                        DropdownButton<int>(
+                          value: minDistance,
+                          isExpanded: false,
+                          items: MINDISTANCES.map((i) {
+                            return DropdownMenuItem<int>(
+                              child: Text(
+                                "$i m",
+                                textAlign: TextAlign.center,
+                              ),
+                              value: i,
+                            );
+                          }).toList(),
+                          onChanged: (selected) async {
+                            await GpPreferences()
+                                .setInt(KEY_GPS_MIN_DISTANCE, selected);
+                            var gpsState = Provider.of<GpsState>(context);
+                            gpsState.gpsMinDistance = selected;
+                            setState(() {});
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Min timespan between 2 points."),
-                  ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: DropdownButton<int>(
-                      value: timeInterval,
-                      isExpanded: true,
-                      items: TIMEINTERVALS.map((i) {
-                        return DropdownMenuItem<int>(
-                          child: SmashUI.normalText(
-                            "$i sec",
-                            textAlign: TextAlign.center,
-                          ),
-                          value: i,
-                        );
-                      }).toList(),
-                      onChanged: (selected) async {
-                        await GpPreferences()
-                            .setInt(KEY_GPS_TIMEINTERVAL, selected);
-                        var gpsState = Provider.of<GpsState>(context);
-                        gpsState.gpsTimeInterval = selected;
-                        setState(() {});
-                      },
+                  ListTile(
+                    leading: Icon(MdiIcons.timelapse),
+                    title: Text("Min timespan between 2 points."),
+                    subtitle: Wrap(
+                      children: <Widget>[
+                        DropdownButton<int>(
+                          value: timeInterval,
+                          isExpanded: false,
+                          items: TIMEINTERVALS.map((i) {
+                            return DropdownMenuItem<int>(
+                              child: Text(
+                                "$i sec",
+                                textAlign: TextAlign.center,
+                              ),
+                              value: i,
+                            );
+                          }).toList(),
+                          onChanged: (selected) async {
+                            await GpPreferences()
+                                .setInt(KEY_GPS_TIMEINTERVAL, selected);
+                            var gpsState = Provider.of<GpsState>(context);
+                            gpsState.gpsTimeInterval = selected;
+                            setState(() {});
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -606,7 +617,6 @@ class GpsSettingsState extends State<GpsSettings> {
             ),
             Card(
               margin: SmashUI.defaultMargin(),
-              elevation: SmashUI.DEFAULT_ELEVATION,
               color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
@@ -614,32 +624,40 @@ class GpsSettingsState extends State<GpsSettings> {
                     padding: SmashUI.defaultPadding(),
                     child: SmashUI.normalText("Other filters", bold: true),
                   ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText(
-                        "Max distance allowed between 2 subsequent points. This marks GPS points with higher 'jumps' as invalid and ignores them."),
-                  ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: DropdownButton<int>(
-                      value: maxDistance,
-                      isExpanded: true,
-                      items: MAXDISTANCES.map((i) {
-                        return DropdownMenuItem<int>(
-                          child: SmashUI.normalText(
-                            "$i m",
-                            textAlign: TextAlign.center,
+                  ListTile(
+                    leading: Icon(MdiIcons.ruler),
+                    title: Text("Max distance between 2 points."),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: SmashUI.defaultTBPadding(),
+                          child: Text(
+                            "Max distance allowed between two subsequent points. This marks GPS points with higher 'jumps' as invalid and ignores them.",
+                            textAlign: TextAlign.justify,
                           ),
-                          value: i,
-                        );
-                      }).toList(),
-                      onChanged: (selected) async {
-                        await GpPreferences()
-                            .setInt(KEY_GPS_MAX_DISTANCE, selected);
-                        var gpsState = Provider.of<GpsState>(context);
-                        gpsState.gpsMaxDistance = selected;
-                        setState(() {});
-                      },
+                        ),
+                        DropdownButton<int>(
+                          value: maxDistance,
+                          isExpanded: false,
+                          items: MAXDISTANCES.map((i) {
+                            return DropdownMenuItem<int>(
+                              child: Text(
+                                "$i m",
+                                textAlign: TextAlign.center,
+                              ),
+                              value: i,
+                            );
+                          }).toList(),
+                          onChanged: (selected) async {
+                            await GpPreferences()
+                                .setInt(KEY_GPS_MAX_DISTANCE, selected);
+                            var gpsState = Provider.of<GpsState>(context);
+                            gpsState.gpsMaxDistance = selected;
+                            setState(() {});
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -647,7 +665,6 @@ class GpsSettingsState extends State<GpsSettings> {
             ),
             Card(
               margin: SmashUI.defaultMargin(),
-              elevation: SmashUI.DEFAULT_ELEVATION,
               color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
@@ -655,22 +672,31 @@ class GpsSettingsState extends State<GpsSettings> {
                     padding: SmashUI.defaultPadding(),
                     child: SmashUI.normalText("Mock locations", bold: true),
                   ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText(
-                        "${doTestLog ? "Disable" : "Enable"} test gps log for demo use.\n\nWARNING: This needs a working gps fix since it modifies the incoming gps points with those of the demo."),
-                  ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: Checkbox(
-                      value: doTestLog,
-                      onChanged: (newValue) async {
-                        await GpPreferences()
-                            .setBoolean(KEY_GPS_TESTLOG, newValue);
-                        var gpsState = Provider.of<GpsState>(context);
-                        gpsState.doTestLog = newValue;
-                        setState(() {});
-                      },
+                  ListTile(
+                    leading: Icon(MdiIcons.crosshairsGps),
+                    title: Text(
+                        "${doTestLog ? "Disable" : "Enable"} test gps log for demo use."),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: SmashUI.defaultTBPadding(),
+                          child: Text(
+                            "WARNING: This needs a working gps fix since it modifies the incoming gps points with those of the demo.",
+                            textAlign: TextAlign.justify,
+                          ),
+                        ),
+                        Checkbox(
+                          value: doTestLog,
+                          onChanged: (newValue) async {
+                            await GpPreferences()
+                                .setBoolean(KEY_GPS_TESTLOG, newValue);
+                            var gpsState = Provider.of<GpsState>(context);
+                            gpsState.doTestLog = newValue;
+                            setState(() {});
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -711,7 +737,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(
                 iconData,
-                color: SmashColors.mainDecorations,
+                color: SmashColors.mainBackground,
               ),
             ),
             Text(title),
@@ -723,7 +749,6 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
           children: <Widget>[
             Card(
               margin: SmashUI.defaultMargin(),
-              elevation: SmashUI.DEFAULT_ELEVATION,
               color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
@@ -731,46 +756,63 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                     padding: SmashUI.defaultPadding(),
                     child: SmashUI.normalText("Data loading", bold: true),
                   ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText(
-                        "Max number of features to load per layer. To apply remove and add layer back."),
-                  ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: DropdownButton<int>(
-                      value: maxFeaturesToLoad,
-                      isExpanded: true,
-                      items: MAXFEATURESTOLOAD.map((i) {
-                        return DropdownMenuItem<int>(
-                          child: SmashUI.normalText(
-                            i > 0 ? "$i" : "all",
-                            textAlign: TextAlign.center,
+                  ListTile(
+                    leading: Icon(MdiIcons.counter),
+                    title: Text("Max number of features."),
+                    subtitle: Wrap(
+                      children: <Widget>[
+                        Padding(
+                          padding: SmashUI.defaultTBPadding(),
+                          child: Text(
+                            "Max number of features to load per layer. To apply remove and add layer back.",
+                            textAlign: TextAlign.justify,
                           ),
-                          value: i,
-                        );
-                      }).toList(),
-                      onChanged: (selected) async {
-                        await GpPreferences()
-                            .setInt(KEY_VECTOR_MAX_FEATURES, selected);
-                        setState(() {});
-                      },
+                        ),
+                        DropdownButton<int>(
+                          value: maxFeaturesToLoad,
+                          isExpanded: false,
+                          items: MAXFEATURESTOLOAD.map((i) {
+                            return DropdownMenuItem<int>(
+                              child: Text(
+                                i > 0 ? "$i" : "all",
+                                textAlign: TextAlign.center,
+                              ),
+                              value: i,
+                            );
+                          }).toList(),
+                          onChanged: (selected) async {
+                            await GpPreferences()
+                                .setInt(KEY_VECTOR_MAX_FEATURES, selected);
+                            setState(() {});
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText(
-                        "Load only on the last visible map area. To apply remove and add layer back."),
-                  ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: Checkbox(
-                      value: loadOnlyVisible,
-                      onChanged: (newValue) async {
-                        await GpPreferences()
-                            .setBoolean(KEY_VECTOR_LOAD_ONLY_VISIBLE, newValue);
-                        setState(() {});
-                      },
+                  ListTile(
+                    leading: Icon(MdiIcons.selectMarker),
+                    title: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text("Load map area."),
+                    ),
+                    subtitle: Wrap(
+                      children: <Widget>[
+                        Padding(
+                          padding: SmashUI.defaultTBPadding(),
+                          child: Text(
+                            "Load only on the last visible map area. To apply remove and add layer back.",
+                            textAlign: TextAlign.justify,
+                          ),
+                        ),
+                        Checkbox(
+                          value: loadOnlyVisible,
+                          onChanged: (newValue) async {
+                            await GpPreferences().setBoolean(
+                                KEY_VECTOR_LOAD_ONLY_VISIBLE, newValue);
+                            setState(() {});
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -778,7 +820,6 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
             ),
             Card(
               margin: SmashUI.defaultMargin(),
-              elevation: SmashUI.DEFAULT_ELEVATION,
               color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
@@ -786,30 +827,30 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                     padding: SmashUI.defaultPadding(),
                     child: SmashUI.normalText("Info Tool", bold: true),
                   ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText(
-                        "Tap size of the info tool in pixels."),
-                  ),
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: DropdownButton<int>(
-                      value: tapAreaPixels,
-                      isExpanded: true,
-                      items: TAPAREASIZES.map((i) {
-                        return DropdownMenuItem<int>(
-                          child: SmashUI.normalText(
-                            "$i px",
-                            textAlign: TextAlign.center,
-                          ),
-                          value: i,
-                        );
-                      }).toList(),
-                      onChanged: (selected) async {
-                        await GpPreferences()
-                            .setInt(KEY_VECTOR_TAPAREA_SIZE, selected);
-                        setState(() {});
-                      },
+                  ListTile(
+                    leading: Icon(MdiIcons.mapMarkerRadius),
+                    title: Text("Tap size of the info tool in pixels."),
+                    subtitle: Wrap(
+                      children: <Widget>[
+                        DropdownButton<int>(
+                          value: tapAreaPixels,
+                          isExpanded: true,
+                          items: TAPAREASIZES.map((i) {
+                            return DropdownMenuItem<int>(
+                              child: Text(
+                                "$i px",
+                                textAlign: TextAlign.center,
+                              ),
+                              value: i,
+                            );
+                          }).toList(),
+                          onChanged: (selected) async {
+                            await GpPreferences()
+                                .setInt(KEY_VECTOR_TAPAREA_SIZE, selected);
+                            setState(() {});
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -845,27 +886,35 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(
                 iconData,
-                color: SmashColors.mainDecorations,
+                color: SmashColors.mainBackground,
               ),
             ),
             Text(title),
           ],
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          CheckboxListTile(
-            value: value,
-            onChanged: (selected) async {
-              await GpPreferences()
-                  .setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
-              setState(() {});
-            },
-            title: SmashUI.normalText(
-              "Enable diagnostics menu",
-            ),
+      body: Card(
+        margin: SmashUI.defaultMargin(),
+        // elevation: SmashUI.DEFAULT_ELEVATION,
+        color: SmashColors.mainBackground,
+        child: ListTile(
+          leading: Icon(iconData),
+          title: Text("${value ? "Disable" : "Enable"} diagnostics menu"),
+          subtitle: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Checkbox(
+                value: value,
+                onChanged: (selected) async {
+                  await GpPreferences()
+                      .setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
+                  setState(() {});
+                },
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -912,7 +961,7 @@ class DeviceSettingsState extends State<DeviceSettings> {
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(
                 iconData,
-                color: SmashColors.mainDecorations,
+                color: SmashColors.mainBackground,
               ),
             ),
             Text(title),
@@ -930,7 +979,6 @@ class DeviceSettingsState extends State<DeviceSettings> {
                     width: double.infinity,
                     child: Card(
                       margin: SmashUI.defaultMargin(),
-                      elevation: SmashUI.DEFAULT_ELEVATION,
                       color: SmashColors.mainBackground,
                       child: Column(
                         children: <Widget>[
@@ -950,7 +998,6 @@ class DeviceSettingsState extends State<DeviceSettings> {
                     width: double.infinity,
                     child: Card(
                       margin: SmashUI.defaultMargin(),
-                      elevation: SmashUI.DEFAULT_ELEVATION,
                       color: SmashColors.mainBackground,
                       child: Column(
                         children: <Widget>[
@@ -965,8 +1012,9 @@ class DeviceSettingsState extends State<DeviceSettings> {
                           ),
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: RaisedButton(
-                              child: SmashUI.normalText("Change"),
+                            child: FlatButton(
+                              child: SmashUI.normalText("CHANGE",
+                                  color: SmashColors.mainDanger),
                               onPressed: () async {
                                 var res = await showInputDialog(context,
                                     "Override id", "Insert override id",
@@ -1037,7 +1085,7 @@ class GssSettingsState extends State<GssSettings> {
               padding: const EdgeInsets.only(right: 8.0),
               child: Icon(
                 iconData,
-                color: SmashColors.mainDecorations,
+                color: SmashColors.mainBackground,
               ),
             ),
             Text(title),
@@ -1055,7 +1103,6 @@ class GssSettingsState extends State<GssSettings> {
                     width: double.infinity,
                     child: Card(
                       margin: SmashUI.defaultMargin(),
-                      elevation: SmashUI.DEFAULT_ELEVATION,
                       color: SmashColors.mainBackground,
                       child: Column(
                         children: <Widget>[
@@ -1069,8 +1116,9 @@ class GssSettingsState extends State<GssSettings> {
                           ),
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: RaisedButton(
-                              child: SmashUI.normalText("Change"),
+                            child: FlatButton(
+                              child: SmashUI.normalText("CHANGE",
+                                  color: SmashColors.mainDecorations),
                               onPressed: () async {
                                 var res = await showInputDialog(
                                     context, "Set url", "Set GSS server url",

@@ -171,6 +171,10 @@ class SmashUI {
     return EdgeInsets.only(right: DEFAULT_PADDING);
   }
 
+  static EdgeInsets defaultTBPadding() {
+    return EdgeInsets.only(top: DEFAULT_PADDING, bottom: DEFAULT_PADDING);
+  }
+
   static ShapeBorder defaultShapeBorder() {
     return RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10.0),

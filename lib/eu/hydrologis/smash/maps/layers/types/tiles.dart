@@ -26,8 +26,8 @@ class TileSource extends TiledRasterLayerSource {
   String name;
   String absolutePath;
   String url;
-  int minZoom;
-  int maxZoom;
+  int minZoom = DEFAULT_MINZOOM;
+  int maxZoom = DEFAULT_MAXZOOM;
   String attribution;
   LatLngBounds bounds;
   List<String> subdomains = [];
@@ -37,7 +37,7 @@ class TileSource extends TiledRasterLayerSource {
   double opacityPercentage = 100;
   int _srid = SmashPrj.EPSG3857_INT;
 
-  bool canDoProperties = false;
+  bool canDoProperties = true;
 
   TileSource({
     this.name,
@@ -59,8 +59,8 @@ class TileSource extends TiledRasterLayerSource {
       absolutePath = Workspace.makeAbsolute(relativePath);
     }
     this.url = map[LAYERSKEY_URL];
-    this.minZoom = map[LAYERSKEY_MINZOOM];
-    this.maxZoom = map[LAYERSKEY_MAXZOOM];
+    this.minZoom = map[LAYERSKEY_MINZOOM] ?? DEFAULT_MINZOOM;
+    this.maxZoom = map[LAYERSKEY_MAXZOOM] ?? DEFAULT_MAXZOOM;
     this.attribution = map[LAYERSKEY_ATTRIBUTION];
     this.isVisible = map[LAYERSKEY_ISVISIBLE];
     this.opacityPercentage = (map[LAYERSKEY_OPACITY] ?? 100).toDouble();
@@ -78,8 +78,8 @@ class TileSource extends TiledRasterLayerSource {
     this.name: "Open Street Map",
     this.url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
-    this.minZoom: 0,
-    this.maxZoom: 19,
+    this.minZoom: DEFAULT_MINZOOM,
+    this.maxZoom: DEFAULT_MAXZOOM,
     this.subdomains: const ['a', 'b', 'c'],
     this.isVisible: true,
     this.isTms: false,
@@ -91,8 +91,8 @@ class TileSource extends TiledRasterLayerSource {
     this.url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
     this.subdomains: const ['a', 'b', 'c'],
-    this.minZoom: 0,
-    this.maxZoom: 19,
+    this.minZoom: DEFAULT_MINZOOM,
+    this.maxZoom: DEFAULT_MAXZOOM,
     this.isVisible: true,
     this.canDoProperties = true,
   });
@@ -102,8 +102,8 @@ class TileSource extends TiledRasterLayerSource {
     this.url: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
     this.subdomains: const ['a', 'b'],
-    this.minZoom: 0,
-    this.maxZoom: 19,
+    this.minZoom: DEFAULT_MINZOOM,
+    this.maxZoom: DEFAULT_MAXZOOM,
     this.isVisible: true,
     this.isTms: false,
     this.canDoProperties = true,
@@ -114,8 +114,8 @@ class TileSource extends TiledRasterLayerSource {
     this.url: "http://c.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
     this.attribution:
         "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL",
-    this.minZoom: 0,
-    this.maxZoom: 20,
+    this.minZoom: DEFAULT_MINZOOM,
+    this.maxZoom: DEFAULT_MAXZOOM,
     this.isVisible: true,
     this.isTms: false,
     this.canDoProperties = true,
@@ -125,8 +125,8 @@ class TileSource extends TiledRasterLayerSource {
     this.name: "Opnvkarte Transport",
     this.url: "http://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
-    this.minZoom: 0,
-    this.maxZoom: 20,
+    this.minZoom: DEFAULT_MINZOOM,
+    this.maxZoom: DEFAULT_MAXZOOM,
     this.isVisible: true,
     this.isTms: false,
     this.canDoProperties = true,
@@ -136,8 +136,8 @@ class TileSource extends TiledRasterLayerSource {
     this.name: "Wikimedia Map",
     this.url: "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap contributors, under ODbL",
-    this.minZoom: 0,
-    this.maxZoom: 20,
+    this.minZoom: DEFAULT_MINZOOM,
+    this.maxZoom: DEFAULT_MAXZOOM,
     this.isVisible: true,
     this.isTms: false,
     this.canDoProperties = true,
@@ -148,8 +148,8 @@ class TileSource extends TiledRasterLayerSource {
     this.url:
         "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     this.attribution: "Esri",
-    this.minZoom: 0,
-    this.maxZoom: 19,
+    this.minZoom: DEFAULT_MINZOOM,
+    this.maxZoom: DEFAULT_MAXZOOM,
     this.isVisible: true,
     this.isTms: true,
     this.canDoProperties = true,
@@ -160,7 +160,7 @@ class TileSource extends TiledRasterLayerSource {
     this.absolutePath = Workspace.makeAbsolute(filePath);
     this.attribution =
         "Map tiles by Mapsforge, Data by OpenStreetMap, under ODbL";
-    this.minZoom = 0;
+    this.minZoom = DEFAULT_MINZOOM;
     this.maxZoom = 22;
     this.isVisible = true;
     this.isTms = false;
@@ -220,7 +220,7 @@ class TileSource extends TiledRasterLayerSource {
     this.name = FileUtilities.nameFromFile(filePath, false);
     this.absolutePath = Workspace.makeAbsolute(filePath);
     this.attribution = "";
-    this.minZoom = 0;
+    this.minZoom = DEFAULT_MINZOOM;
     this.maxZoom = 22;
     this.isVisible = true;
     this.isTms = true;
@@ -232,7 +232,7 @@ class TileSource extends TiledRasterLayerSource {
     this.name = tableName;
     this.absolutePath = Workspace.makeAbsolute(filePath);
     this.attribution = "";
-    this.minZoom = 0;
+    this.minZoom = DEFAULT_MINZOOM;
     this.maxZoom = 22;
     this.isVisible = true;
     this.isTms = true;
