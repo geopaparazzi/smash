@@ -131,6 +131,9 @@ dependencies:
   image: 2.1.12
 
   # MIT
+  flutter_slidable: ^0.5.4
+
+  # MIT
   permission_handler: ^4.4.0+hotfix.2
 
   # BSD

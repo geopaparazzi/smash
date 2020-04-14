@@ -26,7 +26,7 @@ class WorldImageSource extends RasterLayerSource {
   String _name;
   double opacityPercentage = 100;
   bool isVisible = true;
-  LatLngBounds _imageBounds = LatLngBounds();
+  LatLngBounds _imageBounds;
   bool loaded = false;
   MemoryImage _memoryImage;
   int _srid;
@@ -202,8 +202,11 @@ class WorldImageSource extends RasterLayerSource {
   }
 
   @override
-  Future<LatLngBounds> getBounds() {
-    return Future.value(_imageBounds);
+  Future<LatLngBounds> getBounds() async {
+    if (_imageBounds == null) {
+      await load(null);
+    }
+    return _imageBounds;
   }
 
   @override

@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
@@ -49,7 +50,7 @@ class LayersPageState extends State<LayersPage> {
     List<LayerSource> _layersList =
         LayerManager().getLayerSources(onlyActive: false);
 
-    List<Dismissible> listItems = createLayersList(_layersList, context);
+    List<Widget> listItems = createLayersList(_layersList, context);
 
     return WillPopScope(
         onWillPop: () async {
@@ -61,6 +62,45 @@ class LayersPageState extends State<LayersPage> {
         child: Scaffold(
           appBar: AppBar(
             title: Text("Layer List"),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(MdiIcons.earth),
+                onPressed: () async {
+                  var wmsLayerSource = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OnlineSourcesPage()));
+
+                  if (wmsLayerSource != null) {
+                    LayerManager().addLayerSource(wmsLayerSource);
+                    setState(() {});
+                  }
+                },
+                tooltip: "Load online sources",
+              ),
+              IconButton(
+                icon: Icon(MdiIcons.map),
+                onPressed: () async {
+                  //Navigator.of(context).pop();
+                  var lastUsedFolder = await Workspace.getLastUsedFolder();
+                  var allowed = <String>[]
+                    ..addAll(FileManager.ALLOWED_VECTOR_DATA_EXT)
+                    ..addAll(FileManager.ALLOWED_RASTER_DATA_EXT)
+                    ..addAll(FileManager.ALLOWED_TILE_DATA_EXT);
+                  var selectedPath = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              FileBrowser(false, allowed, lastUsedFolder)));
+
+                  if (selectedPath != null) {
+                    await loadLayer(context, selectedPath);
+                    setState(() {});
+                  }
+                },
+                tooltip: "Load local datasets",
+              ),
+            ],
           ),
           body: ReorderableListView(
             children: listItems,
@@ -73,60 +113,10 @@ class LayersPageState extends State<LayersPage> {
               }
             },
           ),
-          floatingActionButton: AnimatedFloatingActionButton(
-              fabButtons: <Widget>[
-                Container(
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      //Navigator.of(context).pop();
-                      var lastUsedFolder = await Workspace.getLastUsedFolder();
-                      var allowed = <String>[]
-                        ..addAll(FileManager.ALLOWED_VECTOR_DATA_EXT)
-                        ..addAll(FileManager.ALLOWED_RASTER_DATA_EXT)
-                        ..addAll(FileManager.ALLOWED_TILE_DATA_EXT);
-                      var selectedPath = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  FileBrowser(false, allowed, lastUsedFolder)));
-
-                      if (selectedPath != null) {
-                        await loadLayer(context, selectedPath);
-                        setState(() {});
-                      }
-                    },
-                    tooltip: "Load spatial datasets",
-                    child: Icon(MdiIcons.map),
-                    heroTag: null,
-                  ),
-                ),
-                Container(
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      var wmsLayerSource = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => OnlineSourcesPage()));
-
-                      if (wmsLayerSource != null) {
-                        LayerManager().addLayerSource(wmsLayerSource);
-                        setState(() {});
-                      }
-                    },
-                    tooltip: "Online Sources",
-                    child: Icon(MdiIcons.earth),
-                    heroTag: null,
-                  ),
-                ),
-              ],
-              colorStartAnimation: SmashColors.mainSelection,
-              colorEndAnimation: SmashColors.mainSelectionBorder,
-              animatedIconData: AnimatedIcons.menu_close //To principal button
-              ),
         ));
   }
 
-  List<Dismissible> createLayersList(
+  List<Widget> createLayersList(
       List<LayerSource> _layersList, BuildContext context) {
     return _layersList.map((layerSourceItem) {
       var srid = layerSourceItem.getSrid();
@@ -136,110 +126,78 @@ class LayersPageState extends State<LayersPage> {
         prjSupported = projection != null;
       }
 
-      return Dismissible(
-        confirmDismiss: _confirmLogDismiss,
-        direction: DismissDirection.endToStart,
-        onDismissed: (direction) {
-          if (layerSourceItem.isActive()) {
-            _somethingChanged = true;
-          }
-          _layersList.remove(layerSourceItem);
-          LayerManager().removeLayerSource(layerSourceItem);
-        },
-        key: ValueKey(layerSourceItem),
-        background: Container(
-          alignment: AlignmentDirectional.centerEnd,
-          color: Colors.red,
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-            child: Icon(
-              Icons.delete,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        child: ListTile(
-          onTap: () {
-            if (!prjSupported) {
-              // showWarningDialog(context, "Need to add prj: $srid");
+      List<Widget> actions = [];
+      List<Widget> secondaryActions = [];
 
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProjectionsSettings(
-                            epsgToDownload: srid,
-                          )));
-            }
-          },
-          leading: Icon(
-            SmashIcons.forPath(
-                layerSourceItem.getAbsolutePath() ?? layerSourceItem.getUrl()),
+      if (layerSourceItem.isZoomable()) {
+        actions.add(IconSlideAction(
+            caption: 'Zoom to',
             color: SmashColors.mainDecorations,
-            size: SmashUI.MEDIUM_ICON_SIZE,
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              layerSourceItem.isZoomable()
-                  ? IconButton(
-                      icon: Icon(MdiIcons.magnifyScan,
-                          color: SmashColors.mainDecorations),
-                      onPressed: () async {
-                        LatLngBounds bb = await layerSourceItem.getBounds();
-                        if (bb != null) {
-                          setLayersOnChange(_layersList);
+            icon: MdiIcons.magnifyScan,
+            onTap: () async {
+              LatLngBounds bb = await layerSourceItem.getBounds();
+              if (bb != null) {
+                setLayersOnChange(_layersList);
 
-                          SmashMapState mapState = Provider.of<SmashMapState>(
-                              context,
-                              listen: false);
-                          mapState.setBounds(new Envelope(
-                              bb.west, bb.east, bb.south, bb.north));
-                          Navigator.of(context).pop();
-                        }
-                      })
-                  : Container(),
-              layerSourceItem.hasProperties()
-                  ? IconButton(
-                      icon: Icon(MdiIcons.palette,
-                          color: SmashColors.mainDecorations),
-                      onPressed: () async {
-                        if (layerSourceItem is GpxSource) {
-                          await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      GpxPropertiesWidget(layerSourceItem)));
-                        } else if (layerSourceItem is WorldImageSource) {
-                          await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      TiffPropertiesWidget(layerSourceItem)));
-                        } else if (layerSourceItem is WmsSource) {
-                          await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      WmsPropertiesWidget(layerSourceItem)));
-                        } else if (layerSourceItem is TileSource) {
-                          await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      TileSourcePropertiesWidget(
-                                          layerSourceItem)));
-                        }
-                      })
-                  : Container(),
-              Checkbox(
-                  value: layerSourceItem.isActive(),
-                  onChanged: (isVisible) async {
-                    layerSourceItem.setActive(isVisible);
-                    _somethingChanged = true;
-                    setState(() {});
-                  }),
-            ],
-          ),
+                SmashMapState mapState =
+                    Provider.of<SmashMapState>(context, listen: false);
+                mapState.setBounds(
+                    new Envelope(bb.west, bb.east, bb.south, bb.north));
+                Navigator.of(context).pop();
+              }
+            }));
+      }
+      if (layerSourceItem.hasProperties()) {
+        actions.add(IconSlideAction(
+            caption: 'Properties',
+            color: SmashColors.mainDecorations,
+            icon: MdiIcons.palette,
+            onTap: () async {
+              if (layerSourceItem is GpxSource) {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            GpxPropertiesWidget(layerSourceItem)));
+              } else if (layerSourceItem is WorldImageSource) {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            TiffPropertiesWidget(layerSourceItem)));
+              } else if (layerSourceItem is WmsSource) {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            WmsPropertiesWidget(layerSourceItem)));
+              } else if (layerSourceItem is TileSource) {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            TileSourcePropertiesWidget(layerSourceItem)));
+              }
+            }));
+      }
+      secondaryActions.add(IconSlideAction(
+          caption: 'Delete',
+          color: SmashColors.mainDanger,
+          icon: MdiIcons.delete,
+          onTap: () {
+            if (layerSourceItem.isActive()) {
+              _somethingChanged = true;
+            }
+            _layersList.remove(layerSourceItem);
+            LayerManager().removeLayerSource(layerSourceItem);
+            setState(() {});
+          }));
+
+      return Slidable(
+        key: ValueKey(layerSourceItem),
+        actionPane: SlidableDrawerActionPane(),
+        actionExtentRatio: 0.25,
+        child: ListTile(
           title: SingleChildScrollView(
             child: Text('${layerSourceItem.getName()}'),
             scrollDirection: Axis.horizontal,
@@ -259,7 +217,34 @@ class LayersPageState extends State<LayersPage> {
                       "The proj is not supported. Tap to solve.",
                       style: TextStyle(color: SmashColors.mainDanger),
                     ),
+          onTap: () {
+            if (!prjSupported) {
+              // showWarningDialog(context, "Need to add prj: $srid");
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ProjectionsSettings(
+                            epsgToDownload: srid,
+                          )));
+            }
+          },
+          leading: Icon(
+            SmashIcons.forPath(
+                layerSourceItem.getAbsolutePath() ?? layerSourceItem.getUrl()),
+            color: SmashColors.mainDecorations,
+            size: SmashUI.MEDIUM_ICON_SIZE,
+          ),
+          trailing: Checkbox(
+              value: layerSourceItem.isActive(),
+              onChanged: (isVisible) async {
+                layerSourceItem.setActive(isVisible);
+                _somethingChanged = true;
+                setState(() {});
+              }),
         ),
+        actions: actions,
+        secondaryActions: secondaryActions,
       );
     }).toList();
   }
@@ -267,29 +252,6 @@ class LayersPageState extends State<LayersPage> {
   void setLayersOnChange(List<LayerSource> _layersList) {
     List<String> layers = _layersList.map((ls) => ls.toJson()).toList();
     GpPreferences().setLayerInfoList(layers);
-  }
-
-  Future<bool> _confirmLogDismiss(DismissDirection direction) async {
-    return await showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Remove layer'),
-            content: Text('Are you sure you want to remove the layer?'),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                  },
-                  child: Text('Yes')),
-              FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  },
-                  child: Text('No')),
-            ],
-          );
-        });
   }
 }
 
