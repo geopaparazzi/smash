@@ -171,31 +171,31 @@ class FileUtilities {
 /// Class to handle int conversions.
 class ByteConversionUtilities {
   /// Convert a 32 bit integer [number] to its int representation.
-  static List<int> bytesFromInt32(int number) {
+  static List<int> bytesFromInt32(int number,  [Endian endian = Endian.big]) {
     var tmp = Uint8List.fromList([0, 0, 0, 0]);
     ByteData bdata = ByteData.view(tmp.buffer);
-    bdata.setInt32(0, number);
+    bdata.setInt32(0, number, endian);
     return tmp;
   }
 
   /// Convert a 16 bit integer [number] to its int representation.
-  static List<int> bytesFromInt16(int number) {
+  static List<int> bytesFromInt16(int number, [Endian endian = Endian.big]) {
     var tmp = Uint8List.fromList([0, 0]);
     ByteData bdata = ByteData.view(tmp.buffer);
-    bdata.setInt16(0, number);
+    bdata.setInt16(0, number, endian);
     return tmp;
   }
 
   /// Get an int from a list of 4 bytes.
-  static int getInt32(Uint8List list) {
+  static int getInt32(Uint8List list, [Endian endian = Endian.big]) {
     var bdata = new ByteData.view(list.buffer);
-    return bdata.getInt32(0);
+    return bdata.getInt32(0, endian);
   }
 
   /// Get an int from a list of 2 bytes.
-  static int getInt16(Uint8List list) {
+  static int getInt16(Uint8List list, [Endian endian = Endian.big]) {
     var bdata = new ByteData.view(list.buffer);
-    return bdata.getInt16(0);
+    return bdata.getInt16(0, endian);
   }
 
   /// Get an int from a list of 1 byte.
@@ -205,18 +205,18 @@ class ByteConversionUtilities {
   }
 
   /// Convert a 64 bit integer [number] to its int representation.
-  static List<int> bytesFromInt64(int number) {
+  static List<int> bytesFromInt64(int number, [Endian endian = Endian.big]) {
     var tmp = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
     ByteData bdata = ByteData.view(tmp.buffer);
-    bdata.setInt64(0, number);
+    bdata.setInt64(0, number, endian);
     return tmp;
   }
 
   /// Convert a 64 bit double [number] to its int representation.
-  static List<int> bytesFromDouble(double number) {
+  static List<int> bytesFromDouble(double number, [Endian endian = Endian.big]) {
     var tmp = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
     ByteData bdata = ByteData.view(tmp.buffer);
-    bdata.setFloat64(0, number);
+    bdata.setFloat64(0, number, endian);
     return tmp;
   }
 

@@ -15,13 +15,17 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/tables.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/screen.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 class FeatureAttributesViewer extends StatefulWidget {
-  final QueryResult features;
+  final EditableQueryResult features;
 
   FeatureAttributesViewer(this.features, {Key key}) : super(key: key);
 
@@ -82,7 +86,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     Color borderFill = Colors.yellow;
     Color fillPoly = Colors.yellow.withOpacity(0.3);
 
-    QueryResult f = widget.features;
+    EditableQueryResult f = widget.features;
     var layers = <LayerOptions>[];
 
     if (baseLayer != null) {
@@ -90,8 +94,11 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     }
     _total = f.geoms.length;
     var geometry = f.geoms[_index];
-    
+
     Map<String, dynamic> data = f.data[_index];
+    var primaryKey = f.primaryKeys[_index];
+    var db = f.dbs[_index];
+
     var centroid = geometry.getCentroid().getCoordinate();
 
     var geometryType = geometry.getGeometryType();
@@ -177,9 +184,10 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
       _mapController.fitBounds(latLngBounds);
     });
 
+    var tableName = widget.features.ids[_index];
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.features.ids[_index]),
+        title: Text(tableName),
         actions: _total > 1
             ? <Widget>[
                 IconButton(
@@ -250,8 +258,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   flex: 1,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: TableUtilities.fromMap(data,
-                        withBorder: true, borderColor: SmashColors.tableBorder),
+                    child: getDataTable(tableName, data, primaryKey, db),
                   ),
                 ),
               ],
@@ -287,12 +294,67 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   flex: 1,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: TableUtilities.fromMap(data,
-                        withBorder: true, borderColor: SmashColors.tableBorder),
+                    child: getDataTable(tableName, data, primaryKey, db),
                   ),
                 ),
               ],
             ),
+    );
+  }
+
+  Widget getDataTable(String tablename, Map<String, dynamic> data,
+      String primaryKey, GeopackageDb db) {
+    List<DataRow> rows = [];
+
+    data.forEach((key, value) {
+      bool editable = primaryKey != null && key != primaryKey;
+      var row = DataRow(
+        cells: [
+          DataCell(SmashUI.normalText(key)),
+          DataCell(SmashUI.normalText(value.toString()), showEditIcon: editable,
+              onTap: () async {
+            if (editable) {
+              var pkValue = data[primaryKey];
+              var result = await showInputDialog(
+                context,
+                "Set new value",
+                key,
+                defaultText: value.toString(),
+              );
+              if (result != null) {
+                String sql = "update " + tablename + " set " + key + "=";
+                if (value is String) {
+                  data[key] = result;
+                  sql += "'$result'";
+                } else if (value is int) {
+                  data[key] = int.parse(result);
+                  sql += "${data[key]}";
+                } else if (value is double) {
+                  data[key] = double.parse(result);
+                  sql += "${data[key]}";
+                } else {
+                  GpLogger().e(
+                      "Could not find type for $key ($value) in table $tablename");
+                  return;
+                }
+                sql += " where $primaryKey=$pkValue";
+                var i = await db.update(sql);
+                print("Updated: $i");
+                setState(() {});
+              }
+            }
+          }),
+        ],
+      );
+      rows.add(row);
+    });
+
+    return DataTable(
+      columns: [
+        DataColumn(label: SmashUI.normalText("FIELD", bold: true)),
+        DataColumn(label: SmashUI.normalText("VALUE", bold: true)),
+      ],
+      rows: rows,
     );
   }
 

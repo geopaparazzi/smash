@@ -53,7 +53,7 @@ dependencies:
 #      url: https://github.com/moovida/dart_jts.git
 
   # apache 2
-  flutter_geopackage: ^0.1.0
+  flutter_geopackage: ^0.1.2
 #    git:
 #      url: https://github.com/moovida/flutter_geopackage.git
 

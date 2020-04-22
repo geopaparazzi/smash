@@ -117,8 +117,10 @@ class FeatureInfoLayer extends StatelessWidget {
         .getLayerSources()
         .where((l) => l is VectorLayerSource && l.isActive())
         .toList();
-    QueryResult totalQueryResult = QueryResult();
+    EditableQueryResult totalQueryResult = EditableQueryResult();
     totalQueryResult.ids = [];
+    totalQueryResult.primaryKeys = [];
+    totalQueryResult.dbs = [];
     for (var vLayer in visibleVectorLayers) {
       if (vLayer is GeopackageSource) {
         var srid = vLayer.getSrid();
@@ -137,6 +139,10 @@ class FeatureInfoLayer extends StatelessWidget {
         if (queryResult.data.isNotEmpty) {
           var layerName = vLayer.getName();
           print("Found data for: " + layerName);
+
+          var pk = await db.getPrimaryKey(layerName);
+          totalQueryResult.primaryKeys.add(pk);
+          totalQueryResult.dbs.add(db);
 
           var dataPrj = SmashPrj.fromSrid(srid);
           queryResult.geoms.forEach((g) {
@@ -161,6 +167,11 @@ class FeatureInfoLayer extends StatelessWidget {
               builder: (context) => FeatureAttributesViewer(totalQueryResult)));
     }
   }
+}
+
+class EditableQueryResult extends QueryResult {
+  List<String> primaryKeys;
+  List<GeopackageDb> dbs;
 }
 
 class TapSelectionCircle extends StatefulWidget {
