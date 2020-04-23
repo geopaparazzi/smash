@@ -7,15 +7,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/ui/tables.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/device.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 
@@ -516,9 +520,297 @@ class GpsSettingsState extends State<GpsSettings> {
   static final title = "GPS";
   static final subtitle = "GPS filters and mock locations";
   static final iconData = MdiIcons.crosshairsGps;
+  List<GpsFilterManagerMessage> gpsInfoList = [];
+  List<int> gpsInfoListCounter = [];
+  int _count = 0;
+  bool isPaused = false;
+
+  MapController _mapController;
+  @override
+  void initState() {
+    _mapController = MapController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: new AppBar(
+          title: Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Icon(
+                  iconData,
+                  color: SmashColors.mainBackground,
+                ),
+              ),
+              Text(title),
+            ],
+          ),
+          bottom: TabBar(tabs: [
+            Tab(text: "Settings"),
+            Tab(text: "Live Preview"),
+          ]),
+        ),
+        body: TabBarView(children: [
+          getSettingsPart(context),
+          getLivePreviewPart(context),
+        ]),
+      ),
+    );
+  }
+
+  Widget getLivePreviewPart(BuildContext context) {
+    return Consumer<GpsState>(builder: (context, gpsState, child) {
+      if (!isPaused) {
+        var msg = GpsFilterManager().currentMessage;
+        if (!gpsInfoList.contains(msg)) {
+          gpsInfoList.insert(0, msg);
+          gpsInfoListCounter.insert(0, _count);
+          _count++;
+          if (gpsInfoList.length > 10) {
+            gpsInfoList.removeRange(10, gpsInfoList.length);
+          }
+        }
+      }
+
+      var layer = new MarkerLayerOptions(
+        markers: gpsInfoList.map((msg) {
+          var clr = Colors.red.withAlpha(100);
+          if (msg == gpsInfoList.last) {
+            clr = Colors.blue.withAlpha(150);
+          }
+
+          return new Marker(
+            width: 10,
+            height: 10,
+            point: msg.newPosLatLon,
+            builder: (ctx) => new Stack(
+              children: <Widget>[
+                Center(
+                  child: Icon(
+                    MdiIcons.circle,
+                    color: clr,
+                    size: 10,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      );
+
+      return Stack(
+        children: <Widget>[
+          FlutterMap(
+            options: new MapOptions(
+              center: gpsInfoList.last.newPosLatLon,
+              zoom: 19,
+              minZoom: 7,
+              maxZoom: 21,
+            ),
+            layers: [layer],
+            mapController: _mapController,
+          ),
+          Column(
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+                  itemCount: gpsInfoList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    GpsFilterManagerMessage msg = gpsInfoList[index];
+                    int i = gpsInfoListCounter[index];
+                    var infoMap = {
+                      "longitude [deg]":
+                          msg.newPosLatLon.longitude.toStringAsFixed(6),
+                      "latitude [deg]":
+                          msg.newPosLatLon.latitude.toStringAsFixed(6),
+                      "accuracy [m]": msg.accuracy.toStringAsFixed(0),
+                      "altitude [m]": msg.altitude.toStringAsFixed(0),
+                      "heading [deg]": msg.heading.toStringAsFixed(0),
+                      "speed [m/s]": msg.speed.toStringAsFixed(0),
+                      "is logging?": msg.isLogging,
+                      "mock locations?": msg.mocked,
+                    };
+
+                    var infoTable = TableUtilities.fromMap(infoMap,
+                        doSmallText: true,
+                        borderColor: SmashColors.mainDecorations,
+                        withBorder: true);
+
+                    double distanceLastEvent = msg.distanceLastEvent;
+                    int maxAllowedDistanceLastEvent =
+                        msg.maxAllowedDistanceLastEvent;
+                    int minAllowedDistanceLastEvent =
+                        msg.minAllowedDistanceLastEvent;
+
+                    int timeLastEvent = msg.timeDeltaLastEvent;
+                    int minAllowedTimeLastEvent =
+                        msg.minAllowedTimeDeltaLastEvent;
+
+                    bool maxDistFilterBlocks =
+                        distanceLastEvent > maxAllowedDistanceLastEvent;
+                    bool minDistFilterBlocks =
+                        distanceLastEvent <= minAllowedDistanceLastEvent;
+                    bool minTimeFilterBlocks =
+                        timeLastEvent <= minAllowedTimeLastEvent;
+
+                    var maxDistString = maxDistFilterBlocks
+                        ? "MAX DIST FILTER BLOCKS"
+                        : "Max dist filter passes";
+                    var minDistString = minDistFilterBlocks
+                        ? "MIN DIST FILTER BLOCKS"
+                        : "Min dist filter passes";
+                    var minTimeString = minTimeFilterBlocks
+                        ? "MIN TIME FILTER BLOCKS"
+                        : "Min time filter passes";
+
+                    bool hasBeenBlocked = msg.blockedByFilter;
+                    var filterMap = {
+                      "HAS BEEN BLOCKED": "$hasBeenBlocked",
+                      "Distance from prev [m]": distanceLastEvent,
+                      "Time from prev [s]": timeLastEvent,
+                      maxDistString:
+                          "$distanceLastEvent > $maxAllowedDistanceLastEvent",
+                      minDistString:
+                          "$distanceLastEvent <= $minAllowedDistanceLastEvent",
+                      minTimeString:
+                          "$timeLastEvent <= $minAllowedTimeLastEvent",
+                    };
+                    var filtersTable = TableUtilities.fromMap(filterMap,
+                        doSmallText: true,
+                        borderColor: Colors.orange,
+                        withBorder: true,
+                        colWidthFlex: [0.6, 0.4]);
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
+                      child: ListTile(
+                        title: Text("$i        " + msg.timestamp.toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: SmashColors.mainDecorations)),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, top: 8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    RotatedBox(
+                                      quarterTurns: 3,
+                                      child: Text("Location Info",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  SmashColors.mainDecorations)),
+                                    ),
+                                    Expanded(child: infoTable),
+                                  ],
+                                )),
+                            Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, top: 8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    RotatedBox(
+                                      quarterTurns: 3,
+                                      child: Text(
+                                        "Filters",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.orange),
+                                      ),
+                                    ),
+                                    Expanded(child: filtersTable),
+                                  ],
+                                )),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Container(
+                color: SmashColors.mainDecorations,
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                      tooltip: GpsFilterManager().filtersEnabled
+                          ? "Disable Filters."
+                          : "Enable Filters.",
+                      icon: Icon(
+                        GpsFilterManager().filtersEnabled
+                            ? MdiIcons.filterRemove
+                            : MdiIcons.filter,
+                        color: SmashColors.mainBackground,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          GpsFilterManager().filtersEnabled =
+                              !GpsFilterManager().filtersEnabled;
+                        });
+                      },
+                    ),
+                    Spacer(
+                      flex: 2,
+                    ),
+                    IconButton(
+                      tooltip: "Zoom in",
+                      icon: Icon(
+                        SmashIcons.zoomInIcon,
+                        color: SmashColors.mainBackground,
+                      ),
+                      onPressed: () {
+                        var z = _mapController.zoom + 1;
+                        if (z > 21) z = 21;
+                        _mapController.move(gpsInfoList.last.newPosLatLon, z);
+                      },
+                    ),
+                    IconButton(
+                      tooltip: "Zoom out",
+                      icon: Icon(
+                        SmashIcons.zoomOutIcon,
+                        color: SmashColors.mainBackground,
+                      ),
+                      onPressed: () {
+                        var z = _mapController.zoom - 1;
+                        if (z < 7) z = 7;
+                        _mapController.move(gpsInfoList.last.newPosLatLon, z);
+                      },
+                    ),
+                    Spacer(
+                      flex: 2,
+                    ),
+                    IconButton(
+                      tooltip: isPaused
+                          ? "Activate point flow."
+                          : "Pause points flow.",
+                      icon: Icon(isPaused ? MdiIcons.play : MdiIcons.pause,
+                          color: SmashColors.mainBackground),
+                      onPressed: () {
+                        setState(() {
+                          isPaused = !isPaused;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ],
+      );
+    });
+  }
+
+  SingleChildScrollView getSettingsPart(BuildContext context) {
     int minDistance =
         GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, MINDISTANCES.first);
     int maxDistance =
@@ -527,183 +819,167 @@ class GpsSettingsState extends State<GpsSettings> {
         GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS.first);
     bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
 
-    return Scaffold(
-      appBar: new AppBar(
-        title: Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(
-                iconData,
-                color: SmashColors.mainBackground,
-              ),
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Card(
+            margin: SmashUI.defaultMargin(),
+            // elevation: SmashUI.DEFAULT_ELEVATION,
+            color: SmashColors.mainBackground,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: SmashUI.normalText("Log filters",
+                      bold: true, textAlign: TextAlign.start),
+                ),
+                ListTile(
+                  leading: Icon(MdiIcons.ruler),
+                  title: Text("Min distance between 2 points."),
+                  subtitle: Wrap(
+                    children: <Widget>[
+                      DropdownButton<int>(
+                        value: minDistance,
+                        isExpanded: false,
+                        items: MINDISTANCES.map((i) {
+                          return DropdownMenuItem<int>(
+                            child: Text(
+                              "$i m",
+                              textAlign: TextAlign.center,
+                            ),
+                            value: i,
+                          );
+                        }).toList(),
+                        onChanged: (selected) async {
+                          await GpPreferences()
+                              .setInt(KEY_GPS_MIN_DISTANCE, selected);
+                          var gpsState = Provider.of<GpsState>(context);
+                          gpsState.gpsMinDistance = selected;
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(MdiIcons.timelapse),
+                  title: Text("Min timespan between 2 points."),
+                  subtitle: Wrap(
+                    children: <Widget>[
+                      DropdownButton<int>(
+                        value: timeInterval,
+                        isExpanded: false,
+                        items: TIMEINTERVALS.map((i) {
+                          return DropdownMenuItem<int>(
+                            child: Text(
+                              "$i sec",
+                              textAlign: TextAlign.center,
+                            ),
+                            value: i,
+                          );
+                        }).toList(),
+                        onChanged: (selected) async {
+                          await GpPreferences()
+                              .setInt(KEY_GPS_TIMEINTERVAL, selected);
+                          var gpsState = Provider.of<GpsState>(context);
+                          gpsState.gpsTimeInterval = selected;
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Text(title),
-          ],
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Card(
-              margin: SmashUI.defaultMargin(),
-              // elevation: SmashUI.DEFAULT_ELEVATION,
-              color: SmashColors.mainBackground,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Log filters",
-                        bold: true, textAlign: TextAlign.start),
-                  ),
-                  ListTile(
-                    leading: Icon(MdiIcons.ruler),
-                    title: Text("Min distance between 2 points."),
-                    subtitle: Wrap(
-                      children: <Widget>[
-                        DropdownButton<int>(
-                          value: minDistance,
-                          isExpanded: false,
-                          items: MINDISTANCES.map((i) {
-                            return DropdownMenuItem<int>(
-                              child: Text(
-                                "$i m",
-                                textAlign: TextAlign.center,
-                              ),
-                              value: i,
-                            );
-                          }).toList(),
-                          onChanged: (selected) async {
-                            await GpPreferences()
-                                .setInt(KEY_GPS_MIN_DISTANCE, selected);
-                            var gpsState = Provider.of<GpsState>(context);
-                            gpsState.gpsMinDistance = selected;
-                            setState(() {});
-                          },
+          ),
+          Card(
+            margin: SmashUI.defaultMargin(),
+            color: SmashColors.mainBackground,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: SmashUI.normalText("Other filters", bold: true),
+                ),
+                ListTile(
+                  leading: Icon(MdiIcons.ruler),
+                  title: Text("Max distance between 2 points."),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: SmashUI.defaultTBPadding(),
+                        child: Text(
+                          "Max distance allowed between two subsequent points. This marks GPS points with higher 'jumps' as invalid and ignores them.",
+                          textAlign: TextAlign.justify,
                         ),
-                      ],
-                    ),
+                      ),
+                      DropdownButton<int>(
+                        value: maxDistance,
+                        isExpanded: false,
+                        items: MAXDISTANCES.map((i) {
+                          return DropdownMenuItem<int>(
+                            child: Text(
+                              "$i m",
+                              textAlign: TextAlign.center,
+                            ),
+                            value: i,
+                          );
+                        }).toList(),
+                        onChanged: (selected) async {
+                          await GpPreferences()
+                              .setInt(KEY_GPS_MAX_DISTANCE, selected);
+                          var gpsState = Provider.of<GpsState>(context);
+                          gpsState.gpsMaxDistance = selected;
+                          setState(() {});
+                        },
+                      ),
+                    ],
                   ),
-                  ListTile(
-                    leading: Icon(MdiIcons.timelapse),
-                    title: Text("Min timespan between 2 points."),
-                    subtitle: Wrap(
-                      children: <Widget>[
-                        DropdownButton<int>(
-                          value: timeInterval,
-                          isExpanded: false,
-                          items: TIMEINTERVALS.map((i) {
-                            return DropdownMenuItem<int>(
-                              child: Text(
-                                "$i sec",
-                                textAlign: TextAlign.center,
-                              ),
-                              value: i,
-                            );
-                          }).toList(),
-                          onChanged: (selected) async {
-                            await GpPreferences()
-                                .setInt(KEY_GPS_TIMEINTERVAL, selected);
-                            var gpsState = Provider.of<GpsState>(context);
-                            gpsState.gpsTimeInterval = selected;
-                            setState(() {});
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Card(
-              margin: SmashUI.defaultMargin(),
-              color: SmashColors.mainBackground,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Other filters", bold: true),
-                  ),
-                  ListTile(
-                    leading: Icon(MdiIcons.ruler),
-                    title: Text("Max distance between 2 points."),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: SmashUI.defaultTBPadding(),
-                          child: Text(
-                            "Max distance allowed between two subsequent points. This marks GPS points with higher 'jumps' as invalid and ignores them.",
-                            textAlign: TextAlign.justify,
-                          ),
+          ),
+          Card(
+            margin: SmashUI.defaultMargin(),
+            color: SmashColors.mainBackground,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: SmashUI.normalText("Mock locations", bold: true),
+                ),
+                ListTile(
+                  leading: Icon(MdiIcons.crosshairsGps),
+                  title: Text(
+                      "${doTestLog ? "Disable" : "Enable"} test gps log for demo use."),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: SmashUI.defaultTBPadding(),
+                        child: Text(
+                          "WARNING: This needs a working gps fix since it modifies the incoming gps points with those of the demo.",
+                          textAlign: TextAlign.justify,
                         ),
-                        DropdownButton<int>(
-                          value: maxDistance,
-                          isExpanded: false,
-                          items: MAXDISTANCES.map((i) {
-                            return DropdownMenuItem<int>(
-                              child: Text(
-                                "$i m",
-                                textAlign: TextAlign.center,
-                              ),
-                              value: i,
-                            );
-                          }).toList(),
-                          onChanged: (selected) async {
-                            await GpPreferences()
-                                .setInt(KEY_GPS_MAX_DISTANCE, selected);
-                            var gpsState = Provider.of<GpsState>(context);
-                            gpsState.gpsMaxDistance = selected;
-                            setState(() {});
-                          },
-                        ),
-                      ],
-                    ),
+                      ),
+                      Checkbox(
+                        value: doTestLog,
+                        onChanged: (newValue) async {
+                          await GpPreferences()
+                              .setBoolean(KEY_GPS_TESTLOG, newValue);
+                          var gpsState = Provider.of<GpsState>(context);
+                          gpsState.doTestLog = newValue;
+                          setState(() {});
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Card(
-              margin: SmashUI.defaultMargin(),
-              color: SmashColors.mainBackground,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Mock locations", bold: true),
-                  ),
-                  ListTile(
-                    leading: Icon(MdiIcons.crosshairsGps),
-                    title: Text(
-                        "${doTestLog ? "Disable" : "Enable"} test gps log for demo use."),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: SmashUI.defaultTBPadding(),
-                          child: Text(
-                            "WARNING: This needs a working gps fix since it modifies the incoming gps points with those of the demo.",
-                            textAlign: TextAlign.justify,
-                          ),
-                        ),
-                        Checkbox(
-                          value: doTestLog,
-                          onChanged: (newValue) async {
-                            await GpPreferences()
-                                .setBoolean(KEY_GPS_TESTLOG, newValue);
-                            var gpsState = Provider.of<GpsState>(context);
-                            gpsState.doTestLog = newValue;
-                            setState(() {});
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

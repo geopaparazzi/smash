@@ -52,6 +52,8 @@ const KEY_GSS_SERVER_PWD = 'KEY_GSS_SERVER_PWD';
 
 const KEY_PROJECTIONS = 'KEY_PROJECTIONS';
 
+const KEY_GPS_ACCURACY = 'KEY_GPS_ACCURACY';
+
 const KEY_LATLONG_DECIMALS = 6;
 const KEY_ELEV_DECIMALS = 0;
 
@@ -282,6 +284,7 @@ class GpPreferences {
   }
 
   Future<void> setCenterOnGps(bool centerOnGps) async {
+    await _checkPreferences();
     await setBoolean(KEY_CENTER_ON_GPS, centerOnGps);
   }
 
@@ -290,6 +293,7 @@ class GpPreferences {
   }
 
   Future<void> setRotateOnHeading(bool rotateOnHeading) async {
+    await _checkPreferences();
     await setBoolean(KEY_ROTATE_ON_HEADING, rotateOnHeading);
   }
 
@@ -298,6 +302,7 @@ class GpPreferences {
   }
 
   Future<void> setKeepScreenOn(bool keepScreenOn) async {
+    await _checkPreferences();
     await setBoolean(KEY_KEEP_SCREEN_ON, keepScreenOn);
   }
 
@@ -325,5 +330,14 @@ class GpPreferences {
     await _checkPreferences();
     if (projectionsList == null) projectionsList = [];
     await _preferences.setStringList(KEY_PROJECTIONS, projectionsList);
+  }
+
+  String getLocationAccuracy() {
+    return getStringSync(KEY_GPS_ACCURACY, "best");
+  }
+
+  Future<void> setLocationAccuracy(String accuracy) async {
+    await _checkPreferences();
+    await setString(KEY_GPS_ACCURACY, accuracy);
   }
 }

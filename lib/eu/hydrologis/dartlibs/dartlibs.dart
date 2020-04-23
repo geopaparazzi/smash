@@ -171,7 +171,7 @@ class FileUtilities {
 /// Class to handle int conversions.
 class ByteConversionUtilities {
   /// Convert a 32 bit integer [number] to its int representation.
-  static List<int> bytesFromInt32(int number,  [Endian endian = Endian.big]) {
+  static List<int> bytesFromInt32(int number, [Endian endian = Endian.big]) {
     var tmp = Uint8List.fromList([0, 0, 0, 0]);
     ByteData bdata = ByteData.view(tmp.buffer);
     bdata.setInt32(0, number, endian);
@@ -213,7 +213,8 @@ class ByteConversionUtilities {
   }
 
   /// Convert a 64 bit double [number] to its int representation.
-  static List<int> bytesFromDouble(double number, [Endian endian = Endian.big]) {
+  static List<int> bytesFromDouble(double number,
+      [Endian endian = Endian.big]) {
     var tmp = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
     ByteData bdata = ByteData.view(tmp.buffer);
     bdata.setFloat64(0, number, endian);
@@ -733,5 +734,23 @@ class MercatorUtils {
   static double tile2lat(int y, int z) {
     double n = pi - (2.0 * pi * y) / pow(2.0, z);
     return radianToDeg(atan(sinh(n)));
+  }
+}
+
+class HashUtilities {
+  /// Generates a hash code for multiple [objects].
+  static int hashObjects(Iterable objects) =>
+      _finish(objects.fold(0, (h, i) => _combine(h, i.hashCode)));
+
+  static int _combine(int hash, int value) {
+    hash = 0x1fffffff & (hash + value);
+    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
+    return hash ^ (hash >> 6);
+  }
+
+  static int _finish(int hash) {
+    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
+    hash = hash ^ (hash >> 11);
+    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
   }
 }

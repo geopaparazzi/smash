@@ -31,6 +31,8 @@ class GpsState extends ChangeNotifierPlus {
   int gpsTimeInterval = 1;
   bool doTestLog = false;
 
+  
+
   List<LatLng> _currentLogPoints = [];
   GpsStatus _lastGpsStatusBeforeLogging;
 

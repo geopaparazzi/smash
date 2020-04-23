@@ -4,32 +4,34 @@
  * found in the LICENSE file.
  */
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart' as ICONS;
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 
 class TableUtilities {
-  static TableCell cellForString(String data, {color: Colors.black}) {
+  static TableCell cellForString(String data,
+      {color: Colors.black, bool doSmallText = false}) {
     return TableCell(
       child: Padding(
         padding: const EdgeInsets.all(4.0),
-        child: SmashUI.normalText(data, color: color),
+        child: doSmallText
+            ? SmashUI.smallText(data, color: color)
+            : SmashUI.normalText(data, color: color),
       ),
     );
   }
 
   static Table fromMap(Map<String, dynamic> map,
-      {bool withBorder = false, Color borderColor = Colors.blueAccent}) {
+      {bool withBorder = false,
+      Color borderColor = Colors.blueAccent,
+      bool doSmallText = false,
+      List<double> colWidthFlex = const [0.4, 0.6]}) {
     List<TableRow> rows = [];
 
     map.forEach((key, value) {
       var row = TableRow(
         children: [
-          cellForString(key),
-          cellForString(value.toString()),
+          cellForString(key, doSmallText: doSmallText),
+          cellForString(value.toString(), doSmallText: doSmallText),
         ],
       );
       rows.add(row);
@@ -47,8 +49,8 @@ class TableUtilities {
             )
           : null,
       columnWidths: {
-        0: FlexColumnWidth(0.4),
-        1: FlexColumnWidth(0.6),
+        0: FlexColumnWidth(colWidthFlex[0]),
+        1: FlexColumnWidth(colWidthFlex[1]),
       },
       children: rows,
     );
