@@ -15,7 +15,6 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
 
-
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
 class LoggingButton extends StatefulWidget {
@@ -39,8 +38,12 @@ class _LoggingButtonState extends State<LoggingButton> {
               _toggleLoggingFunction(context, gpsState);
             }),
         onLongPress: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => LogListWidget()));
+          ProjectState projectState =
+              Provider.of<ProjectState>(context, listen: false);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LogListWidget(projectState.projectDb)));
         },
       );
     });
@@ -53,7 +56,7 @@ class _LoggingButtonState extends State<LoggingButton> {
       if (stopLogging) {
         await gpsLoggingState.stopLogging();
         ProjectState projectState =
-        Provider.of<ProjectState>(context, listen: false);
+            Provider.of<ProjectState>(context, listen: false);
         projectState.reloadProject();
       }
     } else {

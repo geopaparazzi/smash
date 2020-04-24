@@ -8,6 +8,7 @@ import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:latlong/latlong.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/database/database.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
@@ -76,7 +77,8 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
 
 /// The log list widget.
 class LogListWidget extends StatefulWidget {
-  LogListWidget();
+  var db;
+  LogListWidget(this.db);
 
   @override
   State<StatefulWidget> createState() {
@@ -87,13 +89,23 @@ class LogListWidget extends StatefulWidget {
 /// The log list widget state.
 class LogListWidgetState extends State<LogListWidget> {
   List<dynamic> _logsList = [];
+  bool _isLoading = true;
 
-  Future<bool> loadLogs(var db) async {
-    var itemsList = await db.getQueryObjectsList(Log4ListWidgetBuilder());
+  @override
+  void initState() {
+    super.initState();
+    loadLogs();
+  }
+
+  Future loadLogs() async {
+    var itemsList =
+        await widget.db.getQueryObjectsList(Log4ListWidgetBuilder());
     if (itemsList != null) {
       _logsList = itemsList;
     }
-    return true;
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -106,104 +118,125 @@ class LogListWidgetState extends State<LogListWidget> {
           title: Text("GPS Logs list"),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.check),
+              icon: Icon(MdiIcons.checkBoxMultipleOutline),
               tooltip: "Select all",
               onPressed: () async {
                 await db.updateGpsLogVisibility(true);
-                setState(() {});
+                await loadLogs();
               },
             ),
             IconButton(
               tooltip: "Unselect all",
-              icon: Icon(Icons.check_box_outline_blank),
+              icon: Icon(MdiIcons.checkboxMultipleBlankOutline),
               onPressed: () async {
                 await db.updateGpsLogVisibility(false);
-                setState(() {});
+                await loadLogs();
               },
             ),
-            IconButton(
-              tooltip: "Invert selection",
-              icon: Icon(Icons.check_box),
-              onPressed: () async {
-                await db.invertGpsLogsVisibility();
-                setState(() {});
+            PopupMenuButton<int>(
+              onSelected: (value) async {
+                if (value == 1) {
+                  await db.invertGpsLogsVisibility();
+                  await loadLogs();
+                } else if (value == 2) {
+                  if (_logsList.length > 1) {
+                    var masterId; // = (_logsList.first as Log4ListWidget).id;
+                    var mergeIds = <int>[];
+                    for (Log4ListWidget log in _logsList) {
+                      if (log.isVisible == 1) {
+                        if (masterId == null) {
+                          masterId = log.id;
+                        } else {
+                          mergeIds.add(log.id);
+                        }
+                      }
+                    }
+                    await db.mergeGpslogs(masterId, mergeIds);
+                    await loadLogs();
+                    await projectState.reloadProject();
+                  }
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                var txt1 = "Invert selection";
+                var txt2 = "Merge selected";
+                return [
+                  PopupMenuItem<int>(
+                    value: 1,
+                    child: Text(txt1),
+                  ),
+                  PopupMenuItem<int>(
+                    value: 2,
+                    child: Text(txt2),
+                  )
+                ];
               },
             ),
           ],
         ),
-        body: FutureBuilder<void>(
-          future: loadLogs(db),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future is complete, display the preview.
-              return ListView.builder(
-                  itemCount: _logsList.length,
-                  itemBuilder: (context, index) {
-                    Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
-                    return Dismissible(
-                      confirmDismiss: _confirmLogDismiss,
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) async {
-                        await db.deleteGpslog(logItem.id);
-                        await projectState.reloadProject();
-                      },
-                      key: Key("${logItem.id}"),
-                      background: Container(
-                        alignment: AlignmentDirectional.centerEnd,
-                        color: Colors.red,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.white,
+        body: _isLoading
+            ? Center(child: SmashCircularProgress(label: "Loading logs..."))
+            : ListView.builder(
+                itemCount: _logsList.length,
+                itemBuilder: (context, index) {
+                  Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
+                  return Dismissible(
+                    confirmDismiss: _confirmLogDismiss,
+                    direction: DismissDirection.endToStart,
+                    onDismissed: (direction) async {
+                      await db.deleteGpslog(logItem.id);
+                      await loadLogs();
+                      await projectState.reloadProject();
+                    },
+                    key: Key("${logItem.id}"),
+                    background: Container(
+                      alignment: AlignmentDirectional.centerEnd,
+                      color: Colors.red,
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    child: ListTile(
+                      leading: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(
+                            Icons.timeline,
+                            color: ColorExt(logItem.color),
+                            size: SmashUI.MEDIUM_ICON_SIZE,
                           ),
-                        ),
+                          Checkbox(
+                              value: logItem.isVisible == 1 ? true : false,
+                              onChanged: (isVisible) async {
+                                logItem.isVisible = isVisible ? 1 : 0;
+                                await db.updateGpsLogVisibility(
+                                    isVisible, logItem.id);
+                                await loadLogs();
+                                await projectState.reloadProject();
+                              }),
+                        ],
                       ),
-                      child: ListTile(
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(
-                              Icons.timeline,
-                              color: ColorExt(logItem.color),
-                              size: SmashUI.MEDIUM_ICON_SIZE,
-                            ),
-                            Checkbox(
-                                value: logItem.isVisible == 1 ? true : false,
-                                onChanged: (isVisible) async {
-                                  logItem.isVisible = isVisible ? 1 : 0;
-                                  await db.updateGpsLogVisibility(
-                                      isVisible, logItem.id);
-                                  await projectState.reloadProject();
-                                  setState(() {});
-                                }),
-                          ],
-                        ),
-                        trailing: Icon(Icons.arrow_right),
-                        title: Text('${logItem.name}'),
-                        subtitle: Text(
-                            '${_getTime(logItem, gpsState, db)} ${_getLength(logItem, gpsState)}'),
-                        onTap: () => _navigateToLogProperties(context, logItem),
-                        onLongPress: () async {
-                          SmashMapState mapState = Provider.of<SmashMapState>(
-                              context,
-                              listen: false);
-                          LatLng position =
-                          await db.getLogStartPosition(logItem.id);
-                          mapState.center =
-                              Coordinate(position.longitude, position.latitude);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    );
-                  });
-            } else {
-              // Otherwise, display a loading indicator.
-              return Center(
-                  child: SmashCircularProgress(label: "Loading logs..."));
-            }
-          },
-        ),
+                      trailing: Icon(Icons.arrow_right),
+                      title: Text('${logItem.name}'),
+                      subtitle: Text(
+                          '${_getTime(logItem, gpsState, db)} ${_getLength(logItem, gpsState)}'),
+                      onTap: () => _navigateToLogProperties(context, logItem),
+                      onLongPress: () async {
+                        SmashMapState mapState =
+                            Provider.of<SmashMapState>(context, listen: false);
+                        LatLng position =
+                            await db.getLogStartPosition(logItem.id);
+                        mapState.center =
+                            Coordinate(position.longitude, position.latitude);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  );
+                }),
       );
     });
   }
@@ -218,11 +251,20 @@ class LogListWidgetState extends State<LogListWidget> {
       } else {
         // needs to be fixed using the points. Do it and refresh.
         db.getLogDataPointsById(item.id).then((data) {
-          var last = data.last;
-          var ts = last.ts;
-          db.updateGpsLogEndts(item.id, ts).then((i) {
-            setState(() {});
-          });
+          if (data != null && data.length > 0) {
+            var last = data.last;
+            var ts = last.ts;
+            db.updateGpsLogEndts(item.id, ts).then((i) {
+              setState(() {});
+            });
+          } else {
+            // remove those that have no data
+            db.deleteGpslog(item.id).then((deleted) {
+              if (deleted) {
+                setState(() {});
+              }
+            });
+          }
         });
         return "";
       }
@@ -248,7 +290,7 @@ class LogListWidgetState extends State<LogListWidget> {
       double sum = 0;
       for (int i = 0; i < points.length - 1; i++) {
         double distance =
-        CoordinateUtilities.getDistance(points[i], points[i + 1]);
+            CoordinateUtilities.getDistance(points[i], points[i + 1]);
         sum += distance;
       }
       length = sum;

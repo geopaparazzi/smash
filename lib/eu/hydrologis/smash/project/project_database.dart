@@ -559,6 +559,25 @@ class GeopaparazziProjectDb extends SqliteDb {
     });
   }
 
+  /// Merge gps logs [mergeLogs] into the master [logId].
+  Future<bool> mergeGpslogs(int logId, List<int> mergeLogs) async {
+    return await transaction((tx) {
+      for (var mergeLogId in mergeLogs) {
+        // assign all data of the log to the new log
+        String sql =
+            "update $TABLE_GPSLOG_DATA set $LOGSDATA_COLUMN_LOGID=$logId where $LOGSDATA_COLUMN_LOGID=$mergeLogId";
+        tx.execute(sql);
+        // then remove log and properties
+        sql = "delete from $TABLE_GPSLOGS where $LOGS_COLUMN_ID = $mergeLogId";
+        tx.execute(sql);
+        sql =
+            "delete from $TABLE_GPSLOG_PROPERTIES where $LOGSPROP_COLUMN_LOGID = $mergeLogId";
+        tx.execute(sql);
+      }
+      return Future.value(true);
+    });
+  }
+
   /// Updates the end timestamp [endTs] of a log of id [logId].
   Future<int> updateGpsLogEndts(int logId, int endTs) async {
     var updatedId = await update(
@@ -837,4 +856,3 @@ class GeopaparazziProjectDb extends SqliteDb {
     }
   }
 }
-
