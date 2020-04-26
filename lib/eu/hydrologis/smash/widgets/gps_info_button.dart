@@ -239,7 +239,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                   children: [
                     TableUtilities.cellForString("Timestamp", color: color),
                     TableUtilities.cellForString(
-                        "${TimeUtilities.ISO8601_TS_FORMATTER.format(pos.timestamp)}",
+                        "${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(pos.time.round()))}",
                         color: color),
                   ],
                 ),

@@ -258,7 +258,7 @@ class DashboardUtils {
             sb.write("\nAccuracy: ");
             sb.write(pos.accuracy.toStringAsFixed(KEY_ELEV_DECIMALS));
             sb.write("\nTimestamp: ");
-            sb.write(TimeUtilities.ISO8601_TS_FORMATTER.format(pos.timestamp));
+            sb.write(TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
             ShareHandler.shareText(sb.toString());
           },
         ),

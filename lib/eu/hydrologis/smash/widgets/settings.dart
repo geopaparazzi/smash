@@ -580,7 +580,7 @@ class GpsSettingsState extends State<GpsSettings> {
       var layer = new MarkerLayerOptions(
         markers: gpsInfoList.map((msg) {
           var clr = Colors.red.withAlpha(100);
-          if (msg == gpsInfoList.last) {
+          if (msg == gpsInfoList.first) {
             clr = Colors.blue.withAlpha(150);
           }
 
@@ -689,7 +689,11 @@ class GpsSettingsState extends State<GpsSettings> {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
                       child: ListTile(
-                        title: Text("$i        " + msg.timestamp.toString(),
+                        title: Text(
+                            "$i        " +
+                                DateTime.fromMillisecondsSinceEpoch(
+                                        (msg.timestamp).toInt())
+                                    .toString(),
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: SmashColors.mainDecorations)),

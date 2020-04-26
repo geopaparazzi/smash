@@ -1,11 +1,11 @@
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/util/logging.dart';
-
+import 'package:background_locator/location_dto.dart';
+import 'package:background_locator/location_settings.dart';
 class GpsFilterManagerMessage {
   /// Time in milliseconds from the last position event.
   var lastFixDelta;
@@ -51,7 +51,7 @@ class GpsFilterManager {
   ///
   /// In the case the position is discarded due to [isValid]
   /// or [passesFilters] returning false, the point is not updated.
-  Position _previousLogPosition;
+  LocationDto _previousLogPosition;
   GpsState _gpsState;
 
   GpsFilterManagerMessage currentMessage;
@@ -82,7 +82,7 @@ class GpsFilterManager {
   /// New position event coming in from the location service.
   ///
   /// In here all the filtering happens.
-  void onNewPositionEvent(Position position) {
+  void onNewPositionEvent(LocationDto position) {
     GpsFilterManagerMessage msg = GpsFilterManagerMessage();
     msg.lastFixDelta = _lastFixDelta;
 
@@ -92,8 +92,8 @@ class GpsFilterManager {
     position = GpsFilterManager().checkTestMock() ?? position;
 
     if (position != null) {
-      msg.timestamp = position.timestamp;
-      msg.mocked = position.mocked;
+      msg.timestamp = position.time;//stamp;
+      msg.mocked = false;//position.mocked;
       msg.accuracy = position.accuracy;
       msg.altitude = position.altitude;
       msg.heading = position.heading;
@@ -109,13 +109,13 @@ class GpsFilterManager {
             _previousLogPosition.latitude, _previousLogPosition.longitude);
         msg.previousPosLatLon = previousPosLatLon;
         msg.newPosLatLon = newPosLatLon;
-        var ts = position.timestamp.millisecondsSinceEpoch;
+        var ts = position.time.round();//timestamp.millisecondsSinceEpoch;
 
         // find values for filter checks
         var distanceLastLogged =
             CoordinateUtilities.getDistance(previousPosLatLon, newPosLatLon);
         var deltaSecondsLastLogged =
-            ((ts - _previousLogPosition.timestamp.millisecondsSinceEpoch) /
+            ((ts - _previousLogPosition.time) /
                     1000)
                 .round();
         var valid = isValid(distanceLastLogged, msg);
@@ -177,22 +177,22 @@ class GpsFilterManager {
         deltaSecondsLastEvent > _gpsState.gpsTimeInterval;
   }
 
-  Position checkTestMock() {
-    if (_gpsState.doTestLog) {
-      // Use the mocked log
-      var c = Testlog.getNext();
-      Position newP = Position(
-        latitude: c.y,
-        longitude: c.x,
-        heading: c.z,
-        accuracy: 2,
-        altitude: 100,
-        speed: 2,
-        timestamp: DateTime.now(),
-        mocked: true,
-      );
-      return newP;
-    }
+  LocationDto checkTestMock() {
+    // if (_gpsState.doTestLog) {
+    //   // Use the mocked log
+    //   var c = Testlog.getNext();
+    //   LocationDto newP = LocationDto(
+    //     latitude: c.y,
+    //     longitude: c.x,
+    //     heading: c.z,
+    //     accuracy: 2,
+    //     altitude: 100,
+    //     speed: 2,
+    //     timestamp: DateTime.now(),
+    //     mocked: true,
+    //   );
+    //   return newP;
+    // }
     return null;
   }
 }

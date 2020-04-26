@@ -6,10 +6,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:background_locator/location_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -186,10 +186,10 @@ class _MasterDetailPageState extends State<MasterDetailPage> {
           String iconColor = ColorExt.asHex(SmashColors.mainDecorationsDarker);
 
           int ts = DateTime.now().millisecondsSinceEpoch;
-          Position pos;
+          LocationDto pos;
           double lon;
           double lat;
-          if (widget._position is Position) {
+          if (widget._position is LocationDto) {
             pos = widget._position;
           } else {
             LatLng ll = widget._position;
@@ -955,7 +955,7 @@ class PicturesWidgetState extends State<PicturesWidget> {
                             ..isDirty = 1;
 
                           var position = widget._position;
-                          if (position is Position) {
+                          if (position is LocationDto) {
                             dbImage.lon = position.longitude;
                             dbImage.lat = position.latitude;
                             dbImage.altim = position.altitude;

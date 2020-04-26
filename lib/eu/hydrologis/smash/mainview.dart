@@ -478,6 +478,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
               "Active operations will be stopped.");
           if (doExit) {
             await disposeProject(context);
+            GpsHandler().close();
             return Future.value(true);
           }
           return Future.value(false);

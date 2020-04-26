@@ -1,4 +1,6 @@
 PODS:
+  - background_locator (0.0.1):
+    - Flutter
   - device_info (0.0.1):
     - Flutter
   - Flutter (1.0.0)
@@ -9,13 +11,7 @@ PODS:
   - FMDB/standard (2.7.5)
   - geocoder (0.0.1):
     - Flutter
-  - geolocator (5.3.0):
-    - Flutter
-  - google_api_availability (2.0.2):
-    - Flutter
   - image_picker (0.0.1):
-    - Flutter
-  - "location_permissions (2.0.4+1)":
     - Flutter
   - package_info (0.0.1):
     - Flutter
@@ -25,7 +21,7 @@ PODS:
     - Flutter
   - path_provider_macos (0.0.1):
     - Flutter
-  - "permission_handler (4.4.0+hotfix.2)":
+  - "permission_handler (4.4.0+hotfix.4)":
     - Flutter
   - screen (0.0.1):
     - Flutter
@@ -48,14 +44,12 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - background_locator (from `.symlinks/plugins/background_locator/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Flutter (from `Flutter`)
   - flutter_plugin_android_lifecycle (from `.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
   - geocoder (from `.symlinks/plugins/geocoder/ios`)
-  - geolocator (from `.symlinks/plugins/geolocator/ios`)
-  - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
-  - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_ex (from `.symlinks/plugins/path_provider_ex/ios`)
@@ -76,6 +70,8 @@ SPEC REPOS:
     - FMDB
 
 EXTERNAL SOURCES:
+  background_locator:
+    :path: ".symlinks/plugins/background_locator/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   Flutter:
@@ -84,14 +80,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_plugin_android_lifecycle/ios"
   geocoder:
     :path: ".symlinks/plugins/geocoder/ios"
-  geolocator:
-    :path: ".symlinks/plugins/geolocator/ios"
-  google_api_availability:
-    :path: ".symlinks/plugins/google_api_availability/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
-  location_permissions:
-    :path: ".symlinks/plugins/location_permissions/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
@@ -122,20 +112,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_web/ios"
 
 SPEC CHECKSUMS:
+  background_locator: fe84072e5be02da3e28a3bbca81293d6c7443df7
   device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_plugin_android_lifecycle: 47de533a02850f070f5696a623995e93eddcdb9b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
-  geolocator: 7cdcf71180b80913b3cd84ab715d3b5365b378af
-  google_api_availability: 6f1017d3a61be12be3bd9f929cc5b2606f24ae7f
   image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
-  location_permissions: 360d12ecd1c94a4cab68585f508be1d5ad944c8b
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   path_provider_ex: 95397ca0c3f5f99c8538aec3736674fa9cefc1b6
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
-  permission_handler: d5d46b2ca93671e8dcf870b949e304c7ddb65ad0
+  permission_handler: 8278954f2382902f63f00dd8828769c0bd6d511b
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01

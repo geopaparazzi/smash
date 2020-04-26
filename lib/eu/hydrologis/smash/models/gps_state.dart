@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-import 'package:geolocator/geolocator.dart';
+import 'package:background_locator/location_dto.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
@@ -19,7 +19,7 @@ import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 /// Provides tracking of position and parameters related to GPS state.
 class GpsState extends ChangeNotifierPlus {
   GpsStatus _status = GpsStatus.OFF;
-  Position _lastPosition;
+  LocationDto _lastPosition;
 
   bool _isLogging = false;
   int _currentLogId;
@@ -45,14 +45,14 @@ class GpsState extends ChangeNotifierPlus {
 
   GpsStatus get status => _status;
 
-  Position get lastGpsPosition => _lastPosition;
+  LocationDto get lastGpsPosition => _lastPosition;
 
-  set lastGpsPosition(Position position) {
+  set lastGpsPosition(LocationDto position) {
     _lastPosition = position;
     notifyListeners(); //Msg("lastGpsPosition");
   }
 
-  set lastGpsPositionQuiet(Position position) {
+  set lastGpsPositionQuiet(LocationDto position) {
     _lastPosition = position;
   }
 

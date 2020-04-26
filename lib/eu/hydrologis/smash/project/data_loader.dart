@@ -7,9 +7,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:background_locator/location_dto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
@@ -37,7 +37,7 @@ class DataLoaderUtilities {
       ProjectState projectState, bool doInGps, MapController mapController,
       {String form, String iconName, String color, String text}) async {
     int ts = DateTime.now().millisecondsSinceEpoch;
-    Position pos;
+    LocationDto pos;
     double lon;
     double lat;
     if (doInGps) {
@@ -91,7 +91,7 @@ class DataLoaderUtilities {
       ..timeStamp = DateTime.now().millisecondsSinceEpoch
       ..isDirty = 1;
 
-    if (position is Position) {
+    if (position is LocationDto) {
       dbImage.lon = position.longitude;
       dbImage.lat = position.latitude;
       dbImage.altim = position.altitude;
@@ -246,12 +246,14 @@ class DataLoaderUtilities {
                             if (note.hasForm()) {
                               var sectionMap = jsonDecode(note.form);
                               var sectionName = sectionMap[ATTR_SECTIONNAME];
-                              Position p = Position(
-                                latitude: note.lat,
-                                longitude: note.lon,
-                                altitude: -1,
-                                heading: -1,
-                                timestamp: DateTime.now(),
+                              LocationDto p = LocationDto.fromJson(
+                                {
+                                "latitude": note.lat,
+                                "longitude": note.lon,
+                                "altitude": -1,
+                                "heading": -1,
+                                "time": DateTime.now().millisecondsSinceEpoch,
+                                }
                               );
                               Navigator.push(
                                   ctx,
