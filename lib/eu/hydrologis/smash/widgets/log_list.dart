@@ -223,7 +223,7 @@ class LogListWidgetState extends State<LogListWidget> {
                       trailing: Icon(Icons.arrow_right),
                       title: Text('${logItem.name}'),
                       subtitle: Text(
-                          '${_getTime(logItem, gpsState, db)} ${_getLength(logItem, gpsState)}'),
+                          '${_getTime(logItem, gpsState, db)}; ${_getLength(logItem, gpsState)}'),
                       onTap: () => _navigateToLogProperties(context, logItem),
                       onLongPress: () async {
                         SmashMapState mapState =
@@ -271,12 +271,13 @@ class LogListWidgetState extends State<LogListWidget> {
     }
 
     if (minutes > 60) {
-      var hours = minutes / 60;
-      var h = (hours * 10).toInt() / 10.0;
-      return "Hours: $h";
+      var h = minutes ~/ 60;
+      var m = (minutes % 60).round();
+      var hStr = h > 1 ? "hours" : "hour";
+      return "$h $hStr $m min";
     } else {
       var m = minutes.toInt();
-      return "Minutes: $m";
+      return "$m min";
     }
   }
 
@@ -298,9 +299,9 @@ class LogListWidgetState extends State<LogListWidget> {
     if (length > 1000) {
       var lengthKm = length / 1000;
       var l = (lengthKm * 10).toInt() / 10.0;
-      return "Km: ${l.round()}";
+      return "${l.toStringAsFixed(1)} km";
     } else {
-      return "Meters: ${length.round()}";
+      return "${length.round()} m";
     }
   }
 

@@ -34,10 +34,40 @@ class CoordinateUtilities {
 
 enum GpsStatus { OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
 
+class SmashPosition {
+  LocationDto _location;
+
+  SmashPosition.fromLocation(this._location);
+
+  double get latitude => _location.latitude;
+  double get longitude => _location.longitude;
+  double get accuracy => _location.accuracy;
+  double get altitude => _location.altitude;
+  double get speed => _location.speed;
+  double get speedAccuracy => _location.speedAccuracy;
+  double get heading => _location.heading;
+  double get time => _location.time;
+
+  @override
+  String toString() {
+    return """SmashPosition{
+      latitude: $latitude, 
+      longitude: $longitude, 
+      accuracy: $accuracy, 
+      altitude: $altitude, 
+      speed: $speed, 
+      speedAccuracy: $speedAccuracy, 
+      heading: $heading, 
+      time: $time
+    }""";
+  }
+
+}
+
 /// Interface to handle position updates
-abstract class PositionListener {
+abstract class SmashPositionListener {
   /// Launched whenever a new [position] comes in.
-  void onPositionUpdate(LocationDto position);
+  void onPositionUpdate(SmashPosition position);
 
   // Launched whenever a new gps status is triggered.
   void setStatus(GpsStatus currentStatus);
@@ -56,7 +86,7 @@ abstract class GpsLoggingHandler {
 ///
 /// This is used to:
 /// * initialize and terminate the location service
-/// * registre for updates through the [PositionListener] interface
+/// * registre for updates through the [SmashPositionListener] interface
 /// * handle the GPS logging
 ///
 class GpsHandler {
@@ -109,7 +139,7 @@ class GpsHandler {
         IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
 
         port.listen((dynamic data) {
-          _onPositionUpdate(data);
+          _onPositionUpdate(SmashPosition.fromLocation(data));
         });
         // init platform state
         await GPS.BackgroundLocator.initialize();
@@ -179,7 +209,7 @@ class GpsHandler {
     return _locationServiceEnabled;
   }
 
-  void _onPositionUpdate(LocationDto position) {
+  void _onPositionUpdate(SmashPosition position) {
     GpsFilterManager().onNewPositionEvent(position);
   }
 

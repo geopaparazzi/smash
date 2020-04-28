@@ -23,6 +23,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/share.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms_widgets.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
@@ -37,7 +38,7 @@ class DataLoaderUtilities {
       ProjectState projectState, bool doInGps, MapController mapController,
       {String form, String iconName, String color, String text}) async {
     int ts = DateTime.now().millisecondsSinceEpoch;
-    LocationDto pos;
+    SmashPosition pos;
     double lon;
     double lat;
     if (doInGps) {
@@ -246,15 +247,13 @@ class DataLoaderUtilities {
                             if (note.hasForm()) {
                               var sectionMap = jsonDecode(note.form);
                               var sectionName = sectionMap[ATTR_SECTIONNAME];
-                              LocationDto p = LocationDto.fromJson(
-                                {
+                              LocationDto p = LocationDto.fromJson({
                                 "latitude": note.lat,
                                 "longitude": note.lon,
                                 "altitude": -1,
                                 "heading": -1,
                                 "time": DateTime.now().millisecondsSinceEpoch,
-                                }
-                              );
+                              });
                               Navigator.push(
                                   ctx,
                                   MaterialPageRoute(

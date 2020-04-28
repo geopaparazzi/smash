@@ -7,7 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 
-const DEBUG_NOTIFICATIONS = true;
+const DEBUG_NOTIFICATIONS = false;
 
 class ChangeNotifierPlus with ChangeNotifier {
   void notifyListenersMsg([String msg]) {
