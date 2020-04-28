@@ -103,6 +103,9 @@ class GpsHandler {
     _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) async {
       if (port == null) {
         port = ReceivePort();
+        if (IsolateNameServer.lookupPortByName(_isolateName) != null) {
+          IsolateNameServer.removePortNameMapping(_isolateName);
+        }
         IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
 
         port.listen((dynamic data) {
@@ -116,10 +119,11 @@ class GpsHandler {
             //Scroll down to see the different options
             notificationTitle: "SMASH location service is active.",
             notificationMsg: "",
+            notificationIcon: "smash_notification",
             wakeLockTime: 20,
             autoStop: false,
             interval: 1);
-        GPS.BackgroundLocator.registerLocationUpdate(
+        await GPS.BackgroundLocator.registerLocationUpdate(
           callback,
           //optional
           androidNotificationCallback: notificationCallback,
@@ -176,10 +180,6 @@ class GpsHandler {
   }
 
   void _onPositionUpdate(LocationDto position) {
-    if (!_locationServiceEnabled) {
-      GpLogger().d("Location service is disabled.");
-      return;
-    }
     GpsFilterManager().onNewPositionEvent(position);
   }
 
@@ -193,11 +193,13 @@ class GpsHandler {
 
     await closeGpsIsolate();
 
-    if (_locationServiceEnabled) return;
+    _locationServiceEnabled = false;
   }
 
   Future closeGpsIsolate() async {
-    IsolateNameServer.removePortNameMapping(_isolateName);
+    if (IsolateNameServer.lookupPortByName(_isolateName) != null) {
+      IsolateNameServer.removePortNameMapping(_isolateName);
+    }
     await GPS.BackgroundLocator.unRegisterLocationUpdate();
   }
 
