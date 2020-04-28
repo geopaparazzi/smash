@@ -4,8 +4,11 @@
  * found in the LICENSE file.
  */
 
+import 'dart:convert';
+
 import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -14,9 +17,13 @@ import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
+import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
+import 'package:smash/eu/hydrologis/smash/forms/forms_widgets.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
+import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 
 /// The notes list widget.
@@ -67,98 +74,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
               return ListView.builder(
                   itemCount: _notesList.length,
                   itemBuilder: (context, index) {
-                    dynamic dynNote = _notesList[index];
-                    int id;
-                    var markerName;
-                    var markerColor;
-                    String text;
-                    bool hasProperties = true;
-                    int ts;
-                    double lat;
-                    double lon;
-                    if (dynNote is Note) {
-                      id = dynNote.id;
-                      markerName = dynNote.noteExt.marker;
-                      markerColor = dynNote.noteExt.color;
-                      text = dynNote.text;
-                      ts = dynNote.timeStamp;
-                      lon = dynNote.lon;
-                      lat = dynNote.lat;
-                      if (dynNote.form != null) {
-                        hasProperties = false;
-                      }
-                    } else {
-                      hasProperties = false;
-                      id = dynNote.id;
-                      markerName = 'camera';
-                      markerColor =
-                          ColorExt.asHex(SmashColors.mainDecorationsDarker);
-                      text = dynNote.text;
-                      ts = dynNote.timeStamp;
-                      lon = dynNote.lon;
-                      lat = dynNote.lat;
-                    }
-
-                    return Dismissible(
-                      confirmDismiss: _confirmNoteDismiss,
-                      direction: DismissDirection.endToStart,
-                      onDismissed: (direction) async {
-                        await db.deleteNote(id);
-                        projectState.reloadProject();
-                      },
-                      key: Key("${id}"),
-                      background: Container(
-                        alignment: AlignmentDirectional.centerEnd,
-                        color: Colors.red,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      child: ListTile(
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(
-                              getIcon(markerName) ?? MdiIcons.mapMarker,
-                              color: ColorExt(markerColor),
-                              size: SmashUI.MEDIUM_ICON_SIZE,
-                            ),
-//                            Checkbox(
-//                                value: note.isVisible == 1 ? true : false,
-//                                onChanged: (isVisible) async {
-//                                  note.isVisible = isVisible ? 1 : 0;
-//                                  var db = await gpProjectModel.getDatabase();
-//                                  await db.updateGpsLogVisibility(
-//                                      isVisible, note.id);
-//                                  widget._eventHandler.reloadProjectFunction();
-//                                  setState(() {});
-//                                }),
-                          ],
-                        ),
-                        trailing: hasProperties
-                            ? Icon(Icons.arrow_right)
-                            : SmashUI.getTransparentIcon(),
-                        title: Text('$text'),
-                        subtitle: Text(
-                            '${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
-                        onTap: () {
-                          if (hasProperties) {
-                            _navigateToNoteProperties(context, dynNote);
-                          }
-                        },
-                        onLongPress: () {
-                          LatLng position = LatLng(lat, lon);
-                          Provider.of<SmashMapState>(context, listen: false)
-                                  .center =
-                              Coordinate(position.longitude, position.latitude);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    );
+                    return buildNoteItem(index, db, projectState, context);
                   });
             } else {
               // Otherwise, display a loading indicator.
@@ -167,6 +83,110 @@ class NotesListWidgetState extends State<NotesListWidget> {
             }
           },
         ));
+  }
+
+  Slidable buildNoteItem(int index, GeopaparazziProjectDb db,
+      ProjectState projectState, BuildContext context) {
+    List<Widget> actions = [];
+    List<Widget> secondaryActions = [];
+    dynamic dynNote = _notesList[index];
+    int id;
+    var markerName;
+    var markerColor;
+    String text;
+    bool isForm = false;
+    int ts;
+    double lat;
+    double lon;
+    if (dynNote is Note) {
+      id = dynNote.id;
+      markerName = dynNote.noteExt.marker;
+      markerColor = dynNote.noteExt.color;
+      text = dynNote.text;
+      ts = dynNote.timeStamp;
+      lon = dynNote.lon;
+      lat = dynNote.lat;
+      if (dynNote.form != null) {
+        isForm = true;
+      }
+    } else {
+      id = dynNote.id;
+      markerName = 'camera';
+      markerColor = ColorExt.asHex(SmashColors.mainDecorationsDarker);
+      text = dynNote.text;
+      ts = dynNote.timeStamp;
+      lon = dynNote.lon;
+      lat = dynNote.lat;
+    }
+    actions.add(IconSlideAction(
+        caption: 'Zoom to',
+        color: SmashColors.mainDecorations,
+        icon: MdiIcons.magnifyScan,
+        onTap: () async {
+          LatLng position = LatLng(lat, lon);
+          Provider.of<SmashMapState>(context, listen: false).center =
+              Coordinate(position.longitude, position.latitude);
+          Navigator.of(context).pop();
+        }));
+    if (isForm) {
+      actions.add(IconSlideAction(
+        caption: 'Edit',
+        color: SmashColors.mainDecorations,
+        icon: MdiIcons.pencil,
+        onTap: () {
+          var sectionMap = jsonDecode(dynNote.form);
+          var sectionName = sectionMap[ATTR_SECTIONNAME];
+          SmashPosition sp = SmashPosition.fromCoords(dynNote.lon, dynNote.lat,
+              DateTime.now().millisecondsSinceEpoch.toDouble());
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MasterDetailPage(
+                        sectionMap,
+                        SmashUI.titleText(sectionName,
+                            color: SmashColors.mainBackground, bold: true),
+                        sectionName,
+                        sp,
+                        dynNote.id,
+                      )));
+        },
+      ));
+    } else {
+      actions.add(IconSlideAction(
+        caption: 'Properties',
+        color: SmashColors.mainDecorations,
+        icon: MdiIcons.palette,
+        onTap: () => _navigateToNoteProperties(context, dynNote),
+      ));
+    }
+    secondaryActions.add(IconSlideAction(
+        caption: 'Delete',
+        color: SmashColors.mainDanger,
+        icon: MdiIcons.delete,
+        onTap: () async {
+          await db.deleteNote(id);
+          await projectState.reloadProject();
+          setState(() {});
+        }));
+
+    return Slidable(
+      key: ValueKey(id),
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      child: ListTile(
+        title: Text('$text'),
+        subtitle: Text(
+            '${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
+        leading: Icon(
+          getIcon(markerName) ?? MdiIcons.mapMarker,
+          color: ColorExt(markerColor),
+          size: SmashUI.MEDIUM_ICON_SIZE,
+        ),
+      ),
+      actions: actions,
+      secondaryActions: secondaryActions,
+    );
   }
 
   Future<bool> _confirmNoteDismiss(DismissDirection direction) async {

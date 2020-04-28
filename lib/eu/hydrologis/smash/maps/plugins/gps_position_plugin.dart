@@ -108,27 +108,29 @@ class GpsPositionLayer extends StatelessWidget {
             (posPixel.y - pixelOrigin.y) -
             gpsPositionLayerOpts.markerSize / 2;
         double delta = 3;
-        return Stack(
-          children: <Widget>[
-            Positioned(
-              left: centerX - delta / 2.0,
-              bottom: centerY - delta / 2.0,
-              child: Icon(
-                Icons.my_location,
-                size: gpsPositionLayerOpts.markerSize + delta,
-                color: Colors.white,
+        return IgnorePointer(
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                left: centerX - delta / 2.0,
+                bottom: centerY - delta / 2.0,
+                child: Icon(
+                  Icons.my_location,
+                  size: gpsPositionLayerOpts.markerSize + delta,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            Positioned(
-              left: centerX,
-              bottom: centerY,
-              child: Icon(
-                Icons.my_location,
-                size: gpsPositionLayerOpts.markerSize,
-                color: color,
+              Positioned(
+                left: centerX,
+                bottom: centerY,
+                child: Icon(
+                  Icons.my_location,
+                  size: gpsPositionLayerOpts.markerSize,
+                  color: color,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       }
     });

@@ -247,13 +247,13 @@ class DataLoaderUtilities {
                             if (note.hasForm()) {
                               var sectionMap = jsonDecode(note.form);
                               var sectionName = sectionMap[ATTR_SECTIONNAME];
-                              LocationDto p = LocationDto.fromJson({
-                                "latitude": note.lat,
-                                "longitude": note.lon,
-                                "altitude": -1,
-                                "heading": -1,
-                                "time": DateTime.now().millisecondsSinceEpoch,
-                              });
+                              SmashPosition sp = SmashPosition.fromCoords(
+                                  note.lon,
+                                  note.lat,
+                                  DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toDouble());
+
                               Navigator.push(
                                   ctx,
                                   MaterialPageRoute(
@@ -264,7 +264,7 @@ class DataLoaderUtilities {
                                                     SmashColors.mainBackground,
                                                 bold: true),
                                             sectionName,
-                                            p,
+                                            sp,
                                             note.id,
                                           )));
                             } else {

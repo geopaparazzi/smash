@@ -38,6 +38,15 @@ class SmashPosition {
   LocationDto _location;
 
   SmashPosition.fromLocation(this._location);
+  SmashPosition.fromCoords(double lon, double lat, double time) {
+    _location = LocationDto.fromJson({
+      "latitude": lat,
+      "longitude": lon,
+      "altitude": -1.0,
+      "heading": -1.0,
+      "time": time,
+    });
+  }
 
   double get latitude => _location.latitude;
   double get longitude => _location.longitude;
@@ -61,7 +70,6 @@ class SmashPosition {
       time: $time
     }""";
   }
-
 }
 
 /// Interface to handle position updates

@@ -22,6 +22,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/screen.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
@@ -186,10 +187,10 @@ class _MasterDetailPageState extends State<MasterDetailPage> {
           String iconColor = ColorExt.asHex(SmashColors.mainDecorationsDarker);
 
           int ts = DateTime.now().millisecondsSinceEpoch;
-          LocationDto pos;
+          SmashPosition pos;
           double lon;
           double lat;
-          if (widget._position is LocationDto) {
+          if (widget._position is SmashPosition) {
             pos = widget._position;
           } else {
             LatLng ll = widget._position;
