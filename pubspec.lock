@@ -235,7 +235,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.15.0"
+    version: "0.17.3+1"
   flutter_tags:
     dependency: "direct main"
     description:
@@ -351,7 +351,7 @@ packages:
     description:
       path: mapsforge_flutter
       ref: libs_upgrade
-      resolved-ref: "8aeb006ffda7c5662fdfb798370505e5b267e543"
+      resolved-ref: "5dc36dbdcb30c5c4337a454397b0687f75590cb4"
       url: "https://github.com/moovida/mapsforge_flutter.git"
     source: git
     version: "0.0.1"
