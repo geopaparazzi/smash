@@ -7,11 +7,13 @@
 import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/database/database.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
@@ -180,65 +182,70 @@ class LogListWidgetState extends State<LogListWidget> {
                 itemCount: _logsList.length,
                 itemBuilder: (context, index) {
                   Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
-                  return Dismissible(
-                    confirmDismiss: _confirmLogDismiss,
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (direction) async {
-                      await db.deleteGpslog(logItem.id);
-                      await loadLogs();
-                      await projectState.reloadProject();
-                    },
-                    key: Key("${logItem.id}"),
-                    background: Container(
-                      alignment: AlignmentDirectional.centerEnd,
-                      color: Colors.red,
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    child: ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Icon(
-                            Icons.timeline,
-                            color: ColorExt(logItem.color),
-                            size: SmashUI.MEDIUM_ICON_SIZE,
-                          ),
-                          Checkbox(
-                              value: logItem.isVisible == 1 ? true : false,
-                              onChanged: (isVisible) async {
-                                logItem.isVisible = isVisible ? 1 : 0;
-                                await db.updateGpsLogVisibility(
-                                    isVisible, logItem.id);
-                                await loadLogs();
-                                await projectState.reloadProject();
-                              }),
-                        ],
-                      ),
-                      trailing: Icon(Icons.arrow_right),
-                      title: Text('${logItem.name}'),
-                      subtitle: Text(
-                          '${_getTime(logItem, gpsState, db)}; ${_getLength(logItem, gpsState)}'),
-                      onTap: () => _navigateToLogProperties(context, logItem),
-                      onLongPress: () async {
-                        SmashMapState mapState =
-                            Provider.of<SmashMapState>(context, listen: false);
-                        LatLng position =
-                            await db.getLogStartPosition(logItem.id);
-                        mapState.center =
-                            Coordinate(position.longitude, position.latitude);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  );
+                  return buildLogSlidable(logItem, gpsState, db, projectState);
                 }),
       );
     });
+  }
+
+  Slidable buildLogSlidable(Log4ListWidget logItem, GpsState gpsState,
+      GeopaparazziProjectDb db, ProjectState projectState) {
+    List<Widget> actions = [];
+    List<Widget> secondaryActions = [];
+
+    actions.add(IconSlideAction(
+        caption: 'Zoom to',
+        color: SmashColors.mainDecorations,
+        icon: MdiIcons.magnifyScan,
+        onTap: () async {
+          SmashMapState mapState =
+              Provider.of<SmashMapState>(context, listen: false);
+          LatLng position = await db.getLogStartPosition(logItem.id);
+          mapState.center = Coordinate(position.longitude, position.latitude);
+          Navigator.of(context).pop();
+        }));
+    actions.add(IconSlideAction(
+      caption: 'Properties',
+      color: SmashColors.mainDecorations,
+      icon: MdiIcons.palette,
+      onTap: () => _navigateToLogProperties(context, logItem),
+    ));
+    secondaryActions.add(IconSlideAction(
+        caption: 'Delete',
+        color: SmashColors.mainDanger,
+        icon: MdiIcons.delete,
+        onTap: () async {
+          await db.deleteGpslog(logItem.id);
+          await loadLogs();
+          await projectState.reloadProject();
+          setState(() {});
+        }));
+
+    return Slidable(
+      key: ValueKey(logItem),
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      child: ListTile(
+        title: Text('${logItem.name}'),
+        subtitle: Text(
+            '${_getTime(logItem, gpsState, db)}; ${_getLength(logItem, gpsState)}'),
+        leading: Icon(
+          SmashIcons.logIcon,
+          color: ColorExt(logItem.color),
+          size: SmashUI.MEDIUM_ICON_SIZE,
+        ),
+        trailing: Checkbox(
+            value: logItem.isVisible == 1 ? true : false,
+            onChanged: (isVisible) async {
+              logItem.isVisible = isVisible ? 1 : 0;
+              await db.updateGpsLogVisibility(isVisible, logItem.id);
+              await loadLogs();
+              await projectState.reloadProject();
+            }),
+      ),
+      actions: actions,
+      secondaryActions: secondaryActions,
+    );
   }
 
   _getTime(Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
