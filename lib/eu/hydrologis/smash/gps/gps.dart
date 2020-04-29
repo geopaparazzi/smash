@@ -12,6 +12,7 @@ import 'package:background_locator/background_locator.dart' as GPS;
 import 'package:background_locator/location_dto.dart';
 import 'package:background_locator/location_settings.dart';
 import 'package:latlong/latlong.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/util/logging.dart';
@@ -72,6 +73,57 @@ class SmashPosition {
   }
 }
 
+class SmashLocationAccuracy {
+  final int code;
+  final LocationAccuracy accuracy;
+  final String label;
+
+  const SmashLocationAccuracy._internal(this.code, this.accuracy, this.label);
+
+  static const POWERSAVE = SmashLocationAccuracy._internal(
+      0, LocationAccuracy.POWERSAVE, "Powersave");
+  static const LOW =
+      SmashLocationAccuracy._internal(1, LocationAccuracy.LOW, "Low");
+  static const BALANCED =
+      SmashLocationAccuracy._internal(2, LocationAccuracy.BALANCED, "Balanced");
+  static const HIGH =
+      SmashLocationAccuracy._internal(3, LocationAccuracy.HIGH, "High");
+  static const NAVIGATION = SmashLocationAccuracy._internal(
+      4, LocationAccuracy.NAVIGATION, "Navigation");
+
+  static List<SmashLocationAccuracy> values() {
+    return [POWERSAVE, LOW, BALANCED, HIGH, NAVIGATION];
+  }
+
+  static SmashLocationAccuracy fromCode(int code) {
+    for (var item in values()) {
+      if (item.code == code) {
+        return item;
+      }
+    }
+    return NAVIGATION;
+  }
+
+  static SmashLocationAccuracy fromLabel(String label) {
+    for (var item in values()) {
+      if (item.label == label) {
+        return item;
+      }
+    }
+    return NAVIGATION;
+  }
+
+  static SmashLocationAccuracy fromPreferences() {
+    int prefCode =
+        GpPreferences().getIntSync(KEY_GPS_ACCURACY, NAVIGATION.code);
+    return fromCode(prefCode);
+  }
+
+  static Future<void> toPreferences(SmashLocationAccuracy accuracy) async {
+    await GpPreferences().setInt(KEY_GPS_ACCURACY, accuracy.code);
+  }
+}
+
 /// Interface to handle position updates
 abstract class SmashPositionListener {
   /// Launched whenever a new [position] comes in.
@@ -107,20 +159,15 @@ class GpsHandler {
 
   Timer _timer;
   GpsState _gpsState;
+  bool initialized = false;
 
   /// Accuracy for the location subscription
-  var locationAccuracy = LocationAccuracy.NAVIGATION;
-
-  /// Request to reinitialize the location subscription
-  bool reInit = false;
+  var locationAccuracy = SmashLocationAccuracy.NAVIGATION;
 
   /// internal handler singleton
   factory GpsHandler() => _instance;
 
-  GpsHandler._internal() {
-    // locationAccuracy =
-    // toLocationAccuracy(GpPreferences().getLocationAccuracy());
-  }
+  GpsHandler._internal();
 
   static void callback(LocationDto locationDto) async {
     final SendPort send = IsolateNameServer.lookupPortByName(_isolateName);
@@ -132,7 +179,7 @@ class GpsHandler {
   }
 
   Future<void> init(GpsState initGpsState) async {
-    GpLogger().d("init GpsHandler");
+    GpLogger().d("Init GpsHandler");
     _gpsState = initGpsState;
     _locationServiceEnabled = false;
 
@@ -140,37 +187,14 @@ class GpsHandler {
 
     _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) async {
       if (port == null) {
-        port = ReceivePort();
-        if (IsolateNameServer.lookupPortByName(_isolateName) != null) {
-          IsolateNameServer.removePortNameMapping(_isolateName);
-        }
-        IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
-
-        port.listen((dynamic data) {
-          _onPositionUpdate(SmashPosition.fromLocation(data));
-        });
-        // init platform state
-        await GPS.BackgroundLocator.initialize();
         GpLogger().d("Initialize geolocator");
+        await closeGpsIsolate();
 
-        var locationSettings = LocationSettings(
-            //Scroll down to see the different options
-            notificationTitle: "SMASH location service is active.",
-            notificationMsg: "",
-            notificationIcon: "smash_notification",
-            wakeLockTime: 20,
-            autoStop: false,
-            interval: 1);
-        await GPS.BackgroundLocator.registerLocationUpdate(
-          callback,
-          //optional
-          androidNotificationCallback: notificationCallback,
-          settings: locationSettings,
-        );
+        await startGpsIsolate(!initialized);
+        initialized = true;
       }
       _locationServiceEnabled =
           await GPS.BackgroundLocator.isRegisterLocationUpdate();
-
       if (port == null || !_locationServiceEnabled) {
         if (_gpsState.status != GpsStatus.OFF) {
           _gpsState.status = GpsStatus.OFF;
@@ -178,30 +202,12 @@ class GpsHandler {
       } else {
         GpsFilterManager().checkFix();
       }
-
-      if (reInit) {
-        if (port != null) {
-          // reset the listeners
-          await closeGpsIsolate();
-          port = null;
-        }
-        reInit = false;
-      }
-
-      // if (_positionStreamSubscription == null) {
-      //   GpLogger().d("GpsHandler: subscribe to gps");
-
-      //   LocationOptions locationOptions = LocationOptions(
-      //     accuracy: locationAccuracy,
-      //     distanceFilter: 0,
-      //   );
-      //   final Stream<Position> positionStream =
-      //       _geolocator.getPositionStream(locationOptions);
-      //   _positionStreamSubscription = positionStream
-      //       .listen((Position position) => _onPositionUpdate(position));
-      // }
-      // other status cases are handled by the events themselves in _onPositionUpdate
     });
+  }
+
+  void restartLocationsService() {
+    port = null;
+    _gpsState.status = GpsStatus.ON_NO_FIX;
   }
 
   /// Returns true if the gps currently has a fix or is logging.
@@ -224,30 +230,48 @@ class GpsHandler {
   /// Close the handler.
   Future close() async {
     if (_timer != null) _timer.cancel();
-    // if (_positionStreamSubscription != null) {
-    //   _positionStreamSubscription.cancel();
-    //   _positionStreamSubscription = null;
-    // }
 
     await closeGpsIsolate();
 
     _locationServiceEnabled = false;
   }
 
+  Future startGpsIsolate(bool isInit) async {
+    port = ReceivePort();
+    IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
+    port.listen((dynamic data) {
+      _onPositionUpdate(SmashPosition.fromLocation(data));
+    });
+    // init platform state
+    if (isInit) await GPS.BackgroundLocator.initialize();
+
+    var smashLocationAccuracy = SmashLocationAccuracy.fromPreferences();
+    GpLogger().d("Register for location updates.");
+    var locationSettings = LocationSettings(
+        //Scroll down to see the different options
+        notificationTitle: "SMASH location service is active.",
+        notificationMsg: "",
+        notificationIcon: "smash_notification",
+        wakeLockTime: 20,
+        autoStop: false,
+        accuracy: smashLocationAccuracy.accuracy,
+        interval: 1);
+    GPS.BackgroundLocator.registerLocationUpdate(
+      callback,
+      //optional
+      androidNotificationCallback: notificationCallback,
+      settings: locationSettings,
+    );
+    GpLogger().d("Geolocator initialized.");
+  }
+
   Future closeGpsIsolate() async {
+    port = null;
     if (IsolateNameServer.lookupPortByName(_isolateName) != null) {
       IsolateNameServer.removePortNameMapping(_isolateName);
     }
-    await GPS.BackgroundLocator.unRegisterLocationUpdate();
+    if (await GPS.BackgroundLocator.isRegisterLocationUpdate()) {
+      await GPS.BackgroundLocator.unRegisterLocationUpdate();
+    }
   }
-
-  // LocationAccuracy toLocationAccuracy(String locationAccuracy) {
-  //   for (var value in LocationAccuracy.values) {
-  //     var tmp = value.toString().replaceFirst("LocationAccuracy.", "");
-  //     if (tmp == locationAccuracy) {
-  //       return value;
-  //     }
-  //   }
-  //   throw ArgumentError("No location accuracy: " + locationAccuracy);
-  // }
 }

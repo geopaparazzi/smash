@@ -333,7 +333,7 @@ class GpPreferences {
   }
 
   String getLocationAccuracy() {
-    return getStringSync(KEY_GPS_ACCURACY, "best");
+    return getStringSync(KEY_GPS_ACCURACY);
   }
 
   Future<void> setLocationAccuracy(String accuracy) async {

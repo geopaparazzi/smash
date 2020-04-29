@@ -20,6 +20,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 
@@ -567,14 +568,20 @@ class GpsSettingsState extends State<GpsSettings> {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       if (!isPaused) {
         var msg = GpsFilterManager().currentMessage;
-        if (!gpsInfoList.contains(msg)) {
+        if (!gpsInfoList.contains(msg) &&
+            msg != null &&
+            msg.newPosLatLon != null) {
           gpsInfoList.insert(0, msg);
           gpsInfoListCounter.insert(0, _count);
           _count++;
-          if (gpsInfoList.length > 10) {
-            gpsInfoList.removeRange(10, gpsInfoList.length);
+          if (gpsInfoList.length > 50) {
+            gpsInfoList.removeRange(50, gpsInfoList.length);
           }
         }
+      }
+
+      if (gpsInfoList.isEmpty) {
+        return SmashCircularProgress(label: "No point available yet.");
       }
 
       var layer = new MarkerLayerOptions(
@@ -823,9 +830,57 @@ class GpsSettingsState extends State<GpsSettings> {
         GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS.first);
     bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
 
+    SmashLocationAccuracy locationAccuracy =
+        SmashLocationAccuracy.fromPreferences();
+    var accuraciesList = SmashLocationAccuracy.values();
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
+          Card(
+            margin: SmashUI.defaultMargin(),
+            // elevation: SmashUI.DEFAULT_ELEVATION,
+            color: SmashColors.mainBackground,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: SmashUI.normalText("GPS accuracy",
+                      bold: true, textAlign: TextAlign.start),
+                ),
+                ListTile(
+                  leading: Icon(MdiIcons.crosshairsQuestion),
+                  title: Text("System accuracy to use."),
+                  subtitle: Wrap(
+                    children: <Widget>[
+                      DropdownButton<int>(
+                        value: locationAccuracy.code,
+                        isExpanded: false,
+                        items: accuraciesList.map((i) {
+                          return DropdownMenuItem<int>(
+                            child: Text(
+                              i.label,
+                              textAlign: TextAlign.center,
+                            ),
+                            value: i.code,
+                          );
+                        }).toList(),
+                        onChanged: (selected) async {
+                          if (locationAccuracy.code != selected) {
+                            var newAccuracy =
+                                SmashLocationAccuracy.fromCode(selected);
+                            await SmashLocationAccuracy.toPreferences(
+                                newAccuracy);
+                            GpsHandler().restartLocationsService();
+                            setState(() {});
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           Card(
             margin: SmashUI.defaultMargin(),
             // elevation: SmashUI.DEFAULT_ELEVATION,
