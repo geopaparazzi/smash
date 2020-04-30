@@ -174,27 +174,6 @@ class DashboardUtils {
       ..add(
         ListTile(
           leading: new Icon(
-            MdiIcons.crosshairsGps,
-            color: c,
-            size: iconSize,
-          ),
-          title: SmashUI.normalText(
-            "Notes in GPS position",
-            bold: true,
-            color: c,
-          ),
-          trailing: Consumer<GpsState>(builder: (context, gpsState, child) {
-            return Checkbox(
-                value: gpsState.insertInGps,
-                onChanged: (value) {
-                  gpsState.insertInGps = value;
-                });
-          }),
-        ),
-      )
-      ..add(
-        ListTile(
-          leading: new Icon(
             MdiIcons.crosshairsQuestion,
             color: c,
             size: iconSize,
@@ -258,7 +237,8 @@ class DashboardUtils {
             sb.write("\nAccuracy: ");
             sb.write(pos.accuracy.toStringAsFixed(KEY_ELEV_DECIMALS));
             sb.write("\nTimestamp: ");
-            sb.write(TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
+            sb.write(TimeUtilities.ISO8601_TS_FORMATTER
+                .format(DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
             ShareHandler.shareText(sb.toString());
           },
         ),

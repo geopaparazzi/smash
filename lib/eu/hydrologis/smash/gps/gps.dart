@@ -248,7 +248,6 @@ class GpsHandler {
     var smashLocationAccuracy = SmashLocationAccuracy.fromPreferences();
     GpLogger().d("Register for location updates.");
     var locationSettings = LocationSettings(
-        //Scroll down to see the different options
         notificationTitle: "SMASH location service is active.",
         notificationMsg: "",
         notificationIcon: "smash_notification",

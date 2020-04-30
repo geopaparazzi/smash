@@ -76,7 +76,6 @@ class GpsState extends ChangeNotifierPlus {
   set insertInGpsQuiet(bool newInsertInGps) {
     if (_insertInGps != newInsertInGps) {
       _insertInGps = newInsertInGps;
-      GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, newInsertInGps);
     }
   }
 

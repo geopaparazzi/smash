@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
@@ -299,14 +300,21 @@ class _MainViewWidgetState extends State<MainViewWidget>
                         var gpsState = Provider.of<GpsState>(
                             projectState.context,
                             listen: false);
-                        var doNoteInGps = gpsState.insertInGps;
-                        Widget titleWidget = getDialogTitleWithInsertionMode(
-                            "Simple Notes",
-                            doNoteInGps,
-                            SmashColors.mainSelection);
+
+                        var titleWithMode = Column(
+                          children: [
+                            SmashUI.titleText("Simple Notes",
+                                color: SmashColors.mainSelection, bold: true),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: GpsInsertionModeSelector(),
+                            ),
+                          ],
+                        );
                         List<String> types = ["note", "image"];
                         var selectedType = await showComboDialog(
-                            projectState.context, titleWidget, types);
+                            projectState.context, titleWithMode, types);
+                        var doNoteInGps = gpsState.insertInGps;
                         if (selectedType == types[0]) {
                           Note note = await DataLoaderUtilities.addNote(
                               projectState, doNoteInGps, _mapController);
@@ -346,9 +354,16 @@ class _MainViewWidgetState extends State<MainViewWidget>
                             projectState.context,
                             listen: false);
                         var doNoteInGps = gpsState.insertInGps;
-                        var title = "Select form";
-                        Widget titleWidget = getDialogTitleWithInsertionMode(
-                            title, doNoteInGps, SmashColors.mainSelection);
+                        var titleWithMode = Column(
+                          children: [
+                            SmashUI.titleText("Simple form",
+                                color: SmashColors.mainSelection, bold: true),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: GpsInsertionModeSelector(),
+                            ),
+                          ],
+                        );
 
                         var allSectionsMap = TagsManager().getSectionsMap();
                         List<String> sectionNames =
@@ -362,7 +377,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
                         var selectedSection = await showComboDialog(
                             projectState.context,
-                            titleWidget,
+                            titleWithMode,
                             sectionNames,
                             iconNames);
                         if (selectedSection != null) {
@@ -485,29 +500,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
         });
   }
 
-  Widget getDialogTitleWithInsertionMode(
-      String title, bool doNoteInGps, Color color) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: SmashUI.defaultRigthPadding(),
-          child: SmashUI.titleText(title, color: color, bold: true),
-        ),
-        doNoteInGps
-            ? Icon(
-                Icons.gps_fixed,
-                color: color,
-              )
-            : Icon(
-                Icons.center_focus_weak,
-                color: color,
-              ),
-      ],
-    );
-  }
-
   _getDrawerWidgets(BuildContext context) {
     double iconSize = 48;
     double textSize = iconSize / 2;
@@ -553,5 +545,93 @@ class _MainViewWidgetState extends State<MainViewWidget>
     projectState?.close();
 
     await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
+  }
+}
+
+Widget getDialogTitleWithInsertionMode(
+    String title, bool doNoteInGps, Color color) {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      Padding(
+        padding: SmashUI.defaultRigthPadding(),
+        child: SmashUI.titleText(title, color: color, bold: true),
+      ),
+      doNoteInGps
+          ? Icon(
+              Icons.gps_fixed,
+              color: color,
+            )
+          : Icon(
+              Icons.center_focus_weak,
+              color: color,
+            ),
+    ],
+  );
+}
+
+class GpsInsertionModeSelector extends StatefulWidget {
+  GpsInsertionModeSelector({Key key}) : super(key: key);
+
+  @override
+  _GpsInsertionModeSelectorState createState() =>
+      _GpsInsertionModeSelectorState();
+}
+
+class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
+  List<bool> _selections;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_selections == null) {
+      var doinGps = GpPreferences().getBooleanSync(KEY_DO_NOTE_IN_GPS, true);
+      _selections = [doinGps, !doinGps];
+    }
+    return Container(
+      child: ToggleButtons(
+        color: SmashColors.mainDecorations,
+        fillColor: SmashColors.mainSelectionMc[100],
+        selectedColor: SmashColors.mainSelection,
+        renderBorder: true,
+        borderRadius: BorderRadius.circular(15),
+        borderWidth: 3,
+        borderColor: SmashColors.mainDecorationsDarker,
+        selectedBorderColor: SmashColors.mainSelection,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SmashUI.smallText("GPS", bold: true),
+                Icon(SmashIcons.locationIcon),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(MdiIcons.imageFilterCenterFocus),
+                SmashUI.smallText("Map Center", bold: true),
+              ],
+            ),
+          ),
+        ],
+        isSelected: _selections,
+        onPressed: (index) async {
+          _selections[0] = !_selections[0];
+          _selections[1] = !_selections[1];
+          var gpsState = Provider.of<GpsState>(context, listen: false);
+          gpsState.insertInGpsQuiet = _selections[0];
+
+          await GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, _selections[0]);
+
+          setState(() {});
+        },
+      ),
+    );
   }
 }
