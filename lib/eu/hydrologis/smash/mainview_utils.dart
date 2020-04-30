@@ -27,6 +27,7 @@ import 'package:smash/eu/hydrologis/smash/export/export_widget.dart';
 import 'package:smash/eu/hydrologis/smash/gps/geocoding.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/import/import_widget.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -193,7 +194,106 @@ class DashboardUtils {
           }),
         ),
       )
-      ..add(
+      ..add(getPositionTools(c, iconSize, context))
+      ..add(getPluginsVisibility(c, iconSize, context))
+      ..add(getExtras(c, iconSize, doDiagnostics, context));
+
+    return list;
+  }
+
+  static ExpansionTile getExtras(
+      Color c, double iconSize, bool doDiagnostics, BuildContext context) {
+    return ExpansionTile(
+        title: SmashUI.normalText(
+          "Extras",
+          bold: true,
+          color: c,
+        ),
+        children: [
+          ListTile(
+            leading: new Icon(
+              Icons.insert_emoticon,
+              color: c,
+              size: iconSize,
+            ),
+            title: SmashUI.normalText(
+              "Available icons",
+              bold: true,
+              color: c,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => IconsWidget()));
+            },
+          ),
+          ListTile(
+            leading: new Icon(
+              Icons.map,
+              color: c,
+              size: iconSize,
+            ),
+            title: SmashUI.normalText(
+              "Offline maps",
+              bold: true,
+              color: c,
+            ),
+            onTap: () async {
+              var mapsFolder = await Workspace.getMapsFolder();
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MapsDownloadWidget(mapsFolder)));
+            },
+          ),
+          doDiagnostics
+              ? ListTile(
+                  leading: new Icon(
+                    MdiIcons.bugOutline,
+                    color: c,
+                    size: iconSize,
+                  ),
+                  title: SmashUI.normalText(
+                    "Run diagnostics",
+                    bold: true,
+                    color: c,
+                  ),
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DiagnosticWidget())),
+                )
+              : Container(),
+        ]);
+  }
+
+  static ExpansionTile getPluginsVisibility(
+      Color c, double iconSize, BuildContext context) {
+    return ExpansionTile(
+      title: SmashUI.normalText(
+        "Map Plugins",
+        bold: true,
+        color: c,
+      ),
+      children: [
+        PluginCheckboxWidget(PluginsHandler.SCALE.key),
+        PluginCheckboxWidget(PluginsHandler.GRID.key),
+        PluginCheckboxWidget(PluginsHandler.CROSS.key),
+        PluginCheckboxWidget(PluginsHandler.GPS.key),
+      ],
+    );
+  }
+
+  static ExpansionTile getPositionTools(
+      Color c, double iconSize, BuildContext context) {
+    return ExpansionTile(
+      title: SmashUI.normalText(
+        "Position Tools",
+        bold: true,
+        color: c,
+      ),
+      children: [
         ListTile(
           leading: new Icon(
             MdiIcons.navigation,
@@ -211,8 +311,6 @@ class DashboardUtils {
                 MaterialPageRoute(builder: (context) => GeocodingPage()));
           },
         ),
-      )
-      ..add(
         ListTile(
           leading: new Icon(
             MdiIcons.shareVariant,
@@ -242,70 +340,8 @@ class DashboardUtils {
             ShareHandler.shareText(sb.toString());
           },
         ),
-      )
-      ..add(
-        ListTile(
-          leading: new Icon(
-            Icons.insert_emoticon,
-            color: c,
-            size: iconSize,
-          ),
-          title: SmashUI.normalText(
-            "Available icons",
-            bold: true,
-            color: c,
-          ),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => IconsWidget()));
-          },
-        ),
-      )
-      ..add(
-        ListTile(
-          leading: new Icon(
-            Icons.map,
-            color: c,
-            size: iconSize,
-          ),
-          title: SmashUI.normalText(
-            "Offline maps",
-            bold: true,
-            color: c,
-          ),
-          onTap: () async {
-            var mapsFolder = await Workspace.getMapsFolder();
-            Navigator.pop(context);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MapsDownloadWidget(mapsFolder)));
-          },
-        ),
-      )
-      ..add(
-        doDiagnostics
-            ? ListTile(
-                leading: new Icon(
-                  MdiIcons.bugOutline,
-                  color: c,
-                  size: iconSize,
-                ),
-                title: SmashUI.normalText(
-                  "Run diagnostics",
-                  bold: true,
-                  color: c,
-                ),
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DiagnosticWidget())),
-              )
-            : Container(),
-      );
-
-    return list;
+      ],
+    );
   }
 
   static Future _createNewProject(BuildContext context) async {

@@ -266,7 +266,6 @@ class ScreenSettingState extends State<ScreenSetting> {
   Widget build(BuildContext context) {
     bool keepScreenOn =
         GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
-    bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
     double currentIconSize = GpPreferences()
         .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
     //    String themeStr = GpPreferences().getStringSync(KEY_THEME, SmashThemes.LIGHT.toString());
@@ -312,31 +311,11 @@ class ScreenSettingState extends State<ScreenSetting> {
             Card(
               margin: SmashUI.defaultMargin(),
               color: SmashColors.mainBackground,
-              child: CheckboxListTile(
-                value: showScalebar,
-                onChanged: (selected) async {
-                  await GpPreferences().setBoolean(KEY_SHOW_SCALEBAR, selected);
-                  setState(() {});
-                },
-                title: SmashUI.normalText(
-                  "Show Scalebar",
-                ),
-              ),
-            ),
-            Card(
-              margin: SmashUI.defaultMargin(),
-              color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
-                  CheckboxListTile(
-                    value: centerCrossStyle.visible,
-                    onChanged: (selected) async {
-                      centerCrossStyle.visible = selected;
-                      await centerCrossStyle.saveToPreferences();
-                      setState(() {});
-                    },
+                  ListTile(
                     title: SmashUI.normalText(
-                      "Show Center Cross",
+                      "Map Center Cross",
                     ),
                   ),
                   Padding(

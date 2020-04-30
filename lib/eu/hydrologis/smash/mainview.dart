@@ -34,6 +34,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart'
 import 'package:smash/eu/hydrologis/smash/maps/plugins/current_log_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/gps_position_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
@@ -171,39 +172,51 @@ class _MainViewWidgetState extends State<MainViewWidget>
       }
     }
 
+    var pluginsList = <MapPlugin>[
+      MarkerClusterPlugin(),
+    ];
+
     layers.add(CurrentGpsLogPluginOption(
       logColor: Colors.red,
       logWidth: 5.0,
     ));
+    pluginsList.add(CurrentGpsLogPlugin());
 
-    layers.add(GpsPositionPluginOption(
-      markerColor: Colors.black,
-      markerSize: 32,
-    ));
+    if (PluginsHandler.GPS.isOn()) {
+      layers.add(GpsPositionPluginOption(
+        markerColor: Colors.black,
+        markerSize: 32,
+      ));
+      pluginsList.add(GpsPositionPlugin());
+    }
 
-    bool showScalebar = GpPreferences().getBooleanSync(KEY_SHOW_SCALEBAR, true);
-    if (showScalebar) {
+    if (PluginsHandler.SCALE.isOn()) {
       layers.add(ScaleLayerPluginOption(
         lineColor: Colors.black,
         lineWidth: 3,
         textStyle: TextStyle(color: Colors.black, fontSize: 14),
         padding: EdgeInsets.all(10),
       ));
+      pluginsList.add(ScaleLayerPlugin());
     }
 
-    var centerCrossStyle = CenterCrossStyle.fromPreferences();
-    if (centerCrossStyle.visible) {
-      layers.add(CenterCrossPluginOption(
-        crossColor: ColorExt(centerCrossStyle.color),
-        crossSize: centerCrossStyle.size,
-        lineWidth: centerCrossStyle.lineWidth,
-      ));
+    if (PluginsHandler.CROSS.isOn()) {
+      var centerCrossStyle = CenterCrossStyle.fromPreferences();
+      if (centerCrossStyle.visible) {
+        layers.add(CenterCrossPluginOption(
+          crossColor: ColorExt(centerCrossStyle.color),
+          crossSize: centerCrossStyle.size,
+          lineWidth: centerCrossStyle.lineWidth,
+        ));
+        pluginsList.add(CenterCrossPlugin());
+      }
     }
 
     int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);
     layers.add(FeatureInfoPluginOption(
       tapAreaPixelSize: tapAreaPixels.toDouble(),
     ));
+    pluginsList.add(FeatureInfoPlugin());
 
     return WillPopScope(
         // check when the app is left
@@ -255,14 +268,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
                   zoom: _initZoom,
                   minZoom: SmashMapState.MINZOOM,
                   maxZoom: SmashMapState.MAXZOOM,
-                  plugins: [
-                    MarkerClusterPlugin(),
-                    ScaleLayerPlugin(),
-                    CenterCrossPlugin(),
-                    CurrentGpsLogPlugin(),
-                    GpsPositionPlugin(),
-                    FeatureInfoPlugin(),
-                  ],
+                  plugins: pluginsList,
                   onPositionChanged: (newPosition, hasGesture) {
                     mapState.setLastPosition(
                         Coordinate(newPosition.center.longitude,

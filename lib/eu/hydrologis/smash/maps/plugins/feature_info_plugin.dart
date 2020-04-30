@@ -20,7 +20,6 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:proj4dart/proj4dart.dart' as PROJ;
 
 /// A plugin that handles tap info from vector layers
 class FeatureInfoPlugin implements MapPlugin {
