@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -210,6 +211,25 @@ class _MainViewWidgetState extends State<MainViewWidget>
         ));
         pluginsList.add(CenterCrossPlugin());
       }
+    }
+
+    if(PluginsHandler.GRID.isOn()){
+      var gridLayer = MapPluginLatLonGridOptions(
+        lineColor: SmashColors.mainDecorations,
+        textColor: SmashColors.mainBackground,
+        lineWidth: 0.5,
+        textBackgroundColor: SmashColors.mainDecorations,
+        showCardinalDirections: true,
+        showCardinalDirectionsAsPrefix: false,
+        textSize: 12.0,
+        showLabels: true,
+        rotateLonLabels: true,
+        placeLabelsOnLines: true,
+        offsetLonTextBottom: 20.0,
+        offsetLatTextLeft: 20.0,
+      );
+      layers.add(gridLayer);
+      pluginsList.add(MapPluginLatLonGrid());
     }
 
     int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);

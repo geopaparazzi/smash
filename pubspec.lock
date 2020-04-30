@@ -318,6 +318,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.4"
+  lat_lon_grid_plugin:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: b0ff01ff098e26fa320be518dfd0392ebcf9ec6e
+      url: "https://github.com/moovida/lat_lon_grid_plugin.git"
+    source: git
+    version: "0.1.1"
   latlong:
     dependency: "direct main"
     description:

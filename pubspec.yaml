@@ -113,6 +113,12 @@ dependencies:
     git:
       url: https://github.com/moovida/flutter_map_marker_cluster.git
 
+  
+  # MIT
+  lat_lon_grid_plugin: #0.1.1
+    git:
+      url: https://github.com/moovida/lat_lon_grid_plugin.git
+
   # MIT
   proj4dart: 1.0.4
 
