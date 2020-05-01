@@ -29,6 +29,7 @@ import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/import/import_widget.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
@@ -340,6 +341,32 @@ class DashboardUtils {
             ShareHandler.shareText(sb.toString());
           },
         ),
+        Consumer<SmashMapState>(builder: (context, mapState, child) {
+          return ListTile(
+            title: SmashUI.normalText("Center on GPS", bold: true, color: c),
+            leading: Checkbox(
+                value: mapState.centerOnGps,
+                onChanged: (value) {
+                  mapState.centerOnGps = value;
+                }),
+          );
+        }),
+        Platform.isAndroid && EXPERIMENTAL_ROTATION_ENABLED
+            ? Consumer<SmashMapState>(builder: (context, mapState, child) {
+                return ListTile(
+                  title: SmashUI.normalText("Rotate map with GPS",
+                      bold: true, color: c),
+                  leading: Checkbox(
+                      value: mapState.rotateOnHeading,
+                      onChanged: (value) {
+                        if (!value) {
+                          mapState.heading = 0;
+                        }
+                        mapState.rotateOnHeading = value;
+                      }),
+                );
+              })
+            : Container(),
       ],
     );
   }

@@ -138,7 +138,26 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
     var mapState =
         Provider.of<SmashMapState>(projectState.context, listen: false);
-    mapState.mapController = _mapController;
+
+    if (EXPERIMENTAL_ROTATION_ENABLED) {
+      // check map centering and rotation
+      if (mapState.rotateOnHeading) {
+        GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+        var heading = gpsState.lastGpsPosition.heading;
+        if (heading < 0) {
+          heading = 360 + heading;
+        }
+        _mapController.rotate(-heading);
+      } else {
+        _mapController.rotate(0);
+      }
+    }
+    if (mapState.centerOnGps) {
+      GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+      LatLng posLL = LatLng(gpsState.lastGpsPosition.latitude,
+          gpsState.lastGpsPosition.longitude);
+      _mapController.move(posLL, _mapController.zoom);
+    }
 
     layers.addAll(_activeLayers);
 
@@ -161,33 +180,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
                 height: 32,
               ),
             ),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.info_outline),
-                  onPressed: () {
-                    String projectPath = projectState.projectPath;
-                    if (Platform.isIOS) {
-                      projectPath = IOS_DOCUMENTSFOLDER +
-                          Workspace.makeRelative(projectPath);
-                    }
-
-                    showInfoDialog(
-                        projectState.context,
-                        "Project: ${projectState.projectName}\nDatabase: $projectPath"
-                            .trim(),
-                        widgets: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.share,
-                              color: SmashColors.mainDecorations,
-                            ),
-                            onPressed: () async {
-                              ShareHandler.shareProject(projectState.context);
-                            },
-                          )
-                        ]);
-                  })
-            ],
+            actions: addActionBarButtons(projectState),
           ),
           backgroundColor: SmashColors.mainBackground,
           body: Stack(
@@ -239,6 +232,36 @@ class _MainViewWidgetState extends State<MainViewWidget>
           }
           return Future.value(false);
         });
+  }
+
+  List<Widget> addActionBarButtons(ProjectState projectState) {
+    return <Widget>[
+      IconButton(
+          icon: Icon(Icons.info_outline),
+          onPressed: () {
+            String projectPath = projectState.projectPath;
+            if (Platform.isIOS) {
+              projectPath =
+                  IOS_DOCUMENTSFOLDER + Workspace.makeRelative(projectPath);
+            }
+
+            showInfoDialog(
+                projectState.context,
+                "Project: ${projectState.projectName}\nDatabase: $projectPath"
+                    .trim(),
+                widgets: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.share,
+                      color: SmashColors.mainDecorations,
+                    ),
+                    onPressed: () async {
+                      ShareHandler.shareProject(projectState.context);
+                    },
+                  )
+                ]);
+          })
+    ];
   }
 
   BottomAppBar addBottomToolBar(ProjectState projectState,
@@ -446,36 +469,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
     ));
     pluginsList.add(CurrentGpsLogPlugin());
 
-    if (PluginsHandler.GPS.isOn()) {
-      layers.add(GpsPositionPluginOption(
-        markerColor: Colors.black,
-        markerSize: 32,
-      ));
-      pluginsList.add(GpsPositionPlugin());
-    }
-
-    if (PluginsHandler.SCALE.isOn()) {
-      layers.add(ScaleLayerPluginOption(
-        lineColor: Colors.black,
-        lineWidth: 3,
-        textStyle: TextStyle(color: Colors.black, fontSize: 14),
-        padding: EdgeInsets.all(10),
-      ));
-      pluginsList.add(ScaleLayerPlugin());
-    }
-
-    if (PluginsHandler.CROSS.isOn()) {
-      var centerCrossStyle = CenterCrossStyle.fromPreferences();
-      if (centerCrossStyle.visible) {
-        layers.add(CenterCrossPluginOption(
-          crossColor: ColorExt(centerCrossStyle.color),
-          crossSize: centerCrossStyle.size,
-          lineWidth: centerCrossStyle.lineWidth,
-        ));
-        pluginsList.add(CenterCrossPlugin());
-      }
-    }
-
     if (PluginsHandler.GRID.isOn()) {
       var gridLayer = MapPluginLatLonGridOptions(
         lineColor: SmashColors.mainDecorations,
@@ -500,6 +493,36 @@ class _MainViewWidgetState extends State<MainViewWidget>
       tapAreaPixelSize: tapAreaPixels.toDouble(),
     ));
     pluginsList.add(FeatureInfoPlugin());
+
+    if (PluginsHandler.GPS.isOn()) {
+      layers.add(GpsPositionPluginOption(
+        markerColor: Colors.black,
+        markerSize: 32,
+      ));
+      pluginsList.add(GpsPositionPlugin());
+    }
+
+    if (PluginsHandler.CROSS.isOn()) {
+      var centerCrossStyle = CenterCrossStyle.fromPreferences();
+      if (centerCrossStyle.visible) {
+        layers.add(CenterCrossPluginOption(
+          crossColor: ColorExt(centerCrossStyle.color),
+          crossSize: centerCrossStyle.size,
+          lineWidth: centerCrossStyle.lineWidth,
+        ));
+        pluginsList.add(CenterCrossPlugin());
+      }
+    }
+
+    if (PluginsHandler.SCALE.isOn()) {
+      layers.add(ScaleLayerPluginOption(
+        lineColor: Colors.black,
+        lineWidth: 3,
+        textStyle: TextStyle(color: Colors.black, fontSize: 14),
+        padding: EdgeInsets.all(10),
+      ));
+      pluginsList.add(ScaleLayerPlugin());
+    }
   }
 
   ProjectData addProjectMarkers(

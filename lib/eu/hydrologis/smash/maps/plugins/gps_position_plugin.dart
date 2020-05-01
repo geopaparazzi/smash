@@ -61,31 +61,31 @@ class GpsPositionLayer extends StatelessWidget {
         return Container();
       } else {
         LatLng posLL = LatLng(pos.latitude, pos.longitude);
-        var mapState = Provider.of<SmashMapState>(context, listen: false);
-        var mapController = mapState.mapController;
-        if (mapController != null) {
-          if (mapState.rotateOnHeading) {
-            var heading = gpsState.lastGpsPosition.heading;
-            if (heading < 0) {
-              heading = 360 + heading;
-            }
-            map.rotation = gpsState.lastGpsPosition.heading;
-//            mapController.rotate(-heading);
-          } else {
-            map.rotation = 0;
-//            mapController.rotate(0);
-          }
-          if (mapState.centerOnGps) {
-            mapController.move(posLL, map.zoom);
-          }
-        } else {
-          if (mapState.centerOnGps) {
-            map.move(posLL, map.zoom);
-          }
-          if (mapState.rotateOnHeading) {
-            map.rotation = gpsState.lastGpsPosition.heading;
-          }
-        }
+//         var mapState = Provider.of<SmashMapState>(context, listen: false);
+//         var mapController = mapState.mapController;
+//         if (mapController != null) {
+//           if (mapState.rotateOnHeading) {
+//             var heading = gpsState.lastGpsPosition.heading;
+//             if (heading < 0) {
+//               heading = 360 + heading;
+//             }
+//             map.rotation = gpsState.lastGpsPosition.heading;
+// //            mapController.rotate(-heading);
+//           } else {
+//             map.rotation = 0;
+// //            mapController.rotate(0);
+//           }
+//           if (mapState.centerOnGps) {
+//             mapController.move(posLL, map.zoom);
+//           }
+//         } else {
+//           if (mapState.centerOnGps) {
+//             map.move(posLL, map.zoom);
+//           }
+//           if (mapState.rotateOnHeading) {
+//             map.rotation = gpsState.lastGpsPosition.heading;
+//           }
+//         }
 
         var bounds = map.getBounds();
         if (!bounds.contains(posLL)) {

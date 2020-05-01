@@ -10,6 +10,8 @@ import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 
+const EXPERIMENTAL_ROTATION_ENABLED = false;
+
 /// Current state of the Map view.
 ///
 /// This provides tracking of map view and general status.
@@ -25,7 +27,7 @@ class SmashMapState extends ChangeNotifierPlus {
   bool _centerOnGps = true;
 
   /// Defines whether the map should rotate following the gps heading
-  bool _rotateOnHeading = true;
+  bool _rotateOnHeading = false;
 
   void init(Coordinate center, double zoom) {
     _center = center;
