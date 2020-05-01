@@ -258,19 +258,10 @@ class _MainViewWidgetState extends State<MainViewWidget>
   List<Widget> addActionBarButtons() {
     return <Widget>[
       IconButton(
-        tooltip: "Open tools drawer",
+          tooltip: "Open tools drawer",
           icon: Icon(MdiIcons.tools),
           onPressed: () {
             _scaffoldKey.currentState.openEndDrawer();
-          }),
-      IconButton(
-          tooltip: "Open Online Help",
-          icon: Icon(MdiIcons.lifebuoy),
-          onPressed: () async {
-            var urlString = "http://www.geopaparazzi.org/smash/index.html";
-            if (await canLaunch(urlString)) {
-              await launch(urlString);
-            }
           }),
     ];
   }

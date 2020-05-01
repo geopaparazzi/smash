@@ -38,6 +38,7 @@ import 'package:smash/eu/hydrologis/smash/util/diagnostic.dart';
 import 'package:smash/eu/hydrologis/smash/util/network.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
 
@@ -147,6 +148,24 @@ class DashboardUtils {
           Navigator.of(context).pop();
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => SettingsWidget()));
+        },
+      ),
+      ListTile(
+        leading: new Icon(
+          MdiIcons.lifebuoy,
+          color: c,
+          size: iconSize,
+        ),
+        title: SmashUI.normalText(
+          "Online Help",
+          bold: true,
+          color: c,
+        ),
+        onTap: () async {
+          var urlString = "http://www.geopaparazzi.org/smash/index.html";
+          if (await canLaunch(urlString)) {
+            await launch(urlString);
+          }
         },
       ),
       ListTile(
