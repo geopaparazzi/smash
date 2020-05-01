@@ -23,7 +23,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/gps_tools_widget.dart';
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
 class GpsInfoButton extends StatefulWidget {
-  double _iconSize;
+  final double _iconSize;
 
   GpsInfoButton(this._iconSize);
 
@@ -106,9 +106,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
           child: FloatingActionButton(
             elevation: 1,
             backgroundColor: SmashColors.mainDecorations,
-            child: DashboardUtils.getGpsStatusIcon(gpsState.status),
-
-//          iconSize: widget._iconSize,
+            child: DashboardUtils.getGpsStatusIcon(gpsState.status, widget._iconSize),
             onPressed: () {
               if (gpsState.hasFix() || gpsState.status == GpsStatus.ON_NO_FIX) {
                 var pos = gpsState.lastGpsPosition;

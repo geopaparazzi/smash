@@ -142,101 +142,11 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
     layers.addAll(_activeLayers);
 
-    var projectData = projectState.projectData;
-    if (projectData != null) {
-      if (projectData.geopapLogs != null) layers.add(projectData.geopapLogs);
-      if (projectData.geopapMarkers != null &&
-          projectData.geopapMarkers.length > 0) {
-        var markerCluster = MarkerClusterLayerOptions(
-          maxClusterRadius: 80,
-          //        height: 40,
-          //        width: 40,
-          fitBoundsOptions: FitBoundsOptions(
-            padding: EdgeInsets.all(50),
-          ),
-          markers: projectData.geopapMarkers,
-          polygonOptions: PolygonOptions(
-              borderColor: SmashColors.mainDecorationsDarker,
-              color: SmashColors.mainDecorations.withOpacity(0.2),
-              borderStrokeWidth: 3),
-          builder: (context, markers) {
-            return FloatingActionButton(
-              child: Text(markers.length.toString()),
-              onPressed: null,
-              backgroundColor: SmashColors.mainDecorationsDarker,
-              foregroundColor: SmashColors.mainBackground,
-              heroTag: null,
-            );
-          },
-        );
-        layers.add(markerCluster);
-      }
-    }
+    ProjectData projectData = addProjectMarkers(projectState, layers);
 
-    var pluginsList = <MapPlugin>[
-      MarkerClusterPlugin(),
-    ];
+    var pluginsList = <MapPlugin>[];
 
-    layers.add(CurrentGpsLogPluginOption(
-      logColor: Colors.red,
-      logWidth: 5.0,
-    ));
-    pluginsList.add(CurrentGpsLogPlugin());
-
-    if (PluginsHandler.GPS.isOn()) {
-      layers.add(GpsPositionPluginOption(
-        markerColor: Colors.black,
-        markerSize: 32,
-      ));
-      pluginsList.add(GpsPositionPlugin());
-    }
-
-    if (PluginsHandler.SCALE.isOn()) {
-      layers.add(ScaleLayerPluginOption(
-        lineColor: Colors.black,
-        lineWidth: 3,
-        textStyle: TextStyle(color: Colors.black, fontSize: 14),
-        padding: EdgeInsets.all(10),
-      ));
-      pluginsList.add(ScaleLayerPlugin());
-    }
-
-    if (PluginsHandler.CROSS.isOn()) {
-      var centerCrossStyle = CenterCrossStyle.fromPreferences();
-      if (centerCrossStyle.visible) {
-        layers.add(CenterCrossPluginOption(
-          crossColor: ColorExt(centerCrossStyle.color),
-          crossSize: centerCrossStyle.size,
-          lineWidth: centerCrossStyle.lineWidth,
-        ));
-        pluginsList.add(CenterCrossPlugin());
-      }
-    }
-
-    if(PluginsHandler.GRID.isOn()){
-      var gridLayer = MapPluginLatLonGridOptions(
-        lineColor: SmashColors.mainDecorations,
-        textColor: SmashColors.mainBackground,
-        lineWidth: 0.5,
-        textBackgroundColor: SmashColors.mainDecorations,
-        showCardinalDirections: true,
-        showCardinalDirectionsAsPrefix: false,
-        textSize: 12.0,
-        showLabels: true,
-        rotateLonLabels: true,
-        placeLabelsOnLines: true,
-        offsetLonTextBottom: 20.0,
-        offsetLatTextLeft: 20.0,
-      );
-      layers.add(gridLayer);
-      pluginsList.add(MapPluginLatLonGrid());
-    }
-
-    int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);
-    layers.add(FeatureInfoPluginOption(
-      tapAreaPixelSize: tapAreaPixels.toDouble(),
-    ));
-    pluginsList.add(FeatureInfoPlugin());
+    addPluginsLayers(pluginsList, layers);
 
     return WillPopScope(
         // check when the app is left
@@ -314,203 +224,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
               child: ListView(
             children: _getEndDrawerWidgets(projectState.context),
           )),
-          bottomNavigationBar: BottomAppBar(
-            color: SmashColors.mainDecorations,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                DashboardUtils.makeToolbarBadge(
-                  GestureDetector(
-                    child: IconButton(
-                      onPressed: () async {
-                        var gpsState = Provider.of<GpsState>(
-                            projectState.context,
-                            listen: false);
-
-                        var titleWithMode = Column(
-                          children: [
-                            SmashUI.titleText("Simple Notes",
-                                color: SmashColors.mainSelection, bold: true),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: GpsInsertionModeSelector(),
-                            ),
-                          ],
-                        );
-                        List<String> types = ["note", "image"];
-                        var selectedType = await showComboDialog(
-                            projectState.context, titleWithMode, types);
-                        var doNoteInGps = gpsState.insertInGps;
-                        if (selectedType == types[0]) {
-                          Note note = await DataLoaderUtilities.addNote(
-                              projectState, doNoteInGps, _mapController);
-                          Navigator.push(
-                              projectState.context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      NotePropertiesWidget(note)));
-                        } else if (selectedType == types[1]) {
-                          DataLoaderUtilities.addImage(
-                              projectState.context,
-                              doNoteInGps
-                                  ? gpsState.lastGpsPosition
-                                  : _mapController.center);
-                        }
-                      },
-                      icon: Icon(
-                        SmashIcons.simpleNotesIcon,
-                        color: SmashColors.mainBackground,
-                      ),
-                      iconSize: _iconSize,
-                    ),
-                    onLongPress: () {
-                      Navigator.push(
-                          projectState.context,
-                          MaterialPageRoute(
-                              builder: (context) => NotesListWidget(true)));
-                    },
-                  ),
-                  projectData != null ? projectData.simpleNotesCount : 0,
-                ),
-                DashboardUtils.makeToolbarBadge(
-                  GestureDetector(
-                    child: IconButton(
-                      onPressed: () async {
-                        var gpsState = Provider.of<GpsState>(
-                            projectState.context,
-                            listen: false);
-                        var doNoteInGps = gpsState.insertInGps;
-                        var titleWithMode = Column(
-                          children: [
-                            SmashUI.titleText("Simple form",
-                                color: SmashColors.mainSelection, bold: true),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: GpsInsertionModeSelector(),
-                            ),
-                          ],
-                        );
-
-                        var allSectionsMap = TagsManager().getSectionsMap();
-                        List<String> sectionNames =
-                            allSectionsMap.keys.toList();
-                        List<String> iconNames = [];
-                        sectionNames.forEach((key) {
-                          var icon4section =
-                              TagsManager.getIcon4Section(allSectionsMap[key]);
-                          iconNames.add(icon4section);
-                        });
-
-                        var selectedSection = await showComboDialog(
-                            projectState.context,
-                            titleWithMode,
-                            sectionNames,
-                            iconNames);
-                        if (selectedSection != null) {
-                          Widget appbarWidget = getDialogTitleWithInsertionMode(
-                              selectedSection,
-                              doNoteInGps,
-                              SmashColors.mainBackground);
-
-                          var selectedIndex =
-                              sectionNames.indexOf(selectedSection);
-                          var iconName = iconNames[selectedIndex];
-                          var sectionMap = allSectionsMap[selectedSection];
-                          var jsonString = jsonEncode(sectionMap);
-                          Note note = await DataLoaderUtilities.addNote(
-                              projectState, doNoteInGps, _mapController,
-                              text: selectedSection,
-                              form: jsonString,
-                              iconName: iconName,
-                              color: ColorExt.asHex(
-                                  SmashColors.mainDecorationsDarker));
-
-                          Navigator.push(projectState.context,
-                              MaterialPageRoute(
-                            builder: (context) {
-                              return MasterDetailPage(
-                                  sectionMap,
-                                  appbarWidget,
-                                  selectedSection,
-                                  doNoteInGps
-                                      ? gpsState.lastGpsPosition
-                                      : _mapController.center,
-                                  note.id);
-                            },
-                          ));
-                        }
-                      },
-                      icon: Icon(
-                        SmashIcons.formNotesIcon,
-                        color: SmashColors.mainBackground,
-                      ),
-                      iconSize: _iconSize,
-                    ),
-                    onLongPress: () {
-                      Navigator.push(
-                          projectState.context,
-                          MaterialPageRoute(
-                              builder: (context) => NotesListWidget(false)));
-                    },
-                  ),
-                  projectData != null ? projectData.formNotesCount : 0,
-                ),
-                DashboardUtils.makeToolbarBadge(
-                  LoggingButton(_iconSize),
-                  projectData != null ? projectData.logsCount : 0,
-                ),
-                Spacer(),
-                GpsInfoButton(_iconSize),
-                Spacer(),
-                IconButton(
-                  icon: Icon(
-                    SmashIcons.layersIcon,
-                    color: SmashColors.mainBackground,
-                  ),
-                  iconSize: _iconSize,
-                  onPressed: () async {
-                    await Navigator.push(projectState.context,
-                        MaterialPageRoute(builder: (context) => LayersPage()));
-
-                    var layers = await LayerManager().loadLayers(context);
-                    _activeLayers.clear();
-                    setState(() {
-                      _activeLayers.addAll(layers);
-                    });
-                  },
-                  color: SmashColors.mainBackground,
-                  tooltip: 'Open layers list',
-                ),
-                Consumer<SmashMapState>(builder: (context, mapState, child) {
-                  return DashboardUtils.makeToolbarZoomBadge(
-                    IconButton(
-                      onPressed: () {
-                        mapState.zoomIn();
-                      },
-                      tooltip: 'Zoom in',
-                      icon: Icon(
-                        SmashIcons.zoomInIcon,
-                        color: SmashColors.mainBackground,
-                      ),
-                      iconSize: _iconSize,
-                    ),
-                    mapState.zoom.toInt(),
-                  );
-                }),
-                IconButton(
-                  onPressed: () {
-                    mapState.zoomOut();
-                  },
-                  tooltip: 'Zoom out',
-                  icon: Icon(
-                    SmashIcons.zoomOutIcon,
-                    color: SmashColors.mainBackground,
-                  ),
-                  iconSize: _iconSize,
-                ),
-              ],
-            ),
-          ),
+          bottomNavigationBar:
+              addBottomToolBar(projectState, projectData, mapState),
         ),
         onWillPop: () async {
           bool doExit = await showConfirmDialog(
@@ -524,6 +239,302 @@ class _MainViewWidgetState extends State<MainViewWidget>
           }
           return Future.value(false);
         });
+  }
+
+  BottomAppBar addBottomToolBar(ProjectState projectState,
+      ProjectData projectData, SmashMapState mapState) {
+    return BottomAppBar(
+      color: SmashColors.mainDecorations,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          DashboardUtils.makeToolbarBadge(
+            GestureDetector(
+              child: IconButton(
+                onPressed: () async {
+                  var gpsState = Provider.of<GpsState>(projectState.context,
+                      listen: false);
+
+                  var titleWithMode = Column(
+                    children: [
+                      SmashUI.titleText("Simple Notes",
+                          color: SmashColors.mainSelection, bold: true),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: GpsInsertionModeSelector(),
+                      ),
+                    ],
+                  );
+                  List<String> types = ["note", "image"];
+                  var selectedType = await showComboDialog(
+                      projectState.context, titleWithMode, types);
+                  var doNoteInGps = gpsState.insertInGps;
+                  if (selectedType == types[0]) {
+                    Note note = await DataLoaderUtilities.addNote(
+                        projectState, doNoteInGps, _mapController);
+                    Navigator.push(
+                        projectState.context,
+                        MaterialPageRoute(
+                            builder: (context) => NotePropertiesWidget(note)));
+                  } else if (selectedType == types[1]) {
+                    DataLoaderUtilities.addImage(
+                        projectState.context,
+                        doNoteInGps
+                            ? gpsState.lastGpsPosition
+                            : _mapController.center);
+                  }
+                },
+                icon: Icon(
+                  SmashIcons.simpleNotesIcon,
+                  color: SmashColors.mainBackground,
+                ),
+                iconSize: _iconSize,
+              ),
+              onLongPress: () {
+                Navigator.push(
+                    projectState.context,
+                    MaterialPageRoute(
+                        builder: (context) => NotesListWidget(true)));
+              },
+            ),
+            projectData != null ? projectData.simpleNotesCount : 0,
+          ),
+          DashboardUtils.makeToolbarBadge(
+            GestureDetector(
+              child: IconButton(
+                onPressed: () async {
+                  var gpsState = Provider.of<GpsState>(projectState.context,
+                      listen: false);
+                  var doNoteInGps = gpsState.insertInGps;
+                  var titleWithMode = Column(
+                    children: [
+                      SmashUI.titleText("Simple form",
+                          color: SmashColors.mainSelection, bold: true),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: GpsInsertionModeSelector(),
+                      ),
+                    ],
+                  );
+
+                  var allSectionsMap = TagsManager().getSectionsMap();
+                  List<String> sectionNames = allSectionsMap.keys.toList();
+                  List<String> iconNames = [];
+                  sectionNames.forEach((key) {
+                    var icon4section =
+                        TagsManager.getIcon4Section(allSectionsMap[key]);
+                    iconNames.add(icon4section);
+                  });
+
+                  var selectedSection = await showComboDialog(
+                      projectState.context,
+                      titleWithMode,
+                      sectionNames,
+                      iconNames);
+                  if (selectedSection != null) {
+                    Widget appbarWidget = getDialogTitleWithInsertionMode(
+                        selectedSection,
+                        doNoteInGps,
+                        SmashColors.mainBackground);
+
+                    var selectedIndex = sectionNames.indexOf(selectedSection);
+                    var iconName = iconNames[selectedIndex];
+                    var sectionMap = allSectionsMap[selectedSection];
+                    var jsonString = jsonEncode(sectionMap);
+                    Note note = await DataLoaderUtilities.addNote(
+                        projectState, doNoteInGps, _mapController,
+                        text: selectedSection,
+                        form: jsonString,
+                        iconName: iconName,
+                        color:
+                            ColorExt.asHex(SmashColors.mainDecorationsDarker));
+
+                    Navigator.push(projectState.context, MaterialPageRoute(
+                      builder: (context) {
+                        return MasterDetailPage(
+                            sectionMap,
+                            appbarWidget,
+                            selectedSection,
+                            doNoteInGps
+                                ? gpsState.lastGpsPosition
+                                : _mapController.center,
+                            note.id);
+                      },
+                    ));
+                  }
+                },
+                icon: Icon(
+                  SmashIcons.formNotesIcon,
+                  color: SmashColors.mainBackground,
+                ),
+                iconSize: _iconSize,
+              ),
+              onLongPress: () {
+                Navigator.push(
+                    projectState.context,
+                    MaterialPageRoute(
+                        builder: (context) => NotesListWidget(false)));
+              },
+            ),
+            projectData != null ? projectData.formNotesCount : 0,
+          ),
+          DashboardUtils.makeToolbarBadge(
+            LoggingButton(_iconSize),
+            projectData != null ? projectData.logsCount : 0,
+          ),
+          Spacer(),
+          GpsInfoButton(_iconSize),
+          Spacer(),
+          IconButton(
+            icon: Icon(
+              SmashIcons.layersIcon,
+              color: SmashColors.mainBackground,
+            ),
+            iconSize: _iconSize,
+            onPressed: () async {
+              await Navigator.push(projectState.context,
+                  MaterialPageRoute(builder: (context) => LayersPage()));
+
+              var layers = await LayerManager().loadLayers(context);
+              _activeLayers.clear();
+              setState(() {
+                _activeLayers.addAll(layers);
+              });
+            },
+            color: SmashColors.mainBackground,
+            tooltip: 'Open layers list',
+          ),
+          Consumer<SmashMapState>(builder: (context, mapState, child) {
+            return DashboardUtils.makeToolbarZoomBadge(
+              IconButton(
+                onPressed: () {
+                  mapState.zoomIn();
+                },
+                tooltip: 'Zoom in',
+                icon: Icon(
+                  SmashIcons.zoomInIcon,
+                  color: SmashColors.mainBackground,
+                ),
+                iconSize: _iconSize,
+              ),
+              mapState.zoom.toInt(),
+            );
+          }),
+          IconButton(
+            onPressed: () {
+              mapState.zoomOut();
+            },
+            tooltip: 'Zoom out',
+            icon: Icon(
+              SmashIcons.zoomOutIcon,
+              color: SmashColors.mainBackground,
+            ),
+            iconSize: _iconSize,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void addPluginsLayers(
+      List<MapPlugin> pluginsList, List<LayerOptions> layers) {
+    pluginsList.add(MarkerClusterPlugin());
+
+    layers.add(CurrentGpsLogPluginOption(
+      logColor: Colors.red,
+      logWidth: 5.0,
+    ));
+    pluginsList.add(CurrentGpsLogPlugin());
+
+    if (PluginsHandler.GPS.isOn()) {
+      layers.add(GpsPositionPluginOption(
+        markerColor: Colors.black,
+        markerSize: 32,
+      ));
+      pluginsList.add(GpsPositionPlugin());
+    }
+
+    if (PluginsHandler.SCALE.isOn()) {
+      layers.add(ScaleLayerPluginOption(
+        lineColor: Colors.black,
+        lineWidth: 3,
+        textStyle: TextStyle(color: Colors.black, fontSize: 14),
+        padding: EdgeInsets.all(10),
+      ));
+      pluginsList.add(ScaleLayerPlugin());
+    }
+
+    if (PluginsHandler.CROSS.isOn()) {
+      var centerCrossStyle = CenterCrossStyle.fromPreferences();
+      if (centerCrossStyle.visible) {
+        layers.add(CenterCrossPluginOption(
+          crossColor: ColorExt(centerCrossStyle.color),
+          crossSize: centerCrossStyle.size,
+          lineWidth: centerCrossStyle.lineWidth,
+        ));
+        pluginsList.add(CenterCrossPlugin());
+      }
+    }
+
+    if (PluginsHandler.GRID.isOn()) {
+      var gridLayer = MapPluginLatLonGridOptions(
+        lineColor: SmashColors.mainDecorations,
+        textColor: SmashColors.mainBackground,
+        lineWidth: 0.5,
+        textBackgroundColor: SmashColors.mainDecorations.withAlpha(170),
+        showCardinalDirections: true,
+        showCardinalDirectionsAsPrefix: false,
+        textSize: 12.0,
+        showLabels: true,
+        rotateLonLabels: true,
+        placeLabelsOnLines: true,
+        offsetLonTextBottom: 20.0,
+        offsetLatTextLeft: 20.0,
+      );
+      layers.add(gridLayer);
+      pluginsList.add(MapPluginLatLonGrid());
+    }
+
+    int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);
+    layers.add(FeatureInfoPluginOption(
+      tapAreaPixelSize: tapAreaPixels.toDouble(),
+    ));
+    pluginsList.add(FeatureInfoPlugin());
+  }
+
+  ProjectData addProjectMarkers(
+      ProjectState projectState, List<LayerOptions> layers) {
+    var projectData = projectState.projectData;
+    if (projectData != null) {
+      if (projectData.geopapLogs != null) layers.add(projectData.geopapLogs);
+      if (projectData.geopapMarkers != null &&
+          projectData.geopapMarkers.length > 0) {
+        var markerCluster = MarkerClusterLayerOptions(
+          maxClusterRadius: 80,
+          //        height: 40,
+          //        width: 40,
+          fitBoundsOptions: FitBoundsOptions(
+            padding: EdgeInsets.all(50),
+          ),
+          markers: projectData.geopapMarkers,
+          polygonOptions: PolygonOptions(
+              borderColor: SmashColors.mainDecorationsDarker,
+              color: SmashColors.mainDecorations.withOpacity(0.2),
+              borderStrokeWidth: 3),
+          builder: (context, markers) {
+            return FloatingActionButton(
+              child: Text(markers.length.toString()),
+              onPressed: null,
+              backgroundColor: SmashColors.mainDecorationsDarker,
+              foregroundColor: SmashColors.mainBackground,
+              heroTag: null,
+            );
+          },
+        );
+        layers.add(markerCluster);
+      }
+    }
+    return projectData;
   }
 
   _getDrawerWidgets(BuildContext context) {
