@@ -47,6 +47,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/gps_info_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'mainview_utils.dart';
 
@@ -180,9 +181,9 @@ class _MainViewWidgetState extends State<MainViewWidget>
                 height: 32,
               ),
             ),
-            actions: addActionBarButtons(projectState),
+            actions: addActionBarButtons(),
           ),
-          backgroundColor: SmashColors.mainBackground,
+          // backgroundColor: SmashColors.mainBackground,
           body: Stack(
             children: <Widget>[
               FlutterMap(
@@ -211,12 +212,32 @@ class _MainViewWidgetState extends State<MainViewWidget>
           ),
           drawer: Drawer(
               child: ListView(
-            children: _getDrawerWidgets(projectState.context),
+            children: [
+              new Container(
+                margin: EdgeInsets.only(bottom: 20),
+                child: new DrawerHeader(
+                    child: Image.asset("assets/smash_icon.png")),
+                color: SmashColors.mainBackground,
+              ),
+              new Container(
+                child: new Column(
+                    children: DashboardUtils.getDrawerTilesList(
+                        context, _mapController)),
+              ),
+            ],
           )),
-          endDrawer: Drawer(
+          endDrawer: Theme(
+            data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
+            child: Drawer(
+                child: Container(
+              color: Colors.transparent,
               child: ListView(
-            children: _getEndDrawerWidgets(projectState.context),
-          )),
+                children: DashboardUtils.getEndDrawerListTiles(
+                    context, _mapController),
+              ),
+            )),
+          ),
+
           bottomNavigationBar:
               addBottomToolBar(projectState, projectData, mapState),
         ),
@@ -234,33 +255,23 @@ class _MainViewWidgetState extends State<MainViewWidget>
         });
   }
 
-  List<Widget> addActionBarButtons(ProjectState projectState) {
+  List<Widget> addActionBarButtons() {
     return <Widget>[
       IconButton(
-          icon: Icon(Icons.info_outline),
+        tooltip: "Open tools drawer",
+          icon: Icon(MdiIcons.tools),
           onPressed: () {
-            String projectPath = projectState.projectPath;
-            if (Platform.isIOS) {
-              projectPath =
-                  IOS_DOCUMENTSFOLDER + Workspace.makeRelative(projectPath);
+            _scaffoldKey.currentState.openEndDrawer();
+          }),
+      IconButton(
+          tooltip: "Open Online Help",
+          icon: Icon(MdiIcons.lifebuoy),
+          onPressed: () async {
+            var urlString = "http://www.geopaparazzi.org/smash/index.html";
+            if (await canLaunch(urlString)) {
+              await launch(urlString);
             }
-
-            showInfoDialog(
-                projectState.context,
-                "Project: ${projectState.projectName}\nDatabase: $projectPath"
-                    .trim(),
-                widgets: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.share,
-                      color: SmashColors.mainDecorations,
-                    ),
-                    onPressed: () async {
-                      ShareHandler.shareProject(projectState.context);
-                    },
-                  )
-                ]);
-          })
+          }),
     ];
   }
 
@@ -558,43 +569,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
       }
     }
     return projectData;
-  }
-
-  _getDrawerWidgets(BuildContext context) {
-    double iconSize = 48;
-    double textSize = iconSize / 2;
-    var c = SmashColors.mainDecorations;
-    return [
-      new Container(
-        margin: EdgeInsets.only(bottom: 20),
-        child: new DrawerHeader(child: Image.asset("assets/smash_icon.png")),
-        color: SmashColors.mainBackground,
-      ),
-      new Container(
-        child: new Column(
-            children:
-                DashboardUtils.getDrawerTilesList(context, _mapController)),
-      ),
-    ];
-  }
-
-  _getEndDrawerWidgets(BuildContext context) {
-    return [
-      new Container(
-        margin: EdgeInsets.only(bottom: 20),
-        child: new DrawerHeader(
-          child: Image.asset(
-            "assets/maptools_icon.png",
-          ),
-        ),
-        color: SmashColors.mainBackground,
-      ),
-      new Container(
-        child: new Column(
-            children:
-                DashboardUtils.getEndDrawerListTiles(context, _mapController)),
-      ),
-    ];
   }
 
   Future disposeProject(BuildContext context) async {

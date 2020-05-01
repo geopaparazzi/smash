@@ -139,7 +139,50 @@ void showErrorDialog(BuildContext context, String prompt,
 void showInfoDialog(BuildContext context, String prompt,
     {String title,
     double dialogHeight: SIMPLE_DIALOGS_HEIGHT,
-    List<Widget> widgets}) async {
+    List<Widget> widgets,
+    bool doLandscape = false}) async {
+  Widget widget;
+  if (doLandscape) {
+    widget = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Icon(
+            Icons.info_outline,
+            color: SmashColors.mainDecorations,
+            size: SIMPLE_DIALOGS_ICONSIZE,
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(prompt),
+            ),
+            Column(
+              children: []..addAll(widgets != null ? widgets : []),
+            )
+          ],
+        ),
+      ],
+    );
+  } else {
+    widget = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Icon(
+            Icons.info_outline,
+            color: SmashColors.mainDecorations,
+            size: SIMPLE_DIALOGS_ICONSIZE,
+          ),
+        ),
+        Text(prompt),
+      ]..addAll(widgets != null ? widgets : []),
+    );
+  }
+
   await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -151,20 +194,7 @@ void showInfoDialog(BuildContext context, String prompt,
                   textAlign: TextAlign.center,
                 ),
           content: Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Icon(
-                    Icons.info_outline,
-                    color: SmashColors.mainDecorations,
-                    size: SIMPLE_DIALOGS_ICONSIZE,
-                  ),
-                ),
-                Text(prompt),
-              ]..addAll(widgets != null ? widgets : []),
-            ),
+            child: widget,
           ),
           actions: <Widget>[
             FlatButton(

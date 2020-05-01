@@ -21,6 +21,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/utils/screen.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/share.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/validators.dart';
 import 'package:smash/eu/hydrologis/smash/export/export_widget.dart';
@@ -172,202 +173,262 @@ class DashboardUtils {
     var doDiagnostics =
         GpPreferences().getBooleanSync(KEY_ENABLE_DIAGNOSTICS, false);
 
+    Color backColor = SmashColors.mainBackground;
     List<Widget> list = []
-      ..add(
-        ListTile(
-          leading: new Icon(
-            MdiIcons.crosshairsQuestion,
-            color: c,
-            size: iconSize,
-          ),
+      ..add(Container(
+        color: backColor,
+        child: ListTile(
           title: SmashUI.normalText(
-            "Query vector layers",
+            "Project Info",
             bold: true,
             color: c,
           ),
-          trailing:
-              Consumer<InfoToolState>(builder: (context, infoState, child) {
-            return Checkbox(
-                value: infoState.isEnabled,
-                onChanged: (value) {
-                  infoState.setEnabled(value);
-                });
-          }),
+          leading: new Icon(
+            MdiIcons.informationOutline,
+            color: c,
+            size: iconSize,
+          ),
+          onTap: () {
+            var projectState =
+                Provider.of<ProjectState>(context, listen: false);
+            String projectPath = projectState.projectPath;
+            if (Platform.isIOS) {
+              projectPath =
+                  IOS_DOCUMENTSFOLDER + Workspace.makeRelative(projectPath);
+            }
+            var isLandscape = ScreenUtilities.isLandscape(context);
+            showInfoDialog(
+                projectState.context,
+                "Project: ${projectState.projectName}\nDatabase: $projectPath"
+                    .trim(),
+                doLandscape: isLandscape,
+                widgets: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.share,
+                      color: SmashColors.mainDecorations,
+                    ),
+                    onPressed: () async {
+                      ShareHandler.shareProject(projectState.context);
+                    },
+                  )
+                ]);
+          },
         ),
-      )
-      ..add(getPositionTools(c, iconSize, context))
-      ..add(getPluginsVisibility(c, iconSize, context))
-      ..add(getExtras(c, iconSize, doDiagnostics, context));
+      ))
+      ..add(getPositionTools(c, backColor, iconSize, context))
+      ..add(getPluginsVisibility(c, backColor, iconSize, context))
+      ..add(getVectorTools(c, backColor, iconSize, doDiagnostics, context))
+      ..add(getExtras(c, backColor, iconSize, doDiagnostics, context));
 
     return list;
   }
 
-  static ExpansionTile getExtras(
-      Color c, double iconSize, bool doDiagnostics, BuildContext context) {
-    return ExpansionTile(
+  static Container getVectorTools(Color c, Color backColor, double iconSize,
+      bool doDiagnostics, BuildContext context) {
+    return Container(
+      color: backColor,
+      child: ExpansionTile(
+          title: SmashUI.normalText(
+            "Feature tools",
+            bold: true,
+            color: c,
+          ),
+          children: [
+            ListTile(
+              title: SmashUI.normalText(
+                "Query layers",
+                bold: true,
+                color: c,
+              ),
+              leading:
+                  Consumer<InfoToolState>(builder: (context, infoState, child) {
+                return Checkbox(
+                    value: infoState.isEnabled,
+                    onChanged: (value) {
+                      infoState.setEnabled(value);
+                    });
+              }),
+            ),
+          ]),
+    );
+  }
+
+  static Container getExtras(Color c, Color backColor, double iconSize,
+      bool doDiagnostics, BuildContext context) {
+    return Container(
+      color: backColor,
+      child: ExpansionTile(
+          title: SmashUI.normalText(
+            "Extras",
+            bold: true,
+            color: c,
+          ),
+          children: [
+            ListTile(
+              leading: new Icon(
+                Icons.insert_emoticon,
+                color: c,
+                size: iconSize,
+              ),
+              title: SmashUI.normalText(
+                "Available icons",
+                bold: true,
+                color: c,
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => IconsWidget()));
+              },
+            ),
+            ListTile(
+              leading: new Icon(
+                Icons.map,
+                color: c,
+                size: iconSize,
+              ),
+              title: SmashUI.normalText(
+                "Offline maps",
+                bold: true,
+                color: c,
+              ),
+              onTap: () async {
+                var mapsFolder = await Workspace.getMapsFolder();
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MapsDownloadWidget(mapsFolder)));
+              },
+            ),
+            doDiagnostics
+                ? ListTile(
+                    leading: new Icon(
+                      MdiIcons.bugOutline,
+                      color: c,
+                      size: iconSize,
+                    ),
+                    title: SmashUI.normalText(
+                      "Run diagnostics",
+                      bold: true,
+                      color: c,
+                    ),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DiagnosticWidget())),
+                  )
+                : Container(),
+          ]),
+    );
+  }
+
+  static Container getPluginsVisibility(
+      Color c, Color backColor, double iconSize, BuildContext context) {
+    return Container(
+      color: backColor,
+      child: ExpansionTile(
         title: SmashUI.normalText(
-          "Extras",
+          "Map Plugins",
+          bold: true,
+          color: c,
+        ),
+        children: [
+          PluginCheckboxWidget(PluginsHandler.SCALE.key),
+          PluginCheckboxWidget(PluginsHandler.GRID.key),
+          PluginCheckboxWidget(PluginsHandler.CROSS.key),
+          PluginCheckboxWidget(PluginsHandler.GPS.key),
+        ],
+      ),
+    );
+  }
+
+  static Container getPositionTools(
+      Color c, Color backColor, double iconSize, BuildContext context) {
+    return Container(
+      color: backColor,
+      child: ExpansionTile(
+        title: SmashUI.normalText(
+          "Position Tools",
           bold: true,
           color: c,
         ),
         children: [
           ListTile(
             leading: new Icon(
-              Icons.insert_emoticon,
+              MdiIcons.navigation,
               color: c,
               size: iconSize,
             ),
             title: SmashUI.normalText(
-              "Available icons",
+              "Go to",
               bold: true,
               color: c,
             ),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => IconsWidget()));
+                  MaterialPageRoute(builder: (context) => GeocodingPage()));
             },
           ),
           ListTile(
             leading: new Icon(
-              Icons.map,
+              MdiIcons.shareVariant,
               color: c,
               size: iconSize,
             ),
             title: SmashUI.normalText(
-              "Offline maps",
+              "Share position",
               bold: true,
               color: c,
             ),
-            onTap: () async {
-              var mapsFolder = await Workspace.getMapsFolder();
-              Navigator.pop(context);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MapsDownloadWidget(mapsFolder)));
+            onTap: () {
+              var gpsState = Provider.of<GpsState>(context, listen: false);
+              var pos = gpsState.lastGpsPosition;
+              StringBuffer sb = StringBuffer();
+              sb.write("Latitude: ");
+              sb.write(pos.latitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
+              sb.write("\nLongitude: ");
+              sb.write(pos.longitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
+              sb.write("\nAltitude: ");
+              sb.write(pos.altitude.toStringAsFixed(KEY_ELEV_DECIMALS));
+              sb.write("\nAccuracy: ");
+              sb.write(pos.accuracy.toStringAsFixed(KEY_ELEV_DECIMALS));
+              sb.write("\nTimestamp: ");
+              sb.write(TimeUtilities.ISO8601_TS_FORMATTER.format(
+                  DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
+              ShareHandler.shareText(sb.toString());
             },
           ),
-          doDiagnostics
-              ? ListTile(
-                  leading: new Icon(
-                    MdiIcons.bugOutline,
-                    color: c,
-                    size: iconSize,
-                  ),
-                  title: SmashUI.normalText(
-                    "Run diagnostics",
-                    bold: true,
-                    color: c,
-                  ),
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DiagnosticWidget())),
-                )
+          Consumer<SmashMapState>(builder: (context, mapState, child) {
+            return ListTile(
+              title: SmashUI.normalText("Center on GPS", bold: true, color: c),
+              leading: Checkbox(
+                  value: mapState.centerOnGps,
+                  onChanged: (value) {
+                    mapState.centerOnGps = value;
+                  }),
+            );
+          }),
+          Platform.isAndroid && EXPERIMENTAL_ROTATION_ENABLED
+              ? Consumer<SmashMapState>(builder: (context, mapState, child) {
+                  return ListTile(
+                    title: SmashUI.normalText("Rotate map with GPS",
+                        bold: true, color: c),
+                    leading: Checkbox(
+                        value: mapState.rotateOnHeading,
+                        onChanged: (value) {
+                          if (!value) {
+                            mapState.heading = 0;
+                          }
+                          mapState.rotateOnHeading = value;
+                        }),
+                  );
+                })
               : Container(),
-        ]);
-  }
-
-  static ExpansionTile getPluginsVisibility(
-      Color c, double iconSize, BuildContext context) {
-    return ExpansionTile(
-      title: SmashUI.normalText(
-        "Map Plugins",
-        bold: true,
-        color: c,
+        ],
       ),
-      children: [
-        PluginCheckboxWidget(PluginsHandler.SCALE.key),
-        PluginCheckboxWidget(PluginsHandler.GRID.key),
-        PluginCheckboxWidget(PluginsHandler.CROSS.key),
-        PluginCheckboxWidget(PluginsHandler.GPS.key),
-      ],
-    );
-  }
-
-  static ExpansionTile getPositionTools(
-      Color c, double iconSize, BuildContext context) {
-    return ExpansionTile(
-      title: SmashUI.normalText(
-        "Position Tools",
-        bold: true,
-        color: c,
-      ),
-      children: [
-        ListTile(
-          leading: new Icon(
-            MdiIcons.navigation,
-            color: c,
-            size: iconSize,
-          ),
-          title: SmashUI.normalText(
-            "Go to",
-            bold: true,
-            color: c,
-          ),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => GeocodingPage()));
-          },
-        ),
-        ListTile(
-          leading: new Icon(
-            MdiIcons.shareVariant,
-            color: c,
-            size: iconSize,
-          ),
-          title: SmashUI.normalText(
-            "Share position",
-            bold: true,
-            color: c,
-          ),
-          onTap: () {
-            var gpsState = Provider.of<GpsState>(context, listen: false);
-            var pos = gpsState.lastGpsPosition;
-            StringBuffer sb = StringBuffer();
-            sb.write("Latitude: ");
-            sb.write(pos.latitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
-            sb.write("\nLongitude: ");
-            sb.write(pos.longitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
-            sb.write("\nAltitude: ");
-            sb.write(pos.altitude.toStringAsFixed(KEY_ELEV_DECIMALS));
-            sb.write("\nAccuracy: ");
-            sb.write(pos.accuracy.toStringAsFixed(KEY_ELEV_DECIMALS));
-            sb.write("\nTimestamp: ");
-            sb.write(TimeUtilities.ISO8601_TS_FORMATTER
-                .format(DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
-            ShareHandler.shareText(sb.toString());
-          },
-        ),
-        Consumer<SmashMapState>(builder: (context, mapState, child) {
-          return ListTile(
-            title: SmashUI.normalText("Center on GPS", bold: true, color: c),
-            leading: Checkbox(
-                value: mapState.centerOnGps,
-                onChanged: (value) {
-                  mapState.centerOnGps = value;
-                }),
-          );
-        }),
-        Platform.isAndroid && EXPERIMENTAL_ROTATION_ENABLED
-            ? Consumer<SmashMapState>(builder: (context, mapState, child) {
-                return ListTile(
-                  title: SmashUI.normalText("Rotate map with GPS",
-                      bold: true, color: c),
-                  leading: Checkbox(
-                      value: mapState.rotateOnHeading,
-                      onChanged: (value) {
-                        if (!value) {
-                          mapState.heading = 0;
-                        }
-                        mapState.rotateOnHeading = value;
-                      }),
-                );
-              })
-            : Container(),
-      ],
     );
   }
 

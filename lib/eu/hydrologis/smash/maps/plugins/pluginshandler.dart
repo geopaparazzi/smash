@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:provider/provider.dart';
@@ -72,7 +74,11 @@ class _PluginCheckboxWidgetState extends State<PluginCheckboxWidget> {
           await projectState.reloadProject();
         },
       ),
-      title: Text(plugin.label),
+      title: SmashUI.normalText(
+        plugin.label,
+        bold: true,
+        color: SmashColors.mainDecorations,
+      ),
     );
   }
 }
