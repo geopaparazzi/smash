@@ -206,7 +206,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                     });
                   },
                 ),
-                Text("${_index + 1}/${_total}"),
+                Text("${_index + 1}/$_total"),
                 IconButton(
                   icon: Icon(MdiIcons.arrowRightBoldOutline),
                   onPressed: () {
@@ -308,6 +308,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
 
     data.forEach((key, value) {
       bool editable = primaryKey != null && key != primaryKey;
+      editable = false;// TODO fix when geopackage gets editable
       var row = DataRow(
         cells: [
           DataCell(SmashUI.normalText(key)),
