@@ -6,7 +6,7 @@
 
 import 'dart:io';
 
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';

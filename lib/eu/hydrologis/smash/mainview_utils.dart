@@ -36,6 +36,7 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smash/eu/hydrologis/smash/util/diagnostic.dart';
 import 'package:smash/eu/hydrologis/smash/util/network.dart';
+import 'package:smash/eu/hydrologis/smash/util/urls.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -417,6 +418,11 @@ class DashboardUtils {
               sb.write("\nTimestamp: ");
               sb.write(TimeUtilities.ISO8601_TS_FORMATTER.format(
                   DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
+              sb.write("\n");
+              sb.write(UrlUtilities.osmUrlFromLatLong(
+                  pos.latitude, pos.longitude,
+                  withMarker: true));
+
               ShareHandler.shareText(sb.toString());
             },
           ),
