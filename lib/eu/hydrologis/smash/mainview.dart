@@ -35,6 +35,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart'
 import 'package:smash/eu/hydrologis/smash/maps/plugins/current_log_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/gps_position_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/heatmap.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -140,7 +141,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
     var mapState =
         Provider.of<SmashMapState>(projectState.context, listen: false);
 
-    if (_mapController != null) {
+    var mcTmp = _mapController;
+    if (mcTmp != null) {
       if (EXPERIMENTAL_ROTATION_ENABLED) {
         // check map centering and rotation
         if (mapState.rotateOnHeading) {
@@ -149,9 +151,9 @@ class _MainViewWidgetState extends State<MainViewWidget>
           if (heading < 0) {
             heading = 360 + heading;
           }
-          _mapController.rotate(-heading);
+          mcTmp.rotate(-heading);
         } else {
-          _mapController.rotate(0);
+          mcTmp.rotate(0);
         }
       }
       if (mapState.centerOnGps) {
@@ -159,7 +161,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
         if (gpsState.lastGpsPosition != null) {
           LatLng posLL = LatLng(gpsState.lastGpsPosition.latitude,
               gpsState.lastGpsPosition.longitude);
-          _mapController.move(posLL, _mapController.zoom);
+          mcTmp.move(posLL, mcTmp.zoom);
         }
       }
     }
@@ -528,6 +530,10 @@ class _MainViewWidgetState extends State<MainViewWidget>
       ));
       pluginsList.add(ScaleLayerPlugin());
     }
+
+
+    layers.add(HeatmapPluginOption());
+    pluginsList.add(HeatmapPlugin());
   }
 
   ProjectData addProjectMarkers(
