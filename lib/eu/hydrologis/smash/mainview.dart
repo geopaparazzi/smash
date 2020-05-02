@@ -140,26 +140,29 @@ class _MainViewWidgetState extends State<MainViewWidget>
     var mapState =
         Provider.of<SmashMapState>(projectState.context, listen: false);
 
-    if (EXPERIMENTAL_ROTATION_ENABLED) {
-      // check map centering and rotation
-      if (mapState.rotateOnHeading) {
-        GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-        var heading = gpsState.lastGpsPosition.heading;
-        if (heading < 0) {
-          heading = 360 + heading;
+    if (_mapController != null) {
+      if (EXPERIMENTAL_ROTATION_ENABLED) {
+        // check map centering and rotation
+        if (mapState.rotateOnHeading) {
+          GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+          var heading = gpsState.lastGpsPosition.heading;
+          if (heading < 0) {
+            heading = 360 + heading;
+          }
+          _mapController.rotate(-heading);
+        } else {
+          _mapController.rotate(0);
         }
-        _mapController.rotate(-heading);
-      } else {
-        _mapController.rotate(0);
+      }
+      if (mapState.centerOnGps) {
+        GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+        if (gpsState.lastGpsPosition != null) {
+          LatLng posLL = LatLng(gpsState.lastGpsPosition.latitude,
+              gpsState.lastGpsPosition.longitude);
+          _mapController.move(posLL, _mapController.zoom);
+        }
       }
     }
-    if (mapState.centerOnGps) {
-      GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-      LatLng posLL = LatLng(gpsState.lastGpsPosition.latitude,
-          gpsState.lastGpsPosition.longitude);
-      _mapController.move(posLL, _mapController.zoom);
-    }
-
     layers.addAll(_activeLayers);
 
     ProjectData projectData = addProjectMarkers(projectState, layers);
