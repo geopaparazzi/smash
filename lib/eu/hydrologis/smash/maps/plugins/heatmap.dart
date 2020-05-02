@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 import 'dart:async';
-import 'dart:convert' as JSON;
+import "dart:math" as math;
 import 'dart:ui' as ui;
 
 import 'package:dart_jts/dart_jts.dart';
@@ -96,7 +96,10 @@ class HeatmapPainter extends CustomPainter {
   @override
   void paint(ui.Canvas canvas, ui.Size size) {
     // var heat = SimpleHeat(canvas, size);
-    print("paint");
+    var minOpacity = 0.05;
+    var radius = 30.0;
+    var z = 1.0;
+    var max = 1.0;
 
     List<Polyline> lines = projectState.projectData.geopapLogs.polylines;
     for (var i = 0; i < lines.length; i++) {
@@ -109,26 +112,25 @@ class HeatmapPainter extends CustomPainter {
         double pixelY = (posPixel.y - pixelOrigin.y);
         var pointOffset = Offset(pixelX, pixelY);
 
-        var radius = 20.0;
-        var gradient = RadialGradient(
-          center: const Alignment(0.0, 0.0), // near the top right
-          radius: 1.0,
-          colors: [
-            const Color.fromARGB(255, 0, 0, 0),
-            const Color.fromARGB(0, 255, 255, 255),
-          ],
-          stops: [0.0, 1.0],
-        );
-        // rect is the area we are painting over
-        Rect rect = Rect.fromCircle(
-          center: pointOffset,
-          radius: radius,
-        );
-        var paint = Paint()..shader = gradient.createShader(rect);
-
-        // final paint = Paint()..color = Colors.black;
         if (size.contains(pointOffset)) {
+          int globalAlpha = math.min(math.max(z / max, minOpacity), 1).round();
           // draw it
+          var gradient = RadialGradient(
+            center: const Alignment(0.0, 0.0), // near the top right
+            radius: 1.0,
+            colors: [
+              Color.fromARGB(globalAlpha, 0, 0, 0),
+              Color.fromARGB(0, 255, 255, 255),
+            ],
+            stops: [0.0, 0.9],
+          );
+          // rect is the area we are painting over
+          Rect rect = Rect.fromCircle(
+            center: pointOffset,
+            radius: radius,
+          );
+          var paint = Paint()..shader = gradient.createShader(rect);
+
           canvas.drawCircle(pointOffset, radius, paint);
         }
       }
