@@ -39,8 +39,8 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/heatmap.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
@@ -76,6 +76,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
   @override
   void initState() {
     super.initState();
+    SmashMapBuilder mapBuilder =
+        Provider.of<SmashMapBuilder>(context, listen: false);
     SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
     GpsState gpsState = Provider.of<GpsState>(context, listen: false);
     ProjectState projectState =
@@ -99,9 +101,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
     ScreenUtilities.keepScreenOn(GpPreferences().getKeepScreenOn());
 
-    _iconSize = GpPreferences()
-        .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
-
     // set initial status
     bool gpsIsOn = GpsHandler().isGpsOn();
     if (gpsIsOn != null) {
@@ -111,8 +110,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
     }
 
     Future.delayed(Duration.zero, () async {
-      projectState.context = context;
-      await projectState.reloadProject();
+      mapBuilder.context = context;
+      await projectState.reloadProject(context);
 
       _activeLayers.clear();
       var layers = await LayerManager().loadLayers(context);
@@ -128,21 +127,23 @@ class _MainViewWidgetState extends State<MainViewWidget>
   Widget build(BuildContext context) {
     print("BUIIIIIILD!!!");
 
-    return Consumer<ProjectState>(builder: (context, projectState, child) {
-      projectState.context = context;
-      projectState.scaffoldKey = _scaffoldKey;
-      return consumeBuild(projectState);
+    return Consumer<SmashMapBuilder>(builder: (context, mapBuilder, child) {
+      mapBuilder.context = context;
+      mapBuilder.scaffoldKey = _scaffoldKey;
+      return consumeBuild(mapBuilder);
     });
   }
 
-  WillPopScope consumeBuild(ProjectState projectState) {
+  WillPopScope consumeBuild(SmashMapBuilder mapBuilder) {
     var layers = <LayerOptions>[];
-
+    _iconSize = GpPreferences()
+        .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+    var projectState =
+        Provider.of<ProjectState>(mapBuilder.context, listen: false);
     var mapState =
-        Provider.of<SmashMapState>(projectState.context, listen: false);
+        Provider.of<SmashMapState>(mapBuilder.context, listen: false);
 
-    var mcTmp = _mapController;
-    if (mcTmp != null) {
+    if (_mapController != null && _mapController.ready) {
       if (EXPERIMENTAL_ROTATION_ENABLED) {
         // check map centering and rotation
         if (mapState.rotateOnHeading) {
@@ -151,9 +152,9 @@ class _MainViewWidgetState extends State<MainViewWidget>
           if (heading < 0) {
             heading = 360 + heading;
           }
-          mcTmp.rotate(-heading);
+          _mapController.rotate(-heading);
         } else {
-          mcTmp.rotate(0);
+          _mapController.rotate(0);
         }
       }
       if (mapState.centerOnGps) {
@@ -161,7 +162,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
         if (gpsState.lastGpsPosition != null) {
           LatLng posLL = LatLng(gpsState.lastGpsPosition.latitude,
               gpsState.lastGpsPosition.longitude);
-          mcTmp.move(posLL, mcTmp.zoom);
+          _mapController?.move(posLL, _mapController?.zoom);
         }
       }
     }
@@ -209,7 +210,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
                 mapController: _mapController,
               ),
               Center(
-                child: Provider.of<MapProgressState>(context).inProgress
+                child: mapBuilder.inProgress
                     ? SmashCircularProgress(label: "Loading data...")
                     : Container(),
               )
@@ -244,11 +245,11 @@ class _MainViewWidgetState extends State<MainViewWidget>
           ),
 
           bottomNavigationBar:
-              addBottomToolBar(projectState, projectData, mapState),
+              addBottomToolBar(mapBuilder, projectData, mapState),
         ),
         onWillPop: () async {
           bool doExit = await showConfirmDialog(
-              projectState.context,
+              mapBuilder.context,
               "Are you sure you want to close the project?",
               "Active operations will be stopped.");
           if (doExit) {
@@ -271,7 +272,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
     ];
   }
 
-  BottomAppBar addBottomToolBar(ProjectState projectState,
+  BottomAppBar addBottomToolBar(SmashMapBuilder mapBuilder,
       ProjectData projectData, SmashMapState mapState) {
     return BottomAppBar(
       color: SmashColors.mainDecorations,
@@ -282,8 +283,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
             GestureDetector(
               child: IconButton(
                 onPressed: () async {
-                  var gpsState = Provider.of<GpsState>(projectState.context,
-                      listen: false);
+                  var gpsState =
+                      Provider.of<GpsState>(mapBuilder.context, listen: false);
 
                   var titleWithMode = Column(
                     children: [
@@ -297,18 +298,18 @@ class _MainViewWidgetState extends State<MainViewWidget>
                   );
                   List<String> types = ["note", "image"];
                   var selectedType = await showComboDialog(
-                      projectState.context, titleWithMode, types);
+                      mapBuilder.context, titleWithMode, types);
                   var doNoteInGps = gpsState.insertInGps;
                   if (selectedType == types[0]) {
                     Note note = await DataLoaderUtilities.addNote(
-                        projectState, doNoteInGps, _mapController);
+                        mapBuilder, doNoteInGps, _mapController);
                     Navigator.push(
-                        projectState.context,
+                        mapBuilder.context,
                         MaterialPageRoute(
                             builder: (context) => NotePropertiesWidget(note)));
                   } else if (selectedType == types[1]) {
                     DataLoaderUtilities.addImage(
-                        projectState.context,
+                        mapBuilder.context,
                         doNoteInGps
                             ? gpsState.lastGpsPosition
                             : _mapController.center);
@@ -322,7 +323,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
               ),
               onLongPress: () {
                 Navigator.push(
-                    projectState.context,
+                    mapBuilder.context,
                     MaterialPageRoute(
                         builder: (context) => NotesListWidget(true)));
               },
@@ -333,8 +334,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
             GestureDetector(
               child: IconButton(
                 onPressed: () async {
-                  var gpsState = Provider.of<GpsState>(projectState.context,
-                      listen: false);
+                  var gpsState =
+                      Provider.of<GpsState>(mapBuilder.context, listen: false);
                   var doNoteInGps = gpsState.insertInGps;
                   var titleWithMode = Column(
                     children: [
@@ -357,7 +358,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
                   });
 
                   var selectedSection = await showComboDialog(
-                      projectState.context,
+                      mapBuilder.context,
                       titleWithMode,
                       sectionNames,
                       iconNames);
@@ -372,14 +373,14 @@ class _MainViewWidgetState extends State<MainViewWidget>
                     var sectionMap = allSectionsMap[selectedSection];
                     var jsonString = jsonEncode(sectionMap);
                     Note note = await DataLoaderUtilities.addNote(
-                        projectState, doNoteInGps, _mapController,
+                        mapBuilder, doNoteInGps, _mapController,
                         text: selectedSection,
                         form: jsonString,
                         iconName: iconName,
                         color:
                             ColorExt.asHex(SmashColors.mainDecorationsDarker));
 
-                    Navigator.push(projectState.context, MaterialPageRoute(
+                    Navigator.push(mapBuilder.context, MaterialPageRoute(
                       builder: (context) {
                         return MasterDetailPage(
                             sectionMap,
@@ -401,7 +402,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
               ),
               onLongPress: () {
                 Navigator.push(
-                    projectState.context,
+                    mapBuilder.context,
                     MaterialPageRoute(
                         builder: (context) => NotesListWidget(false)));
               },
@@ -422,7 +423,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
             ),
             iconSize: _iconSize,
             onPressed: () async {
-              await Navigator.push(projectState.context,
+              await Navigator.push(mapBuilder.context,
                   MaterialPageRoute(builder: (context) => LayersPage()));
 
               var layers = await LayerManager().loadLayers(context);
@@ -468,6 +469,11 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
   void addPluginsLayers(
       List<MapPlugin> pluginsList, List<LayerOptions> layers) {
+    if (PluginsHandler.LOG_HEATMAP.isOn()) {
+      layers.add(HeatmapPluginOption());
+      pluginsList.add(HeatmapPlugin());
+    }
+
     pluginsList.add(MarkerClusterPlugin());
 
     layers.add(CurrentGpsLogPluginOption(
@@ -530,10 +536,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
       ));
       pluginsList.add(ScaleLayerPlugin());
     }
-
-
-    layers.add(HeatmapPluginOption());
-    pluginsList.add(HeatmapPlugin());
   }
 
   ProjectData addProjectMarkers(

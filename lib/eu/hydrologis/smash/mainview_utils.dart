@@ -32,6 +32,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smash/eu/hydrologis/smash/util/diagnostic.dart';
@@ -211,6 +212,8 @@ class DashboardUtils {
           onTap: () {
             var projectState =
                 Provider.of<ProjectState>(context, listen: false);
+            var mapBuilder =
+                Provider.of<SmashMapBuilder>(context, listen: false);
             String projectPath = projectState.projectPath;
             if (Platform.isIOS) {
               projectPath =
@@ -218,7 +221,7 @@ class DashboardUtils {
             }
             var isLandscape = ScreenUtilities.isLandscape(context);
             showInfoDialog(
-                projectState.context,
+                mapBuilder.context,
                 "Project: ${projectState.projectName}\nDatabase: $projectPath"
                     .trim(),
                 doLandscape: isLandscape,
@@ -229,7 +232,7 @@ class DashboardUtils {
                       color: SmashColors.mainDecorations,
                     ),
                     onPressed: () async {
-                      ShareHandler.shareProject(projectState.context);
+                      ShareHandler.shareProject(mapBuilder.context);
                     },
                   )
                 ]);
@@ -359,6 +362,7 @@ class DashboardUtils {
           PluginCheckboxWidget(PluginsHandler.GRID.key),
           PluginCheckboxWidget(PluginsHandler.CROSS.key),
           PluginCheckboxWidget(PluginsHandler.GPS.key),
+          PluginCheckboxWidget(PluginsHandler.LOG_HEATMAP.key),
         ],
       ),
     );
@@ -478,8 +482,7 @@ class DashboardUtils {
       }
       var gpFile = new File(newPath);
       var projectState = Provider.of<ProjectState>(context, listen: false);
-      await projectState.setNewProject(gpFile.path);
-      await projectState.reloadProject();
+      await projectState.setNewProject(gpFile.path, context);
     }
 
     Navigator.of(context).pop();

@@ -26,6 +26,9 @@ class CenterCrossStyle {
       color = data['color'];
       size = data['size'];
       lineWidth = data['lineWidth'];
+    }else{
+      // first time
+      saveToPreferences();
     }
   }
 

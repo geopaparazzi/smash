@@ -25,6 +25,7 @@ import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms_widgets.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
@@ -35,14 +36,14 @@ import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 
 class DataLoaderUtilities {
   static Future<Note> addNote(
-      ProjectState projectState, bool doInGps, MapController mapController,
+      SmashMapBuilder mapBuilder, bool doInGps, MapController mapController,
       {String form, String iconName, String color, String text}) async {
     int ts = DateTime.now().millisecondsSinceEpoch;
     SmashPosition pos;
     double lon;
     double lat;
     if (doInGps) {
-      pos = Provider.of<GpsState>(projectState.context, listen: false)
+      pos = Provider.of<GpsState>(mapBuilder.context, listen: false)
           .lastGpsPosition;
     } else {
       var center = mapController.center;
@@ -74,6 +75,8 @@ class DataLoaderUtilities {
       next.color = color;
     }
     note.noteExt = next;
+
+    var projectState = Provider.of<ProjectState>(mapBuilder.context);
     var db = projectState.projectDb;
     await db.addNote(note);
 
@@ -122,7 +125,7 @@ class DataLoaderUtilities {
                     if (imageId != null) {
                       ProjectState projectState =
                           Provider.of<ProjectState>(context, listen: false);
-                      if (projectState != null) projectState.reloadProject();
+                      if (projectState != null) projectState.reloadProject(context);
                       File file = File(imagePath);
                       if (file.existsSync()) {
                         await file.delete();
@@ -137,7 +140,7 @@ class DataLoaderUtilities {
   }
 
   static void loadNotesMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
-      ProjectState projectState) async {
+      SmashMapBuilder mapBuilder) async {
     List<Note> notesList = await db.getNotes();
     notesList.forEach((note) {
       NoteExt noteExt = note.noteExt;
@@ -152,7 +155,7 @@ class DataLoaderUtilities {
         builder: (ctx) => new Container(
             child: GestureDetector(
           onTap: () {
-            projectState.scaffoldKey.currentState.showSnackBar(SnackBar(
+            mapBuilder.scaffoldKey.currentState.showSnackBar(SnackBar(
               backgroundColor: SmashColors.snackBarColor,
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -233,7 +236,7 @@ class DataLoaderUtilities {
                             var label =
                                 "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
                             ShareHandler.shareText(label);
-                            projectState.scaffoldKey.currentState
+                            mapBuilder.scaffoldKey.currentState
                                 .hideCurrentSnackBar();
                           },
                         ),
@@ -274,7 +277,7 @@ class DataLoaderUtilities {
                                       builder: (context) =>
                                           NotePropertiesWidget(note)));
                             }
-                            projectState.scaffoldKey.currentState
+                            mapBuilder.scaffoldKey.currentState
                                 .hideCurrentSnackBar();
                           },
                         ),
@@ -291,10 +294,12 @@ class DataLoaderUtilities {
                                 "Are you sure you want to remove note ${note.id}?");
                             if (doRemove) {
                               await db.deleteNote(note.id);
+                              var projectState =
+                                  Provider.of<ProjectState>(mapBuilder.context);
                               await projectState
-                                  .reloadProject(); // TODO check await
+                                  .reloadProject(ctx); // TODO check await
                             }
-                            projectState.scaffoldKey.currentState
+                            mapBuilder.scaffoldKey.currentState
                                 .hideCurrentSnackBar();
                           },
                         ),
@@ -306,7 +311,7 @@ class DataLoaderUtilities {
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
-                            projectState.scaffoldKey.currentState
+                            mapBuilder.scaffoldKey.currentState
                                 .hideCurrentSnackBar();
                           },
                         ),
@@ -329,7 +334,7 @@ class DataLoaderUtilities {
   }
 
   static void loadImageMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
-      ProjectState projectState) async {
+      SmashMapBuilder mapBuilder) async {
     // IMAGES
     var imagesList = await db.getImages();
     imagesList.forEach((image) async {
@@ -344,7 +349,7 @@ class DataLoaderUtilities {
             child: GestureDetector(
           onTap: () async {
             var thumb = await db.getThumbnail(image.imageDataId);
-            projectState.scaffoldKey.currentState.showSnackBar(SnackBar(
+            mapBuilder.scaffoldKey.currentState.showSnackBar(SnackBar(
               backgroundColor: SmashColors.snackBarColor,
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -413,7 +418,7 @@ class DataLoaderUtilities {
                             MaterialPageRoute(
                                 builder: (context) =>
                                     SmashImageZoomWidget(image)));
-                        projectState.scaffoldKey.currentState
+                        mapBuilder.scaffoldKey.currentState
                             .hideCurrentSnackBar();
                       },
                     ),
@@ -435,7 +440,7 @@ class DataLoaderUtilities {
                             var uint8list =
                                 await db.getImageDataBytes(image.imageDataId);
                             ShareHandler.shareImage(label, uint8list);
-                            projectState.scaffoldKey.currentState
+                            mapBuilder.scaffoldKey.currentState
                                 .hideCurrentSnackBar();
                           },
                         ),
@@ -452,10 +457,12 @@ class DataLoaderUtilities {
                                 "Are you sure you want to remove image ${image.id}?");
                             if (doRemove) {
                               await db.deleteImage(image.id);
+                              var projectState =
+                                  Provider.of<ProjectState>(mapBuilder.context);
                               await projectState
-                                  .reloadProject(); // TODO check await
+                                  .reloadProject(ctx); // TODO check await
                             }
-                            projectState.scaffoldKey.currentState
+                            mapBuilder.scaffoldKey.currentState
                                 .hideCurrentSnackBar();
                           },
                         ),
@@ -467,7 +474,7 @@ class DataLoaderUtilities {
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () {
-                            projectState.scaffoldKey.currentState
+                            mapBuilder.scaffoldKey.currentState
                                 .hideCurrentSnackBar();
                           },
                         ),

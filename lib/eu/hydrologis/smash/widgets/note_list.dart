@@ -166,7 +166,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
         icon: MdiIcons.delete,
         onTap: () async {
           await db.deleteNote(id);
-          await projectState.reloadProject();
+          await projectState.reloadProject(context);
           setState(() {});
         }));
 

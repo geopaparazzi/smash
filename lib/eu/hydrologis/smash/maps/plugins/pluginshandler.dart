@@ -9,6 +9,7 @@ const KEY_PLUGIN_SCALE = "KEY_PLUGIN_SCALE";
 const KEY_PLUGIN_GRID = "KEY_PLUGIN_GRID";
 const KEY_PLUGIN_CROSS = "KEY_PLUGIN_CROSS";
 const KEY_PLUGIN_GPS = "KEY_PLUGIN_GPS";
+const KEY_PLUGIN_LOGSHEATMAP = "KEY_PLUGIN_LOGSHEATMAP";
 
 var PLUGINMAP = {};
 
@@ -22,6 +23,7 @@ class PluginsHandler {
   static const GRID = const PluginsHandler._(KEY_PLUGIN_GRID, "Grid");
   static const CROSS = const PluginsHandler._(KEY_PLUGIN_CROSS, "Center Cross");
   static const GPS = const PluginsHandler._(KEY_PLUGIN_GPS, "GPS Position");
+  static const LOG_HEATMAP = const PluginsHandler._(KEY_PLUGIN_LOGSHEATMAP, "Logs Heatmap");
 
   static List<PluginsHandler> values() {
     return [
@@ -29,6 +31,7 @@ class PluginsHandler {
       GRID,
       CROSS,
       GPS,
+      LOG_HEATMAP,
     ];
   }
 
@@ -71,7 +74,7 @@ class _PluginCheckboxWidgetState extends State<PluginCheckboxWidget> {
           await plugin.toggle(selected);
           setState(() {});
           var projectState = Provider.of<ProjectState>(context, listen: false);
-          await projectState.reloadProject();
+          await projectState.reloadProject(context);
         },
       ),
       title: SmashUI.normalText(

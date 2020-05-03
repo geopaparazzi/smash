@@ -23,12 +23,20 @@ import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
+import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 
 class SettingsWidget extends StatefulWidget {
   SettingsWidget({Key key}) : super(key: key);
 
   @override
   _SettingsWidgetState createState() => new _SettingsWidgetState();
+
+  static void reloadMapSettings(BuildContext context) {
+    // var projectState = Provider.of<ProjectState>(context, listen: false);
+    // projectState.reloadProjectQuiet(context);
+    SmashMapBuilder.reBuildStatic(context);
+  }
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
@@ -301,6 +309,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                 onChanged: (selected) async {
                   await GpPreferences()
                       .setBoolean(KEY_KEEP_SCREEN_ON, selected);
+                  SettingsWidget.reloadMapSettings(context);
                   setState(() {});
                 },
                 title: SmashUI.normalText(
@@ -326,21 +335,24 @@ class ScreenSettingState extends State<ScreenSetting> {
                         SmashUI.normalText("Color"),
                         Expanded(
                           child: MaterialColorPicker(
-                              shrinkWrap: true,
-                              allowShades: false,
-                              circleSize: 45,
-                              onColorChange: (Color color) async {
-                                centerCrossStyle.color = ColorExt.asHex(color);
-                                await centerCrossStyle.saveToPreferences();
-                                setState(() {});
-                              },
-                              onMainColorChange: (mColor) async {
-                                centerCrossStyle.color = ColorExt.asHex(mColor);
-                                await centerCrossStyle.saveToPreferences();
-                                setState(() {});
-                              },
-                              selectedColor: Color(
-                                  ColorExt(centerCrossStyle.color).value)),
+                            shrinkWrap: true,
+                            allowShades: false,
+                            circleSize: 45,
+                            onColorChange: (Color color) async {
+                              centerCrossStyle.color = ColorExt.asHex(color);
+                              await centerCrossStyle.saveToPreferences();
+                              setState(() {});
+                            },
+                            onMainColorChange: (mColor) async {
+                              centerCrossStyle.color = ColorExt.asHex(mColor);
+                              await centerCrossStyle.saveToPreferences();
+                              SettingsWidget.reloadMapSettings(context);
+                              setState(() {});
+                            },
+                            selectedColor:
+                                Color(ColorExt(centerCrossStyle.color).value),
+                            colors: SmashColorPalette.getColorSwatchValues(),
+                          ),
                         ),
                       ],
                     ),
@@ -361,6 +373,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                               onChanged: (newSize) async {
                                 centerCrossStyle.size = newSize;
                                 await centerCrossStyle.saveToPreferences();
+                                SettingsWidget.reloadMapSettings(context);
                                 setState(() {});
                               },
                               value: centerCrossStyle.size,
@@ -391,6 +404,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                               onChanged: (newSize) async {
                                 centerCrossStyle.lineWidth = newSize;
                                 await centerCrossStyle.saveToPreferences();
+                                SettingsWidget.reloadMapSettings(context);
                                 setState(() {});
                               },
                               value: centerCrossStyle.lineWidth,
@@ -429,6 +443,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                               onChanged: (newSize) async {
                                 await GpPreferences()
                                     .setDouble(KEY_MAPTOOLS_ICON_SIZE, newSize);
+                                SettingsWidget.reloadMapSettings(context);
                                 setState(() {});
                               },
                               value: currentIconSize,

@@ -57,7 +57,7 @@ class _LoggingButtonState extends State<LoggingButton> {
         await gpsLoggingState.stopLogging();
         ProjectState projectState =
             Provider.of<ProjectState>(context, listen: false);
-        projectState.reloadProject();
+        projectState.reloadProject(context);
       }
     } else {
       if (GpsHandler().hasFix()) {

@@ -95,6 +95,9 @@ class HeatmapPainter extends CustomPainter {
 
   @override
   void paint(ui.Canvas canvas, ui.Size size) {
+    final pictureRecorder = ui.PictureRecorder();
+    final tmpCanvas = Canvas(pictureRecorder);
+
     // var heat = SimpleHeat(canvas, size);
     var minOpacity = 0.05;
     var radius = 30.0;
@@ -120,9 +123,9 @@ class HeatmapPainter extends CustomPainter {
             radius: 1.0,
             colors: [
               Color.fromARGB(globalAlpha, 0, 0, 0),
-              Color.fromARGB(0, 255, 255, 255),
+              Color.fromARGB(globalAlpha, 255, 255, 255),
             ],
-            stops: [0.0, 0.9],
+            stops: [0.0, 0.5],
           );
           // rect is the area we are painting over
           Rect rect = Rect.fromCircle(
@@ -130,11 +133,18 @@ class HeatmapPainter extends CustomPainter {
             radius: radius,
           );
           var paint = Paint()..shader = gradient.createShader(rect);
-
-          canvas.drawCircle(pointOffset, radius, paint);
+          
+          tmpCanvas.drawCircle(pointOffset, radius, paint);
         }
       }
     }
+    // Note that you can draw pictures to other canvases using Canvas.drawPicture().
+    ui.Picture picture = pictureRecorder.endRecording();
+
+
+// And here's your pixel data
+    // ui.Image image = await picture.toImage(width, height);
+    // ByteData bytes = await image.toByteData();
   }
 
   @override

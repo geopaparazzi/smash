@@ -18,7 +18,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 
 /// A plugin that handles tap info from vector layers
@@ -77,7 +77,7 @@ class FeatureInfoLayer extends StatelessWidget {
               ? GestureDetector(
                   child: InkWell(),
                   onTapUp: (e) async {
-                    Provider.of<MapProgressState>(context, listen: false)
+                    Provider.of<SmashMapBuilder>(context, listen: false)
                         .setInProgress(true);
                     var p = e.localPosition;
                     var pixelBounds = map.getLastPixelBounds();
@@ -158,7 +158,7 @@ class FeatureInfoLayer extends StatelessWidget {
       }
     }
 
-    Provider.of<MapProgressState>(context, listen: false).setInProgress(false);
+    Provider.of<SmashMapBuilder>(context, listen: false).setInProgress(false);
     if (totalQueryResult.data.isNotEmpty) {
       Navigator.push(
           context,
@@ -202,7 +202,7 @@ class _TapSelectionCircleState extends State<TapSelectionCircle> {
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<MapProgressState>(context).inProgress) {
+    if (Provider.of<SmashMapBuilder>(context).inProgress) {
       size = widget.size;
     } else {
       size = 0;

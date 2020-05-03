@@ -10,10 +10,12 @@ import 'package:path/path.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
+import 'package:provider/provider.dart';
 
 /// The provider object of the current project status
 ///
@@ -24,8 +26,7 @@ class ProjectState extends ChangeNotifierPlus {
   GeopaparazziProjectDb _db;
   ProjectData _projectData;
 
-  BuildContext context;
-  GlobalKey<ScaffoldState> scaffoldKey;
+
 
   String get projectPath => _projectPath;
 
@@ -35,13 +36,13 @@ class ProjectState extends ChangeNotifierPlus {
 
   ProjectData get projectData => _projectData;
 
-  Future<void> setNewProject(String path) async {
+  Future<void> setNewProject(String path, BuildContext context) async {
     GpLogger().d("Set new project: $path");
     await close();
     _projectPath = path;
     await openDb(_projectPath);
-    GpPreferences().addRecentProject(path);
-    notifyListenersMsg("setNewProject");
+    await GpPreferences().addRecentProject(path);
+    reloadProject(context);
   }
 
   Future<void> openDb([String projectPath]) async {
@@ -76,17 +77,17 @@ class ProjectState extends ChangeNotifierPlus {
     }
     _db = null;
     _projectPath = null;
-    context = null;
-    scaffoldKey = null;
   }
-
-  Future<void> reloadProject() async {
+  
+  Future<void> reloadProject(BuildContext context) async {
     if (projectDb == null) return;
-    await reloadProjectQuiet();
-    notifyListenersMsg('reloadProject');
+    var mapBuilder = Provider.of<SmashMapBuilder>(context);
+    await reloadProjectQuiet(mapBuilder);
+    mapBuilder.reBuild();
   }
 
-  Future<void> reloadProjectQuiet() async {
+  /// Reloads the project data but doesn't tigger a map build
+  Future<void> reloadProjectQuiet(SmashMapBuilder mapBuilder) async {
     if (projectDb == null) return;
     ProjectData tmp = ProjectData();
     tmp.projectName = basenameWithoutExtension(projectDb.path);
@@ -98,8 +99,8 @@ class ProjectState extends ChangeNotifierPlus {
     tmp.formNotesCount = await projectDb.getFormNotesCount(false);
 
     List<Marker> tmpList = [];
-    DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, this);
-    DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, this);
+    DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, mapBuilder);
+    DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, mapBuilder);
     tmp.geopapMarkers = tmpList;
     tmp.geopapLogs = await DataLoaderUtilities.loadLogLinesLayer(projectDb);
     _projectData = tmp;

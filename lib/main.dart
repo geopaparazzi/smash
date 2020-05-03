@@ -17,8 +17,8 @@ import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smash/eu/hydrologis/smash/util/logging.dart';
@@ -26,11 +26,11 @@ import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 void main() => runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProjectState()),
+        ChangeNotifierProvider(create: (_) => SmashMapBuilder()),
         ChangeNotifierProvider(create: (_) => ThemeState()),
         ChangeNotifierProvider(create: (_) => GpsState()),
         ChangeNotifierProvider(create: (_) => SmashMapState()),
         ChangeNotifierProvider(create: (_) => InfoToolState()),
-        ChangeNotifierProvider(create: (_) => MapProgressState()),
       ],
       child: SmashApp(),
     ));

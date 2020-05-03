@@ -201,8 +201,7 @@ class ProjectView extends StatelessWidget {
       var projectState = Provider.of<ProjectState>(context, listen: false);
       var gpsState = Provider.of<GpsState>(context, listen: false);
       gpsState.projectState = projectState;
-      await projectState.setNewProject(gpFile.path);
-      await projectState.reloadProject();
+      await projectState.setNewProject(gpFile.path, context) ;
       Navigator.pop(context);
       if (isOpeningPage) {
         Navigator.push(
@@ -215,8 +214,7 @@ class ProjectView extends StatelessWidget {
     var projectState = Provider.of<ProjectState>(context, listen: false);
     var gpsState = Provider.of<GpsState>(context, listen: false);
     gpsState.projectState = projectState;
-    await projectState.setNewProject(selectedPath);
-    await projectState.reloadProject();
+    await projectState.setNewProject(selectedPath, context);
     Navigator.pop(context);
     if (isOpeningPage) {
       Navigator.push(

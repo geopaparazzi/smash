@@ -13,13 +13,12 @@ import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/tables.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/validators.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_progress_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
 
 /// The log properties page.
 class LogPropertiesWidget extends StatefulWidget {
-  var _logItem;
+  final _logItem;
 
   LogPropertiesWidget(this._logItem);
 
@@ -62,7 +61,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                 Provider.of<ProjectState>(context, listen: false);
             await projectState.projectDb
                 .updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
-            projectState.reloadProject();
+            projectState.reloadProject(context);
           }
           return true;
         },

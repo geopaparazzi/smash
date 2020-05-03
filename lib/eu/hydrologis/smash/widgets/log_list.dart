@@ -19,6 +19,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
@@ -112,84 +113,86 @@ class LogListWidgetState extends State<LogListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProjectState>(builder: (context, projectState, child) {
-      GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-      var db = projectState.projectDb;
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("GPS Logs list"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(MdiIcons.checkBoxMultipleOutline),
-              tooltip: "Select all",
-              onPressed: () async {
-                await db.updateGpsLogVisibility(true);
+    GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+    var projectState = Provider.of<ProjectState>(context, listen: false);
+    var db = projectState.projectDb;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("GPS Logs list"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(MdiIcons.checkBoxMultipleOutline),
+            tooltip: "Select all",
+            onPressed: () async {
+              await db.updateGpsLogVisibility(true);
+              await loadLogs();
+              await reloadMap(context);
+            },
+          ),
+          IconButton(
+            tooltip: "Unselect all",
+            icon: Icon(MdiIcons.checkboxMultipleBlankOutline),
+            onPressed: () async {
+              await db.updateGpsLogVisibility(false);
+              await loadLogs();
+              await reloadMap(context);
+            },
+          ),
+          PopupMenuButton<int>(
+            onSelected: (value) async {
+              if (value == 1) {
+                await db.invertGpsLogsVisibility();
                 await loadLogs();
-              },
-            ),
-            IconButton(
-              tooltip: "Unselect all",
-              icon: Icon(MdiIcons.checkboxMultipleBlankOutline),
-              onPressed: () async {
-                await db.updateGpsLogVisibility(false);
-                await loadLogs();
-              },
-            ),
-            PopupMenuButton<int>(
-              onSelected: (value) async {
-                if (value == 1) {
-                  await db.invertGpsLogsVisibility();
-                  await loadLogs();
-                } else if (value == 2) {
-                  if (_logsList.length > 1) {
-                    var masterId; // = (_logsList.first as Log4ListWidget).id;
-                    var mergeIds = <int>[];
-                    for (Log4ListWidget log in _logsList) {
-                      if (log.isVisible == 1) {
-                        if (masterId == null) {
-                          masterId = log.id;
-                        } else {
-                          mergeIds.add(log.id);
-                        }
+                await reloadMap(context);
+              } else if (value == 2) {
+                if (_logsList.length > 1) {
+                  var masterId; // = (_logsList.first as Log4ListWidget).id;
+                  var mergeIds = <int>[];
+                  for (Log4ListWidget log in _logsList) {
+                    if (log.isVisible == 1) {
+                      if (masterId == null) {
+                        masterId = log.id;
+                      } else {
+                        mergeIds.add(log.id);
                       }
                     }
-                    await db.mergeGpslogs(masterId, mergeIds);
-                    await loadLogs();
-                    await projectState.reloadProject();
                   }
+                  await db.mergeGpslogs(masterId, mergeIds);
+                  await loadLogs();
+                  await reloadMap(context);
                 }
-              },
-              itemBuilder: (BuildContext context) {
-                var txt1 = "Invert selection";
-                var txt2 = "Merge selected";
-                return [
-                  PopupMenuItem<int>(
-                    value: 1,
-                    child: Text(txt1),
-                  ),
-                  PopupMenuItem<int>(
-                    value: 2,
-                    child: Text(txt2),
-                  )
-                ];
-              },
-            ),
-          ],
-        ),
-        body: _isLoading
-            ? Center(child: SmashCircularProgress(label: "Loading logs..."))
-            : ListView.builder(
-                itemCount: _logsList.length,
-                itemBuilder: (context, index) {
-                  Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
-                  return buildLogSlidable(logItem, gpsState, db, projectState);
-                }),
-      );
-    });
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              var txt1 = "Invert selection";
+              var txt2 = "Merge selected";
+              return [
+                PopupMenuItem<int>(
+                  value: 1,
+                  child: Text(txt1),
+                ),
+                PopupMenuItem<int>(
+                  value: 2,
+                  child: Text(txt2),
+                )
+              ];
+            },
+          ),
+        ],
+      ),
+      body: _isLoading
+          ? Center(child: SmashCircularProgress(label: "Loading logs..."))
+          : ListView.builder(
+              itemCount: _logsList.length,
+              itemBuilder: (context, index) {
+                Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
+                return buildLogSlidable(logItem, gpsState, db);
+              }),
+    );
   }
 
-  Slidable buildLogSlidable(Log4ListWidget logItem, GpsState gpsState,
-      GeopaparazziProjectDb db, ProjectState projectState) {
+  Slidable buildLogSlidable(
+      Log4ListWidget logItem, GpsState gpsState, GeopaparazziProjectDb db) {
     List<Widget> actions = [];
     List<Widget> secondaryActions = [];
 
@@ -217,7 +220,7 @@ class LogListWidgetState extends State<LogListWidget> {
         onTap: () async {
           await db.deleteGpslog(logItem.id);
           await loadLogs();
-          await projectState.reloadProject();
+          await reloadMap(context);
           setState(() {});
         }));
 
@@ -240,12 +243,16 @@ class LogListWidgetState extends State<LogListWidget> {
               logItem.isVisible = isVisible ? 1 : 0;
               await db.updateGpsLogVisibility(isVisible, logItem.id);
               await loadLogs();
-              await projectState.reloadProject();
+              await reloadMap(context);
             }),
       ),
       actions: actions,
       secondaryActions: secondaryActions,
     );
+  }
+
+  Future reloadMap(context) async {
+    Provider.of<ProjectState>(context).reloadProject(context);
   }
 
   _getTime(Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
@@ -310,29 +317,6 @@ class LogListWidgetState extends State<LogListWidget> {
     } else {
       return "${length.round()} m";
     }
-  }
-
-  Future<bool> _confirmLogDismiss(DismissDirection direction) async {
-    return await showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Confirm'),
-            content: Text('Are you sure you want to delete the log?'),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                  },
-                  child: Text('Yes')),
-              FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  },
-                  child: Text('No')),
-            ],
-          );
-        });
   }
 
   _navigateToLogProperties(BuildContext context, Log4ListWidget logItem) {
