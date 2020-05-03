@@ -185,7 +185,7 @@ Future<String> handleWorkspace(BuildContext context) async {
   await Workspace.init();
   var directory = await Workspace.getConfigFolder();
   bool init = await GpLogger().init(directory.path); // init logger
-  if (init) GpLogger().d("Db logger initialized.");
+  if (init) GpLogger().i("Db logger initialized.");
   return null;
 }
 

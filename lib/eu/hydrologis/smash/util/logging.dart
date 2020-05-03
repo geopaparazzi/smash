@@ -46,12 +46,45 @@ class DbOutput extends LogOutput {
   }
 }
 
+/// [QueryObjectBuilder] to allow easy extraction from the db.
+class GpLogItemQueryBuilder extends QueryObjectBuilder<GpLogItem> {
+  var limit;
+
+  @override
+  GpLogItem fromMap(Map<String, dynamic> map) {
+    GpLogItem l = new GpLogItem()
+      ..level = map[LogDb.level_NAME]
+      ..message = map[LogDb.message_NAME]
+      ..ts = map[LogDb.TimeStamp_NAME];
+    return l;
+  }
+
+  @override
+  String insertSql() {
+    // UNUSED
+    return null;
+  }
+
+  @override
+  String querySql() {
+    String sql = '''
+        SELECT ${LogDb.level_NAME}, ${LogDb.message_NAME}, ${LogDb.TimeStamp_NAME}
+        FROM ${LogDb.TABLE_NAME}
+        ORDER BY ${LogDb.TimeStamp_NAME} DESC ${limit != null ? " LIMIT " + limit.toString() : ""}
+    ''';
+    return sql;
+  }
+
+  @override
+  Map<String, dynamic> toMap(GpLogItem item) {
+    return item.toMap();
+  }
+}
+
 class GpLogItem {
   String level;
   String message;
-  int ts = DateTime
-      .now()
-      .millisecondsSinceEpoch;
+  int ts = DateTime.now().millisecondsSinceEpoch;
 
   Map<String, dynamic> toMap() {
     return {
@@ -82,9 +115,18 @@ class LogDb {
   SqliteDb _db;
   String _dbPath;
 
+  Future<List<GpLogItem>> getLogItems({int limit}) async {
+    var queryObj = GpLogItemQueryBuilder();
+    if (limit != null) {
+      queryObj.limit = limit;
+    }
+    List<GpLogItem> result = await _db.getQueryObjectsList(queryObj);
+    return result;
+  }
+
   Future<bool> init(String folder) async {
     try {
-      GpLogger().d("Init LogDb with folder: $folder and app name: $DB_NAME");
+      GpLogger().i("Init LogDb with folder: $folder and app name: $DB_NAME");
       _dbPath = FileUtilities.joinPaths(folder, DB_NAME);
       _db = SqliteDb(_dbPath);
       await _db.openOrCreate(dbCreateFunction: createLogDatabase);
@@ -126,7 +168,7 @@ class GpLogger {
   Future<bool> init(String folder) async {
     if (internalLogger != null) return false;
     _folder = folder;
-    d("Initializing GpLogger with folder: $_folder");
+    i("Initializing GpLogger with folder: $_folder");
 
     _logDb = LogDb();
     await _logDb.init(_folder).then((ok) {
@@ -144,7 +186,7 @@ class GpLogger {
               printEmojis: true,
               // Print an emoji for each log message
               printTime: false // Should each log print contain a timestamp
-          ),
+              ),
           filter: GpLogFilter(),
           output: DbOutput(_logDb),
         );
@@ -243,5 +285,9 @@ class GpLogger {
       addToDiagnostic("WTF", message,
           bgColor: Colors.deepPurple[100], iconColor: Colors.black);
     }
+  }
+
+  Future<List<GpLogItem>> getLogItems({int limit}) async {
+    return _logDb.getLogItems(limit: limit);
   }
 }

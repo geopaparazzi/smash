@@ -41,16 +41,16 @@ class PermissionManager {
     PermissionStatus permission = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.storage);
     if (permission != PermissionStatus.granted) {
-      GpLogger().d("Storage permission is not granted.");
+      GpLogger().w("Storage permission is not granted.");
       Map<PermissionGroup, PermissionStatus> permissionsMap =
           await PermissionHandler()
               .requestPermissions([PermissionGroup.storage]);
       if (permissionsMap[PermissionGroup.storage] != PermissionStatus.granted) {
-        GpLogger().d("Unable to grant permission: ${PermissionGroup.storage}");
+        GpLogger().w("Unable to grant permission: ${PermissionGroup.storage}");
         return false;
       }
     }
-    GpLogger().d("Storage permission granted.");
+    GpLogger().i("Storage permission granted.");
     return true;
   }
 
@@ -58,17 +58,17 @@ class PermissionManager {
     PermissionStatus permission = await PermissionHandler()
         .checkPermissionStatus(PermissionGroup.location);
     if (permission != PermissionStatus.granted) {
-      GpLogger().d("Location permission is not granted.");
+      GpLogger().w("Location permission is not granted.");
       Map<PermissionGroup, PermissionStatus> permissionsMap =
           await PermissionHandler()
               .requestPermissions([PermissionGroup.location]);
       if (permissionsMap[PermissionGroup.location] !=
           PermissionStatus.granted) {
-        GpLogger().d("Unable to grant permission: ${PermissionGroup.location}");
+        GpLogger().w("Unable to grant permission: ${PermissionGroup.location}");
         return false;
       }
     }
-    GpLogger().d("Location permission granted.");
+    GpLogger().i("Location permission granted.");
     return true;
   }
 }

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
@@ -25,6 +26,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart'
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 class SettingsWidget extends StatefulWidget {
   SettingsWidget({Key key}) : super(key: key);
@@ -1224,29 +1226,177 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
           ],
         ),
       ),
-      body: Card(
-        margin: SmashUI.defaultMargin(),
-        // elevation: SmashUI.DEFAULT_ELEVATION,
-        color: SmashColors.mainBackground,
-        child: ListTile(
-          leading: Icon(iconData),
-          title: Text("${value ? "Disable" : "Enable"} diagnostics menu"),
-          subtitle: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Checkbox(
-                value: value,
-                onChanged: (selected) async {
-                  await GpPreferences()
-                      .setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
-                  setState(() {});
-                },
+      body: Column(
+        children: [
+          Card(
+            margin: SmashUI.defaultMargin(),
+            // elevation: SmashUI.DEFAULT_ELEVATION,
+            color: SmashColors.mainBackground,
+            child: ListTile(
+              leading: Icon(iconData),
+              title: Text("${value ? "Disable" : "Enable"} diagnostics menu"),
+              subtitle: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Checkbox(
+                    value: value,
+                    onChanged: (selected) async {
+                      await GpPreferences()
+                          .setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
+                      setState(() {});
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          Card(
+            margin: SmashUI.defaultMargin(),
+            color: SmashColors.mainBackground,
+            child: ListTile(
+              leading: Icon(MdiIcons.tableEye),
+              title: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: RaisedButton(
+                    color: SmashColors.mainBackground,
+                    child: Text("Open full debug log"),
+                    onPressed: () {
+                      ProjectState projectState =
+                          Provider.of<ProjectState>(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  DebugLogViewer(projectState)));
+                    }),
+              ),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class DebugLogViewer extends StatefulWidget {
+  final ProjectState projectState;
+
+  DebugLogViewer(this.projectState, {Key key}) : super(key: key);
+
+  @override
+  _DebugLogViewerState createState() => _DebugLogViewerState();
+}
+
+class _DebugLogViewerState extends State<DebugLogViewer> {
+  int limit = 1000;
+  List<GpLogItem> logItems;
+  List<GpLogItem> allLogItems;
+  bool isViewingErrors = false;
+
+  var levelToColor = {
+    "Level.verbose": Colors.grey[100],
+    "Level.debug": Colors.green[100],
+    "Level.info": Colors.blue[100],
+    "Level.warning": Colors.orange[100],
+    "Level.error": Colors.red[100],
+    "Level.wtf": Colors.deepPurple[100],
+    "Level.nothing": Colors.grey[100],
+  };
+  var levelToIcon = {
+    "Level.verbose": MdiIcons.accountVoice,
+    "Level.debug": MdiIcons.androidDebugBridge,
+    "Level.info": MdiIcons.information,
+    "Level.warning": MdiIcons.alertOutline,
+    "Level.error": MdiIcons.flashAlert,
+    "Level.wtf": MdiIcons.bomb,
+    "Level.nothing": MdiIcons.helpCircleOutline,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    loadDebug();
+  }
+
+  void loadDebug() async {
+    allLogItems = await GpLogger().getLogItems(limit: limit);
+    allLogItems = allLogItems.where((element) {
+      element.message = element.message.trim();
+
+      if (element.message.contains("38;5;12m")) {
+        element.message = element.message.substring(12).trim();
+      }
+
+      if (element.message.contains("────────") ||
+          element.message.contains("┄┄┄┄┄┄") ||
+          element.message.startsWith("#")) {
+        return false;
+      } else if (element.message.startsWith("│ ")) {
+        element.message = element.message.substring(4).trim();
+      }
+
+      if (element.message.endsWith("[0m")) {
+        element.message =
+            element.message.substring(0, element.message.length - 4);
+      }
+      return true;
+    }).toList();
+    setState(() {
+      logItems = allLogItems;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Debug Log View"),
+        actions: [
+          IconButton(
+              icon: Icon(isViewingErrors
+                  ? MdiIcons.androidDebugBridge
+                  : MdiIcons.flashAlert),
+              tooltip: "View only errors and warnings",
+              onPressed: () {
+                if (isViewingErrors) {
+                  logItems = allLogItems;
+                } else {
+                  logItems = allLogItems.where((element) {
+                    return element.level == "Level.warning" ||
+                        element.level == "Level.error";
+                  }).toList();
+                }
+                setState(() {
+                  isViewingErrors = !isViewingErrors;
+                });
+              })
+        ],
+      ),
+      body: logItems == null
+          ? SmashCircularProgress(
+              label: "Loading data...",
+            )
+          : ListView.builder(
+              itemCount: logItems.length,
+              itemBuilder: (BuildContext context, int index) {
+                GpLogItem logItem = logItems[index];
+                Color c = levelToColor[logItem.level];
+                String msg = logItem.message;
+                String ts = TimeUtilities.ISO8601_TS_FORMATTER
+                    .format(DateTime.fromMillisecondsSinceEpoch(logItem.ts));
+                var iconData = levelToIcon[logItem.level];
+
+                return Container(
+                  color: c,
+                  child: ListTile(
+                    leading: Icon(iconData),
+                    title: Text(ts),
+                    subtitle: Text(msg),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

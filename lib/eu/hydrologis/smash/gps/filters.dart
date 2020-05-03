@@ -161,7 +161,7 @@ class GpsFilterManager {
     msg.maxAllowedDistanceLastEvent = _gpsState.gpsMaxDistance;
 
     if (!isAtValidDistance) {
-      GpLogger().d(
+      GpLogger().w(
           "Ignoring GPS point jump: $distanceLastEvent > ${_gpsState.gpsMaxDistance}");
     }
     return isAtValidDistance;
