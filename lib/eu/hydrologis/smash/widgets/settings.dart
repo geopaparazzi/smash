@@ -1330,6 +1330,7 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
 
       if (element.message.contains("────────") ||
           element.message.contains("┄┄┄┄┄┄") ||
+          element.message.startsWith("│ #") ||
           element.message.startsWith("#")) {
         return false;
       } else if (element.message.startsWith("│ ")) {
@@ -1357,7 +1358,9 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
               icon: Icon(isViewingErrors
                   ? MdiIcons.androidDebugBridge
                   : MdiIcons.flashAlert),
-              tooltip: "View only errors and warnings",
+              tooltip: isViewingErrors
+                  ? "View all messages"
+                  : "View only errors and warnings",
               onPressed: () {
                 if (isViewingErrors) {
                   logItems = allLogItems;
@@ -1383,7 +1386,7 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
                 GpLogItem logItem = logItems[index];
                 Color c = levelToColor[logItem.level];
                 String msg = logItem.message;
-                String ts = TimeUtilities.ISO8601_TS_FORMATTER
+                String ts = TimeUtilities.ISO8601_TS_FORMATTER_MILLIS
                     .format(DateTime.fromMillisecondsSinceEpoch(logItem.ts));
                 var iconData = levelToIcon[logItem.level];
 

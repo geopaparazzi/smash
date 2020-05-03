@@ -302,6 +302,8 @@ class TimeUtilities {
   /// An ISO8601 date formatter (yyyy-MM-dd HH:mm:ss).
   static final DateFormat ISO8601_TS_FORMATTER =
       DateFormat("yyyy-MM-dd HH:mm:ss");
+  static final DateFormat ISO8601_TS_FORMATTER_MILLIS =
+      DateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
   /// An ISO8601 time formatter (HH:mm:ss).
   static final DateFormat ISO8601_TS_TIME_FORMATTER = DateFormat("HH:mm:ss");
