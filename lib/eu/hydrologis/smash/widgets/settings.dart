@@ -685,7 +685,9 @@ class GpsSettingsState extends State<GpsSettings> {
                         doSmallText: true,
                         borderColor: Colors.orange,
                         withBorder: true,
-                        colWidthFlex: [0.6, 0.4]);
+                        colWidthFlex: [0.6, 0.4],
+                        highlightPattern: "BLOCKS",
+                        highlightColor: Colors.orange.withAlpha(128));
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),

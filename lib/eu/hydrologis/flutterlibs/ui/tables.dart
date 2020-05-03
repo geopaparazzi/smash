@@ -5,17 +5,18 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 
 class TableUtilities {
-  static TableCell cellForString(String data,
-      {color: Colors.black, bool doSmallText = false}) {
+  static Widget cellForString(String data,
+      {color: Colors.black, bool doSmallText = false, bool doBold = false}) {
     return TableCell(
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: doSmallText
-            ? SmashUI.smallText(data, color: color)
-            : SmashUI.normalText(data, color: color),
+            ? SmashUI.smallText(data, color: color, bold: doBold)
+            : SmashUI.normalText(data, color: color, bold: doBold),
       ),
     );
   }
@@ -24,14 +25,30 @@ class TableUtilities {
       {bool withBorder = false,
       Color borderColor = Colors.blueAccent,
       bool doSmallText = false,
-      List<double> colWidthFlex = const [0.4, 0.6]}) {
+      List<double> colWidthFlex = const [0.4, 0.6],
+      String highlightPattern,
+      Color highlightColor}) {
     List<TableRow> rows = [];
 
     map.forEach((key, value) {
+      String valueStr = value.toString();
+      Color color;
+      bool doBold = false;
+      if (highlightPattern != null &&
+          (valueStr.toLowerCase().contains(highlightPattern.toLowerCase()) ||
+              key.toLowerCase().contains(highlightPattern.toLowerCase()))) {
+        color = highlightColor;
+        doBold = true;
+      }
+
       var row = TableRow(
+        decoration: new BoxDecoration(
+          color: color == null ? SmashColors.mainBackground : color,
+        ),
         children: [
-          cellForString(key, doSmallText: doSmallText),
-          cellForString(value.toString(), doSmallText: doSmallText),
+          cellForString(key, doSmallText: doSmallText, doBold: doBold),
+          cellForString(value.toString(),
+              doSmallText: doSmallText, doBold: doBold),
         ],
       );
       rows.add(row);
