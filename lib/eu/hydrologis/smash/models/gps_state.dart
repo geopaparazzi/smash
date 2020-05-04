@@ -142,7 +142,7 @@ class GpsState extends ChangeNotifierPlus {
 
       return logId;
     } catch (e) {
-      GpLogger().e("Error creating log", e);
+      GpLogger().e("Error creating new gps log", e);
       return null;
     }
   }

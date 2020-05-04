@@ -12,6 +12,7 @@ import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart' as ICONS;
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
+import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 class FileDownloadListTileProgressWidget extends StatefulWidget {
   final String _downloadUrl;
@@ -70,7 +71,7 @@ class FileDownloadListTileProgressWidgetState
         });
       }, cancelToken: cancelToken, options: options);
     } catch (e) {
-      print(e);
+      GpLogger().err("Error while downloading file ${widget._downloadUrl}", e);
     }
 
     setState(() {
@@ -126,7 +127,7 @@ class FileDownloadListTileProgressWidgetState
               dFile.deleteSync();
             }
           } catch (e) {
-            print(e);
+            GpLogger().err("Error deleting file $dFile", e);
           }
           cancelToken.cancel("cancelled");
         }

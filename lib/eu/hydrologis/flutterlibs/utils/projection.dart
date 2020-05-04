@@ -9,6 +9,7 @@ import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'dart:io';
 
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 class SmashPrj {
   static final Projection EPSG4326 = Projection.WGS84;
@@ -35,6 +36,7 @@ class SmashPrj {
     try {
       return int.parse(sridStr);
     } catch (e) {
+      GpLogger().err("Unable to parse projection ${projection.projName}", e);
       return null;
     }
   }
@@ -58,6 +60,7 @@ class SmashPrj {
             try {
               return int.parse(epsgString);
             } catch (e) {
+              GpLogger().err("Error parsing epsg string: $epsgString", e);
               return null;
             }
           }

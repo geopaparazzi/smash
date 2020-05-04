@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 /// Geocoding widget that makes use of the [MainEventHandler] to move to the
 /// chosen location.
@@ -48,7 +49,7 @@ class GeocodingPageState extends State<GeocodingPage> {
     try {
       addresses = await Geocoder.local.findAddressesFromQuery(query);
     } catch (e) {
-      print(e);
+      GpLogger().err("Unable to geocode $query", e);
     }
     searching = false;
     if (addresses == null || addresses.isEmpty) {

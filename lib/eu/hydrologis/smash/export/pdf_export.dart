@@ -16,6 +16,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
+import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 class PdfExporter {
   static final String novalue = "-nv-";
@@ -147,7 +148,7 @@ class PdfExporter {
                 formWidgetList.add(c);
               }
             } catch (e) {
-              print(e);
+             GpLogger().err("Error exporting image to pdf document", e);
             }
           } else if (type == TYPE_DYNAMICSTRING) {
             var p = Paragraph(text: '$label: ');

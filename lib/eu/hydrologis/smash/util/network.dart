@@ -22,6 +22,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
+import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 import 'offline_maps.dart';
 
@@ -78,7 +79,7 @@ class DownloadMapFromListTileProgressWidgetState
 //        widget._mainEventsHandler.reloadLayersFunction();
       }
     } catch (e) {
-      print(e);
+      GpLogger().err("Error downloading file ${widget._downloadUrl}", e);
     }
 
     setState(() {
