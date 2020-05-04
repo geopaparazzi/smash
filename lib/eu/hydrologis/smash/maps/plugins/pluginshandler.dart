@@ -16,6 +16,7 @@ var PLUGINMAP = {};
 class PluginsHandler {
   final String key;
   final String label;
+  static const HEATMAP_WORKING = false;
 
   const PluginsHandler._(this.key, this.label);
 
@@ -31,7 +32,7 @@ class PluginsHandler {
       GRID,
       CROSS,
       GPS,
-      LOG_HEATMAP,
+     // LOG_HEATMAP, TODO add when ready
     ];
   }
 

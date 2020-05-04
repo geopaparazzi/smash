@@ -469,7 +469,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
   void addPluginsLayers(
       List<MapPlugin> pluginsList, List<LayerOptions> layers) {
-    if (PluginsHandler.LOG_HEATMAP.isOn()) {
+    if (PluginsHandler.HEATMAP_WORKING && PluginsHandler.LOG_HEATMAP.isOn()) {
       layers.add(HeatmapPluginOption());
       pluginsList.add(HeatmapPlugin());
     }
