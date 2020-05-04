@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+import 'package:badges/badges.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,7 +37,12 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   @override
   Widget build(BuildContext context) {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
-      return GestureDetector(
+      bool showAllGpsPointCount =
+          GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
+      bool showFilteredGpsPointCount =
+          GpPreferences().getBooleanSync(KEY_GPS_SHOW_FILTERED_POINTS, false);
+
+      Widget button = GestureDetector(
         onLongPress: () {
           var color = SmashColors.mainDecorations;
           if (!gpsState.hasFix()) {
@@ -74,6 +80,20 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
           ),
         ),
       );
+
+      if (showFilteredGpsPointCount) {
+        button = DashboardUtils.makeToolbarBadge(
+            button, GpsHandler().filteredPointsCount,
+            badgeColor: SmashColors.mainDecorations);
+      }
+      if (showAllGpsPointCount) {
+        button = DashboardUtils.makeToolbarBadge(
+            button, GpsHandler().allPointsCount,
+            badgeColor: SmashColors.mainDecorations,
+            badgePosition: BadgePosition.bottomLeft());
+      }
+
+      return button;
     });
   }
 

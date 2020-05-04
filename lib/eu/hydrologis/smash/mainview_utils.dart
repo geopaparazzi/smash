@@ -45,15 +45,18 @@ import 'package:url_launcher/url_launcher.dart';
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
 
 class DashboardUtils {
-  static Widget makeToolbarBadge(Widget widget, int badgeValue) {
+  static Widget makeToolbarBadge(Widget widget, int badgeValue,
+      {Color textColor, Color badgeColor, BadgePosition badgePosition}) {
     if (badgeValue > 0) {
       return Badge(
-        badgeColor: SmashColors.mainSelection,
-        shape: BadgeShape.circle,
+        badgeColor: badgeColor != null ? badgeColor : SmashColors.mainSelection,
+        shape: badgeValue > 999 ? BadgeShape.square : BadgeShape.circle,
+        borderRadius: 20,
         toAnimate: false,
+        position: badgePosition,
         badgeContent: Text(
           '$badgeValue',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: textColor != null ? textColor : Colors.white),
         ),
         child: widget,
       );

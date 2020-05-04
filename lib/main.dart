@@ -151,7 +151,7 @@ Future<String> handleProjections(BuildContext context) async {
       int.parse(epsg);
       Projection.add('EPSG:$epsg', def);
     } catch (e) {
-      print(e);
+      GpLogger().err("Error adding projection $projDef", e);
     }
   }
   return null;

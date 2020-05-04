@@ -827,6 +827,10 @@ class GpsSettingsState extends State<GpsSettings> {
     int timeInterval =
         GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS.first);
     bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
+    bool showAllGpsPointCount =
+        GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
+    bool showFilteredGpsPointCount =
+        GpPreferences().getBooleanSync(KEY_GPS_SHOW_FILTERED_POINTS, false);
 
     SmashLocationAccuracy locationAccuracy =
         SmashLocationAccuracy.fromPreferences();
@@ -842,35 +846,39 @@ class GpsSettingsState extends State<GpsSettings> {
               children: <Widget>[
                 Padding(
                   padding: SmashUI.defaultPadding(),
-                  child: SmashUI.normalText("GPS accuracy",
+                  child: SmashUI.normalText("Visualize point count",
                       bold: true, textAlign: TextAlign.start),
                 ),
                 ListTile(
-                  leading: Icon(MdiIcons.crosshairsQuestion),
-                  title: Text("System accuracy to use."),
+                  leading: Icon(MdiIcons.formatListNumbered),
+                  title: Text("Show the GPS points count for VALID points."),
                   subtitle: Wrap(
                     children: <Widget>[
-                      DropdownButton<int>(
-                        value: locationAccuracy.code,
-                        isExpanded: false,
-                        items: accuraciesList.map((i) {
-                          return DropdownMenuItem<int>(
-                            child: Text(
-                              i.label,
-                              textAlign: TextAlign.center,
-                            ),
-                            value: i.code,
-                          );
-                        }).toList(),
-                        onChanged: (selected) async {
-                          if (locationAccuracy.code != selected) {
-                            var newAccuracy =
-                                SmashLocationAccuracy.fromCode(selected);
-                            await SmashLocationAccuracy.toPreferences(
-                                newAccuracy);
-                            GpsHandler().restartLocationsService();
-                            setState(() {});
-                          }
+                      Checkbox(
+                        value: showFilteredGpsPointCount,
+                        onChanged: (selValid) async {
+                          await GpPreferences().setBoolean(
+                              KEY_GPS_SHOW_FILTERED_POINTS, selValid);
+                          Provider.of<SmashMapBuilder>(context).reBuild();
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(MdiIcons.formatListNumbered),
+                  title: Text("Show the GPS points count for ALL points."),
+                  subtitle: Wrap(
+                    children: <Widget>[
+                      Checkbox(
+                        value: showAllGpsPointCount,
+                        onChanged: (selAll) async {
+                          await GpPreferences()
+                              .setBoolean(KEY_GPS_SHOW_ALL_POINTS, selAll);
+
+                          Provider.of<SmashMapBuilder>(context).reBuild();
+                          setState(() {});
                         },
                       ),
                     ],
@@ -879,6 +887,52 @@ class GpsSettingsState extends State<GpsSettings> {
               ],
             ),
           ),
+          // TODO enable this when the locationaccuracy works properly
+          // Card(
+          //   margin: SmashUI.defaultMargin(),
+          //   // elevation: SmashUI.DEFAULT_ELEVATION,
+          //   color: SmashColors.mainBackground,
+          //   child: Column(
+          //     children: <Widget>[
+          //       Padding(
+          //         padding: SmashUI.defaultPadding(),
+          //         child: SmashUI.normalText("GPS accuracy",
+          //             bold: true, textAlign: TextAlign.start),
+          //       ),
+          //       ListTile(
+          //         leading: Icon(MdiIcons.crosshairsQuestion),
+          //         title: Text("System accuracy to use."),
+          //         subtitle: Wrap(
+          //           children: <Widget>[
+          //             DropdownButton<int>(
+          //               value: locationAccuracy.code,
+          //               isExpanded: false,
+          //               items: accuraciesList.map((i) {
+          //                 return DropdownMenuItem<int>(
+          //                   child: Text(
+          //                     i.label,
+          //                     textAlign: TextAlign.center,
+          //                   ),
+          //                   value: i.code,
+          //                 );
+          //               }).toList(),
+          //               onChanged: (selected) async {
+          //                 if (locationAccuracy.code != selected) {
+          //                   var newAccuracy =
+          //                       SmashLocationAccuracy.fromCode(selected);
+          //                   await SmashLocationAccuracy.toPreferences(
+          //                       newAccuracy);
+          //                   GpsHandler().restartLocationsService();
+          //                   setState(() {});
+          //                 }
+          //               },
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Card(
             margin: SmashUI.defaultMargin(),
             // elevation: SmashUI.DEFAULT_ELEVATION,

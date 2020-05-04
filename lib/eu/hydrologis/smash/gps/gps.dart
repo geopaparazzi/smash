@@ -152,6 +152,8 @@ abstract class GpsLoggingHandler {
 class GpsHandler {
   static const String _isolateName = "LocatorIsolate";
   ReceivePort port;
+  int allPointsCount = 0;
+  int filteredPointsCount = 0;
 
   static final GpsHandler _instance = GpsHandler._internal();
 
@@ -207,6 +209,8 @@ class GpsHandler {
 
   void restartLocationsService() {
     port = null;
+    allPointsCount = 0;
+    filteredPointsCount = 0;
     _gpsState.status = GpsStatus.ON_NO_FIX;
   }
 
@@ -224,7 +228,11 @@ class GpsHandler {
   }
 
   void _onPositionUpdate(SmashPosition position) {
-    GpsFilterManager().onNewPositionEvent(position);
+    allPointsCount++;
+    var notBlocked = GpsFilterManager().onNewPositionEvent(position);
+    if (notBlocked) {
+      filteredPointsCount++;
+    }
   }
 
   /// Close the handler.

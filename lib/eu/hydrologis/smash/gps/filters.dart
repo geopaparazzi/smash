@@ -11,7 +11,7 @@ class GpsFilterManagerMessage {
   /// Time in milliseconds from the last position event.
   var lastFixDelta;
   bool isLogging = false;
-  bool blockedByFilter = true;
+  bool blockedByFilter = false;
 
   LatLng previousPosLatLon;
   LatLng newPosLatLon;
@@ -83,7 +83,9 @@ class GpsFilterManager {
   /// New position event coming in from the location service.
   ///
   /// In here all the filtering happens.
-  void onNewPositionEvent(SmashPosition position) {
+  /// 
+  /// Returns true if the point was not blocked.
+  bool onNewPositionEvent(SmashPosition position) {
     GpsFilterManagerMessage msg = GpsFilterManagerMessage();
     msg.lastFixDelta = _lastFixDelta;
 
@@ -132,7 +134,6 @@ class GpsFilterManager {
                 _gpsState.addLogPoint(position.longitude, position.latitude,
                     position.altitude, ts);
               }
-              // TODO check what to do for filters. They do not work!
               _previousLogPosition = position;
               setGpsState = true;
             }
@@ -147,12 +148,12 @@ class GpsFilterManager {
       }
 
       if (setGpsState || _gpsState.status != tmpStatus) {
-        // gps information is set at every event
         _gpsState.statusQuiet = tmpStatus;
         _gpsState.lastGpsPosition = position;
       }
     }
     currentMessage = msg;
+    return !msg.blockedByFilter;
   }
 
   bool isValid(var distanceLastEvent, GpsFilterManagerMessage msg) {
