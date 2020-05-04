@@ -829,8 +829,8 @@ class GpsSettingsState extends State<GpsSettings> {
     bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
     bool showAllGpsPointCount =
         GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
-    bool showFilteredGpsPointCount =
-        GpPreferences().getBooleanSync(KEY_GPS_SHOW_FILTERED_POINTS, false);
+    bool showValidGpsPointCount =
+        GpPreferences().getBooleanSync(KEY_GPS_SHOW_VALID_POINTS, false);
 
     SmashLocationAccuracy locationAccuracy =
         SmashLocationAccuracy.fromPreferences();
@@ -855,10 +855,10 @@ class GpsSettingsState extends State<GpsSettings> {
                   subtitle: Wrap(
                     children: <Widget>[
                       Checkbox(
-                        value: showFilteredGpsPointCount,
+                        value: showValidGpsPointCount,
                         onChanged: (selValid) async {
                           await GpPreferences().setBoolean(
-                              KEY_GPS_SHOW_FILTERED_POINTS, selValid);
+                              KEY_GPS_SHOW_VALID_POINTS, selValid);
                           Provider.of<SmashMapBuilder>(context).reBuild();
                           setState(() {});
                         },

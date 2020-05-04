@@ -39,8 +39,8 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       bool showAllGpsPointCount =
           GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
-      bool showFilteredGpsPointCount =
-          GpPreferences().getBooleanSync(KEY_GPS_SHOW_FILTERED_POINTS, false);
+      bool showValidGpsPointCount =
+          GpPreferences().getBooleanSync(KEY_GPS_SHOW_VALID_POINTS, false);
 
       Widget button = GestureDetector(
         onLongPress: () {
@@ -81,14 +81,15 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         ),
       );
 
-      if (showFilteredGpsPointCount) {
+      if (showValidGpsPointCount) {
         button = DashboardUtils.makeToolbarBadge(
             button, GpsHandler().filteredPointsCount,
-            badgeColor: SmashColors.mainDecorations);
+            badgeColor: SmashColors.mainSelection);
       }
       if (showAllGpsPointCount) {
         button = DashboardUtils.makeToolbarBadge(
             button, GpsHandler().allPointsCount,
+            textColor: SmashColors.mainBackground,
             badgeColor: SmashColors.mainDecorations,
             badgePosition: BadgePosition.bottomLeft());
       }
