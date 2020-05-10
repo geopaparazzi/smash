@@ -211,7 +211,15 @@ class LogListWidgetState extends State<LogListWidget> {
       caption: 'Properties',
       color: SmashColors.mainDecorations,
       icon: MdiIcons.palette,
-      onTap: () => _navigateToLogProperties(context, logItem),
+      onTap: () async {
+        var somethingChanged = await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LogPropertiesWidget(logItem)));
+        if (somethingChanged) {
+          loadLogs();
+        }
+      },
     ));
     secondaryActions.add(IconSlideAction(
         caption: 'Delete',
@@ -317,10 +325,5 @@ class LogListWidgetState extends State<LogListWidget> {
     } else {
       return "${length.round()} m";
     }
-  }
-
-  _navigateToLogProperties(BuildContext context, Log4ListWidget logItem) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => LogPropertiesWidget(logItem)));
   }
 }

@@ -63,6 +63,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                 .updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
             projectState.reloadProject(context);
           }
+          Navigator.pop(context, _somethingChanged);
           return true;
         },
         child: Scaffold(
