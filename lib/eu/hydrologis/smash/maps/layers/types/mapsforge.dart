@@ -11,6 +11,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'dart:ui' as ui;
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/foundation.dart' show DiagnosticsProperty;
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ import 'package:mapsforge_flutter/src/graphics/tilebitmap.dart';
 import 'package:mapsforge_flutter/src/implementation/graphics/fluttertilebitmap.dart';
 import 'package:mapsforge_flutter/src/model/tile.dart';
 import 'package:mapsforge_flutter/src/renderer/rendererjob.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/database/database.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';

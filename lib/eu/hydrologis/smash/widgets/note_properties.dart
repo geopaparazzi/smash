@@ -7,7 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';

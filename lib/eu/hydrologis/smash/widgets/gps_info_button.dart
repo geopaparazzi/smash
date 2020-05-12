@@ -9,7 +9,7 @@ import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/tables.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';

@@ -4,387 +4,51 @@
  * found in the LICENSE file.
  */
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:dart_jts/dart_jts.dart';
-import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:logger/logger.dart';
 
-/// Pure dart classes and methods for HydroloGIS projects.
-
-/// File path and folder utilities.
-class FileUtilities {
-  static String joinPaths(String path1, String path2) {
-    if (path2.startsWith("/")) {
-      path2 = path2.substring(1);
-      if (!path1.endsWith("/")) {
-        path1 = path1 + "/";
-      }
-    }
-    return join(path1, path2);
-  }
-
-  static String nameFromFile(String filePath, bool withExtension) {
-    if (withExtension) {
-      return basename(filePath);
-    } else {
-      return basenameWithoutExtension(filePath);
-    }
-  }
-
-  static String getExtension(String filePath) {
-    var lastDot = filePath.lastIndexOf(".");
-    if (lastDot > 0) {
-      return filePath.substring(lastDot + 1);
-    } else {
-      return null;
-    }
-  }
-
-  static String parentFolderFromFile(String filePath) {
-    return dirname(filePath);
-  }
-
-  static String readFile(String filePath) {
-    return File(filePath).readAsStringSync();
-  }
-
-  static List<String> readFileToList(String filePath) {
-    var fileText = readFile(filePath);
-    List<String> split = fileText.split("\n");
-    return split;
-  }
-
-  static void writeStringToFile(String filePath, String stringToWrite) {
-    return File(filePath).writeAsStringSync(stringToWrite);
-  }
-
-  static void writeBytesToFile(String filePath, List<int> bytesToWrite) {
-    return File(filePath).writeAsBytesSync(bytesToWrite);
-  }
-
-  static void copyFile(String fromPath, String toPath) {
-    File from = File(fromPath);
-    from.copySync(toPath);
-  }
-
-  /// Method to read a properties [file] into a hashmap.
-  ///
-  /// Empty lines are ignored, as well as lines that do not contain the separator.
-  static Map<String, String> readFileToHashMap(String filePath,
-      {String separator = "=", bool valueFirst = false}) {
-    var fileTxt = readFile(filePath);
-    var lines = fileTxt.split("\n");
-
-    Map<String, String> propertiesMap = {};
-    for (String line in lines) {
-      line = line.trim();
-      if (line.length == 0) {
-        continue;
-      }
-      int firstSep = line.indexOf(separator);
-      if (firstSep == -1) {
-        continue;
-      }
-
-      String first = line.substring(0, firstSep);
-      String second = line.substring(firstSep + 1);
-
-      if (!valueFirst) {
-        propertiesMap[first] = second;
-      } else {
-        propertiesMap[second] = first;
-      }
-    }
-    return propertiesMap;
-  }
-
-  /// Get the list of files names from a given [parentPath] and optionally filtered by [ext].
-  static List<String> getFilesInPathByExt(String parentPath, [String ext]) {
-    List<String> filenameList = List();
-
-    try {
-      Directory(parentPath).listSync().forEach((FileSystemEntity fse) {
-        String path = fse.path;
-        String filename = basename(path);
-        if (ext == null || filename.endsWith(ext)) {
-          filenameList.add(filename);
-        }
-      });
-    } catch (e) {
-      print(e);
-    }
-    return filenameList;
-  }
-
-  static List<List<dynamic>> listFiles(String parentPath,
-      {bool doOnlyFolder = false,
-      List<String> allowedExtensions,
-      bool doHidden = false,
-      bool order = true}) {
-    List<List<dynamic>> pathAndNameList = [];
-
-    try {
-      var list = Directory(parentPath).listSync();
-      for (var fse in list) {
-        String path = fse.path;
-        String filename = basename(path);
-        if (filename.startsWith(".")) {
-          continue;
-        }
-        String parentname = dirname(path);
-
-        var isDirectory = FileSystemEntity.isDirectorySync(path);
-        if (doOnlyFolder && !isDirectory) {
-          continue;
-        }
-
-        if (isDirectory) {
-          pathAndNameList.add(<dynamic>[parentname, filename, isDirectory]);
-        } else if (allowedExtensions != null) {
-          for (var ext in allowedExtensions) {
-            if (filename.endsWith(ext)) {
-              pathAndNameList.add(<dynamic>[parentname, filename, isDirectory]);
-              break;
-            }
-          }
-        } else {
-          pathAndNameList.add(<dynamic>[parentname, filename, isDirectory]);
-        }
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    pathAndNameList.sort((o1, o2) {
-      String n1 = o1[1];
-      String n2 = o2[1];
-      return n1.compareTo(n2);
-    });
-
-    return pathAndNameList;
-  }
-}
-
-/// Class to handle int conversions.
-class ByteConversionUtilities {
-  /// Convert a 32 bit integer [number] to its int representation.
-  static List<int> bytesFromInt32(int number, [Endian endian = Endian.big]) {
-    var tmp = Uint8List.fromList([0, 0, 0, 0]);
-    ByteData bdata = ByteData.view(tmp.buffer);
-    bdata.setInt32(0, number, endian);
-    return tmp;
-  }
-
-  /// Convert a 16 bit integer [number] to its int representation.
-  static List<int> bytesFromInt16(int number, [Endian endian = Endian.big]) {
-    var tmp = Uint8List.fromList([0, 0]);
-    ByteData bdata = ByteData.view(tmp.buffer);
-    bdata.setInt16(0, number, endian);
-    return tmp;
-  }
-
-  /// Get an int from a list of 4 bytes.
-  static int getInt32(Uint8List list, [Endian endian = Endian.big]) {
-    var bdata = new ByteData.view(list.buffer);
-    return bdata.getInt32(0, endian);
-  }
-
-  /// Get an int from a list of 2 bytes.
-  static int getInt16(Uint8List list, [Endian endian = Endian.big]) {
-    var bdata = new ByteData.view(list.buffer);
-    return bdata.getInt16(0, endian);
-  }
-
-  /// Get an int from a list of 1 byte.
-  static int getInt8(Uint8List list) {
-    var bdata = new ByteData.view(list.buffer);
-    return bdata.getInt8(0);
-  }
-
-  /// Convert a 64 bit integer [number] to its int representation.
-  static List<int> bytesFromInt64(int number, [Endian endian = Endian.big]) {
-    var tmp = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
-    ByteData bdata = ByteData.view(tmp.buffer);
-    bdata.setInt64(0, number, endian);
-    return tmp;
-  }
-
-  /// Convert a 64 bit double [number] to its int representation.
-  static List<int> bytesFromDouble(double number,
-      [Endian endian = Endian.big]) {
-    var tmp = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
-    ByteData bdata = ByteData.view(tmp.buffer);
-    bdata.setFloat64(0, number, endian);
-    return tmp;
-  }
-
-  /// Read a file from [path] into a bytes list.
-  static Uint8List bytesFromFile(String path) {
-    File outputFile = File(path);
-    return outputFile.readAsBytesSync();
-  }
-
-  /// Write a list of [bytes] to file and return the written file [path].
-  static String bytesToFile(String path, List<int> bytes) {
-    File outputFile = File(path);
-    outputFile.writeAsBytesSync(bytes);
-    return outputFile.path;
-  }
-
-  /// Convert a [name] into a list of bytes.
-  static List<int> bytesFromString(String fileName) {
-    return fileName.codeUnits;
-  }
-
-  static void addPadding(List<int> data, int requiredSize) {
-    if (data.length < requiredSize) {
-      // add padding to complete the mtu
-      var add = requiredSize - data.length;
-      for (int i = 0; i < add; i++) {
-        data.add(0);
-      }
-    }
-  }
-}
-
-/// Image utilities
-class ImageUtilities {
-  static IMG.Image imageFromBytes(List<int> bytes) {
-    IMG.Image img = IMG.decodeImage(bytes);
-    return img;
-  }
-
-//  static void imageBytes2File(File file, List<int> bytes) {
-//    IMG.Image img = imageFromBytes(bytes);
-//
-//    IMG.writeJpg(img)
-//
-//  }
-
-  static List<int> bytesFromImageFile(String path) {
-    File imgFile = File(path);
-    return imgFile.readAsBytesSync();
-  }
-
-  static List<int> resizeImage(Uint8List bytes,
-      {int newWidth: 100, int longestSizeTo}) {
-    IMG.Image image = IMG.decodeImage(bytes);
-
-    IMG.Image thumbnail;
-    if (longestSizeTo != null) {
-      if (image.width > image.height) {
-        thumbnail = IMG.copyResize(
-          image,
-          width: longestSizeTo,
-        );
-      } else {
-        thumbnail = IMG.copyResize(
-          image,
-          height: longestSizeTo,
-        );
-      }
-    } else {
-      thumbnail = IMG.copyResize(
-        image,
-        width: newWidth,
-      );
-    }
-    var encodeJpg = IMG.encodeJpg(thumbnail);
-    return encodeJpg;
-  }
-}
-
-/// Time related utilities
-class TimeUtilities {
-  /// An ISO8601 date formatter (yyyy-MM-dd HH:mm:ss).
-  static final DateFormat ISO8601_TS_FORMATTER =
-      DateFormat("yyyy-MM-dd HH:mm:ss");
-  static final DateFormat ISO8601_TS_FORMATTER_MILLIS =
-      DateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-
-  /// An ISO8601 time formatter (HH:mm:ss).
-  static final DateFormat ISO8601_TS_TIME_FORMATTER = DateFormat("HH:mm:ss");
-
-  /// An ISO8601 day formatter (yyyy-MM-dd).
-  static final DateFormat ISO8601_TS_DAY_FORMATTER = DateFormat("yyyy-MM-dd");
-
-  /// A date formatter (yyyyMMdd_HHmmss) useful for file names (it contains no spaces).
-  static final DateFormat DATE_TS_FORMATTER = DateFormat("yyyyMMdd_HHmmss");
-
-  /// A date formatter (yyyyMMdd) useful for file names (it contains no spaces).
-  static final DateFormat DAY_TS_FORMATTER = DateFormat("yyyyMMdd");
-
-  /// A date formatter (yyyyMMdd_HH) useful for file names (it contains no spaces).
-  static final DateFormat DAYHOUR_TS_FORMATTER = DateFormat("yyyyMMdd_HH");
-
-  /// A date formatter (yyyyMMdd_HHmm) useful for file names (it contains no spaces).
-  static final DateFormat DAYHOURMINUTE_TS_FORMATTER =
-      DateFormat("yyyyMMdd_HHmm");
-}
-
-/// Network related utilities
-class NetworkUtilities {
-  static Future<bool> isConnected() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch (_) {
-      return false;
-    }
-  }
-
-  /// Get the first ip address found in the [NetworkInterface.list()].
-  static Future<String> getFirstIpAddress() async {
-    for (var interface in await NetworkInterface.list()) {
-      for (var addr in interface.addresses) {
-        return addr.address;
-      }
-    }
-    return null;
-  }
-}
-
 /// A simple websocket service client class
 ///
-abstract class HyServerSocketService {
-  Logger log = Logger();
-  bool _isConnected = false;
+// abstract class HyServerSocketService {
+//   Logger log = Logger();
+//   bool _isConnected = false;
 
-  WebSocket webSocket;
-  String _host;
-  String _port;
+//   WebSocket webSocket;
+//   String _host;
+//   String _port;
 
-  /// Create the object ad connect using [_host] and [_port].
-  /// If _host is not set, the ipaddress of the device is guessed.
-  HyServerSocketService(this._port, [this._host]) {
-    assert(_port != null);
+//   /// Create the object ad connect using [_host] and [_port].
+//   /// If _host is not set, the ipaddress of the device is guessed.
+//   HyServerSocketService(this._port, [this._host]) {
+//     assert(_port != null);
 
-    checkConnection();
-  }
+//     checkConnection();
+//   }
 
-  void checkConnection() {
-    if (!_isConnected) {
-      log.i("Connecting to socket service.");
-      connect();
-      log.i("Connected to socket service: $_isConnected");
-    }
-  }
+//   void checkConnection() {
+//     if (!_isConnected) {
+//       log.i("Connecting to socket service.");
+//       connect();
+//       log.i("Connected to socket service: $_isConnected");
+//     }
+//   }
 
-  Future<void> connect() async {
-    if (_host == null) {
-      _host = await NetworkUtilities.getFirstIpAddress();
-    }
-    webSocket = await WebSocket.connect('ws://$_host:$_port');
-    webSocket.listen((data) {
-      onMessage(data);
-    });
-  }
+//   Future<void> connect() async {
+//     if (_host == null) {
+//       _host = await NetworkUtilities.getFirstIpAddress();
+//     }
+//     webSocket = await WebSocket.connect('ws://$_host:$_port');
+//     webSocket.listen((data) {
+//       onMessage(data);
+//     });
+//   }
 
-  Future<void> onMessage(data);
-}
+//   Future<void> onMessage(data);
+// }
 
 /// Mercator tiling system utils.
 ///
@@ -739,20 +403,4 @@ class MercatorUtils {
   }
 }
 
-class HashUtilities {
-  /// Generates a hash code for multiple [objects].
-  static int hashObjects(Iterable objects) =>
-      _finish(objects.fold(0, (h, i) => _combine(h, i.hashCode)));
 
-  static int _combine(int hash, int value) {
-    hash = 0x1fffffff & (hash + value);
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int _finish(int hash) {
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}

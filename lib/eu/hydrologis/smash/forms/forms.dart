@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'dart:collection';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 
 const String COLON = ":";

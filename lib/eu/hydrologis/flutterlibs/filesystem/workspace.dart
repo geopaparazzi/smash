@@ -6,9 +6,9 @@
 
 import 'dart:io';
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_ex/path_provider_ex.dart';
-import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 
 /// The name of the app, used to handle project folders and similar.

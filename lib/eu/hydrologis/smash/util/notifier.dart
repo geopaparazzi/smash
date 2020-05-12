@@ -5,7 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 
 const DEBUG_NOTIFICATIONS = false;
 

@@ -8,7 +8,7 @@
  * gpslog table name.
  */
 import 'package:latlong/latlong.dart';
-import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 
 final String TABLE_GPSLOGS = "gpslogs";
 /*

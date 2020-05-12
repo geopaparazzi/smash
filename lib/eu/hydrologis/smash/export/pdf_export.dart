@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
-import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';

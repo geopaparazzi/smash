@@ -59,6 +59,9 @@ dependencies:
 #    git:
 #      url: https://github.com/moovida/flutter_geopackage.git
 
+  dart_hydrologis_utils: ^0.1.0
+  dart_shp: ^0.1.0
+
   #BSD
   image_picker: ^0.6.4
   # ON IOS NEEDS:

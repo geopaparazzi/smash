@@ -5,7 +5,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/dartlibs/dartlibs.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
 import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
