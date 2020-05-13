@@ -1,21 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
-import 'dart:convert';
-
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class OnlineSourcesPage extends StatefulWidget {
   OnlineSourcesPage({Key key}) : super(key: key);

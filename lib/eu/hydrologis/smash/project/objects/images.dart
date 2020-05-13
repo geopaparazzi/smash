@@ -9,7 +9,7 @@
  */
 import 'dart:typed_data';
 
-import 'package:smash/eu/hydrologis/flutterlibs/database/database.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 final String TABLE_IMAGES = "images";
 /*

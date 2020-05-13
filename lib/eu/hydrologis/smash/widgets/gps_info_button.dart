@@ -5,20 +5,16 @@
  */
 
 import 'package:badges/badges.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/tables.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/screen.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
-import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///

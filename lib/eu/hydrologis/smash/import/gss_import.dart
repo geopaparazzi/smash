@@ -10,15 +10,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/network/download_file_listtile.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gss/gss_utilities.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 class GssImportWidget extends StatefulWidget {
   GssImportWidget({Key key}) : super(key: key);

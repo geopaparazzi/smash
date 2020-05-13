@@ -6,8 +6,7 @@
 
 import 'dart:convert';
 
-import 'package:smash/eu/hydrologis/flutterlibs/utils/device.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /**
  *

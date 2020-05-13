@@ -10,13 +10,12 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 const LAYERSKEY_FILE = 'file';
 const LAYERSKEY_URL = 'url';

@@ -9,9 +9,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
 class WmsSource extends RasterLayerSource {

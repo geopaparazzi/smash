@@ -6,7 +6,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
@@ -17,15 +16,6 @@ import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/screen.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/share.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms_widgets.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
@@ -48,7 +38,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/gps_info_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 import 'mainview_utils.dart';
 

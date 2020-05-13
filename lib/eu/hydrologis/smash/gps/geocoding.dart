@@ -15,10 +15,8 @@ import 'package:provider/provider.dart';
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 /// Geocoding widget that makes use of the [MainEventHandler] to move to the
 /// chosen location.

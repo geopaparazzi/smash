@@ -2,7 +2,7 @@ import 'package:latlong/latlong.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:background_locator/location_dto.dart';
 
 class GpsFilterManagerMessage {

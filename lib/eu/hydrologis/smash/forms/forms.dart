@@ -8,7 +8,7 @@ import 'dart:collection';
 import 'dart:io';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 const String COLON = ":";
 const String UNDERSCORE = "_";

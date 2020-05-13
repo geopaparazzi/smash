@@ -4,21 +4,11 @@
  * found in the LICENSE file.
  */
 
-import 'package:dio/dio.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:latlong/latlong.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/tables.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/device.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
@@ -26,7 +16,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart'
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class SettingsWidget extends StatefulWidget {
   SettingsWidget({Key key}) : super(key: key);

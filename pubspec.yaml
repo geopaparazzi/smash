@@ -59,44 +59,23 @@ dependencies:
 #    git:
 #      url: https://github.com/moovida/flutter_geopackage.git
 
-  dart_hydrologis_utils: ^0.1.0
+  smashlibs:
+    git:
+      url: https://github.com/moovida/smashlibs.git
+
   dart_shp: ^0.1.0
 
-  #BSD
-  image_picker: ^0.6.4
-  # ON IOS NEEDS:
-  #  <key>NSPhotoLibraryUsageDescription</key>
-  #  <string>The app needs to access the photo library to attach media to the survey.</string>
-  #  <key>NSCameraUsageDescription</key>
-  #  <string>The app needs to use the camera to take picture notes during the field mapping activity.</string>
-  #  <key>NSMicrophoneUsageDescription</key>
-  #  <string>The app needs to use the camera to take vocal notes during the field mapping activity.</string>
 
   # apache
   latlong: 0.6.1
 
-  # MIT
-  material_design_icons_flutter: ^4.0.5045
 
-  # BSD
-  path_provider: ^1.6.5
 
-  # MIT
-  path_provider_ex: ^1.0.1
-
-  # MIT
-  screen: 0.0.5
-  # ON ANDROID NEEDS:
-  # <uses-permission android:name="android.permission.WAKE_LOCK" />
 
   # UNKNOWN!!!
   geocoder: 0.2.1
 
-  # BSD
-  shared_preferences: ^0.5.6+3
 
-  # MIT
-  logger: ^0.8.3
 
   # BSD
   #  esys_flutter_share: any #1.0.2
@@ -122,8 +101,7 @@ dependencies:
     git:
       url: https://github.com/moovida/lat_lon_grid_plugin.git
 
-  # MIT
-  proj4dart: 1.0.4
+
 
   ## USING OWN FILEPICKER TO AVOID PATHS CAOS
   # MIT
@@ -144,20 +122,17 @@ dependencies:
   # MIT
   flutter_slidable: ^0.5.4
 
-  # MIT
-  permission_handler: ^4.4.0+hotfix.2
+
 
   # BSD
   stack_trace: 1.9.3
 
-  # MIT
-  share_extend: ^1.1.2
+
 
   # BSD
   url_launcher: ^5.4.2
 
-  # MIT
-  dio: ^3.0.9
+
 
   # Apache 2.0
   gpx: ^0.0.3
@@ -178,8 +153,7 @@ dependencies:
       path: mapsforge_flutter
     #path: ../../OTHERS/mapsforge_flutter/mapsforge_flutter
 
-  # BSD
-  device_info: ^0.4.2+1
+
 
 
 dev_dependencies:

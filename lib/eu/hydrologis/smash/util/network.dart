@@ -6,13 +6,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart' as ICONS;
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/gss/gss_utilities.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
@@ -22,7 +18,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 import 'offline_maps.dart';
 
@@ -119,7 +115,7 @@ class DownloadMapFromListTileProgressWidgetState
                   color: SmashColors.mainDecorations,
                 )
               : Icon(
-                  ICONS.getIcon('timer'),
+                  getSmashIcon('timer'),
                   color: SmashColors.mainSelection,
                 ),
       title: SmashUI.normalText(name),
@@ -358,11 +354,11 @@ class ProjectDataUploadListTileProgressWidgetState
           ? CircularProgressIndicator()
           : _errorString.length > 0
               ? Icon(
-                  ICONS.SmashIcons.finishedError,
+                  SmashIcons.finishedError,
                   color: SmashColors.mainSelection,
                 )
               : Icon(
-                  ICONS.SmashIcons.finishedOk,
+                  SmashIcons.finishedOk,
                   color: SmashColors.mainDecorations,
                 ),
       title: Text(name),

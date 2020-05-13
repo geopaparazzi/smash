@@ -6,7 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/import/gss_import.dart';
 
 class ImportWidget extends StatefulWidget {

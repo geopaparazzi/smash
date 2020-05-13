@@ -12,10 +12,9 @@ import 'package:background_locator/background_locator.dart' as GPS;
 import 'package:background_locator/location_dto.dart';
 import 'package:background_locator/location_settings.dart';
 import 'package:latlong/latlong.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// Utilities to work with coordinates.
 class CoordinateUtilities {

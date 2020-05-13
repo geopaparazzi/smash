@@ -4,7 +4,6 @@
  * found in the LICENSE file.
  */
 
-
 import 'dart:typed_data';
 import 'dart:ui' as UI;
 
@@ -12,10 +11,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 class ImageWidgetUtilities {
   static Image imageFromBytes(Uint8List bytes) {

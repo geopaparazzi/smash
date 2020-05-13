@@ -6,7 +6,6 @@
 
 import 'dart:core';
 
-import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +15,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/projection.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dart';
@@ -33,7 +25,6 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 
 class LayersPage extends StatefulWidget {
   LayersPage();

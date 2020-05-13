@@ -10,10 +10,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart' hide Path;
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 
 /// Plugin to show the current GPS position
 class GpsPositionPlugin implements MapPlugin {

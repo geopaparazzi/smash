@@ -14,15 +14,9 @@ import 'package:flutter_map/flutter_map.dart' as FM;
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/tables.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/screen.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 class FeatureAttributesViewer extends StatefulWidget {
   final EditableQueryResult features;

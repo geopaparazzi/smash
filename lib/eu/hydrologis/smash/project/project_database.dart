@@ -9,14 +9,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/database/database.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/othertables.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 import 'package:sqflite/sqflite.dart';
 
 const int MAXBLOBSIZE = 1000000;

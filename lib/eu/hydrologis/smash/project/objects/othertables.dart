@@ -4,11 +4,6 @@
  * found in the LICENSE file.
  */
 
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/database/database.dart';
-import 'package:latlong/latlong.dart';
-import 'dart:typed_data';
-
 /*
  * The metadata table name.
  */

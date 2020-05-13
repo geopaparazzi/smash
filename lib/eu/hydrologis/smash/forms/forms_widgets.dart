@@ -14,14 +14,7 @@ import 'package:flutter_tags/flutter_tags.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/camera/camera.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart' as ICONS;
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/screen.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -306,7 +299,7 @@ ListTile getWidget(BuildContext context, int noteId,
 
   Icon icon;
   if (iconStr != null) {
-    var iconData = ICONS.getIcon(iconStr);
+    var iconData = getSmashIcon(iconStr);
     icon = Icon(
       iconData,
       color: SmashColors.mainDecorations,

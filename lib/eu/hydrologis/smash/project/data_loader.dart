@@ -8,19 +8,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:background_locator/location_dto.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/camera/camera.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/tables.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/share.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms_widgets.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
@@ -33,6 +25,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class DataLoaderUtilities {
   static Future<Note> addNote(
@@ -145,7 +138,7 @@ class DataLoaderUtilities {
     notesList.forEach((note) {
       NoteExt noteExt = note.noteExt;
 
-      var iconData = getIcon(noteExt.marker);
+      var iconData = getSmashIcon(noteExt.marker);
       var iconColor = ColorExt(noteExt.color);
 
       tmp.add(Marker(
@@ -487,7 +480,7 @@ class DataLoaderUtilities {
             ));
           },
           child: Icon(
-            getIcon('camera'),
+            getSmashIcon('camera'),
             size: size,
             color: SmashColors.mainDecorationsDarker,
           ),

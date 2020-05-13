@@ -8,39 +8,30 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:badges/badges.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/filemanagement.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/dialogs.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/screen.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/share.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/validators.dart';
 import 'package:smash/eu/hydrologis/smash/export/export_widget.dart';
 import 'package:smash/eu/hydrologis/smash/gps/geocoding.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/import/import_widget.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
-import 'package:smash/eu/hydrologis/smash/util/diagnostic.dart';
 import 'package:smash/eu/hydrologis/smash/util/network.dart';
 import 'package:smash/eu/hydrologis/smash/util/urls.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_extend/share_extend.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
 
@@ -235,7 +226,7 @@ class DashboardUtils {
                       color: SmashColors.mainDecorations,
                     ),
                     onPressed: () async {
-                      ShareHandler.shareProject(mapBuilder.context);
+                      shareProject(mapBuilder.context);
                     },
                   )
                 ]);
@@ -571,3 +562,15 @@ class DashboardUtils {
     );
   }
 }
+
+
+   Future<void> shareProject(BuildContext context) async {
+    ProjectState projectState =
+        Provider.of<ProjectState>(context, listen: false);
+    if (projectState.projectPath != null) {
+      File projectFile = File("${projectState.projectPath}");
+      if (projectFile.existsSync()) {
+        await ShareExtend.share(projectFile.path, "file");
+      }
+    }
+  }

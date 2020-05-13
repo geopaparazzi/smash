@@ -4,18 +4,16 @@
  * found in the LICENSE file.
  */
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:path/path.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
-import 'package:provider/provider.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// The provider object of the current project status
 ///

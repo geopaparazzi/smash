@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/filesystem/workspace.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/theme.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/permissions.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
@@ -21,7 +18,6 @@ import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 
 void main() => runApp(MultiProvider(
       providers: [

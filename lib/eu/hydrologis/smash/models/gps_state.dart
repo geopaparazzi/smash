@@ -4,14 +4,11 @@
  * found in the LICENSE file.
  */
 
-import 'package:background_locator/location_dto.dart';
 import 'package:latlong/latlong.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/utils/preferences.dart';
-import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 
 /// Current Gps Status.

@@ -6,25 +6,22 @@
 
 import 'dart:convert';
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/colors.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/theme/icons.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/progress.dart';
-import 'package:smash/eu/hydrologis/flutterlibs/ui/ui.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/forms/forms_widgets.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// The notes list widget.
 class NotesListWidget extends StatefulWidget {
@@ -179,7 +176,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
         subtitle: Text(
             '${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
         leading: Icon(
-          getIcon(markerName) ?? MdiIcons.mapMarker,
+          getSmashIcon(markerName) ?? MdiIcons.mapMarker,
           color: ColorExt(markerColor),
           size: SmashUI.MEDIUM_ICON_SIZE,
         ),

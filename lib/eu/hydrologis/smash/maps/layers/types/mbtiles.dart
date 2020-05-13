@@ -15,7 +15,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'package:smash/eu/hydrologis/smash/util/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:sqflite/sqflite.dart';
 
 
