@@ -46,13 +46,6 @@ dependencies:
   #  <key>NSLocationAlwaysUsageDescription</key>
   #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
 
-  # MIT
-  sqflite: ^1.3.0
-
-  #BSD
-  dart_jts: ^0.0.5+2
-#    git:
-#      url: https://github.com/moovida/dart_jts.git
 
   # apache 2
   flutter_geopackage: ^0.1.2
@@ -60,25 +53,17 @@ dependencies:
 #      url: https://github.com/moovida/flutter_geopackage.git
 
   smashlibs:
-    git:
-      url: https://github.com/moovida/smashlibs.git
+    path: ../smashlibs/
+    # git:
+    #   url: https://github.com/moovida/smashlibs.git
 
-  dart_shp: ^0.1.0
-
+  dart_shp: ^0.2.0
 
   # apache
   latlong: 0.6.1
 
-
-
-
   # UNKNOWN!!!
   geocoder: 0.2.1
-
-
-
-  # BSD
-  #  esys_flutter_share: any #1.0.2
 
   # UNKNOWN!!!
   animated_floatactionbuttons: ^0.1.0
@@ -94,45 +79,23 @@ dependencies:
   flutter_map_marker_cluster: #^0.2.7
     git:
       url: https://github.com/moovida/flutter_map_marker_cluster.git
-
   
   # MIT
   lat_lon_grid_plugin: #0.1.1
     git:
       url: https://github.com/moovida/lat_lon_grid_plugin.git
 
-
-
-  ## USING OWN FILEPICKER TO AVOID PATHS CAOS
-  # MIT
-  #  file_picker: ^1.4.3+1
-  # ON IOS NEEDS:
-  #  <key>UIBackgroundModes</key>
-  #  <array>
-  #  <string>fetch</string>
-  #  <string>remote-notification</string>
-  #  </array>
-
   #MIT
   extended_image: ^0.7.3-dev
-
-  # Apache 2.0
-  image: 2.1.12
 
   # MIT
   flutter_slidable: ^0.5.4
 
-
-
   # BSD
   stack_trace: 1.9.3
 
-
-
   # BSD
   url_launcher: ^5.4.2
-
-
 
   # Apache 2.0
   gpx: ^0.0.3
