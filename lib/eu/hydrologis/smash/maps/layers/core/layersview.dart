@@ -15,6 +15,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
@@ -150,6 +151,12 @@ class LayersPageState extends State<LayersPage> {
                     MaterialPageRoute(
                         builder: (context) =>
                             GpxPropertiesWidget(layerSourceItem)));
+              } else if (layerSourceItem is ShapefileSource) {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ShpPropertiesWidget(layerSourceItem)));
               } else if (layerSourceItem is WorldImageSource) {
                 await Navigator.push(
                     context,
