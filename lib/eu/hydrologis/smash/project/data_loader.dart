@@ -530,6 +530,7 @@ class DataLoaderUtilities {
     });
 
     return PolylineLayerOptions(
+      polylineCulling: true,
       polylines: lines,
     );
   }

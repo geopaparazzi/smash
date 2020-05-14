@@ -33,6 +33,7 @@ class ShapefileSource extends VectorLayerSource {
   int _srid = SmashPrj.EPSG4326_INT;
 
   List<Feature> features = [];
+  JTS.STRtree _featureTree;
   JTS.Envelope _shpBounds;
   bool loaded = false;
 
@@ -50,16 +51,22 @@ class ShapefileSource extends VectorLayerSource {
     if (!loaded) {
       _name = FileUtilities.nameFromFile(_absolutePath, false);
       var defaultUtf8Charset = Charset();
-      _shpReader = ShapefileFeatureReader(File(_absolutePath),
-          charset: defaultUtf8Charset);
+      var shpFile = File(_absolutePath);
+      _shpReader = ShapefileFeatureReader(shpFile, charset: defaultUtf8Charset);
       await _shpReader.open();
 
+      var fromPrj = SmashPrj.fromImageFile(_absolutePath);
+
       _shpBounds = JTS.Envelope.empty();
+      _featureTree = JTS.STRtree();
       while (await _shpReader.hasNext()) {
         var feature = await _shpReader.next();
-        _shpBounds
-            .expandToIncludeEnvelope(feature.geometry.getEnvelopeInternal());
+        var geometry = feature.geometry;
+        SmashPrj.transformGeometryToWgs84(fromPrj, geometry);
+        var envLL = geometry.getEnvelopeInternal();
+        _shpBounds.expandToIncludeEnvelope(envLL);
         features.add(feature);
+        _featureTree.insert(envLL, feature);
       }
       LOGGER
           .d("Loaded ${features.length} Shp features of envelope: $_shpBounds");
@@ -108,6 +115,21 @@ class ShapefileSource extends VectorLayerSource {
     }
     ''';
     return json;
+  }
+
+  List<Feature> getInRoi({JTS.Geometry roiGeom, JTS.Envelope roiEnvelope}) {
+    if (roiEnvelope != null || roiGeom != null) {
+      if (roiEnvelope == null) {
+        roiEnvelope = roiGeom.getEnvelopeInternal();
+      }
+      List<Feature> result = _featureTree.query(roiEnvelope).cast();
+      if (roiGeom != null) {
+        result.removeWhere((f) => !f.geometry.intersects(roiGeom));
+      }
+      return result;
+    } else {
+      return features;
+    }
   }
 
   @override
@@ -214,11 +236,11 @@ class ShapefileSource extends VectorLayerSource {
           }
         });
 
-        var lineLayer = PolygonLayerOptions(
+        var polygonLayer = PolygonLayerOptions(
           polygonCulling: true,
           polygons: polygons,
         );
-        layers.add(lineLayer);
+        layers.add(polygonLayer);
       }
     }
 

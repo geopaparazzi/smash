@@ -19,7 +19,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
 
 class FeatureAttributesViewer extends StatefulWidget {
-  final EditableQueryResult features;
+  final QueryResult features;
 
   FeatureAttributesViewer(this.features, {Key key}) : super(key: key);
 
@@ -36,9 +36,9 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
 
   @override
   void initState() {
+    _mapController = MapController();
     _total = widget.features.geoms.length;
 
-    _mapController = MapController();
     super.initState();
   }
 
@@ -80,7 +80,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     Color borderFill = Colors.yellow;
     Color fillPoly = Colors.yellow.withOpacity(0.3);
 
-    EditableQueryResult f = widget.features;
+    QueryResult f = widget.features;
     var layers = <LayerOptions>[];
 
     if (baseLayer != null) {
@@ -90,8 +90,12 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     var geometry = f.geoms[_index];
 
     Map<String, dynamic> data = f.data[_index];
-    var primaryKey = f.primaryKeys[_index];
-    var db = f.dbs[_index];
+    var primaryKey;
+    var db;
+    if (f is EditableQueryResult) {
+      primaryKey = f.primaryKeys != null ? f.primaryKeys[_index] : null;
+      db = f.dbs[_index];
+    }
 
     var centroid = geometry.getCentroid().getCoordinate();
 
@@ -139,6 +143,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
             Polyline(points: linePoints, strokeWidth: 3, color: borderFill));
       }
       var lineLayer = PolylineLayerOptions(
+        polylineCulling: true,
         polylines: lines,
       );
       layers.add(lineLayer);
@@ -165,6 +170,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
         }
       }
       var polyLayer = PolygonLayerOptions(
+        polygonCulling: true,
         polygons: polygons,
       );
       layers.add(polyLayer);
@@ -301,8 +307,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     List<DataRow> rows = [];
 
     data.forEach((key, value) {
-      bool editable = primaryKey != null && key != primaryKey;
-      editable = false;// TODO fix when geopackage gets editable
+      bool editable = primaryKey != null && db != null && key != primaryKey;
+      editable = false; // TODO fix when geopackage gets editable
       var row = DataRow(
         cells: [
           DataCell(SmashUI.normalText(key)),

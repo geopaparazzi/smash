@@ -152,6 +152,7 @@ class GpxSource extends VectorLayerSource {
       });
 
       var lineLayer = PolylineLayerOptions(
+        polylineCulling: true,
         polylines: lines,
       );
       layers.add(lineLayer);

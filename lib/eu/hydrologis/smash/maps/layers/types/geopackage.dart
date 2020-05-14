@@ -176,6 +176,7 @@ class GeopackageSource extends VectorLayerSource {
           }
         });
         var lineLayer = PolylineLayerOptions(
+          polylineCulling: true,
           polylines: lines,
         );
         layers.add(lineLayer);
@@ -254,6 +255,7 @@ class GeopackageSource extends VectorLayerSource {
           }
         });
         var polyLayer = PolygonLayerOptions(
+          polygonCulling: true,
           polygons: polygons,
         );
         layers.add(polyLayer);

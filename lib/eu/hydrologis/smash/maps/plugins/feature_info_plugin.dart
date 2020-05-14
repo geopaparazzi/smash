@@ -11,6 +11,7 @@ import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/feature_attributes_viewer.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
@@ -115,12 +116,13 @@ class FeatureInfoLayer extends StatelessWidget {
         .getLayerSources()
         .where((l) => l is VectorLayerSource && l.isActive())
         .toList();
-    EditableQueryResult totalQueryResult = EditableQueryResult();
-    totalQueryResult.ids = [];
-    totalQueryResult.primaryKeys = [];
-    totalQueryResult.dbs = [];
+    QueryResult totalQueryResult;
     for (var vLayer in visibleVectorLayers) {
       if (vLayer is GeopackageSource) {
+        totalQueryResult = EditableQueryResult();
+        totalQueryResult.ids = [];
+        (totalQueryResult as EditableQueryResult).primaryKeys = [];
+        (totalQueryResult as EditableQueryResult).dbs = [];
         var srid = vLayer.getSrid();
         var boundsGeomInSrid = boundMap[srid];
         var db = await ConnectionsHandler().open(vLayer.getAbsolutePath());
@@ -139,8 +141,8 @@ class FeatureInfoLayer extends StatelessWidget {
           print("Found data for: " + layerName);
 
           var pk = await db.getPrimaryKey(layerName);
-          totalQueryResult.primaryKeys.add(pk);
-          totalQueryResult.dbs.add(db);
+          (totalQueryResult as EditableQueryResult).primaryKeys.add(pk);
+          (totalQueryResult as EditableQueryResult).dbs.add(db);
 
           var dataPrj = SmashPrj.fromSrid(srid);
           queryResult.geoms.forEach((g) {
@@ -154,6 +156,15 @@ class FeatureInfoLayer extends StatelessWidget {
             totalQueryResult.data.add(d);
           });
         }
+      } else if (vLayer is ShapefileSource) {
+        var features = vLayer.getInRoi(roiGeom: boundsGeom);
+        totalQueryResult = QueryResult();
+        totalQueryResult.ids = [];
+        features.forEach((f) {
+          totalQueryResult.ids.add(vLayer.getName());
+          totalQueryResult.geoms.add(f.geometry);
+          totalQueryResult.data.add(f.attributes);
+        });
       }
     }
 
@@ -170,6 +181,7 @@ class FeatureInfoLayer extends StatelessWidget {
 class EditableQueryResult extends QueryResult {
   List<String> primaryKeys;
   List<GeopackageDb> dbs;
+  List<Map<String, dynamic>> attributes;
 }
 
 class TapSelectionCircle extends StatefulWidget {
