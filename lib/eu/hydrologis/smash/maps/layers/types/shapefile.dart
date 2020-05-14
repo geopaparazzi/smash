@@ -52,6 +52,7 @@ class ShapefileSource extends VectorLayerSource {
       var defaultUtf8Charset = Charset();
       _shpReader = ShapefileFeatureReader(File(_absolutePath),
           charset: defaultUtf8Charset);
+      await _shpReader.open();
 
       _shpBounds = JTS.Envelope.empty();
       while (await _shpReader.hasNext()) {
@@ -60,6 +61,10 @@ class ShapefileSource extends VectorLayerSource {
             .expandToIncludeEnvelope(feature.geometry.getEnvelopeInternal());
         features.add(feature);
       }
+      LOGGER
+          .d("Loaded ${features.length} Shp features of envelope: $_shpBounds");
+
+      _shpReader.close();
       loaded = true;
     }
   }
@@ -173,6 +178,7 @@ class ShapefileSource extends VectorLayerSource {
         });
 
         var lineLayer = PolylineLayerOptions(
+          polylineCulling: true,
           polylines: lines,
         );
         layers.add(lineLayer);

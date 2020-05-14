@@ -273,6 +273,13 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       LayerManager().addLayerSource(gpxLayer);
       return true;
     }
+  } else if (FileManager.isShp(filePath)) {
+    ShapefileSource shpLayer = ShapefileSource(filePath);
+    await shpLayer.load(context);
+    if (shpLayer.hasData()) {
+      LayerManager().addLayerSource(shpLayer);
+      return true;
+    }
   } else if (FileManager.isWorldImage(filePath)) {
     var worldFile = WorldImageSource.getWorldFile(filePath);
     var prjFile = SmashPrj.getPrjForImage(filePath);

@@ -223,7 +223,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ac52f28716f799b2265da280e79ff56dc4950e1a
+      resolved-ref: "1ec33f83ee65c6aaaadcf4014fdd83534b648645"
       url: "https://github.com/moovida/flutter_map.git"
     source: git
     version: "0.9.0"

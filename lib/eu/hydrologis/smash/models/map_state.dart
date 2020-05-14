@@ -109,10 +109,13 @@ class SmashMapState extends ChangeNotifierPlus {
   }
 
   /// Store the last position in memory and to the preferences.
-  void setLastPosition(Coordinate newCenter, double newZoom) {
+  void setLastPositionQuiet(Coordinate newCenter, double newZoom) {
     _center = newCenter;
     _zoom = newZoom;
-    GpPreferences().setLastPosition(_center.x, _center.y, newZoom);
+  }
+  
+  void persistLastPosition() {
+    GpPreferences().setLastPosition(_center.x, _center.y, _zoom);
   }
 
   bool get centerOnGps => _centerOnGps;

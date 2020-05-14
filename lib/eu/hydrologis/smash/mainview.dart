@@ -190,7 +190,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
                   maxZoom: SmashMapState.MAXZOOM,
                   plugins: pluginsList,
                   onPositionChanged: (newPosition, hasGesture) {
-                    mapState.setLastPosition(
+                    mapState.setLastPositionQuiet(
                         Coordinate(newPosition.center.longitude,
                             newPosition.center.latitude),
                         newPosition.zoom);
@@ -243,6 +243,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
               "Are you sure you want to close the project?",
               "Active operations will be stopped.");
           if (doExit) {
+            mapState.persistLastPosition();
             await disposeProject(context);
             GpsHandler().close();
             return Future.value(true);
