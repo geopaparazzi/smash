@@ -151,12 +151,12 @@ class LayersPageState extends State<LayersPage> {
                     MaterialPageRoute(
                         builder: (context) =>
                             GpxPropertiesWidget(layerSourceItem)));
-              } else if (layerSourceItem is ShapefileSource) {
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ShpPropertiesWidget(layerSourceItem)));
+              // } else if (layerSourceItem is ShapefileSource) {
+              //   await Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) =>
+              //               ShpPropertiesWidget(layerSourceItem)));
               } else if (layerSourceItem is WorldImageSource) {
                 await Navigator.push(
                     context,

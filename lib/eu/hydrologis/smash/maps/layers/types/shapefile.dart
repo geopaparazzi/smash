@@ -23,11 +23,7 @@ class ShapefileSource extends VectorLayerSource {
   String _absolutePath;
   String _name;
   ShapefileFeatureReader _shpReader;
-  Color pointFillColor = Colors.red;
-  Color lineStrokeColor = Colors.black;
-  Color fillColor = Colors.black.withAlpha(100);
-  double pointsSize = 10;
-  double lineWidth = 3;
+
   bool isVisible = true;
   String _attribution = "SHP";
   int _srid = SmashPrj.EPSG4326_INT;
@@ -36,6 +32,7 @@ class ShapefileSource extends VectorLayerSource {
   JTS.STRtree _featureTree;
   JTS.Envelope _shpBounds;
   bool loaded = false;
+  SldObject sld;
 
   ShapefileSource.fromMap(Map<String, dynamic> map) {
     _name = map[LAYERSKEY_LABEL];
@@ -50,6 +47,16 @@ class ShapefileSource extends VectorLayerSource {
   Future<void> load(BuildContext context) async {
     if (!loaded) {
       _name = FileUtilities.nameFromFile(_absolutePath, false);
+
+      var parentFolder = FileUtilities.parentFolderFromFile(_absolutePath);
+
+      var sldPath = FileUtilities.joinPaths(parentFolder, _name + ".sld");
+      var sldFile = File(sldPath);
+      if (sldFile.existsSync()) {
+        sld = SldObject.fromFile(sldFile);
+        sld.parse();
+      }
+
       var defaultUtf8Charset = Charset();
       var shpFile = File(_absolutePath);
       _shpReader = ShapefileFeatureReader(shpFile, charset: defaultUtf8Charset);
@@ -141,6 +148,25 @@ class ShapefileSource extends VectorLayerSource {
     if (features.isNotEmpty) {
       JTS.Geometry geometry = features[0].geometry;
       if (geometry is JTS.Point || geometry is JTS.MultiPoint) {
+        var iconData = MdiIcons.circle;
+        double pointsSize = 10;
+        Color pointFillColor = Colors.red;
+        String labelName;
+        Color labelColor = Colors.black;
+        if (sld != null) {
+          var pSym =
+              sld.featureTypeStyles[0].rules[0].pointSymbolizers[0].style;
+          iconData = SmashIcons.forSldWkName(pSym.markerName);
+          pointsSize = pSym.markerSize * 5;
+          pointFillColor = ColorExt(pSym.fillColorHex);
+
+          var textSym = sld.featureTypeStyles[0].rules[0].textSymbolizers;
+          if (textSym.isNotEmpty) {
+            labelName = textSym[0].labelName;
+            labelColor = ColorExt(textSym[0].textColor);
+          }
+        }
+
         List<Marker> waypoints = [];
         features.forEach((f) {
           var count = f.geometry.getNumGeometries();
@@ -150,13 +176,39 @@ class ShapefileSource extends VectorLayerSource {
               width: pointsSize,
               height: pointsSize,
               point: LatLng(l.getY(), l.getX()),
-              builder: (ctx) => new Container(
-                child: Icon(
-                  MdiIcons.circle,
-                  size: pointsSize,
-                  color: pointFillColor,
-                ),
-              ),
+              builder: (ctx) => labelName == null
+                  ? Container(
+                      child: Icon(
+                        iconData,
+                        size: pointsSize,
+                        color: pointFillColor,
+                      ),
+                    )
+                  : Stack(
+                      children: [
+                        Container(
+                          child: Icon(
+                            iconData,
+                            size: pointsSize,
+                            color: pointFillColor,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: FittedBox(
+                            child: Container(
+                              color: Colors.white.withAlpha(170),
+                              child: Text(
+                                f.attributes[labelName] ??= "",
+                                style: TextStyle(
+                                    color: labelColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
             );
             waypoints.add(m);
           }
@@ -185,6 +237,17 @@ class ShapefileSource extends VectorLayerSource {
         layers.add(waypointsCluster);
       } else if (geometry is JTS.LineString ||
           geometry is JTS.MultiLineString) {
+        Color lineStrokeColor = Colors.black;
+        double lineWidth = 3;
+        double lineOpacity = 1;
+        if (sld != null) {
+          var pSym = sld.featureTypeStyles[0].rules[0].lineSymbolizers[0].style;
+          lineWidth = pSym.strokeWidth;
+          lineStrokeColor = ColorExt(pSym.strokeColorHex);
+          lineOpacity = pSym.strokeOpacity * 255;
+          lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
+        }
+
         List<Polyline> lines = [];
         features.forEach((f) {
           var count = f.geometry.getNumGeometries();
@@ -205,6 +268,22 @@ class ShapefileSource extends VectorLayerSource {
         );
         layers.add(lineLayer);
       } else if (geometry is JTS.Polygon || geometry is JTS.MultiPolygon) {
+        Color lineStrokeColor = Colors.black;
+        Color fillColor = Colors.black.withAlpha(100);
+        double lineWidth = 3;
+        double lineOpacity = 1;
+        if (sld != null) {
+          var pSym =
+              sld.featureTypeStyles[0].rules[0].polygonSymbolizers[0].style;
+          lineWidth = pSym.strokeWidth;
+          lineStrokeColor = ColorExt(pSym.strokeColorHex);
+          lineOpacity = pSym.strokeOpacity * 255;
+          lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
+
+          fillColor = ColorExt(pSym.fillColorHex)
+              .withAlpha((pSym.fillOpacity * 255).toInt());
+        }
+
         List<Polygon> polygons = [];
         features.forEach((f) {
           var count = f.geometry.getNumGeometries();
@@ -241,7 +320,7 @@ class ShapefileSource extends VectorLayerSource {
 
         var polygonLayer = PolygonLayerOptions(
           polygonCulling: true,
-          simplify: true,
+          // simplify: true,
           polygons: polygons,
         );
         layers.add(polygonLayer);
@@ -277,7 +356,7 @@ class ShapefileSource extends VectorLayerSource {
 
   @override
   bool hasProperties() {
-    return true;
+    return false;
   }
 
   @override
@@ -291,186 +370,186 @@ class ShapefileSource extends VectorLayerSource {
   }
 }
 
-/// The notes properties page.
-class ShpPropertiesWidget extends StatefulWidget {
-  ShapefileSource _source;
+// /// The notes properties page.
+// class ShpPropertiesWidget extends StatefulWidget {
+//   ShapefileSource _source;
 
-  ShpPropertiesWidget(this._source);
+//   ShpPropertiesWidget(this._source);
 
-  @override
-  State<StatefulWidget> createState() {
-    return ShpPropertiesWidgetState(_source);
-  }
-}
+//   @override
+//   State<StatefulWidget> createState() {
+//     return ShpPropertiesWidgetState(_source);
+//   }
+// }
 
-class ShpPropertiesWidgetState extends State<ShpPropertiesWidget> {
-  // TODO MAKE THIS FOR SHAPEFILES
-  ShapefileSource _source;
-  double _pointSizeSliderValue = 10;
-  double _lineWidthSliderValue = 2;
-  double _maxSize = 100.0;
-  double _maxWidth = 20.0;
-  ColorExt _pointColor;
-  ColorExt _lineColor;
-  bool _somethingChanged = false;
+// class ShpPropertiesWidgetState extends State<ShpPropertiesWidget> {
+//   // TODO MAKE THIS FOR SHAPEFILES
+//   ShapefileSource _source;
+//   double _pointSizeSliderValue = 10;
+//   double _lineWidthSliderValue = 2;
+//   double _maxSize = 100.0;
+//   double _maxWidth = 20.0;
+//   ColorExt _pointColor;
+//   ColorExt _lineColor;
+//   bool _somethingChanged = false;
 
-  ShpPropertiesWidgetState(this._source);
+//   ShpPropertiesWidgetState(this._source);
 
-  @override
-  void initState() {
-    _pointSizeSliderValue = _source.pointsSize;
-    if (_pointSizeSliderValue > _maxSize) {
-      _pointSizeSliderValue = _maxSize;
-    }
-    _pointColor = ColorExt.fromColor(_source.pointFillColor);
+//   @override
+//   void initState() {
+//     _pointSizeSliderValue = _source.pointsSize;
+//     if (_pointSizeSliderValue > _maxSize) {
+//       _pointSizeSliderValue = _maxSize;
+//     }
+//     _pointColor = ColorExt.fromColor(_source.pointFillColor);
 
-    _lineWidthSliderValue = _source.lineWidth;
-    if (_lineWidthSliderValue > _maxWidth) {
-      _lineWidthSliderValue = _maxWidth;
-    }
-    _lineColor = ColorExt.fromColor(_source.lineStrokeColor);
+//     _lineWidthSliderValue = _source.lineWidth;
+//     if (_lineWidthSliderValue > _maxWidth) {
+//       _lineWidthSliderValue = _maxWidth;
+//     }
+//     _lineColor = ColorExt.fromColor(_source.lineStrokeColor);
 
-    super.initState();
-  }
+//     super.initState();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () async {
-          if (_somethingChanged) {
-            _source.pointFillColor = _pointColor;
-            _source.pointsSize = _pointSizeSliderValue;
-            _source.lineStrokeColor = _lineColor;
-            _source.lineWidth = _lineWidthSliderValue;
-          }
-          return true;
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("Shp Properties"),
-          ),
-          body: Center(
-            child: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Card(
-                    elevation: SmashUI.DEFAULT_ELEVATION,
-                    shape: SmashUI.defaultShapeBorder(),
-                    child: Column(
-                      children: <Widget>[
-                        SmashUI.titleText("Waypoints Color"),
-                        Padding(
-                          padding: SmashUI.defaultPadding(),
-                          child: LimitedBox(
-                            maxHeight: 400,
-                            child: MaterialColorPicker(
-                                shrinkWrap: true,
-                                allowShades: false,
-                                circleSize: 45,
-                                onColorChange: (Color color) {
-                                  _pointColor = ColorExt.fromColor(color);
-                                  _somethingChanged = true;
-                                },
-                                onMainColorChange: (mColor) {
-                                  _pointColor = ColorExt.fromColor(mColor);
-                                  _somethingChanged = true;
-                                },
-                                selectedColor: Color(_pointColor.value)),
-                          ),
-                        ),
-                        SmashUI.titleText("Waypoints Size"),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Flexible(
-                                flex: 1,
-                                child: Slider(
-                                  activeColor: SmashColors.mainSelection,
-                                  min: 1.0,
-                                  max: _maxSize,
-                                  divisions: 20,
-                                  onChanged: (newRating) {
-                                    _somethingChanged = true;
-                                    setState(() =>
-                                        _pointSizeSliderValue = newRating);
-                                  },
-                                  value: _pointSizeSliderValue,
-                                )),
-                            Container(
-                              width: 50.0,
-                              alignment: Alignment.center,
-                              child: SmashUI.normalText(
-                                '${_pointSizeSliderValue.toInt()}',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Card(
-                    elevation: SmashUI.DEFAULT_ELEVATION,
-                    shape: SmashUI.defaultShapeBorder(),
-                    child: Column(
-                      children: <Widget>[
-                        SmashUI.titleText("Tracks/Routes Color"),
-                        Padding(
-                          padding: SmashUI.defaultPadding(),
-                          child: LimitedBox(
-                            maxHeight: 400,
-                            child: MaterialColorPicker(
-                                shrinkWrap: true,
-                                allowShades: false,
-                                circleSize: 45,
-                                onColorChange: (Color color) {
-                                  _lineColor = ColorExt.fromColor(color);
-                                  _somethingChanged = true;
-                                },
-                                onMainColorChange: (mColor) {
-                                  _lineColor = ColorExt.fromColor(mColor);
-                                  _somethingChanged = true;
-                                },
-                                selectedColor: Color(_lineColor.value)),
-                          ),
-                        ),
-                        SmashUI.titleText("Tracks/Routes Width"),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Flexible(
-                                flex: 1,
-                                child: Slider(
-                                  activeColor: SmashColors.mainSelection,
-                                  min: 1.0,
-                                  max: _maxWidth,
-                                  divisions: 20,
-                                  onChanged: (newRating) {
-                                    _somethingChanged = true;
-                                    setState(() =>
-                                        _lineWidthSliderValue = newRating);
-                                  },
-                                  value: _lineWidthSliderValue,
-                                )),
-                            Container(
-                              width: 50.0,
-                              alignment: Alignment.center,
-                              child: SmashUI.normalText(
-                                '${_lineWidthSliderValue.toInt()}',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ));
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return WillPopScope(
+//         onWillPop: () async {
+//           if (_somethingChanged) {
+//             _source.pointFillColor = _pointColor;
+//             _source.pointsSize = _pointSizeSliderValue;
+//             _source.lineStrokeColor = _lineColor;
+//             _source.lineWidth = _lineWidthSliderValue;
+//           }
+//           return true;
+//         },
+//         child: Scaffold(
+//           appBar: AppBar(
+//             title: Text("Shp Properties"),
+//           ),
+//           body: Center(
+//             child: ListView(
+//               children: <Widget>[
+//                 Padding(
+//                   padding: SmashUI.defaultPadding(),
+//                   child: Card(
+//                     elevation: SmashUI.DEFAULT_ELEVATION,
+//                     shape: SmashUI.defaultShapeBorder(),
+//                     child: Column(
+//                       children: <Widget>[
+//                         SmashUI.titleText("Waypoints Color"),
+//                         Padding(
+//                           padding: SmashUI.defaultPadding(),
+//                           child: LimitedBox(
+//                             maxHeight: 400,
+//                             child: MaterialColorPicker(
+//                                 shrinkWrap: true,
+//                                 allowShades: false,
+//                                 circleSize: 45,
+//                                 onColorChange: (Color color) {
+//                                   _pointColor = ColorExt.fromColor(color);
+//                                   _somethingChanged = true;
+//                                 },
+//                                 onMainColorChange: (mColor) {
+//                                   _pointColor = ColorExt.fromColor(mColor);
+//                                   _somethingChanged = true;
+//                                 },
+//                                 selectedColor: Color(_pointColor.value)),
+//                           ),
+//                         ),
+//                         SmashUI.titleText("Waypoints Size"),
+//                         Row(
+//                           mainAxisSize: MainAxisSize.max,
+//                           children: <Widget>[
+//                             Flexible(
+//                                 flex: 1,
+//                                 child: Slider(
+//                                   activeColor: SmashColors.mainSelection,
+//                                   min: 1.0,
+//                                   max: _maxSize,
+//                                   divisions: 20,
+//                                   onChanged: (newRating) {
+//                                     _somethingChanged = true;
+//                                     setState(() =>
+//                                         _pointSizeSliderValue = newRating);
+//                                   },
+//                                   value: _pointSizeSliderValue,
+//                                 )),
+//                             Container(
+//                               width: 50.0,
+//                               alignment: Alignment.center,
+//                               child: SmashUI.normalText(
+//                                 '${_pointSizeSliderValue.toInt()}',
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//                 Padding(
+//                   padding: SmashUI.defaultPadding(),
+//                   child: Card(
+//                     elevation: SmashUI.DEFAULT_ELEVATION,
+//                     shape: SmashUI.defaultShapeBorder(),
+//                     child: Column(
+//                       children: <Widget>[
+//                         SmashUI.titleText("Tracks/Routes Color"),
+//                         Padding(
+//                           padding: SmashUI.defaultPadding(),
+//                           child: LimitedBox(
+//                             maxHeight: 400,
+//                             child: MaterialColorPicker(
+//                                 shrinkWrap: true,
+//                                 allowShades: false,
+//                                 circleSize: 45,
+//                                 onColorChange: (Color color) {
+//                                   _lineColor = ColorExt.fromColor(color);
+//                                   _somethingChanged = true;
+//                                 },
+//                                 onMainColorChange: (mColor) {
+//                                   _lineColor = ColorExt.fromColor(mColor);
+//                                   _somethingChanged = true;
+//                                 },
+//                                 selectedColor: Color(_lineColor.value)),
+//                           ),
+//                         ),
+//                         SmashUI.titleText("Tracks/Routes Width"),
+//                         Row(
+//                           mainAxisSize: MainAxisSize.max,
+//                           children: <Widget>[
+//                             Flexible(
+//                                 flex: 1,
+//                                 child: Slider(
+//                                   activeColor: SmashColors.mainSelection,
+//                                   min: 1.0,
+//                                   max: _maxWidth,
+//                                   divisions: 20,
+//                                   onChanged: (newRating) {
+//                                     _somethingChanged = true;
+//                                     setState(() =>
+//                                         _lineWidthSliderValue = newRating);
+//                                   },
+//                                   value: _lineWidthSliderValue,
+//                                 )),
+//                             Container(
+//                               width: 50.0,
+//                               alignment: Alignment.center,
+//                               child: SmashUI.normalText(
+//                                 '${_lineWidthSliderValue.toInt()}',
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ));
+//   }
+// }

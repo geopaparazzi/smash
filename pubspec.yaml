@@ -26,7 +26,9 @@ dependencies:
     git:
       url: https://github.com/moovida/smashlibs.git
 
-  dart_shp: ^0.2.0
+  dart_shp: ^0.3.0
+
+  dart_hydrologis_utils: ^0.4.0
 
   ##################################
   # OTHERS
