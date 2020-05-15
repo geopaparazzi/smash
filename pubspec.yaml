@@ -12,9 +12,49 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.3
+  ##################################
+  # OWN
+  ##################################
+
+  # apache 2
+  flutter_geopackage: ^0.1.2
+  #    git:
+  #      url: https://github.com/moovida/flutter_geopackage.git
+
+  smashlibs:
+    # path: ../smashlibs/
+    git:
+      url: https://github.com/moovida/smashlibs.git
+
+  dart_shp: ^0.2.0
+
+  ##################################
+  # OTHERS
+  ##################################
+  # BSD
+  flutter_map: #^0.9.0
+    git:
+      url: https://github.com/moovida/flutter_map.git
+      ref: simplify_poly
+      # url: https://github.com/johnpryan/flutter_map.git
+
+  flutter_map_marker_cluster: #^0.2.7
+    git:
+      url: https://github.com/moovida/flutter_map_marker_cluster.git
+      ref: simplify_poly
+
+  # MIT
+  lat_lon_grid_plugin: #0.1.1
+    git:
+      url: https://github.com/moovida/lat_lon_grid_plugin.git
+      ref: simplify_poly
+
+  mapsforge_flutter:
+    git:
+      url: https://github.com/moovida/mapsforge_flutter.git
+      ref: libs_upgrade
+      path: mapsforge_flutter
+    #path: ../../OTHERS/mapsforge_flutter/mapsforge_flutter
 
   # Apache 2
   badges: ^1.1.1
@@ -24,7 +64,6 @@ dependencies:
   # NOTES: As noted on issue 20761, package_info on iOS requires the Xcode build folder to be
   # rebuilt after changes to the version string in pubspec.yaml. Clean the Xcode build folder
   # with: XCode Menu -> Product -> (Holding Option Key) Clean build folder.
-
 
   # ON IOS TO EXPOSE STORAGE FOLLOWING KEYS ARE NEEDED
   #    <key>LSSupportsOpeningDocumentsInPlace</key>
@@ -46,19 +85,6 @@ dependencies:
   #  <key>NSLocationAlwaysUsageDescription</key>
   #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
 
-
-  # apache 2
-  flutter_geopackage: ^0.1.2
-#    git:
-#      url: https://github.com/moovida/flutter_geopackage.git
-
-  smashlibs:
-    # path: ../smashlibs/
-    git:
-      url: https://github.com/moovida/smashlibs.git
-
-  dart_shp: ^0.2.0
-
   # apache
   latlong: 0.6.1
 
@@ -70,21 +96,6 @@ dependencies:
 
   # MIT
   flutter_material_color_picker: ^1.0.5
-
-  # BSD
-  flutter_map: #^0.9.0
-    git:
-      url: https://github.com/moovida/flutter_map.git
-      # url: https://github.com/johnpryan/flutter_map.git
-
-  flutter_map_marker_cluster: #^0.2.7
-    git:
-      url: https://github.com/moovida/flutter_map_marker_cluster.git
-  
-  # MIT
-  lat_lon_grid_plugin: #0.1.1
-    git:
-      url: https://github.com/moovida/lat_lon_grid_plugin.git
 
   #MIT
   extended_image: ^0.7.3-dev
@@ -110,18 +121,7 @@ dependencies:
   # MIT
   flutter_datetime_picker: ^1.3.8
 
-  mapsforge_flutter:
-    git:
-      url: https://github.com/moovida/mapsforge_flutter.git
-      ref: libs_upgrade
-      path: mapsforge_flutter
-    #path: ../../OTHERS/mapsforge_flutter/mapsforge_flutter
-
-
-
-
 dev_dependencies:
-
   # MIT
   flutter_launcher_icons: ^0.7.4
 
@@ -137,10 +137,8 @@ flutter_icons:
   adaptive_icon_foreground: "assets/ic_launcher_ios.png"
   # to rebuild icons run: flutter packages pub run flutter_launcher_icons:main
 
-
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -315,16 +313,10 @@ flutter:
     - packages/mapsforge_flutter/assets/symbols/water/weir.svg
     - packages/mapsforge_flutter/assets/symbols/windsock.svg
     - packages/mapsforge_flutter/assets/symbols/viewpoint.svg
-
-
-
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a

@@ -210,20 +210,23 @@ class ShapefileSource extends VectorLayerSource {
           var count = f.geometry.getNumGeometries();
           for (var i = 0; i < count; i++) {
             JTS.Polygon p = f.geometry.getGeometryN(i);
+            // ext ring
             var extCoords = p
                 .getExteriorRing()
                 .getCoordinates()
                 .map((c) => LatLng(c.y, c.x))
                 .toList();
+
+            // inter rings
             var numInteriorRing = p.getNumInteriorRing();
             List<List<LatLng>> intRingCoords = [];
             for (var i = 0; i < numInteriorRing; i++) {
-              var coords = p
+              var intCoords = p
                   .getInteriorRingN(i)
                   .getCoordinates()
                   .map((c) => LatLng(c.y, c.x))
                   .toList();
-              intRingCoords.add(coords);
+              intRingCoords.add(intCoords);
             }
 
             polygons.add(Polygon(
@@ -238,6 +241,7 @@ class ShapefileSource extends VectorLayerSource {
 
         var polygonLayer = PolygonLayerOptions(
           polygonCulling: true,
+          simplify: true,
           polygons: polygons,
         );
         layers.add(polygonLayer);

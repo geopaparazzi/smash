@@ -1,6 +1,8 @@
 PODS:
   - background_locator (0.0.1):
     - Flutter
+  - charset_converter (0.0.1):
+    - Flutter
   - device_info (0.0.1):
     - Flutter
   - Flutter (1.0.0)
@@ -45,6 +47,7 @@ PODS:
 
 DEPENDENCIES:
   - background_locator (from `.symlinks/plugins/background_locator/ios`)
+  - charset_converter (from `.symlinks/plugins/charset_converter/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Flutter (from `Flutter`)
   - flutter_plugin_android_lifecycle (from `.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
@@ -72,6 +75,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   background_locator:
     :path: ".symlinks/plugins/background_locator/ios"
+  charset_converter:
+    :path: ".symlinks/plugins/charset_converter/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   Flutter:
@@ -113,12 +118,13 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   background_locator: fe84072e5be02da3e28a3bbca81293d6c7443df7
-  device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
+  charset_converter: 215c7b04932ec2b9ba43be96a9bc34afed3e5322
+  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_plugin_android_lifecycle: 47de533a02850f070f5696a623995e93eddcdb9b
+  flutter_plugin_android_lifecycle: dc0b544e129eebb77a6bfb1239d4d1c673a60a35
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
-  image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
+  image_picker: 66aa71bc96850a90590a35d4c4a2907b0d823109
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
   path_provider_ex: 95397ca0c3f5f99c8538aec3736674fa9cefc1b6
@@ -126,7 +132,7 @@ SPEC CHECKSUMS:
   permission_handler: 8278954f2382902f63f00dd8828769c0bd6d511b
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   share_extend: b6748dc53695587891126a89533b862b92548c7b
-  shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0

@@ -63,6 +63,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
   double _iconSize;
 
+  Timer _centerOnGpsTimer;
+
   @override
   void initState() {
     super.initState();
@@ -111,6 +113,22 @@ class _MainViewWidgetState extends State<MainViewWidget>
     });
 
     WidgetsBinding.instance.addObserver(this);
+
+    _centerOnGpsTimer =
+        Timer.periodic(Duration(milliseconds: 3000), (timer) async {
+      if (mapBuilder.context != null && _mapController != null) {
+        var mapState =
+            Provider.of<SmashMapState>(mapBuilder.context, listen: false);
+        if (mapState.centerOnGps) {
+          GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+          if (gpsState.lastGpsPosition != null) {
+            LatLng posLL = LatLng(gpsState.lastGpsPosition.latitude,
+                gpsState.lastGpsPosition.longitude);
+            _mapController?.move(posLL, _mapController?.zoom);
+          }
+        }
+      }
+    });
   }
 
   @override
@@ -145,14 +163,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
           _mapController.rotate(-heading);
         } else {
           _mapController.rotate(0);
-        }
-      }
-      if (mapState.centerOnGps) {
-        GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-        if (gpsState.lastGpsPosition != null) {
-          LatLng posLL = LatLng(gpsState.lastGpsPosition.latitude,
-              gpsState.lastGpsPosition.longitude);
-          _mapController?.move(posLL, _mapController?.zoom);
         }
       }
     }
@@ -222,19 +232,24 @@ class _MainViewWidgetState extends State<MainViewWidget>
               ),
             ],
           )),
-          endDrawer: Theme(
-            data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
-            child: Drawer(
-                child: Container(
-              color: Colors.transparent,
+          endDrawer: Drawer(
               child: ListView(
-                children: DashboardUtils.getEndDrawerListTiles(
-                    context, _mapController),
-              ),
-            )),
-          ),
+            children:
+                DashboardUtils.getEndDrawerListTiles(context, _mapController),
+          )),
+          // Theme(
+          //   data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
+          //   child: Drawer(
+          //       child: Container(
+          //     color: Colors.transparent,
+          //     child: ListView(
+          //       children: DashboardUtils.getEndDrawerListTiles(
+          //           context, _mapController),
+          //     ),
+          //   )),
+          // ),
 
-          bottomNavigationBar:
+        bottomNavigationBar:
               addBottomToolBar(mapBuilder, projectData, mapState),
         ),
         onWillPop: () async {
