@@ -249,7 +249,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
           //   )),
           // ),
 
-        bottomNavigationBar:
+          bottomNavigationBar:
               addBottomToolBar(mapBuilder, projectData, mapState),
         ),
         onWillPop: () async {
@@ -593,13 +593,11 @@ class _MainViewWidgetState extends State<MainViewWidget>
 Widget getDialogTitleWithInsertionMode(
     String title, bool doNoteInGps, Color color) {
   return Row(
-    mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: <Widget>[
-      Padding(
+    children: [
+      Expanded(child: Padding(
         padding: SmashUI.defaultRigthPadding(),
         child: SmashUI.titleText(title, color: color, bold: true),
-      ),
+      )),
       doNoteInGps
           ? Icon(
               Icons.gps_fixed,

@@ -236,8 +236,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: simplify_poly
-      resolved-ref: b8feb6aff9352fceb430ea4cf67e7d863ec9a5e1
+      ref: HEAD
+      resolved-ref: "1ec33f83ee65c6aaaadcf4014fdd83534b648645"
       url: "https://github.com/moovida/flutter_map.git"
     source: git
     version: "0.9.0"
@@ -245,8 +245,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: simplify_poly
-      resolved-ref: "9c2f2fd4f8e7cd1727d4dcceff633b69a6b6a2b7"
+      ref: HEAD
+      resolved-ref: feed966e017b7c5ec4f8551ff1ce7c470d0d3936
       url: "https://github.com/moovida/flutter_map_marker_cluster.git"
     source: git
     version: "0.2.7"
@@ -378,8 +378,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: simplify_poly
-      resolved-ref: a931205f9d66413e3d969a22bda307ee470ab712
+      ref: HEAD
+      resolved-ref: b0ff01ff098e26fa320be518dfd0392ebcf9ec6e
       url: "https://github.com/moovida/lat_lon_grid_plugin.git"
     source: git
     version: "0.1.1"
@@ -510,7 +510,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   pedantic:
     dependency: transitive
     description:
@@ -647,7 +647,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e1aa600b943fe932ea93b430ed6687f9e5cceccb
+      resolved-ref: "70ac0fbae4eedd31719de717cf2a60ced389f8bb"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

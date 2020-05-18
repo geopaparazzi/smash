@@ -602,6 +602,9 @@ class ComboboxWidgetState extends State<ComboboxWidget> {
 
     var comboItems = TagsManager.getComboItems(widget._itemMap);
     List<String> itemsArray = TagsManager.comboItems2StringArray(comboItems);
+    if (!itemsArray.contains(value)) {
+      value = null;
+    }
     var items = itemsArray
         .map(
           (itemName) => new DropdownMenuItem(
@@ -611,16 +614,16 @@ class ComboboxWidgetState extends State<ComboboxWidget> {
         )
         .toList();
 
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Flexible(
-          child: Padding(
-            padding: SmashUI.defaultRigthPadding(),
-            child: SmashUI.normalText(widget._label,
-                color: SmashColors.mainDecorationsDarker),
-          ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: SmashUI.DEFAULT_PADDING),
+          child: SmashUI.normalText(widget._label,
+              color: SmashColors.mainDecorationsDarker),
         ),
-        Flexible(
+        Padding(
+          padding: const EdgeInsets.only(left: SmashUI.DEFAULT_PADDING * 2),
           child: Container(
             padding: EdgeInsets.only(
                 left: SmashUI.DEFAULT_PADDING, right: SmashUI.DEFAULT_PADDING),
@@ -781,22 +784,27 @@ class DatePickerWidgetState extends State<DatePickerWidget> {
           child: Center(
             child: Padding(
               padding: SmashUI.defaultPadding(),
-              child: Row(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Padding(
-                    padding: SmashUI.defaultRigthPadding(),
-                    child: Icon(
-                      MdiIcons.calendar,
-                      color: SmashColors.mainDecorations,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: SmashUI.defaultRigthPadding(),
+                        child: Icon(
+                          MdiIcons.calendar,
+                          color: SmashColors.mainDecorations,
+                        ),
+                      ),
+                      SmashUI.normalText(widget._label,
+                          color: SmashColors.mainDecorations, bold: true),
+                    ],
                   ),
-                  SmashUI.normalText(
-                      value.isNotEmpty
-                          ? "${widget._label}: $value"
-                          : widget._label,
-                      color: SmashColors.mainDecorations,
-                      bold: true),
+                  value.isNotEmpty
+                      ? SmashUI.normalText("$value",
+                          color: SmashColors.mainDecorations, bold: true)
+                      : Container(),
                 ],
               ),
             ),

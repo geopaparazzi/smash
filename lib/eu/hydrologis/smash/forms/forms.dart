@@ -50,7 +50,8 @@ const String TYPE_STRINGCOMBO = "stringcombo";
 const String TYPE_AUTOCOMPLETESTRINGCOMBO = "autocompletestringcombo";
 
 /// Type for autocomplete connected combos.
-const String TYPE_AUTOCOMPLETECONNECTEDSTRINGCOMBO = "autocompleteconnectedstringcombo";
+const String TYPE_AUTOCOMPLETECONNECTEDSTRINGCOMBO =
+    "autocompleteconnectedstringcombo";
 
 /// Type for two connected {@link Spinner}.
 const String TYPE_CONNECTEDSTRINGCOMBO = "connectedstringcombo";
@@ -262,7 +263,7 @@ class RangeConstraint implements IConstraint {
     lowValue = low.toDouble();
   }
 
-  void applyConstraint(var value) {
+  void applyConstraint(dynamic value) {
     if (value is String) {
       if (value.isEmpty) {
         // empty can be still ok, we just check for ranges if we have a value
@@ -270,16 +271,19 @@ class RangeConstraint implements IConstraint {
         return;
       } else {
         try {
-          double.parse(value);
+          value = double.parse(value);
         } catch (e) {
           _isValid = false;
         }
       }
-    } else if (value is num) {
+    }
+    if (value is num) {
       double doubleValue = value.toDouble();
       if ( //
-          ((includeLow && doubleValue >= lowValue) || (!includeLow && doubleValue > lowValue)) && //
-              ((includeHigh && doubleValue <= highValue) || (!includeHigh && doubleValue < highValue)) //
+          ((includeLow && doubleValue >= lowValue) ||
+                  (!includeLow && doubleValue > lowValue)) && //
+              ((includeHigh && doubleValue <= highValue) ||
+                  (!includeHigh && doubleValue < highValue)) //
           ) {
         _isValid = true;
       } else {
@@ -337,7 +341,8 @@ class FormUtilities {
   /// @param constraints the {@link Constraints} object to use or <code>null</code>.
   /// @return the original {@link Constraints} object or a new created.
   /// @throws Exception if something goes wrong.
-  static Constraints handleConstraints(Map<String, dynamic> jsonObject, Constraints constraints) {
+  static Constraints handleConstraints(
+      Map<String, dynamic> jsonObject, Constraints constraints) {
     if (constraints == null) constraints = new Constraints();
 
     if (jsonObject.containsKey(CONSTRAINT_MANDATORY)) {
@@ -356,7 +361,8 @@ class FormUtilities {
         bool highIncluded = rangeSplit[1].endsWith("]");
         String highStr = rangeSplit[1].substring(0, rangeSplit[1].length - 1);
         double high = double.parse(highStr);
-        constraints.addConstraint(RangeConstraint(low, lowIncluded, high, highIncluded));
+        constraints.addConstraint(
+            RangeConstraint(low, lowIncluded, high, highIncluded));
       }
     }
     return constraints;
@@ -368,7 +374,8 @@ class FormUtilities {
   /// @param key            the key of the item to update.
   /// @param value          the new value to use.
   /// @ if something goes wrong.
-  static void update(List<Map<String, dynamic>> formItemsArray, String key, String value) {
+  static void update(
+      List<Map<String, dynamic>> formItemsArray, String key, String value) {
     int length = formItemsArray.length;
 
     for (int i = 0; i < length; i++) {
@@ -389,7 +396,8 @@ class FormUtilities {
   /// @param longitude      the long value.
   /// @param pkValue        an optional value to set the PRIMARYKEY to.
   /// @ if something goes wrong.
-  static void updateExtras(List<Map<String, dynamic>> formItemsArray, double latitude, double longitude, String pkValue) {
+  static void updateExtras(List<Map<String, dynamic>> formItemsArray,
+      double latitude, double longitude, String pkValue) {
     int length = formItemsArray.length;
 
 // TODO check back if it would be good to check also on labels
@@ -444,11 +452,15 @@ class FormUtilities {
         }
         sB.writeln();
       }
-      Map<String, dynamic> form4Name = TagsManager.getForm4Name(formName, sectionObject);
-      List<Map<String, dynamic>> formItems = TagsManager.getFormItems(form4Name);
+      Map<String, dynamic> form4Name =
+          TagsManager.getForm4Name(formName, sectionObject);
+      List<Map<String, dynamic>> formItems =
+          TagsManager.getFormItems(form4Name);
       for (int i = 0; i < formItems.length; i++) {
         Map<String, dynamic> formItem = formItems[i];
-        if (!formItem.containsKey(TAG_KEY) || !formItem.containsKey(TAG_VALUE) || !formItem.containsKey(TAG_TYPE)) {
+        if (!formItem.containsKey(TAG_KEY) ||
+            !formItem.containsKey(TAG_VALUE) ||
+            !formItem.containsKey(TAG_TYPE)) {
           continue;
         }
 
@@ -460,7 +472,10 @@ class FormUtilities {
           label = formItem[TAG_LABEL];
         }
 
-        if (type == TYPE_PICTURES || type == TYPE_IMAGELIB || type == TYPE_MAP || type == TYPE_SKETCH) {
+        if (type == TYPE_PICTURES ||
+            type == TYPE_IMAGELIB ||
+            type == TYPE_MAP ||
+            type == TYPE_SKETCH) {
           if (value.trim().isEmpty) {
             continue;
           }
@@ -490,7 +505,8 @@ class FormUtilities {
       List<String> formsNames = TagsManager.getFormNames4Section(sectionObject);
       for (int j = 0; j < formsNames.length; j++) {
         String formName = formsNames[j];
-        Map<String, dynamic> form4Name = TagsManager.getForm4Name(formName, sectionObject);
+        Map<String, dynamic> form4Name =
+            TagsManager.getForm4Name(formName, sectionObject);
         var formItems = TagsManager.getFormItems(form4Name);
         for (int i = 0; i < formItems.length; i++) {
           Map<String, dynamic> formItem = formItems[i];
@@ -638,10 +654,14 @@ class TagsManager {
       _tagsFileArray.add(tagsFilePath);
     } else {
       Directory formsFolder = await Workspace.getFormsFolder();
-      List<String> fileNames = FileUtilities.getFilesInPathByExt(formsFolder.path, TAGSFILENAME_ENDPATTERN);
-      _tagsFileArray = fileNames.map((fn) => FileUtilities.joinPaths(formsFolder.path, fn)).toList();
+      List<String> fileNames = FileUtilities.getFilesInPathByExt(
+          formsFolder.path, TAGSFILENAME_ENDPATTERN);
+      _tagsFileArray = fileNames
+          .map((fn) => FileUtilities.joinPaths(formsFolder.path, fn))
+          .toList();
       if (_tagsFileArray == null || _tagsFileArray.isEmpty) {
-        String tagsFile = FileUtilities.joinPaths(formsFolder.path, "tags.json");
+        String tagsFile =
+            FileUtilities.joinPaths(formsFolder.path, "tags.json");
         if (!File(tagsFile).existsSync()) {
           var tagsString = await rootBundle.loadString("assets/tags.json");
           FileUtilities.writeStringToFile(tagsFile, tagsString);
@@ -715,7 +735,8 @@ class TagsManager {
   /// @param section  the section object containing the form.
   /// @return the form object.
   /// @ if something goes wrong.
-  static Map<String, dynamic> getForm4Name(String formName, Map<String, dynamic> section) {
+  static Map<String, dynamic> getForm4Name(
+      String formName, Map<String, dynamic> section) {
     List<dynamic> jsonArray = section[ATTR_FORMS];
     if (jsonArray != null && jsonArray.length > 0) {
       for (int i = 0; i < jsonArray.length; i++) {
