@@ -166,13 +166,13 @@ class _MainViewWidgetState extends State<MainViewWidget>
         }
       }
     }
+
     layers.addAll(_activeLayers);
 
-    ProjectData projectData = addProjectMarkers(projectState, layers);
-
     var pluginsList = <MapPlugin>[];
-
-    addPluginsLayers(pluginsList, layers);
+    addPluginsPreLayers(pluginsList, layers);
+    ProjectData projectData = addProjectMarkers(projectState, layers);
+    addPluginsPostLayers(pluginsList, layers);
 
     return WillPopScope(
         // check when the app is left
@@ -473,21 +473,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
     );
   }
 
-  void addPluginsLayers(
+  void addPluginsPreLayers(
       List<MapPlugin> pluginsList, List<LayerOptions> layers) {
-    if (PluginsHandler.HEATMAP_WORKING && PluginsHandler.LOG_HEATMAP.isOn()) {
-      layers.add(HeatmapPluginOption());
-      pluginsList.add(HeatmapPlugin());
-    }
-
-    pluginsList.add(MarkerClusterPlugin());
-
-    layers.add(CurrentGpsLogPluginOption(
-      logColor: Colors.red,
-      logWidth: 5.0,
-    ));
-    pluginsList.add(CurrentGpsLogPlugin());
-
     if (PluginsHandler.GRID.isOn()) {
       var gridLayer = MapPluginLatLonGridOptions(
         lineColor: SmashColors.mainDecorations,
@@ -506,6 +493,22 @@ class _MainViewWidgetState extends State<MainViewWidget>
       layers.add(gridLayer);
       pluginsList.add(MapPluginLatLonGrid());
     }
+  }
+
+  void addPluginsPostLayers(
+      List<MapPlugin> pluginsList, List<LayerOptions> layers) {
+    if (PluginsHandler.HEATMAP_WORKING && PluginsHandler.LOG_HEATMAP.isOn()) {
+      layers.add(HeatmapPluginOption());
+      pluginsList.add(HeatmapPlugin());
+    }
+
+    pluginsList.add(MarkerClusterPlugin());
+
+    layers.add(CurrentGpsLogPluginOption(
+      logColor: Colors.red,
+      logWidth: 5.0,
+    ));
+    pluginsList.add(CurrentGpsLogPlugin());
 
     int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);
     layers.add(FeatureInfoPluginOption(
@@ -594,7 +597,8 @@ Widget getDialogTitleWithInsertionMode(
     String title, bool doNoteInGps, Color color) {
   return Row(
     children: [
-      Expanded(child: Padding(
+      Expanded(
+          child: Padding(
         padding: SmashUI.defaultRigthPadding(),
         child: SmashUI.titleText(title, color: color, bold: true),
       )),

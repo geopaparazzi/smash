@@ -17,6 +17,7 @@ import 'package:flutter_material_color_picker/flutter_material_color_picker.dart
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/maputils.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class ShapefileSource extends VectorLayerSource {
@@ -25,7 +26,7 @@ class ShapefileSource extends VectorLayerSource {
   ShapefileFeatureReader _shpReader;
 
   bool isVisible = true;
-  String _attribution = "SHP";
+  String _attribution = "";
   int _srid = SmashPrj.EPSG4326_INT;
 
   List<Feature> features = [];
@@ -79,6 +80,10 @@ class ShapefileSource extends VectorLayerSource {
           .d("Loaded ${features.length} Shp features of envelope: $_shpBounds");
 
       _shpReader.close();
+
+      _attribution = _attribution +
+          "${features[0].geometry.getGeometryType()} (${features.length}) ";
+
       loaded = true;
     }
   }
@@ -157,7 +162,7 @@ class ShapefileSource extends VectorLayerSource {
           var pSym =
               sld.featureTypeStyles[0].rules[0].pointSymbolizers[0].style;
           iconData = SmashIcons.forSldWkName(pSym.markerName);
-          pointsSize = pSym.markerSize * 5;
+          pointsSize = pSym.markerSize * 3;
           pointFillColor = ColorExt(pSym.fillColorHex);
 
           var textSym = sld.featureTypeStyles[0].rules[0].textSymbolizers;
@@ -168,48 +173,30 @@ class ShapefileSource extends VectorLayerSource {
         }
 
         List<Marker> waypoints = [];
+
         features.forEach((f) {
           var count = f.geometry.getNumGeometries();
           for (var i = 0; i < count; i++) {
             JTS.Point l = f.geometry.getGeometryN(i);
+            var labelText = f.attributes[labelName];
+            double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
+            if (labelText == null) {
+              textExtraHeight = 0;
+            }
             Marker m = Marker(
-              width: pointsSize,
-              height: pointsSize,
-              point: LatLng(l.getY(), l.getX()),
-              builder: (ctx) => labelName == null
-                  ? Container(
-                      child: Icon(
-                        iconData,
-                        size: pointsSize,
-                        color: pointFillColor,
-                      ),
-                    )
-                  : Stack(
-                      children: [
-                        Container(
-                          child: Icon(
-                            iconData,
-                            size: pointsSize,
-                            color: pointFillColor,
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: FittedBox(
-                            child: Container(
-                              color: Colors.white.withAlpha(170),
-                              child: Text(
-                                f.attributes[labelName] ??= "",
-                                style: TextStyle(
-                                    color: labelColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-            );
+                width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
+                height: pointsSize + textExtraHeight,
+                point: LatLng(l.getY(), l.getX()),
+                anchorPos: AnchorPos.exactly(
+                    Anchor(pointsSize / 2, textExtraHeight + pointsSize / 2)),
+                builder: (ctx) => MarkerIcon(
+                      iconData,
+                      pointFillColor,
+                      pointsSize,
+                      labelText,
+                      labelColor,
+                      pointFillColor.withAlpha(80),
+                    ));
             waypoints.add(m);
           }
         });

@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 /// The notes properties view.
 class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
@@ -98,6 +99,33 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  icon: Icon(MdiIcons.pencil),
+                                  color: SmashColors.mainDecorationsDarker,
+                                  onPressed: () async {
+                                    String result = await showInputDialog(
+                                      context,
+                                      "Change note text",
+                                      "Please enter a new text for the note",
+                                      defaultText: _note.text,
+                                      validationFunction: noEmptyValidator,
+                                    );
+                                    if (result != null) {
+                                      _note.text = result;
+                                      _somethingChanged = true;
+                                      setState(() {});
+                                    }
+                                  },
+                                ),
+                                SmashUI.normalText(_note.text,
+                                    color: SmashColors.mainDecorationsDarker),
+                              ],
+                            ),
+                          ),
                           Table(
                             columnWidths: {
                               0: FlexColumnWidth(0.4),
@@ -206,12 +234,6 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
     return [
       TableRow(
         children: [
-          TableUtilities.cellForString("Note"),
-          _cellForNoteText(context, _note),
-        ],
-      ),
-      TableRow(
-        children: [
           TableUtilities.cellForString("Timestamp"),
           TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
               .format(DateTime.fromMillisecondsSinceEpoch(_note.timeStamp))),
@@ -239,32 +261,6 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
         ],
       ),
     ];
-  }
-
-  TableCell _cellForNoteText(BuildContext context, Note item) {
-    return TableCell(
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: GestureDetector(
-          child: SmashUI.normalText(item.text,
-              color: SmashColors.mainDecorationsDarker),
-          onDoubleTap: () async {
-            String result = await showInputDialog(
-              context,
-              "Change note text",
-              "Please enter a new text for the note",
-              defaultText: _note.text,
-              validationFunction: noEmptyValidator,
-            );
-            if (result != null) {
-              _note.text = result;
-              _somethingChanged = true;
-              setState(() {});
-            }
-          },
-        ),
-      ),
-    );
   }
 }
 

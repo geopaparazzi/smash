@@ -26,7 +26,7 @@ class GpxSource extends VectorLayerSource {
   double pointsSize = 10;
   double lineWidth = 3;
   bool isVisible = true;
-  String _attribution = "GPX: ";
+  String _attribution = "";
   int _srid = SmashPrj.EPSG4326_INT;
 
   List<LatLng> _wayPoints = [];
