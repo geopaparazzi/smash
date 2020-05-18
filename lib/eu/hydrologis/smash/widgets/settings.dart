@@ -847,8 +847,8 @@ class GpsSettingsState extends State<GpsSettings> {
                       Checkbox(
                         value: showValidGpsPointCount,
                         onChanged: (selValid) async {
-                          await GpPreferences().setBoolean(
-                              KEY_GPS_SHOW_VALID_POINTS, selValid);
+                          await GpPreferences()
+                              .setBoolean(KEY_GPS_SHOW_VALID_POINTS, selValid);
                           Provider.of<SmashMapBuilder>(context).reBuild();
                           setState(() {});
                         },
@@ -1363,12 +1363,14 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
     loadDebug();
   }
 
-  void loadDebug() async {
+  Future<void> loadDebug() async {
     allLogItems = await GpLogger().getLogItems(limit: limit);
     allLogItems = allLogItems.where((element) {
       element.message = element.message.trim();
 
       if (element.message.contains("38;5;12m")) {
+        element.message = element.message.substring(12).trim();
+      } else if (element.message.contains("38;5;208m")) {
         element.message = element.message.substring(12).trim();
       }
 
@@ -1417,7 +1419,14 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
                 setState(() {
                   isViewingErrors = !isViewingErrors;
                 });
-              })
+              }),
+          IconButton(
+              icon: Icon(MdiIcons.delete),
+              tooltip: "Clear debug log",
+              onPressed: () async {
+                await GpLogger().clearLog();
+                await loadDebug();
+              }),
         ],
       ),
       body: logItems == null
