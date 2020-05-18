@@ -106,9 +106,10 @@ final String NOTESEXT_COLUMN_SPEEDACCURACY = "speedaccuracy";
 final String NOTESEXT_COLUMN_NOTEID = "noteid";
 
 class NoteExt {
+  static final String DEFAULT_MARKER = 'mapMarker';
   int id;
   int noteId;
-  String marker = 'solidCircle';
+  String marker = DEFAULT_MARKER;
   double size = 36;
   double rotation = 0;
   String color = "#FFf44336";

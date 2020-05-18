@@ -19,7 +19,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
   double _sizeSliderValue = 10;
   double _maxSize = 100.0;
   ColorExt _noteColor;
-  String _marker = 'mapMarker';
+  String _marker = NoteExt.DEFAULT_MARKER;
   bool _somethingChanged = false;
   var chosenIconsList = [];
 
