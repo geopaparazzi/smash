@@ -125,8 +125,8 @@ SPEC CHECKSUMS:
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
   image_picker: 66aa71bc96850a90590a35d4c4a2907b0d823109
-  package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
-  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   path_provider_ex: 95397ca0c3f5f99c8538aec3736674fa9cefc1b6
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   permission_handler: 8278954f2382902f63f00dd8828769c0bd6d511b
@@ -136,7 +136,7 @@ SPEC CHECKSUMS:
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
-  url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
+  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
   url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
 
