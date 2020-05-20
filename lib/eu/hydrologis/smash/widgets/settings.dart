@@ -632,6 +632,7 @@ class GpsSettingsState extends State<GpsSettings> {
                     var infoTable = TableUtilities.fromMap(infoMap,
                         doSmallText: true,
                         borderColor: SmashColors.mainDecorations,
+                        backgroundColor: Colors.white.withAlpha(0),
                         withBorder: true);
 
                     double distanceLastEvent = msg.distanceLastEvent;
@@ -673,13 +674,16 @@ class GpsSettingsState extends State<GpsSettings> {
                       minTimeString:
                           "$timeLastEvent <= $minAllowedTimeLastEvent",
                     };
-                    var filtersTable = TableUtilities.fromMap(filterMap,
-                        doSmallText: true,
-                        borderColor: Colors.orange,
-                        withBorder: true,
-                        colWidthFlex: [0.6, 0.4],
-                        highlightPattern: "BLOCKS",
-                        highlightColor: Colors.orange.withAlpha(128));
+                    var filtersTable = TableUtilities.fromMap(
+                      filterMap,
+                      doSmallText: true,
+                      borderColor: Colors.orange,
+                      withBorder: true,
+                      colWidthFlex: [0.6, 0.4],
+                      highlightPattern: "BLOCKS",
+                      highlightColor: Colors.orange.withAlpha(128),
+                      backgroundColor: Colors.white.withAlpha(0),
+                    );
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
@@ -1368,16 +1372,17 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
     allLogItems = allLogItems.where((element) {
       element.message = element.message.trim();
 
-      if (element.message.contains("38;5;12m")) {
-        element.message = element.message.substring(12).trim();
-      } else if (element.message.contains("38;5;208m")) {
+      if (element.message.contains(RegExp("38;5;.*m"))) {
         element.message = element.message.substring(12).trim();
       }
 
       if (element.message.contains("────────") ||
           element.message.contains("┄┄┄┄┄┄") ||
           element.message.startsWith("│ #") ||
-          element.message.startsWith("#")) {
+          element.message.startsWith("#") ||
+          element.message.startsWith(RegExp(".*48;5;196mERROR.\\[0m")) 
+
+          ) {
         return false;
       } else if (element.message.startsWith("│ ")) {
         element.message = element.message.substring(4).trim();
