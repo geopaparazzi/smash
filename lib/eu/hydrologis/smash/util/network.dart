@@ -17,6 +17,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
+import 'package:smash/eu/hydrologis/smash/project/objects/othertables.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -290,13 +291,15 @@ class ProjectDataUploadListTileProgressWidgetState
     }
 
     bool hasError = false;
+    var dbPath = widget._projectDb.path;
+    var projectName = FileUtilities.nameFromFile(dbPath, false);
     try {
       if (_item is Note) {
-        hasError = await handleNote(options, hasError);
+        hasError = await handleNote(options, projectName, hasError);
       } else if (_item is DbImage) {
-        hasError = await handleImage(options, hasError);
+        hasError = await handleImage(options, projectName, hasError);
       } else if (_item is Log) {
-        hasError = await handleLog(options, hasError);
+        hasError = await handleLog(options, projectName, hasError);
       }
     } catch (e) {
       hasError = true;
@@ -374,13 +377,15 @@ class ProjectDataUploadListTileProgressWidgetState
     );
   }
 
-  Future<bool> handleLog(Options options, bool hasError) async {
+  Future<bool> handleLog(
+      Options options, String projectName, bool hasError) async {
     Log log = _item;
     LogProperty props = await widget._projectDb.getLogProperties(log.id);
 
     var formData = FormData();
     formData.fields
       ..add(MapEntry(GssUtilities.OBJID_TYPE_KEY, GssUtilities.LOG_OBJID))
+      ..add(MapEntry(PROJECT_NAME, projectName))
       ..add(MapEntry(LOGS_COLUMN_ID, "${log.id}"))
       ..add(MapEntry(LOGS_COLUMN_TEXT, log.text))
       ..add(MapEntry(LOGS_COLUMN_STARTTS, "${log.startTime}"))
@@ -427,11 +432,13 @@ class ProjectDataUploadListTileProgressWidgetState
     return hasError;
   }
 
-  Future<bool> handleImage(Options options, bool hasError) async {
+  Future<bool> handleImage(
+      Options options, String projectName, bool hasError) async {
     DbImage image = _item;
     var formData = FormData();
     formData.fields
       ..add(MapEntry(GssUtilities.OBJID_TYPE_KEY, GssUtilities.IMAGE_OBJID))
+      ..add(MapEntry(PROJECT_NAME, projectName))
       ..add(MapEntry(IMAGES_COLUMN_ID, "${image.id}"))
       ..add(MapEntry(IMAGES_COLUMN_TEXT, image.text))
       ..add(MapEntry(IMAGES_COLUMN_IMAGEDATA_ID, "${image.imageDataId}"))
@@ -479,11 +486,13 @@ class ProjectDataUploadListTileProgressWidgetState
     return hasError;
   }
 
-  Future<bool> handleNote(Options options, bool hasError) async {
+  Future<bool> handleNote(
+      Options options, String projectName, bool hasError) async {
     Note note = _item;
     var formData = FormData();
     formData.fields
       ..add(MapEntry(GssUtilities.OBJID_TYPE_KEY, GssUtilities.NOTE_OBJID))
+      ..add(MapEntry(PROJECT_NAME, projectName))
       ..add(MapEntry(NOTES_COLUMN_ID, "${note.id}"))
       ..add(MapEntry(NOTES_COLUMN_TEXT, note.text))
       ..add(MapEntry(NOTES_COLUMN_DESCRIPTION, note.description))

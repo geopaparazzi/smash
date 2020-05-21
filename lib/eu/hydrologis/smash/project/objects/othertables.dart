@@ -14,6 +14,7 @@ final String TABLE_METADATA = "metadata";
  */
 final String TABLE_BOOKMARKS = "bookmarks";
 
+final String PROJECT_NAME = "PROJECT_NAME";
 
 final String BOOKMARK_COLUMN_ID = "_id";
 final String BOOKMARK_COLUMN_LON = "lon";
