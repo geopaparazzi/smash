@@ -113,10 +113,10 @@ class NoteExt {
   double size = 36;
   double rotation = 0;
   String color = "#FFf44336";
-  double accuracy;
-  double heading;
-  double speed;
-  double speedaccuracy;
+  double accuracy = -1;
+  double heading = -9999;
+  double speed = -1;
+  double speedaccuracy = -1;
 
   Map<String, dynamic> toMap() {
     var map = {
@@ -129,16 +129,16 @@ class NoteExt {
     if (id != null) {
       map[NOTESEXT_COLUMN_ID] = id;
     }
-    if (accuracy != null) {
+    if (accuracy >= 0) {
       map[NOTESEXT_COLUMN_ACCURACY] = accuracy;
     }
-    if (heading != null) {
+    if (heading > -1000) {
       map[NOTESEXT_COLUMN_HEADING] = heading;
     }
-    if (speed != null) {
+    if (speed >= 0) {
       map[NOTESEXT_COLUMN_SPEED] = speed;
     }
-    if (speedaccuracy != null) {
+    if (speedaccuracy >= 0) {
       map[NOTESEXT_COLUMN_SPEEDACCURACY] = speedaccuracy;
     }
     return map;

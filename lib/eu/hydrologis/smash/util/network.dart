@@ -452,8 +452,15 @@ class ProjectDataUploadListTileProgressWidgetState
     var imageBytes =
         await widget._projectDb.getImageDataBytes(image.imageDataId);
     formData.files.add(MapEntry(
-      TABLE_IMAGE_DATA,
+      TABLE_IMAGE_DATA + "_" + IMAGESDATA_COLUMN_IMAGE,
       MultipartFile.fromBytes(imageBytes, filename: image.text),
+    ));
+
+    var thumbBytes =
+        await widget._projectDb.getThumbnailBytes(image.imageDataId);
+    formData.files.add(MapEntry(
+      TABLE_IMAGE_DATA + "_" + IMAGESDATA_COLUMN_THUMBNAIL,
+      MultipartFile.fromBytes(thumbBytes, filename: image.text),
     ));
 
     await widget._dio.post(
@@ -500,9 +507,6 @@ class ProjectDataUploadListTileProgressWidgetState
       ..add(MapEntry(NOTES_COLUMN_LON, "${note.lon}"))
       ..add(MapEntry(NOTES_COLUMN_LAT, "${note.lat}"))
       ..add(MapEntry(NOTES_COLUMN_ALTIM, "${note.altim}"));
-    if (note.style != null) {
-      formData.fields.add(MapEntry(NOTES_COLUMN_STYLE, note.style));
-    }
     if (note.form != null) {
       formData.fields.add(MapEntry(NOTES_COLUMN_FORM, note.form));
 
@@ -513,15 +517,37 @@ class ProjectDataUploadListTileProgressWidgetState
               await widget._projectDb.getImageById(int.parse(imageId));
           var imageBytes =
               await widget._projectDb.getImageDataBytes(dbImage.imageDataId);
-          var key = "$TABLE_IMAGE_DATA${dbImage.id}";
+          var thumbBytes =
+              await widget._projectDb.getThumbnailBytes(dbImage.imageDataId);
+          var key =
+              "${TABLE_IMAGE_DATA}_${IMAGESDATA_COLUMN_IMAGE}_${dbImage.id}";
           formData.files.add(MapEntry(
             key,
             MultipartFile.fromBytes(imageBytes, filename: dbImage.text),
           ));
+          key =
+              "${TABLE_IMAGE_DATA}_${IMAGESDATA_COLUMN_THUMBNAIL}_${dbImage.id}";
+          formData.files.add(MapEntry(
+            key,
+            MultipartFile.fromBytes(thumbBytes, filename: dbImage.text),
+          ));
         }
       }
     }
-    // TODO add note ext data
+
+    NoteExt noteExt = note.noteExt;
+    if (noteExt != null) {
+      formData.fields
+        ..add(MapEntry(NOTESEXT_COLUMN_MARKER, noteExt.marker))
+        ..add(MapEntry(NOTESEXT_COLUMN_SIZE, "${noteExt.size}"))
+        ..add(MapEntry(NOTESEXT_COLUMN_ROTATION, "${noteExt.rotation}"))
+        ..add(MapEntry(NOTESEXT_COLUMN_COLOR, noteExt.color))
+        ..add(MapEntry(NOTESEXT_COLUMN_ACCURACY, "${noteExt.accuracy}"))
+        ..add(MapEntry(NOTESEXT_COLUMN_HEADING, "${noteExt.heading}"))
+        ..add(MapEntry(NOTESEXT_COLUMN_SPEED, "${noteExt.speed}"))
+        ..add(MapEntry(
+            NOTESEXT_COLUMN_SPEEDACCURACY, "${noteExt.speedaccuracy}"));
+    }
 
     await widget._dio.post(
       widget._uploadUrl,

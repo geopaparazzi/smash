@@ -273,13 +273,22 @@ class GeopaparazziProjectDb extends SqliteDb {
 
   /// Get the image thumbnail of a given [imageDataId].
   Future<Image> getThumbnail(int imageDataId) async {
+    var uint8list = await getThumbnailBytes(imageDataId);
+    if (uint8list != null) {
+      return ImageWidgetUtilities.imageFromBytes(uint8list);
+    }
+    return null;
+  }
+
+  /// Get the image thumbnail bytes of a given [imageDataId].
+  Future<Uint8List> getThumbnailBytes(int imageDataId) async {
     var imageDataList = await getQueryObjectsList(
         ImageDataQueryBuilder(doData: false, doThumb: true),
         whereString: "where $IMAGESDATA_COLUMN_ID=$imageDataId");
     if (imageDataList != null && imageDataList.length == 1) {
       DbImageData imgDataMap = imageDataList.first;
       if (imgDataMap != null && imgDataMap.thumb != null) {
-        return ImageWidgetUtilities.imageFromBytes(imgDataMap.thumb);
+        return imgDataMap.thumb;
       }
     }
     return null;
@@ -664,6 +673,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   }
 
   Future<int> updateNote(Note note) async {
+    note.isDirty = 1; // set the note to dirty again
     var map = note.toMap();
     var noteId = map.remove(NOTES_COLUMN_ID);
 
@@ -672,12 +682,16 @@ class GeopaparazziProjectDb extends SqliteDb {
       var extMap = note.noteExt.toMap();
       int noteExtId = extMap.remove(NOTESEXT_COLUMN_ID);
       extMap.remove(NOTESEXT_COLUMN_NOTEID);
-      count = await updateMap(
+      int extCount = await updateMap(
           TABLE_NOTESEXT, extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
-      if (count != 1) {
-        print("Not updated");
+      if (extCount != 1) {
+        GpLogger().e(
+            "Note ext values not updated for note $noteId and noteext $noteExtId");
       }
+    } else {
+      GpLogger().e("Note not updated for note $noteId");
     }
+    return count;
   }
 
   /// Update the project's dirtyness state.
