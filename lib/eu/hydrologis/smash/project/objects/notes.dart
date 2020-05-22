@@ -129,16 +129,16 @@ class NoteExt {
     if (id != null) {
       map[NOTESEXT_COLUMN_ID] = id;
     }
-    if (accuracy >= 0) {
+    if (accuracy != null && accuracy >= 0) {
       map[NOTESEXT_COLUMN_ACCURACY] = accuracy;
     }
-    if (heading > -1000) {
+    if (heading != null && heading > -1000) {
       map[NOTESEXT_COLUMN_HEADING] = heading;
     }
-    if (speed >= 0) {
+    if (speed != null && speed >= 0) {
       map[NOTESEXT_COLUMN_SPEED] = speed;
     }
-    if (speedaccuracy >= 0) {
+    if (speedaccuracy != null && speedaccuracy >= 0) {
       map[NOTESEXT_COLUMN_SPEEDACCURACY] = speedaccuracy;
     }
     return map;
