@@ -9,7 +9,6 @@ import 'dart:io';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
 import 'package:smash/eu/hydrologis/smash/gss/gss_utilities.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/mapsforge.dart';

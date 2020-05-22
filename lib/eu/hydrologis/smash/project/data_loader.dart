@@ -13,8 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
-import 'package:smash/eu/hydrologis/smash/forms/forms_widgets.dart';
+import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/maputils.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -277,6 +276,9 @@ class DataLoaderUtilities {
                                               sectionName,
                                               sp,
                                               note.id,
+                                              onWillPopFunction,
+                                              getThumbnailsFromDb,
+                                              takePictureForForms,
                                             )));
                               } else {
                                 Navigator.push(

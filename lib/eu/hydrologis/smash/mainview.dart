@@ -16,8 +16,7 @@ import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/forms/forms.dart';
-import 'package:smash/eu/hydrologis/smash/forms/forms_widgets.dart';
+import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersview.dart';
@@ -389,13 +388,17 @@ class _MainViewWidgetState extends State<MainViewWidget>
                     Navigator.push(mapBuilder.context, MaterialPageRoute(
                       builder: (context) {
                         return MasterDetailPage(
-                            sectionMap,
-                            appbarWidget,
-                            selectedSection,
-                            doNoteInGps
-                                ? gpsState.lastGpsPosition
-                                : _mapController.center,
-                            note.id);
+                          sectionMap,
+                          appbarWidget,
+                          selectedSection,
+                          doNoteInGps
+                              ? gpsState.lastGpsPosition
+                              : _mapController.center,
+                          note.id,
+                          onWillPopFunction,
+                          getThumbnailsFromDb,
+                          takePictureForForms,
+                        );
                       },
                     ));
                   }
