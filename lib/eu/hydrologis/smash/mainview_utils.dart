@@ -367,8 +367,10 @@ class DashboardUtils {
   static Container getPositionTools(
       Color c, Color backColor, double iconSize, BuildContext context) {
     return Container(
+
       color: backColor,
       child: ExpansionTile(
+        initiallyExpanded: true,
         title: SmashUI.normalText(
           "Position Tools",
           bold: true,

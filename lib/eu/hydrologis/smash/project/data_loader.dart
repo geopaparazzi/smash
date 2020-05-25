@@ -80,7 +80,7 @@ class DataLoaderUtilities {
   ///
   /// If [noteId] is specified, the image is added to a specific note.
   static Future<void> addImage(
-    BuildContext context,
+    BuildContext parentContext,
     dynamic position, {
     int noteId,
   }) async {
@@ -104,7 +104,7 @@ class DataLoaderUtilities {
     }
 
     await Navigator.push(
-        context,
+        parentContext,
         MaterialPageRoute(
             builder: (context) => TakePictureWidget("Saving image to db...",
                     (String imagePath) async {
@@ -115,15 +115,15 @@ class DataLoaderUtilities {
                         "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
                     var imageId = await ImageWidgetUtilities.saveImageToSmashDb(
                         context, imagePath, dbImage);
+                    File file = File(imagePath);
+                    if (file.existsSync()) {
+                      await file.delete();
+                    }
                     if (imageId != null) {
                       ProjectState projectState =
                           Provider.of<ProjectState>(context, listen: false);
                       if (projectState != null)
-                        projectState.reloadProject(context);
-                      File file = File(imagePath);
-                      if (file.existsSync()) {
-                        await file.delete();
-                      }
+                        await projectState.reloadProject(context);
 //                } else {
 //                  showWarningDialog(
 //                      context, "Could not save image in database.");

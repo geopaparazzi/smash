@@ -426,7 +426,7 @@ packages:
       name: material_design_icons_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.5245"
+    version: "4.0.5345"
   meta:
     dependency: transitive
     description:
@@ -654,7 +654,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "83e2ba751f081450c1f96e64ace24ec7fce5a1c6"
+      resolved-ref: cce02b57e59c80cd0ffc6b47184dc2972ac22190
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

@@ -115,9 +115,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
     _centerOnGpsTimer =
         Timer.periodic(Duration(milliseconds: 3000), (timer) async {
-      if (mapBuilder.context != null && _mapController != null) {
-        var mapState =
-            Provider.of<SmashMapState>(mapBuilder.context, listen: false);
+      if (context != null && _mapController != null) {
+        var mapState = Provider.of<SmashMapState>(context, listen: false);
         if (mapState.centerOnGps) {
           GpsState gpsState = Provider.of<GpsState>(context, listen: false);
           if (gpsState.lastGpsPosition != null) {
@@ -133,7 +132,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
   @override
   Widget build(BuildContext context) {
     print("BUIIIIIILD!!!");
-
     return Consumer<SmashMapBuilder>(builder: (context, mapBuilder, child) {
       mapBuilder.context = context;
       mapBuilder.scaffoldKey = _scaffoldKey;

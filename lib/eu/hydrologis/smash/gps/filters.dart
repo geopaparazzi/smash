@@ -111,7 +111,7 @@ class GpsFilterManager {
             _previousLogPosition.latitude, _previousLogPosition.longitude);
         msg.previousPosLatLon = previousPosLatLon;
         msg.newPosLatLon = newPosLatLon;
-        var ts = position.time.round(); //timestamp.millisecondsSinceEpoch;
+        var ts = position.time.round(); 
 
         // find values for filter checks
         var distanceLastLogged =
