@@ -1,6 +1,7 @@
 import 'package:latlong/latlong.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:background_locator/location_dto.dart';
@@ -81,7 +82,7 @@ class GpsFilterManager {
   /// New position event coming in from the location service.
   ///
   /// In here all the filtering happens.
-  /// 
+  ///
   /// Returns true if the point was not blocked.
   bool onNewPositionEvent(SmashPosition position) {
     GpsFilterManagerMessage msg = GpsFilterManagerMessage();
@@ -111,7 +112,7 @@ class GpsFilterManager {
             _previousLogPosition.latitude, _previousLogPosition.longitude);
         msg.previousPosLatLon = previousPosLatLon;
         msg.newPosLatLon = newPosLatLon;
-        var ts = position.time.round(); 
+        var ts = position.time.round();
 
         // find values for filter checks
         var distanceLastLogged =
@@ -155,6 +156,10 @@ class GpsFilterManager {
   }
 
   bool isValid(var distanceLastEvent, GpsFilterManagerMessage msg) {
+    if (_gpsState.gpsMaxDistance == null) {
+      msg.distanceLastEvent = distanceLastEvent;
+      return true;
+    }
     var isAtValidDistance = distanceLastEvent < _gpsState.gpsMaxDistance;
     msg.distanceLastEvent = distanceLastEvent;
     msg.maxAllowedDistanceLastEvent = _gpsState.gpsMaxDistance;
@@ -176,22 +181,11 @@ class GpsFilterManager {
         deltaSecondsLastEvent > _gpsState.gpsTimeInterval;
   }
 
-  LocationDto checkTestMock() {
-    // if (_gpsState.doTestLog) {
-    //   // Use the mocked log
-    //   var c = Testlog.getNext();
-    //   LocationDto newP = LocationDto(
-    //     latitude: c.y,
-    //     longitude: c.x,
-    //     heading: c.z,
-    //     accuracy: 2,
-    //     altitude: 100,
-    //     speed: 2,
-    //     timestamp: DateTime.now(),
-    //     mocked: true,
-    //   );
-    //   return newP;
-    // }
+  SmashPosition checkTestMock() {
+    if (_gpsState.doTestLog) {
+      // Use the mocked log
+      return Testlog.getNext();
+    }
     return null;
   }
 }

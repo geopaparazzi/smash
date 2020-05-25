@@ -4,12 +4,14 @@
  * found in the LICENSE file.
  */
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart' hide Path;
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -34,7 +36,7 @@ class GpsPositionPlugin implements MapPlugin {
 class GpsPositionPluginOption extends LayerOptions {
   Color markerColor;
   Color markerColorStale;
-  Color markerColorLogging = SmashColors.gpsLogging;
+  Color markerColorLogging;
   double markerSize;
 
   GpsPositionPluginOption({
@@ -42,7 +44,9 @@ class GpsPositionPluginOption extends LayerOptions {
     this.markerColorStale = Colors.grey,
     this.markerColorLogging,
     this.markerSize = 10,
-  });
+  }) {
+    markerColorLogging ??= SmashColors.gpsLogging;
+  }
 }
 
 class GpsPositionLayer extends StatelessWidget {
@@ -54,58 +58,115 @@ class GpsPositionLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GpsState>(builder: (context, gpsState, child) {
-      var pos = gpsState.lastGpsPosition;
-      if (pos == null || gpsState.status == GpsStatus.OFF) {
-        return Container();
-      } else {
-        LatLng posLL = LatLng(pos.latitude, pos.longitude);
-        var bounds = map.getBounds();
-        if (!bounds.contains(posLL)) {
-          return Container();
-        }
+    GpsState gpsState = Provider.of<GpsState>(context);
 
-        var color = gpsState.status == GpsStatus.ON_WITH_FIX
-            ? gpsPositionLayerOpts.markerColor
-            : (gpsState.status == GpsStatus.ON_NO_FIX
-                ? gpsPositionLayerOpts.markerColorStale
-                : gpsPositionLayerOpts.markerColorLogging);
-
-        CustomPoint posPixel = map.project(posLL);
-        var pixelBounds = map.getLastPixelBounds();
-        var height = pixelBounds.bottomLeft.y - pixelBounds.topLeft.y;
-        CustomPoint pixelOrigin = map.getPixelOrigin();
-        double centerX =
-            posPixel.x - pixelOrigin.x - gpsPositionLayerOpts.markerSize / 2;
-        double centerY = height -
-            (posPixel.y - pixelOrigin.y) -
-            gpsPositionLayerOpts.markerSize / 2;
-        double delta = 3;
-        return IgnorePointer(
-          child: Stack(
-            children: <Widget>[
-              Positioned(
-                left: centerX - delta / 2.0,
-                bottom: centerY - delta / 2.0,
-                child: Icon(
-                  Icons.my_location,
-                  size: gpsPositionLayerOpts.markerSize + delta,
-                  color: Colors.white,
-                ),
-              ),
-              Positioned(
-                left: centerX,
-                bottom: centerY,
-                child: Icon(
-                  Icons.my_location,
-                  size: gpsPositionLayerOpts.markerSize,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-    });
+    return CustomPaint(
+      painter: CurrentLogPathPainter(gpsPositionLayerOpts, gpsState, map),
+    );
   }
+}
+
+class CurrentLogPathPainter extends CustomPainter {
+  MapState map;
+  GpsState gpsState;
+  GpsPositionPluginOption gpsPositionLayerOpts;
+  Paint paintStroke = Paint()
+    ..color = Colors.white
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 5;
+  Paint paintFill = Paint()
+    ..color = Colors.white
+    ..style = PaintingStyle.fill;
+  Paint accuracyStroke = Paint()
+    ..color = Colors.blue
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 1;
+  Paint accuracyFill = Paint()
+    ..color = Colors.blue.withAlpha(50)
+    ..style = PaintingStyle.fill;
+
+  CurrentLogPathPainter(this.gpsPositionLayerOpts, this.gpsState, this.map);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var pos = gpsState.lastGpsPosition;
+    if (pos != null && gpsState.status != GpsStatus.OFF) {
+      LatLng posLL = LatLng(pos.latitude, pos.longitude);
+      var bounds = map.getBounds();
+      if (!bounds.contains(posLL)) {
+        return;
+      }
+
+      var color = //gpsPositionLayerOpts.markerColor;
+          gpsState.status == GpsStatus.ON_WITH_FIX
+              ? gpsPositionLayerOpts.markerColor
+              : (gpsState.status == GpsStatus.ON_NO_FIX
+                  ? gpsPositionLayerOpts.markerColorStale
+                  : gpsPositionLayerOpts.markerColorLogging);
+
+      CustomPoint posPixel = map.project(posLL);
+      CustomPoint pixelOrigin = map.getPixelOrigin();
+      var radius = gpsPositionLayerOpts.markerSize / 2;
+      double centerX = posPixel.x - pixelOrigin.x;
+      double centerY = (posPixel.y - pixelOrigin.y);
+
+      if (pos.accuracy != null) {
+        var radiusLL =
+            calculateEndingGlobalCoordinates(posLL, 90, pos.accuracy);
+        CustomPoint tmpPixel = map.project(radiusLL);
+        double tmpX = tmpPixel.x - pixelOrigin.x;
+        double accuracyRadius = (centerX - tmpX).abs();
+
+        canvas.drawCircle(
+            Offset(centerX, centerY), accuracyRadius, accuracyStroke);
+        canvas.drawCircle(
+            Offset(centerX, centerY), accuracyRadius, accuracyFill);
+      }
+
+      if (pos.heading != null && pos.heading > 0) {
+        var heading = pos.heading - 90;
+        double rad = degToRadian(heading);
+
+        var rect = Rect.fromCircle(
+            center: Offset(centerX, centerY), radius: radius * 0.7);
+
+        var delta = math.pi / 4;
+
+        canvas.drawArc(
+            rect, rad + delta / 2, math.pi * 2 - delta, false, paintStroke);
+        canvas.drawCircle(Offset(centerX, centerY), radius * 0.3, paintFill);
+
+        delta = delta * 1.1;
+        var paintStrokeOver = Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3;
+        var paintFillOver = Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
+        canvas.drawArc(
+            rect, rad + delta / 2, math.pi * 2 - delta, false, paintStrokeOver);
+        canvas.drawCircle(
+            Offset(centerX, centerY), radius * 0.2, paintFillOver);
+      } else {
+        canvas.drawCircle(Offset(centerX, centerY), radius * 0.7, paintStroke);
+        canvas.drawCircle(Offset(centerX, centerY), radius * 0.3, paintFill);
+
+        var paintStrokeOver = Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3;
+        var paintFillOver = Paint()
+          ..color = color
+          ..style = PaintingStyle.fill;
+        canvas.drawCircle(
+            Offset(centerX, centerY), radius * 0.7, paintStrokeOver);
+        canvas.drawCircle(
+            Offset(centerX, centerY), radius * 0.2, paintFillOver);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }

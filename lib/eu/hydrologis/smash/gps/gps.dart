@@ -9,6 +9,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:background_locator/background_locator.dart' as GPS;
+import 'package:background_locator/keys.dart';
 import 'package:background_locator/location_dto.dart';
 import 'package:background_locator/location_settings.dart';
 import 'package:latlong/latlong.dart';
@@ -33,18 +34,41 @@ class CoordinateUtilities {
 }
 
 enum GpsStatus { OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
+const String ARG_LATITUDE = 'latitude';
+const String ARG_LONGITUDE = 'longitude';
+const String ARG_ACCURACY = 'accuracy';
+const String ARG_ALTITUDE = 'altitude';
+const String ARG_SPEED = 'speed';
+const String ARG_SPEED_ACCURACY = 'speed_accuracy';
+const String ARG_HEADING = 'heading';
+const String ARG_TIME = 'time';
+const String ARG_MOCKED = 'mocked';
 
 class SmashPosition {
   LocationDto _location;
+  bool mocked = false;
 
   SmashPosition.fromLocation(this._location);
+  SmashPosition.fromJson(Map<String, dynamic> json) {
+    _location = LocationDto.fromJson({
+      Keys.ARG_LATITUDE: json[ARG_LATITUDE],
+      Keys.ARG_LONGITUDE: json[ARG_LONGITUDE],
+      Keys.ARG_ALTITUDE: json[ARG_ALTITUDE],
+      Keys.ARG_HEADING: json[ARG_HEADING],
+      Keys.ARG_ACCURACY: json[ARG_ACCURACY],
+      Keys.ARG_TIME: json[ARG_TIME],
+      Keys.ARG_SPEED: json[ARG_SPEED],
+      Keys.ARG_SPEED_ACCURACY: json[ARG_SPEED_ACCURACY],
+    });
+    mocked = json[ARG_MOCKED];
+  }
   SmashPosition.fromCoords(double lon, double lat, double time) {
     _location = LocationDto.fromJson({
-      "latitude": lat,
-      "longitude": lon,
-      "altitude": -1.0,
-      "heading": -1.0,
-      "time": time,
+      ARG_LATITUDE: lat,
+      ARG_LONGITUDE: lon,
+      ARG_ALTITUDE: -1.0,
+      ARG_HEADING: -1.0,
+      ARG_TIME: time,
     });
   }
 

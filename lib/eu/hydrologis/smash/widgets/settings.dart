@@ -646,7 +646,9 @@ class GpsSettingsState extends State<GpsSettings> {
                         msg.minAllowedTimeDeltaLastEvent;
 
                     bool maxDistFilterBlocks =
-                        distanceLastEvent > maxAllowedDistanceLastEvent;
+                        maxAllowedDistanceLastEvent == null
+                            ? false
+                            : distanceLastEvent > maxAllowedDistanceLastEvent;
                     bool minDistFilterBlocks =
                         distanceLastEvent <= minAllowedDistanceLastEvent;
                     bool minTimeFilterBlocks =
@@ -667,8 +669,9 @@ class GpsSettingsState extends State<GpsSettings> {
                       "HAS BEEN BLOCKED": "$hasBeenBlocked",
                       "Distance from prev [m]": distanceLastEvent,
                       "Time from prev [s]": timeLastEvent,
-                      maxDistString:
-                          "$distanceLastEvent > $maxAllowedDistanceLastEvent",
+                      maxDistString: maxAllowedDistanceLastEvent == null
+                          ? "Disabled."
+                          : "$distanceLastEvent > $maxAllowedDistanceLastEvent",
                       minDistString:
                           "$distanceLastEvent <= $minAllowedDistanceLastEvent",
                       minTimeString:
@@ -815,11 +818,11 @@ class GpsSettingsState extends State<GpsSettings> {
 
   SingleChildScrollView getSettingsPart(BuildContext context) {
     int minDistance =
-        GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, MINDISTANCES.first);
+        GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, MINDISTANCES[1]);
     int maxDistance =
         GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, MAXDISTANCES.last);
     int timeInterval =
-        GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS.first);
+        GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS[1]);
     bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
     bool showAllGpsPointCount =
         GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
@@ -1025,7 +1028,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         items: MAXDISTANCES.map((i) {
                           return DropdownMenuItem<int>(
                             child: Text(
-                              "$i m",
+                              i < 0 ? "Disabled" : "$i m",
                               textAlign: TextAlign.center,
                             ),
                             value: i,
@@ -1035,7 +1038,8 @@ class GpsSettingsState extends State<GpsSettings> {
                           await GpPreferences()
                               .setInt(KEY_GPS_MAX_DISTANCE, selected);
                           var gpsState = Provider.of<GpsState>(context);
-                          gpsState.gpsMaxDistance = selected;
+                          gpsState.gpsMaxDistance =
+                              selected < 0 ? null : selected;
                           setState(() {});
                         },
                       ),
@@ -1380,9 +1384,7 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
           element.message.contains("┄┄┄┄┄┄") ||
           element.message.startsWith("│ #") ||
           element.message.startsWith("#") ||
-          element.message.startsWith(RegExp(".*48;5;196mERROR.\\[0m")) 
-
-          ) {
+          element.message.startsWith(RegExp(".*48;5;196mERROR.\\[0m"))) {
         return false;
       } else if (element.message.startsWith("│ ")) {
         element.message = element.message.substring(4).trim();

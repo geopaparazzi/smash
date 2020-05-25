@@ -24,7 +24,7 @@ class GpsState extends ChangeNotifierPlus {
   bool _insertInGps = true;
 
   int gpsMinDistance = 1;
-  int gpsMaxDistance = 100;
+  int gpsMaxDistance;
   int gpsTimeInterval = 1;
   bool doTestLog = false;
 
@@ -33,7 +33,10 @@ class GpsState extends ChangeNotifierPlus {
 
   void init() {
     gpsMinDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, 1);
-    gpsMaxDistance = GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, 100);
+    gpsMaxDistance = GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, null);
+    if (gpsMaxDistance == -1) {
+      gpsMaxDistance = null;
+    }
     gpsTimeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, 1);
     doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
   }
