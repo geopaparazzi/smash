@@ -6,6 +6,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
@@ -227,31 +228,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
                     children: DashboardUtils.getDrawerTilesList(
                         context, _mapController)
                       ..add(
-                        ListTile(
-                          leading: new Icon(
-                            MdiIcons.exitRun,
-                            color: SmashColors.mainDecorations,
-                            size: SmashUI.MEDIUM_ICON_SIZE,
-                          ),
-                          title: SmashUI.normalText(
-                            "Exit",
-                            bold: true,
-                            color: SmashColors.mainDecorations,
-                          ),
-                          onTap: () async {
-                            bool doExit = await showConfirmDialog(
-                                mapBuilder.context,
-                                "Are you sure you want to close the project?",
-                                "Active operations will be stopped.");
-                            if (doExit) {
-                              await mapState.persistLastPosition();
-                              await disposeProject(context);
-                              await GpsHandler().close();
-                              SystemChannels.platform
-                                  .invokeMethod('SystemNavigator.pop');
-                            }
-                          },
-                        ),
+                        getExitTile(context, mapBuilder, mapState),
                       )),
               ),
             ],
@@ -279,6 +256,60 @@ class _MainViewWidgetState extends State<MainViewWidget>
         onWillPop: () async {
           return Future.value(false);
         });
+  }
+
+  Widget getExitTile(BuildContext context, SmashMapBuilder mapBuilder,
+      SmashMapState mapState) {
+    if (Platform.isIOS) {
+      return Consumer<GpsState>(builder: (context, gpsState, child) {
+        var gpsStatusIcon = DashboardUtils.getGpsStatusIcon(
+            gpsState.status, SmashUI.MEDIUM_ICON_SIZE);
+        var gpsIsOff = gpsState.status == GpsStatus.OFF;
+        return ListTile(
+          leading: gpsStatusIcon,
+          title: SmashUI.normalText(
+            gpsIsOff ? "Turn GPS on" : "Turn GPS off",
+            bold: true,
+            color: SmashColors.mainDecorations,
+          ),
+          onTap: () async {
+            if (gpsIsOff) {
+              gpsState.status = GpsStatus.ON_NO_FIX;
+              await GpsHandler().init(gpsState);
+            } else {
+              gpsState.status = GpsStatus.OFF;
+              await mapState.persistLastPosition();
+              await GpsHandler().close();
+            }
+          },
+        );
+      });
+    } else {
+      return ListTile(
+        leading: new Icon(
+          MdiIcons.exitRun,
+          color: SmashColors.mainDecorations,
+          size: SmashUI.MEDIUM_ICON_SIZE,
+        ),
+        title: SmashUI.normalText(
+          "Exit",
+          bold: true,
+          color: SmashColors.mainDecorations,
+        ),
+        onTap: () async {
+          bool doExit = await showConfirmDialog(
+              mapBuilder.context,
+              "Are you sure you want to close the project?",
+              "Active operations will be stopped.");
+          if (doExit) {
+            await mapState.persistLastPosition();
+            await disposeProject(context);
+            await GpsHandler().close();
+            SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+          }
+        },
+      );
+    }
   }
 
   List<Widget> addActionBarButtons() {
