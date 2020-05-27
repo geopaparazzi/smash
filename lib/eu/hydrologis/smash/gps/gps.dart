@@ -260,7 +260,7 @@ class GpsHandler {
 
   /// Close the handler.
   Future close() async {
-    if (_timer != null) _timer.cancel();
+    _timer?.cancel();
 
     await closeGpsIsolate();
 

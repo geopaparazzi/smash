@@ -114,8 +114,8 @@ class SmashMapState extends ChangeNotifierPlus {
     _zoom = newZoom;
   }
   
-  void persistLastPosition() {
-    GpPreferences().setLastPosition(_center.x, _center.y, _zoom);
+  Future<void> persistLastPosition() async {
+    await GpPreferences().setLastPosition(_center.x, _center.y, _zoom);
   }
 
   bool get centerOnGps => _centerOnGps;

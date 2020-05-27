@@ -54,7 +54,7 @@ class WelcomeWidget extends StatefulWidget {
 
 class _WelcomeWidgetState extends State<WelcomeWidget> {
   ValueNotifier<int> orderNotifier = ValueNotifier<int>(0);
-  var finalOrder = 8;
+  var finalOrder = 7;
 
   bool _initFinished = false;
 
@@ -106,19 +106,19 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                 "Preferences loaded.", orderNotifier, 2, handlePreferences),
             ProgressTile(MdiIcons.folderCog, "Loading workspace...",
                 "Workspace loaded.", orderNotifier, 3, handleWorkspace),
-            ProgressTile(MdiIcons.crosshairsGps, "Initializing GPS...",
-                "GPS initialized.", orderNotifier, 4, handleGps),
+            // ProgressTile(MdiIcons.crosshairsGps, "Initializing GPS...",
+            //     "GPS initialized.", orderNotifier, 4, handleGps),
             ProgressTile(MdiIcons.notePlus, "Loading tags list...",
-                "Tags list loaded.", orderNotifier, 5, handleTags),
+                "Tags list loaded.", orderNotifier, 4, handleTags),
             ProgressTile(
                 MdiIcons.earthBox,
                 "Loading known projections...",
                 "Known projections loaded.",
                 orderNotifier,
-                6,
+                5,
                 handleProjections),
             ProgressTile(MdiIcons.layers, "Loading layers list...",
-                "Layers list loaded.", orderNotifier, 7, handleLayers),
+                "Layers list loaded.", orderNotifier, 6, handleLayers),
           ],
         ),
       );

@@ -70,12 +70,19 @@ class CurrentLogPathPainter extends CustomPainter {
   MapState map;
   GpsState gpsState;
   GpsPositionPluginOption gpsPositionLayerOpts;
-  Paint paintStroke = Paint()
+  Paint paintStrokeWhite = Paint()
     ..color = Colors.white
     ..style = PaintingStyle.stroke
     ..strokeWidth = 5;
-  Paint paintFill = Paint()
+  Paint paintFillWhite = Paint()
     ..color = Colors.white
+    ..style = PaintingStyle.fill;
+  Paint paintStrokeBlack = Paint()
+    ..color = Colors.black
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 5;
+  Paint paintFillBlack = Paint()
+    ..color = Colors.black
     ..style = PaintingStyle.fill;
   Paint accuracyStroke = Paint()
     ..color = Colors.blue
@@ -97,12 +104,22 @@ class CurrentLogPathPainter extends CustomPainter {
         return;
       }
 
-      var color = //gpsPositionLayerOpts.markerColor;
-          gpsState.status == GpsStatus.ON_WITH_FIX
-              ? gpsPositionLayerOpts.markerColor
-              : (gpsState.status == GpsStatus.ON_NO_FIX
-                  ? gpsPositionLayerOpts.markerColorStale
-                  : gpsPositionLayerOpts.markerColorLogging);
+      var color;
+      var paintStroke;
+      var paintFill;
+      if (gpsState.status == GpsStatus.ON_WITH_FIX) {
+        color = gpsPositionLayerOpts.markerColor;
+        paintStroke = paintStrokeWhite;
+        paintFill = paintFillWhite;
+      } else if (gpsState.status == GpsStatus.ON_NO_FIX) {
+        color = gpsPositionLayerOpts.markerColorStale;
+        paintStroke = paintStrokeWhite;
+        paintFill = paintFillWhite;
+      } else {
+        color = gpsPositionLayerOpts.markerColorLogging;
+        paintStroke = paintStrokeBlack;
+        paintFill = paintFillBlack;
+      }
 
       CustomPoint posPixel = map.project(posLL);
       CustomPoint pixelOrigin = map.getPixelOrigin();

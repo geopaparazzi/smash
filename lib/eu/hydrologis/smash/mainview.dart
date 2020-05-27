@@ -225,7 +225,34 @@ class _MainViewWidgetState extends State<MainViewWidget>
               new Container(
                 child: new Column(
                     children: DashboardUtils.getDrawerTilesList(
-                        context, _mapController)),
+                        context, _mapController)
+                      ..add(
+                        ListTile(
+                          leading: new Icon(
+                            MdiIcons.exitRun,
+                            color: SmashColors.mainDecorations,
+                            size: SmashUI.MEDIUM_ICON_SIZE,
+                          ),
+                          title: SmashUI.normalText(
+                            "Exit",
+                            bold: true,
+                            color: SmashColors.mainDecorations,
+                          ),
+                          onTap: () async {
+                            bool doExit = await showConfirmDialog(
+                                mapBuilder.context,
+                                "Are you sure you want to close the project?",
+                                "Active operations will be stopped.");
+                            if (doExit) {
+                              await mapState.persistLastPosition();
+                              await disposeProject(context);
+                              await GpsHandler().close();
+                              SystemChannels.platform
+                                  .invokeMethod('SystemNavigator.pop');
+                            }
+                          },
+                        ),
+                      )),
               ),
             ],
           )),
@@ -250,16 +277,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
               addBottomToolBar(mapBuilder, projectData, mapState),
         ),
         onWillPop: () async {
-          bool doExit = await showConfirmDialog(
-              mapBuilder.context,
-              "Are you sure you want to close the project?",
-              "Active operations will be stopped.");
-          if (doExit) {
-            mapState.persistLastPosition();
-            await disposeProject(context);
-            GpsHandler().close();
-            return Future.value(true);
-          }
           return Future.value(false);
         });
   }

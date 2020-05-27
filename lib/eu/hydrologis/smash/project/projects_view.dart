@@ -9,6 +9,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/mainview.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -54,6 +55,8 @@ class ProjectView extends StatelessWidget {
                       BorderSide(color: SmashColors.mainDecorations, width: 3),
                   shape: StadiumBorder(),
                   onPressed: () async {
+                    await initGps(context);
+
                     var lastUsedFolder = await Workspace.getLastUsedFolder();
                     var selectedPath = await Navigator.push(
                         context,
@@ -63,7 +66,7 @@ class ProjectView extends StatelessWidget {
                                   FileManager.ALLOWED_PROJECT_EXT,
                                   lastUsedFolder,
                                 )));
-                    _openMainViewOnProject(context, selectedPath);
+                    await _openMainViewOnProject(context, selectedPath);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -90,7 +93,8 @@ class ProjectView extends StatelessWidget {
                       BorderSide(color: SmashColors.mainDecorations, width: 3),
                   shape: StadiumBorder(),
                   onPressed: () async {
-                    _createNewProjectAndOpenMainView(context);
+                    await initGps(context);
+                    await _createNewProjectAndOpenMainView(context);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -143,8 +147,9 @@ class ProjectView extends StatelessWidget {
                                   title: Text(projectName),
                                   subtitle: Text(folder),
                                   trailing: Icon(MdiIcons.arrowRight),
-                                  onTap: () {
-                                    _openMainViewOnProject(context, path);
+                                  onTap: () async {
+                                    await initGps(context);
+                                    await _openMainViewOnProject(context, path);
                                   },
                                 ),
                               );
@@ -194,7 +199,7 @@ class ProjectView extends StatelessWidget {
       var projectState = Provider.of<ProjectState>(context, listen: false);
       var gpsState = Provider.of<GpsState>(context, listen: false);
       gpsState.projectState = projectState;
-      await projectState.setNewProject(gpFile.path, context) ;
+      await projectState.setNewProject(gpFile.path, context);
       Navigator.pop(context);
       if (isOpeningPage) {
         Navigator.push(
@@ -212,6 +217,14 @@ class ProjectView extends StatelessWidget {
     if (isOpeningPage) {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => MainViewWidget()));
+    }
+  }
+
+  initGps(BuildContext context) async {
+    if (isOpeningPage) {
+      GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+      gpsState.init();
+      await GpsHandler().init(gpsState);
     }
   }
 }
