@@ -3,7 +3,8 @@
 # found in the LICENSE file.
 name: smash
 description: The Smart Mobile Application for Surveyor's Happyness.
-version: 1.2.0+6
+
+version: 1.2.1+7 # we keep the build number growing to have it properly handled in android
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

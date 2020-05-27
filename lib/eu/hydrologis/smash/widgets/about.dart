@@ -19,7 +19,6 @@ class AboutPage extends StatefulWidget {
 class AboutPageState extends State<AboutPage> {
   String _appName;
   String _version;
-  String _buildNumber;
 
   Future<void> getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -29,10 +28,6 @@ class AboutPageState extends State<AboutPage> {
       _appName = "SMASH";
     }
     _version = packageInfo.version;
-    _buildNumber = packageInfo.buildNumber;
-    if (_version == _buildNumber) {
-      _buildNumber = "";
-    }
 
     setState(() {});
   }
@@ -46,9 +41,6 @@ class AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     String version = _version;
-    if (_buildNumber != null && _buildNumber.length != 0) {
-      version += " build " + _buildNumber;
-    }
 
     return _appName == null
         ? SmashCircularProgress(
