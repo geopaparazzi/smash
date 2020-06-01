@@ -856,7 +856,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selValid) async {
                           await GpPreferences()
                               .setBoolean(KEY_GPS_SHOW_VALID_POINTS, selValid);
-                          Provider.of<SmashMapBuilder>(context).reBuild();
+                          Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
                           setState(() {});
                         },
                       ),
@@ -874,7 +874,7 @@ class GpsSettingsState extends State<GpsSettings> {
                           await GpPreferences()
                               .setBoolean(KEY_GPS_SHOW_ALL_POINTS, selAll);
 
-                          Provider.of<SmashMapBuilder>(context).reBuild();
+                          Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
                           setState(() {});
                         },
                       ),
@@ -961,7 +961,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selected) async {
                           await GpPreferences()
                               .setInt(KEY_GPS_MIN_DISTANCE, selected);
-                          var gpsState = Provider.of<GpsState>(context);
+                          var gpsState = Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsMinDistance = selected;
                           setState(() {});
                         },
@@ -989,7 +989,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selected) async {
                           await GpPreferences()
                               .setInt(KEY_GPS_TIMEINTERVAL, selected);
-                          var gpsState = Provider.of<GpsState>(context);
+                          var gpsState = Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsTimeInterval = selected;
                           setState(() {});
                         },
@@ -1037,7 +1037,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selected) async {
                           await GpPreferences()
                               .setInt(KEY_GPS_MAX_DISTANCE, selected);
-                          var gpsState = Provider.of<GpsState>(context);
+                          var gpsState = Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsMaxDistance =
                               selected < 0 ? null : selected;
                           setState(() {});
@@ -1077,7 +1077,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (newValue) async {
                           await GpPreferences()
                               .setBoolean(KEY_GPS_TESTLOG, newValue);
-                          var gpsState = Provider.of<GpsState>(context);
+                          var gpsState = Provider.of<GpsState>(context, listen: false);
                           gpsState.doTestLog = newValue;
                           setState(() {});
                         },
@@ -1315,7 +1315,7 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
                     child: Text("Open full debug log"),
                     onPressed: () {
                       ProjectState projectState =
-                          Provider.of<ProjectState>(context);
+                          Provider.of<ProjectState>(context, listen: false);
                       Navigator.push(
                           context,
                           MaterialPageRoute(

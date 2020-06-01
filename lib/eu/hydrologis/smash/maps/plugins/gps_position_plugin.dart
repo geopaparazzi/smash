@@ -58,7 +58,7 @@ class GpsPositionLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    GpsState gpsState = Provider.of<GpsState>(context);
+    GpsState gpsState = Provider.of<GpsState>(context, listen: false);
 
     return CustomPaint(
       painter: CurrentLogPathPainter(gpsPositionLayerOpts, gpsState, map),

@@ -79,7 +79,7 @@ class ProjectState extends ChangeNotifierPlus {
   
   Future<void> reloadProject(BuildContext context) async {
     if (projectDb == null) return;
-    var mapBuilder = Provider.of<SmashMapBuilder>(context);
+    var mapBuilder = Provider.of<SmashMapBuilder>(context, listen: false);
     await reloadProjectQuiet(mapBuilder);
     mapBuilder.reBuild();
   }

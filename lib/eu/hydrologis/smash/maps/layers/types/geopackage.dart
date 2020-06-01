@@ -63,7 +63,7 @@ class GeopackageSource extends VectorLayerSource {
 
       Envelope limitBounds;
       if (loadOnlyVisible) {
-        var mapState = Provider.of<SmashMapState>(context);
+        var mapState = Provider.of<SmashMapState>(context, listen: false);
         if (mapState.mapController != null) {
           var bounds = mapState.mapController.bounds;
           var n = bounds.north;

@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+import 'package:after_layout/after_layout.dart';
 import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -75,7 +76,7 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
 
 /// The log list widget.
 class LogListWidget extends StatefulWidget {
-  var db;
+  GeopaparazziProjectDb db;
   LogListWidget(this.db);
 
   @override
@@ -85,21 +86,21 @@ class LogListWidget extends StatefulWidget {
 }
 
 /// The log list widget state.
-class LogListWidgetState extends State<LogListWidget> {
+class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
   List<dynamic> _logsList = [];
   bool _isLoading = true;
 
   @override
-  void initState() {
-    super.initState();
+  void afterFirstLayout(BuildContext context) {
     loadLogs();
   }
 
   Future loadLogs() async {
     var itemsList =
         await widget.db.getQueryObjectsList(Log4ListWidgetBuilder());
+
     if (itemsList != null) {
-      _logsList = itemsList;
+      _logsList = itemsList.reversed.toList();
     }
     setState(() {
       _isLoading = false;
@@ -111,83 +112,140 @@ class LogListWidgetState extends State<LogListWidget> {
     GpsState gpsState = Provider.of<GpsState>(context, listen: false);
     var projectState = Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("GPS Logs list"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(MdiIcons.checkBoxMultipleOutline),
-            tooltip: "Select all",
-            onPressed: () async {
-              await db.updateGpsLogVisibility(true);
-              await loadLogs();
-              await reloadMap(context);
-            },
-          ),
-          IconButton(
-            tooltip: "Unselect all",
-            icon: Icon(MdiIcons.checkboxMultipleBlankOutline),
-            onPressed: () async {
-              await db.updateGpsLogVisibility(false);
-              await loadLogs();
-              await reloadMap(context);
-            },
-          ),
-          PopupMenuButton<int>(
-            onSelected: (value) async {
-              if (value == 1) {
-                await db.invertGpsLogsVisibility();
+    return WillPopScope(
+      onWillPop: () async {
+        await Provider.of<ProjectState>(context, listen: false)
+            .reloadProject(context);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("GPS Logs list"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(MdiIcons.checkBoxMultipleOutline),
+              tooltip: "Select all",
+              onPressed: () async {
+                await db.updateGpsLogVisibility(true);
                 await loadLogs();
-                await reloadMap(context);
-              } else if (value == 2) {
-                if (_logsList.length > 1) {
-                  var masterId; // = (_logsList.first as Log4ListWidget).id;
-                  var mergeIds = <int>[];
-                  for (Log4ListWidget log in _logsList) {
-                    if (log.isVisible == 1) {
-                      if (masterId == null) {
-                        masterId = log.id;
-                      } else {
-                        mergeIds.add(log.id);
+              },
+            ),
+            IconButton(
+              tooltip: "Unselect all",
+              icon: Icon(MdiIcons.checkboxMultipleBlankOutline),
+              onPressed: () async {
+                await db.updateGpsLogVisibility(false);
+                await loadLogs();
+              },
+            ),
+            PopupMenuButton<int>(
+              onSelected: (value) async {
+                if (value == 1) {
+                  await db.invertGpsLogsVisibility();
+                  await loadLogs();
+                } else if (value == 2) {
+                  if (_logsList.length > 1) {
+                    var masterId; // = (_logsList.first as Log4ListWidget).id;
+                    var mergeIds = <int>[];
+                    for (Log4ListWidget log in _logsList) {
+                      if (log.isVisible == 1) {
+                        if (masterId == null) {
+                          masterId = log.id;
+                        } else {
+                          mergeIds.add(log.id);
+                        }
                       }
                     }
+                    await db.mergeGpslogs(masterId, mergeIds);
+                    await loadLogs();
                   }
-                  await db.mergeGpslogs(masterId, mergeIds);
-                  await loadLogs();
-                  await reloadMap(context);
                 }
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              var txt1 = "Invert selection";
-              var txt2 = "Merge selected";
-              return [
-                PopupMenuItem<int>(
-                  value: 1,
-                  child: Text(txt1),
-                ),
-                PopupMenuItem<int>(
-                  value: 2,
-                  child: Text(txt2),
-                )
-              ];
-            },
-          ),
-        ],
+              },
+              itemBuilder: (BuildContext context) {
+                var txt1 = "Invert selection";
+                var txt2 = "Merge selected";
+                return [
+                  PopupMenuItem<int>(
+                    value: 1,
+                    child: Text(txt1),
+                  ),
+                  PopupMenuItem<int>(
+                    value: 2,
+                    child: Text(txt2),
+                  )
+                ];
+              },
+            ),
+          ],
+        ),
+        body: _isLoading
+            ? Center(child: SmashCircularProgress(label: "Loading logs..."))
+            : ListView.builder(
+                itemCount: _logsList.length,
+                itemBuilder: (context, index) {
+                  Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
+                  return LogInfo(logItem, gpsState, db, loadLogs);
+                }),
       ),
-      body: _isLoading
-          ? Center(child: SmashCircularProgress(label: "Loading logs..."))
-          : ListView.builder(
-              itemCount: _logsList.length,
-              itemBuilder: (context, index) {
-                Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
-                return buildLogSlidable(logItem, gpsState, db);
-              }),
     );
   }
+}
 
-  Slidable buildLogSlidable(
-      Log4ListWidget logItem, GpsState gpsState, GeopaparazziProjectDb db) {
+class LogInfo extends StatefulWidget {
+  var db;
+  var gpsState;
+  var logItem;
+  var reloadLogFunction;
+
+  LogInfo(this.logItem, this.gpsState, this.db, this.reloadLogFunction);
+
+  @override
+  _LogInfoState createState() => _LogInfoState();
+}
+
+class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
+  String timeString = "- nv -";
+  String lengthString = "- nv -";
+
+  String upString = "- nv -";
+  String downString = "- nv -";
+
+  @override
+  Future<void> afterFirstLayout(BuildContext context) async {
+    timeString = await _getTime(widget.logItem, widget.gpsState, widget.db);
+    lengthString = _getLength(widget.logItem, widget.gpsState);
+    List<double> upDown =
+        await _getElevDelta(widget.logItem, widget.gpsState, widget.db);
+    upString = "${upDown[0].toInt()}m";
+    downString = "${upDown[1].toInt()}m";
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var logItem = widget.logItem;
+    var db = widget.db;
+
+    var size = 15.0;
+    var timeIcon = Icon(
+      MdiIcons.clockOutline,
+      size: size,
+    );
+    var distIcon = Icon(
+      MdiIcons.ruler,
+      size: size,
+    );
+    var upIcon = Icon(
+      MdiIcons.arrowTopRightThick,
+      size: size,
+    );
+    var downIcon = Icon(
+      MdiIcons.arrowBottomRightThick,
+      size: size,
+    );
+    var padLeft = 5.0;
+    var pad = 3.0;
+
     List<Widget> actions = [];
     List<Widget> secondaryActions = [];
 
@@ -207,13 +265,11 @@ class LogListWidgetState extends State<LogListWidget> {
       color: SmashColors.mainDecorations,
       icon: MdiIcons.palette,
       onTap: () async {
-        var somethingChanged = await Navigator.push(
+        await Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => LogPropertiesWidget(logItem)));
-        if (somethingChanged) {
-          loadLogs();
-        }
+        setState(() {});
       },
     ));
     secondaryActions.add(IconSlideAction(
@@ -222,9 +278,7 @@ class LogListWidgetState extends State<LogListWidget> {
         icon: MdiIcons.delete,
         onTap: () async {
           await db.deleteGpslog(logItem.id);
-          await loadLogs();
-          await reloadMap(context);
-          setState(() {});
+          widget.reloadLogFunction();
         }));
 
     return Slidable(
@@ -232,9 +286,44 @@ class LogListWidgetState extends State<LogListWidget> {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: ListTile(
-        title: Text('${logItem.name}'),
-        subtitle: Text(
-            '${_getTime(logItem, gpsState, db)}; ${_getLength(logItem, gpsState)}'),
+        title: SmashUI.normalText('${logItem.name}',
+            bold: true, textAlign: TextAlign.left),
+        subtitle: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: pad),
+                    child: timeIcon,
+                  ),
+                  Text(timeString),
+                  Padding(
+                    padding: EdgeInsets.only(left: padLeft, right: pad),
+                    child: distIcon,
+                  ),
+                  Text(lengthString),
+                ],
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: pad),
+                    child: upIcon,
+                  ),
+                  Text(upString),
+                  Padding(
+                    padding: EdgeInsets.only(left: padLeft, right: pad),
+                    child: downIcon,
+                  ),
+                  Text(downString),
+                ],
+              )
+            ],
+          ),
+        ),
         leading: Icon(
           SmashIcons.logIcon,
           color: ColorExt(logItem.color),
@@ -245,8 +334,9 @@ class LogListWidgetState extends State<LogListWidget> {
             onChanged: (isVisible) async {
               logItem.isVisible = isVisible ? 1 : 0;
               await db.updateGpsLogVisibility(isVisible, logItem.id);
-              await loadLogs();
-              await reloadMap(context);
+              await Provider.of<ProjectState>(context, listen: false)
+                  .reloadProject(context);
+              setState(() {});
             }),
       ),
       actions: actions,
@@ -254,11 +344,8 @@ class LogListWidgetState extends State<LogListWidget> {
     );
   }
 
-  Future reloadMap(context) async {
-    Provider.of<ProjectState>(context).reloadProject(context);
-  }
-
-  _getTime(Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
+  Future<String> _getTime(
+      Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) async {
     var minutes = (item.endTime - item.startTime) / 1000 / 60;
     if (item.endTime == 0) {
       if (gpsState.isLogging && item.id == gpsState.currentLogId) {
@@ -267,22 +354,16 @@ class LogListWidgetState extends State<LogListWidget> {
             60;
       } else {
         // needs to be fixed using the points. Do it and refresh.
-        db.getLogDataPointsById(item.id).then((data) {
-          if (data != null && data.length > 0) {
-            var last = data.last;
-            var ts = last.ts;
-            db.updateGpsLogEndts(item.id, ts).then((i) {
-              setState(() {});
-            });
-          } else {
-            // remove those that have no data
-            db.deleteGpslog(item.id).then((deleted) {
-              if (deleted) {
-                setState(() {});
-              }
-            });
-          }
-        });
+        var data = await db.getLogDataPointsById(item.id);
+        if (data != null && data.length > 0) {
+          var last = data.last;
+          var ts = last.ts;
+          await db.updateGpsLogEndts(item.id, ts);
+          minutes = (ts - item.startTime) / 1000 / 60;
+        } else {
+          minutes = 0;
+        }
+
         return "";
       }
     }
@@ -298,7 +379,7 @@ class LogListWidgetState extends State<LogListWidget> {
     }
   }
 
-  _getLength(Log4ListWidget item, GpsState gpsState) {
+  String _getLength(Log4ListWidget item, GpsState gpsState) {
     double length = item.lengthm;
     if (length == 0 &&
         item.endTime == 0 &&
@@ -320,5 +401,25 @@ class LogListWidgetState extends State<LogListWidget> {
     } else {
       return "${length.round()} m";
     }
+  }
+
+  Future<List<double>> _getElevDelta(
+      Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) async {
+    double up = 0;
+    double down = 0;
+    var pointsList = await db.getLogDataPoints(item.id);
+
+    for (int i = 0; i < pointsList.length - 1; i++) {
+      var alt1 = pointsList[i].altim;
+      var alt2 = pointsList[i + 1].altim;
+
+      var delta = alt2 - alt1;
+      if (delta > 0) {
+        up += delta;
+      } else {
+        down += delta.abs();
+      }
+    }
+    return [up, down];
   }
 }

@@ -69,7 +69,7 @@ class DataLoaderUtilities {
     }
     note.noteExt = next;
 
-    var projectState = Provider.of<ProjectState>(mapBuilder.context);
+    var projectState = Provider.of<ProjectState>(mapBuilder.context, listen: false);
     var db = projectState.projectDb;
     await db.addNote(note);
 
@@ -305,7 +305,7 @@ class DataLoaderUtilities {
                               if (doRemove) {
                                 await db.deleteNote(note.id);
                                 var projectState = Provider.of<ProjectState>(
-                                    mapBuilder.context);
+                                    mapBuilder.context, listen: false);
                                 await projectState
                                     .reloadProject(ctx); // TODO check await
                               }
@@ -464,7 +464,7 @@ class DataLoaderUtilities {
                             if (doRemove) {
                               await db.deleteImage(image.id);
                               var projectState =
-                                  Provider.of<ProjectState>(mapBuilder.context);
+                                  Provider.of<ProjectState>(mapBuilder.context, listen: false);
                               await projectState
                                   .reloadProject(ctx); // TODO check await
                             }
