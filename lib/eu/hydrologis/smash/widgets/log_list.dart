@@ -216,8 +216,13 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     lengthString = _getLength(widget.logItem, widget.gpsState);
     List<double> upDown =
         await _getElevDelta(widget.logItem, widget.gpsState, widget.db);
-    upString = "${upDown[0].toInt()}m";
-    downString = "${upDown[1].toInt()}m";
+    if (upDown[0] == -1) {
+      upString = "- nv -";
+      downString = "- nv -";
+    } else {
+      upString = "${upDown[0].toInt()}m";
+      downString = "${upDown[1].toInt()}m";
+    }
     setState(() {});
   }
 
@@ -407,19 +412,71 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) async {
     double up = 0;
     double down = 0;
+    // if (item.name != "log_20200601_170019") {
+    //   return [-1, -1];
+    // }
     var pointsList = await db.getLogDataPoints(item.id);
-
+    List<int> removeIndexesList = [];
+    // start removing subsequent duplicates
     for (int i = 0; i < pointsList.length - 1; i++) {
-      var alt1 = pointsList[i].altim;
-      var alt2 = pointsList[i + 1].altim;
-
-      var delta = alt2 - alt1;
-      if (delta > 0) {
-        up += delta;
-      } else {
-        down += delta.abs();
+      double elev1 = pointsList[i].altim;
+      double elev2 = pointsList[i + 1].altim;
+      if (elev2 - elev1 == 0) {
+        removeIndexesList.add(i);
       }
     }
-    return [up, down];
+    removeIndexesList.reversed.forEach((index) {
+      pointsList.removeAt(index);
+    });
+    removeIndexesList = [];
+    // then remove simmetric peaks
+    for (int i = 0; i < pointsList.length - 2; i++) {
+      double elev1 = pointsList[i].altim;
+      double elev2 = pointsList[i + 1].altim;
+      double elev3 = pointsList[i + 2].altim;
+      var delta1 = elev2 - elev1;
+      var delta2 = elev3 - elev2;
+      var deltaDiff = delta2 + delta1;
+      // print("Check $i $elev1 / $elev2 / $elev3");
+      if (deltaDiff.abs() < 0.1) {
+        // print("REMOVE $elev1 and $elev2");
+        // remove the central peak and first duplicate
+        removeIndexesList.add(i);
+        removeIndexesList.add(i + 1);
+      }
+    }
+    removeIndexesList.reversed.toSet().forEach((index) {
+      var removeAt = pointsList.removeAt(index);
+      // print("Removed $index: ${removeAt.altim}");
+    });
+
+    var minThresholdSum = 5; // meters
+    var maxThreshold = 10; // meters
+    double deltaSum = 0;
+    for (int i = 0; i < pointsList.length - 1; i++) {
+      double elev1 = pointsList[i].altim;
+      double elev2 = pointsList[i + 1].altim;
+
+      var delta = elev2 - elev1;
+
+      // print("$i = $delta   ->   $elev1      $elev2");
+      if (delta.abs() > maxThreshold) {
+        // ignore the point
+        continue;
+      }
+
+      deltaSum += delta;
+      // print("$i = $delta   ->   $deltaSum");
+      if (deltaSum.abs() > minThresholdSum) {
+        // print("USE IT $deltaSum");
+        if (deltaSum > 0) {
+          up += deltaSum;
+        } else {
+          down += deltaSum;
+        }
+        deltaSum = 0;
+      }
+    }
+    return [up, down.abs()];
   }
 }
