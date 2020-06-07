@@ -160,20 +160,20 @@ class _NoteInfoState extends State<NoteInfo> {
           SmashPosition sp = SmashPosition.fromCoords(dynNote.lon, dynNote.lat,
               DateTime.now().millisecondsSinceEpoch.toDouble());
 
-          await Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MasterDetailPage(
-                        sectionMap,
-                        SmashUI.titleText(sectionName,
-                            color: SmashColors.mainBackground, bold: true),
-                        sectionName,
-                        sp,
-                        dynNote.id,
-                        onWillPopFunction,
-                        getThumbnailsFromDb,
-                        takePictureForForms,
-                      )));
+          await Navigator.push(context, MaterialPageRoute(builder: (context) {
+            var masterDetailPage = MasterDetailPage(
+              sectionMap,
+              SmashUI.titleText(sectionName,
+                  color: SmashColors.mainBackground, bold: true),
+              sectionName,
+              sp,
+              dynNote.id,
+              onWillPopFunction,
+              getThumbnailsFromDb,
+              takePictureForForms,
+            );
+            return masterDetailPage;
+          }));
           setState(() {});
         },
       ));
