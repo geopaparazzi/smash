@@ -393,7 +393,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
                   var doNoteInGps = gpsState.insertInGps;
                   var titleWithMode = Column(
                     children: [
-                      SmashUI.titleText("Simple form",
+                      SmashUI.titleText("Form Notes",
                           color: SmashColors.mainSelection, bold: true),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
@@ -416,6 +416,8 @@ class _MainViewWidgetState extends State<MainViewWidget>
                       titleWithMode,
                       sectionNames,
                       iconNames);
+                  // refresh mode
+                  doNoteInGps = gpsState.insertInGps;
                   if (selectedSection != null) {
                     Widget appbarWidget = getDialogTitleWithInsertionMode(
                         selectedSection,
@@ -680,14 +682,14 @@ class GpsInsertionModeSelector extends StatefulWidget {
 }
 
 class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
-  List<bool> _selections;
+  bool _doInGps = true;
 
   @override
   Widget build(BuildContext context) {
-    if (_selections == null) {
-      var doinGps = GpPreferences().getBooleanSync(KEY_DO_NOTE_IN_GPS, true);
-      _selections = [doinGps, !doinGps];
-    }
+    _doInGps = GpPreferences().getBooleanSync(KEY_DO_NOTE_IN_GPS, true);
+
+    var sel = [_doInGps, !_doInGps];
+
     return Container(
       child: ToggleButtons(
         color: SmashColors.mainDecorations,
@@ -720,14 +722,14 @@ class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
             ),
           ),
         ],
-        isSelected: _selections,
+        isSelected: sel,
         onPressed: (index) async {
-          _selections[0] = !_selections[0];
-          _selections[1] = !_selections[1];
+          print("${sel[0]}   ${sel[1]}");
+          var doGps = !sel[0];
           var gpsState = Provider.of<GpsState>(context, listen: false);
-          gpsState.insertInGpsQuiet = _selections[0];
+          gpsState.insertInGpsQuiet = doGps;
 
-          await GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, _selections[0]);
+          await GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, doGps);
 
           setState(() {});
         },
