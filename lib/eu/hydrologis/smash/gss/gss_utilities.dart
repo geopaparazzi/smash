@@ -40,7 +40,7 @@ class GssUtilities {
   static final String YES = "Yes";
   static final String NO = "No";
 
-  static Future<String> getAuthHeader() async {
+  static Future<String> getAuthHeader(String password) async {
     String deviceId = GpPreferences().getStringSync(DEVICE_ID_OVERRIDE);
     if (deviceId == null) {
       deviceId = GpPreferences()
@@ -49,7 +49,8 @@ class GssUtilities {
     if (deviceId == null) {
       return null;
     }
-    String authCode = deviceId + ":" + GssUtilities.MASTER_GSS_PASSWORD;
+    String authCode =
+        deviceId + ":" + (password ?? GssUtilities.MASTER_GSS_PASSWORD);
     String authHeader = "Basic " + Base64Encoder().convert(authCode.codeUnits);
     return authHeader;
   }
