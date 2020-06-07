@@ -101,29 +101,20 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(4.0),
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(MdiIcons.pencil),
-                                  color: SmashColors.mainDecorationsDarker,
-                                  onPressed: () async {
-                                    String result = await showInputDialog(
-                                      context,
-                                      "Change note text",
-                                      "Please enter a new text for the note",
-                                      defaultText: _note.text,
-                                      validationFunction: noEmptyValidator,
-                                    );
-                                    if (result != null) {
-                                      _note.text = result;
-                                      _somethingChanged = true;
-                                      setState(() {});
-                                    }
-                                  },
-                                ),
-                                SmashUI.normalText(_note.text,
-                                    color: SmashColors.mainDecorationsDarker),
-                              ],
+                            child: EditableTextField(
+                              "Log Name",
+                              _note.text,
+                              (res) async {
+                                if (res == null || res.trim().length == 0) {
+                                  res = _note.text;
+                                }
+                                setState(() {
+                                  _note.text = res;
+                                  _somethingChanged = true;
+                                });
+                              },
+                              validationFunction: noEmptyValidator,
+                              doBold: true,
                             ),
                           ),
                           Table(

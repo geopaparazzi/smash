@@ -76,7 +76,7 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
 
 /// The log list widget.
 class LogListWidget extends StatefulWidget {
-  GeopaparazziProjectDb db;
+  final GeopaparazziProjectDb db;
   LogListWidget(this.db);
 
   @override
@@ -282,8 +282,12 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         color: SmashColors.mainDanger,
         icon: MdiIcons.delete,
         onTap: () async {
-          await db.deleteGpslog(logItem.id);
-          widget.reloadLogFunction();
+          bool doDelete = await showConfirmDialog(
+              context, "DELETE", 'Are you sure you want to delete the log?');
+          if (doDelete) {
+            await db.deleteGpslog(logItem.id);
+            await widget.reloadLogFunction();
+          }
         }));
 
     return Slidable(

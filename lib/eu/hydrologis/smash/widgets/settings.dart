@@ -856,7 +856,8 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selValid) async {
                           await GpPreferences()
                               .setBoolean(KEY_GPS_SHOW_VALID_POINTS, selValid);
-                          Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
+                          Provider.of<SmashMapBuilder>(context, listen: false)
+                              .reBuild();
                           setState(() {});
                         },
                       ),
@@ -874,7 +875,8 @@ class GpsSettingsState extends State<GpsSettings> {
                           await GpPreferences()
                               .setBoolean(KEY_GPS_SHOW_ALL_POINTS, selAll);
 
-                          Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
+                          Provider.of<SmashMapBuilder>(context, listen: false)
+                              .reBuild();
                           setState(() {});
                         },
                       ),
@@ -961,7 +963,8 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selected) async {
                           await GpPreferences()
                               .setInt(KEY_GPS_MIN_DISTANCE, selected);
-                          var gpsState = Provider.of<GpsState>(context, listen: false);
+                          var gpsState =
+                              Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsMinDistance = selected;
                           setState(() {});
                         },
@@ -989,7 +992,8 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selected) async {
                           await GpPreferences()
                               .setInt(KEY_GPS_TIMEINTERVAL, selected);
-                          var gpsState = Provider.of<GpsState>(context, listen: false);
+                          var gpsState =
+                              Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsTimeInterval = selected;
                           setState(() {});
                         },
@@ -1037,7 +1041,8 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selected) async {
                           await GpPreferences()
                               .setInt(KEY_GPS_MAX_DISTANCE, selected);
-                          var gpsState = Provider.of<GpsState>(context, listen: false);
+                          var gpsState =
+                              Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsMaxDistance =
                               selected < 0 ? null : selected;
                           setState(() {});
@@ -1077,7 +1082,8 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (newValue) async {
                           await GpPreferences()
                               .setBoolean(KEY_GPS_TESTLOG, newValue);
-                          var gpsState = Provider.of<GpsState>(context, listen: false);
+                          var gpsState =
+                              Provider.of<GpsState>(context, listen: false);
                           gpsState.doTestLog = newValue;
                           setState(() {});
                         },
@@ -1497,6 +1503,7 @@ class DeviceSettingsState extends State<DeviceSettings> {
 
   @override
   Widget build(BuildContext context) {
+    var p = SmashUI.DEFAULT_PADDING;
     return Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -1551,29 +1558,29 @@ class DeviceSettingsState extends State<DeviceSettings> {
                                 bold: true),
                           ),
                           Padding(
-                            padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText(_overrideId),
-                          ),
-                          Padding(
-                            padding: SmashUI.defaultPadding(),
-                            child: FlatButton(
-                              child: SmashUI.normalText("CHANGE",
-                                  color: SmashColors.mainDanger),
-                              onPressed: () async {
-                                var res = await showInputDialog(context,
-                                    "Override id", "Insert override id",
-                                    defaultText: _overrideId);
-                                if (res == null || res.trim().length == 0) {
-                                  res = _deviceId;
-                                }
-                                await GpPreferences()
-                                    .setString(DEVICE_ID_OVERRIDE, res);
-                                setState(() {
-                                  _overrideId = res;
-                                });
-                              },
-                            ),
-                          ),
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: EditableTextField(
+                                "Override Id",
+                                _overrideId,
+                                (res) async {
+                                  if (res == null || res.trim().length == 0) {
+                                    res = _deviceId;
+                                  }
+                                  await GpPreferences()
+                                      .setString(DEVICE_ID_OVERRIDE, res);
+                                  setState(() {
+                                    _overrideId = res;
+                                  });
+                                },
+                                validationFunction: (text) {
+                                  if (text.toString().trim().isNotEmpty) {
+                                    return null;
+                                  } else {
+                                    return "Please enter a valid server password.";
+                                  }
+                                },
+                              )),
                         ],
                       ),
                     ),
@@ -1598,7 +1605,7 @@ class GssSettingsState extends State<GssSettings> {
   static final iconData = MdiIcons.cloudLock;
 
   String _gssUrl;
-  String _gssUser; // TODO when server supports them
+  String _gssUser; // Rigth now unused, since the deviceid is the user
   String _gssPwd;
 
   @override
@@ -1610,7 +1617,8 @@ class GssSettingsState extends State<GssSettings> {
   Future<void> getData() async {
     String gssUrl = await GpPreferences().getString(KEY_GSS_SERVER_URL, "");
     String gssUser = await GpPreferences().getString(KEY_GSS_SERVER_USER, "");
-    String gssPwd = await GpPreferences().getString(KEY_GSS_SERVER_PWD, "");
+    String gssPwd =
+        await GpPreferences().getString(KEY_GSS_SERVER_PWD, "dummy");
 
     setState(() {
       _gssUrl = gssUrl;
@@ -1621,6 +1629,7 @@ class GssSettingsState extends State<GssSettings> {
 
   @override
   Widget build(BuildContext context) {
+    var p = SmashUI.DEFAULT_PADDING;
     return Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -1655,37 +1664,70 @@ class GssSettingsState extends State<GssSettings> {
                             child: SmashUI.normalText("Server URL", bold: true),
                           ),
                           Padding(
-                            padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText(_gssUrl),
-                          ),
-                          Padding(
-                            padding: SmashUI.defaultPadding(),
-                            child: FlatButton(
-                              child: SmashUI.normalText("CHANGE",
-                                  color: SmashColors.mainDecorations),
-                              onPressed: () async {
-                                var res = await showInputDialog(
-                                    context, "Set url", "Set GSS server url",
-                                    defaultText: _gssUrl,
-                                    validationFunction: (text) {
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: EditableTextField(
+                                "server url",
+                                _gssUrl,
+                                (res) async {
+                                  if (res == null || res.trim().length == 0) {
+                                    res = _gssUrl;
+                                  }
+                                  await GpPreferences()
+                                      .setString(KEY_GSS_SERVER_URL, res);
+                                  setState(() {
+                                    _gssUrl = res;
+                                  });
+                                },
+                                validationFunction: (text) {
                                   if (text.startsWith("http://") ||
                                       text.startsWith("https://")) {
                                     return null;
                                   } else {
                                     return "Server url needs to start with http or https.";
                                   }
-                                });
-                                if (res == null || res.trim().length == 0) {
-                                  res = _gssUrl;
-                                }
-                                await GpPreferences()
-                                    .setString(KEY_GSS_SERVER_URL, res);
-                                setState(() {
-                                  _gssUrl = res;
-                                });
-                              },
-                            ),
+                                },
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText("Server Password",
+                                bold: true),
                           ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: EditableTextField(
+                                "server password",
+                                _gssPwd,
+                                (res) async {
+                                  if (res == null || res.trim().length == 0) {
+                                    res = _gssPwd;
+                                  }
+                                  await GpPreferences()
+                                      .setString(KEY_GSS_SERVER_PWD, res);
+                                  setState(() {
+                                    _gssPwd = res;
+                                  });
+                                },
+                                validationFunction: (text) {
+                                  if (text.toString().trim().isNotEmpty) {
+                                    return null;
+                                  } else {
+                                    return "Please enter a valid server password.";
+                                  }
+                                },
+                              )),
                         ],
                       ),
                     ),

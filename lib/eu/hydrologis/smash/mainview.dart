@@ -373,10 +373,13 @@ class _MainViewWidgetState extends State<MainViewWidget>
                 iconSize: _iconSize,
               ),
               onLongPress: () {
+                ProjectState projectState =
+                    Provider.of<ProjectState>(context, listen: false);
                 Navigator.push(
                     mapBuilder.context,
                     MaterialPageRoute(
-                        builder: (context) => NotesListWidget(true)));
+                        builder: (context) =>
+                            NotesListWidget(true, projectState.projectDb)));
               },
             ),
             projectData != null ? projectData.simpleNotesCount : 0,
@@ -456,10 +459,14 @@ class _MainViewWidgetState extends State<MainViewWidget>
                 iconSize: _iconSize,
               ),
               onLongPress: () {
+                ProjectState projectState =
+                    Provider.of<ProjectState>(context, listen: false);
+
                 Navigator.push(
                     mapBuilder.context,
                     MaterialPageRoute(
-                        builder: (context) => NotesListWidget(false)));
+                        builder: (context) =>
+                            NotesListWidget(false, projectState.projectDb)));
               },
             ),
             projectData != null ? projectData.formNotesCount : 0,

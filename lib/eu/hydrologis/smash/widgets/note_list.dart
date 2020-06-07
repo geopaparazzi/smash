@@ -6,6 +6,7 @@
 
 import 'dart:convert';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
@@ -25,8 +26,9 @@ import 'package:smashlibs/smashlibs.dart';
 /// The notes list widget.
 class NotesListWidget extends StatefulWidget {
   final bool _doSimpleNotes;
+  final GeopaparazziProjectDb db;
 
-  NotesListWidget(this._doSimpleNotes);
+  NotesListWidget(this._doSimpleNotes, this.db);
 
   @override
   State<StatefulWidget> createState() {
@@ -35,57 +37,80 @@ class NotesListWidget extends StatefulWidget {
 }
 
 /// The notes list widget state.
-class NotesListWidgetState extends State<NotesListWidget> {
+class NotesListWidgetState extends State<NotesListWidget>
+    with AfterLayoutMixin {
   List<dynamic> _notesList = [];
+  bool _isLoading = true;
 
-  Future<bool> loadNotes(var db) async {
+  @override
+  void afterFirstLayout(BuildContext context) {
+    loadNotes();
+  }
+
+  Future loadNotes() async {
     _notesList.clear();
-    dynamic itemsList = await db.getNotes(doSimple: widget._doSimpleNotes);
+    dynamic itemsList =
+        await widget.db.getNotes(doSimple: widget._doSimpleNotes);
     if (itemsList != null) {
       _notesList.addAll(itemsList);
     }
     if (widget._doSimpleNotes) {
-      itemsList = await db.getImages();
+      itemsList = await widget.db.getImages();
       if (itemsList != null) {
         _notesList.addAll(itemsList);
       }
     }
-    return true;
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var projectState = Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(
-              widget._doSimpleNotes ? "Simple Notes List" : "Form Notes List"),
-        ),
-        body: FutureBuilder<void>(
-          future: loadNotes(db),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future is complete, display the preview.
-              return ListView.builder(
+    return WillPopScope(
+      onWillPop: () async {
+        await Provider.of<ProjectState>(context, listen: false)
+            .reloadProject(context);
+        return true;
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget._doSimpleNotes
+                ? "Simple Notes List"
+                : "Form Notes List"),
+          ),
+          body: _isLoading
+              ? Center(child: SmashCircularProgress(label: "Loading Notes..."))
+              : ListView.builder(
                   itemCount: _notesList.length,
                   itemBuilder: (context, index) {
-                    return buildNoteItem(index, db, projectState, context);
-                  });
-            } else {
-              // Otherwise, display a loading indicator.
-              return Center(
-                  child: SmashCircularProgress(label: "Loading notes..."));
-            }
-          },
-        ));
+                    return NoteInfo(
+                        _notesList[index], db, projectState, loadNotes);
+                  })),
+    );
   }
+}
 
-  Slidable buildNoteItem(int index, GeopaparazziProjectDb db,
-      ProjectState projectState, BuildContext context) {
+class NoteInfo extends StatefulWidget {
+  final dynamic note;
+  final GeopaparazziProjectDb db;
+  final ProjectState projectState;
+  final reloadNotesFunction;
+  NoteInfo(this.note, this.db, this.projectState, this.reloadNotesFunction);
+
+  @override
+  _NoteInfoState createState() => _NoteInfoState();
+}
+
+class _NoteInfoState extends State<NoteInfo> {
+  @override
+  Widget build(BuildContext context) {
     List<Widget> actions = [];
     List<Widget> secondaryActions = [];
-    dynamic dynNote = _notesList[index];
+    // dynamic dynNote = _notesList[index];
+    dynamic dynNote = widget.note;
     int id;
     var markerName;
     var markerColor;
@@ -129,13 +154,13 @@ class NotesListWidgetState extends State<NotesListWidget> {
         caption: 'Edit',
         color: SmashColors.mainDecorations,
         icon: MdiIcons.pencil,
-        onTap: () {
+        onTap: () async {
           var sectionMap = jsonDecode(dynNote.form);
           var sectionName = sectionMap[ATTR_SECTIONNAME];
           SmashPosition sp = SmashPosition.fromCoords(dynNote.lon, dynNote.lat,
               DateTime.now().millisecondsSinceEpoch.toDouble());
 
-          Navigator.push(
+          await Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => MasterDetailPage(
@@ -149,14 +174,21 @@ class NotesListWidgetState extends State<NotesListWidget> {
                         getThumbnailsFromDb,
                         takePictureForForms,
                       )));
+          setState(() {});
         },
       ));
-    } else {
+    } else if (dynNote is Note) {
       actions.add(IconSlideAction(
         caption: 'Properties',
         color: SmashColors.mainDecorations,
         icon: MdiIcons.palette,
-        onTap: () => _navigateToNoteProperties(context, dynNote),
+        onTap: () async {
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => NotePropertiesWidget(dynNote)));
+          setState(() {});
+        },
       ));
     }
     secondaryActions.add(IconSlideAction(
@@ -164,9 +196,12 @@ class NotesListWidgetState extends State<NotesListWidget> {
         color: SmashColors.mainDanger,
         icon: MdiIcons.delete,
         onTap: () async {
-          await db.deleteNote(id);
-          await projectState.reloadProject(context);
-          setState(() {});
+          bool doDelete = await showConfirmDialog(
+              context, "DELETE", 'Are you sure you want to delete the note?');
+          if (doDelete) {
+            await widget.db.deleteNote(id);
+            await widget.reloadNotesFunction();
+          }
         }));
 
     return Slidable(
@@ -174,7 +209,7 @@ class NotesListWidgetState extends State<NotesListWidget> {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: ListTile(
-        title: Text('$text'),
+        title: SmashUI.normalText('$text', bold: true),
         subtitle: Text(
             '${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
         leading: Icon(
@@ -186,33 +221,5 @@ class NotesListWidgetState extends State<NotesListWidget> {
       actions: actions,
       secondaryActions: secondaryActions,
     );
-  }
-
-  Future<bool> _confirmNoteDismiss(DismissDirection direction) async {
-    return await showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Confirm'),
-            content: Text('Are you sure you want to delete the note?'),
-            actions: <Widget>[
-              FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                  },
-                  child: Text('Yes')),
-              FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context, false);
-                  },
-                  child: Text('No')),
-            ],
-          );
-        });
-  }
-
-  _navigateToNoteProperties(BuildContext context, Note note) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => NotePropertiesWidget(note)));
   }
 }

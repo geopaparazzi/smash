@@ -84,6 +84,28 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: EditableTextField(
+                              "Log Name",
+                              _logItem.name,
+                              (res) async {
+                                if (res == null || res.trim().length == 0) {
+                                  res = _logItem.name;
+                                }
+                                ProjectState projectState =
+                                    Provider.of<ProjectState>(context,
+                                        listen: false);
+                                await projectState.projectDb
+                                    .updateGpsLogName(_logItem.id, res);
+                                setState(() {
+                                  _logItem.name = res;
+                                });
+                              },
+                              validationFunction: noEmptyValidator,
+                              doBold: true,
+                            ),
+                          ),
                           Table(
                             columnWidths: {
                               0: FlexColumnWidth(0.2),
@@ -104,12 +126,6 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 
   _getInfoTableCells(BuildContext context) {
     return [
-      TableRow(
-        children: [
-          TableUtilities.cellForString("Name"),
-          cellForEditableName(context, _logItem),
-        ],
-      ),
       TableRow(
         children: [
           TableUtilities.cellForString("Start"),
@@ -182,33 +198,24 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
   TableCell cellForEditableName(BuildContext context, Log4ListWidget item) {
     return TableCell(
       child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: GestureDetector(
-          child: SmashUI.normalText(item.name,
-              color: SmashColors.mainDecorationsDarker),
-          onDoubleTap: () {
-            _changeLogName(context, item);
+        padding: const EdgeInsets.only(left: 4.0),
+        child: EditableTextField(
+          "Log Name",
+          item.name,
+          (res) async {
+            if (res == null || res.trim().length == 0) {
+              res = item.name;
+            }
+            ProjectState projectState =
+                Provider.of<ProjectState>(context, listen: false);
+            await projectState.projectDb.updateGpsLogName(item.id, res);
+            setState(() {
+              item.name = res;
+            });
           },
+          validationFunction: noEmptyValidator,
         ),
       ),
     );
-  }
-
-  _changeLogName(BuildContext context, Log4ListWidget logItem) async {
-    String result = await showInputDialog(
-      context,
-      "Change log name",
-      "Please enter a new name for the log",
-      defaultText: logItem.name,
-      validationFunction: noEmptyValidator,
-    );
-    if (result != null) {
-      ProjectState projectState =
-          Provider.of<ProjectState>(context, listen: false);
-      await projectState.projectDb.updateGpsLogName(logItem.id, result);
-      setState(() {
-        logItem.name = result;
-      });
-    }
   }
 }
