@@ -133,7 +133,7 @@ class DataLoaderUtilities {
                 })));
   }
 
-  static void loadNotesMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
+  static Future loadNotesMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
       SmashMapBuilder mapBuilder) async {
     List<Note> notesList = await db.getNotes();
     notesList.forEach((note) {
@@ -339,7 +339,7 @@ class DataLoaderUtilities {
     });
   }
 
-  static void loadImageMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
+  static Future loadImageMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
       SmashMapBuilder mapBuilder) async {
     // IMAGES
     var imagesList = await db.getImages();

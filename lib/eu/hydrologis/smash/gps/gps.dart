@@ -210,24 +210,31 @@ class GpsHandler {
 
     GpsFilterManager().setGpsState(_gpsState);
 
+    // first time wait for it
+    await initGpsWithCheck();
+    // then check regularly
     _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) async {
-      if (port == null) {
-        GpLogger().i("Initialize geolocator");
-        await closeGpsIsolate();
-
-        await startGpsIsolate(!initialized);
-        initialized = true;
-      }
-      _locationServiceEnabled =
-          await GPS.BackgroundLocator.isRegisterLocationUpdate();
-      if (port == null || !_locationServiceEnabled) {
-        if (_gpsState.status != GpsStatus.OFF) {
-          _gpsState.status = GpsStatus.OFF;
-        }
-      } else {
-        GpsFilterManager().checkFix();
-      }
+      await initGpsWithCheck();
     });
+  }
+
+  Future initGpsWithCheck() async {
+    if (port == null) {
+      GpLogger().i("Initialize geolocator");
+      await closeGpsIsolate();
+
+      await startGpsIsolate(!initialized);
+      initialized = true;
+    }
+    _locationServiceEnabled =
+        await GPS.BackgroundLocator.isRegisterLocationUpdate();
+    if (port == null || !_locationServiceEnabled) {
+      if (_gpsState.status != GpsStatus.OFF) {
+        _gpsState.status = GpsStatus.OFF;
+      }
+    } else {
+      GpsFilterManager().checkFix();
+    }
   }
 
   void restartLocationsService() {

@@ -24,8 +24,6 @@ class ProjectState extends ChangeNotifierPlus {
   GeopaparazziProjectDb _db;
   ProjectData _projectData;
 
-
-
   String get projectPath => _projectPath;
 
   String get projectName => _projectName;
@@ -40,7 +38,7 @@ class ProjectState extends ChangeNotifierPlus {
     _projectPath = path;
     await openDb(_projectPath);
     await GpPreferences().addRecentProject(path);
-    reloadProject(context);
+    await reloadProject(context);
   }
 
   Future<void> openDb([String projectPath]) async {
@@ -76,7 +74,7 @@ class ProjectState extends ChangeNotifierPlus {
     _db = null;
     _projectPath = null;
   }
-  
+
   Future<void> reloadProject(BuildContext context) async {
     if (projectDb == null) return;
     var mapBuilder = Provider.of<SmashMapBuilder>(context, listen: false);
@@ -97,8 +95,8 @@ class ProjectState extends ChangeNotifierPlus {
     tmp.formNotesCount = await projectDb.getFormNotesCount(false);
 
     List<Marker> tmpList = [];
-    DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, mapBuilder);
-    DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, mapBuilder);
+    await DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, mapBuilder);
+    await DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, mapBuilder);
     tmp.geopapMarkers = tmpList;
     tmp.geopapLogs = await DataLoaderUtilities.loadLogLinesLayer(projectDb);
     _projectData = tmp;

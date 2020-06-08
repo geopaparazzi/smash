@@ -115,7 +115,7 @@ class GeopaparazziProjectDb extends SqliteDb {
              nex.$NOTESEXT_COLUMN_ID as $extid,nex.$NOTESEXT_COLUMN_NOTEID,nex.$NOTESEXT_COLUMN_MARKER,nex.$NOTESEXT_COLUMN_SIZE,
              nex.$NOTESEXT_COLUMN_ROTATION,nex.$NOTESEXT_COLUMN_COLOR,nex.$NOTESEXT_COLUMN_ACCURACY,
              nex.$NOTESEXT_COLUMN_HEADING,nex.$NOTESEXT_COLUMN_SPEED,nex.$NOTESEXT_COLUMN_SPEEDACCURACY
-      from $TABLE_NOTES n left join  $TABLE_NOTESEXT nex
+      from $TABLE_NOTES n left join $TABLE_NOTESEXT nex
       on n.$NOTES_COLUMN_ID=nex.$NOTESEXT_COLUMN_NOTEID
       $where
     ''';
@@ -365,8 +365,8 @@ class GeopaparazziProjectDb extends SqliteDb {
     return noteId;
   }
 
-  Future<int> addNoteExt(NoteExt noteExt) {
-    var noteExtId = insertMap(TABLE_NOTESEXT, noteExt.toMap());
+  Future<int> addNoteExt(NoteExt noteExt) async {
+    var noteExtId = await insertMap(TABLE_NOTESEXT, noteExt.toMap());
     return noteExtId;
   }
 

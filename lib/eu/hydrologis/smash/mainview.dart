@@ -8,6 +8,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,11 +47,11 @@ class MainViewWidget extends StatefulWidget {
   MainViewWidget({Key key}) : super(key: key);
 
   @override
-  _MainViewWidgetState createState() => new _MainViewWidgetState();
+  MainViewWidgetState createState() => new MainViewWidgetState();
 }
 
-class _MainViewWidgetState extends State<MainViewWidget>
-    with WidgetsBindingObserver {
+class MainViewWidgetState extends State<MainViewWidget>
+    with WidgetsBindingObserver, AfterLayoutMixin {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   double _initLon;
@@ -68,12 +69,13 @@ class _MainViewWidgetState extends State<MainViewWidget>
   @override
   void initState() {
     super.initState();
-    SmashMapBuilder mapBuilder =
-        Provider.of<SmashMapBuilder>(context, listen: false);
+
+    WidgetsBinding.instance.addObserver(this);
+
+    ScreenUtilities.keepScreenOn(GpPreferences().getKeepScreenOn());
+
     SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
     GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-    ProjectState projectState =
-        Provider.of<ProjectState>(context, listen: false);
 
     _initLon = mapState.center.x;
     _initLat = mapState.center.y;
@@ -91,8 +93,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
     bool rotateOnHeading = GpPreferences().getRotateOnHeading();
     mapState.rotateOnHeadingQuiet = rotateOnHeading;
 
-    ScreenUtilities.keepScreenOn(GpPreferences().getKeepScreenOn());
-
     // set initial status
     bool gpsIsOn = GpsHandler().isGpsOn();
     if (gpsIsOn != null) {
@@ -100,7 +100,15 @@ class _MainViewWidgetState extends State<MainViewWidget>
         gpsState.statusQuiet = GpsStatus.ON_NO_FIX;
       }
     }
+  }
 
+  @override
+  void afterFirstLayout(BuildContext context) {
+    SmashMapBuilder mapBuilder =
+        Provider.of<SmashMapBuilder>(context, listen: false);
+
+    ProjectState projectState =
+        Provider.of<ProjectState>(context, listen: false);
     Future.delayed(Duration.zero, () async {
       mapBuilder.context = context;
       await projectState.reloadProject(context);
@@ -111,8 +119,6 @@ class _MainViewWidgetState extends State<MainViewWidget>
         _activeLayers.addAll(layers);
       });
     });
-
-    WidgetsBinding.instance.addObserver(this);
 
     _centerOnGpsTimer =
         Timer.periodic(Duration(milliseconds: 3000), (timer) async {
@@ -642,6 +648,7 @@ class _MainViewWidgetState extends State<MainViewWidget>
 
   Future disposeProject(BuildContext context) async {
     WidgetsBinding.instance.removeObserver(this);
+    _centerOnGpsTimer.cancel();
 
     ProjectState projectState =
         Provider.of<ProjectState>(context, listen: false);
