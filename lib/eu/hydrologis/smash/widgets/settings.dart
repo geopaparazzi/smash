@@ -1727,6 +1727,7 @@ class GssSettingsState extends State<GssSettings> {
                                     return "Please enter a valid server password.";
                                   }
                                 },
+                                isPassword: true,
                               )),
                         ],
                       ),

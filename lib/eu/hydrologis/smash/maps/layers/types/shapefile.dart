@@ -17,7 +17,6 @@ import 'package:flutter_material_color_picker/flutter_material_color_picker.dart
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/maputils.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class ShapefileSource extends VectorLayerSource {
