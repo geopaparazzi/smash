@@ -68,7 +68,8 @@ class DataLoaderUtilities {
     }
     note.noteExt = next;
 
-    var projectState = Provider.of<ProjectState>(mapBuilder.context, listen: false);
+    var projectState =
+        Provider.of<ProjectState>(mapBuilder.context, listen: false);
     var db = projectState.projectDb;
     await db.addNote(note);
 
@@ -146,6 +147,11 @@ class DataLoaderUtilities {
         textExtraHeight = 0;
       }
 
+      String text = note.text;
+      if (note.hasForm()) {
+        text = FormUtilities.getFormItemLabel(note.form, note.text);
+      }
+
       tmp.add(Marker(
         width: noteExt.size * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
         height: noteExt.size + textExtraHeight,
@@ -156,7 +162,7 @@ class DataLoaderUtilities {
               iconData,
               iconColor,
               noteExt.size,
-              note.text,
+              text,
               SmashColors.mainTextColorNeutral,
               iconColor.withAlpha(80),
             ),
@@ -304,7 +310,8 @@ class DataLoaderUtilities {
                               if (doRemove) {
                                 await db.deleteNote(note.id);
                                 var projectState = Provider.of<ProjectState>(
-                                    mapBuilder.context, listen: false);
+                                    mapBuilder.context,
+                                    listen: false);
                                 await projectState
                                     .reloadProject(ctx); // TODO check await
                               }
@@ -462,8 +469,9 @@ class DataLoaderUtilities {
                                 "Are you sure you want to remove image ${image.id}?");
                             if (doRemove) {
                               await db.deleteImage(image.id);
-                              var projectState =
-                                  Provider.of<ProjectState>(mapBuilder.context, listen: false);
+                              var projectState = Provider.of<ProjectState>(
+                                  mapBuilder.context,
+                                  listen: false);
                               await projectState
                                   .reloadProject(ctx); // TODO check await
                             }
