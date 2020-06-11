@@ -97,13 +97,13 @@ Future<void> onWillPopFunction(BuildContext context, var _noteId,
   var db = projectState.projectDb;
   String jsonForm = jsonEncode(sectionMap);
   int noteId;
+  int ts = DateTime.now().millisecondsSinceEpoch;
   if (_noteId == null) {
     // create new note in position based on form
 
     var iconName = TagsManager.getIcon4Section(sectionMap);
     String iconColor = ColorExt.asHex(SmashColors.mainDecorationsDarker);
 
-    int ts = DateTime.now().millisecondsSinceEpoch;
     SmashPosition pos;
     double lon;
     double lat;
@@ -140,6 +140,7 @@ Future<void> onWillPopFunction(BuildContext context, var _noteId,
     // update form for note
     var note = await db.getNoteById(_noteId);
     note.form = jsonForm;
+    note.timeStamp = ts;
     await db.updateNote(note);
   }
 

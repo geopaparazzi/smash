@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -1599,7 +1600,7 @@ class GssSettings extends StatefulWidget {
   }
 }
 
-class GssSettingsState extends State<GssSettings> {
+class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
   static final title = "GSS";
   static final subtitle = "Geopaparazzi Survey Server";
   static final iconData = MdiIcons.cloudLock;
@@ -1607,11 +1608,11 @@ class GssSettingsState extends State<GssSettings> {
   String _gssUrl;
   String _gssUser; // Rigth now unused, since the deviceid is the user
   String _gssPwd;
+  bool _allowSelfCert;
 
   @override
-  void initState() {
+  void afterFirstLayout(BuildContext context) {
     getData();
-    super.initState();
   }
 
   Future<void> getData() async {
@@ -1619,11 +1620,14 @@ class GssSettingsState extends State<GssSettings> {
     String gssUser = await GpPreferences().getString(KEY_GSS_SERVER_USER, "");
     String gssPwd =
         await GpPreferences().getString(KEY_GSS_SERVER_PWD, "dummy");
+    bool allowSelfCert = await GpPreferences()
+        .getBoolean(KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE, true);
 
     setState(() {
       _gssUrl = gssUrl;
       _gssUser = gssUser;
       _gssPwd = gssPwd;
+      _allowSelfCert = allowSelfCert;
     });
   }
 
@@ -1728,6 +1732,35 @@ class GssSettingsState extends State<GssSettings> {
                                   }
                                 },
                                 isPassword: true,
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(
+                                "Allow self signed certificates",
+                                bold: true),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: Checkbox(
+                                value: _allowSelfCert,
+                                onChanged: (newValue) async {
+                                  await GpPreferences().setBoolean(
+                                      KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE,
+                                      newValue);
+                                  await getData();
+                                },
                               )),
                         ],
                       ),

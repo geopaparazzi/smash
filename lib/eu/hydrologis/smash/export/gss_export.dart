@@ -5,8 +5,10 @@
  */
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio/src/adapters/io_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
@@ -261,7 +263,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
 
   Future uploadProjectData() async {
     var db = widget.projectDb;
-    Dio dio = Dio();
+    Dio dio = NetworkHelper.getNewDioInstance();
     ValueNotifier<int> uploadOrder = ValueNotifier<int>(0);
     int order = 0;
 

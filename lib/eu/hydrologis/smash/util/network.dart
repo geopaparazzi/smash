@@ -50,7 +50,7 @@ class DownloadMapFromListTileProgressWidgetState
   }
 
   Future<void> downloadFile() async {
-    Dio dio = Dio();
+    Dio dio = NetworkHelper.getNewDioInstance();
 
     File file = File(widget._destinationFilePath);
     if (!file.parent.existsSync()) {
@@ -509,7 +509,9 @@ class ProjectDataUploadListTileProgressWidgetState
     if (note.form != null) {
       formData.fields.add(MapEntry(NOTES_COLUMN_FORM, note.form));
 
+      
       List<String> imageIds = FormUtilities.getImageIds(note.form);
+
       if (imageIds.isNotEmpty) {
         for (var imageId in imageIds) {
           var dbImage =

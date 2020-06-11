@@ -5,8 +5,10 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
@@ -20,7 +22,8 @@ class GssImportWidget extends StatefulWidget {
   _GssImportWidgetState createState() => new _GssImportWidgetState();
 }
 
-class _GssImportWidgetState extends State<GssImportWidget> {
+class _GssImportWidgetState extends State<GssImportWidget>
+    with AfterLayoutMixin {
   /*
    * 0 = waiting
    * 1 = has data
@@ -41,10 +44,8 @@ class _GssImportWidgetState extends State<GssImportWidget> {
   List<String> _tagsList = [];
 
   @override
-  void initState() {
+  void afterFirstLayout(BuildContext context) {
     init();
-
-    super.initState();
   }
 
   Future<void> init() async {
@@ -75,11 +76,11 @@ class _GssImportWidgetState extends State<GssImportWidget> {
     _authHeader = await GssUtilities.getAuthHeader(pwd);
 
     try {
-      Dio dio = new Dio();
+      Dio dio = NetworkHelper.getNewDioInstance();
 
       var dataResponse = await dio.get(downloadDataListUrl,
           options: Options(headers: {"Authorization": _authHeader}));
-      var dataResponseMap = dataResponse.data;
+      var dataResponseMap = jsonDecode(dataResponse.data);
 
       List<dynamic> baseMaps = dataResponseMap[GssUtilities.DATA_DOWNLOAD_MAPS];
       _baseMapsList.clear();
@@ -103,7 +104,7 @@ class _GssImportWidgetState extends State<GssImportWidget> {
 
       var tagsResponse = await dio.get(downloadTagsListUrl,
           options: Options(headers: {"Authorization": _authHeader}));
-      var tagsResponseMap = tagsResponse.data;
+      var tagsResponseMap = jsonDecode(tagsResponse.data);
       var tagsJsonList = tagsResponseMap[GssUtilities.TAGS_DOWNLOAD_TAGS];
       if (tagsJsonList != null) {
         tagsJsonList.forEach((tg) {
