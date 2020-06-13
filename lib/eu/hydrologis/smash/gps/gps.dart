@@ -205,6 +205,10 @@ class GpsHandler {
 
   Future<void> init(GpsState initGpsState) async {
     GpLogger().i("Init GpsHandler");
+    if(SmashPlatform.isDesktop()){
+      GpLogger().i("No gps handler active on desktop.");
+      return;
+    }
     _gpsState = initGpsState;
     _locationServiceEnabled = false;
 

@@ -3,6 +3,8 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
+import 'dart:io';
+
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -185,19 +187,23 @@ Future<String> handleWorkspace(BuildContext context) async {
 }
 
 Future<String> handleLocationPermission(BuildContext context) async {
-  var locationPermission =
-      await PermissionManager().add(PERMISSIONS.LOCATION).check();
-  if (!locationPermission) {
-    return "Location permission is mandatory to open SMASH.";
+  if (!SmashPlatform.isDesktop()) {
+    var locationPermission =
+        await PermissionManager().add(PERMISSIONS.LOCATION).check();
+    if (!locationPermission) {
+      return "Location permission is mandatory to open SMASH.";
+    }
   }
   return null;
 }
 
 Future<String> handleStoragePermission(BuildContext context) async {
-  var storagePermission =
-      await PermissionManager().add(PERMISSIONS.STORAGE).check();
-  if (!storagePermission) {
-    return "Storage permission is mandatory to open SMASH.";
+  if (!SmashPlatform.isDesktop()) {
+    var storagePermission =
+        await PermissionManager().add(PERMISSIONS.STORAGE).check();
+    if (!storagePermission) {
+      return "Storage permission is mandatory to open SMASH.";
+    }
   }
   return null;
 }

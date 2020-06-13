@@ -147,7 +147,7 @@ packages:
       name: dart_jts
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.5+3"
+    version: "0.0.5+4"
   dart_shp:
     dependency: "direct main"
     description:
@@ -636,7 +636,7 @@ packages:
       name: share_extend
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.6"
+    version: "1.1.7"
   shared_preferences:
     dependency: transitive
     description:
@@ -673,11 +673,9 @@ packages:
   smashlibs:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "70b01871ee4f99189a0d51e2ac363d212800acd0"
-      url: "https://github.com/moovida/smashlibs.git"
-    source: git
+      path: "../smashlibs"
+      relative: true
+    source: path
     version: "1.0.0"
   source_span:
     dependency: transitive
@@ -797,7 +795,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.1.0"
   validate:
     dependency: transitive
     description:
