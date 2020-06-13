@@ -281,9 +281,7 @@ class DataLoaderUtilities {
                                               sectionName,
                                               sp,
                                               note.id,
-                                              onWillPopFunction,
-                                              getThumbnailsFromDb,
-                                              takePictureForForms,
+                                              SmashFormHelper(),
                                             )));
                               } else {
                                 Navigator.push(

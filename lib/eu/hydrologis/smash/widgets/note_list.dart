@@ -168,9 +168,7 @@ class _NoteInfoState extends State<NoteInfo> {
               sectionName,
               sp,
               dynNote.id,
-              onWillPopFunction,
-              getThumbnailsFromDb,
-              takePictureForForms,
+              SmashFormHelper(),
             );
             return masterDetailPage;
           }));

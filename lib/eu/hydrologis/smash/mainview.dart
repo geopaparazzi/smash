@@ -452,9 +452,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                               ? gpsState.lastGpsPosition
                               : _mapController.center,
                           note.id,
-                          onWillPopFunction,
-                          getThumbnailsFromDb,
-                          takePictureForForms,
+                          SmashFormHelper(),
                         );
                       },
                     ));
