@@ -93,7 +93,7 @@ class SmashFormHelper implements AFormhelper {
   }
 
   /// Save data on form exit.
-  Future<void> onWillPopFunction(BuildContext context, var _noteId,
+  Future<void> onSaveFunction(BuildContext context, var _noteId,
       var sectionName, var sectionMap, var _position) async {
     ProjectState projectState =
         Provider.of<ProjectState>(context, listen: false);
