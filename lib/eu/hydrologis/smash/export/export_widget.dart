@@ -61,7 +61,7 @@ class _ExportWidgetState extends State<ExportWidget> {
                     color: SmashColors.mainDecorations,
                   )
                 : _pdfBuildStatus == 1
-                    ? SmashCircularProgress()
+                    ? CircularProgressIndicator()
                     : Icon(
                         Icons.check,
                         color: SmashColors.mainDecorations,
