@@ -1,10 +1,11 @@
-import 'package:latlong/latlong.dart';
+import 'dart:math' as math;
+
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:background_locator/location_dto.dart';
 
 class GpsFilterManagerMessage {
   /// Time in milliseconds from the last position event.
@@ -119,23 +120,27 @@ class GpsFilterManager {
             CoordinateUtilities.getDistance(previousPosLatLon, newPosLatLon);
         var deltaSecondsLastLogged =
             ((ts - _previousLogPosition.time) / 1000).round();
-        var valid = isValid(distanceLastLogged, msg);
+        msg.distanceLastEvent = distanceLastLogged;
         var isPassingFilters =
             passesFilters(distanceLastLogged, deltaSecondsLastLogged, msg);
-        msg.blockedByFilter = !valid || !isPassingFilters;
+        msg.blockedByFilter = !isPassingFilters;
         if (filtersEnabled) {
-          if (valid) {
-            if (isPassingFilters) {
-              // if logging add to visible log and into db
-              if (_gpsState.isLogging && _gpsState.currentLogId != null) {
-                msg.isLogging = true;
-                _gpsState.currentLogPoints.add(newPosLatLon);
-                _gpsState.addLogPoint(position.longitude, position.latitude,
-                    position.altitude, ts);
-              }
-              _previousLogPosition = position;
-              setGpsState = true;
+          if (isPassingFilters) {
+            // if logging add to visible log and into db
+            if (_gpsState.isLogging && _gpsState.currentLogId != null) {
+              msg.isLogging = true;
+              _gpsState.currentLogPoints.add(newPosLatLon);
+              var newFilteredPosLatLon =
+                  LatLng(position.filteredLatitude, position.filteredLongitude);
+              _gpsState.currentFilteredLogPoints.add(newFilteredPosLatLon);
+              _gpsState.addLogPoint(position.longitude, position.latitude,
+                  position.altitude, ts, position.accuracy,
+                  accuracyFiltered: position.filteredAccuracy,
+                  latitudeFiltered: position.filteredLatitude,
+                  longitudeFiltered: position.filteredLongitude);
             }
+            _previousLogPosition = position;
+            setGpsState = true;
           }
         } else {
           _previousLogPosition = position;
@@ -155,22 +160,6 @@ class GpsFilterManager {
     return !msg.blockedByFilter;
   }
 
-  bool isValid(var distanceLastEvent, GpsFilterManagerMessage msg) {
-    if (_gpsState.gpsMaxDistance == null) {
-      msg.distanceLastEvent = distanceLastEvent;
-      return true;
-    }
-    var isAtValidDistance = distanceLastEvent < _gpsState.gpsMaxDistance;
-    msg.distanceLastEvent = distanceLastEvent;
-    msg.maxAllowedDistanceLastEvent = _gpsState.gpsMaxDistance;
-
-    if (!isAtValidDistance) {
-      GpLogger().w(
-          "Ignoring GPS point jump: $distanceLastEvent > ${_gpsState.gpsMaxDistance}");
-    }
-    return isAtValidDistance;
-  }
-
   bool passesFilters(var distanceLastEvent, var deltaSecondsLastEvent,
       GpsFilterManagerMessage msg) {
     msg.minAllowedDistanceLastEvent = _gpsState.gpsMinDistance;
@@ -184,8 +173,85 @@ class GpsFilterManager {
   SmashPosition checkTestMock() {
     if (_gpsState.doTestLog) {
       // Use the mocked log
-      return Testlog.getNext();
+      return Testlog.getNext(KalmanFilter.getInstance());
     }
     return null;
+  }
+}
+
+/// Original code by https://github.com/Bresiu/KalmanFilter
+class KalmanFilter {
+  static KalmanFilter instance;
+  static getInstance() {
+    if (instance == null) {
+      instance = KalmanFilter();
+    }
+    return instance;
+  }
+
+  final double _minAccuracy = 1;
+
+  double _timeStampMilliseconds;
+  double _lat;
+  double _lng;
+  double _variance;
+
+  KalmanFilter() {
+    this._variance = -1;
+  }
+
+  double get timeStamp {
+    return this._timeStampMilliseconds;
+  }
+
+  double get latitude {
+    return this._lat;
+  }
+
+  double get longitude {
+    return this._lng;
+  }
+
+  double get accuracy {
+    return math.sqrt(this._variance);
+  }
+
+  void setState(
+      double lat, double lng, double accuracy, double timeStampMilliseconds) {
+    this._lat = lat;
+    this._lng = lng;
+    this._variance = accuracy * accuracy;
+    this._timeStampMilliseconds = timeStampMilliseconds;
+  }
+
+  void process(double latMeasurement, double lngMeasurement, double accuracy,
+      double timeStampMilliseconds, double speedMs) {
+    if (accuracy < this._minAccuracy) accuracy = this._minAccuracy;
+    if (this._variance < 0) {
+      // if variance < 0, object is unitialised, so initialise with current values
+      this._timeStampMilliseconds = timeStampMilliseconds;
+      this._lat = latMeasurement;
+      this._lng = lngMeasurement;
+      this._variance = accuracy * accuracy;
+    } else {
+      // else apply Kalman filter methodology
+
+      double duration = timeStampMilliseconds - this._timeStampMilliseconds;
+      if (duration > 0) {
+        // time has moved on, so the uncertainty in the current position increases
+        this._variance += duration * speedMs * speedMs / 1000;
+        this._timeStampMilliseconds = timeStampMilliseconds;
+        // TO DO: USE VELOCITY INFORMATION HERE TO GET A BETTER ESTIMATE OF CURRENT POSITION
+      }
+
+      // Kalman gain matrix K = Covarariance * Inverse(Covariance + MeasurementVariance)
+      // NB: because K is dimensionless, it doesn't matter that variance has different units to lat and lng
+      double K = this._variance / (this._variance + accuracy * accuracy);
+      // apply K
+      this._lat += K * (latMeasurement - this._lat);
+      this._lng += K * (lngMeasurement - this._lng);
+      // new Covarariance  matrix is (IdentityMatrix - K) * Covarariance
+      this._variance = (1 - K) * this._variance;
+    }
   }
 }

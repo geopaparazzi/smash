@@ -80,6 +80,10 @@ final String LOGSDATA_COLUMN_LON = "lon";
  */
 final String LOGSDATA_COLUMN_LAT = "lat";
 /*
+ * the accuracy of the point.
+ */
+final String LOGSDATA_COLUMN_ACCURACY = "accuracy";
+/*
  * the elevation of the point.
  */
 final String LOGSDATA_COLUMN_ALTIM = "altim";
@@ -92,6 +96,19 @@ final String LOGSDATA_COLUMN_TS = "ts";
  */
 final String LOGSDATA_COLUMN_LOGID = "logid";
 
+/*
+ * the longitude of the point.
+ */
+final String LOGSDATA_COLUMN_LON_FILTERED = "filtered_lon";
+/*
+ * the latitude of the point.
+ */
+final String LOGSDATA_COLUMN_LAT_FILTERED = "filtered_lat";
+/*
+ * the accuracy of the point.
+ */
+final String LOGSDATA_COLUMN_ACCURACY_FILTERED = "filtered_accuracy";
+
 class Log {
   int id;
   int startTime;
@@ -99,7 +116,6 @@ class Log {
   double lengthm;
   String text;
   int isDirty;
-  List<LatLng> logData = [];
 
   Map<String, dynamic> toMap() {
     var map = {
@@ -141,6 +157,10 @@ class LogDataPoint {
   int id;
   double lon;
   double lat;
+  double accuracy;
+  double filtered_lon;
+  double filtered_lat;
+  double filtered_accuracy;
   double altim;
   int ts;
   int logid;
@@ -155,6 +175,14 @@ class LogDataPoint {
     };
     if (id != null) {
       map[LOGSDATA_COLUMN_ID] = id;
+    }
+    if (accuracy != null) {
+      map[LOGSDATA_COLUMN_ACCURACY] = accuracy;
+    }
+    if (filtered_accuracy != null) {
+      map[LOGSDATA_COLUMN_ACCURACY_FILTERED] = filtered_accuracy;
+      map[LOGSDATA_COLUMN_LAT_FILTERED] = filtered_lat;
+      map[LOGSDATA_COLUMN_LON_FILTERED] = filtered_lon;
     }
     return map;
   }

@@ -24,19 +24,15 @@ class GpsState extends ChangeNotifierPlus {
   bool _insertInGps = true;
 
   int gpsMinDistance = 1;
-  int gpsMaxDistance;
   int gpsTimeInterval = 1;
   bool doTestLog = false;
 
   List<LatLng> _currentLogPoints = [];
+  List<LatLng> _currentFilteredLogPoints = [];
   GpsStatus _lastGpsStatusBeforeLogging;
 
   void init() {
     gpsMinDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, 1);
-    gpsMaxDistance = GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, null);
-    if (gpsMaxDistance == -1) {
-      gpsMaxDistance = null;
-    }
     gpsTimeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, 1);
     doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
   }
@@ -90,8 +86,11 @@ class GpsState extends ChangeNotifierPlus {
     _projectState = state;
   }
 
-  Future<void> addLogPoint(
-      double longitude, double latitude, double altitude, int timestamp) async {
+  Future<void> addLogPoint(double longitude, double latitude, double altitude,
+      int timestamp, double accuracy,
+      {double longitudeFiltered,
+      double latitudeFiltered,
+      double accuracyFiltered}) async {
     if (_projectState != null) {
       LogDataPoint ldp = LogDataPoint();
       ldp.logid = currentLogId;
@@ -99,6 +98,10 @@ class GpsState extends ChangeNotifierPlus {
       ldp.lat = latitude;
       ldp.altim = altitude;
       ldp.ts = timestamp;
+      ldp.accuracy = accuracy;
+      ldp.filtered_accuracy = accuracyFiltered;
+      ldp.filtered_lat = latitudeFiltered;
+      ldp.filtered_lon = longitudeFiltered;
       await _projectState.projectDb.addGpsLogPoint(currentLogId, ldp);
     }
   }
@@ -149,6 +152,7 @@ class GpsState extends ChangeNotifierPlus {
 
   /// Get the list of current log points.
   List<LatLng> get currentLogPoints => _currentLogPoints;
+  List<LatLng> get currentFilteredLogPoints => _currentFilteredLogPoints;
 
   /// Stop logging to database.
   ///
@@ -156,6 +160,7 @@ class GpsState extends ChangeNotifierPlus {
   Future<void> stopLogging() async {
     _isLogging = false;
     _currentLogPoints.clear();
+    _currentFilteredLogPoints.clear();
 
     if (_projectState != null) {
       int endTs = DateTime.now().millisecondsSinceEpoch;

@@ -852,6 +852,32 @@ class GeopaparazziProjectDb extends SqliteDb {
         }
       });
     }
+
+    var tableColumns = await getTableColumns(TABLE_GPSLOG_DATA);
+    bool hasFiltered = false;
+    tableColumns.forEach((list) {
+      String name = list[0];
+      if (name.toLowerCase() == LOGSDATA_COLUMN_LAT_FILTERED) {
+        hasFiltered = true;
+      }
+    });
+    if (!hasFiltered) {
+      GpLogger().w("Adding extra columns for filtered data to log.");
+      await transaction((tx) async {
+        String sql =
+            "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_ACCURACY real;";
+        await tx.execute(sql);
+        sql =
+            "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_ACCURACY_FILTERED real;";
+        await tx.execute(sql);
+        sql =
+            "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_LAT_FILTERED real;";
+        await tx.execute(sql);
+        sql =
+            "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_LON_FILTERED real;";
+        await tx.execute(sql);
+      });
+    }
   }
 
   void printInfo() async {

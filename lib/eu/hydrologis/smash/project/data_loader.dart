@@ -507,7 +507,8 @@ class DataLoaderUtilities {
     });
   }
 
-  static Future<PolylineLayerOptions> loadLogLinesLayer(var db) async {
+  static Future<PolylineLayerOptions> loadLogLinesLayer(
+      var db, bool doOrig, bool doFiltered) async {
     String logsQuery = '''
         select l.$LOGS_COLUMN_ID, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH 
         from $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
@@ -521,31 +522,59 @@ class DataLoaderUtilities {
       var color = map["color"];
       var width = map["width"];
 
-      logs[id] = [color, width, <LatLng>[]];
+      logs[id] = [color, width, <LatLng>[], <LatLng>[]];
     });
 
-    String logDataQuery =
-        "select $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LOGID from $TABLE_GPSLOG_DATA order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS";
+    String logDataQuery = '''
+        select $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, 
+        $LOGSDATA_COLUMN_LAT_FILTERED, $LOGSDATA_COLUMN_LON_FILTERED
+        from $TABLE_GPSLOG_DATA order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS
+        ''';
     List<Map<String, dynamic>> resLogData = await db.query(logDataQuery);
     resLogData.forEach((map) {
       var logid = map[LOGSDATA_COLUMN_LOGID];
       var log = logs[logid];
       if (log != null) {
-        var lat = map[LOGSDATA_COLUMN_LAT];
-        var lon = map[LOGSDATA_COLUMN_LON];
-        var coordsList = log[2];
-        coordsList.add(LatLng(lat, lon));
+        if (doOrig) {
+          var lat = map[LOGSDATA_COLUMN_LAT];
+          var lon = map[LOGSDATA_COLUMN_LON];
+          var coordsList = log[2];
+          coordsList.add(LatLng(lat, lon));
+        }
+        if (doFiltered) {
+          var latF = map[LOGSDATA_COLUMN_LAT_FILTERED];
+          if (latF != null) {
+            var lonF = map[LOGSDATA_COLUMN_LON_FILTERED];
+            var coordsListF = log[3];
+            coordsListF.add(LatLng(latF, lonF));
+          }
+        }
       }
     });
 
     List<Polyline> lines = [];
-    logs.forEach((key, list) {
-      var color = list[0];
-      var width = list[1];
-      var points = list[2];
-      lines.add(
-          Polyline(points: points, strokeWidth: width, color: ColorExt(color)));
-    });
+    if (doOrig) {
+      logs.forEach((key, list) {
+        var color = list[0];
+        var width = list[1];
+        var points = list[2];
+        lines.add(Polyline(
+            points: points,
+            strokeWidth: width,
+            color: ColorExt(color).withAlpha(100)));
+      });
+    }
+    if (doFiltered) {
+      logs.forEach((key, list) {
+        var color = list[0];
+        var width = list[1];
+        var points = list[3];
+        if (points.length > 1) {
+          lines.add(Polyline(
+              points: points, strokeWidth: width, color: ColorExt(color)));
+        }
+      });
+    }
 
     return PolylineLayerOptions(
       polylineCulling: true,

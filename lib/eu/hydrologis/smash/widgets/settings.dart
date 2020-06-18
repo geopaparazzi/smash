@@ -637,8 +637,6 @@ class GpsSettingsState extends State<GpsSettings> {
                         withBorder: true);
 
                     double distanceLastEvent = msg.distanceLastEvent;
-                    int maxAllowedDistanceLastEvent =
-                        msg.maxAllowedDistanceLastEvent;
                     int minAllowedDistanceLastEvent =
                         msg.minAllowedDistanceLastEvent;
 
@@ -646,18 +644,11 @@ class GpsSettingsState extends State<GpsSettings> {
                     int minAllowedTimeLastEvent =
                         msg.minAllowedTimeDeltaLastEvent;
 
-                    bool maxDistFilterBlocks =
-                        maxAllowedDistanceLastEvent == null
-                            ? false
-                            : distanceLastEvent > maxAllowedDistanceLastEvent;
                     bool minDistFilterBlocks =
                         distanceLastEvent <= minAllowedDistanceLastEvent;
                     bool minTimeFilterBlocks =
                         timeLastEvent <= minAllowedTimeLastEvent;
 
-                    var maxDistString = maxDistFilterBlocks
-                        ? "MAX DIST FILTER BLOCKS"
-                        : "Max dist filter passes";
                     var minDistString = minDistFilterBlocks
                         ? "MIN DIST FILTER BLOCKS"
                         : "Min dist filter passes";
@@ -670,9 +661,6 @@ class GpsSettingsState extends State<GpsSettings> {
                       "HAS BEEN BLOCKED": "$hasBeenBlocked",
                       "Distance from prev [m]": distanceLastEvent,
                       "Time from prev [s]": timeLastEvent,
-                      maxDistString: maxAllowedDistanceLastEvent == null
-                          ? "Disabled."
-                          : "$distanceLastEvent > $maxAllowedDistanceLastEvent",
                       minDistString:
                           "$distanceLastEvent <= $minAllowedDistanceLastEvent",
                       minTimeString:
@@ -820,8 +808,6 @@ class GpsSettingsState extends State<GpsSettings> {
   SingleChildScrollView getSettingsPart(BuildContext context) {
     int minDistance =
         GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, MINDISTANCES[1]);
-    int maxDistance =
-        GpPreferences().getIntSync(KEY_GPS_MAX_DISTANCE, MAXDISTANCES.last);
     int timeInterval =
         GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS[1]);
     bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
@@ -830,9 +816,13 @@ class GpsSettingsState extends State<GpsSettings> {
     bool showValidGpsPointCount =
         GpPreferences().getBooleanSync(KEY_GPS_SHOW_VALID_POINTS, false);
 
-    SmashLocationAccuracy locationAccuracy =
-        SmashLocationAccuracy.fromPreferences();
-    var accuraciesList = SmashLocationAccuracy.values();
+    /// The log view modes [originalData, filteredData].
+    List<String> currentLogViewModes = GpPreferences().getStringListSync(
+        KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
+
+    // SmashLocationAccuracy locationAccuracy =
+    //     SmashLocationAccuracy.fromPreferences();
+    // var accuraciesList = SmashLocationAccuracy.values();
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
@@ -1012,40 +1002,65 @@ class GpsSettingsState extends State<GpsSettings> {
               children: <Widget>[
                 Padding(
                   padding: SmashUI.defaultPadding(),
-                  child: SmashUI.normalText("Other filters", bold: true),
+                  child: SmashUI.normalText("GPS Logs", bold: true),
                 ),
                 ListTile(
-                  leading: Icon(MdiIcons.ruler),
-                  title: Text("Max distance between 2 points."),
+                  leading: Icon(MdiIcons.eye),
+                  title: Text("Log view mode for original data."),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Padding(
-                        padding: SmashUI.defaultTBPadding(),
-                        child: Text(
-                          "Max distance allowed between two subsequent points. This marks GPS points with higher 'jumps' as invalid and ignores them.",
-                          textAlign: TextAlign.justify,
-                        ),
-                      ),
-                      DropdownButton<int>(
-                        value: maxDistance,
+                      DropdownButton<String>(
+                        value: currentLogViewModes[0],
                         isExpanded: false,
-                        items: MAXDISTANCES.map((i) {
-                          return DropdownMenuItem<int>(
+                        items: LOGVIEWMODES.map((i) {
+                          return DropdownMenuItem<String>(
                             child: Text(
-                              i < 0 ? "Disabled" : "$i m",
+                              i,
                               textAlign: TextAlign.center,
                             ),
                             value: i,
                           );
                         }).toList(),
                         onChanged: (selected) async {
-                          await GpPreferences()
-                              .setInt(KEY_GPS_MAX_DISTANCE, selected);
-                          var gpsState =
-                              Provider.of<GpsState>(context, listen: false);
-                          gpsState.gpsMaxDistance =
-                              selected < 0 ? null : selected;
+                          await GpPreferences().setStringList(
+                              KEY_GPS_LOG_VIEW_MODE,
+                              [selected, currentLogViewModes[1]]);
+                          var projectState =
+                              Provider.of<ProjectState>(context, listen: false);
+                          projectState.reloadProject(context);
+
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(MdiIcons.eyeSettings),
+                  title: Text("Log view mode for Kalman filtered data."),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      DropdownButton<String>(
+                        value: currentLogViewModes[1],
+                        isExpanded: false,
+                        items: LOGVIEWMODES.map((i) {
+                          return DropdownMenuItem<String>(
+                            child: Text(
+                              i,
+                              textAlign: TextAlign.center,
+                            ),
+                            value: i,
+                          );
+                        }).toList(),
+                        onChanged: (selected) async {
+                          await GpPreferences().setStringList(
+                              KEY_GPS_LOG_VIEW_MODE,
+                              [currentLogViewModes[0], selected]);
+                          var projectState =
+                              Provider.of<ProjectState>(context, listen: false);
+                          projectState.reloadProject(context);
                           setState(() {});
                         },
                       ),

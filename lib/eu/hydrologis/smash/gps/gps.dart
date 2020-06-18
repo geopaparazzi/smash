@@ -47,8 +47,13 @@ const String ARG_MOCKED = 'mocked';
 class SmashPosition {
   LocationDto _location;
   bool mocked = false;
+  double filteredLatitude;
+  double filteredLongitude;
+  double filteredAccuracy;
 
-  SmashPosition.fromLocation(this._location);
+  SmashPosition.fromLocation(this._location,
+      {this.filteredLatitude, this.filteredLongitude, this.filteredAccuracy});
+
   SmashPosition.fromJson(Map<String, dynamic> json) {
     _location = LocationDto.fromJson({
       Keys.ARG_LATITUDE: json[ARG_LATITUDE],
@@ -61,6 +66,9 @@ class SmashPosition {
       Keys.ARG_SPEED_ACCURACY: json[ARG_SPEED_ACCURACY],
     });
     mocked = json[ARG_MOCKED];
+    filteredLatitude = json[Keys.ARG_LATITUDE_FILTERED];
+    filteredLongitude = json[Keys.ARG_LONGITUDE_FILTERED];
+    filteredAccuracy = json[Keys.ARG_ACCURACY_FILTERED];
   }
   SmashPosition.fromCoords(double lon, double lat, double time) {
     _location = LocationDto.fromJson({
@@ -75,6 +83,7 @@ class SmashPosition {
   double get latitude => _location.latitude;
   double get longitude => _location.longitude;
   double get accuracy => _location.accuracy;
+
   double get altitude => _location.altitude;
   double get speed => _location.speed;
   double get speedAccuracy => _location.speedAccuracy;
@@ -205,7 +214,7 @@ class GpsHandler {
 
   Future<void> init(GpsState initGpsState) async {
     GpLogger().i("Init GpsHandler");
-    if(SmashPlatform.isDesktop()){
+    if (SmashPlatform.isDesktop()) {
       GpLogger().i("No gps handler active on desktop.");
       return;
     }
@@ -282,7 +291,13 @@ class GpsHandler {
     port = ReceivePort();
     IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
     port.listen((dynamic data) {
-      _onPositionUpdate(SmashPosition.fromLocation(data));
+      KalmanFilter kalman = KalmanFilter.getInstance();
+      kalman.process(data.latitude, data.longitude, data.accuracy, data.time, data.speed);
+
+      _onPositionUpdate(SmashPosition.fromLocation(data,
+          filteredLatitude: kalman.latitude,
+          filteredLongitude: kalman.longitude,
+          filteredAccuracy: kalman.accuracy));
     });
     // init platform state
     if (isInit) await GPS.BackgroundLocator.initialize();
