@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
@@ -99,15 +100,13 @@ class ProjectState extends ChangeNotifierPlus {
     await DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, mapBuilder);
     tmp.geopapMarkers = tmpList;
 
-    /// The log view modes [originalData, filteredData].
-    List<String> currentLogViewModes = GpPreferences().getStringListSync(
-        KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
+    var gpsState = Provider.of<GpsState>(mapBuilder.context);
     tmp.geopapLogs = await DataLoaderUtilities.loadLogLinesLayer(
       projectDb,
-      currentLogViewModes[0] != LOGVIEWMODES[0],
-      currentLogViewModes[1] != LOGVIEWMODES[0],
-      currentLogViewModes[0] == LOGVIEWMODES[2],
-      currentLogViewModes[1] == LOGVIEWMODES[2],
+      gpsState.logMode != LOGVIEWMODES[0],
+      gpsState.filteredLogMode != LOGVIEWMODES[0],
+      gpsState.logMode == LOGVIEWMODES[2],
+      gpsState.filteredLogMode == LOGVIEWMODES[2],
     );
     _projectData = tmp;
   }
