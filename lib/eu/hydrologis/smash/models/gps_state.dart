@@ -31,6 +31,7 @@ class GpsState extends ChangeNotifierPlus {
   List<LatLng> _currentFilteredLogPoints = [];
   String logMode;
   String filteredLogMode;
+  String notesMode;
 
   GpsStatus _lastGpsStatusBeforeLogging;
 
@@ -43,6 +44,8 @@ class GpsState extends ChangeNotifierPlus {
         KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
     logMode = currentLogViewModes[0];
     filteredLogMode = currentLogViewModes[1];
+    notesMode =
+        GpPreferences().getStringSync(KEY_NOTES_VIEW_MODE, NOTESVIEWMODES[0]);
   }
 
   GpsStatus get status => _status;

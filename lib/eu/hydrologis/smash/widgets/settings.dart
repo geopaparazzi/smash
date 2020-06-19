@@ -1130,6 +1130,63 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
   }
 }
 
+class NotesViewSetting extends StatefulWidget {
+  NotesViewSetting({Key key}) : super(key: key);
+
+  @override
+  _NotesViewSettingState createState() => _NotesViewSettingState();
+}
+
+class _NotesViewSettingState extends State<NotesViewSetting> {
+  @override
+  Widget build(BuildContext context) {
+    GpsState gpsState = Provider.of<GpsState>(context);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: SmashUI.defaultPadding() * 2,
+          child: SmashUI.normalText("Notes view modes", bold: true),
+        ),
+        ListTile(
+          leading: Icon(MdiIcons.eye),
+          title: Text("Select a notes view mode."),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              DropdownButton<String>(
+                value: gpsState.logMode,
+                isExpanded: false,
+                items: NOTESVIEWMODES.map((i) {
+                  return DropdownMenuItem<String>(
+                    child: Text(
+                      i,
+                      textAlign: TextAlign.center,
+                    ),
+                    value: i,
+                  );
+                }).toList(),
+                onChanged: (selected) async {
+                  await GpPreferences()
+                      .setString(KEY_NOTES_VIEW_MODE, selected);
+                  gpsState.notesMode = selected;
+
+                  var projectState =
+                      Provider.of<ProjectState>(context, listen: false);
+                  projectState.reloadProject(context);
+
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class VectorLayerSettings extends StatefulWidget {
   @override
   VectorLayerSettingsState createState() {

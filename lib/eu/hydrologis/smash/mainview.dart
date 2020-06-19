@@ -39,6 +39,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/gps_info_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 import 'mainview_utils.dart';
@@ -387,6 +388,9 @@ class MainViewWidgetState extends State<MainViewWidget>
                         builder: (context) =>
                             NotesListWidget(true, projectState.projectDb)));
               },
+              onDoubleTap: () async {
+                await openNotesViewSettings();
+              },
             ),
             projectData != null ? projectData.simpleNotesCount : 0,
           ),
@@ -474,6 +478,9 @@ class MainViewWidgetState extends State<MainViewWidget>
                         builder: (context) =>
                             NotesListWidget(false, projectState.projectDb)));
               },
+              onDoubleTap: () async {
+                await openNotesViewSettings();
+              },
             ),
             projectData != null ? projectData.formNotesCount : 0,
           ),
@@ -533,6 +540,18 @@ class MainViewWidgetState extends State<MainViewWidget>
         ],
       ),
     );
+  }
+
+  Future openNotesViewSettings() async {
+    Dialog settingsDialog = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+        child: NotesViewSetting(),
+      ),
+    );
+    await showDialog(
+        context: context, builder: (BuildContext context) => settingsDialog);
   }
 
   void addPluginsPreLayers(
