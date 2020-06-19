@@ -507,8 +507,8 @@ class DataLoaderUtilities {
     });
   }
 
-  static Future<PolylineLayerOptions> loadLogLinesLayer(
-      var db, bool doOrig, bool doFiltered) async {
+  static Future<PolylineLayerOptions> loadLogLinesLayer(var db, bool doOrig,
+      bool doFiltered, bool doOrigTransp, bool doFilteredTransp) async {
     String logsQuery = '''
         select l.$LOGS_COLUMN_ID, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH 
         from $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
@@ -558,10 +558,13 @@ class DataLoaderUtilities {
         var color = list[0];
         var width = list[1];
         var points = list[2];
-        lines.add(Polyline(
-            points: points,
-            strokeWidth: width,
-            color: ColorExt(color).withAlpha(100)));
+        dynamic colorObj = ColorExt(color);
+        if (doOrigTransp) {
+          colorObj = colorObj.withAlpha(100);
+        }
+        var polyline =
+            Polyline(points: points, strokeWidth: width, color: colorObj);
+        lines.add(polyline);
       });
     }
     if (doFiltered) {
@@ -570,8 +573,12 @@ class DataLoaderUtilities {
         var width = list[1];
         var points = list[3];
         if (points.length > 1) {
-          lines.add(Polyline(
-              points: points, strokeWidth: width, color: ColorExt(color)));
+          dynamic colorObj = ColorExt(color);
+          if (doFilteredTransp) {
+            colorObj = colorObj.withAlpha(100);
+          }
+          lines.add(
+              Polyline(points: points, strokeWidth: width, color: colorObj));
         }
       });
     }

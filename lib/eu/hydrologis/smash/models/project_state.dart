@@ -106,6 +106,8 @@ class ProjectState extends ChangeNotifierPlus {
       projectDb,
       currentLogViewModes[0] != LOGVIEWMODES[0],
       currentLogViewModes[1] != LOGVIEWMODES[0],
+      currentLogViewModes[0] == LOGVIEWMODES[2],
+      currentLogViewModes[1] == LOGVIEWMODES[2],
     );
     _projectData = tmp;
   }

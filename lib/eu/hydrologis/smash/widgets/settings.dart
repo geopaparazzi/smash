@@ -816,10 +816,6 @@ class GpsSettingsState extends State<GpsSettings> {
     bool showValidGpsPointCount =
         GpPreferences().getBooleanSync(KEY_GPS_SHOW_VALID_POINTS, false);
 
-    /// The log view modes [originalData, filteredData].
-    List<String> currentLogViewModes = GpPreferences().getStringListSync(
-        KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
-
     // SmashLocationAccuracy locationAccuracy =
     //     SmashLocationAccuracy.fromPreferences();
     // var accuraciesList = SmashLocationAccuracy.values();
@@ -998,77 +994,7 @@ class GpsSettingsState extends State<GpsSettings> {
           Card(
             margin: SmashUI.defaultMargin(),
             color: SmashColors.mainBackground,
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: SmashUI.normalText("GPS Logs", bold: true),
-                ),
-                ListTile(
-                  leading: Icon(MdiIcons.eye),
-                  title: Text("Log view mode for original data."),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      DropdownButton<String>(
-                        value: currentLogViewModes[0],
-                        isExpanded: false,
-                        items: LOGVIEWMODES.map((i) {
-                          return DropdownMenuItem<String>(
-                            child: Text(
-                              i,
-                              textAlign: TextAlign.center,
-                            ),
-                            value: i,
-                          );
-                        }).toList(),
-                        onChanged: (selected) async {
-                          await GpPreferences().setStringList(
-                              KEY_GPS_LOG_VIEW_MODE,
-                              [selected, currentLogViewModes[1]]);
-                          var projectState =
-                              Provider.of<ProjectState>(context, listen: false);
-                          projectState.reloadProject(context);
-
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(MdiIcons.eyeSettings),
-                  title: Text("Log view mode for Kalman filtered data."),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      DropdownButton<String>(
-                        value: currentLogViewModes[1],
-                        isExpanded: false,
-                        items: LOGVIEWMODES.map((i) {
-                          return DropdownMenuItem<String>(
-                            child: Text(
-                              i,
-                              textAlign: TextAlign.center,
-                            ),
-                            value: i,
-                          );
-                        }).toList(),
-                        onChanged: (selected) async {
-                          await GpPreferences().setStringList(
-                              KEY_GPS_LOG_VIEW_MODE,
-                              [currentLogViewModes[0], selected]);
-                          var projectState =
-                              Provider.of<ProjectState>(context, listen: false);
-                          projectState.reloadProject(context);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            child: GpsLogsSetting(),
           ),
           Card(
             margin: SmashUI.defaultMargin(),
@@ -1112,6 +1038,94 @@ class GpsSettingsState extends State<GpsSettings> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class GpsLogsSetting extends StatefulWidget {
+  GpsLogsSetting({Key key}) : super(key: key);
+
+  @override
+  _GpsLogsSettingState createState() => _GpsLogsSettingState();
+}
+
+class _GpsLogsSettingState extends State<GpsLogsSetting> {
+  @override
+  Widget build(BuildContext context) {
+    GpsState gpsState = Provider.of<GpsState>(context);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: SmashUI.defaultPadding() * 2,
+          child: SmashUI.normalText("GPS Logs view mode", bold: true),
+        ),
+        ListTile(
+          leading: Icon(MdiIcons.eye),
+          title: Text("Log view mode for original data."),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              DropdownButton<String>(
+                value: gpsState.logMode,
+                isExpanded: false,
+                items: LOGVIEWMODES.map((i) {
+                  return DropdownMenuItem<String>(
+                    child: Text(
+                      i,
+                      textAlign: TextAlign.center,
+                    ),
+                    value: i,
+                  );
+                }).toList(),
+                onChanged: (selected) async {
+                  await GpPreferences().setStringList(KEY_GPS_LOG_VIEW_MODE,
+                      [selected, gpsState.filteredLogMode]);
+                  gpsState.logMode = selected;
+
+                  var projectState =
+                      Provider.of<ProjectState>(context, listen: false);
+                  projectState.reloadProject(context);
+
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+        ),
+        ListTile(
+          leading: Icon(MdiIcons.eyeSettings),
+          title: Text("Log view mode for Kalman filtered data."),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              DropdownButton<String>(
+                value: gpsState.filteredLogMode,
+                isExpanded: false,
+                items: LOGVIEWMODES.map((i) {
+                  return DropdownMenuItem<String>(
+                    child: Text(
+                      i,
+                      textAlign: TextAlign.center,
+                    ),
+                    value: i,
+                  );
+                }).toList(),
+                onChanged: (selected) async {
+                  await GpPreferences().setStringList(
+                      KEY_GPS_LOG_VIEW_MODE, [gpsState.logMode, selected]);
+                  gpsState.filteredLogMode = selected;
+                  var projectState =
+                      Provider.of<ProjectState>(context, listen: false);
+                  projectState.reloadProject(context);
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

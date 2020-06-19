@@ -12,6 +12,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -122,28 +123,18 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
         appBar: AppBar(
           title: Text("GPS Logs list"),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(MdiIcons.checkBoxMultipleOutline),
-              tooltip: "Select all",
-              onPressed: () async {
-                await db.updateGpsLogVisibility(true);
-                await loadLogs();
-              },
-            ),
-            IconButton(
-              tooltip: "Unselect all",
-              icon: Icon(MdiIcons.checkboxMultipleBlankOutline),
-              onPressed: () async {
-                await db.updateGpsLogVisibility(false);
-                await loadLogs();
-              },
-            ),
             PopupMenuButton<int>(
               onSelected: (value) async {
                 if (value == 1) {
-                  await db.invertGpsLogsVisibility();
+                  await db.updateGpsLogVisibility(true);
                   await loadLogs();
                 } else if (value == 2) {
+                  await db.updateGpsLogVisibility(false);
+                  await loadLogs();
+                } else if (value == 3) {
+                  await db.invertGpsLogsVisibility();
+                  await loadLogs();
+                } else if (value == 4) {
                   if (_logsList.length > 1) {
                     var masterId; // = (_logsList.first as Log4ListWidget).id;
                     var mergeIds = <int>[];
@@ -162,8 +153,10 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                 }
               },
               itemBuilder: (BuildContext context) {
-                var txt1 = "Invert selection";
-                var txt2 = "Merge selected";
+                var txt1 = "Select all";
+                var txt2 = "Unselect all";
+                var txt3 = "Invert selection";
+                var txt4 = "Merge selected";
                 return [
                   PopupMenuItem<int>(
                     value: 1,
@@ -172,7 +165,15 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                   PopupMenuItem<int>(
                     value: 2,
                     child: Text(txt2),
-                  )
+                  ),
+                  PopupMenuItem<int>(
+                    value: 3,
+                    child: Text(txt3),
+                  ),
+                  PopupMenuItem<int>(
+                    value: 4,
+                    child: Text(txt4),
+                  ),
                 ];
               },
             ),

@@ -29,12 +29,20 @@ class GpsState extends ChangeNotifierPlus {
 
   List<LatLng> _currentLogPoints = [];
   List<LatLng> _currentFilteredLogPoints = [];
+  String logMode;
+  String filteredLogMode;
+
   GpsStatus _lastGpsStatusBeforeLogging;
 
   void init() {
     gpsMinDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, 1);
     gpsTimeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, 1);
     doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
+
+    List<String> currentLogViewModes = GpPreferences().getStringListSync(
+        KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
+    logMode = currentLogViewModes[0];
+    filteredLogMode = currentLogViewModes[1];
   }
 
   GpsStatus get status => _status;

@@ -51,35 +51,33 @@ class CurrentGpsLogLayer extends StatelessWidget {
 
   CurrentGpsLogLayer(this.currentGpsLogLayerOpts, this.map, this.stream) {
     /// The log view modes [originalData, filteredData].
-    List<String> currentLogViewModes = GpPreferences().getStringListSync(
-        KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
-    String origMode = currentLogViewModes[0];
-    if (origMode == LOGVIEWMODES[0]) {
-      doOrig = false;
-    } else {
-      logPaint = Paint()
-        ..color = currentGpsLogLayerOpts.logColor.withAlpha(100)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = currentGpsLogLayerOpts.logWidth;
-    }
-    String filteredMode = currentLogViewModes[1];
-    if (filteredMode == LOGVIEWMODES[0]) {
-      doFiltered = false;
-    } else {
-      filteredLogPaint = Paint()
-        ..color =
-            SmashColors.mainDecorationsDarker // currentGpsLogLayerOpts.logColor
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = currentGpsLogLayerOpts.logWidth;
-    }
-
-    // TODO add dashed
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       if (gpsState.isLogging && gpsState.currentLogPoints.length > 1) {
+        if (gpsState.logMode == LOGVIEWMODES[0]) {
+          doOrig = false;
+        } else {
+          logPaint = Paint()
+            ..color = (gpsState.logMode == LOGVIEWMODES[1])
+                ? currentGpsLogLayerOpts.logColor
+                : currentGpsLogLayerOpts.logColor.withAlpha(100)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = currentGpsLogLayerOpts.logWidth;
+        }
+        if (gpsState.filteredLogMode == LOGVIEWMODES[0]) {
+          doFiltered = false;
+        } else {
+          filteredLogPaint = Paint()
+            ..color = (gpsState.filteredLogMode == LOGVIEWMODES[1])
+                ? currentGpsLogLayerOpts.logColor
+                : currentGpsLogLayerOpts.logColor.withAlpha(100)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = currentGpsLogLayerOpts.logWidth;
+        }
+
         return CustomPaint(
           painter: CurrentLogPathPainter(
               logPaint,
@@ -140,6 +138,14 @@ class CurrentLogPathPainter extends CustomPainter {
         double center2Y = (posPixel2.y - pixelOrigin.y);
         path2.lineTo(center2X, center2Y);
       }
+
+      // connect filtered to gps position. Else it can looks
+      // lagging behind. Just for show.
+      CustomPoint extra = map.project(currentLogPoints.last);
+      double centerExtraX = extra.x - pixelOrigin.x;
+      double centerExtraY = (extra.y - pixelOrigin.y);
+      path2.lineTo(centerExtraX, centerExtraY);
+
       canvas.drawPath(path2, filtereLogPaint);
     }
   }

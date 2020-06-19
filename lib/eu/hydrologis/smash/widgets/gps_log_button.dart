@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -43,6 +44,19 @@ class _LoggingButtonState extends State<LoggingButton> {
               context,
               MaterialPageRoute(
                   builder: (context) => LogListWidget(projectState.projectDb)));
+        },
+        onDoubleTap: () async {
+          Dialog settingsDialog = Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+              child: GpsLogsSetting(),
+            ),
+          );
+          await showDialog(
+              context: context,
+              builder: (BuildContext context) => settingsDialog);
         },
       );
     });
