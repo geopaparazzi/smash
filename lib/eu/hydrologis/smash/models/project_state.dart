@@ -97,16 +97,21 @@ class ProjectState extends ChangeNotifierPlus {
 
     List<Marker> tmpList = [];
     await DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, mapBuilder);
-    await DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, mapBuilder);
+    var notesMode =
+        GpPreferences().getStringSync(KEY_NOTES_VIEW_MODE, NOTESVIEWMODES[0]);
+    await DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, mapBuilder, notesMode);
     tmp.geopapMarkers = tmpList;
 
-    var gpsState = Provider.of<GpsState>(mapBuilder.context);
+    List<String> currentLogViewModes = GpPreferences().getStringListSync(
+        KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
+    var logMode = currentLogViewModes[0];
+    var filteredLogMode = currentLogViewModes[1];
     tmp.geopapLogs = await DataLoaderUtilities.loadLogLinesLayer(
       projectDb,
-      gpsState.logMode != LOGVIEWMODES[0],
-      gpsState.filteredLogMode != LOGVIEWMODES[0],
-      gpsState.logMode == LOGVIEWMODES[2],
-      gpsState.filteredLogMode == LOGVIEWMODES[2],
+      logMode != LOGVIEWMODES[0],
+      filteredLogMode != LOGVIEWMODES[0],
+      logMode == LOGVIEWMODES[2],
+      filteredLogMode == LOGVIEWMODES[2],
     );
     _projectData = tmp;
   }

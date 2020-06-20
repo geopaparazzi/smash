@@ -160,13 +160,6 @@ Future<String> handleTags(BuildContext context) async {
   return null;
 }
 
-Future<String> handleGps(BuildContext context) async {
-  GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-  gpsState.init();
-  await GpsHandler().init(gpsState);
-  return null;
-}
-
 Future<String> handlePreferences(BuildContext context) async {
   await GpPreferences().initialize();
 

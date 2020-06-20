@@ -134,9 +134,8 @@ class DataLoaderUtilities {
   }
 
   static Future loadNotesMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
-      SmashMapBuilder mapBuilder) async {
-    var gpsState = Provider.of<GpsState>(mapBuilder.context);
-    if (gpsState.notesMode == NOTESVIEWMODES[2]) {
+      SmashMapBuilder mapBuilder, String notesMode) async {
+    if (notesMode == NOTESVIEWMODES[2]) {
       return;
     }
 
@@ -156,7 +155,7 @@ class DataLoaderUtilities {
       if (note.hasForm()) {
         text = FormUtilities.getFormItemLabel(note.form, note.text);
       }
-      if (gpsState.notesMode == NOTESVIEWMODES[1]) {
+      if (notesMode == NOTESVIEWMODES[1]) {
         text = null; // so the text of the icon is not made in MarkerIcon
       }
 

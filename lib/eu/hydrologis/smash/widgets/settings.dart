@@ -1152,34 +1152,30 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
         ListTile(
           leading: Icon(MdiIcons.eye),
           title: Text("Select a notes view mode."),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              DropdownButton<String>(
-                value: gpsState.logMode,
-                isExpanded: false,
-                items: NOTESVIEWMODES.map((i) {
-                  return DropdownMenuItem<String>(
-                    child: Text(
-                      i,
-                      textAlign: TextAlign.center,
-                    ),
-                    value: i,
-                  );
-                }).toList(),
-                onChanged: (selected) async {
-                  await GpPreferences()
-                      .setString(KEY_NOTES_VIEW_MODE, selected);
-                  gpsState.notesMode = selected;
+          subtitle: DropdownButton<String>(
+            value: gpsState.notesMode,
+            isExpanded: false,
+            items: NOTESVIEWMODES.map((i) {
+              print(i);
+              return DropdownMenuItem<String>(
+                child: Text(
+                  i,
+                  textAlign: TextAlign.center,
+                ),
+                value: i,
+              );
+            }).toList(),
+            onChanged: (selected) async {
+              await GpPreferences()
+                  .setString(KEY_NOTES_VIEW_MODE, selected);
+              gpsState.notesMode = selected;
 
-                  var projectState =
-                      Provider.of<ProjectState>(context, listen: false);
-                  projectState.reloadProject(context);
+              var projectState =
+                  Provider.of<ProjectState>(context, listen: false);
+              projectState.reloadProject(context);
 
-                  setState(() {});
-                },
-              ),
-            ],
+              setState(() {});
+            },
           ),
         ),
       ],
