@@ -35,6 +35,7 @@ import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
+import 'package:smash/eu/hydrologis/smash/util/coachmarks.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_info_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';
@@ -54,6 +55,8 @@ class MainViewWidget extends StatefulWidget {
 class MainViewWidgetState extends State<MainViewWidget>
     with WidgetsBindingObserver, AfterLayoutMixin {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  MainViewCoachMarks coachMarks = MainViewCoachMarks();
 
   double _initLon;
   double _initLat;
@@ -101,6 +104,8 @@ class MainViewWidgetState extends State<MainViewWidget>
         gpsState.statusQuiet = GpsStatus.ON_NO_FIX;
       }
     }
+
+    coachMarks.initCoachMarks();
   }
 
   @override
@@ -322,7 +327,13 @@ class MainViewWidgetState extends State<MainViewWidget>
   List<Widget> addActionBarButtons() {
     return <Widget>[
       IconButton(
-          tooltip: "Open tools drawer",
+          tooltip: "Show interactive coach marks.",
+          icon: Icon(MdiIcons.helpCircleOutline),
+          onPressed: () {
+            coachMarks.showTutorial(context);
+          }),
+      IconButton(
+          tooltip: "Open tools drawer.",
           icon: Icon(MdiIcons.tools),
           onPressed: () {
             _scaffoldKey.currentState.openEndDrawer();
@@ -340,6 +351,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           DashboardUtils.makeToolbarBadge(
             GestureDetector(
               child: IconButton(
+                key: coachMarks.simpleNotesButtonKey,
                 onPressed: () async {
                   var gpsState =
                       Provider.of<GpsState>(mapBuilder.context, listen: false);
@@ -397,6 +409,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           DashboardUtils.makeToolbarBadge(
             GestureDetector(
               child: IconButton(
+                key: coachMarks.formsButtonKey,
                 onPressed: () async {
                   var gpsState =
                       Provider.of<GpsState>(mapBuilder.context, listen: false);
@@ -485,13 +498,14 @@ class MainViewWidgetState extends State<MainViewWidget>
             projectData != null ? projectData.formNotesCount : 0,
           ),
           DashboardUtils.makeToolbarBadge(
-            LoggingButton(_iconSize),
+            LoggingButton(coachMarks.logsButtonKey, _iconSize),
             projectData != null ? projectData.logsCount : 0,
           ),
           Spacer(),
-          GpsInfoButton(_iconSize),
+          GpsInfoButton(coachMarks.gpsButtonKey, _iconSize),
           Spacer(),
           IconButton(
+            key: coachMarks.layersButtonKey,
             icon: Icon(
               SmashIcons.layersIcon,
               color: SmashColors.mainBackground,
@@ -513,6 +527,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           Consumer<SmashMapState>(builder: (context, mapState, child) {
             return DashboardUtils.makeToolbarZoomBadge(
               IconButton(
+                key: coachMarks.zoomInButtonKey,
                 onPressed: () {
                   mapState.zoomIn();
                 },
@@ -527,6 +542,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             );
           }),
           IconButton(
+            key: coachMarks.zoomOutButtonKey,
             onPressed: () {
               mapState.zoomOut();
             },

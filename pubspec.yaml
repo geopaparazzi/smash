@@ -61,6 +61,9 @@ dependencies:
   badges: ^1.1.1
 
   # MIT
+  tutorial_coach_mark: ^0.3.0
+
+  # MIT
   after_layout: ^1.0.7+2
 
   # BSD

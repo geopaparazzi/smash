@@ -18,9 +18,9 @@ import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
 class LoggingButton extends StatefulWidget {
-  double _iconSize;
-
-  LoggingButton(this._iconSize);
+  final double _iconSize;
+  final _key;
+  LoggingButton(this._key, this._iconSize);
 
   @override
   State<StatefulWidget> createState() => _LoggingButtonState();
@@ -32,6 +32,7 @@ class _LoggingButtonState extends State<LoggingButton> {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       return GestureDetector(
         child: IconButton(
+            key: widget._key,
             icon: DashboardUtils.getLoggingIcon(gpsState.status),
             iconSize: widget._iconSize,
             onPressed: () {

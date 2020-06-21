@@ -329,31 +329,19 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                 ],
               ),
             ),
-            ButtonBar(
-              children: <Widget>[
-                FlatButton(
-                  child: Text(
-                    'DELETE',
-                    style: TextStyle(color: SmashColors.mainDanger),
-                  ),
-                  onPressed: () async {
-                    widget.sourcesList.removeAt(widget.index);
-                    if (widget.type == LAYERSTYPE_TMS) {
-                      await GpPreferences().setTmsList(widget.sourcesList);
-                    } else {
-                      await GpPreferences().setWmsList(widget.sourcesList);
-                    }
-                    widget.reloadNotifier.value =
-                        widget.reloadNotifier.value + 1;
-                  },
-                ),
-                FlatButton(
-                  child: const Text('ADD TO LAYERS'),
-                  onPressed: () {
-                    Navigator.pop(context, widget.layerSource);
-                  },
-                ),
-              ],
+            SmashUI.defaultButtonBar(
+              dangerLabel: 'DELETE',
+              dangerFunction: () async {
+                widget.sourcesList.removeAt(widget.index);
+                if (widget.type == LAYERSTYPE_TMS) {
+                  await GpPreferences().setTmsList(widget.sourcesList);
+                } else {
+                  await GpPreferences().setWmsList(widget.sourcesList);
+                }
+                widget.reloadNotifier.value = widget.reloadNotifier.value + 1;
+              },
+              okLabel: 'ADD TO LAYERS',
+              okFunction: () => Navigator.pop(context, widget.layerSource),
             ),
           ],
         ),

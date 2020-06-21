@@ -994,11 +994,6 @@ class GpsSettingsState extends State<GpsSettings> {
           Card(
             margin: SmashUI.defaultMargin(),
             color: SmashColors.mainBackground,
-            child: GpsLogsSetting(),
-          ),
-          Card(
-            margin: SmashUI.defaultMargin(),
-            color: SmashColors.mainBackground,
             child: Column(
               children: <Widget>[
                 Padding(
@@ -1062,7 +1057,10 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
           child: SmashUI.normalText("GPS Logs view mode", bold: true),
         ),
         ListTile(
-          leading: Icon(MdiIcons.eye),
+          leading: Icon(
+            MdiIcons.eye,
+            color: SmashColors.mainDecorations,
+          ),
           title: Text("Log view mode for original data."),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1083,11 +1081,6 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
                   await GpPreferences().setStringList(KEY_GPS_LOG_VIEW_MODE,
                       [selected, gpsState.filteredLogMode]);
                   gpsState.logMode = selected;
-
-                  var projectState =
-                      Provider.of<ProjectState>(context, listen: false);
-                  projectState.reloadProject(context);
-
                   setState(() {});
                 },
               ),
@@ -1095,7 +1088,10 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
           ),
         ),
         ListTile(
-          leading: Icon(MdiIcons.eyeSettings),
+          leading: Icon(
+            MdiIcons.eyeSettings,
+            color: SmashColors.mainDecorations,
+          ),
           title: Text("Log view mode for Kalman filtered data."),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1116,14 +1112,22 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
                   await GpPreferences().setStringList(
                       KEY_GPS_LOG_VIEW_MODE, [gpsState.logMode, selected]);
                   gpsState.filteredLogMode = selected;
-                  var projectState =
-                      Provider.of<ProjectState>(context, listen: false);
-                  projectState.reloadProject(context);
                   setState(() {});
                 },
               ),
             ],
           ),
+        ),
+        SmashUI.defaultButtonBar(
+          cancelLabel: 'CANCEL',
+          cancelFunction: () => Navigator.pop(context),
+          okLabel: 'OK',
+          okFunction: () async {
+            Navigator.pop(context);
+            var projectState =
+                Provider.of<ProjectState>(context, listen: false);
+            await projectState.reloadProject(context);
+          },
         ),
       ],
     );
@@ -1150,7 +1154,10 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
           child: SmashUI.normalText("Notes view modes", bold: true),
         ),
         ListTile(
-          leading: Icon(MdiIcons.eye),
+          leading: Icon(
+            MdiIcons.eye,
+            color: SmashColors.mainDecorations,
+          ),
           title: Text("Select a notes view mode."),
           subtitle: DropdownButton<String>(
             value: gpsState.notesMode,
@@ -1166,17 +1173,22 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
               );
             }).toList(),
             onChanged: (selected) async {
-              await GpPreferences()
-                  .setString(KEY_NOTES_VIEW_MODE, selected);
+              await GpPreferences().setString(KEY_NOTES_VIEW_MODE, selected);
               gpsState.notesMode = selected;
-
-              var projectState =
-                  Provider.of<ProjectState>(context, listen: false);
-              projectState.reloadProject(context);
-
               setState(() {});
             },
           ),
+        ),
+        SmashUI.defaultButtonBar(
+          cancelLabel: 'CANCEL',
+          cancelFunction: () => Navigator.pop(context),
+          okLabel: 'OK',
+          okFunction: () async {
+            Navigator.pop(context);
+            var projectState =
+                Provider.of<ProjectState>(context, listen: false);
+            await projectState.reloadProject(context);
+          },
         ),
       ],
     );
