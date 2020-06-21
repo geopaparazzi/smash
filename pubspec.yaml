@@ -38,26 +38,24 @@ dependencies:
   flutter_map: #^0.9.0
     git:
       url: https://github.com/moovida/flutter_map.git
-      # ref: simplify_poly
-      # url: https://github.com/johnpryan/flutter_map.git
+      ref: version4smash
 
   flutter_map_marker_cluster: #^0.2.7
     git:
       url: https://github.com/moovida/flutter_map_marker_cluster.git
-      # ref: simplify_poly
+      ref: version4smash
 
   # MIT
   lat_lon_grid_plugin: #0.1.1
     git:
       url: https://github.com/moovida/lat_lon_grid_plugin.git
-      # ref: simplify_poly
+      ref: version4smash
 
   mapsforge_flutter:
     git:
       url: https://github.com/moovida/mapsforge_flutter.git
       ref: libs_upgrade
       path: mapsforge_flutter
-    #path: ../../OTHERS/mapsforge_flutter/mapsforge_flutter
 
   # Apache 2
   badges: ^1.1.1

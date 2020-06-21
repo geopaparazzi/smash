@@ -63,7 +63,7 @@ packages:
       name: barcode
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.11.1"
+    version: "1.13.0"
   cached_network_image:
     dependency: transitive
     description:
@@ -198,7 +198,7 @@ packages:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.2.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -210,7 +210,7 @@ packages:
       name: flutter_cache_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "1.4.1"
   flutter_datetime_picker:
     dependency: transitive
     description:
@@ -243,8 +243,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: "1ec33f83ee65c6aaaadcf4014fdd83534b648645"
+      ref: version4smash
+      resolved-ref: "5a99b1e130c87aee2dad365114f3e2f2df378879"
       url: "https://github.com/moovida/flutter_map.git"
     source: git
     version: "0.9.0"
@@ -252,8 +252,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: feed966e017b7c5ec4f8551ff1ce7c470d0d3936
+      ref: version4smash
+      resolved-ref: d8a0a6b81a247d439ea6b8ca0a1ff2cb25ea6dc4
       url: "https://github.com/moovida/flutter_map_marker_cluster.git"
     source: git
     version: "0.2.7"
@@ -352,7 +352,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7+1"
+    version: "0.6.7+2"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -378,8 +378,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: b0ff01ff098e26fa320be518dfd0392ebcf9ec6e
+      ref: version4smash
+      resolved-ref: "5168e82e61a046efe78570d3e3b96bef5d83a6b9"
       url: "https://github.com/moovida/lat_lon_grid_plugin.git"
     source: git
     version: "0.1.1"
@@ -426,7 +426,7 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.6"
+    version: "0.12.8"
   material_design_icons_flutter:
     dependency: transitive
     description:
@@ -482,7 +482,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.10"
+    version: "1.6.11"
   path_provider_ex:
     dependency: transitive
     description:
@@ -608,7 +608,7 @@ packages:
       name: qr
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "1.3.0"
   quiver:
     dependency: transitive
     description:
@@ -697,7 +697,7 @@ packages:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2+1"
   stack_trace:
     dependency: "direct main"
     description:
@@ -718,7 +718,7 @@ packages:
       name: synchronized
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.0+1"
   term_glyph:
     dependency: transitive
     description:
@@ -760,7 +760,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.4.10"
+    version: "5.4.11"
   url_launcher_macos:
     dependency: transitive
     description:
@@ -839,5 +839,5 @@ packages:
     source: hosted
     version: "2.2.1"
 sdks:
-  dart: ">=2.7.0 <3.0.0"
+  dart: ">=2.8.0 <3.0.0"
   flutter: ">=1.12.13+hotfix.5 <2.0.0"
