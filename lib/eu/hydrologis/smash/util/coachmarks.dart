@@ -13,75 +13,138 @@ class MainViewCoachMarks {
   GlobalKey layersButtonKey = GlobalKey();
   GlobalKey zoomInButtonKey = GlobalKey();
   GlobalKey zoomOutButtonKey = GlobalKey();
+  GlobalKey toolsButtonKey = GlobalKey();
+  GlobalKey drawerButtonKey = GlobalKey();
 
   List<TargetFocus> targets = List();
 
   void initCoachMarks() {
-    var title = "Simple Notes Button";
-    var singleTap = "Single tap: add new note";
+    var all = 9;
+    var i = 1;
+
+    var title = "($i/$all) Simple Notes Button";
+    var singleTap = "Single tap: add a new note";
     var longTap = "Long tap: view notes list";
     var doubleTap = "Double tap: view notes settings";
     targets.add(TargetFocus(
-      identify: "Target 1",
+      identify: "Target ${i++}",
       keyTarget: simpleNotesButtonKey,
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "Form Notes Button";
+    title = "($i/$all) Form Notes Button";
     singleTap = "Single tap: add new form note";
     longTap = "Long tap: view form notes list";
     doubleTap = "Double tap: view notes settings";
     targets.add(TargetFocus(
-      identify: "Target 2",
+      identify: "Target ${i++}",
       keyTarget: formsButtonKey,
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "GPS Log Button";
+    title = "($i/$all) GPS Log Button";
     singleTap = "Single tap: start logging/stop logging";
     longTap = "Long tap: view logs list";
     doubleTap = "Double tap: view logs settings";
     targets.add(TargetFocus(
-      identify: "Target 3",
+      identify: "Target ${i++}",
       keyTarget: logsButtonKey,
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "GPS Info Button";
+    title = "($i/$all) GPS Info Button";
     singleTap = "Single tap: center map on GPS position";
     longTap = "Long tap: show GPS info";
     doubleTap = "Double tap: toggle automatic center on GPS";
     targets.add(TargetFocus(
-      identify: "Target 4",
+      identify: "Target ${i++}",
       keyTarget: gpsButtonKey,
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "Layers View Button";
-    singleTap = "single tap: open layers view";
+    title = "($i/$all) Layers View Button";
+    singleTap = "Open the layers view";
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
-      identify: "Target 5",
+      identify: "Target ${i++}",
       keyTarget: layersButtonKey,
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
+      shape: ShapeLightFocus.Circle,
+    ));
+    title = "($i/$all) Zoom In Button";
+    singleTap = "Zoom in the map by one level";
+    longTap = null;
+    doubleTap = null;
+    targets.add(TargetFocus(
+      identify: "Target ${i++}",
+      keyTarget: zoomInButtonKey,
+      contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
+      shape: ShapeLightFocus.Circle,
+    ));
+    title = "($i/$all) Zoom Out Button";
+    singleTap = "Zoom out the map by one level";
+    longTap = null;
+    doubleTap = null;
+    targets.add(TargetFocus(
+      identify: "Target ${i++}",
+      keyTarget: zoomOutButtonKey,
+      contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
+      shape: ShapeLightFocus.Circle,
+    ));
+    title = "($i/$all) Tools Button";
+    singleTap =
+        "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.";
+    longTap = null;
+    doubleTap = null;
+    targets.add(TargetFocus(
+      identify: "Target ${i++}",
+      keyTarget: toolsButtonKey,
+      contents: [
+        getContentTarget(title, singleTap, longTap, doubleTap,
+            alignContent: AlignContent.bottom)
+      ],
+      shape: ShapeLightFocus.Circle,
+    ));
+    title = "($i/$all) Main Menu Button";
+    singleTap =
+        "Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.";
+    longTap = null;
+    doubleTap = null;
+    targets.add(TargetFocus(
+      identify: "Target ${i++}",
+      keyTarget: drawerButtonKey,
+      contents: [
+        getContentTarget(title, singleTap, longTap, doubleTap,
+            alignContent: AlignContent.bottom)
+      ],
       shape: ShapeLightFocus.Circle,
     ));
   }
 
   ContentTarget getContentTarget(
-      String title, String singleTap, String longTap, String doubleTap) {
+      String title, String singleTap, String longTap, String doubleTap,
+      {AlignContent alignContent = AlignContent.top}) {
     var size = SmashUI.MEDIUM_SIZE;
     var widgets = <Widget>[];
 
     widgets.add(SmashUI.titleText(title, useColor: true, bold: true));
 
     if (singleTap != null) {
-      widgets.add(
-        Padding(
-            padding: const EdgeInsets.only(top: 10.0, left: 4),
-            child: getRichText(size, singleTap)),
-      );
+      if (singleTap.contains(":")) {
+        widgets.add(
+          Padding(
+              padding: const EdgeInsets.only(top: 10.0, left: 4),
+              child: getRichText(size, singleTap)),
+        );
+      } else {
+        widgets.add(
+          Padding(
+              padding: const EdgeInsets.only(top: 10.0, left: 4),
+              child: SmashUI.normalText(singleTap,
+                  color: SmashColors.mainBackground)),
+        );
+      }
     }
     if (longTap != null) {
       widgets.add(
@@ -101,7 +164,7 @@ class MainViewCoachMarks {
     }
 
     return ContentTarget(
-        align: AlignContent.top,
+        align: alignContent,
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -138,7 +201,8 @@ class MainViewCoachMarks {
     TutorialCoachMark(context,
         targets: targets,
         colorShadow: SmashColors.mainDecorations,
-        textSkip: "SKIP",
+        alignSkip: Alignment.topCenter,
+        textSkip: "",
         paddingFocus: 10,
         opacityShadow: 0.7, finish: () {
       // print("finish");

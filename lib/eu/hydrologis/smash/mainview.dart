@@ -189,6 +189,19 @@ class MainViewWidgetState extends State<MainViewWidget>
         child: new Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
+            leading: Builder(
+              builder: (BuildContext context) {
+                return IconButton(
+                  key: coachMarks.drawerButtonKey,
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  tooltip:
+                      MaterialLocalizations.of(context).openAppDrawerTooltip,
+                );
+              },
+            ),
             title: Padding(
               padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
               child: Image.asset(
@@ -247,9 +260,9 @@ class MainViewWidgetState extends State<MainViewWidget>
           )),
           endDrawer: Drawer(
               child: ListView(
-            children:
-                DashboardUtils.getEndDrawerListTiles(context, _mapController),
-          )),
+                children: DashboardUtils.getEndDrawerListTiles(
+                    context, _mapController),
+              )),
           // Theme(
           //   data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
           //   child: Drawer(
@@ -333,6 +346,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             coachMarks.showTutorial(context);
           }),
       IconButton(
+          key: coachMarks.toolsButtonKey,
           tooltip: "Open tools drawer.",
           icon: Icon(MdiIcons.tools),
           onPressed: () {
