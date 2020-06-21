@@ -43,6 +43,9 @@ const String ARG_SPEED_ACCURACY = 'speed_accuracy';
 const String ARG_HEADING = 'heading';
 const String ARG_TIME = 'time';
 const String ARG_MOCKED = 'mocked';
+const String ARG_LATITUDE_FILTERED = 'latitude_filtered';
+const String ARG_LONGITUDE_FILTERED = 'longitude_filtered';
+const String ARG_ACCURACY_FILTERED = 'accuracy_filtered';
 
 class SmashPosition {
   LocationDto _location;
@@ -66,9 +69,9 @@ class SmashPosition {
       Keys.ARG_SPEED_ACCURACY: json[ARG_SPEED_ACCURACY],
     });
     mocked = json[ARG_MOCKED];
-    filteredLatitude = json[Keys.ARG_LATITUDE_FILTERED];
-    filteredLongitude = json[Keys.ARG_LONGITUDE_FILTERED];
-    filteredAccuracy = json[Keys.ARG_ACCURACY_FILTERED];
+    filteredLatitude = json[ARG_LATITUDE_FILTERED];
+    filteredLongitude = json[ARG_LONGITUDE_FILTERED];
+    filteredAccuracy = json[ARG_ACCURACY_FILTERED];
   }
   SmashPosition.fromCoords(double lon, double lat, double time) {
     _location = LocationDto.fromJson({
@@ -292,7 +295,8 @@ class GpsHandler {
     IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
     port.listen((dynamic data) {
       KalmanFilter kalman = KalmanFilter.getInstance();
-      kalman.process(data.latitude, data.longitude, data.accuracy, data.time, data.speed);
+      kalman.process(
+          data.latitude, data.longitude, data.accuracy, data.time, data.speed);
 
       _onPositionUpdate(SmashPosition.fromLocation(data,
           filteredLatitude: kalman.latitude,
