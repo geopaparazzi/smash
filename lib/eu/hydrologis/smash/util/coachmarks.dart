@@ -15,17 +15,18 @@ class MainViewCoachMarks {
   GlobalKey zoomOutButtonKey = GlobalKey();
   GlobalKey toolsButtonKey = GlobalKey();
   GlobalKey drawerButtonKey = GlobalKey();
+  GlobalKey coachMarkButtonKey = GlobalKey();
 
   List<TargetFocus> targets = List();
 
   void initCoachMarks() {
-    var all = 9;
+    var all = 10;
     var i = 1;
     const s = "Single tap: ";
     const l = "Long tap: ";
     const d = "Double tap: ";
 
-    var title = "($i/$all) Simple Notes Button";
+    var title = "$i/$all Simple Notes Button";
     var singleTap = "${s}add a new note";
     var longTap = "${l}view notes list";
     var doubleTap = "${d}view notes settings";
@@ -35,7 +36,8 @@ class MainViewCoachMarks {
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "($i/$all) Form Notes Button";
+
+    title = "$i/$all Form Notes Button";
     singleTap = "${s}add new form note";
     longTap = "${l}view form notes list";
     doubleTap = "${d}view notes settings";
@@ -45,7 +47,8 @@ class MainViewCoachMarks {
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "($i/$all) GPS Log Button";
+
+    title = "$i/$all GPS Log Button";
     singleTap = "${s}start logging/stop logging";
     longTap = "${l}view logs list";
     doubleTap = "${d}view logs settings";
@@ -55,7 +58,8 @@ class MainViewCoachMarks {
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "($i/$all) GPS Info Button";
+
+    title = "$i/$all GPS Info Button";
     singleTap = "${s}center map on GPS position";
     longTap = "${l}show GPS info";
     doubleTap = "${d}toggle automatic center on GPS";
@@ -65,7 +69,8 @@ class MainViewCoachMarks {
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "($i/$all) Layers View Button";
+
+    title = "$i/$all Layers View Button";
     singleTap = "${s}Open the layers view";
     longTap = null;
     doubleTap = "${d}Open the layer plugins dialog";
@@ -75,7 +80,8 @@ class MainViewCoachMarks {
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "($i/$all) Zoom In Button";
+
+    title = "$i/$all Zoom In Button";
     singleTap = "Zoom in the map by one level";
     longTap = null;
     doubleTap = null;
@@ -85,7 +91,8 @@ class MainViewCoachMarks {
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "($i/$all) Zoom Out Button";
+
+    title = "$i/$all Zoom Out Button";
     singleTap = "Zoom out the map by one level";
     longTap = null;
     doubleTap = null;
@@ -95,7 +102,8 @@ class MainViewCoachMarks {
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "($i/$all) Tools Button";
+
+    title = "$i/$all Tools Button";
     singleTap =
         "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.";
     longTap = null;
@@ -109,7 +117,23 @@ class MainViewCoachMarks {
       ],
       shape: ShapeLightFocus.Circle,
     ));
-    title = "($i/$all) Main Menu Button";
+
+    title = "$i/$all Interactive coach marks button";
+    singleTap =
+        "Open the interactice coach marks that explain all the actions of the main map view.";
+    longTap = null;
+    doubleTap = null;
+    targets.add(TargetFocus(
+      identify: "Target ${i++}",
+      keyTarget: coachMarkButtonKey,
+      contents: [
+        getContentTarget(title, singleTap, longTap, doubleTap,
+            alignContent: AlignContent.bottom)
+      ],
+      shape: ShapeLightFocus.Circle,
+    ));
+
+    title = "$i/$all Main Menu Button";
     singleTap =
         "Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.";
     longTap = null;

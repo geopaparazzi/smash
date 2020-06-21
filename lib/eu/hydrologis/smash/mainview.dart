@@ -140,6 +140,13 @@ class MainViewWidgetState extends State<MainViewWidget>
         }
       }
     });
+
+    var keyCoach = "key_did_show_main_view_coach_marks";
+    var didShowCoachMarks = GpPreferences().getBooleanSync(keyCoach, false);
+    if (!didShowCoachMarks) {
+      coachMarks.showTutorial(context);
+      GpPreferences().setBoolean(keyCoach, true);
+    }
   }
 
   @override
@@ -340,6 +347,7 @@ class MainViewWidgetState extends State<MainViewWidget>
   List<Widget> addActionBarButtons() {
     return <Widget>[
       IconButton(
+          key: coachMarks.coachMarkButtonKey,
           tooltip: "Show interactive coach marks.",
           icon: Icon(MdiIcons.helpCircleOutline),
           onPressed: () {
