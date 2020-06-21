@@ -234,7 +234,6 @@ class DashboardUtils {
         ),
       ))
       ..add(getPositionTools(c, backColor, iconSize, context))
-      ..add(getPluginsVisibility(c, backColor, iconSize, context))
       ..add(getVectorTools(c, backColor, iconSize, doDiagnostics, context))
       ..add(getExtras(c, backColor, iconSize, doDiagnostics, context));
 
@@ -341,28 +340,6 @@ class DashboardUtils {
     );
   }
 
-  static Container getPluginsVisibility(
-      Color c, Color backColor, double iconSize, BuildContext context) {
-    return Container(
-      color: backColor,
-      child: ExpansionTile(
-        title: SmashUI.normalText(
-          "Map Plugins",
-          bold: true,
-          color: c,
-        ),
-        children: [
-          PluginCheckboxWidget(PluginsHandler.SCALE.key),
-          PluginCheckboxWidget(PluginsHandler.GRID.key),
-          PluginCheckboxWidget(PluginsHandler.CROSS.key),
-          PluginCheckboxWidget(PluginsHandler.GPS.key),
-          PluginsHandler.HEATMAP_WORKING
-              ? PluginCheckboxWidget(PluginsHandler.LOG_HEATMAP.key)
-              : Container(),
-        ],
-      ),
-    );
-  }
 
   static Container getPositionTools(
       Color c, Color backColor, double iconSize, BuildContext context) {

@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -1189,6 +1190,39 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
                 Provider.of<ProjectState>(context, listen: false);
             await projectState.reloadProject(context);
           },
+        ),
+      ],
+    );
+  }
+}
+
+class PluginsViewSetting extends StatefulWidget {
+  PluginsViewSetting({Key key}) : super(key: key);
+
+  @override
+  _PluginsViewSettingState createState() => _PluginsViewSettingState();
+}
+
+class _PluginsViewSettingState extends State<PluginsViewSetting> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: SmashUI.defaultPadding() * 2,
+          child: SmashUI.normalText("Map Plugins", bold: true),
+        ),
+        PluginCheckboxWidget(PluginsHandler.SCALE.key),
+        PluginCheckboxWidget(PluginsHandler.GRID.key),
+        PluginCheckboxWidget(PluginsHandler.CROSS.key),
+        PluginCheckboxWidget(PluginsHandler.GPS.key),
+        PluginsHandler.HEATMAP_WORKING
+            ? PluginCheckboxWidget(PluginsHandler.LOG_HEATMAP.key)
+            : Container(),
+        SmashUI.defaultButtonBar(
+          cancelLabel: 'CANCEL',
+          cancelFunction: () => Navigator.pop(context),
         ),
       ],
     );

@@ -21,11 +21,14 @@ class MainViewCoachMarks {
   void initCoachMarks() {
     var all = 9;
     var i = 1;
+    const s = "Single tap: ";
+    const l = "Long tap: ";
+    const d = "Double tap: ";
 
     var title = "($i/$all) Simple Notes Button";
-    var singleTap = "Single tap: add a new note";
-    var longTap = "Long tap: view notes list";
-    var doubleTap = "Double tap: view notes settings";
+    var singleTap = "${s}add a new note";
+    var longTap = "${l}view notes list";
+    var doubleTap = "${d}view notes settings";
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: simpleNotesButtonKey,
@@ -33,9 +36,9 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
     title = "($i/$all) Form Notes Button";
-    singleTap = "Single tap: add new form note";
-    longTap = "Long tap: view form notes list";
-    doubleTap = "Double tap: view notes settings";
+    singleTap = "${s}add new form note";
+    longTap = "${l}view form notes list";
+    doubleTap = "${d}view notes settings";
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: formsButtonKey,
@@ -43,9 +46,9 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
     title = "($i/$all) GPS Log Button";
-    singleTap = "Single tap: start logging/stop logging";
-    longTap = "Long tap: view logs list";
-    doubleTap = "Double tap: view logs settings";
+    singleTap = "${s}start logging/stop logging";
+    longTap = "${l}view logs list";
+    doubleTap = "${d}view logs settings";
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: logsButtonKey,
@@ -53,9 +56,9 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
     title = "($i/$all) GPS Info Button";
-    singleTap = "Single tap: center map on GPS position";
-    longTap = "Long tap: show GPS info";
-    doubleTap = "Double tap: toggle automatic center on GPS";
+    singleTap = "${s}center map on GPS position";
+    longTap = "${l}show GPS info";
+    doubleTap = "${d}toggle automatic center on GPS";
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: gpsButtonKey,
@@ -63,9 +66,9 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
     title = "($i/$all) Layers View Button";
-    singleTap = "Open the layers view";
+    singleTap = "${s}Open the layers view";
     longTap = null;
-    doubleTap = null;
+    doubleTap = "${d}Open the layer plugins dialog";
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: layersButtonKey,

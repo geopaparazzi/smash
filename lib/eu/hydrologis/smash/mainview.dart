@@ -260,9 +260,9 @@ class MainViewWidgetState extends State<MainViewWidget>
           )),
           endDrawer: Drawer(
               child: ListView(
-                children: DashboardUtils.getEndDrawerListTiles(
-                    context, _mapController),
-              )),
+            children:
+                DashboardUtils.getEndDrawerListTiles(context, _mapController),
+          )),
           // Theme(
           //   data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
           //   child: Drawer(
@@ -518,14 +518,18 @@ class MainViewWidgetState extends State<MainViewWidget>
           Spacer(),
           GpsInfoButton(coachMarks.gpsButtonKey, _iconSize),
           Spacer(),
-          IconButton(
-            key: coachMarks.layersButtonKey,
-            icon: Icon(
-              SmashIcons.layersIcon,
+          GestureDetector(
+            child: IconButton(
+              key: coachMarks.layersButtonKey,
+              icon: Icon(
+                SmashIcons.layersIcon,
+                color: SmashColors.mainBackground,
+              ),
+              iconSize: _iconSize,
               color: SmashColors.mainBackground,
+              tooltip: 'Open layers list',
             ),
-            iconSize: _iconSize,
-            onPressed: () async {
+            onTap: () async {
               await Navigator.push(mapBuilder.context,
                   MaterialPageRoute(builder: (context) => LayersPage()));
 
@@ -535,8 +539,9 @@ class MainViewWidgetState extends State<MainViewWidget>
                 _activeLayers.addAll(layers);
               });
             },
-            color: SmashColors.mainBackground,
-            tooltip: 'Open layers list',
+            onDoubleTap: () async {
+              await openPluginsViewSettings();
+            },
           ),
           Consumer<SmashMapState>(builder: (context, mapState, child) {
             return DashboardUtils.makeToolbarZoomBadge(
@@ -578,6 +583,18 @@ class MainViewWidgetState extends State<MainViewWidget>
       child: Padding(
         padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
         child: NotesViewSetting(),
+      ),
+    );
+    await showDialog(
+        context: context, builder: (BuildContext context) => settingsDialog);
+  }
+
+  Future openPluginsViewSettings() async {
+    Dialog settingsDialog = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+        child: PluginsViewSetting(),
       ),
     );
     await showDialog(
