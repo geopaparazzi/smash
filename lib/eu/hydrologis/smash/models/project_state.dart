@@ -34,7 +34,7 @@ class ProjectState extends ChangeNotifierPlus {
   ProjectData get projectData => _projectData;
 
   Future<void> setNewProject(String path, BuildContext context) async {
-    GpLogger().i("Set new project: $path");
+    Logger().i("Set new project: $path");
     await close();
     _projectPath = path;
     await openDb(_projectPath);
@@ -46,20 +46,20 @@ class ProjectState extends ChangeNotifierPlus {
     _projectPath = projectPath;
     if (_projectPath == null) {
       _projectPath = await GpPreferences().getString(KEY_LAST_GPAPPROJECT);
-      GpLogger().i("Read db path from preferences: $_projectPath");
+      Logger().i("Read db path from preferences: $_projectPath");
     }
     if (_projectPath == null) {
-      GpLogger().w("No project path found creating default");
+      Logger().w("No project path found creating default");
       var projectsFolder = await Workspace.getProjectsFolder();
       _projectPath = FileUtilities.joinPaths(projectsFolder.path, "smash.gpap");
     }
     try {
-      GpLogger().i("Opening db $_projectPath...");
+      Logger().i("Opening db $_projectPath...");
       _db = GeopaparazziProjectDb(_projectPath);
       await _db.openOrCreate();
-      GpLogger().i("Db opened: $_projectPath");
+      Logger().i("Db opened: $_projectPath");
     } catch (e) {
-      GpLogger().e("Error opening project db: ", e);
+      Logger().e("Error opening project db: ", e);
     }
 
     await _db.createNecessaryExtraTables();
@@ -70,7 +70,7 @@ class ProjectState extends ChangeNotifierPlus {
   Future<void> close() async {
     if (_db != null && _db.isOpen()) {
       await _db.close();
-      GpLogger().i("Closed db: ${_db.path}");
+      Logger().i("Closed db: ${_db.path}");
     }
     _db = null;
     _projectPath = null;

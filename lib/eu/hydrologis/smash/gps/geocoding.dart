@@ -47,7 +47,7 @@ class GeocodingPageState extends State<GeocodingPage> {
     try {
       addresses = await Geocoder.local.findAddressesFromQuery(query);
     } catch (e) {
-      GpLogger().err("Unable to geocode $query", e);
+      Logger().err("Unable to geocode $query", e);
     }
     searching = false;
     if (addresses == null || addresses.isEmpty) {

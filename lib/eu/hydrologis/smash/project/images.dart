@@ -44,7 +44,7 @@ class ImageWidgetUtilities {
       int imgId =
           await tx.insert(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
       if (imgId == null) {
-        GpLogger().e("Could not save image to db: $path");
+        Logger().e("Could not save image to db: $path");
       }
       return imgId;
     });

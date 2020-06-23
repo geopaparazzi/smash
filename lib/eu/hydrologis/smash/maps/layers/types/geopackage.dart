@@ -102,7 +102,7 @@ class GeopackageSource extends VectorLayerSource {
 
   Future getDatabase() async {
     var ch = ConnectionsHandler();
-    ch.doRtreeCheck = DO_RTREE_CHECK;
+    // ch.doRtreeCheck = DO_RTREE_CHECK;
     if (db == null) {
       db = await ch.open(_absolutePath, tableName: _tableName);
     }
@@ -356,7 +356,7 @@ class GeopackageImageProvider extends TileProvider {
 //        _emptyImageBytes = byteData.buffer.asUint8List();
 
       } catch (e) {
-        GpLogger().err("Error getting geopackage bounds or empty image.", e);
+        Logger().err("Error getting geopackage bounds or empty image.", e);
       }
 
       isDisposed = false;

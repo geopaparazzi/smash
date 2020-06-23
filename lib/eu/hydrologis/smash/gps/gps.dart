@@ -216,9 +216,9 @@ class GpsHandler {
   }
 
   Future<void> init(GpsState initGpsState) async {
-    GpLogger().i("Init GpsHandler");
+    Logger().i("Init GpsHandler");
     if (SmashPlatform.isDesktop()) {
-      GpLogger().i("No gps handler active on desktop.");
+      Logger().i("No gps handler active on desktop.");
       return;
     }
     _gpsState = initGpsState;
@@ -236,7 +236,7 @@ class GpsHandler {
 
   Future initGpsWithCheck() async {
     if (port == null) {
-      GpLogger().i("Initialize geolocator");
+      Logger().i("Initialize geolocator");
       await closeGpsIsolate();
 
       await startGpsIsolate(!initialized);
@@ -307,7 +307,7 @@ class GpsHandler {
     if (isInit) await GPS.BackgroundLocator.initialize();
 
     var smashLocationAccuracy = SmashLocationAccuracy.fromPreferences();
-    GpLogger().i("Register for location updates.");
+    Logger().i("Register for location updates.");
     var locationSettings = LocationSettings(
         notificationTitle: "SMASH location service is active.",
         notificationMsg: "",
@@ -322,7 +322,7 @@ class GpsHandler {
       androidNotificationCallback: notificationCallback,
       settings: locationSettings,
     );
-    GpLogger().i("Geolocator initialized.");
+    Logger().i("Geolocator initialized.");
   }
 
   Future closeGpsIsolate() async {

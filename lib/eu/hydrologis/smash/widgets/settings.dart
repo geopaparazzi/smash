@@ -1507,7 +1507,7 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
   }
 
   Future<void> loadDebug() async {
-    allLogItems = await GpLogger().getLogItems(limit: limit);
+    allLogItems = Logger().getLogItems(limit: limit);
     allLogItems = allLogItems.where((element) {
       element.message = element.message.trim();
 
@@ -1566,7 +1566,7 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
               icon: Icon(MdiIcons.delete),
               tooltip: "Clear debug log",
               onPressed: () async {
-                await GpLogger().clearLog();
+                Logger().clearLog();
                 await loadDebug();
               }),
         ],

@@ -54,7 +54,7 @@ class SmashMBTilesImageProvider extends TileProvider {
 //        _emptyImageBytes = byteData.buffer.asUint8List();
 
       } catch (e) {
-        GpLogger().err("Error getting mbtiles bounds or empty image.", e);
+        Logger().err("Error getting mbtiles bounds or empty image.", e);
       }
 
       if (isDisposed) {

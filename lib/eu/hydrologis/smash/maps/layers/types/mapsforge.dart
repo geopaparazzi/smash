@@ -46,14 +46,14 @@ Future<TileLayerOptions> loadMapsforgeLayer(File file) async {
 }
 
 Future<void> fillBaseCache(File file) async {
-  GpLogger().d("Filling mbtiles cache in ${file.path}");
+  Logger().d("Filling mbtiles cache in ${file.path}");
   var mapsforgeTileProvider =
       MapsforgeTileProvider(file, tileSize: MAPSFORGE_TILESIZE);
   await mapsforgeTileProvider.open();
 
   await mapsforgeTileProvider.fillCache();
   mapsforgeTileProvider.close();
-  GpLogger().d("Done mbtiles cache in ${file.path}");
+  Logger().d("Done mbtiles cache in ${file.path}");
 }
 
 Future<FM.LatLngBounds> getMapsforgeBounds(File file) async {
@@ -106,7 +106,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
     var name = FileUtilities.nameFromFile(chachePath, false);
     _mbtilesCache = MBTilesDb(chachePath);
     await _mbtilesCache.open();
-    GpLogger().d("Creating mbtiles cache in $chachePath");
+    Logger().d("Creating mbtiles cache in $chachePath");
 
     BoundingBox bBox = _multiMapDataStore.boundingBox;
     await _mbtilesCache.fillMetadata(bBox.maxLatitude, bBox.minLatitude,

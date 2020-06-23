@@ -334,7 +334,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   data[key] = double.parse(result);
                   sql += "${data[key]}";
                 } else {
-                  GpLogger().e(
+                  Logger().e(
                       "Could not find type for $key ($value) in table $tablename");
                   return;
                 }

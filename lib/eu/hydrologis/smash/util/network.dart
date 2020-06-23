@@ -75,7 +75,7 @@ class DownloadMapFromListTileProgressWidgetState
 //        widget._mainEventsHandler.reloadLayersFunction();
       }
     } catch (e) {
-      GpLogger().err("Error downloading file ${widget._downloadUrl}", e);
+      Logger().err("Error downloading file ${widget._downloadUrl}", e);
     }
 
     setState(() {

@@ -685,11 +685,11 @@ class GeopaparazziProjectDb extends SqliteDb {
       int extCount = await updateMap(
           TABLE_NOTESEXT, extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
       if (extCount != 1) {
-        GpLogger().e(
+        Logger().e(
             "Note ext values not updated for note $noteId and noteext $noteExtId");
       }
     } else {
-      GpLogger().e("Note not updated for note $noteId");
+      Logger().e("Note not updated for note $noteId");
     }
     return count;
   }
@@ -840,7 +840,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   createNecessaryExtraTables() async {
     bool hasNotesExt = await hasTable(TABLE_NOTESEXT);
     if (!hasNotesExt) {
-      GpLogger().w("Adding extra database table $TABLE_NOTESEXT.");
+      Logger().w("Adding extra database table $TABLE_NOTESEXT.");
       await transaction((tx) async {
         var split =
             CREATE_NOTESEXT_STATEMENT.replaceAll("\n", "").trim().split(";");
@@ -862,7 +862,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       }
     });
     if (!hasFiltered) {
-      GpLogger().w("Adding extra columns for filtered data to log.");
+      Logger().w("Adding extra columns for filtered data to log.");
       await transaction((tx) async {
         String sql =
             "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_ACCURACY real;";

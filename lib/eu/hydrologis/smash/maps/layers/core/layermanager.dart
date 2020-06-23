@@ -101,7 +101,7 @@ class LayerManager {
       if (ls != null) {
         ls.forEach((l) => layerOptions.add(l));
       }
-      //GpLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
+      //Logger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
     }
     return layerOptions;
   }

@@ -127,13 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
-  cupertino_icons:
-    dependency: transitive
+  dart_hydrologis_db:
+    dependency: "direct main"
     description:
-      name: cupertino_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.3"
+      path: "../dart_hydrologis_db"
+      relative: true
+    source: path
+    version: "0.1.0"
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
@@ -192,6 +192,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.3"
+  ffi:
+    dependency: transitive
+    description:
+      name: ffi
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.3"
   file:
     dependency: transitive
     description:
@@ -221,10 +228,10 @@ packages:
   flutter_geopackage:
     dependency: "direct main"
     description:
-      name: flutter_geopackage
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2"
+      path: "../flutter_geopackage"
+      relative: true
+    source: path
+    version: "0.2.0"
   flutter_image:
     dependency: transitive
     description:
@@ -448,6 +455,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  moor:
+    dependency: transitive
+    description:
+      name: moor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
+  moor_ffi:
+    dependency: transitive
+    description:
+      name: moor_ffi
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.0"
   package_info:
     dependency: "direct main"
     description:
@@ -673,11 +694,9 @@ packages:
   smashlibs:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "7e4ba9aa3f03bfaeacb7b605300d81c1ab04b698"
-      url: "https://github.com/moovida/smashlibs.git"
-    source: git
+      path: "../smashlibs"
+      relative: true
+    source: path
     version: "1.0.0"
   source_span:
     dependency: transitive
@@ -848,5 +867,5 @@ packages:
     source: hosted
     version: "2.2.1"
 sdks:
-  dart: ">=2.8.0 <3.0.0"
+  dart: ">=2.8.1 <3.0.0"
   flutter: ">=1.12.13+hotfix.5 <2.0.0"

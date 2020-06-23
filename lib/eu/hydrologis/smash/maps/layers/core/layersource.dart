@@ -128,7 +128,7 @@ abstract class LayerSource {
         return [ts];
       }
     } catch (e) {
-      GpLogger().e("Error while loading layer: \n$json", e);
+      Logger().e("Error while loading layer: \n$json", e);
       return [];
     }
   }

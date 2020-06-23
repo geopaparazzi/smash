@@ -120,7 +120,7 @@ class _GssImportWidgetState extends State<GssImportWidget>
       setState(() {
         _status = 12;
       });
-      GpLogger().e("An error occurred while downloading GSS data list.", e);
+      Logger().e("An error occurred while downloading GSS data list.", e);
     }
   }
 

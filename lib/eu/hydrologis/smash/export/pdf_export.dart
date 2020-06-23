@@ -147,7 +147,7 @@ class PdfExporter {
                 formWidgetList.add(c);
               }
             } catch (e) {
-              GpLogger().err("Error exporting image to pdf document", e);
+              Logger().err("Error exporting image to pdf document", e);
             }
           } else if (type == TYPE_DYNAMICSTRING) {
             var p = Paragraph(text: '$label: ');

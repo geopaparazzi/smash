@@ -109,7 +109,6 @@ class DbImage {
   }
 }
 
-
 class DbImageData {
   int id;
   Uint8List data;
@@ -127,10 +126,9 @@ class DbImageData {
   }
 }
 
-
 class ImageQueryBuilder extends QueryObjectBuilder<DbImage> {
   @override
-  DbImage fromMap(Map<String, dynamic> map) {
+  DbImage fromMap(dynamic map) {
     DbImage image = DbImage()
       ..id = map[IMAGES_COLUMN_ID]
       ..lon = map[IMAGES_COLUMN_LON]
@@ -166,7 +164,6 @@ class ImageQueryBuilder extends QueryObjectBuilder<DbImage> {
   }
 }
 
-
 class ImageDataQueryBuilder extends QueryObjectBuilder<DbImageData> {
   bool doData;
   bool doThumb;
@@ -174,7 +171,7 @@ class ImageDataQueryBuilder extends QueryObjectBuilder<DbImageData> {
   ImageDataQueryBuilder({this.doData: true, this.doThumb: true});
 
   @override
-  DbImageData fromMap(Map<String, dynamic> map) {
+  DbImageData fromMap(dynamic map) {
     DbImageData imageData = DbImageData()..id = map[IMAGESDATA_COLUMN_ID];
     if (doData) imageData.data = map[IMAGESDATA_COLUMN_IMAGE];
     if (doThumb) imageData.thumb = map[IMAGESDATA_COLUMN_THUMBNAIL];
