@@ -3,15 +3,13 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'dart:io';
-
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
@@ -147,8 +145,8 @@ Future<String> handleProjections(BuildContext context) async {
     try {
       int.parse(epsg);
       Projection.add('EPSG:$epsg', def);
-    } catch (e) {
-      GpLogger().err("Error adding projection $projDef", e);
+    } catch (e, s) {
+      SLogger().e("Error adding projection $projDef", s);
     }
   }
   return null;
@@ -174,8 +172,8 @@ Future<String> handlePreferences(BuildContext context) async {
 Future<String> handleWorkspace(BuildContext context) async {
   await Workspace.init();
   var directory = await Workspace.getConfigFolder();
-  bool init = await GpLogger().init(directory.path); // init logger
-  if (init) GpLogger().i("Db logger initialized.");
+  bool init = SLogger().init(directory.path); // init logger
+  if (init) SLogger().i("Db logger initialized.");
   return null;
 }
 

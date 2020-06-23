@@ -31,7 +31,7 @@ class LayerManager {
         var fromJson = LayerSource.fromJson(json);
         for (var source in fromJson) {
           if (source.getSrid() == null) {
-            await source.calculateSrid();
+            source.calculateSrid();
           }
         }
         _layerSources.addAll(fromJson);
@@ -101,7 +101,7 @@ class LayerManager {
       if (ls != null) {
         ls.forEach((l) => layerOptions.add(l));
       }
-      //Logger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
+      //SLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
     }
     return layerOptions;
   }

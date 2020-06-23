@@ -5,6 +5,7 @@
  */
 
 import 'package:after_layout/after_layout.dart';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -37,7 +38,7 @@ class Log4ListWidget {
 /// [QueryObjectBuilder] to allow easy extraction from the db.
 class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
   @override
-  Log4ListWidget fromMap(Map<String, dynamic> map) {
+  Log4ListWidget fromMap(dynamic map) {
     Log4ListWidget l = new Log4ListWidget()
       ..id = map[LOGS_COLUMN_ID]
       ..name = map[LOGS_COLUMN_TEXT]
@@ -96,9 +97,8 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
     loadLogs();
   }
 
-  Future loadLogs() async {
-    var itemsList =
-        await widget.db.getQueryObjectsList(Log4ListWidgetBuilder());
+  loadLogs() {
+    var itemsList = widget.db.getQueryObjectsList(Log4ListWidgetBuilder());
 
     if (itemsList != null) {
       _logsList = itemsList.reversed.toList();
@@ -115,7 +115,7 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
     var db = projectState.projectDb;
     return WillPopScope(
       onWillPop: () async {
-        await Provider.of<ProjectState>(context, listen: false)
+        Provider.of<ProjectState>(context, listen: false)
             .reloadProject(context);
         return true;
       },
@@ -126,14 +126,14 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
             PopupMenuButton<int>(
               onSelected: (value) async {
                 if (value == 1) {
-                  await db.updateGpsLogVisibility(true);
-                  await loadLogs();
+                  db.updateGpsLogVisibility(true);
+                  loadLogs();
                 } else if (value == 2) {
-                  await db.updateGpsLogVisibility(false);
-                  await loadLogs();
+                  db.updateGpsLogVisibility(false);
+                  loadLogs();
                 } else if (value == 3) {
-                  await db.invertGpsLogsVisibility();
-                  await loadLogs();
+                  db.invertGpsLogsVisibility();
+                  loadLogs();
                 } else if (value == 4) {
                   if (_logsList.length > 1) {
                     var masterId; // = (_logsList.first as Log4ListWidget).id;
@@ -147,8 +147,8 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                         }
                       }
                     }
-                    await db.mergeGpslogs(masterId, mergeIds);
-                    await loadLogs();
+                    db.mergeGpslogs(masterId, mergeIds);
+                    loadLogs();
                   }
                 }
               },
@@ -193,7 +193,7 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
 }
 
 class LogInfo extends StatefulWidget {
-  var db;
+  GeopaparazziProjectDb db;
   var gpsState;
   var logItem;
   var reloadLogFunction;
@@ -212,11 +212,11 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   String downString = "- nv -";
 
   @override
-  Future<void> afterFirstLayout(BuildContext context) async {
-    timeString = await _getTime(widget.logItem, widget.gpsState, widget.db);
+  void afterFirstLayout(BuildContext context) {
+    timeString = _getTime(widget.logItem, widget.gpsState, widget.db);
     lengthString = _getLength(widget.logItem, widget.gpsState);
     List<double> upDown =
-        await _getElevDelta(widget.logItem, widget.gpsState, widget.db);
+        _getElevDelta(widget.logItem, widget.gpsState, widget.db);
     if (upDown[0] == -1) {
       upString = "- nv -";
       downString = "- nv -";
@@ -262,7 +262,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         onTap: () async {
           SmashMapState mapState =
               Provider.of<SmashMapState>(context, listen: false);
-          LatLng position = await db.getLogStartPosition(logItem.id);
+          LatLng position = db.getLogStartPosition(logItem.id);
           mapState.center = Coordinate(position.longitude, position.latitude);
           Navigator.of(context).pop();
         }));
@@ -286,8 +286,8 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
           bool doDelete = await showConfirmDialog(
               context, "DELETE", 'Are you sure you want to delete the log?');
           if (doDelete) {
-            await db.deleteGpslog(logItem.id);
-            await widget.reloadLogFunction();
+            db.deleteGpslog(logItem.id);
+            widget.reloadLogFunction();
           }
         }));
 
@@ -343,8 +343,8 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             value: logItem.isVisible == 1 ? true : false,
             onChanged: (isVisible) async {
               logItem.isVisible = isVisible ? 1 : 0;
-              await db.updateGpsLogVisibility(isVisible, logItem.id);
-              await Provider.of<ProjectState>(context, listen: false)
+              db.updateGpsLogVisibility(isVisible, logItem.id);
+              Provider.of<ProjectState>(context, listen: false)
                   .reloadProject(context);
               setState(() {});
             }),
@@ -354,8 +354,8 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     );
   }
 
-  Future<String> _getTime(
-      Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) async {
+  String _getTime(
+      Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
     var minutes = (item.endTime - item.startTime) / 1000 / 60;
     if (item.endTime == 0) {
       if (gpsState.isLogging && item.id == gpsState.currentLogId) {
@@ -364,11 +364,11 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             60;
       } else {
         // needs to be fixed using the points. Do it and refresh.
-        var data = await db.getLogDataPointsById(item.id);
+        var data = db.getLogDataPointsById(item.id);
         if (data != null && data.length > 0) {
           var last = data.last;
           var ts = last.ts;
-          await db.updateGpsLogEndts(item.id, ts);
+          db.updateGpsLogEndts(item.id, ts);
           minutes = (ts - item.startTime) / 1000 / 60;
         } else {
           minutes = 0;
@@ -413,14 +413,14 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     }
   }
 
-  Future<List<double>> _getElevDelta(
-      Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) async {
+  List<double> _getElevDelta(
+      Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
     double up = 0;
     double down = 0;
     // if (item.name != "log_20200601_170019") {
     //   return [-1, -1];
     // }
-    var pointsList = await db.getLogDataPoints(item.id);
+    var pointsList = db.getLogDataPoints(item.id);
     List<int> removeIndexesList = [];
     // start removing subsequent duplicates
     for (int i = 0; i < pointsList.length - 1; i++) {

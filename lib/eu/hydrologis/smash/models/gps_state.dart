@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
@@ -97,11 +98,11 @@ class GpsState extends ChangeNotifierPlus {
     _projectState = state;
   }
 
-  Future<void> addLogPoint(double longitude, double latitude, double altitude,
+  void addLogPoint(double longitude, double latitude, double altitude,
       int timestamp, double accuracy,
       {double longitudeFiltered,
       double latitudeFiltered,
-      double accuracyFiltered}) async {
+      double accuracyFiltered}) {
     if (_projectState != null) {
       LogDataPoint ldp = LogDataPoint();
       ldp.logid = currentLogId;
@@ -113,11 +114,11 @@ class GpsState extends ChangeNotifierPlus {
       ldp.filtered_accuracy = accuracyFiltered;
       ldp.filtered_lat = latitudeFiltered;
       ldp.filtered_lon = longitudeFiltered;
-      await _projectState.projectDb.addGpsLogPoint(currentLogId, ldp);
+      _projectState.projectDb.addGpsLogPoint(currentLogId, ldp);
     }
   }
 
-  Future<int> addGpsLog(String logName) async {
+  int addGpsLog(String logName) {
     if (_projectState != null) {
       Log l = new Log();
       l.text = logName;
@@ -129,7 +130,7 @@ class GpsState extends ChangeNotifierPlus {
       lp.isVisible = 1;
       lp.color = "#FF0000";
       lp.width = 3;
-      var logId = await _projectState.projectDb.addGpsLog(l, lp);
+      var logId = _projectState.projectDb.addGpsLog(l, lp);
       return logId;
     } else {
       return -1;
@@ -143,9 +144,9 @@ class GpsState extends ChangeNotifierPlus {
   ///
   /// Once logging, the [_onPositionUpdate] method adds the
   /// points as the come.
-  Future<int> startLogging(String logName) async {
+  int startLogging(String logName) {
     try {
-      var logId = await addGpsLog(logName);
+      var logId = addGpsLog(logName);
       _currentLogId = logId;
       _isLogging = true;
 
@@ -155,8 +156,8 @@ class GpsState extends ChangeNotifierPlus {
       notifyListenersMsg("startLogging");
 
       return logId;
-    } catch (e) {
-      Logger().e("Error creating new gps log", e);
+    } catch (e, s) {
+      SLogger().e("Error creating new gps log", s);
       return null;
     }
   }
@@ -168,14 +169,14 @@ class GpsState extends ChangeNotifierPlus {
   /// Stop logging to database.
   ///
   /// This also properly closes the recorded log.
-  Future<void> stopLogging() async {
+  void stopLogging() {
     _isLogging = false;
     _currentLogPoints.clear();
     _currentFilteredLogPoints.clear();
 
     if (_projectState != null) {
       int endTs = DateTime.now().millisecondsSinceEpoch;
-      await _projectState.projectDb.updateGpsLogEndts(_currentLogId, endTs);
+      _projectState.projectDb.updateGpsLogEndts(_currentLogId, endTs);
     }
 
     if (_lastGpsStatusBeforeLogging == null)

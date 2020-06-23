@@ -45,8 +45,8 @@ class SmashFormHelper implements AFormhelper {
       var imageName = FileUtilities.nameFromFile(imagePath, true);
       dbImage.text =
           "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
-      imageId = await ImageWidgetUtilities.saveImageToSmashDb(
-          context, imagePath, dbImage);
+      imageId =
+          ImageWidgetUtilities.saveImageToSmashDb(context, imagePath, dbImage);
       if (imageId != null) {
         imageSplit.add(imageId.toString());
         var value = imageSplit.join(IMAGE_ID_SEPARATOR);
@@ -82,7 +82,7 @@ class SmashFormHelper implements AFormhelper {
     List<Widget> thumbList = [];
     for (int i = 0; i < imageSplit.length; i++) {
       var id = int.parse(imageSplit[i]);
-      Widget thumbnail = await projectState.projectDb.getThumbnail(id);
+      Widget thumbnail = projectState.projectDb.getThumbnail(id);
       Widget withBorder = Container(
         padding: SmashUI.defaultPadding(),
         child: thumbnail,
@@ -137,16 +137,16 @@ class SmashFormHelper implements AFormhelper {
       next.marker = iconName;
       next.color = iconColor;
 
-      noteId = await db.addNote(note);
+      noteId = db.addNote(note);
     } else {
       noteId = _noteId;
       // update form for note
-      var note = await db.getNoteById(_noteId);
+      var note = db.getNoteById(_noteId);
       note.form = jsonForm;
       note.timeStamp = ts;
-      await db.updateNote(note);
+      db.updateNote(note);
     }
 
-    await projectState.reloadProject(context);
+    projectState.reloadProject(context);
   }
 }

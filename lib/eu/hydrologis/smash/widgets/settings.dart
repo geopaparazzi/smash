@@ -5,6 +5,7 @@
  */
 
 import 'package:after_layout/after_layout.dart';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -1123,11 +1124,11 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
           cancelLabel: 'CANCEL',
           cancelFunction: () => Navigator.pop(context),
           okLabel: 'OK',
-          okFunction: () async {
+          okFunction: () {
             Navigator.pop(context);
             var projectState =
                 Provider.of<ProjectState>(context, listen: false);
-            await projectState.reloadProject(context);
+            projectState.reloadProject(context);
           },
         ),
       ],
@@ -1397,7 +1398,6 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
 
   @override
   Widget build(BuildContext context) {
-    bool value = GpPreferences().getBooleanSync(KEY_ENABLE_DIAGNOSTICS, false);
     return Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -1415,29 +1415,6 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
       ),
       body: Column(
         children: [
-          Card(
-            margin: SmashUI.defaultMargin(),
-            // elevation: SmashUI.DEFAULT_ELEVATION,
-            color: SmashColors.mainBackground,
-            child: ListTile(
-              leading: Icon(iconData),
-              title: Text("${value ? "Disable" : "Enable"} diagnostics menu"),
-              subtitle: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Checkbox(
-                    value: value,
-                    onChanged: (selected) async {
-                      await GpPreferences()
-                          .setBoolean(KEY_ENABLE_DIAGNOSTICS, selected);
-                      setState(() {});
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
           Card(
             margin: SmashUI.defaultMargin(),
             color: SmashColors.mainBackground,
@@ -1506,8 +1483,8 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
     loadDebug();
   }
 
-  Future<void> loadDebug() async {
-    allLogItems = Logger().getLogItems(limit: limit);
+  void loadDebug() {
+    allLogItems = SLogger().getLogItems(limit: limit);
     allLogItems = allLogItems.where((element) {
       element.message = element.message.trim();
 
@@ -1565,9 +1542,9 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
           IconButton(
               icon: Icon(MdiIcons.delete),
               tooltip: "Clear debug log",
-              onPressed: () async {
-                Logger().clearLog();
-                await loadDebug();
+              onPressed: () {
+                SLogger().clearLog();
+                loadDebug();
               }),
         ],
       ),

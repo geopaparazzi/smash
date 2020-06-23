@@ -47,15 +47,14 @@ class NotesListWidgetState extends State<NotesListWidget>
     loadNotes();
   }
 
-  Future loadNotes() async {
+  loadNotes() {
     _notesList.clear();
-    dynamic itemsList =
-        await widget.db.getNotes(doSimple: widget._doSimpleNotes);
+    dynamic itemsList = widget.db.getNotes(doSimple: widget._doSimpleNotes);
     if (itemsList != null) {
       _notesList.addAll(itemsList);
     }
     if (widget._doSimpleNotes) {
-      itemsList = await widget.db.getImages();
+      itemsList = widget.db.getImages();
       if (itemsList != null) {
         _notesList.addAll(itemsList);
       }
@@ -71,7 +70,7 @@ class NotesListWidgetState extends State<NotesListWidget>
     var db = projectState.projectDb;
     return WillPopScope(
       onWillPop: () async {
-        await Provider.of<ProjectState>(context, listen: false)
+        Provider.of<ProjectState>(context, listen: false)
             .reloadProject(context);
         return true;
       },
@@ -197,8 +196,8 @@ class _NoteInfoState extends State<NoteInfo> {
           bool doDelete = await showConfirmDialog(
               context, "DELETE", 'Are you sure you want to delete the note?');
           if (doDelete) {
-            await widget.db.deleteNote(id);
-            await widget.reloadNotesFunction();
+            widget.db.deleteNote(id);
+            widget.reloadNotesFunction();
           }
         }));
 

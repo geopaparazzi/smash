@@ -6,6 +6,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -74,8 +75,8 @@ class DownloadMapFromListTileProgressWidgetState
         // TODO fix the below
 //        widget._mainEventsHandler.reloadLayersFunction();
       }
-    } catch (e) {
-      Logger().err("Error downloading file ${widget._downloadUrl}", e);
+    } catch (e, s) {
+      SLogger().e("Error downloading file ${widget._downloadUrl}", s);
     }
 
     setState(() {
@@ -139,7 +140,7 @@ class DownloadMapFromListTileProgressWidgetState
           return;
         }
         bool doDownload = await showConfirmDialog(context, "Download",
-            "Download file ${name} to the device? This can take some time.");
+            "Download file $name to the device? This can take some time.");
         if (doDownload) {
           await downloadFile();
         }
@@ -150,7 +151,7 @@ class DownloadMapFromListTileProgressWidgetState
 
 /// The notes properties page.
 class MapsDownloadWidget extends StatefulWidget {
-  Directory _mapsFolder;
+  final Directory _mapsFolder;
 
   MapsDownloadWidget(this._mapsFolder);
 
@@ -379,7 +380,7 @@ class ProjectDataUploadListTileProgressWidgetState
   Future<bool> handleLog(
       Options options, String projectName, bool hasError) async {
     Log log = _item;
-    LogProperty props = await widget._projectDb.getLogProperties(log.id);
+    LogProperty props = widget._projectDb.getLogProperties(log.id);
 
     var formData = FormData();
     formData.fields
@@ -393,8 +394,7 @@ class ProjectDataUploadListTileProgressWidgetState
       ..add(MapEntry(LOGSPROP_COLUMN_VISIBLE, "${props.isVisible ?? 1}"))
       ..add(MapEntry(LOGSPROP_COLUMN_COLOR, "${props.color ?? "#FF0000"}"));
 
-    List<LogDataPoint> logPoints =
-        await widget._projectDb.getLogDataPoints(log.id);
+    List<LogDataPoint> logPoints = widget._projectDb.getLogDataPoints(log.id);
     List<Map<String, dynamic>> logPointsList = [];
     for (var logPoint in logPoints) {
       logPointsList.add(logPoint.toMap());
@@ -448,15 +448,13 @@ class ProjectDataUploadListTileProgressWidgetState
     if (image.noteId != null) {
       formData.fields..add(MapEntry(IMAGES_COLUMN_NOTE_ID, "${image.noteId}"));
     }
-    var imageBytes =
-        await widget._projectDb.getImageDataBytes(image.imageDataId);
+    var imageBytes = widget._projectDb.getImageDataBytes(image.imageDataId);
     formData.files.add(MapEntry(
       TABLE_IMAGE_DATA + "_" + IMAGESDATA_COLUMN_IMAGE,
       MultipartFile.fromBytes(imageBytes, filename: image.text),
     ));
 
-    var thumbBytes =
-        await widget._projectDb.getThumbnailBytes(image.imageDataId);
+    var thumbBytes = widget._projectDb.getThumbnailBytes(image.imageDataId);
     formData.files.add(MapEntry(
       TABLE_IMAGE_DATA + "_" + IMAGESDATA_COLUMN_THUMBNAIL,
       MultipartFile.fromBytes(thumbBytes, filename: image.text),
@@ -509,17 +507,15 @@ class ProjectDataUploadListTileProgressWidgetState
     if (note.form != null) {
       formData.fields.add(MapEntry(NOTES_COLUMN_FORM, note.form));
 
-      
       List<String> imageIds = FormUtilities.getImageIds(note.form);
 
       if (imageIds.isNotEmpty) {
         for (var imageId in imageIds) {
-          var dbImage =
-              await widget._projectDb.getImageById(int.parse(imageId));
+          var dbImage = widget._projectDb.getImageById(int.parse(imageId));
           var imageBytes =
-              await widget._projectDb.getImageDataBytes(dbImage.imageDataId);
+              widget._projectDb.getImageDataBytes(dbImage.imageDataId);
           var thumbBytes =
-              await widget._projectDb.getThumbnailBytes(dbImage.imageDataId);
+              widget._projectDb.getThumbnailBytes(dbImage.imageDataId);
           var key =
               "${TABLE_IMAGE_DATA}_${IMAGESDATA_COLUMN_IMAGE}_${dbImage.id}";
           formData.files.add(MapEntry(

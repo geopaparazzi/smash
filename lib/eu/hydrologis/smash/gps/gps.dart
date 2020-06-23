@@ -12,6 +12,7 @@ import 'package:background_locator/background_locator.dart' as GPS;
 import 'package:background_locator/keys.dart';
 import 'package:background_locator/location_dto.dart';
 import 'package:background_locator/location_settings.dart';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -216,9 +217,9 @@ class GpsHandler {
   }
 
   Future<void> init(GpsState initGpsState) async {
-    Logger().i("Init GpsHandler");
+    SLogger().i("Init GpsHandler");
     if (SmashPlatform.isDesktop()) {
-      Logger().i("No gps handler active on desktop.");
+      SLogger().i("No gps handler active on desktop.");
       return;
     }
     _gpsState = initGpsState;
@@ -236,7 +237,7 @@ class GpsHandler {
 
   Future initGpsWithCheck() async {
     if (port == null) {
-      Logger().i("Initialize geolocator");
+      SLogger().i("Initialize geolocator");
       await closeGpsIsolate();
 
       await startGpsIsolate(!initialized);
@@ -307,7 +308,7 @@ class GpsHandler {
     if (isInit) await GPS.BackgroundLocator.initialize();
 
     var smashLocationAccuracy = SmashLocationAccuracy.fromPreferences();
-    Logger().i("Register for location updates.");
+    SLogger().i("Register for location updates.");
     var locationSettings = LocationSettings(
         notificationTitle: "SMASH location service is active.",
         notificationMsg: "",
@@ -322,7 +323,7 @@ class GpsHandler {
       androidNotificationCallback: notificationCallback,
       settings: locationSettings,
     );
-    Logger().i("Geolocator initialized.");
+    SLogger().i("Geolocator initialized.");
   }
 
   Future closeGpsIsolate() async {

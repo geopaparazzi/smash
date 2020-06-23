@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' as DJ;
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
@@ -334,12 +335,13 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   data[key] = double.parse(result);
                   sql += "${data[key]}";
                 } else {
-                  Logger().e(
-                      "Could not find type for $key ($value) in table $tablename");
+                  SLogger().e(
+                      "Could not find type for $key ($value) in table $tablename",
+                      null);
                   return;
                 }
                 sql += " where $primaryKey=$pkValue";
-                var i = await db.update(sql);
+                var i = db.update(sql);
                 print("Updated: $i");
                 setState(() {});
               }

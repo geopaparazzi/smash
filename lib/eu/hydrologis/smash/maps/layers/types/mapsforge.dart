@@ -11,6 +11,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'dart:ui' as ui;
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/foundation.dart' show DiagnosticsProperty;
@@ -46,20 +47,20 @@ Future<TileLayerOptions> loadMapsforgeLayer(File file) async {
 }
 
 Future<void> fillBaseCache(File file) async {
-  Logger().d("Filling mbtiles cache in ${file.path}");
+  SLogger().d("Filling mbtiles cache in ${file.path}");
   var mapsforgeTileProvider =
       MapsforgeTileProvider(file, tileSize: MAPSFORGE_TILESIZE);
   await mapsforgeTileProvider.open();
 
   await mapsforgeTileProvider.fillCache();
   mapsforgeTileProvider.close();
-  Logger().d("Done mbtiles cache in ${file.path}");
+  SLogger().d("Done mbtiles cache in ${file.path}");
 }
 
-Future<FM.LatLngBounds> getMapsforgeBounds(File file) async {
+FM.LatLngBounds getMapsforgeBounds(File file) {
   var mapsforgeTileProvider =
       MapsforgeTileProvider(file, tileSize: MAPSFORGE_TILESIZE);
-  await mapsforgeTileProvider.createMapDataStore();
+  mapsforgeTileProvider.createMapDataStore();
   var bounds = mapsforgeTileProvider.getBounds();
   mapsforgeTileProvider.close();
   return bounds;
@@ -81,7 +82,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
   MBTilesDb _mbtilesCache;
 
   Future<void> open() async {
-    await createMapDataStore();
+    createMapDataStore();
 
     GraphicFactory graphicFactory = FlutterGraphicFactory();
     _displayModel = DisplayModel();
@@ -105,19 +106,19 @@ class MapsforgeTileProvider extends FM.TileProvider {
     String chachePath = _mapsforgeFile.path + ".mbtiles";
     var name = FileUtilities.nameFromFile(chachePath, false);
     _mbtilesCache = MBTilesDb(chachePath);
-    await _mbtilesCache.open();
-    Logger().d("Creating mbtiles cache in $chachePath");
+    _mbtilesCache.open();
+    SLogger().d("Creating mbtiles cache in $chachePath");
 
     BoundingBox bBox = _multiMapDataStore.boundingBox;
-    await _mbtilesCache.fillMetadata(bBox.maxLatitude, bBox.minLatitude,
+    _mbtilesCache.fillMetadata(bBox.maxLatitude, bBox.minLatitude,
         bBox.minLongitude, bBox.maxLongitude, name, "png", 8, 22);
   }
 
-  Future<void> createMapDataStore() async {
+  void createMapDataStore() {
     _multiMapDataStore = MultiMapDataStore(DataPolicy.DEDUPLICATE);
     ReadBuffer readBuffer = ReadBuffer(_mapsforgeFile.path);
     MapFile mapFile = MapFile(readBuffer, null, null);
-    await mapFile.init();
+    mapFile.init();
     //await mapFile.debug();
     _multiMapDataStore.addMapDataStore(mapFile, false, false);
   }
@@ -165,7 +166,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
             ui.Image img = (resultTile as FlutterTileBitmap).bitmap;
             var byteData = await img.toByteData(format: ImageByteFormat.png);
             var bytes = byteData.buffer.asUint8List();
-            await _mbtilesCache.addTile(x, y, z, bytes);
+            _mbtilesCache.addTile(x, y, z, bytes);
           }
         }
       }
@@ -211,7 +212,8 @@ class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
       this._tile, this._bitmapCache);
 
   @override
-  ImageStreamCompleter load(MapsforgeImageProvider key , DecoderCallback decoder) {
+  ImageStreamCompleter load(
+      MapsforgeImageProvider key, DecoderCallback decoder) {
     // TODo check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
     return MultiFrameImageStreamCompleter(
       codec: loadAsync(key),
@@ -228,7 +230,7 @@ class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
 
     try {
       Uint8List tileData =
-          await _bitmapCache.getTile(_tile.tileX, _tile.tileY, _tile.zoomLevel);
+          _bitmapCache.getTile(_tile.tileX, _tile.tileY, _tile.zoomLevel);
       if (tileData != null) {
         return await PaintingBinding.instance.instantiateImageCodec(tileData);
       }

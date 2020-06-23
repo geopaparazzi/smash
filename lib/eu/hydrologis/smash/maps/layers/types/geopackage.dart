@@ -9,6 +9,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as UI;
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' hide Polygon;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -75,13 +76,13 @@ class GeopackageSource extends VectorLayerSource {
         }
       }
 
-      await getDatabase();
-      _geometryColumn = await db.getGeometryColumnsForTable(_tableName);
+      getDatabase();
+      _geometryColumn = db.getGeometryColumnsForTable(_tableName);
       _srid = _geometryColumn.srid;
 
 //      _tableBounds = db.getTableBounds(_tableName);
 
-      _tableGeoms = await db.getGeometriesIn(_tableName,
+      _tableGeoms = db.getGeometriesIn(_tableName,
           limit: maxFeaturesToLoad, envelope: limitBounds);
 
       var fromPrj = SmashPrj.fromSrid(_srid);
@@ -94,17 +95,17 @@ class GeopackageSource extends VectorLayerSource {
       _attribution = _attribution +
           "${_geometryColumn.geometryType.getTypeName()} (${_tableGeoms.length}) ";
 
-      _basicStyle = await db.getBasicStyle(_tableName);
+      _basicStyle = db.getBasicStyle(_tableName);
 
       loaded = true;
     }
   }
 
-  Future getDatabase() async {
+  getDatabase() {
     var ch = ConnectionsHandler();
     // ch.doRtreeCheck = DO_RTREE_CHECK;
     if (db == null) {
-      db = await ch.open(_absolutePath, tableName: _tableName);
+      db = ch.open(_absolutePath, tableName: _tableName);
     }
   }
 
@@ -152,7 +153,7 @@ class GeopackageSource extends VectorLayerSource {
 
   @override
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
-    await load(context);
+    load(context);
 
     List<LayerOptions> layers = [];
 
@@ -267,16 +268,16 @@ class GeopackageSource extends VectorLayerSource {
   }
 
   @override
-  Future<LatLngBounds> getBounds() {
+  LatLngBounds getBounds() {
     if (_tableBounds != null) {
       var s = _tableBounds.getMinY();
       var n = _tableBounds.getMaxY();
       var w = _tableBounds.getMinX();
       var e = _tableBounds.getMaxX();
       LatLngBounds b = LatLngBounds(LatLng(s, w), LatLng(n, e));
-      return Future.value(b);
+      return b;
     } else {
-      Future.value(null);
+      return null;
     }
   }
 
@@ -301,19 +302,21 @@ class GeopackageSource extends VectorLayerSource {
   }
 
   @override
-  Future<void> calculateSrid() async {
+  void calculateSrid() {
     if (_srid == null) {
       if (db == null) {
-        await getDatabase();
+        getDatabase();
       }
       if (_srid == null) {
-        _geometryColumn = await db.getGeometryColumnsForTable(_tableName);
+        _geometryColumn = db.getGeometryColumnsForTable(_tableName);
         _srid = _geometryColumn.srid;
       }
     }
     return;
   }
 }
+
+var _emptyImageBytes;
 
 class GeopackageImageProvider extends TileProvider {
   final File geopackageFile;
@@ -326,16 +329,16 @@ class GeopackageImageProvider extends TileProvider {
 
   GeopackageImageProvider(this.geopackageFile, this.tableName);
 
-  Future<GeopackageDb> open() async {
+  GeopackageDb open() {
     if (_loadedDb == null || !_loadedDb.isOpen()) {
       var ch = ConnectionsHandler();
-      _loadedDb = await ch.open(geopackageFile.path, tableName: tableName);
+      _loadedDb = ch.open(geopackageFile.path, tableName: tableName);
     }
     if (isDisposed) {
-      await _loadedDb.openOrCreate();
+      _loadedDb.openOrCreate();
 
       try {
-        TileEntry tile = await _loadedDb.tile(tableName);
+        TileEntry tile = _loadedDb.tile(tableName);
         Envelope bounds = tile.getBounds();
         Envelope bounds4326 = MercatorUtils.convert3857To4326Env(bounds);
         var w = bounds4326.getMinX();
@@ -348,15 +351,12 @@ class GeopackageImageProvider extends TileProvider {
         b.extend(LatLng(n, e));
         _bounds = b;
 
-        ByteData imageData = await rootBundle.load('assets/emptytile256.png');
-        _emptyImageBytes = imageData.buffer.asUint8List();
-
 //        UI.Image _emptyImage = await ImageWidgetUtilities.transparentImage();
 //        var byteData = await _emptyImage.toByteData(format: UI.ImageByteFormat.png);
 //        _emptyImageBytes = byteData.buffer.asUint8List();
 
-      } catch (e) {
-        Logger().err("Error getting geopackage bounds or empty image.", e);
+      } catch (e, s) {
+        SLogger().e("Error getting geopackage bounds or empty image.", s);
       }
 
       isDisposed = false;
@@ -380,8 +380,8 @@ class GeopackageImageProvider extends TileProvider {
         : coords.y.round();
     var z = coords.z.round();
 
-    return GeopackageImage(geopackageFile.path, tableName,
-        Coords<int>(x, y)..z = z, _emptyImageBytes);
+    return GeopackageImage(
+        geopackageFile.path, tableName, Coords<int>(x, y)..z = z);
   }
 }
 
@@ -389,10 +389,7 @@ class GeopackageImage extends ImageProvider<GeopackageImage> {
   final String databasePath;
   String tableName;
   final Coords<int> coords;
-  Uint8List _emptyImageBytes;
-
-  GeopackageImage(
-      this.databasePath, this.tableName, this.coords, this._emptyImageBytes);
+  GeopackageImage(this.databasePath, this.tableName, this.coords);
 
   @override
   ImageStreamCompleter load(GeopackageImage key, DecoderCallback decoder) {
@@ -409,14 +406,18 @@ class GeopackageImage extends ImageProvider<GeopackageImage> {
   Future<UI.Codec> _loadAsync(GeopackageImage key) async {
     assert(key == this);
 
-    final db = await ConnectionsHandler()
-        .open(key.databasePath, tableName: key.tableName);
-    var tileBytes = await db.getTile(tableName, coords.x, coords.y, coords.z);
+    final db =
+        ConnectionsHandler().open(key.databasePath, tableName: key.tableName);
+    var tileBytes = db.getTile(tableName, coords.x, coords.y, coords.z);
     if (tileBytes != null) {
       Uint8List bytes = tileBytes;
       return await PaintingBinding.instance.instantiateImageCodec(bytes);
     } else {
       // TODO get from other zoomlevels
+      if (_emptyImageBytes == null) {
+        ByteData imageData = await rootBundle.load('assets/emptytile256.png');
+        _emptyImageBytes = imageData.buffer.asUint8List();
+      }
       if (_emptyImageBytes != null) {
         var bytes = _emptyImageBytes;
         return await PaintingBinding.instance.instantiateImageCodec(bytes);

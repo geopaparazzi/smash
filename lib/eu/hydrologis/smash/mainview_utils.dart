@@ -185,8 +185,6 @@ class DashboardUtils {
       BuildContext context, MapController mapController) {
     Color c = SmashColors.mainDecorations;
     var iconSize = SmashUI.MEDIUM_ICON_SIZE;
-    var doDiagnostics =
-        GpPreferences().getBooleanSync(KEY_ENABLE_DIAGNOSTICS, false);
 
     Color backColor = SmashColors.mainBackground;
     List<Widget> list = []
@@ -234,14 +232,14 @@ class DashboardUtils {
         ),
       ))
       ..add(getPositionTools(c, backColor, iconSize, context))
-      ..add(getVectorTools(c, backColor, iconSize, doDiagnostics, context))
-      ..add(getExtras(c, backColor, iconSize, doDiagnostics, context));
+      ..add(getVectorTools(c, backColor, iconSize, context))
+      ..add(getExtras(c, backColor, iconSize, context));
 
     return list;
   }
 
-  static Container getVectorTools(Color c, Color backColor, double iconSize,
-      bool doDiagnostics, BuildContext context) {
+  static Container getVectorTools(
+      Color c, Color backColor, double iconSize, BuildContext context) {
     return Container(
       color: backColor,
       child: ExpansionTile(
@@ -270,8 +268,8 @@ class DashboardUtils {
     );
   }
 
-  static Container getExtras(Color c, Color backColor, double iconSize,
-      bool doDiagnostics, BuildContext context) {
+  static Container getExtras(
+      Color c, Color backColor, double iconSize, BuildContext context) {
     return Container(
       color: backColor,
       child: ExpansionTile(
@@ -318,33 +316,13 @@ class DashboardUtils {
                         builder: (context) => MapsDownloadWidget(mapsFolder)));
               },
             ),
-            doDiagnostics
-                ? ListTile(
-                    leading: new Icon(
-                      MdiIcons.bugOutline,
-                      color: c,
-                      size: iconSize,
-                    ),
-                    title: SmashUI.normalText(
-                      "Run diagnostics",
-                      bold: true,
-                      color: c,
-                    ),
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DiagnosticWidget())),
-                  )
-                : Container(),
           ]),
     );
   }
 
-
   static Container getPositionTools(
       Color c, Color backColor, double iconSize, BuildContext context) {
     return Container(
-
       color: backColor,
       child: ExpansionTile(
         initiallyExpanded: true,
@@ -436,32 +414,32 @@ class DashboardUtils {
     );
   }
 
-  static Future _createNewProject(BuildContext context) async {
-    String projectName =
-        "smash_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
+  // static Future _createNewProject(BuildContext context) async {
+  //   String projectName =
+  //       "smash_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
 
-    var userString = await showInputDialog(
-      context,
-      "New Project",
-      "Enter a name for the new project or accept the proposed.",
-      hintText: '',
-      defaultText: projectName,
-      validationFunction: fileNameValidator,
-    );
-    if (userString != null) {
-      if (userString.trim().length == 0) userString = projectName;
-      var file = await Workspace.getProjectsFolder();
-      var newPath = join(file.path, userString);
-      if (!newPath.endsWith(".gpap")) {
-        newPath = "$newPath.gpap";
-      }
-      var gpFile = new File(newPath);
-      var projectState = Provider.of<ProjectState>(context, listen: false);
-      await projectState.setNewProject(gpFile.path, context);
-    }
+  //   var userString = await showInputDialog(
+  //     context,
+  //     "New Project",
+  //     "Enter a name for the new project or accept the proposed.",
+  //     hintText: '',
+  //     defaultText: projectName,
+  //     validationFunction: fileNameValidator,
+  //   );
+  //   if (userString != null) {
+  //     if (userString.trim().length == 0) userString = projectName;
+  //     var file = await Workspace.getProjectsFolder();
+  //     var newPath = join(file.path, userString);
+  //     if (!newPath.endsWith(".gpap")) {
+  //       newPath = "$newPath.gpap";
+  //     }
+  //     var gpFile = new File(newPath);
+  //     var projectState = Provider.of<ProjectState>(context, listen: false);
+  //     await projectState.setNewProject(gpFile.path, context);
+  //   }
 
-    Navigator.of(context).pop();
-  }
+  //   Navigator.of(context).pop();
+  // }
 
   static Icon getGpsStatusIcon(GpsStatus status, [double iconSize]) {
     Color color;
@@ -542,14 +520,12 @@ class DashboardUtils {
   }
 }
 
-
-   Future<void> shareProject(BuildContext context) async {
-    ProjectState projectState =
-        Provider.of<ProjectState>(context, listen: false);
-    if (projectState.projectPath != null) {
-      File projectFile = File("${projectState.projectPath}");
-      if (projectFile.existsSync()) {
-        await ShareExtend.share(projectFile.path, "file");
-      }
+Future<void> shareProject(BuildContext context) async {
+  ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+  if (projectState.projectPath != null) {
+    File projectFile = File("${projectState.projectPath}");
+    if (projectFile.existsSync()) {
+      await ShareExtend.share(projectFile.path, "file");
     }
   }
+}

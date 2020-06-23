@@ -117,7 +117,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         Provider.of<ProjectState>(context, listen: false);
     Future.delayed(Duration.zero, () async {
       mapBuilder.context = context;
-      await projectState.reloadProject(context);
+      projectState.reloadProject(context);
 
       _activeLayers.clear();
       var layers = await LayerManager().loadLayers(context);
@@ -393,7 +393,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                       mapBuilder.context, titleWithMode, types);
                   var doNoteInGps = gpsState.insertInGps;
                   if (selectedType == types[0]) {
-                    Note note = await DataLoaderUtilities.addNote(
+                    Note note = DataLoaderUtilities.addNote(
                         mapBuilder, doNoteInGps, _mapController);
                     Navigator.push(
                         mapBuilder.context,
@@ -473,7 +473,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                     var iconName = iconNames[selectedIndex];
                     var sectionMap = allSectionsMap[selectedSection];
                     var jsonString = jsonEncode(sectionMap);
-                    Note note = await DataLoaderUtilities.addNote(
+                    Note note = DataLoaderUtilities.addNote(
                         mapBuilder, doNoteInGps, _mapController,
                         text: selectedSection,
                         form: jsonString,

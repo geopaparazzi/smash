@@ -55,7 +55,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
-            await projectState.projectDb
+            projectState.projectDb
                 .updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
             projectState.reloadProject(context);
           }
@@ -89,14 +89,14 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                             child: EditableTextField(
                               "Log Name",
                               _logItem.name,
-                              (res) async {
+                              (res) {
                                 if (res == null || res.trim().length == 0) {
                                   res = _logItem.name;
                                 }
                                 ProjectState projectState =
                                     Provider.of<ProjectState>(context,
                                         listen: false);
-                                await projectState.projectDb
+                                projectState.projectDb
                                     .updateGpsLogName(_logItem.id, res);
                                 setState(() {
                                   _logItem.name = res;
@@ -202,13 +202,13 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
         child: EditableTextField(
           "Log Name",
           item.name,
-          (res) async {
+          (res) {
             if (res == null || res.trim().length == 0) {
               res = item.name;
             }
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
-            await projectState.projectDb.updateGpsLogName(item.id, res);
+            projectState.projectDb.updateGpsLogName(item.id, res);
             setState(() {
               item.name = res;
             });

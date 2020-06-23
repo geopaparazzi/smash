@@ -4,12 +4,12 @@
  * found in the LICENSE file.
  */
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
@@ -34,79 +34,80 @@ class ProjectState extends ChangeNotifierPlus {
   ProjectData get projectData => _projectData;
 
   Future<void> setNewProject(String path, BuildContext context) async {
-    Logger().i("Set new project: $path");
-    await close();
+    SLogger().i("Set new project: $path");
+    close();
     _projectPath = path;
     await openDb(_projectPath);
     await GpPreferences().addRecentProject(path);
-    await reloadProject(context);
+    reloadProject(context);
   }
 
   Future<void> openDb([String projectPath]) async {
     _projectPath = projectPath;
     if (_projectPath == null) {
       _projectPath = await GpPreferences().getString(KEY_LAST_GPAPPROJECT);
-      Logger().i("Read db path from preferences: $_projectPath");
+      SLogger().i("Read db path from preferences: $_projectPath");
     }
     if (_projectPath == null) {
-      Logger().w("No project path found creating default");
+      SLogger().w("No project path found creating default");
       var projectsFolder = await Workspace.getProjectsFolder();
       _projectPath = FileUtilities.joinPaths(projectsFolder.path, "smash.gpap");
     }
     try {
-      Logger().i("Opening db $_projectPath...");
+      SLogger().i("Opening db $_projectPath...");
       _db = GeopaparazziProjectDb(_projectPath);
-      await _db.openOrCreate();
-      Logger().i("Db opened: $_projectPath");
+      _db.open();
+      SLogger().i("Db opened: $_projectPath");
     } catch (e) {
-      Logger().e("Error opening project db: ", e);
+      SLogger().e("Error opening project db: ", e);
     }
 
-    await _db.createNecessaryExtraTables();
+    _db.createNecessaryExtraTables();
     await GpPreferences().setString(KEY_LAST_GPAPPROJECT, _projectPath);
     _projectName = FileUtilities.nameFromFile(_projectPath, false);
   }
 
-  Future<void> close() async {
+  void close() {
     if (_db != null && _db.isOpen()) {
-      await _db.close();
-      Logger().i("Closed db: ${_db.path}");
+      _db.close();
+      SLogger().i("Closed db: ${_db.path}");
     }
     _db = null;
     _projectPath = null;
   }
 
-  Future<void> reloadProject(BuildContext context) async {
+  void reloadProject(BuildContext context) {
     if (projectDb == null) return;
     var mapBuilder = Provider.of<SmashMapBuilder>(context, listen: false);
-    await reloadProjectQuiet(mapBuilder);
+    reloadProjectQuiet(mapBuilder);
     mapBuilder.reBuild();
   }
 
   /// Reloads the project data but doesn't tigger a map build
-  Future<void> reloadProjectQuiet(SmashMapBuilder mapBuilder) async {
+  void reloadProjectQuiet(SmashMapBuilder mapBuilder) {
     if (projectDb == null) return;
     ProjectData tmp = ProjectData();
     tmp.projectName = basenameWithoutExtension(projectDb.path);
     tmp.projectDirName = dirname(projectDb.path);
-    tmp.simpleNotesCount = await projectDb.getSimpleNotesCount(false);
-    var imageNotescount = await projectDb.getImagesCount(false);
+    tmp.simpleNotesCount = projectDb.getSimpleNotesCount(false);
+    int imageNotescount = projectDb.getImagesCount(false);
     tmp.simpleNotesCount += imageNotescount;
-    tmp.logsCount = await projectDb.getGpsLogCount(false);
-    tmp.formNotesCount = await projectDb.getFormNotesCount(false);
+    tmp.logsCount = projectDb.getGpsLogCount(false);
+    tmp.formNotesCount = projectDb.getFormNotesCount(false);
 
     List<Marker> tmpList = [];
-    await DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, mapBuilder);
+    DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, mapBuilder);
     var notesMode =
         GpPreferences().getStringSync(KEY_NOTES_VIEW_MODE, NOTESVIEWMODES[0]);
-    await DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, mapBuilder, notesMode);
+    DataLoaderUtilities.loadNotesMarkers(
+        projectDb, tmpList, mapBuilder, notesMode);
     tmp.geopapMarkers = tmpList;
 
     List<String> currentLogViewModes = GpPreferences().getStringListSync(
         KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
     var logMode = currentLogViewModes[0];
     var filteredLogMode = currentLogViewModes[1];
-    tmp.geopapLogs = await DataLoaderUtilities.loadLogLinesLayer(
+    tmp.geopapLogs = DataLoaderUtilities.loadLogLinesLayer(
       projectDb,
       logMode != LOGVIEWMODES[0],
       filteredLogMode != LOGVIEWMODES[0],

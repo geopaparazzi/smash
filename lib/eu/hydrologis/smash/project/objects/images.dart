@@ -9,6 +9,7 @@
  */
 import 'dart:typed_data';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 final String TABLE_IMAGES = "images";

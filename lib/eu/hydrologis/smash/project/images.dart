@@ -7,12 +7,14 @@
 import 'dart:typed_data';
 import 'dart:ui' as UI;
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
+import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class ImageWidgetUtilities {
@@ -25,8 +27,8 @@ class ImageWidgetUtilities {
   ///
   /// [dbImageToCompleteAndSave] is passed in with the necessary spatial data
   /// (but missing imageDataId, which will be filled here.
-  static Future<int> saveImageToSmashDb(BuildContext context, String path,
-      DbImage dbImageToCompleteAndSave) async {
+  static int saveImageToSmashDb(
+      BuildContext context, String path, DbImage dbImageToCompleteAndSave) {
     var imageBytes = ImageUtilities.bytesFromImageFile(path);
     var thumbBytes = ImageUtilities.resizeImage(imageBytes, newWidth: 200);
 
@@ -38,13 +40,12 @@ class ImageWidgetUtilities {
       ..thumb = thumbBytes
       ..data = imageBytes;
 
-    return await db.transaction((tx) async {
-      int imgDataId = await tx.insert(TABLE_IMAGE_DATA, imgData.toMap());
+    Transaction(db).runInTransaction((_db) {
+      int imgDataId = _db.insertMap(TABLE_IMAGE_DATA, imgData.toMap());
       dbImageToCompleteAndSave.imageDataId = imgDataId;
-      int imgId =
-          await tx.insert(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
+      int imgId = _db.insertMap(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
       if (imgId == null) {
-        Logger().e("Could not save image to db: $path");
+        SLogger().e("Could not save image to db: $path", null);
       }
       return imgId;
     });
@@ -107,8 +108,8 @@ class SmashImageZoomWidget extends StatelessWidget {
 
   SmashImageZoomWidget(this._image);
 
-  Future<Null> getImageData(var db) async {
-    _bytes = await db.getImageDataBytes(_image.id);
+  Future<Null> getImageData(GeopaparazziProjectDb db) async {
+    _bytes = db.getImageDataBytes(_image.id);
   }
 
   @override

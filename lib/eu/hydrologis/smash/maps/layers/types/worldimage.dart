@@ -83,7 +83,7 @@ class WorldImageSource extends RasterLayerSource {
     return null;
   }
 
-  Future<void> load(BuildContext context) async {
+  Future<void> load(BuildContext context) {
     if (!loaded) {
       // print("LOAD WORLD FILE");
       _name = FileUtilities.nameFromFile(_absolutePath, false);
@@ -198,9 +198,9 @@ class WorldImageSource extends RasterLayerSource {
   }
 
   @override
-  Future<LatLngBounds> getBounds() async {
+  LatLngBounds getBounds() {
     if (_imageBounds == null) {
-      await load(null);
+      load(null);
     }
     return _imageBounds;
   }

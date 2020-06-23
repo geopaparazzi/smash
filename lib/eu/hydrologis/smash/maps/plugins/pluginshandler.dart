@@ -73,7 +73,7 @@ class _PluginCheckboxWidgetState extends State<PluginCheckboxWidget> {
           await plugin.toggle(selected);
           setState(() {});
           var projectState = Provider.of<ProjectState>(context, listen: false);
-          await projectState.reloadProject(context);
+          projectState.reloadProject(context);
         },
       ),
       title: SmashUI.normalText(

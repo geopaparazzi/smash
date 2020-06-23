@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
@@ -116,11 +117,11 @@ class _GssImportWidgetState extends State<GssImportWidget>
       setState(() {
         _status = 1;
       });
-    } catch (e) {
+    } catch (e, s) {
       setState(() {
         _status = 12;
       });
-      Logger().e("An error occurred while downloading GSS data list.", e);
+      SLogger().e("An error occurred while downloading GSS data list.", s);
     }
   }
 

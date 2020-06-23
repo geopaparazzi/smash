@@ -138,8 +138,8 @@ class WmsSource extends RasterLayerSource {
   }
 
   @override
-  Future<LatLngBounds> getBounds() {
-    return Future.value(_serviceBounds);
+  LatLngBounds getBounds() {
+    return _serviceBounds;
   }
 
   @override

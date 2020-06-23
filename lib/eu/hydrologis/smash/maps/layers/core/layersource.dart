@@ -7,6 +7,7 @@
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -64,7 +65,7 @@ abstract class LayerSource {
   void setActive(bool active);
 
   /// Get the bounds for the resource.
-  Future<LatLngBounds> getBounds();
+  LatLngBounds getBounds();
 
   /// Dispose the current layeresource.
   void disposeSource();
@@ -91,7 +92,7 @@ abstract class LayerSource {
   /// This can be used to calculate the srid if an async moment can be exploited and is necessary.
   ///
   /// After this getSrid is assured to have the right srid.
-  Future<void> calculateSrid() async {
+  void calculateSrid() {
     return;
   }
 
@@ -127,8 +128,8 @@ abstract class LayerSource {
         TileSource ts = TileSource.fromMap(map);
         return [ts];
       }
-    } catch (e) {
-      Logger().e("Error while loading layer: \n$json", e);
+    } catch (e, s) {
+      SLogger().e("Error while loading layer: \n$json", s);
       return [];
     }
   }

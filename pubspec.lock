@@ -137,9 +137,9 @@ packages:
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
-      name: dart_hydrologis_utils
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../dart_hydrologis_utils"
+      relative: true
+    source: path
     version: "0.4.0"
   dart_jts:
     dependency: transitive
@@ -151,9 +151,9 @@ packages:
   dart_shp:
     dependency: "direct main"
     description:
-      name: dart_shp
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../dart_shp"
+      relative: true
+    source: path
     version: "0.3.0"
   dcache:
     dependency: transitive
@@ -251,7 +251,7 @@ packages:
     description:
       path: "."
       ref: version4smash
-      resolved-ref: "5a99b1e130c87aee2dad365114f3e2f2df378879"
+      resolved-ref: d9a2b72a38fadfdd5c0cfe45e95e17b833aa3181
       url: "https://github.com/moovida/flutter_map.git"
     source: git
     version: "0.9.0"
@@ -374,13 +374,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.16.1"
-  io:
-    dependency: transitive
-    description:
-      name: io
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.4"
   lat_lon_grid_plugin:
     dependency: "direct main"
     description:
@@ -404,13 +397,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.6"
-  logger:
-    dependency: transitive
-    description:
-      name: logger
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.8.3"
   logging:
     dependency: transitive
     description:
@@ -538,7 +524,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.1"
+    version: "1.9.0"
   pedantic:
     dependency: transitive
     description:
@@ -781,7 +767,7 @@ packages:
       name: unicode
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.3"
+    version: "0.2.4"
   url_launcher:
     dependency: "direct main"
     description:

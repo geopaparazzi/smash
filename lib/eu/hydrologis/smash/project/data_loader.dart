@@ -27,9 +27,9 @@ import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class DataLoaderUtilities {
-  static Future<Note> addNote(
+  static Note addNote(
       SmashMapBuilder mapBuilder, bool doInGps, MapController mapController,
-      {String form, String iconName, String color, String text}) async {
+      {String form, String iconName, String color, String text}) {
     int ts = DateTime.now().millisecondsSinceEpoch;
     SmashPosition pos;
     double lon;
@@ -71,7 +71,7 @@ class DataLoaderUtilities {
     var projectState =
         Provider.of<ProjectState>(mapBuilder.context, listen: false);
     var db = projectState.projectDb;
-    await db.addNote(note);
+    db.addNote(note);
 
     return note;
   }
@@ -106,24 +106,24 @@ class DataLoaderUtilities {
     await Navigator.push(
         parentContext,
         MaterialPageRoute(
-            builder: (context) => TakePictureWidget("Saving image to db...",
-                    (String imagePath) async {
+            builder: (context) =>
+                TakePictureWidget("Saving image to db...", (String imagePath) {
                   if (imagePath != null) {
                     String imageName =
                         FileUtilities.nameFromFile(imagePath, true);
                     dbImage.text =
                         "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
-                    var imageId = await ImageWidgetUtilities.saveImageToSmashDb(
+                    var imageId = ImageWidgetUtilities.saveImageToSmashDb(
                         context, imagePath, dbImage);
                     File file = File(imagePath);
                     if (file.existsSync()) {
-                      await file.delete();
+                      file.deleteSync();
                     }
                     if (imageId != null) {
                       ProjectState projectState =
                           Provider.of<ProjectState>(context, listen: false);
                       if (projectState != null)
-                        await projectState.reloadProject(context);
+                        projectState.reloadProject(context);
 //                } else {
 //                  showWarningDialog(
 //                      context, "Could not save image in database.");
@@ -133,13 +133,13 @@ class DataLoaderUtilities {
                 })));
   }
 
-  static Future loadNotesMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
-      SmashMapBuilder mapBuilder, String notesMode) async {
+  static void loadNotesMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
+      SmashMapBuilder mapBuilder, String notesMode) {
     if (notesMode == NOTESVIEWMODES[2]) {
       return;
     }
 
-    List<Note> notesList = await db.getNotes();
+    List<Note> notesList = db.getNotes();
     notesList.forEach((note) {
       NoteExt noteExt = note.noteExt;
 
@@ -313,12 +313,11 @@ class DataLoaderUtilities {
                                   "Remove Note",
                                   "Are you sure you want to remove note ${note.id}?");
                               if (doRemove) {
-                                await db.deleteNote(note.id);
+                                db.deleteNote(note.id);
                                 var projectState = Provider.of<ProjectState>(
                                     mapBuilder.context,
                                     listen: false);
-                                await projectState
-                                    .reloadProject(ctx); // TODO check await
+                                projectState.reloadProject(ctx);
                               }
                               mapBuilder.scaffoldKey.currentState
                                   .hideCurrentSnackBar();
@@ -350,11 +349,11 @@ class DataLoaderUtilities {
     });
   }
 
-  static Future loadImageMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
-      SmashMapBuilder mapBuilder) async {
+  static void loadImageMarkers(
+      GeopaparazziProjectDb db, List<Marker> tmp, SmashMapBuilder mapBuilder) {
     // IMAGES
-    var imagesList = await db.getImages();
-    imagesList.forEach((image) async {
+    var imagesList = db.getImages();
+    imagesList.forEach((image) {
       var size = 48.0;
       var lat = image.lat;
       var lon = image.lon;
@@ -364,8 +363,8 @@ class DataLoaderUtilities {
         point: new LatLng(lat, lon),
         builder: (ctx) => new Container(
             child: GestureDetector(
-          onTap: () async {
-            var thumb = await db.getThumbnail(image.imageDataId);
+          onTap: () {
+            var thumb = db.getThumbnail(image.imageDataId);
             mapBuilder.scaffoldKey.currentState.showSnackBar(SnackBar(
               backgroundColor: SmashColors.snackBarColor,
               content: Column(
@@ -455,8 +454,8 @@ class DataLoaderUtilities {
                             var label =
                                 "image: ${image.text}\nlat: ${image.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)}\nlon: ${image.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
                             var uint8list =
-                                await db.getImageDataBytes(image.imageDataId);
-                            ShareHandler.shareImage(label, uint8list);
+                                db.getImageDataBytes(image.imageDataId);
+                            await ShareHandler.shareImage(label, uint8list);
                             mapBuilder.scaffoldKey.currentState
                                 .hideCurrentSnackBar();
                           },
@@ -473,11 +472,11 @@ class DataLoaderUtilities {
                                 "Remove Image",
                                 "Are you sure you want to remove image ${image.id}?");
                             if (doRemove) {
-                              await db.deleteImage(image.id);
+                              db.deleteImage(image.id);
                               var projectState = Provider.of<ProjectState>(
                                   mapBuilder.context,
                                   listen: false);
-                              await projectState
+                              projectState
                                   .reloadProject(ctx); // TODO check await
                             }
                             mapBuilder.scaffoldKey.currentState
@@ -514,15 +513,15 @@ class DataLoaderUtilities {
     });
   }
 
-  static Future<PolylineLayerOptions> loadLogLinesLayer(var db, bool doOrig,
-      bool doFiltered, bool doOrigTransp, bool doFilteredTransp) async {
+  static PolylineLayerOptions loadLogLinesLayer(GeopaparazziProjectDb db, bool doOrig,
+      bool doFiltered, bool doOrigTransp, bool doFilteredTransp)  {
     String logsQuery = '''
         select l.$LOGS_COLUMN_ID, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH 
         from $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
         where l.$LOGS_COLUMN_ID = p.$LOGSPROP_COLUMN_ID and p.$LOGSPROP_COLUMN_VISIBLE=1
     ''';
 
-    List<Map<String, dynamic>> resLogs = await db.query(logsQuery);
+    var resLogs = db.select(logsQuery);
     Map<int, List> logs = Map();
     resLogs.forEach((map) {
       var id = map['_id'];
@@ -537,7 +536,7 @@ class DataLoaderUtilities {
         $LOGSDATA_COLUMN_LAT_FILTERED, $LOGSDATA_COLUMN_LON_FILTERED
         from $TABLE_GPSLOG_DATA order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS
         ''';
-    List<Map<String, dynamic>> resLogData = await db.query(logDataQuery);
+    var resLogData =  db.select(logDataQuery);
     resLogData.forEach((map) {
       var logid = map[LOGSDATA_COLUMN_LOGID];
       var log = logs[logid];

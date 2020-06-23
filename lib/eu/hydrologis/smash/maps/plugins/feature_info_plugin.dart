@@ -50,7 +50,7 @@ class FeatureInfoLayer extends StatelessWidget {
   final MapState map;
   final Stream<Null> stream;
 
-  FeatureInfoLayer(this.featureInfoLayerOpts, this.map, this.stream) {}
+  FeatureInfoLayer(this.featureInfoLayerOpts, this.map, this.stream);
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +108,7 @@ class FeatureInfoLayer extends StatelessWidget {
   }
 
   void queryLayers(Envelope env, InfoToolState state, ProjectState projectState,
-      BuildContext context) async {
+      BuildContext context) {
     var boundsGeom = GeometryUtilities.fromEnvelope(env, makeCircle: true);
     var boundMap = {4326: boundsGeom};
 
@@ -125,7 +125,7 @@ class FeatureInfoLayer extends StatelessWidget {
         (totalQueryResult as EditableQueryResult).dbs = [];
         var srid = vLayer.getSrid();
         var boundsGeomInSrid = boundMap[srid];
-        var db = await ConnectionsHandler().open(vLayer.getAbsolutePath());
+        var db = ConnectionsHandler().open(vLayer.getAbsolutePath());
         if (boundsGeomInSrid == null) {
           // create the env
           var tmp = GeometryUtilities.fromEnvelope(env, makeCircle: true);
@@ -135,12 +135,12 @@ class FeatureInfoLayer extends StatelessWidget {
           boundMap[srid] = boundsGeomInSrid;
         }
         QueryResult queryResult =
-            await db.getTableData(vLayer.getName(), geometry: boundsGeomInSrid);
+            db.getTableData(vLayer.getName(), geometry: boundsGeomInSrid);
         if (queryResult.data.isNotEmpty) {
           var layerName = vLayer.getName();
           print("Found data for: " + layerName);
 
-          var pk = await db.getPrimaryKey(layerName);
+          var pk = db.getPrimaryKey(layerName);
           (totalQueryResult as EditableQueryResult).primaryKeys.add(pk);
           (totalQueryResult as EditableQueryResult).dbs.add(db);
 

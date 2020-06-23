@@ -7,16 +7,15 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/othertables.dart';
-import 'package:sqflite/sqflite.dart';
 
 const int MAXBLOBSIZE = 1000000;
 
@@ -39,24 +38,23 @@ class GeopaparazziProjectDb extends SqliteDb {
 
   GeopaparazziProjectDb(dbPath) : super(dbPath);
 
-  openOrCreate({Function dbCreateFunction}) async {
-    await super.openOrCreate(dbCreateFunction: createDatabase);
+  open({Function dbCreateFunction}) {
+    super.open(dbCreateFunction: createDatabase);
   }
 
   /// Get the count of the current notes
   ///
   /// Get the count using [onlyDirty] to count only dirty notes.
-  Future<int> getNotesCount(bool onlyDirty) async {
+  int getNotesCount(bool onlyDirty) {
     String where = !onlyDirty ? "" : " where $NOTES_COLUMN_ISDIRTY = 1";
-    List<Map<String, dynamic>> resNotes =
-        await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
+    var resNotes = select("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
-    var resNote = resNotes[0];
+    var resNote = resNotes.first;
     var count = resNote["count"];
     return count;
   }
 
-  Future<int> getSimpleNotesCount(bool onlyDirty) async {
+  int getSimpleNotesCount(bool onlyDirty) {
     String where = !onlyDirty ? "" : " where $NOTES_COLUMN_ISDIRTY = 1";
     if (where.isEmpty) {
       where = " where ";
@@ -64,15 +62,14 @@ class GeopaparazziProjectDb extends SqliteDb {
       where = "$where and ";
     }
     where = "$where ($NOTES_COLUMN_FORM is null or $NOTES_COLUMN_FORM='')";
-    List<Map<String, dynamic>> resNotes =
-        await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
+    var resNotes = select("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
-    var resNote = resNotes[0];
+    var resNote = resNotes.first;
     var count = resNote["count"];
     return count;
   }
 
-  Future<int> getFormNotesCount(bool onlyDirty) async {
+  int getFormNotesCount(bool onlyDirty) {
     String where = !onlyDirty ? "" : " where $NOTES_COLUMN_ISDIRTY = 1";
     if (where.isEmpty) {
       where = " where ";
@@ -80,15 +77,14 @@ class GeopaparazziProjectDb extends SqliteDb {
       where = "$where and ";
     }
     where = "$where $NOTES_COLUMN_FORM is not null and $NOTES_COLUMN_FORM<>''";
-    List<Map<String, dynamic>> resNotes =
-        await query("SELECT count(*) as count FROM $TABLE_NOTES$where");
+    var resNotes = select("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
-    var resNote = resNotes[0];
+    var resNote = resNotes.first;
     var count = resNote["count"];
     return count;
   }
 
-  Future<List<Note>> getNotes({bool doSimple, bool onlyDirty: false}) async {
+  List<Note> getNotes({bool doSimple, bool onlyDirty: false}) {
     String where = "";
     if (onlyDirty) {
       where = " where $NOTES_COLUMN_ISDIRTY=1";
@@ -121,10 +117,8 @@ class GeopaparazziProjectDb extends SqliteDb {
     ''';
 
     List<Note> notes = [];
-    List<Map<String, dynamic>> resNotes = await query(sql);
-    for (int i = 0; i < resNotes.length; i++) {
-      Map resNoteMap = resNotes[i];
-
+    var resNotes = select(sql);
+    for (var resNoteMap in resNotes) {
       Note note = Note()
         ..id = resNoteMap[NOTES_COLUMN_ID]
         ..lon = resNoteMap[NOTES_COLUMN_LON]
@@ -157,7 +151,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       } else {
         // insert the note ext
         noteExt.noteId = note.id;
-        int noteExtId = await addNoteExt(noteExt);
+        int noteExtId = addNoteExt(noteExt);
         noteExt.id = noteExtId;
       }
       note.noteExt = noteExt;
@@ -166,7 +160,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     return notes;
   }
 
-  Future<Note> getNoteById(int id) async {
+  Note getNoteById(int id) {
     String where = " where n.$NOTES_COLUMN_ID=$id";
     String extid = "extid";
     String sql = '''
@@ -182,8 +176,8 @@ class GeopaparazziProjectDb extends SqliteDb {
     ''';
 
     List<Note> notes = [];
-    List<Map<String, dynamic>> resNotes = await query(sql);
-    Map resNoteMap = resNotes[0];
+    var resNotes = select(sql);
+    var resNoteMap = resNotes.first;
 
     Note note = Note()
       ..id = resNoteMap[NOTES_COLUMN_ID]
@@ -217,7 +211,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     } else {
       // insert the note ext
       noteExt.noteId = note.id;
-      int noteExtId = await addNoteExt(noteExt);
+      int noteExtId = addNoteExt(noteExt);
       noteExt.id = noteExtId;
     }
     note.noteExt = noteExt;
@@ -229,7 +223,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   /// where multiple could be associated to the same note).
   ///
   /// Get the count using [onlyDirty] to count only dirty images.
-  Future<int> getImagesCount(bool onlyDirty) async {
+  int getImagesCount(bool onlyDirty) {
     String where = "";
     if (onlyDirty) {
       where = " where $IMAGES_COLUMN_ISDIRTY=1";
@@ -240,15 +234,14 @@ class GeopaparazziProjectDb extends SqliteDb {
       where = "$where and ";
     }
     where = "$where ($IMAGES_COLUMN_NOTE_ID is null)";
-    List<Map<String, dynamic>> resImages =
-        await query("SELECT count(*) as count FROM $TABLE_IMAGES$where");
+    var resImages = select("SELECT count(*) as count FROM $TABLE_IMAGES$where");
 
-    var resImage = resImages[0];
+    var resImage = resImages.first;
     var count = resImage["count"];
     return count;
   }
 
-  Future<List<DbImage>> getImages({bool onlyDirty = false}) async {
+  List<DbImage> getImages({bool onlyDirty = false}) {
     String where = "";
     if (onlyDirty) {
       where = " where $IMAGES_COLUMN_ISDIRTY=1";
@@ -259,21 +252,19 @@ class GeopaparazziProjectDb extends SqliteDb {
       where = "$where and ";
     }
     where = "$where ($IMAGES_COLUMN_NOTE_ID is null)";
-    var images =
-        await getQueryObjectsList(ImageQueryBuilder(), whereString: where);
+    var images = getQueryObjectsList(ImageQueryBuilder(), whereString: where);
     return images;
   }
 
-  Future<DbImage> getImageById(int imageId) async {
+  DbImage getImageById(int imageId) {
     String where = "where $IMAGES_COLUMN_ID=$imageId";
-    var images =
-        await getQueryObjectsList(ImageQueryBuilder(), whereString: where);
+    var images = getQueryObjectsList(ImageQueryBuilder(), whereString: where);
     return images[0];
   }
 
   /// Get the image thumbnail of a given [imageDataId].
-  Future<Image> getThumbnail(int imageDataId) async {
-    var uint8list = await getThumbnailBytes(imageDataId);
+  Image getThumbnail(int imageDataId) {
+    var uint8list = getThumbnailBytes(imageDataId);
     if (uint8list != null) {
       return ImageWidgetUtilities.imageFromBytes(uint8list);
     }
@@ -281,8 +272,8 @@ class GeopaparazziProjectDb extends SqliteDb {
   }
 
   /// Get the image thumbnail bytes of a given [imageDataId].
-  Future<Uint8List> getThumbnailBytes(int imageDataId) async {
-    var imageDataList = await getQueryObjectsList(
+  Uint8List getThumbnailBytes(int imageDataId) {
+    var imageDataList = getQueryObjectsList(
         ImageDataQueryBuilder(doData: false, doThumb: true),
         whereString: "where $IMAGESDATA_COLUMN_ID=$imageDataId");
     if (imageDataList != null && imageDataList.length == 1) {
@@ -295,18 +286,18 @@ class GeopaparazziProjectDb extends SqliteDb {
   }
 
   /// Get the image of a given [imageDataId].
-  Future<Image> getImage(int imageDataId) async {
-    Uint8List imageDataBytes = await getImageDataBytes(imageDataId);
+  Image getImage(int imageDataId) {
+    Uint8List imageDataBytes = getImageDataBytes(imageDataId);
     if (imageDataBytes != null)
       return ImageWidgetUtilities.imageFromBytes(imageDataBytes);
     return null;
   }
 
-  Future<Uint8List> getImageDataBytes(int imageDataId) async {
+  Uint8List getImageDataBytes(int imageDataId) {
     Uint8List imageDataBytes;
     var whereStr = "where $IMAGESDATA_COLUMN_ID=$imageDataId";
     try {
-      List<DbImageData> imageDataList = await getQueryObjectsList(
+      List<DbImageData> imageDataList = getQueryObjectsList(
           ImageDataQueryBuilder(doData: true, doThumb: false),
           whereString: whereStr);
       if (imageDataList != null && imageDataList.length == 1) {
@@ -318,9 +309,9 @@ class GeopaparazziProjectDb extends SqliteDb {
     } catch (ex) {
       String sizeQuery =
           "SELECT $IMAGESDATA_COLUMN_ID, length($IMAGESDATA_COLUMN_IMAGE) as blobsize FROM $TABLE_IMAGE_DATA $whereStr";
-      var res = await query(sizeQuery);
+      var res = select(sizeQuery);
       if (res.length == 1) {
-        int blobSize = res[0]['blobsize'];
+        int blobSize = res.first['blobsize'];
         List<int> total = List();
         if (blobSize > MAXBLOBSIZE) {
           for (int i = 1; i <= blobSize; i = i + MAXBLOBSIZE) {
@@ -331,8 +322,8 @@ class GeopaparazziProjectDb extends SqliteDb {
             }
             String tmpQuery =
                 "SELECT substr($IMAGESDATA_COLUMN_IMAGE, $from, $size) as partialblob FROM $TABLE_IMAGE_DATA $whereStr";
-            var res2 = await query(tmpQuery);
-            var partial = res2[0]['partialblob'];
+            var res2 = select(tmpQuery);
+            var partial = res2.first['partialblob'];
             total.addAll(partial);
           }
           imageDataBytes = Uint8List.fromList(total);
@@ -342,79 +333,77 @@ class GeopaparazziProjectDb extends SqliteDb {
     return imageDataBytes;
   }
 
-/*
- * Add a note.
- *
- * @param note the note to insert.
- * @return the inserted note id.
- */
-  Future<int> addNote(Note note) async {
-    var noteId = await insertMap(TABLE_NOTES, note.toMap());
+  /// Add a note.
+  ///
+  /// @param note the note to insert.
+  /// @return the inserted note id.
+  int addNote(Note note) {
+    var noteId = insertMap(TABLE_NOTES, note.toMap());
     note.id = noteId;
     if (note.noteExt == null) {
       NoteExt noteExt = NoteExt();
       noteExt.noteId = note.id;
-      int noteExtId = await addNoteExt(noteExt);
+      int noteExtId = addNoteExt(noteExt);
       noteExt.id = noteExtId;
       note.noteExt = noteExt;
     } else {
       note.noteExt.noteId = noteId;
-      int extid = await addNoteExt(note.noteExt);
+      int extid = addNoteExt(note.noteExt);
       note.noteExt.id = extid;
     }
     return noteId;
   }
 
-  Future<int> addNoteExt(NoteExt noteExt) async {
-    var noteExtId = await insertMap(TABLE_NOTESEXT, noteExt.toMap());
+  int addNoteExt(NoteExt noteExt) {
+    var noteExtId = insertMap(TABLE_NOTESEXT, noteExt.toMap());
     return noteExtId;
   }
 
   /// Delete a note by its [noteId].
-  Future<int> deleteNote(int noteId) async {
+  int deleteNote(int noteId) {
     var sql = "delete from $TABLE_NOTES where $NOTES_COLUMN_ID=$noteId";
-    var deletedCount = await delete(sql);
+    var deletedCount = execute(sql);
 
-    await deleteImageByNoteId(noteId);
+    deleteImageByNoteId(noteId);
     return deletedCount;
   }
 
-  Future<int> deleteImageByNoteId(int noteId) async {
+  int deleteImageByNoteId(int noteId) {
     var deleteSql =
         "delete from $TABLE_IMAGES where $IMAGES_COLUMN_NOTE_ID=$noteId";
-    return await delete(deleteSql);
+    return execute(deleteSql);
   }
 
-  Future<int> deleteImage(int imageId) async {
+  int deleteImage(int imageId) {
     String sql = "delete from $TABLE_IMAGES where $IMAGES_COLUMN_ID=$imageId";
-    return await delete(sql);
+    return execute(sql);
   }
 
-  Future<int> updateNoteImages(int noteId, List<int> imageIds) async {
+  int updateNoteImages(int noteId, List<int> imageIds) {
     if (imageIds == null || imageIds.isEmpty) {
       return 0;
     }
     var idsJoin = imageIds.join(',');
     var updateSql =
         "update $TABLE_IMAGES set $IMAGES_COLUMN_NOTE_ID=$noteId where $IMAGES_COLUMN_ID in (${idsJoin})";
-    var updatedIds = await update(updateSql);
+    var updatedIds = execute(updateSql);
     return updatedIds;
   }
 
   /// Get the count of the current logs
   ///
   /// Get the count using [onlyDirty] to count only dirty notes.
-  Future<int> getGpsLogCount(bool onlyDirty) async {
+  int getGpsLogCount(bool onlyDirty) {
     String where = !onlyDirty ? "" : " where $LOGS_COLUMN_ISDIRTY = 1";
     var sql = "SELECT count(*) as count FROM $TABLE_GPSLOGS$where";
-    List<Map<String, dynamic>> resMap = await query(sql);
+    var resMap = select(sql);
 
-    var res = resMap[0];
+    var res = resMap.first;
     var count = res["count"];
     return count;
   }
 
-  Future<List<Log>> getLogs({bool onlyDirty: false}) async {
+  List<Log> getLogs({bool onlyDirty: false}) {
     String where = "";
     if (onlyDirty) {
       where = " where $LOGS_COLUMN_ISDIRTY=1";
@@ -425,7 +414,7 @@ class GeopaparazziProjectDb extends SqliteDb {
         $where
     ''';
 
-    List<Map<String, dynamic>> resLogs = await query(logsQuery);
+    var resLogs = select(logsQuery);
     List<Log> logs = [];
     resLogs.forEach((map) {
       Log log = Log()
@@ -440,7 +429,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     return logs;
   }
 
-  Future<List<LogDataPoint>> getLogDataPoints(int logId) async {
+  List<LogDataPoint> getLogDataPoints(int logId) {
     String logDataQuery = """
             select $LOGSDATA_COLUMN_ID, $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, 
               $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_ALTIM, $LOGSDATA_COLUMN_TS 
@@ -448,7 +437,7 @@ class GeopaparazziProjectDb extends SqliteDb {
             order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS
             """;
     List<LogDataPoint> points = [];
-    List<Map<String, dynamic>> resLogData = await query(logDataQuery);
+    var resLogData = select(logDataQuery);
     resLogData.forEach((map) {
       LogDataPoint point = LogDataPoint()
         ..id = map[LOGSDATA_COLUMN_ID]
@@ -462,15 +451,15 @@ class GeopaparazziProjectDb extends SqliteDb {
     return points;
   }
 
-  Future<LogProperty> getLogProperties(int logId) async {
+  LogProperty getLogProperties(int logId) {
     String logPropQuery = """
             select $LOGSPROP_COLUMN_ID, $LOGSPROP_COLUMN_COLOR, $LOGSPROP_COLUMN_VISIBLE, 
             $LOGSPROP_COLUMN_WIDTH,$LOGSPROP_COLUMN_LOGID
             from $TABLE_GPSLOG_PROPERTIES where $LOGSPROP_COLUMN_LOGID=$logId
             """;
-    List<Map<String, dynamic>> resLogData = await query(logPropQuery);
+    var resLogData = select(logPropQuery);
     if (resLogData.length == 1) {
-      Map<String, dynamic> map = resLogData[0];
+      var map = resLogData.first;
       LogProperty prop = LogProperty()
         ..id = map[LOGSPROP_COLUMN_ID]
         ..color = map[LOGSPROP_COLUMN_COLOR]
@@ -483,7 +472,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   }
 
   /// Get the start position coordinate of a log identified by [logId].
-  Future<LatLng> getLogStartPosition(int logId) async {
+  LatLng getLogStartPosition(int logId) {
     var sql = '''
       select $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LAT from $TABLE_GPSLOG_DATA 
       where $LOGSDATA_COLUMN_LOGID=$logId
@@ -491,9 +480,9 @@ class GeopaparazziProjectDb extends SqliteDb {
       limit 1
     ''';
 
-    List<Map<String, dynamic>> resList = await query(sql);
+    var resList = select(sql);
     if (resList.length == 1) {
-      var map = resList[0];
+      var map = resList.first;
       var lon = map[LOGSDATA_COLUMN_LON];
       var lat = map[LOGSDATA_COLUMN_LAT];
       return LatLng(lat, lon);
@@ -502,7 +491,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   }
 
   /// Get the start position coordinate of a log identified by [logId].
-  Future<List<LogDataPoint>> getLogDataPointsById(int logId) async {
+  List<LogDataPoint> getLogDataPointsById(int logId) {
     var sql = '''
       select $LOGSDATA_COLUMN_ID, $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_ALTIM, $LOGSDATA_COLUMN_TS 
       from $TABLE_GPSLOG_DATA 
@@ -511,7 +500,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     ''';
 
     List<LogDataPoint> data = [];
-    List<Map<String, dynamic>> resList = await query(sql);
+    var resList = select(sql);
     resList.forEach((map) {
       LogDataPoint ldp = LogDataPoint()
         ..id = map[LOGSDATA_COLUMN_ID]
@@ -529,12 +518,12 @@ class GeopaparazziProjectDb extends SqliteDb {
   ///
   /// The log is inserted with the properties [prop].
   /// The method returns the id of the inserted log.
-  Future<int> addGpsLog(Log insertLog, LogProperty prop) async {
-    await transaction((tx) async {
-      int insertedId = await tx.insert(TABLE_GPSLOGS, insertLog.toMap());
+  int addGpsLog(Log insertLog, LogProperty prop) {
+    Transaction(this).runInTransaction((_db) {
+      int insertedId = _db.insertMap(TABLE_GPSLOGS, insertLog.toMap());
       prop.logid = insertedId;
       insertLog.id = insertedId;
-      await tx.insert(TABLE_GPSLOG_PROPERTIES, prop.toMap());
+      _db.insertMap(TABLE_GPSLOG_PROPERTIES, prop.toMap());
     });
 
     return insertLog.id;
@@ -543,99 +532,99 @@ class GeopaparazziProjectDb extends SqliteDb {
   /// Add a point [logPoint] to a [Log] of id [logId].
   ///
   /// Returns the id of the inserted point.
-  Future<int> addGpsLogPoint(int logId, LogDataPoint logPoint) async {
+  int addGpsLogPoint(int logId, LogDataPoint logPoint) {
     logPoint.logid = logId;
-    int insertedId = await insertMap(TABLE_GPSLOG_DATA, logPoint.toMap());
+    int insertedId = insertMap(TABLE_GPSLOG_DATA, logPoint.toMap());
     return insertedId;
   }
 
   /// Delete a gps log by its id.
   ///
   /// @param id the log's id.
-  Future<bool> deleteGpslog(int logId) async {
-    return await transaction((tx) {
+  bool deleteGpslog(int logId) {
+    return Transaction(this).runInTransaction((_db) {
       // delete log
       String sql = "delete from $TABLE_GPSLOGS where $LOGS_COLUMN_ID = $logId";
-      tx.execute(sql);
+      _db.execute(sql);
       sql =
           "delete from $TABLE_GPSLOG_PROPERTIES where $LOGSPROP_COLUMN_LOGID = $logId";
-      tx.execute(sql);
+      _db.execute(sql);
       sql =
           "delete from $TABLE_GPSLOG_DATA where $LOGSDATA_COLUMN_LOGID = $logId";
-      tx.execute(sql);
-      return Future.value(true);
+      _db.execute(sql);
+      return true;
     });
   }
 
   /// Merge gps logs [mergeLogs] into the master [logId].
-  Future<bool> mergeGpslogs(int logId, List<int> mergeLogs) async {
-    return await transaction((tx) {
+  bool mergeGpslogs(int logId, List<int> mergeLogs) {
+    return Transaction(this).runInTransaction((_db) {
       for (var mergeLogId in mergeLogs) {
         // assign all data of the log to the new log
         String sql =
             "update $TABLE_GPSLOG_DATA set $LOGSDATA_COLUMN_LOGID=$logId where $LOGSDATA_COLUMN_LOGID=$mergeLogId";
-        tx.execute(sql);
+        _db.execute(sql);
         // then remove log and properties
         sql = "delete from $TABLE_GPSLOGS where $LOGS_COLUMN_ID = $mergeLogId";
-        tx.execute(sql);
+        _db.execute(sql);
         sql =
             "delete from $TABLE_GPSLOG_PROPERTIES where $LOGSPROP_COLUMN_LOGID = $mergeLogId";
-        tx.execute(sql);
+        _db.execute(sql);
       }
-      return Future.value(true);
+      return true;
     });
   }
 
   /// Updates the end timestamp [endTs] of a log of id [logId].
-  Future<int> updateGpsLogEndts(int logId, int endTs) async {
-    var updatedId = await update(
+  int updateGpsLogEndts(int logId, int endTs) {
+    var updatedId = execute(
         "update $TABLE_GPSLOGS set $LOGS_COLUMN_ENDTS=$endTs where $LOGS_COLUMN_ID=$logId");
-    await updateLogLength(logId);
+    updateLogLength(logId);
     return updatedId;
   }
 
   /// Updates the [name] of a log of id [logId].
-  Future<int> updateGpsLogName(int logId, String name) async {
-    var updatedId = await update(
+  int updateGpsLogName(int logId, String name) {
+    var updatedId = execute(
         "update $TABLE_GPSLOGS set $LOGS_COLUMN_TEXT='$name' where $LOGS_COLUMN_ID=$logId");
     return updatedId;
   }
 
   /// Updates the [color] and [width] of a log of id [logId].
-  Future<int> updateGpsLogStyle(int logId, String color, double width) async {
-    var updatedId = await update(
+  int updateGpsLogStyle(int logId, String color, double width) {
+    var updatedId = execute(
         "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_COLOR='$color', $LOGSPROP_COLUMN_WIDTH=$width where $LOGSPROP_COLUMN_LOGID=$logId");
     return updatedId;
   }
 
   /// Updates the [isVisible] of a log of id [logId].
-  Future<int> updateGpsLogVisibility(bool isVisible, [int logId]) async {
+  int updateGpsLogVisibility(bool isVisible, [int logId]) {
     String where = "";
     if (logId != null) {
       where = " where $LOGSPROP_COLUMN_LOGID=$logId";
     }
 
-    var updatedId = await update(
+    var updatedId = execute(
         "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_VISIBLE=${isVisible ? 1 : 0}$where");
     return updatedId;
   }
 
   /// Invert the visiblity of all logs.
-  Future<int> invertGpsLogsVisibility() async {
+  int invertGpsLogsVisibility() {
     String sql = '''
       update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_VISIBLE= CASE
         WHEN $LOGSPROP_COLUMN_VISIBLE = 1 THEN 0
                        ELSE 1
         END
     ''';
-    var updatedId = await update(sql);
+    var updatedId = execute(sql);
     return updatedId;
   }
 
   /// Update the length of a log
   ///
   /// Calculates the length of a log of id [logId].
-  Future<double> updateLogLength(int logId) async {
+  double updateLogLength(int logId) {
     var sql = '''
       SELECT $LOGSDATA_COLUMN_LON,$LOGSDATA_COLUMN_LAT,$LOGSDATA_COLUMN_TS 
       FROM $TABLE_GPSLOG_DATA 
@@ -644,10 +633,9 @@ class GeopaparazziProjectDb extends SqliteDb {
     ''';
     double summedDistance = 0.0;
 
-    var res = await query(sql);
+    var res = select(sql);
     LatLng previousPosition;
-    for (int i = 0; i < res.length; i++) {
-      var map = res[i];
+    for (var map in res) {
       var lon = map[LOGSDATA_COLUMN_LON];
       var lat = map[LOGSDATA_COLUMN_LAT];
       var ts = map[LOGSDATA_COLUMN_TS];
@@ -665,31 +653,32 @@ class GeopaparazziProjectDb extends SqliteDb {
       update $TABLE_GPSLOGS set $LOGS_COLUMN_LENGTHM=$summedDistance 
       where $LOGS_COLUMN_ID=$logId;
     ''';
-    var updateNums = await update(updateSql);
+    var updateNums = execute(updateSql);
     if (updateNums != 1) {
       return null;
     }
     return summedDistance;
   }
 
-  Future<int> updateNote(Note note) async {
+  int updateNote(Note note) {
     note.isDirty = 1; // set the note to dirty again
     var map = note.toMap();
     var noteId = map.remove(NOTES_COLUMN_ID);
 
-    int count = await updateMap(TABLE_NOTES, map, "$NOTES_COLUMN_ID=$noteId");
+    int count = updateMap(TABLE_NOTES, map, "$NOTES_COLUMN_ID=$noteId");
     if (count == 1) {
       var extMap = note.noteExt.toMap();
       int noteExtId = extMap.remove(NOTESEXT_COLUMN_ID);
       extMap.remove(NOTESEXT_COLUMN_NOTEID);
-      int extCount = await updateMap(
-          TABLE_NOTESEXT, extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
+      int extCount =
+          updateMap(TABLE_NOTESEXT, extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
       if (extCount != 1) {
-        Logger().e(
-            "Note ext values not updated for note $noteId and noteext $noteExtId");
+        SLogger().e(
+            "Note ext values not updated for note $noteId and noteext $noteExtId",
+            null);
       }
     } else {
-      Logger().e("Note not updated for note $noteId");
+      SLogger().e("Note not updated for note $noteId", null);
     }
     return count;
   }
@@ -699,42 +688,42 @@ class GeopaparazziProjectDb extends SqliteDb {
   /// The notes, images and logs are set to be dirty (i.e. synched)
   /// if [doDirty] is true. They are set to be clean (i.e. ignored
   /// by synch), is false.
-  Future<void> updateDirty(bool doDirty) async {
+  void updateDirty(bool doDirty) {
     var dirty = 1;
     if (!doDirty) {
       dirty = 0;
     }
     String updateSql = 'update $TABLE_GPSLOGS set $LOGS_COLUMN_ISDIRTY=$dirty;';
-    await update(updateSql);
+    execute(updateSql);
     updateSql = 'update $TABLE_IMAGES set $IMAGES_COLUMN_ISDIRTY=$dirty;';
-    await update(updateSql);
+    execute(updateSql);
     updateSql = 'update $TABLE_NOTES set $NOTES_COLUMN_ISDIRTY=$dirty;';
-    await update(updateSql);
+    execute(updateSql);
   }
 
-  Future<void> updateNoteDirty(int noteId, bool doDirty) async {
+  void updateNoteDirty(int noteId, bool doDirty) {
     var dirty = doDirty ? 1 : 0;
     String updateSql =
         'update $TABLE_NOTES set $NOTES_COLUMN_ISDIRTY=$dirty where $NOTES_COLUMN_ID=$noteId;';
-    await update(updateSql);
+    execute(updateSql);
   }
 
-  Future<void> updateImageDirty(int imageId, bool doDirty) async {
+  void updateImageDirty(int imageId, bool doDirty) {
     var dirty = doDirty ? 1 : 0;
     String updateSql =
         'update $TABLE_IMAGES set $IMAGES_COLUMN_ISDIRTY=$dirty where $IMAGES_COLUMN_ID=$imageId;';
-    await update(updateSql);
+    execute(updateSql);
   }
 
-  Future<void> updateLogDirty(int logId, bool doDirty) async {
+  void updateLogDirty(int logId, bool doDirty) {
     var dirty = doDirty ? 1 : 0;
     String updateSql =
         'update $TABLE_GPSLOGS set $LOGS_COLUMN_ISDIRTY=$dirty where $LOGS_COLUMN_ID=$logId;';
-    await update(updateSql);
+    execute(updateSql);
   }
 
   /// Create the geopaparazzi project database.
-  createDatabase(Database db) async {
+  createDatabase(SqliteDb db) async {
     var createTablesQuery = '''
     CREATE TABLE $TABLE_NOTES (  
       $NOTES_COLUMN_ID  INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -826,34 +815,34 @@ class GeopaparazziProjectDb extends SqliteDb {
     );
   ''';
 
-    await db.transaction((tx) async {
+    db.transaction(() {
       var split = createTablesQuery.replaceAll("\n", "").trim().split(";");
       for (int i = 0; i < split.length; i++) {
         var sql = split[i].trim();
         if (sql.length > 0 && !sql.startsWith("--")) {
-          await tx.execute(sql);
+          db.execute(sql);
         }
       }
     });
   }
 
-  createNecessaryExtraTables() async {
-    bool hasNotesExt = await hasTable(TABLE_NOTESEXT);
+  createNecessaryExtraTables() {
+    bool hasNotesExt = hasTable(TABLE_NOTESEXT);
     if (!hasNotesExt) {
-      Logger().w("Adding extra database table $TABLE_NOTESEXT.");
-      await transaction((tx) async {
+      SLogger().w("Adding extra database table $TABLE_NOTESEXT.");
+      Transaction(this).runInTransaction((_db) {
         var split =
             CREATE_NOTESEXT_STATEMENT.replaceAll("\n", "").trim().split(";");
         for (int i = 0; i < split.length; i++) {
           var sql = split[i].trim();
           if (sql.length > 0 && !sql.startsWith("--")) {
-            await tx.execute(sql);
+            _db.execute(sql);
           }
         }
       });
     }
 
-    var tableColumns = await getTableColumns(TABLE_GPSLOG_DATA);
+    var tableColumns = getTableColumns(TABLE_GPSLOG_DATA);
     bool hasFiltered = false;
     tableColumns.forEach((list) {
       String name = list[0];
@@ -862,31 +851,31 @@ class GeopaparazziProjectDb extends SqliteDb {
       }
     });
     if (!hasFiltered) {
-      Logger().w("Adding extra columns for filtered data to log.");
-      await transaction((tx) async {
+      SLogger().w("Adding extra columns for filtered data to log.");
+      Transaction(this).runInTransaction((_db) {
         String sql =
             "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_ACCURACY real;";
-        await tx.execute(sql);
+        _db.execute(sql);
         sql =
             "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_ACCURACY_FILTERED real;";
-        await tx.execute(sql);
+        _db.execute(sql);
         sql =
             "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_LAT_FILTERED real;";
-        await tx.execute(sql);
+        _db.execute(sql);
         sql =
             "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_LON_FILTERED real;";
-        await tx.execute(sql);
+        _db.execute(sql);
       });
     }
   }
 
-  void printInfo() async {
-    var tableNames = await getTables(true);
+  void printInfo() {
+    var tableNames = getTables(doOrder: true);
     for (int i = 0; i < tableNames.length; i++) {
       var tableName = tableNames[i];
-      var has = await hasTable(tableName);
+      var has = hasTable(tableName);
       print("$tableName found: $has");
-      var tableColumns = await getTableColumns(tableName);
+      var tableColumns = getTableColumns(tableName);
       for (int j = 0; j < tableColumns.length; j++) {
         var tableColumn = tableColumns[j];
         print(

@@ -7,6 +7,7 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:dart_shp/dart_shp.dart' hide Row;
@@ -75,7 +76,7 @@ class ShapefileSource extends VectorLayerSource {
         features.add(feature);
         _featureTree.insert(envLL, feature);
       }
-      LOGGER
+      SLogger()
           .d("Loaded ${features.length} Shp features of envelope: $_shpBounds");
 
       _shpReader.close();
@@ -317,16 +318,16 @@ class ShapefileSource extends VectorLayerSource {
   }
 
   @override
-  Future<LatLngBounds> getBounds() {
+  LatLngBounds getBounds() {
     if (_shpBounds != null) {
       var s = _shpBounds.getMinY();
       var n = _shpBounds.getMaxY();
       var w = _shpBounds.getMinX();
       var e = _shpBounds.getMaxX();
       LatLngBounds b = LatLngBounds(LatLng(s, w), LatLng(n, e));
-      return Future.value(b);
+      return b;
     } else {
-      return Future.value(null);
+      return null;
     }
   }
 

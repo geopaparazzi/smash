@@ -261,18 +261,18 @@ class TileSource extends TiledRasterLayerSource {
     isVisible = active;
   }
 
-  Future<LatLngBounds> getBounds() async {
+  LatLngBounds getBounds() {
     if (bounds == null) {
       if (FileManager.isMapsforge(getAbsolutePath())) {
-        bounds = await getMapsforgeBounds(File(absolutePath));
+        bounds = getMapsforgeBounds(File(absolutePath));
       } else if (FileManager.isMbtiles(getAbsolutePath())) {
         var prov = SmashMBTilesImageProvider(File(absolutePath));
-        await prov.open();
+        prov.open();
         bounds = prov.bounds;
         prov.dispose();
       } else if (FileManager.isGeopackage(getAbsolutePath())) {
         var prov = GeopackageImageProvider(File(absolutePath), name);
-        await prov.open();
+        prov.open();
         bounds = prov.bounds;
         prov.dispose();
       }
@@ -300,7 +300,7 @@ class TileSource extends TiledRasterLayerSource {
       ];
     } else if (FileManager.isMbtiles(getAbsolutePath())) {
       var tileProvider = SmashMBTilesImageProvider(File(absolutePath));
-      await tileProvider.open();
+      tileProvider.open();
       // mbtiles
       return [
         TileLayerOptions(
@@ -313,7 +313,7 @@ class TileSource extends TiledRasterLayerSource {
       ];
     } else if (FileManager.isGeopackage(getAbsolutePath())) {
       var tileProvider = GeopackageImageProvider(File(absolutePath), name);
-      await tileProvider.open();
+      tileProvider.open();
       return [
         TileLayerOptions(
           tileProvider: tileProvider,
@@ -399,7 +399,7 @@ class TileSource extends TiledRasterLayerSource {
 
   @override
   Future<void> load(BuildContext context) async {
-    await getBounds();
+    getBounds();
   }
 
   @override
@@ -480,8 +480,8 @@ class TileSourcePropertiesWidgetState
                                   divisions: 10,
                                   onChanged: (newRating) {
                                     _somethingChanged = true;
-                                    setState(() =>
-                                        _opacitySliderValue = newRating);
+                                    setState(
+                                        () => _opacitySliderValue = newRating);
                                   },
                                   value: _opacitySliderValue,
                                 )),

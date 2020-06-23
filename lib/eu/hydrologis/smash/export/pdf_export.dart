@@ -7,6 +7,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'dart:ui';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
@@ -33,8 +34,7 @@ class PdfExporter {
     );
 
     ByteData smashLogoBytes = await rootBundle.load("assets/smash_logo_64.png");
-    IMG.Image image =
-        await IMG.decodeImage(smashLogoBytes.buffer.asUint8List());
+    IMG.Image image = IMG.decodeImage(smashLogoBytes.buffer.asUint8List());
     final smashLogo = PdfImage(
       pdf.document,
       image: image.data.buffer.asUint8List(),
@@ -42,7 +42,7 @@ class PdfExporter {
       height: 64,
     );
 
-    List<Note> simpleNotesList = await db.getNotes(doSimple: true);
+    List<Note> simpleNotesList = db.getNotes(doSimple: true);
 
     List<List<String>> simpleNotesTable = [
       ['id', 'lon', 'lat', 'altim', 'text', 'date', 'accur', 'head', 'speed']
@@ -87,7 +87,7 @@ class PdfExporter {
       Header(level: 1, text: 'Forms'),
     );
 
-    List<Note> formNotesList = await db.getNotes(doSimple: false);
+    List<Note> formNotesList = db.getNotes(doSimple: false);
     for (var i = 0; i < formNotesList.length; i++) {
       Note note = formNotesList[i];
       formWidgetList.add(Header(level: 2, text: note.text));
@@ -121,13 +121,13 @@ class PdfExporter {
               var idSplit = value.toString().split(";");
               for (var i = 0; i < idSplit.length; i++) {
                 var imageId = int.parse(idSplit[i]);
-                DbImage image = await db.getImageById(imageId);
+                DbImage image = db.getImageById(imageId);
                 var p =
                     Paragraph(text: image.text, textAlign: TextAlign.center);
                 formWidgetList.add(p);
 
                 Uint8List imageDataBytes =
-                    await db.getImageDataBytes(image.imageDataId);
+                    db.getImageDataBytes(image.imageDataId);
                 List<int> resizeImage = ImageUtilities.resizeImage(
                     imageDataBytes,
                     longestSizeTo: EXPORT_IMG_LONGSIZE);
@@ -146,8 +146,8 @@ class PdfExporter {
                     ]);
                 formWidgetList.add(c);
               }
-            } catch (e) {
-              Logger().err("Error exporting image to pdf document", e);
+            } catch (e, s) {
+              SLogger().e("Error exporting image to pdf document", s);
             }
           } else if (type == TYPE_DYNAMICSTRING) {
             var p = Paragraph(text: '$label: ');
@@ -182,7 +182,7 @@ class PdfExporter {
         Header(level: 1, text: 'Image notes'),
       );
 
-      List<DbImage> images = await db.getImages();
+      List<DbImage> images = db.getImages();
       for (var i = 0; i < images.length; i++) {
         DbImage image = images[i];
 
@@ -197,11 +197,10 @@ class PdfExporter {
               text:
                   "timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}"),
         ]);
-        Uint8List imageDataBytes =
-            await db.getImageDataBytes(image.imageDataId);
+        Uint8List imageDataBytes = db.getImageDataBytes(image.imageDataId);
         List<int> resizeImage = ImageUtilities.resizeImage(imageDataBytes,
             longestSizeTo: EXPORT_IMG_LONGSIZE);
-        IMG.Image img = await IMG.decodeImage(resizeImage);
+        IMG.Image img = IMG.decodeImage(resizeImage);
 
         final pdfImage = PdfImage(
           pdf.document,

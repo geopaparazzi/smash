@@ -127,7 +127,7 @@ class LayersPageState extends State<LayersPage> {
             color: SmashColors.mainDecorations,
             icon: MdiIcons.magnifyScan,
             onTap: () async {
-              LatLngBounds bb = await layerSourceItem.getBounds();
+              LatLngBounds bb = layerSourceItem.getBounds();
               if (bb != null) {
                 setLayersOnChange(_layersList);
 
@@ -151,12 +151,12 @@ class LayersPageState extends State<LayersPage> {
                     MaterialPageRoute(
                         builder: (context) =>
                             GpxPropertiesWidget(layerSourceItem)));
-              // } else if (layerSourceItem is ShapefileSource) {
-              //   await Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) =>
-              //               ShpPropertiesWidget(layerSourceItem)));
+                // } else if (layerSourceItem is ShapefileSource) {
+                //   await Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //           builder: (context) =>
+                //               ShpPropertiesWidget(layerSourceItem)));
               } else if (layerSourceItem is WorldImageSource) {
                 await Navigator.push(
                     context,
@@ -300,22 +300,22 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
   } else if (FileManager.isGeopackage(filePath)) {
     var ch = ConnectionsHandler();
     try {
-      var db = await ch.open(filePath);
-      List<FeatureEntry> features = await db.features();
+      var db = ch.open(filePath);
+      List<FeatureEntry> features = db.features();
       for (var f in features) {
         GeopackageSource gps = GeopackageSource(filePath, f.tableName);
-        await gps.calculateSrid();
+        gps.calculateSrid();
         LayerManager().addLayerSource(gps);
       }
 
-      List<TileEntry> tiles = await db.tiles();
+      List<TileEntry> tiles = db.tiles();
       tiles.forEach((t) {
         var ts = TileSource.Geopackage(filePath, t.tableName);
         LayerManager().addLayerSource(ts);
         return true;
       });
     } finally {
-      await ch?.close(filePath);
+      ch?.close(filePath);
     }
   } else {
     showWarningDialog(context, "File format not supported.");

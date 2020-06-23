@@ -75,7 +75,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
-            await projectState.projectDb.updateNote(_note);
+            projectState.projectDb.updateNote(_note);
             projectState.reloadProject(context);
           }
           return true;

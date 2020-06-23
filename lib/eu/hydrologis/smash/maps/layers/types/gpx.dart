@@ -138,7 +138,7 @@ class GpxSource extends VectorLayerSource {
 
   @override
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
-    await load(context);
+    load(context);
 
     List<LayerOptions> layers = [];
 
@@ -201,8 +201,8 @@ class GpxSource extends VectorLayerSource {
   }
 
   @override
-  Future<LatLngBounds> getBounds() {
-    return Future.value(_gpxBounds);
+  LatLngBounds getBounds() {
+    return _gpxBounds;
   }
 
   @override
@@ -235,7 +235,7 @@ class GpxSource extends VectorLayerSource {
 
 /// The notes properties page.
 class GpxPropertiesWidget extends StatefulWidget {
-  GpxSource _source;
+  final GpxSource _source;
 
   GpxPropertiesWidget(this._source);
 

@@ -9,6 +9,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as UI;
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -16,49 +17,38 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:sqflite/sqflite.dart';
 
+Uint8List _emptyImageBytes;
 
 class SmashMBTilesImageProvider extends TileProvider {
   final File mbtilesFile;
 
-  Database _loadedDb;
+  MBTilesDb _loadedDb;
   bool isDisposed = false;
   LatLngBounds _bounds;
-  Uint8List _emptyImageBytes;
 
   SmashMBTilesImageProvider(this.mbtilesFile);
 
-  Future<Database> open() async {
+  MBTilesDb open() {
     if (_loadedDb == null) {
-      _loadedDb = await openDatabase(mbtilesFile.path);
+      _loadedDb = MBTilesDb(mbtilesFile.path);
 
       try {
-        String boundsSql = "select value from metadata where name='bounds'";
-        List<Map> result = await _loadedDb.rawQuery(boundsSql);
-        String boundsString = result.first['value'];
-        List<String> boundsSplit =
-            boundsString.split(","); //left, bottom, right, top
-        LatLngBounds b = LatLngBounds();
-        b.extend(
-            LatLng(double.parse(boundsSplit[1]), double.parse(boundsSplit[0])));
-        b.extend(
-            LatLng(double.parse(boundsSplit[3]), double.parse(boundsSplit[2])));
+        var wesn = _loadedDb.getBounds();
+        LatLngBounds b = LatLngBounds.fromPoints(
+            [LatLng(wesn[2], wesn[0]), LatLng(wesn[3], wesn[1])]);
         _bounds = b;
-
-        ByteData imageData = await rootBundle.load('assets/emptytile256.png');
-        _emptyImageBytes = imageData.buffer.asUint8List();
 
 //        UI.Image _emptyImage = await ImageWidgetUtilities.transparentImage();
 //        var byteData = await _emptyImage.toByteData(format: UI.ImageByteFormat.png);
 //        _emptyImageBytes = byteData.buffer.asUint8List();
 
-      } catch (e) {
-        Logger().err("Error getting mbtiles bounds or empty image.", e);
+      } catch (e, s) {
+        SLogger().e("Error getting mbtiles bounds or empty image.", s);
       }
 
       if (isDisposed) {
-        await _loadedDb.close();
+        _loadedDb.close();
         _loadedDb = null;
         throw Exception('Tileprovider is already disposed');
       }
@@ -86,17 +76,15 @@ class SmashMBTilesImageProvider extends TileProvider {
         : coords.y.round();
     var z = coords.z.round();
 
-    return SmashMBTileImage(
-        _loadedDb, Coords<int>(x, y)..z = z, _emptyImageBytes);
+    return SmashMBTileImage(_loadedDb, Coords<int>(x, y)..z = z);
   }
 }
 
 class SmashMBTileImage extends ImageProvider<SmashMBTileImage> {
-  final Database database;
+  final MBTilesDb database;
   final Coords<int> coords;
-  Uint8List _emptyImageBytes;
 
-  SmashMBTileImage(this.database, this.coords, this._emptyImageBytes);
+  SmashMBTileImage(this.database, this.coords);
 
   @override
   ImageStreamCompleter load(SmashMBTileImage key, DecoderCallback decoder) {
@@ -114,13 +102,14 @@ class SmashMBTileImage extends ImageProvider<SmashMBTileImage> {
     assert(key == this);
 
     final db = key.database;
-    List<Map> result = await db.rawQuery('select tile_data from tiles '
-        'where zoom_level = ${coords.z} AND '
-        'tile_column = ${coords.x} AND '
-        'tile_row = ${coords.y} limit 1');
-    Uint8List bytes = result.isNotEmpty ? result.first['tile_data'] : null;
+
+    Uint8List bytes = db.getTile(coords.x, coords.y, coords.z);
 
     if (bytes == null) {
+      if (_emptyImageBytes == null) {
+        ByteData imageData = await rootBundle.load('assets/emptytile256.png');
+        _emptyImageBytes = imageData.buffer.asUint8List();
+      }
       if (_emptyImageBytes != null) {
         bytes = _emptyImageBytes;
       } else {

@@ -6,6 +6,7 @@
 
 import 'dart:async';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position, Distance;
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
@@ -46,8 +47,8 @@ class GeocodingPageState extends State<GeocodingPage> {
     List<Address> addresses;
     try {
       addresses = await Geocoder.local.findAddressesFromQuery(query);
-    } catch (e) {
-      Logger().err("Unable to geocode $query", e);
+    } catch (e, s) {
+      SLogger().e("Unable to geocode $query", s);
     }
     searching = false;
     if (addresses == null || addresses.isEmpty) {

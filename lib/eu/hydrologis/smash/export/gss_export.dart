@@ -82,18 +82,18 @@ class _GssExportWidgetState extends State<GssExportWidget> {
     /*
      * now gather data stats from db
      */
-    await gatherStats();
+    gatherStats();
   }
 
-  Future gatherStats() async {
+  gatherStats() {
     /*
      * now gather data stats from db
      */
     var db = widget.projectDb;
-    _gpsLogCount = await db.getGpsLogCount(true);
-    _simpleNotesCount = await db.getSimpleNotesCount(true);
-    _formNotesCount = await db.getFormNotesCount(true);
-    _imagesCount = await db.getImagesCount(true);
+    _gpsLogCount = db.getGpsLogCount(true);
+    _simpleNotesCount = db.getSimpleNotesCount(true);
+    _formNotesCount = db.getFormNotesCount(true);
+    _imagesCount = db.getImagesCount(true);
 
     var allCount =
         _gpsLogCount + _simpleNotesCount + _formNotesCount + _imagesCount;
@@ -115,7 +115,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                     var doIt = await showConfirmDialog(context,
                         "Set project to DIRTY?", "This can't be undone!");
                     if (doIt) {
-                      await widget.projectDb.updateDirty(true);
+                      widget.projectDb.updateDirty(true);
                       setState(() {
                         _status = 0;
                       });
@@ -130,7 +130,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                     var doIt = await showConfirmDialog(context,
                         "Set project to CLEAN?", "This can't be undone!");
                     if (doIt) {
-                      await widget.projectDb.updateDirty(false);
+                      widget.projectDb.updateDirty(false);
                       setState(() {
                         _status = 0;
                       });
@@ -268,7 +268,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
     int order = 0;
 
     _uploadTiles = [];
-    List<Note> simpleNotes = await db.getNotes(doSimple: true, onlyDirty: true);
+    List<Note> simpleNotes = db.getNotes(doSimple: true, onlyDirty: true);
     for (var note in simpleNotes) {
       var uploadWidget = ProjectDataUploadListTileProgressWidget(
         dio,
@@ -281,7 +281,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
       );
       _uploadTiles.add(uploadWidget);
     }
-    List<Note> formNotes = await db.getNotes(doSimple: false, onlyDirty: true);
+    List<Note> formNotes = db.getNotes(doSimple: false, onlyDirty: true);
     for (var note in formNotes) {
       var uploadWidget = ProjectDataUploadListTileProgressWidget(
         dio,
@@ -294,7 +294,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
       );
       _uploadTiles.add(uploadWidget);
     }
-    List<DbImage> imagesList = await db.getImages(onlyDirty: true);
+    List<DbImage> imagesList = db.getImages(onlyDirty: true);
     for (var image in imagesList) {
       var uploadWidget = ProjectDataUploadListTileProgressWidget(
         dio,
@@ -308,7 +308,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
       _uploadTiles.add(uploadWidget);
     }
 
-    List<Log> logsList = await db.getLogs(onlyDirty: true);
+    List<Log> logsList = db.getLogs(onlyDirty: true);
     for (var log in logsList) {
       var uploadWidget = ProjectDataUploadListTileProgressWidget(
         dio,
