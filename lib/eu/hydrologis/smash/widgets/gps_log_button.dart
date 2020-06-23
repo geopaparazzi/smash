@@ -31,13 +31,18 @@ class _LoggingButtonState extends State<LoggingButton> {
   Widget build(BuildContext context) {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       return GestureDetector(
-        child: IconButton(
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: InkWell(
             key: widget._key,
-            icon: DashboardUtils.getLoggingIcon(gpsState.status),
-            iconSize: widget._iconSize,
-            onPressed: () {
-              _toggleLoggingFunction(context, gpsState);
-            }),
+            child: DashboardUtils.getLoggingIcon(gpsState.status,
+                size: widget._iconSize),
+            // iconSize: widget._iconSize,
+          ),
+        ),
+        onTap: () {
+          _toggleLoggingFunction(context, gpsState);
+        },
         onLongPress: () {
           ProjectState projectState =
               Provider.of<ProjectState>(context, listen: false);
@@ -68,7 +73,7 @@ class _LoggingButtonState extends State<LoggingButton> {
       var stopLogging = await showConfirmDialog(context, "Stop Logging?",
           "Stop logging and close the current GPS log?");
       if (stopLogging) {
-         gpsLoggingState.stopLogging();
+        gpsLoggingState.stopLogging();
         ProjectState projectState =
             Provider.of<ProjectState>(context, listen: false);
         projectState.reloadProject(context);

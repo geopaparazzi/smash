@@ -370,155 +370,8 @@ class MainViewWidgetState extends State<MainViewWidget>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          DashboardUtils.makeToolbarBadge(
-            GestureDetector(
-              child: IconButton(
-                key: coachMarks.simpleNotesButtonKey,
-                onPressed: () async {
-                  var gpsState =
-                      Provider.of<GpsState>(mapBuilder.context, listen: false);
-
-                  var titleWithMode = Column(
-                    children: [
-                      SmashUI.titleText("Simple Notes",
-                          color: SmashColors.mainSelection, bold: true),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: GpsInsertionModeSelector(),
-                      ),
-                    ],
-                  );
-                  List<String> types = ["note", "image"];
-                  var selectedType = await showComboDialog(
-                      mapBuilder.context, titleWithMode, types);
-                  var doNoteInGps = gpsState.insertInGps;
-                  if (selectedType == types[0]) {
-                    Note note = DataLoaderUtilities.addNote(
-                        mapBuilder, doNoteInGps, _mapController);
-                    Navigator.push(
-                        mapBuilder.context,
-                        MaterialPageRoute(
-                            builder: (context) => NotePropertiesWidget(note)));
-                  } else if (selectedType == types[1]) {
-                    DataLoaderUtilities.addImage(
-                        mapBuilder.context,
-                        doNoteInGps
-                            ? gpsState.lastGpsPosition
-                            : _mapController.center);
-                  }
-                },
-                icon: Icon(
-                  SmashIcons.simpleNotesIcon,
-                  color: SmashColors.mainBackground,
-                ),
-                iconSize: _iconSize,
-              ),
-              onLongPress: () {
-                ProjectState projectState =
-                    Provider.of<ProjectState>(context, listen: false);
-                Navigator.push(
-                    mapBuilder.context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            NotesListWidget(true, projectState.projectDb)));
-              },
-              onDoubleTap: () async {
-                await openNotesViewSettings();
-              },
-            ),
-            projectData != null ? projectData.simpleNotesCount : 0,
-          ),
-          DashboardUtils.makeToolbarBadge(
-            GestureDetector(
-              child: IconButton(
-                key: coachMarks.formsButtonKey,
-                onPressed: () async {
-                  var gpsState =
-                      Provider.of<GpsState>(mapBuilder.context, listen: false);
-                  var doNoteInGps = gpsState.insertInGps;
-                  var titleWithMode = Column(
-                    children: [
-                      SmashUI.titleText("Form Notes",
-                          color: SmashColors.mainSelection, bold: true),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: GpsInsertionModeSelector(),
-                      ),
-                    ],
-                  );
-
-                  var allSectionsMap = TagsManager().getSectionsMap();
-                  List<String> sectionNames = allSectionsMap.keys.toList();
-                  List<String> iconNames = [];
-                  sectionNames.forEach((key) {
-                    var icon4section =
-                        TagsManager.getIcon4Section(allSectionsMap[key]);
-                    iconNames.add(icon4section);
-                  });
-
-                  var selectedSection = await showComboDialog(
-                      mapBuilder.context,
-                      titleWithMode,
-                      sectionNames,
-                      iconNames);
-                  // refresh mode
-                  doNoteInGps = gpsState.insertInGps;
-                  if (selectedSection != null) {
-                    Widget appbarWidget = getDialogTitleWithInsertionMode(
-                        selectedSection,
-                        doNoteInGps,
-                        SmashColors.mainBackground);
-
-                    var selectedIndex = sectionNames.indexOf(selectedSection);
-                    var iconName = iconNames[selectedIndex];
-                    var sectionMap = allSectionsMap[selectedSection];
-                    var jsonString = jsonEncode(sectionMap);
-                    Note note = DataLoaderUtilities.addNote(
-                        mapBuilder, doNoteInGps, _mapController,
-                        text: selectedSection,
-                        form: jsonString,
-                        iconName: iconName,
-                        color:
-                            ColorExt.asHex(SmashColors.mainDecorationsDarker));
-
-                    Navigator.push(mapBuilder.context, MaterialPageRoute(
-                      builder: (context) {
-                        return MasterDetailPage(
-                          sectionMap,
-                          appbarWidget,
-                          selectedSection,
-                          doNoteInGps
-                              ? gpsState.lastGpsPosition
-                              : _mapController.center,
-                          note.id,
-                          SmashFormHelper(),
-                        );
-                      },
-                    ));
-                  }
-                },
-                icon: Icon(
-                  SmashIcons.formNotesIcon,
-                  color: SmashColors.mainBackground,
-                ),
-                iconSize: _iconSize,
-              ),
-              onLongPress: () {
-                ProjectState projectState =
-                    Provider.of<ProjectState>(context, listen: false);
-
-                Navigator.push(
-                    mapBuilder.context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            NotesListWidget(false, projectState.projectDb)));
-              },
-              onDoubleTap: () async {
-                await openNotesViewSettings();
-              },
-            ),
-            projectData != null ? projectData.formNotesCount : 0,
-          ),
+          makeSimpleNoteButton(mapBuilder, projectData),
+          makeFormNotesButton(mapBuilder, projectData),
           DashboardUtils.makeToolbarBadge(
             LoggingButton(coachMarks.logsButtonKey, _iconSize),
             projectData != null ? projectData.logsCount : 0,
@@ -526,31 +379,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           Spacer(),
           GpsInfoButton(coachMarks.gpsButtonKey, _iconSize),
           Spacer(),
-          GestureDetector(
-            child: IconButton(
-              key: coachMarks.layersButtonKey,
-              icon: Icon(
-                SmashIcons.layersIcon,
-                color: SmashColors.mainBackground,
-              ),
-              iconSize: _iconSize,
-              color: SmashColors.mainBackground,
-              tooltip: 'Open layers list',
-            ),
-            onTap: () async {
-              await Navigator.push(mapBuilder.context,
-                  MaterialPageRoute(builder: (context) => LayersPage()));
-
-              var layers = await LayerManager().loadLayers(context);
-              _activeLayers.clear();
-              setState(() {
-                _activeLayers.addAll(layers);
-              });
-            },
-            onDoubleTap: () async {
-              await openPluginsViewSettings();
-            },
-          ),
+          makeLayersButton(mapBuilder),
           Consumer<SmashMapState>(builder: (context, mapState, child) {
             return DashboardUtils.makeToolbarZoomBadge(
               IconButton(
@@ -582,6 +411,189 @@ class MainViewWidgetState extends State<MainViewWidget>
           ),
         ],
       ),
+    );
+  }
+
+  GestureDetector makeLayersButton(SmashMapBuilder mapBuilder) {
+    return GestureDetector(
+      child: Padding(
+        padding: SmashUI.defaultPadding(),
+        child: InkWell(
+          key: coachMarks.layersButtonKey,
+          child: Icon(
+            SmashIcons.layersIcon,
+            color: SmashColors.mainBackground,
+            size: _iconSize,
+          ),
+          // tooltip: 'Open layers list',
+        ),
+      ),
+      onTap: () async {
+        await Navigator.push(mapBuilder.context,
+            MaterialPageRoute(builder: (context) => LayersPage()));
+
+        var layers = await LayerManager().loadLayers(context);
+        _activeLayers.clear();
+        setState(() {
+          _activeLayers.addAll(layers);
+        });
+      },
+      onDoubleTap: () async {
+        await openPluginsViewSettings();
+      },
+    );
+  }
+
+  Widget makeFormNotesButton(
+      SmashMapBuilder mapBuilder, ProjectData projectData) {
+    return DashboardUtils.makeToolbarBadge(
+      GestureDetector(
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: InkWell(
+            key: coachMarks.formsButtonKey,
+            child: Icon(
+              SmashIcons.formNotesIcon,
+              color: SmashColors.mainBackground,
+              size: _iconSize,
+            ),
+          ),
+        ),
+        onTap: () async {
+          var gpsState =
+              Provider.of<GpsState>(mapBuilder.context, listen: false);
+          var doNoteInGps = gpsState.insertInGps;
+          var titleWithMode = Column(
+            children: [
+              SmashUI.titleText("Form Notes",
+                  color: SmashColors.mainSelection, bold: true),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: GpsInsertionModeSelector(),
+              ),
+            ],
+          );
+
+          var allSectionsMap = TagsManager().getSectionsMap();
+          List<String> sectionNames = allSectionsMap.keys.toList();
+          List<String> iconNames = [];
+          sectionNames.forEach((key) {
+            var icon4section = TagsManager.getIcon4Section(allSectionsMap[key]);
+            iconNames.add(icon4section);
+          });
+
+          var selectedSection = await showComboDialog(
+              mapBuilder.context, titleWithMode, sectionNames, iconNames);
+          // refresh mode
+          doNoteInGps = gpsState.insertInGps;
+          if (selectedSection != null) {
+            Widget appbarWidget = getDialogTitleWithInsertionMode(
+                selectedSection, doNoteInGps, SmashColors.mainBackground);
+
+            var selectedIndex = sectionNames.indexOf(selectedSection);
+            var iconName = iconNames[selectedIndex];
+            var sectionMap = allSectionsMap[selectedSection];
+            var jsonString = jsonEncode(sectionMap);
+            Note note = DataLoaderUtilities.addNote(
+                mapBuilder, doNoteInGps, _mapController,
+                text: selectedSection,
+                form: jsonString,
+                iconName: iconName,
+                color: ColorExt.asHex(SmashColors.mainDecorationsDarker));
+
+            Navigator.push(mapBuilder.context, MaterialPageRoute(
+              builder: (context) {
+                return MasterDetailPage(
+                  sectionMap,
+                  appbarWidget,
+                  selectedSection,
+                  doNoteInGps
+                      ? gpsState.lastGpsPosition
+                      : _mapController.center,
+                  note.id,
+                  SmashFormHelper(),
+                );
+              },
+            ));
+          }
+        },
+        onLongPress: () {
+          ProjectState projectState =
+              Provider.of<ProjectState>(context, listen: false);
+
+          Navigator.push(
+              mapBuilder.context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      NotesListWidget(false, projectState.projectDb)));
+        },
+        onDoubleTap: () async {
+          await openNotesViewSettings();
+        },
+      ),
+      projectData != null ? projectData.formNotesCount : 0,
+    );
+  }
+
+  Widget makeSimpleNoteButton(
+      SmashMapBuilder mapBuilder, ProjectData projectData) {
+    return DashboardUtils.makeToolbarBadge(
+      GestureDetector(
+        child: InkWell(
+          key: coachMarks.simpleNotesButtonKey,
+          child: Padding(
+            padding: SmashUI.defaultPadding(),
+            child: Icon(
+              SmashIcons.simpleNotesIcon,
+              color: SmashColors.mainBackground,
+              size: _iconSize,
+            ),
+          ),
+        ),
+        onTap: () async {
+          var gpsState =
+              Provider.of<GpsState>(mapBuilder.context, listen: false);
+
+          var titleWithMode = Column(
+            children: [
+              SmashUI.titleText("Simple Notes",
+                  color: SmashColors.mainSelection, bold: true),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: GpsInsertionModeSelector(),
+              ),
+            ],
+          );
+          List<String> types = ["note", "image"];
+          var selectedType =
+              await showComboDialog(mapBuilder.context, titleWithMode, types);
+          var doNoteInGps = gpsState.insertInGps;
+          if (selectedType == types[0]) {
+            Note note = DataLoaderUtilities.addNote(
+                mapBuilder, doNoteInGps, _mapController);
+            Navigator.push(
+                mapBuilder.context,
+                MaterialPageRoute(
+                    builder: (context) => NotePropertiesWidget(note)));
+          } else if (selectedType == types[1]) {
+            DataLoaderUtilities.addImage(mapBuilder.context,
+                doNoteInGps ? gpsState.lastGpsPosition : _mapController.center);
+          }
+        },
+        onLongPress: () {
+          ProjectState projectState =
+              Provider.of<ProjectState>(context, listen: false);
+          Navigator.push(
+              mapBuilder.context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      NotesListWidget(true, projectState.projectDb)));
+        },
+        onDoubleTap: () async {
+          await openNotesViewSettings();
+        },
+      ),
+      projectData != null ? projectData.simpleNotesCount : 0,
     );
   }
 

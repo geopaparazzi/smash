@@ -488,7 +488,7 @@ class DashboardUtils {
           );
   }
 
-  static Icon getLoggingIcon(GpsStatus status) {
+  static Icon getLoggingIcon(GpsStatus status, {double size}) {
     Color color;
     IconData iconData;
     switch (status) {
@@ -513,10 +513,18 @@ class DashboardUtils {
           color = SmashColors.mainBackground;
         }
     }
-    return Icon(
-      iconData,
-      color: color,
-    );
+    if (size != null) {
+      return Icon(
+        iconData,
+        color: color,
+        size: size,
+      );
+    } else {
+      return Icon(
+        iconData,
+        color: color,
+      );
+    }
   }
 }
 

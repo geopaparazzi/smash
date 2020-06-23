@@ -40,10 +40,10 @@ class ImageWidgetUtilities {
       ..thumb = thumbBytes
       ..data = imageBytes;
 
-    return db.transaction(() {
-      int imgDataId = db.insertMap(TABLE_IMAGE_DATA, imgData.toMap());
+    return db.transaction((_db) {
+      int imgDataId = _db.insertMap(TABLE_IMAGE_DATA, imgData.toMap());
       dbImageToCompleteAndSave.imageDataId = imgDataId;
-      int imgId = db.insertMap(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
+      int imgId = _db.insertMap(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
       if (imgId == null) {
         SLogger().e("Could not save image to db: $path", null);
       }

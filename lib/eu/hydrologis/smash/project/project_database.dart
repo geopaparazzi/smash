@@ -815,12 +815,12 @@ class GeopaparazziProjectDb extends SqliteDb {
     );
   ''';
 
-    db.transaction(() {
+    db.transaction((_db) {
       var split = createTablesQuery.replaceAll("\n", "").trim().split(";");
       for (int i = 0; i < split.length; i++) {
         var sql = split[i].trim();
         if (sql.length > 0 && !sql.startsWith("--")) {
-          db.execute(sql);
+          _db.execute(sql);
         }
       }
     });
