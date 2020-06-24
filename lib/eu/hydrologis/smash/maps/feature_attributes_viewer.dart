@@ -316,7 +316,6 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
 
     data.forEach((key, value) {
       bool editable = primaryKey != null && db != null && key != primaryKey;
-      editable = false; // TODO fix when geopackage gets editable
       var row = DataRow(
         cells: [
           DataCell(SmashUI.normalText(key)),
@@ -331,24 +330,23 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                 defaultText: value.toString(),
               );
               if (result != null) {
-                String sql = "update " + tablename + " set " + key + "=";
                 if (value is String) {
                   data[key] = result;
-                  sql += "'$result'";
                 } else if (value is int) {
                   data[key] = int.parse(result);
-                  sql += "${data[key]}";
                 } else if (value is double) {
                   data[key] = double.parse(result);
-                  sql += "${data[key]}";
                 } else {
                   SLogger().e(
                       "Could not find type for $key ($value) in table $tablename",
                       null);
                   return;
                 }
-                sql += " where $primaryKey=$pkValue";
-                var i = db.execute(sql);
+                var map = {
+                  key: data[key],
+                };
+                var where = "$primaryKey=$pkValue";
+                var i = db.updateMap(tablename, map, where);
                 print("Updated: $i");
                 setState(() {});
               }
