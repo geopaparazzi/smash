@@ -130,17 +130,17 @@ packages:
   dart_hydrologis_db:
     dependency: "direct main"
     description:
-      path: "../dart_hydrologis_db"
-      relative: true
-    source: path
+      name: dart_hydrologis_db
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.1.0"
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
-      path: "../dart_hydrologis_utils"
-      relative: true
-    source: path
-    version: "0.4.0"
+      name: dart_hydrologis_utils
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.1"
   dart_jts:
     dependency: transitive
     description:
@@ -151,10 +151,10 @@ packages:
   dart_shp:
     dependency: "direct main"
     description:
-      path: "../dart_shp"
-      relative: true
-    source: path
-    version: "0.3.0"
+      name: dart_shp
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1"
   dcache:
     dependency: transitive
     description:
@@ -228,9 +228,9 @@ packages:
   flutter_geopackage:
     dependency: "direct main"
     description:
-      path: "../flutter_geopackage"
-      relative: true
-    source: path
+      name: flutter_geopackage
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.2.0"
   flutter_image:
     dependency: transitive
@@ -680,9 +680,11 @@ packages:
   smashlibs:
     dependency: "direct main"
     description:
-      path: "../smashlibs"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: d5f78a9bd0a59dde44256650bd75c58a6fafe53c
+      url: "https://github.com/moovida/smashlibs.git"
+    source: git
     version: "1.0.0"
   source_span:
     dependency: transitive

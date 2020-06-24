@@ -18,24 +18,24 @@ dependencies:
   ##################################
 
   # apache 2
-  flutter_geopackage: #^0.1.2
-    path: ../flutter_geopackage/
+  flutter_geopackage: ^0.2.0
+    # path: ../flutter_geopackage/
     #  git:
     #    url: https://github.com/moovida/flutter_geopackage.git
   
-  dart_hydrologis_db:
-    path: ../dart_hydrologis_db/
+  dart_hydrologis_db: ^0.1.0
+    # path: ../dart_hydrologis_db/
 
   smashlibs:
-    path: ../smashlibs/
-    # git:
-    #   url: https://github.com/moovida/smashlibs.git
+    # path: ../smashlibs/
+    git:
+      url: https://github.com/moovida/smashlibs.git
 
-  dart_shp: #^0.3.0
-    path: ../dart_shp/
+  dart_shp: ^0.3.1
+    # path: ../dart_shp/
 
-  dart_hydrologis_utils: #^0.4.0
-    path: ../dart_hydrologis_utils/
+  dart_hydrologis_utils: ^0.4.1
+    # path: ../dart_hydrologis_utils/
 
   ##################################
   # OTHERS
