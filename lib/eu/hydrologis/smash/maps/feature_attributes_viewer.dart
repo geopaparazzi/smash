@@ -40,6 +40,16 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     _mapController = MapController();
     _total = widget.features.geoms.length;
 
+    _mapController.onReady.then((v) {
+      QueryResult f = widget.features;
+      var geometry = f.geoms[_index];
+      var env = geometry.getEnvelopeInternal();
+      var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
+          LatLng(env.getMaxY(), env.getMaxX()));
+
+      _mapController.fitBounds(latLngBounds);
+    });
+
     super.initState();
   }
 
@@ -48,7 +58,12 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     if (activeBaseLayers.isNotEmpty) {
       var baseLayers = await activeBaseLayers[0].toLayers(context);
       if (baseLayers.isNotEmpty) {
-        _baseLayer = baseLayers[0];
+        for (var baseLayer in baseLayers) {
+          if (baseLayer is TileLayerOptions) {
+            _baseLayer = baseLayer;
+            break;
+          }
+        }
         return _baseLayer;
       }
     }
@@ -176,14 +191,6 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
       );
       layers.add(polyLayer);
     }
-
-    var env = geometry.getEnvelopeInternal();
-    var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
-        LatLng(env.getMaxY(), env.getMaxX()));
-
-    Timer(Duration(milliseconds: 300), () {
-      _mapController.fitBounds(latLngBounds);
-    });
 
     var tableName = widget.features.ids[_index];
     return Scaffold(
@@ -341,7 +348,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   return;
                 }
                 sql += " where $primaryKey=$pkValue";
-                var i = db.update(sql);
+                var i = db.execute(sql);
                 print("Updated: $i");
                 setState(() {});
               }
