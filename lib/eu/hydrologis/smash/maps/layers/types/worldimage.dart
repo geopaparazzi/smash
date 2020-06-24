@@ -198,9 +198,9 @@ class WorldImageSource extends RasterLayerSource {
   }
 
   @override
-  LatLngBounds getBounds() {
+  Future<LatLngBounds> getBounds() async {
     if (_imageBounds == null) {
-      load(null);
+      await load(null);
     }
     return _imageBounds;
   }

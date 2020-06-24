@@ -318,7 +318,7 @@ class ShapefileSource extends VectorLayerSource {
   }
 
   @override
-  LatLngBounds getBounds() {
+  Future<LatLngBounds> getBounds() async {
     if (_shpBounds != null) {
       var s = _shpBounds.getMinY();
       var n = _shpBounds.getMaxY();

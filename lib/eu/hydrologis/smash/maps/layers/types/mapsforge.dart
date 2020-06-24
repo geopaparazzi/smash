@@ -57,10 +57,10 @@ Future<void> fillBaseCache(File file) async {
   SLogger().d("Done mbtiles cache in ${file.path}");
 }
 
-FM.LatLngBounds getMapsforgeBounds(File file) {
+Future<FM.LatLngBounds> getMapsforgeBounds(File file) async {
   var mapsforgeTileProvider =
       MapsforgeTileProvider(file, tileSize: MAPSFORGE_TILESIZE);
-  mapsforgeTileProvider.createMapDataStore();
+  await mapsforgeTileProvider.createMapDataStore();
   var bounds = mapsforgeTileProvider.getBounds();
   mapsforgeTileProvider.close();
   return bounds;
@@ -114,11 +114,11 @@ class MapsforgeTileProvider extends FM.TileProvider {
         bBox.minLongitude, bBox.maxLongitude, name, "png", 8, 22);
   }
 
-  void createMapDataStore() {
+  Future<void> createMapDataStore() async {
     _multiMapDataStore = MultiMapDataStore(DataPolicy.DEDUPLICATE);
     ReadBuffer readBuffer = ReadBuffer(_mapsforgeFile.path);
     MapFile mapFile = MapFile(readBuffer, null, null);
-    mapFile.init();
+    await mapFile.init();
     //await mapFile.debug();
     _multiMapDataStore.addMapDataStore(mapFile, false, false);
   }

@@ -261,10 +261,10 @@ class TileSource extends TiledRasterLayerSource {
     isVisible = active;
   }
 
-  LatLngBounds getBounds() {
+  Future<LatLngBounds> getBounds() async {
     if (bounds == null) {
       if (FileManager.isMapsforge(getAbsolutePath())) {
-        bounds = getMapsforgeBounds(File(absolutePath));
+        bounds = await getMapsforgeBounds(File(absolutePath));
       } else if (FileManager.isMbtiles(getAbsolutePath())) {
         var prov = SmashMBTilesImageProvider(File(absolutePath));
         prov.open();

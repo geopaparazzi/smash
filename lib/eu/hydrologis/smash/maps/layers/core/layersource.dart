@@ -65,7 +65,7 @@ abstract class LayerSource {
   void setActive(bool active);
 
   /// Get the bounds for the resource.
-  LatLngBounds getBounds();
+  Future<LatLngBounds> getBounds();
 
   /// Dispose the current layeresource.
   void disposeSource();

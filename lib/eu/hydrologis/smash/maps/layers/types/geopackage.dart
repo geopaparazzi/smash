@@ -268,7 +268,7 @@ class GeopackageSource extends VectorLayerSource {
   }
 
   @override
-  LatLngBounds getBounds() {
+  Future<LatLngBounds> getBounds() async {
     if (_tableBounds != null) {
       var s = _tableBounds.getMinY();
       var n = _tableBounds.getMaxY();

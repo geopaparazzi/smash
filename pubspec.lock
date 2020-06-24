@@ -130,10 +130,12 @@ packages:
   dart_hydrologis_db:
     dependency: "direct main"
     description:
-      name: dart_hydrologis_db
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
+      path: "."
+      ref: HEAD
+      resolved-ref: "03501eb060042cdc52b0a148a53fb2e3b09e9378"
+      url: "https://github.com/moovida/dart_hydrologis_db.git"
+    source: git
+    version: "0.2.0"
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
@@ -228,9 +230,11 @@ packages:
   flutter_geopackage:
     dependency: "direct main"
     description:
-      name: flutter_geopackage
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: f93b674390d6f9409edf6c159e2a41cf3ace3805
+      url: "https://github.com/moovida/flutter_geopackage.git"
+    source: git
     version: "0.2.0"
   flutter_image:
     dependency: transitive
@@ -451,10 +455,12 @@ packages:
   moor_ffi:
     dependency: transitive
     description:
-      name: moor_ffi
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.0"
+      path: moor_ffi
+      ref: develop
+      resolved-ref: "1870ca7455a884f5c405b6bef7ddb120b2b8b287"
+      url: "https://github.com/moovida/moor.git"
+    source: git
+    version: "0.7.0-dev"
   package_info:
     dependency: "direct main"
     description:
@@ -682,7 +688,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: d5f78a9bd0a59dde44256650bd75c58a6fafe53c
+      resolved-ref: "7a0ffce05139e24cf01d3440c737415d995110dd"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

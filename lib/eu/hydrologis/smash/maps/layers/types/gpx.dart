@@ -201,7 +201,7 @@ class GpxSource extends VectorLayerSource {
   }
 
   @override
-  LatLngBounds getBounds() {
+  Future<LatLngBounds> getBounds() async {
     return _gpxBounds;
   }
 
