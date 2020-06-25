@@ -1094,7 +1094,7 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
             MdiIcons.eyeSettings,
             color: SmashColors.mainDecorations,
           ),
-          title: Text("Log view mode for Kalman filtered data."),
+          title: Text("Log view mode for filtered data."),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

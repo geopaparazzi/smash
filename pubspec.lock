@@ -132,7 +132,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "03501eb060042cdc52b0a148a53fb2e3b09e9378"
+      resolved-ref: "2f7f20fba706583756461008967657c90e7515e7"
       url: "https://github.com/moovida/dart_hydrologis_db.git"
     source: git
     version: "0.2.0"
@@ -232,7 +232,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: f93b674390d6f9409edf6c159e2a41cf3ace3805
+      resolved-ref: "057563005cc99cfde60dc44ff5b37933ea43e6d9"
       url: "https://github.com/moovida/flutter_geopackage.git"
     source: git
     version: "0.2.0"
@@ -688,7 +688,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "7a0ffce05139e24cf01d3440c737415d995110dd"
+      resolved-ref: a2dc5d60acb05b0c0e4038c817a11c7c6e5e2064
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

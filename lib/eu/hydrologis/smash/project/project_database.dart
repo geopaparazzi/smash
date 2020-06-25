@@ -519,7 +519,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   /// The log is inserted with the properties [prop].
   /// The method returns the id of the inserted log.
   int addGpsLog(Log insertLog, LogProperty prop) {
-    Transaction(this).runInTransaction((_db) {
+    Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
       int insertedId = _db.insertMap(TABLE_GPSLOGS, insertLog.toMap());
       prop.logid = insertedId;
       insertLog.id = insertedId;
