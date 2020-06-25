@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -18,21 +19,18 @@ class OnlineSourcesPage extends StatefulWidget {
   _OnlineSourcesPageState createState() => _OnlineSourcesPageState();
 }
 
-class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
+class _OnlineSourcesPageState extends State<OnlineSourcesPage>
+    with AfterLayoutMixin {
   List<Widget> _tmsCardsList = [];
   List<String> _tmsSourcesList = [];
   List<Widget> _wmsCardsList = [];
   List<String> _wmsSourcesList = [];
   ValueNotifier<int> reloadNotifier = ValueNotifier<int>(0);
 
-  @override
-  void initState() {
-    super.initState();
-
+  void afterFirstLayout(BuildContext context) {
     reloadNotifier.addListener(() async {
       await getList();
     });
-
     getList();
   }
 
@@ -80,6 +78,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
                                     builder: (context) => AddTmsStepper()));
                             if (layerJson != null) {
                               await GpPreferences().addNewTms(layerJson);
+                              await getList();
                               setState(() {});
                             }
                           }),
@@ -112,6 +111,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage> {
                                     builder: (context) => AddWmsStepper()));
                             if (layerJson != null) {
                               await GpPreferences().addNewWms(layerJson);
+                              await getList();
                               setState(() {});
                             }
                           }),
