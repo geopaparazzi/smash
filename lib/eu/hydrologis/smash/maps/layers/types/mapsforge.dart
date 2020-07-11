@@ -28,7 +28,7 @@ import 'package:mapsforge_flutter/maps.dart';
 import 'package:mapsforge_flutter/src/graphics/tilebitmap.dart';
 import 'package:mapsforge_flutter/src/implementation/graphics/fluttertilebitmap.dart';
 import 'package:mapsforge_flutter/src/model/tile.dart';
-import 'package:mapsforge_flutter/src/renderer/rendererjob.dart';
+import 'package:mapsforge_flutter/src/layer/job/job.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 const MAPSFORGE_TILESIZE = 256.0;
@@ -116,8 +116,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
 
   Future<void> createMapDataStore() async {
     _multiMapDataStore = MultiMapDataStore(DataPolicy.DEDUPLICATE);
-    ReadBuffer readBuffer = ReadBuffer(_mapsforgeFile.path);
-    MapFile mapFile = MapFile(readBuffer, null, null);
+    MapFile mapFile = MapFile(_mapsforgeFile.path, null, null);
     await mapFile.init();
     //await mapFile.debug();
     _multiMapDataStore.addMapDataStore(mapFile, false, false);
@@ -159,8 +158,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
       for (var x = minTileX; x <= maxTileX; x++) {
         for (var y = minTileY; y <= maxTileY; y++) {
           Tile tile = new Tile(x, y, z, tileSize);
-          RendererJob mapGeneratorJob =
-              new RendererJob(tile, userScaleFactor, false);
+          Job mapGeneratorJob = new Job(tile, false, userScaleFactor);
           var resultTile = await _dataStoreRenderer.executeJob(mapGeneratorJob);
           if (resultTile != null) {
             ui.Image img = (resultTile as FlutterTileBitmap).bitmap;
@@ -189,11 +187,13 @@ class MapsforgeTileProvider extends FM.TileProvider {
     // Draw the tile
     var userScaleFactor = _displayModel.getUserScaleFactor();
 
-    RendererJob mapGeneratorJob = new RendererJob(
-        tile,
-        /* _multiMapDataStore,         _renderTheme, _displayModel,*/
-        userScaleFactor,
-        false /*, false*/);
+    Job mapGeneratorJob = new Job(
+      tile,
+      /* _multiMapDataStore,         _renderTheme, _displayModel,*/
+      false,
+      userScaleFactor,
+      /*, false*/
+    );
 //    Future<TileBitmap> executeJob =
 //        _dataStoreRenderer.executeJob(mapGeneratorJob);
 
@@ -204,7 +204,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
 
 class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
   MapDataStoreRenderer _dataStoreRenderer;
-  RendererJob _mapGeneratorJob;
+  Job _mapGeneratorJob;
   Tile _tile;
   MBTilesDb _bitmapCache;
 
