@@ -42,7 +42,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.1"
+    version: "2.4.2"
   background_locator:
     dependency: "direct main"
     description:
@@ -130,11 +130,9 @@ packages:
   dart_hydrologis_db:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "0e3a69c28395c3a320547039f4dac7030465bc31"
-      url: "https://github.com/moovida/dart_hydrologis_db.git"
-    source: git
+      name: dart_hydrologis_db
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.2.0"
   dart_hydrologis_utils:
     dependency: "direct main"
@@ -142,7 +140,7 @@ packages:
       name: dart_hydrologis_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.1+1"
+    version: "0.4.1+2"
   dart_jts:
     dependency: transitive
     description:
@@ -223,19 +221,19 @@ packages:
   flutter_datetime_picker:
     dependency: transitive
     description:
-      name: flutter_datetime_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: e75aaca9565bd799551ba9d81bd2f2e92101e771
+      url: "https://github.com/moovida/flutter_datetime_picker.git"
+    source: git
     version: "1.3.8"
   flutter_geopackage:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "057563005cc99cfde60dc44ff5b37933ea43e6d9"
-      url: "https://github.com/moovida/flutter_geopackage.git"
-    source: git
-    version: "0.2.0"
+      name: flutter_geopackage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0+1"
   flutter_image:
     dependency: transitive
     description:
@@ -295,7 +293,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.17.3+1"
+    version: "0.18.0"
   flutter_tags:
     dependency: transitive
     description:
@@ -356,14 +354,14 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.13"
+    version: "2.1.14"
   image_picker:
     dependency: transitive
     description:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7+2"
+    version: "0.6.7+4"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -412,8 +410,8 @@ packages:
     dependency: "direct main"
     description:
       path: mapsforge_flutter
-      ref: libs_upgrade
-      resolved-ref: feed2ebb3d30eb2bf015f82a44cfd5cd062bf3f3
+      ref: HEAD
+      resolved-ref: "94fd966f1b50c9d15e241aab6c5c3be4c0612133"
       url: "https://github.com/moovida/mapsforge_flutter.git"
     source: git
     version: "0.0.1"
@@ -451,16 +449,21 @@ packages:
       name: moor
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.0"
   moor_ffi:
     dependency: transitive
     description:
-      path: moor_ffi
-      ref: develop
-      resolved-ref: "1870ca7455a884f5c405b6bef7ddb120b2b8b287"
-      url: "https://github.com/moovida/moor.git"
-    source: git
-    version: "0.7.0-dev"
+      name: moor_ffi
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.0"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.4"
   package_info:
     dependency: "direct main"
     description:
@@ -509,7 +512,7 @@ packages:
       name: path_provider_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+1"
+    version: "0.0.1+2"
   path_provider_macos:
     dependency: transitive
     description:
@@ -607,7 +610,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.0"
+    version: "4.2.0"
   pub_semver:
     dependency: transitive
     description:
@@ -635,7 +638,7 @@ packages:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.23.1"
+    version: "0.24.1"
   screen:
     dependency: transitive
     description:
@@ -649,14 +652,21 @@ packages:
       name: share_extend
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.7"
+    version: "1.1.9"
   shared_preferences:
     dependency: transitive
     description:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.7+3"
+    version: "0.5.8"
+  shared_preferences_linux:
+    dependency: transitive
+    description:
+      name: shared_preferences_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2+1"
   shared_preferences_macos:
     dependency: transitive
     description:
@@ -688,7 +698,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: dd305fc903d0a764d002644acb296229fe389ca1
+      resolved-ref: "46666852168fb7cb315c502b9755a42d6f456e96"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
@@ -782,7 +792,14 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.4.11"
+    version: "5.5.0"
+  url_launcher_linux:
+    dependency: transitive
+    description:
+      name: url_launcher_linux
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+1"
   url_launcher_macos:
     dependency: transitive
     description:
@@ -803,7 +820,7 @@ packages:
       name: url_launcher_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1+6"
+    version: "0.1.2"
   utf:
     dependency: transitive
     description:
@@ -817,7 +834,7 @@ packages:
       name: uuid
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   validate:
     dependency: transitive
     description:
@@ -852,7 +869,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.7.0"
+    version: "4.2.0"
   yaml:
     dependency: transitive
     description:
@@ -862,4 +879,4 @@ packages:
     version: "2.2.1"
 sdks:
   dart: ">=2.9.0-14.0.dev <3.0.0"
-  flutter: ">=1.12.13+hotfix.5 <2.0.0"
+  flutter: ">=1.18.0-6.0.pre <2.0.0"

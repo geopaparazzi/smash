@@ -33,6 +33,7 @@ import 'package:smashlibs/smashlibs.dart';
 
 const MAPSFORGE_TILESIZE = 256.0;
 
+/// Load a mapsforge layer from file.
 Future<TileLayerOptions> loadMapsforgeLayer(File file) async {
   var mapsforgeTileProvider =
       MapsforgeTileProvider(file, tileSize: MAPSFORGE_TILESIZE);
@@ -42,10 +43,11 @@ Future<TileLayerOptions> loadMapsforgeLayer(File file) async {
     tileSize: MAPSFORGE_TILESIZE,
     keepBuffer: 2,
     backgroundColor: SmashColors.mainBackground,
-    maxZoom: 22,
+    maxZoom: 24,
   );
 }
 
+/// Fills the base cache for a given mapsforge [file].
 Future<void> fillBaseCache(File file) async {
   SLogger().d("Filling mbtiles cache in ${file.path}");
   var mapsforgeTileProvider =
@@ -57,6 +59,7 @@ Future<void> fillBaseCache(File file) async {
   SLogger().d("Done mbtiles cache in ${file.path}");
 }
 
+/// Get the bounds of a mapsforge file (opens and closes the file).
 Future<FM.LatLngBounds> getMapsforgeBounds(File file) async {
   var mapsforgeTileProvider =
       MapsforgeTileProvider(file, tileSize: MAPSFORGE_TILESIZE);
@@ -77,30 +80,29 @@ class MapsforgeTileProvider extends FM.TileProvider {
   MapsforgeTileProvider(this._mapsforgeFile,
       {this.tileSize: MAPSFORGE_TILESIZE});
 
-  MultiMapDataStore _multiMapDataStore;
+  MapDataStore _mapDataStore;
   MapDataStoreRenderer _dataStoreRenderer;
   MBTilesDb _mbtilesCache;
 
   Future<void> open() async {
-    createMapDataStore();
+    await createMapDataStore();
 
     GraphicFactory graphicFactory = FlutterGraphicFactory();
+
     _displayModel = DisplayModel();
     _displayModel.setFixedTileSize(tileSize);
     _displayModel.setUserScaleFactor(1);
-    SymbolCache symbolCache = SymbolCache(graphicFactory, _displayModel);
+    SymbolCache symbolCache = SymbolCache(_displayModel);
 
     RenderThemeBuilder renderThemeBuilder =
         RenderThemeBuilder(graphicFactory, _displayModel, symbolCache);
     String content = await rootBundle.loadString("assets/defaultrender.xml");
-    await renderThemeBuilder.parseXml(content);
+    renderThemeBuilder.parseXml(content);
 
     _renderTheme = renderThemeBuilder.build();
 
-    _dataStoreRenderer = MapDataStoreRenderer(
-        _multiMapDataStore, _renderTheme, graphicFactory, true);
-
-//    _bitmapCache = FileBitmapCache(_dataStoreRenderer.getRenderKey());
+    _dataStoreRenderer =
+        MapDataStoreRenderer(_mapDataStore, _renderTheme, graphicFactory, true);
 
     // create a mbtiles cache
     String chachePath = _mapsforgeFile.path + ".mbtiles";
@@ -109,43 +111,43 @@ class MapsforgeTileProvider extends FM.TileProvider {
     _mbtilesCache.open();
     SLogger().d("Creating mbtiles cache in $chachePath");
 
-    BoundingBox bBox = _multiMapDataStore.boundingBox;
+    BoundingBox bBox = _mapDataStore.boundingBox;
     _mbtilesCache.fillMetadata(bBox.maxLatitude, bBox.minLatitude,
         bBox.minLongitude, bBox.maxLongitude, name, "png", 8, 22);
   }
 
   Future<void> createMapDataStore() async {
-    _multiMapDataStore = MultiMapDataStore(DataPolicy.DEDUPLICATE);
-    MapFile mapFile = MapFile(_mapsforgeFile.path, null, null);
+    MapFile mapFile = MapFile(_mapsforgeFile.path, 0, "en");
     await mapFile.init();
     //await mapFile.debug();
-    _multiMapDataStore.addMapDataStore(mapFile, false, false);
+    _mapDataStore = mapFile;
   }
 
   FM.LatLngBounds getBounds() {
-    BoundingBox bBox = _multiMapDataStore.boundingBox;
+    BoundingBox bBox = _mapDataStore.boundingBox;
     FM.LatLngBounds bounds = FM.LatLngBounds();
     bounds.extend(LatLng(bBox.minLatitude, bBox.minLongitude));
     bounds.extend(LatLng(bBox.maxLatitude, bBox.maxLongitude));
     return bounds;
   }
 
+  /// Close the mapsforge tile provider.
   void close() {
-    if (_multiMapDataStore != null) {
-      _multiMapDataStore.close();
+    if (_mapDataStore != null) {
+      _mapDataStore.close();
     }
     if (_mbtilesCache != null) {
       _mbtilesCache.close();
     }
   }
 
+  /// fill some base cache for the provider.
   Future<void> fillCache() async {
-    BoundingBox bBox = _multiMapDataStore.boundingBox;
+    BoundingBox bBox = _mapDataStore.boundingBox;
     var userScaleFactor = _displayModel.getUserScaleFactor();
     List<int> zoomLevels = [3, 4, 5, 6, 7, 8, 9];
     for (var i = 0; i < zoomLevels.length; i++) {
       var z = zoomLevels[i];
-//      print("Filling zoomlevel: $z with center in ${bBox.getCenterPoint()}");
       List<int> ul =
           MercatorUtils.getTileNumber(bBox.maxLatitude, bBox.minLongitude, z);
       List<int> lr =
@@ -178,30 +180,18 @@ class MapsforgeTileProvider extends FM.TileProvider {
     int zoom = coords.z.round();
 
     Tile tile = new Tile(xTile, yTile, zoom, tileSize);
-
-//    var tileBitmap = _bitmapCache.getTileBitmap(tile);
-//    if (tileBitmap != null) {
-//      return BitmapImageProvider(tileBitmap, coords);
-//    }
-
-    // Draw the tile
     var userScaleFactor = _displayModel.getUserScaleFactor();
-
     Job mapGeneratorJob = new Job(
       tile,
-      /* _multiMapDataStore,         _renderTheme, _displayModel,*/
       false,
       userScaleFactor,
-      /*, false*/
     );
-//    Future<TileBitmap> executeJob =
-//        _dataStoreRenderer.executeJob(mapGeneratorJob);
-
     return MapsforgeImageProvider(
         _dataStoreRenderer, mapGeneratorJob, tile, _mbtilesCache);
   }
 }
 
+/// Image tiles provider for mapsforge datasets.
 class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
   MapDataStoreRenderer _dataStoreRenderer;
   Job _mapGeneratorJob;
@@ -235,6 +225,7 @@ class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
         return await PaintingBinding.instance.instantiateImageCodec(tileData);
       }
     } catch (e) {
+      print("ERROR");
       print(e); // ignore later
     }
 
@@ -264,6 +255,7 @@ class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
       var codec = await PaintingBinding.instance.instantiateImageCodec(bytes);
       return codec;
     } catch (ex, stacktrace) {
+      print("ERROR");
       print(stacktrace);
     }
     return Future<Codec>.error('Failed to load tile for coords: $_tile');
@@ -283,98 +275,98 @@ class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
   }
 }
 
-class BitmapImageProvider extends ImageProvider<BitmapImageProvider> {
-  TileBitmap _bitmap;
+// class BitmapImageProvider extends ImageProvider<BitmapImageProvider> {
+//   TileBitmap _bitmap;
 
-  var _coords;
+//   var _coords;
 
-  BitmapImageProvider(this._bitmap, this._coords);
+//   BitmapImageProvider(this._bitmap, this._coords);
 
-  @override
-  ImageStreamCompleter load(BitmapImageProvider key, DecoderCallback decoder) {
-    // TODO check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
-    return MultiFrameImageStreamCompleter(
-      codec: _loadAsync(key),
-      scale: 1,
-      informationCollector: () sync* {
-        yield DiagnosticsProperty<ImageProvider>('Image provider', this);
-        yield DiagnosticsProperty<BitmapImageProvider>('Image key', key);
-      },
-    );
-  }
+//   @override
+//   ImageStreamCompleter load(BitmapImageProvider key, DecoderCallback decoder) {
+//     // TODO check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
+//     return MultiFrameImageStreamCompleter(
+//       codec: _loadAsync(key),
+//       scale: 1,
+//       informationCollector: () sync* {
+//         yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+//         yield DiagnosticsProperty<BitmapImageProvider>('Image key', key);
+//       },
+//     );
+//   }
 
-  Future<Codec> _loadAsync(BitmapImageProvider key) async {
-    assert(key == this);
+//   Future<Codec> _loadAsync(BitmapImageProvider key) async {
+//     assert(key == this);
 
-    try {
-      ui.Image img = (_bitmap as FlutterTileBitmap).bitmap;
-      var byteData = await img.toByteData(format: ImageByteFormat.png);
-      final Uint8List bytes = byteData.buffer.asUint8List();
+//     try {
+//       ui.Image img = (_bitmap as FlutterTileBitmap).bitmap;
+//       var byteData = await img.toByteData(format: ImageByteFormat.png);
+//       final Uint8List bytes = byteData.buffer.asUint8List();
 
-      var codec = await PaintingBinding.instance.instantiateImageCodec(bytes);
-      return codec;
-    } catch (ex, stacktrace) {
-      print(stacktrace);
-    }
-    return Future<Codec>.error('Failed to load tile for coords: $_coords');
-  }
+//       var codec = await PaintingBinding.instance.instantiateImageCodec(bytes);
+//       return codec;
+//     } catch (ex, stacktrace) {
+//       print(stacktrace);
+//     }
+//     return Future<Codec>.error('Failed to load tile for coords: $_coords');
+//   }
 
-  @override
-  Future<BitmapImageProvider> obtainKey(ImageConfiguration configuration) {
-    return SynchronousFuture(this);
-  }
+//   @override
+//   Future<BitmapImageProvider> obtainKey(ImageConfiguration configuration) {
+//     return SynchronousFuture(this);
+//   }
 
-  @override
-  int get hashCode => _coords.hashCode;
+//   @override
+//   int get hashCode => _coords.hashCode;
 
-  @override
-  bool operator ==(other) {
-    return other is BitmapImageProvider && _coords == other._coords;
-  }
-}
+//   @override
+//   bool operator ==(other) {
+//     return other is BitmapImageProvider && _coords == other._coords;
+//   }
+// }
 
-class BytesImageProvider extends ImageProvider<BytesImageProvider> {
-  Uint8List _bytes;
+// class BytesImageProvider extends ImageProvider<BytesImageProvider> {
+//   Uint8List _bytes;
 
-  var _coords;
+//   var _coords;
 
-  BytesImageProvider(this._bytes, this._coords);
+//   BytesImageProvider(this._bytes, this._coords);
 
-  @override
-  ImageStreamCompleter load(BytesImageProvider key, DecoderCallback decoder) {
-    // TODO check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
-    return MultiFrameImageStreamCompleter(
-      codec: _loadAsync(key),
-      scale: 1,
-      informationCollector: () sync* {
-        yield DiagnosticsProperty<ImageProvider>('Image provider', this);
-        yield DiagnosticsProperty<BytesImageProvider>('Image key', key);
-      },
-    );
-  }
+//   @override
+//   ImageStreamCompleter load(BytesImageProvider key, DecoderCallback decoder) {
+//     // TODO check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
+//     return MultiFrameImageStreamCompleter(
+//       codec: _loadAsync(key),
+//       scale: 1,
+//       informationCollector: () sync* {
+//         yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+//         yield DiagnosticsProperty<BytesImageProvider>('Image key', key);
+//       },
+//     );
+//   }
 
-  Future<Codec> _loadAsync(BytesImageProvider key) async {
-    assert(key == this);
+//   Future<Codec> _loadAsync(BytesImageProvider key) async {
+//     assert(key == this);
 
-    try {
-      var codec = await PaintingBinding.instance.instantiateImageCodec(_bytes);
-      return codec;
-    } catch (ex, stacktrace) {
-      return Future<Codec>.error(
-          'Failed to load tile for coords: $_coords -> ${ex.toString()}');
-    }
-  }
+//     try {
+//       var codec = await PaintingBinding.instance.instantiateImageCodec(_bytes);
+//       return codec;
+//     } catch (ex, stacktrace) {
+//       return Future<Codec>.error(
+//           'Failed to load tile for coords: $_coords -> ${ex.toString()}');
+//     }
+//   }
 
-  @override
-  Future<BytesImageProvider> obtainKey(ImageConfiguration configuration) {
-    return SynchronousFuture(this);
-  }
+//   @override
+//   Future<BytesImageProvider> obtainKey(ImageConfiguration configuration) {
+//     return SynchronousFuture(this);
+//   }
 
-  @override
-  int get hashCode => _coords.hashCode;
+//   @override
+//   int get hashCode => _coords.hashCode;
 
-  @override
-  bool operator ==(other) {
-    return other is BitmapImageProvider && _coords == other._coords;
-  }
-}
+//   @override
+//   bool operator ==(other) {
+//     return other is BytesImageProvider && _coords == other._coords;
+//   }
+// }

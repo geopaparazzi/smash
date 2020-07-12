@@ -18,15 +18,15 @@ dependencies:
   ##################################
 
   # apache 2
-  flutter_geopackage: #^0.2.0
+  flutter_geopackage: ^0.2.0+1
     # path: ../flutter_geopackage/
-     git:
-       url: https://github.com/moovida/flutter_geopackage.git
+    #  git:
+    #    url: https://github.com/moovida/flutter_geopackage.git
   
-  dart_hydrologis_db: #^0.1.0
+  dart_hydrologis_db: ^0.2.0
     # path: ../dart_hydrologis_db/
-    git:
-     url: https://github.com/moovida/dart_hydrologis_db.git
+    # git:
+    #  url: https://github.com/moovida/dart_hydrologis_db.git
 
   smashlibs:
     # path: ../smashlibs/
@@ -62,7 +62,7 @@ dependencies:
   mapsforge_flutter:
     git:
       url: https://github.com/moovida/mapsforge_flutter.git
-      ref: libs_upgrade
+      # ref: libs_upgrade
       path: mapsforge_flutter
 
   # Apache 2
@@ -177,8 +177,6 @@ flutter:
     - packages/mapsforge_flutter/assets/patterns/access-private.png
     - packages/mapsforge_flutter/assets/patterns/arrow.png
     - packages/mapsforge_flutter/assets/patterns/cemetery.png
-    - packages/mapsforge_flutter/assets/patterns/coniferous.svg
-    - packages/mapsforge_flutter/assets/patterns/coniferous_and_deciduous.svg
     - packages/mapsforge_flutter/assets/patterns/deciduous.svg
     - packages/mapsforge_flutter/assets/patterns/dot.png
     - packages/mapsforge_flutter/assets/patterns/farmland.svg
@@ -323,6 +321,10 @@ flutter:
     - packages/mapsforge_flutter/assets/symbols/water/weir.svg
     - packages/mapsforge_flutter/assets/symbols/windsock.svg
     - packages/mapsforge_flutter/assets/symbols/viewpoint.svg
+
+
+
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
