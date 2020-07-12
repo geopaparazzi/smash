@@ -16,6 +16,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class PdfExporter {
@@ -162,7 +163,7 @@ class PdfExporter {
                   formWidgetList.add(c);
                 }
               } catch (e, s) {
-                SLogger().e("Error exporting image to pdf document", s);
+                SMLogger().e("Error exporting image to pdf document", s);
               }
             } else if (type == TYPE_DYNAMICSTRING) {
               var p = Paragraph(text: '$label: ');

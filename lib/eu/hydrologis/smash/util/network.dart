@@ -19,6 +19,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/othertables.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 import 'offline_maps.dart';
@@ -76,7 +77,7 @@ class DownloadMapFromListTileProgressWidgetState
 //        widget._mainEventsHandler.reloadLayersFunction();
       }
     } catch (e, s) {
-      SLogger().e("Error downloading file ${widget._downloadUrl}", s);
+      SMLogger().e("Error downloading file ${widget._downloadUrl}", s);
     }
 
     setState(() {

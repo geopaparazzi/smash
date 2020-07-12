@@ -15,6 +15,7 @@ import 'package:flutter_map/flutter_map.dart' as FM;
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
@@ -337,7 +338,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                 } else if (value is double) {
                   data[key] = double.parse(result);
                 } else {
-                  SLogger().e(
+                  SMLogger().e(
                       "Could not find type for $key ($value) in table $tablename",
                       null);
                   return;

@@ -18,6 +18,7 @@ import 'package:flutter_material_color_picker/flutter_material_color_picker.dart
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class ShapefileSource extends VectorLayerSource {
@@ -76,7 +77,7 @@ class ShapefileSource extends VectorLayerSource {
         features.add(feature);
         _featureTree.insert(envLL, feature);
       }
-      SLogger()
+      SMLogger()
           .d("Loaded ${features.length} Shp features of envelope: $_shpBounds");
 
       _shpReader.close();

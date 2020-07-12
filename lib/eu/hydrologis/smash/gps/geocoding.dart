@@ -11,6 +11,7 @@ import 'package:dart_jts/dart_jts.dart' hide Position, Distance;
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:provider/provider.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 /*
  * Copyright (c) 2019-2020. Antonello Andrea (www.hydrologis.com). All rights reserved.
  * Use of this source code is governed by a GPL3 license that can be
@@ -48,7 +49,7 @@ class GeocodingPageState extends State<GeocodingPage> {
     try {
       addresses = await Geocoder.local.findAddressesFromQuery(query);
     } catch (e, s) {
-      SLogger().e("Unable to geocode $query", s);
+      SMLogger().e("Unable to geocode $query", s);
     }
     searching = false;
     if (addresses == null || addresses.isEmpty) {

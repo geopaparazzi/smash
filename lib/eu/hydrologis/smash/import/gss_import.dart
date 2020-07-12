@@ -13,6 +13,7 @@ import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gss/gss_utilities.dart';
 
@@ -32,6 +33,7 @@ class _GssImportWidgetState extends State<GssImportWidget>
    * 10 = no server pwd available
    * 11 = no server url available
    * 12 = download list error
+   * 13 = permission denied error
    */
   int _status = 0;
 
@@ -118,194 +120,232 @@ class _GssImportWidgetState extends State<GssImportWidget>
         _status = 1;
       });
     } catch (e, s) {
-      setState(() {
-        _status = 12;
-      });
-      SLogger().e("An error occurred while downloading GSS data list.", s);
+      if (e is DioError) {
+        var code = e.response.statusCode;
+        var msg = e.response.statusMessage;
+        if (code == 403) {
+          setState(() {
+            _status = 13;
+          });
+        } else {
+          SMLogger().e(msg, s);
+        }
+      } else {
+        print(e);
+        setState(() {
+          _status = 12;
+        });
+        SMLogger().e("An error occurred while downloading GSS data list.", s);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("GSS Import"),
-      ),
-      body: _status == 0
-          ? Center(
-              child: SmashCircularProgress(label: "Downloading data list..."),
-            )
-          : _status == 12
-              ? Center(
-                  child: Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.errorWidget(
-                        "Unable to download data list, check diagnostics."),
-                  ),
-                )
-              : _status == 11
-                  ? Center(
-                      child: Padding(
-                        padding: SmashUI.defaultPadding(),
-                        child: SmashUI.titleText(
-                            "No GSS server url has been set. Check your settings."),
-                      ),
-                    )
-                  : _status == 10
-                      ? Center(
-                          child: Padding(
-                            padding: SmashUI.defaultPadding(),
-                            child: SmashUI.titleText(
-                                "No GSS server password has been set. Check your settings."),
-                          ),
-                        )
-                      : SingleChildScrollView(
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                width: double.infinity,
-                                child: Card(
-                                  margin: SmashUI.defaultMargin(),
-                                  elevation: SmashUI.DEFAULT_ELEVATION,
-                                  color: SmashColors.mainBackground,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.normalText("Data",
-                                            bold: true),
-                                      ),
-                                      Padding(
-                                        padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.smallText(
-                                            _baseMapsList.length > 0
-                                                ? "Datasets are downloaded into the maps folder."
-                                                : "No data available.",
-                                            color: Colors.grey),
-                                      ),
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: _baseMapsList.length,
-                                        itemBuilder: (context, index) {
-                                          var name = _baseMapsList[index];
-
-                                          String downloadUrl = _serverUrl +
-                                              GssUtilities.DATA_DOWNLOAD_PATH +
-                                              "?" +
-                                              GssUtilities.DATA_DOWNLOAD_NAME +
-                                              "=" +
-                                              name;
-
-                                          return FileDownloadListTileProgressWidget(
-                                            downloadUrl,
-                                            FileUtilities.joinPaths(
-                                                _mapsFolderPath, name),
-                                            name,
-                                            authHeader: _authHeader,
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                child: Card(
-                                  margin: SmashUI.defaultMargin(),
-                                  elevation: SmashUI.DEFAULT_ELEVATION,
-                                  color: SmashColors.mainBackground,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.normalText("Projects",
-                                            bold: true),
-                                      ),
-                                      Padding(
-                                        padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.smallText(
-                                            _projectsList.length > 0
-                                                ? "Projects are downloaded into the projects folder."
-                                                : "No projects available.",
-                                            color: Colors.grey),
-                                      ),
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: _projectsList.length,
-                                        itemBuilder: (context, index) {
-                                          var name = _projectsList[index];
-
-                                          String downloadUrl = _serverUrl +
-                                              GssUtilities.DATA_DOWNLOAD_PATH +
-                                              "?" +
-                                              GssUtilities.DATA_DOWNLOAD_NAME +
-                                              "=" +
-                                              name;
-
-                                          return FileDownloadListTileProgressWidget(
-                                            downloadUrl,
-                                            FileUtilities.joinPaths(
-                                                _projectsFolderPath, name),
-                                            name,
-                                            authHeader: _authHeader,
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                child: Card(
-                                  margin: SmashUI.defaultMargin(),
-                                  elevation: SmashUI.DEFAULT_ELEVATION,
-                                  color: SmashColors.mainBackground,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.normalText("Forms",
-                                            bold: true),
-                                      ),
-                                      Padding(
-                                        padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.smallText(
-                                            _tagsList.length > 0
-                                                ? "Tags files are downloaded into the forms folder."
-                                                : "No tags available.",
-                                            color: Colors.grey),
-                                      ),
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: _tagsList.length,
-                                        itemBuilder: (context, index) {
-                                          var name = _tagsList[index];
-
-                                          String downloadUrl = _serverUrl +
-                                              GssUtilities.TAGS_DOWNLOAD_PATH +
-                                              "?" +
-                                              GssUtilities.TAGS_DOWNLOAD_NAME +
-                                              "=" +
-                                              name;
-
-                                          return FileDownloadListTileProgressWidget(
-                                            downloadUrl,
-                                            FileUtilities.joinPaths(
-                                                _formsFolderPath, name),
-                                            name,
-                                            authHeader: _authHeader,
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+    return WillPopScope(
+      onWillPop: () async {
+        // make sure new tags are read
+        await TagsManager().readFileTags();
+        return true;
+      },
+      child: new Scaffold(
+        appBar: new AppBar(
+          title: new Text("GSS Import"),
+        ),
+        body: _status == 0
+            ? Center(
+                child: SmashCircularProgress(label: "Downloading data list..."),
+              )
+            : _status == 12
+                ? Center(
+                    child: Padding(
+                      padding: SmashUI.defaultPadding(),
+                      child: SmashUI.errorWidget(
+                          "Unable to download data list due to an error. Check your settings and the log."),
+                    ),
+                  )
+                : _status == 11
+                    ? Center(
+                        child: Padding(
+                          padding: SmashUI.defaultPadding(),
+                          child: SmashUI.titleText(
+                              "No GSS server url has been set. Check your settings."),
                         ),
+                      )
+                    : _status == 10
+                        ? Center(
+                            child: Padding(
+                              padding: SmashUI.defaultPadding(),
+                              child: SmashUI.titleText(
+                                  "No GSS server password has been set. Check your settings."),
+                            ),
+                          )
+                        : _status == 13
+                            ? Center(
+                                child: Padding(
+                                  padding: SmashUI.defaultPadding(),
+                                  child: SmashUI.errorWidget(
+                                      "No permission to access the server. Check your credentials."),
+                                ),
+                              )
+                            : SingleChildScrollView(
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      width: double.infinity,
+                                      child: Card(
+                                        margin: SmashUI.defaultMargin(),
+                                        elevation: SmashUI.DEFAULT_ELEVATION,
+                                        color: SmashColors.mainBackground,
+                                        child: Column(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: SmashUI.defaultPadding(),
+                                              child: SmashUI.normalText("Data",
+                                                  bold: true),
+                                            ),
+                                            Padding(
+                                              padding: SmashUI.defaultPadding(),
+                                              child: SmashUI.smallText(
+                                                  _baseMapsList.length > 0
+                                                      ? "Datasets are downloaded into the maps folder."
+                                                      : "No data available.",
+                                                  color: Colors.grey),
+                                            ),
+                                            ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: _baseMapsList.length,
+                                              itemBuilder: (context, index) {
+                                                var name = _baseMapsList[index];
+
+                                                String downloadUrl = _serverUrl +
+                                                    GssUtilities
+                                                        .DATA_DOWNLOAD_PATH +
+                                                    "?" +
+                                                    GssUtilities
+                                                        .DATA_DOWNLOAD_NAME +
+                                                    "=" +
+                                                    name;
+
+                                                return FileDownloadListTileProgressWidget(
+                                                  downloadUrl,
+                                                  FileUtilities.joinPaths(
+                                                      _mapsFolderPath, name),
+                                                  name,
+                                                  authHeader: _authHeader,
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      child: Card(
+                                        margin: SmashUI.defaultMargin(),
+                                        elevation: SmashUI.DEFAULT_ELEVATION,
+                                        color: SmashColors.mainBackground,
+                                        child: Column(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: SmashUI.defaultPadding(),
+                                              child: SmashUI.normalText(
+                                                  "Projects",
+                                                  bold: true),
+                                            ),
+                                            Padding(
+                                              padding: SmashUI.defaultPadding(),
+                                              child: SmashUI.smallText(
+                                                  _projectsList.length > 0
+                                                      ? "Projects are downloaded into the projects folder."
+                                                      : "No projects available.",
+                                                  color: Colors.grey),
+                                            ),
+                                            ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: _projectsList.length,
+                                              itemBuilder: (context, index) {
+                                                var name = _projectsList[index];
+
+                                                String downloadUrl = _serverUrl +
+                                                    GssUtilities
+                                                        .DATA_DOWNLOAD_PATH +
+                                                    "?" +
+                                                    GssUtilities
+                                                        .DATA_DOWNLOAD_NAME +
+                                                    "=" +
+                                                    name;
+
+                                                return FileDownloadListTileProgressWidget(
+                                                  downloadUrl,
+                                                  FileUtilities.joinPaths(
+                                                      _projectsFolderPath,
+                                                      name),
+                                                  name,
+                                                  authHeader: _authHeader,
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      child: Card(
+                                        margin: SmashUI.defaultMargin(),
+                                        elevation: SmashUI.DEFAULT_ELEVATION,
+                                        color: SmashColors.mainBackground,
+                                        child: Column(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: SmashUI.defaultPadding(),
+                                              child: SmashUI.normalText("Forms",
+                                                  bold: true),
+                                            ),
+                                            Padding(
+                                              padding: SmashUI.defaultPadding(),
+                                              child: SmashUI.smallText(
+                                                  _tagsList.length > 0
+                                                      ? "Tags files are downloaded into the forms folder."
+                                                      : "No tags available.",
+                                                  color: Colors.grey),
+                                            ),
+                                            ListView.builder(
+                                              shrinkWrap: true,
+                                              itemCount: _tagsList.length,
+                                              itemBuilder: (context, index) {
+                                                var name = _tagsList[index];
+
+                                                String downloadUrl =
+                                                    _serverUrl +
+                                                        GssUtilities
+                                                            .TAGS_DOWNLOAD_PATH +
+                                                        // "/" +
+                                                        "?" +
+                                                        GssUtilities
+                                                            .TAGS_DOWNLOAD_NAME +
+                                                        "=" +
+                                                        name;
+
+                                                return FileDownloadListTileProgressWidget(
+                                                  downloadUrl,
+                                                  FileUtilities.joinPaths(
+                                                      _formsFolderPath, name),
+                                                  name,
+                                                  authHeader: _authHeader,
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+      ),
     );
   }
 }

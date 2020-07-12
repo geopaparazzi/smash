@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
@@ -45,7 +46,7 @@ class ImageWidgetUtilities {
       dbImageToCompleteAndSave.imageDataId = imgDataId;
       int imgId = _db.insertMap(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
       if (imgId == null) {
-        SLogger().e("Could not save image to db: $path", null);
+        SMLogger().e("Could not save image to db: $path", null);
       }
       return imgId;
     });

@@ -101,7 +101,7 @@ class LayerManager {
       if (ls != null) {
         ls.forEach((l) => layerOptions.add(l));
       }
-      //SLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
+      //SMLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
     }
     return layerOptions;
   }

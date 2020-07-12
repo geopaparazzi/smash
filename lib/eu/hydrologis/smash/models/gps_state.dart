@@ -6,6 +6,7 @@
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:latlong/latlong.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -157,7 +158,7 @@ class GpsState extends ChangeNotifierPlus {
 
       return logId;
     } catch (e, s) {
-      SLogger().e("Error creating new gps log", s);
+      SMLogger().e("Error creating new gps log", s);
       return null;
     }
   }

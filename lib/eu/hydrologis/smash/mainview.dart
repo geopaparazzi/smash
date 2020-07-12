@@ -779,7 +779,40 @@ class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
   Widget build(BuildContext context) {
     _doInGps = GpPreferences().getBooleanSync(KEY_DO_NOTE_IN_GPS, true);
 
-    var sel = [_doInGps, !_doInGps];
+    var gpsState = Provider.of<GpsState>(context, listen: false);
+
+    if (!gpsState.hasFix()) {
+      _doInGps = false;
+      gpsState.insertInGpsQuiet = _doInGps;
+    }
+
+    List<bool> sel = [];
+
+    List<Widget> buttons = [];
+    if (gpsState.hasFix()) {
+      buttons.add(Padding(
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SmashUI.smallText("GPS", bold: true),
+            Icon(SmashIcons.locationIcon),
+          ],
+        ),
+      ));
+      sel.add(_doInGps);
+    }
+    buttons.add(Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(MdiIcons.imageFilterCenterFocus),
+          SmashUI.smallText("Map Center", bold: true),
+        ],
+      ),
+    ));
+    sel.add(!_doInGps);
 
     return Container(
       child: ToggleButtons(
@@ -791,39 +824,20 @@ class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
         borderWidth: 3,
         borderColor: SmashColors.mainDecorationsDarker,
         selectedBorderColor: SmashColors.mainSelection,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SmashUI.smallText("GPS", bold: true),
-                Icon(SmashIcons.locationIcon),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(MdiIcons.imageFilterCenterFocus),
-                SmashUI.smallText("Map Center", bold: true),
-              ],
-            ),
-          ),
-        ],
+        children: buttons,
         isSelected: sel,
-        onPressed: (index) async {
-          print("${sel[0]}   ${sel[1]}");
-          var doGps = !sel[0];
-          var gpsState = Provider.of<GpsState>(context, listen: false);
-          gpsState.insertInGpsQuiet = doGps;
+        onPressed: !gpsState.hasFix()
+            ? null
+            : (index) async {
+                print("${sel[0]}   ${sel[1]}");
+                var doGps = !sel[0];
+                var gpsState = Provider.of<GpsState>(context, listen: false);
+                gpsState.insertInGpsQuiet = doGps;
 
-          await GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, doGps);
+                await GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, doGps);
 
-          setState(() {});
-        },
+                setState(() {});
+              },
       ),
     );
   }

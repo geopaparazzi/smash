@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
@@ -129,7 +130,7 @@ abstract class LayerSource {
         return [ts];
       }
     } catch (e, s) {
-      SLogger().e("Error while loading layer: \n$json", s);
+      SMLogger().e("Error while loading layer: \n$json", s);
       return [];
     }
   }

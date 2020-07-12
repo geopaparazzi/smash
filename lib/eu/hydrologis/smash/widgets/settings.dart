@@ -19,6 +19,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class SettingsWidget extends StatefulWidget {
@@ -1484,7 +1485,7 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
   }
 
   void loadDebug() {
-    allLogItems = SLogger().getLogItems(limit: limit);
+    allLogItems = SMLogger().getLogItems(limit: limit);
     allLogItems = allLogItems.where((element) {
       element.message = element.message.trim();
 
@@ -1543,7 +1544,7 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
               icon: Icon(MdiIcons.delete),
               tooltip: "Clear debug log",
               onPressed: () {
-                SLogger().clearLog();
+                SMLogger().clearLog();
                 loadDebug();
               }),
         ],

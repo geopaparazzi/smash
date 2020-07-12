@@ -23,7 +23,7 @@ dependencies:
     #  git:
     #    url: https://github.com/moovida/flutter_geopackage.git
   
-  dart_hydrologis_db: ^0.2.0
+  dart_hydrologis_db: ^0.2.1
     # path: ../dart_hydrologis_db/
     # git:
     #  url: https://github.com/moovida/dart_hydrologis_db.git

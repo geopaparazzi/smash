@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -146,7 +147,7 @@ Future<String> handleProjections(BuildContext context) async {
       int.parse(epsg);
       Projection.add('EPSG:$epsg', def);
     } catch (e, s) {
-      SLogger().e("Error adding projection $projDef", s);
+      SMLogger().e("Error adding projection $projDef", s);
     }
   }
   return null;
@@ -173,7 +174,7 @@ Future<String> handleWorkspace(BuildContext context) async {
   await Workspace.init();
   var directory = await Workspace.getConfigFolder();
   bool init = SLogger().init(directory.path); // init logger
-  if (init) SLogger().i("Db logger initialized.");
+  if (init) SMLogger().setSubLogger(SLogger());
   return null;
 }
 

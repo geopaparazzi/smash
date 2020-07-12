@@ -29,6 +29,7 @@ import 'package:mapsforge_flutter/src/graphics/tilebitmap.dart';
 import 'package:mapsforge_flutter/src/implementation/graphics/fluttertilebitmap.dart';
 import 'package:mapsforge_flutter/src/model/tile.dart';
 import 'package:mapsforge_flutter/src/layer/job/job.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 const MAPSFORGE_TILESIZE = 256.0;
@@ -49,14 +50,14 @@ Future<TileLayerOptions> loadMapsforgeLayer(File file) async {
 
 /// Fills the base cache for a given mapsforge [file].
 Future<void> fillBaseCache(File file) async {
-  SLogger().d("Filling mbtiles cache in ${file.path}");
+  SMLogger().d("Filling mbtiles cache in ${file.path}");
   var mapsforgeTileProvider =
       MapsforgeTileProvider(file, tileSize: MAPSFORGE_TILESIZE);
   await mapsforgeTileProvider.open();
 
   await mapsforgeTileProvider.fillCache();
   mapsforgeTileProvider.close();
-  SLogger().d("Done mbtiles cache in ${file.path}");
+  SMLogger().d("Done mbtiles cache in ${file.path}");
 }
 
 /// Get the bounds of a mapsforge file (opens and closes the file).
@@ -109,7 +110,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
     var name = FileUtilities.nameFromFile(chachePath, false);
     _mbtilesCache = MBTilesDb(chachePath);
     _mbtilesCache.open();
-    SLogger().d("Creating mbtiles cache in $chachePath");
+    SMLogger().d("Creating mbtiles cache in $chachePath");
 
     BoundingBox bBox = _mapDataStore.boundingBox;
     _mbtilesCache.fillMetadata(bBox.maxLatitude, bBox.minLatitude,

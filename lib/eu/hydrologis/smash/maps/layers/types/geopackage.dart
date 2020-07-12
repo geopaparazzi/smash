@@ -21,6 +21,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -356,7 +357,7 @@ class GeopackageImageProvider extends TileProvider {
 //        _emptyImageBytes = byteData.buffer.asUint8List();
 
       } catch (e, s) {
-        SLogger().e("Error getting geopackage bounds or empty image.", s);
+        SMLogger().e("Error getting geopackage bounds or empty image.", s);
       }
 
       isDisposed = false;

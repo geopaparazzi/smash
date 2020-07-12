@@ -16,6 +16,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 Uint8List _emptyImageBytes;
@@ -44,7 +45,7 @@ class SmashMBTilesImageProvider extends TileProvider {
 //        _emptyImageBytes = byteData.buffer.asUint8List();
 
       } catch (e, s) {
-        SLogger().e("Error getting mbtiles bounds or empty image.", s);
+        SMLogger().e("Error getting mbtiles bounds or empty image.", s);
       }
 
       if (isDisposed) {

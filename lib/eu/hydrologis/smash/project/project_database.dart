@@ -16,6 +16,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/othertables.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 
 const int MAXBLOBSIZE = 1000000;
 
@@ -673,12 +674,12 @@ class GeopaparazziProjectDb extends SqliteDb {
       int extCount =
           updateMap(TABLE_NOTESEXT, extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
       if (extCount != 1) {
-        SLogger().e(
+        SMLogger().e(
             "Note ext values not updated for note $noteId and noteext $noteExtId",
             null);
       }
     } else {
-      SLogger().e("Note not updated for note $noteId", null);
+      SMLogger().e("Note not updated for note $noteId", null);
     }
     return count;
   }
@@ -829,7 +830,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   createNecessaryExtraTables() {
     bool hasNotesExt = hasTable(TABLE_NOTESEXT);
     if (!hasNotesExt) {
-      SLogger().w("Adding extra database table $TABLE_NOTESEXT.");
+      SMLogger().w("Adding extra database table $TABLE_NOTESEXT.");
       Transaction(this).runInTransaction((_db) {
         var split =
             CREATE_NOTESEXT_STATEMENT.replaceAll("\n", "").trim().split(";");
@@ -851,7 +852,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       }
     });
     if (!hasFiltered) {
-      SLogger().w("Adding extra columns for filtered data to log.");
+      SMLogger().w("Adding extra columns for filtered data to log.");
       Transaction(this).runInTransaction((_db) {
         String sql =
             "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_ACCURACY real;";

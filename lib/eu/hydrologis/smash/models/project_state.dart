@@ -14,6 +14,7 @@ import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// The provider object of the current project status
@@ -34,7 +35,7 @@ class ProjectState extends ChangeNotifierPlus {
   ProjectData get projectData => _projectData;
 
   Future<void> setNewProject(String path, BuildContext context) async {
-    SLogger().i("Set new project: $path");
+    SMLogger().i("Set new project: $path");
     close();
     _projectPath = path;
     await openDb(_projectPath);
@@ -46,20 +47,20 @@ class ProjectState extends ChangeNotifierPlus {
     _projectPath = projectPath;
     if (_projectPath == null) {
       _projectPath = await GpPreferences().getString(KEY_LAST_GPAPPROJECT);
-      SLogger().i("Read db path from preferences: $_projectPath");
+      SMLogger().i("Read db path from preferences: $_projectPath");
     }
     if (_projectPath == null) {
-      SLogger().w("No project path found creating default");
+      SMLogger().w("No project path found creating default");
       var projectsFolder = await Workspace.getProjectsFolder();
       _projectPath = FileUtilities.joinPaths(projectsFolder.path, "smash.gpap");
     }
     try {
-      SLogger().i("Opening db $_projectPath...");
+      SMLogger().i("Opening db $_projectPath...");
       _db = GeopaparazziProjectDb(_projectPath);
       _db.open();
-      SLogger().i("Db opened: $_projectPath");
+      SMLogger().i("Db opened: $_projectPath");
     } catch (e) {
-      SLogger().e("Error opening project db: ", e);
+      SMLogger().e("Error opening project db: ", e);
     }
 
     _db.createNecessaryExtraTables();
@@ -70,7 +71,7 @@ class ProjectState extends ChangeNotifierPlus {
   void close() {
     if (_db != null && _db.isOpen()) {
       _db.close();
-      SLogger().i("Closed db: ${_db.path}");
+      SMLogger().i("Closed db: ${_db.path}");
     }
     _db = null;
     _projectPath = null;
