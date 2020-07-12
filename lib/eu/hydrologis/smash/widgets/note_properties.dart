@@ -68,16 +68,14 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 
     return WillPopScope(
         onWillPop: () async {
-          if (_somethingChanged) {
-            _note.noteExt.color = ColorExt.asHex(_noteColor);
-            _note.noteExt.marker = _marker;
-            _note.noteExt.size = _sizeSliderValue;
+          _note.noteExt.color = ColorExt.asHex(_noteColor);
+          _note.noteExt.marker = _marker;
+          _note.noteExt.size = _sizeSliderValue;
 
-            ProjectState projectState =
-                Provider.of<ProjectState>(context, listen: false);
-            projectState.projectDb.updateNote(_note);
-            projectState.reloadProject(context);
-          }
+          ProjectState projectState =
+              Provider.of<ProjectState>(context, listen: false);
+          projectState.projectDb.updateNote(_note);
+          projectState.reloadProject(context);
           return true;
         },
         child: Scaffold(

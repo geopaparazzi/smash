@@ -571,13 +571,16 @@ class MainViewWidgetState extends State<MainViewWidget>
           if (selectedType == types[0]) {
             Note note = DataLoaderUtilities.addNote(
                 mapBuilder, doNoteInGps, _mapController);
-            Navigator.push(
+            await Navigator.push(
                 mapBuilder.context,
                 MaterialPageRoute(
                     builder: (context) => NotePropertiesWidget(note)));
           } else if (selectedType == types[1]) {
-            DataLoaderUtilities.addImage(mapBuilder.context,
+            await DataLoaderUtilities.addImage(mapBuilder.context,
                 doNoteInGps ? gpsState.lastGpsPosition : _mapController.center);
+            ProjectState projectState =
+                Provider.of<ProjectState>(context, listen: false);
+            projectState.reloadProject(context);
           }
         },
         onLongPress: () {
