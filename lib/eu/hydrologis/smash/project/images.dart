@@ -41,7 +41,7 @@ class ImageWidgetUtilities {
       ..thumb = thumbBytes
       ..data = imageBytes;
 
-    Transaction(db).runInTransaction((_db) {
+    return Transaction(db).runInTransaction((_db) {
       int imgDataId = _db.insertMap(TABLE_IMAGE_DATA, imgData.toMap());
       dbImageToCompleteAndSave.imageDataId = imgDataId;
       int imgId = _db.insertMap(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
