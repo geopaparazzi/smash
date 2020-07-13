@@ -84,25 +84,29 @@ class MapsforgeTileProvider extends FM.TileProvider {
       {this.tileSize: MAPSFORGE_TILESIZE});
 
   MapFile _mapDataStore;
-  MapDataStoreRenderer _dataStoreRenderer;
   MBTilesDb _mbtilesCache;
+  RenderTheme _renderTheme;
+  GraphicFactory _graphicFactory;
+  MapDataStoreRenderer dataStoreRenderer;
 
   Future<void> open() async {
     _displayModel = DisplayModel(
       maxZoomLevel: 24,
     );
-    GraphicFactory graphicFactory = FlutterGraphicFactory();
+
+    _graphicFactory = FlutterGraphicFactory();
     SymbolCache symbolCache = SymbolCache(_displayModel);
     RenderThemeBuilder renderThemeBuilder =
-        RenderThemeBuilder(graphicFactory, _displayModel, symbolCache);
+        RenderThemeBuilder(_graphicFactory, _displayModel, symbolCache);
     String content = await rootBundle.loadString("assets/defaultrender.xml");
     renderThemeBuilder.parseXml(content);
-    RenderTheme renderTheme = renderThemeBuilder.build();
+    _renderTheme = renderThemeBuilder.build();
 
     _mapDataStore = MapFile(_mapsforgeFile.path, 0, "en");
     await _mapDataStore.init();
-    _dataStoreRenderer =
-        MapDataStoreRenderer(_mapDataStore, renderTheme, graphicFactory, false);
+
+    dataStoreRenderer = MapDataStoreRenderer(
+        _mapDataStore, _renderTheme, _graphicFactory, true);
 
     if (DOCACHE) {
       // create a mbtiles cache
@@ -139,35 +143,35 @@ class MapsforgeTileProvider extends FM.TileProvider {
   /// fill some base cache for the provider.
   Future<void> fillCache() async {
     if (_mbtilesCache != null) {
-      BoundingBox bBox = _mapDataStore.boundingBox;
-      var userScaleFactor = _displayModel.getUserScaleFactor();
-      List<int> zoomLevels = [3, 4, 5, 6, 7, 8, 9];
-      for (var i = 0; i < zoomLevels.length; i++) {
-        var z = zoomLevels[i];
-        List<int> ul =
-            MercatorUtils.getTileNumber(bBox.maxLatitude, bBox.minLongitude, z);
-        List<int> lr =
-            MercatorUtils.getTileNumber(bBox.minLatitude, bBox.maxLongitude, z);
+      // BoundingBox bBox = _mapDataStore.boundingBox;
+      // var userScaleFactor = _displayModel.getUserScaleFactor();
+      // List<int> zoomLevels = [3, 4, 5, 6, 7, 8, 9];
+      // for (var i = 0; i < zoomLevels.length; i++) {
+      //   var z = zoomLevels[i];
+      //   List<int> ul =
+      //       MercatorUtils.getTileNumber(bBox.maxLatitude, bBox.minLongitude, z);
+      //   List<int> lr =
+      //       MercatorUtils.getTileNumber(bBox.minLatitude, bBox.maxLongitude, z);
 
-        int minTileX = min(ul[1], lr[1]);
-        int maxTileX = max(ul[1], lr[1]);
-        int minTileY = min(lr[2], ul[2]);
-        int maxTileY = max(lr[2], ul[2]);
-        for (var x = minTileX; x <= maxTileX; x++) {
-          for (var y = minTileY; y <= maxTileY; y++) {
-            Tile tile = new Tile(x, y, z, tileSize);
-            Job mapGeneratorJob = new Job(tile, false, userScaleFactor);
-            var resultTile =
-                await _dataStoreRenderer.executeJob(mapGeneratorJob);
-            if (resultTile != null) {
-              ui.Image img = (resultTile as FlutterTileBitmap).bitmap;
-              var byteData = await img.toByteData(format: ImageByteFormat.png);
-              var bytes = byteData.buffer.asUint8List();
-              _mbtilesCache.addTile(x, y, z, bytes);
-            }
-          }
-        }
-      }
+      //   int minTileX = min(ul[1], lr[1]);
+      //   int maxTileX = max(ul[1], lr[1]);
+      //   int minTileY = min(lr[2], ul[2]);
+      //   int maxTileY = max(lr[2], ul[2]);
+      //   for (var x = minTileX; x <= maxTileX; x++) {
+      //     for (var y = minTileY; y <= maxTileY; y++) {
+      //       Tile tile = new Tile(x, y, z, tileSize);
+      //       Job mapGeneratorJob = new Job(tile, false, userScaleFactor);
+      //       var resultTile =
+      //           await _dataStoreRenderer.executeJob(mapGeneratorJob);
+      //       if (resultTile != null) {
+      //         ui.Image img = (resultTile as FlutterTileBitmap).bitmap;
+      //         var byteData = await img.toByteData(format: ImageByteFormat.png);
+      //         var bytes = byteData.buffer.asUint8List();
+      //         _mbtilesCache.addTile(x, y, z, bytes);
+      //       }
+      //     }
+      //   }
+      // }
     }
   }
 
@@ -180,8 +184,10 @@ class MapsforgeTileProvider extends FM.TileProvider {
     Tile tile = new Tile(xTile, yTile, zoom, tileSize);
     var userScaleFactor = _displayModel.getUserScaleFactor();
     Job mapGeneratorJob = new Job(tile, false, userScaleFactor);
+    // MapDataStoreRenderer dataStoreRenderer = MapDataStoreRenderer(
+    //     _mapDataStore, _renderTheme, _graphicFactory, true);
     return MapsforgeImageProvider(
-        _dataStoreRenderer, mapGeneratorJob, tile, _mbtilesCache);
+        dataStoreRenderer, mapGeneratorJob, tile, _mbtilesCache);
   }
 }
 
@@ -243,10 +249,14 @@ class MapsforgeImageProvider extends ImageProvider<MapsforgeImageProvider> {
         var byteData = await img.toByteData(format: ImageByteFormat.png);
         bytes = byteData.buffer.asUint8List();
 
+        File("/Users/hydrologis/Library/Containers/eu.hydrologis.smash/Data/Documents/smash/tmp/test_${_tile.zoomLevel}_${_tile.tileX}_${_tile.tileY}.png")
+            .writeAsBytesSync(bytes);
         _bitmapCache?.addTile(_tile.tileX, _tile.tileY, _tile.zoomLevel, bytes);
       }
 
       var codec = await PaintingBinding.instance.instantiateImageCodec(bytes);
+      print(
+          "Done https://tile.openstreetmap.org/${_tile.zoomLevel}/${_tile.tileX}/${_tile.tileY}.png");
       return codec;
     } catch (ex, stacktrace) {
       print("ERROR");
