@@ -196,7 +196,11 @@ class _NoteInfoState extends State<NoteInfo> {
           bool doDelete = await showConfirmDialog(
               context, "DELETE", 'Are you sure you want to delete the note?');
           if (doDelete) {
-            widget.db.deleteNote(id);
+            if (dynNote is Note) {
+              widget.db.deleteNote(id);
+            } else {
+              widget.db.deleteImage(id);
+            }
             widget.reloadNotesFunction();
           }
         }));
