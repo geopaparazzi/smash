@@ -411,7 +411,7 @@ packages:
     description:
       path: mapsforge_flutter
       ref: HEAD
-      resolved-ref: "94fd966f1b50c9d15e241aab6c5c3be4c0612133"
+      resolved-ref: df0a58752770e9dc4e21cb39cd8eaf2eb477ec8f
       url: "https://github.com/moovida/mapsforge_flutter.git"
     source: git
     version: "0.0.1"

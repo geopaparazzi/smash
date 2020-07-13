@@ -1463,7 +1463,6 @@
 
     <!-- names for POIs -->
     <rule e="any" k="amenity" v="restaurant|fast_food|biergarten|cafe|pub|bar" zoom-min="18">
-        <symbol id="restaurant" src="jar:symbols/food/restaurant.svg" />
         <caption fill="#734A08" font-size="12" font-style="bold" k="name" position="above"
             stroke="#FFFFFF" stroke-width="2.0" symbol-id="restaurant" />
     </rule>
