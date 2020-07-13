@@ -75,8 +75,12 @@ class SmashFormHelper implements AFormhelper {
       value = itemMap[TAG_VALUE].trim();
     }
     if (value.isNotEmpty) {
-      imageSplit.clear();
-      imageSplit.addAll(value.split(IMAGE_ID_SEPARATOR));
+      var split = value.split(IMAGE_ID_SEPARATOR);
+      split.forEach((v) {
+        if (!imageSplit.contains(v)) {
+          imageSplit.add(v);
+        }
+      });
     }
 
     List<Widget> thumbList = [];
