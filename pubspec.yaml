@@ -60,10 +60,14 @@ dependencies:
       ref: version4smash
 
   mapsforge_flutter:
+    # path: /Users/hydrologis/development/SMASH/mapsforge_flutter/mapsforge_flutter
     git:
       url: https://github.com/moovida/mapsforge_flutter.git
       # ref: libs_upgrade
       path: mapsforge_flutter
+
+  # BSD License
+  synchronized: 2.2.0+1
 
   # Apache 2
   badges: ^1.1.1

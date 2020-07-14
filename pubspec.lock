@@ -105,7 +105,7 @@ packages:
       name: collection
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.14.12"
+    version: "1.14.13"
   console_log_handler:
     dependency: transitive
     description:
@@ -738,7 +738,7 @@ packages:
     source: hosted
     version: "1.0.5"
   synchronized:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: synchronized
       url: "https://pub.dartlang.org"
@@ -778,7 +778,7 @@ packages:
       name: typed_data
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.6"
+    version: "1.2.0"
   unicode:
     dependency: transitive
     description:
