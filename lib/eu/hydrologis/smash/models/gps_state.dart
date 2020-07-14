@@ -125,7 +125,7 @@ class GpsState extends ChangeNotifierPlus {
       l.text = logName;
       l.startTime = DateTime.now().millisecondsSinceEpoch;
       l.endTime = 0;
-      l.isDirty = 0;
+      l.isDirty = 1;
       l.lengthm = 0;
       LogProperty lp = new LogProperty();
       lp.isVisible = 1;
