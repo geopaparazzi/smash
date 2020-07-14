@@ -72,6 +72,8 @@ Future<FM.LatLngBounds> getMapsforgeBounds(File file) async {
   return bounds;
 }
 
+/// Flutter mapsforge renderer with synched executeJob for
+/// concurrent access control.
 class SmashMapDataStoreRenderer extends MapDataStoreRenderer {
   var lock = Lock();
 
