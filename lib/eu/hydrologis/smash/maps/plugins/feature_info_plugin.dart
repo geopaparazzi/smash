@@ -116,13 +116,13 @@ class FeatureInfoLayer extends StatelessWidget {
         .getLayerSources()
         .where((l) => l is VectorLayerSource && l.isActive())
         .toList();
-    QueryResult totalQueryResult;
+    EditableQueryResult totalQueryResult = EditableQueryResult();
+    totalQueryResult.editable = [];
+    totalQueryResult.ids = [];
+    totalQueryResult.primaryKeys = [];
+    totalQueryResult.dbs = [];
     for (var vLayer in visibleVectorLayers) {
       if (vLayer is GeopackageSource) {
-        totalQueryResult = EditableQueryResult();
-        totalQueryResult.ids = [];
-        (totalQueryResult as EditableQueryResult).primaryKeys = [];
-        (totalQueryResult as EditableQueryResult).dbs = [];
         var srid = vLayer.getSrid();
         var boundsGeomInSrid = boundMap[srid];
         var db = ConnectionsHandler().open(vLayer.getAbsolutePath());
@@ -141,12 +141,13 @@ class FeatureInfoLayer extends StatelessWidget {
           print("Found data for: " + layerName);
 
           var pk = db.getPrimaryKey(layerName);
-          (totalQueryResult as EditableQueryResult).primaryKeys.add(pk);
-          (totalQueryResult as EditableQueryResult).dbs.add(db);
 
           var dataPrj = SmashPrj.fromSrid(srid);
           queryResult.geoms.forEach((g) {
             totalQueryResult.ids.add(layerName);
+            totalQueryResult.primaryKeys.add(pk);
+            totalQueryResult.dbs.add(db);
+            totalQueryResult.editable.add(true);
             if (srid != SmashPrj.EPSG4326_INT) {
               SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, g);
             }
@@ -158,10 +159,10 @@ class FeatureInfoLayer extends StatelessWidget {
         }
       } else if (vLayer is ShapefileSource) {
         var features = vLayer.getInRoi(roiGeom: boundsGeom);
-        totalQueryResult = QueryResult();
-        totalQueryResult.ids = [];
         features.forEach((f) {
           totalQueryResult.ids.add(vLayer.getName());
+          totalQueryResult.primaryKeys.add(null);
+          totalQueryResult.editable.add(false);
           totalQueryResult.geoms.add(f.geometry);
           totalQueryResult.data.add(f.attributes);
         });
@@ -179,6 +180,7 @@ class FeatureInfoLayer extends StatelessWidget {
 }
 
 class EditableQueryResult extends QueryResult {
+  List<bool> editable;
   List<String> primaryKeys;
   List<GeopackageDb> dbs;
   List<Map<String, dynamic>> attributes;
