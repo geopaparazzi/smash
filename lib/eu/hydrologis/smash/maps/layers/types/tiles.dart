@@ -281,6 +281,8 @@ class TileSource extends TiledRasterLayerSource {
   }
 
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
+    bool retinaModeOn =
+        GpPreferences().getBooleanSync(KEY_RETINA_MODE_ON, true);
     if (FileManager.isMapsforge(getAbsolutePath())) {
       // mapsforge
       double tileSize = 256;
@@ -296,6 +298,7 @@ class TileSource extends TiledRasterLayerSource {
           tms: isTms,
           backgroundColor: Colors.transparent,
           opacity: opacityPercentage / 100.0,
+          retinaMode: false, // not supported
         )
       ];
     } else if (FileManager.isMbtiles(getAbsolutePath())) {
@@ -309,6 +312,7 @@ class TileSource extends TiledRasterLayerSource {
           tms: true,
           backgroundColor: Colors.transparent,
           opacity: opacityPercentage / 100.0,
+          retinaMode: false, // not supported
         )
       ];
     } else if (FileManager.isGeopackage(getAbsolutePath())) {
@@ -321,6 +325,7 @@ class TileSource extends TiledRasterLayerSource {
           tms: true,
           backgroundColor: Colors.transparent,
           opacity: opacityPercentage / 100.0,
+          retinaMode: false, // not supported
         )
       ];
     } else if (isOnlineService()) {
@@ -334,6 +339,7 @@ class TileSource extends TiledRasterLayerSource {
             backgroundColor: Colors.transparent,
             opacity: opacityPercentage / 100.0,
             maxZoom: maxZoom.toDouble(),
+            retinaMode: retinaModeOn,
           )
         ];
       } else {
@@ -345,6 +351,7 @@ class TileSource extends TiledRasterLayerSource {
             opacity: opacityPercentage / 100.0,
             maxZoom: maxZoom.toDouble(),
             subdomains: subdomains,
+            retinaMode: retinaModeOn,
           )
         ];
       }

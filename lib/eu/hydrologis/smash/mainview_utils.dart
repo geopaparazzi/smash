@@ -140,9 +140,9 @@ class DashboardUtils {
           bold: true,
           color: c,
         ),
-        onTap: () {
+        onTap: () async {
           Navigator.of(context).pop();
-          Navigator.push(context,
+          await Navigator.push(context,
               MaterialPageRoute(builder: (context) => SettingsWidget()));
         },
       ),

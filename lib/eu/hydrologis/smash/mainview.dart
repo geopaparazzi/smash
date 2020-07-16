@@ -333,7 +333,7 @@ class MainViewWidgetState extends State<MainViewWidget>
               mapBuilder.context,
               "Are you sure you want to close the project?",
               "Active operations will be stopped.");
-          if (doExit) {
+          if (doExit != null && doExit) {
             await mapState.persistLastPosition();
             await disposeProject(context);
             await GpsHandler().close();

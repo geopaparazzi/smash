@@ -14,6 +14,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -270,6 +271,8 @@ class ScreenSettingState extends State<ScreenSetting> {
   Widget build(BuildContext context) {
     bool keepScreenOn =
         GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
+    bool retinaModeOn =
+        GpPreferences().getBooleanSync(KEY_RETINA_MODE_ON, true);
     double currentIconSize = GpPreferences()
         .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
     //    String themeStr = GpPreferences().getStringSync(KEY_THEME, SmashThemes.LIGHT.toString());
@@ -310,6 +313,25 @@ class ScreenSettingState extends State<ScreenSetting> {
                 },
                 title: SmashUI.normalText(
                   "Keep Screen On",
+                ),
+              ),
+            ),
+            Card(
+              margin: SmashUI.defaultMargin(),
+              color: SmashColors.mainBackground,
+              child: CheckboxListTile(
+                value: retinaModeOn,
+                onChanged: (selected) async {
+                  await GpPreferences()
+                      .setBoolean(KEY_RETINA_MODE_ON, selected);
+                  SettingsWidget.reloadMapSettings(context);
+                  setState(() {});
+                },
+                title: SmashUI.normalText(
+                  "Retina screen mode",
+                ),
+                subtitle: SmashUI.smallText(
+                  "To apply this setting you need to enter and exit the layer view.",
                 ),
               ),
             ),
