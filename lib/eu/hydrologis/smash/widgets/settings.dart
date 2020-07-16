@@ -272,7 +272,7 @@ class ScreenSettingState extends State<ScreenSetting> {
     bool keepScreenOn =
         GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
     bool retinaModeOn =
-        GpPreferences().getBooleanSync(KEY_RETINA_MODE_ON, true);
+        GpPreferences().getBooleanSync(KEY_RETINA_MODE_ON, false);
     double currentIconSize = GpPreferences()
         .getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
     //    String themeStr = GpPreferences().getStringSync(KEY_THEME, SmashThemes.LIGHT.toString());

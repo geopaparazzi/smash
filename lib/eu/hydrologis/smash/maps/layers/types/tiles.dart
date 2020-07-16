@@ -282,7 +282,7 @@ class TileSource extends TiledRasterLayerSource {
 
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
     bool retinaModeOn =
-        GpPreferences().getBooleanSync(KEY_RETINA_MODE_ON, true);
+        GpPreferences().getBooleanSync(KEY_RETINA_MODE_ON, false);
     if (FileManager.isMapsforge(getAbsolutePath())) {
       // mapsforge
       double tileSize = 256;
