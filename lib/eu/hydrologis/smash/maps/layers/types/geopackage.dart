@@ -9,7 +9,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as UI;
 
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Polygon;
 import 'package:flutter/foundation.dart';
@@ -20,12 +19,11 @@ import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class GeopackageSource extends VectorLayerSource {
   static final bool DO_RTREE_CHECK = false;
@@ -41,11 +39,11 @@ class GeopackageSource extends VectorLayerSource {
   Envelope _tableBounds;
   GeometryColumn _geometryColumn;
   SldObjectParser _style;
+  TextStyle _textStyle;
 
   bool loaded = false;
   GeopackageDb db;
   int _srid;
-  TextStyle _textStyle;
 
   GeopackageSource.fromMap(Map<String, dynamic> map) {
     _tableName = map[LAYERSKEY_LABEL];
@@ -81,34 +79,16 @@ class GeopackageSource extends VectorLayerSource {
 
       getDatabase();
 
-      _attribution = _attribution +
-          "${_geometryColumn.geometryType.getTypeName()} (${_tableGeoms.length}) ";
-
       String sldString = db.getSld(_tableName);
       if (sldString == null) {
         if (_geometryColumn.geometryType.isPoint()) {
-          PointStyle ps = PointStyle();
-          sldString = SldObjectBuilder("simplepoint")
-              .addFeatureTypeStyle("fts")
-              .addRule("rule")
-              .addPointSymbolizer(ps)
-              .build();
+          sldString = DefaultSlds.simplePointSld();
           db.updateSld(_tableName, sldString);
         } else if (_geometryColumn.geometryType.isLine()) {
-          LineStyle ls = LineStyle();
-          sldString = SldObjectBuilder("simpleline")
-              .addFeatureTypeStyle("fts")
-              .addRule("rule")
-              .addLineSymbolizer(ls)
-              .build();
+          sldString = DefaultSlds.simpleLineSld();
           db.updateSld(_tableName, sldString);
         } else if (_geometryColumn.geometryType.isPolygon()) {
-          PolygonStyle ps = PolygonStyle();
-          sldString = SldObjectBuilder("simplepolygon")
-              .addFeatureTypeStyle("fts")
-              .addRule("rule")
-              .addPolygonSymbolizer(ps)
-              .build();
+          sldString = DefaultSlds.simplePolygonSld();
           db.updateSld(_tableName, sldString);
         }
       }
@@ -140,6 +120,9 @@ class GeopackageSource extends VectorLayerSource {
       _tableGeoms.forEach((g) {
         _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
       });
+
+      _attribution = _attribution +
+          "${_geometryColumn.geometryType.getTypeName()} (${_tableGeoms.length}) ";
 
       loaded = true;
     }
@@ -239,7 +222,8 @@ class GeopackageSource extends VectorLayerSource {
         Color fillColorAlpha = ColorExt(pointStyle.fillColorHex)
             .withOpacity(pointStyle.fillOpacity);
         Color fillColor = ColorExt(pointStyle.fillColorHex);
-        Color textColor = ColorExt(_textStyle.textColor);
+        Color textColor =
+            _textStyle != null ? ColorExt(_textStyle.textColor) : null;
 
         List<Marker> points = [];
         var dataSize = _tableGeoms.length;
@@ -250,7 +234,7 @@ class GeopackageSource extends VectorLayerSource {
             var c = geometryN.getCoordinate();
             Object userData = geometryN.getUserData();
             Widget widget;
-            if (userData != null) {
+            if (textColor != null) {
               widget = MarkerIcon(iconData, fillColorAlpha, size,
                   userData.toString(), textColor, fillColorAlpha);
             } else {

@@ -112,7 +112,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
     );
 
     _graphicFactory = FlutterGraphicFactory();
-    SymbolCache symbolCache = SymbolCache(_displayModel);
+    SymbolCache symbolCache = SymbolCache();
     RenderThemeBuilder renderThemeBuilder =
         RenderThemeBuilder(_graphicFactory, _displayModel, symbolCache);
     String content = await rootBundle.loadString("assets/defaultrender.xml");

@@ -11,7 +11,8 @@ import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:dart_shp/dart_shp.dart' hide Row;
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide TextStyle;
+import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
@@ -34,7 +35,8 @@ class ShapefileSource extends VectorLayerSource {
   JTS.STRtree _featureTree;
   JTS.Envelope _shpBounds;
   bool loaded = false;
-  SldObjec sld;
+  SldObjectParser _style;
+  TextStyle _textStyle;
 
   ShapefileSource.fromMap(Map<String, dynamic> map) {
     _name = map[LAYERSKEY_LABEL];
@@ -52,13 +54,6 @@ class ShapefileSource extends VectorLayerSource {
 
       var parentFolder = FileUtilities.parentFolderFromFile(_absolutePath);
 
-      var sldPath = FileUtilities.joinPaths(parentFolder, _name + ".sld");
-      var sldFile = File(sldPath);
-      if (sldFile.existsSync()) {
-        sld = SldObject.fromFile(sldFile);
-        sld.parse();
-      }
-
       var defaultUtf8Charset = Charset();
       var shpFile = File(_absolutePath);
       _shpReader = ShapefileFeatureReader(shpFile, charset: defaultUtf8Charset);
@@ -68,9 +63,13 @@ class ShapefileSource extends VectorLayerSource {
 
       _shpBounds = JTS.Envelope.empty();
       _featureTree = JTS.STRtree();
+      EGeometryType geometryType;
       while (await _shpReader.hasNext()) {
         var feature = await _shpReader.next();
         var geometry = feature.geometry;
+        if (geometryType == null) {
+          geometryType = EGeometryType.forTypeName(geometry.getGeometryType());
+        }
         SmashPrj.transformGeometryToWgs84(fromPrj, geometry);
         var envLL = geometry.getEnvelopeInternal();
         _shpBounds.expandToIncludeEnvelope(envLL);
@@ -81,6 +80,32 @@ class ShapefileSource extends VectorLayerSource {
           .d("Loaded ${features.length} Shp features of envelope: $_shpBounds");
 
       _shpReader.close();
+
+      var sldPath = FileUtilities.joinPaths(parentFolder, _name + ".sld");
+      var sldFile = File(sldPath);
+      if (sldFile.existsSync()) {
+        _style = SldObjectParser.fromFile(sldFile);
+        _style.parse();
+      } else {
+        String sldString;
+        if (geometryType.isPoint()) {
+          sldString = DefaultSlds.simplePointSld();
+        } else if (geometryType.isLine()) {
+          sldString = DefaultSlds.simpleLineSld();
+        } else if (geometryType.isPolygon()) {
+          sldString = DefaultSlds.simplePolygonSld();
+        }
+        if (sldString != null) {
+          FileUtilities.writeStringToFile(sldPath, sldString);
+          _style = SldObjectParser.fromString(sldString);
+          _style.parse();
+        }
+      }
+      if (_style.featureTypeStyles.first.rules.first.textSymbolizers.length >
+          0) {
+        _textStyle = _style
+            .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+      }
 
       _attribution = _attribution +
           "${features[0].geometry.getGeometryType()} (${features.length}) ";
@@ -159,17 +184,16 @@ class ShapefileSource extends VectorLayerSource {
         Color pointFillColor = Colors.red;
         String labelName;
         Color labelColor = Colors.black;
-        if (sld != null) {
+        if (_style != null) {
           var pSym =
-              sld.featureTypeStyles[0].rules[0].pointSymbolizers[0].style;
+              _style.featureTypeStyles[0].rules[0].pointSymbolizers[0].style;
           iconData = SmashIcons.forSldWkName(pSym.markerName);
           pointsSize = pSym.markerSize * 3;
           pointFillColor = ColorExt(pSym.fillColorHex);
 
-          var textSym = sld.featureTypeStyles[0].rules[0].textSymbolizers;
-          if (textSym.isNotEmpty) {
-            labelName = textSym[0].labelName;
-            labelColor = ColorExt(textSym[0].textColor);
+          if (_textStyle != null) {
+            labelName = _textStyle.labelName;
+            labelColor = ColorExt(_textStyle.textColor);
           }
         }
 
@@ -228,8 +252,9 @@ class ShapefileSource extends VectorLayerSource {
         Color lineStrokeColor = Colors.black;
         double lineWidth = 3;
         double lineOpacity = 1;
-        if (sld != null) {
-          var pSym = sld.featureTypeStyles[0].rules[0].lineSymbolizers[0].style;
+        if (_style != null) {
+          var pSym =
+              _style.featureTypeStyles[0].rules[0].lineSymbolizers[0].style;
           lineWidth = pSym.strokeWidth;
           lineStrokeColor = ColorExt(pSym.strokeColorHex);
           lineOpacity = pSym.strokeOpacity * 255;
@@ -260,9 +285,9 @@ class ShapefileSource extends VectorLayerSource {
         Color fillColor = Colors.black.withAlpha(100);
         double lineWidth = 3;
         double lineOpacity = 1;
-        if (sld != null) {
+        if (_style != null) {
           var pSym =
-              sld.featureTypeStyles[0].rules[0].polygonSymbolizers[0].style;
+              _style.featureTypeStyles[0].rules[0].polygonSymbolizers[0].style;
           lineWidth = pSym.strokeWidth;
           lineStrokeColor = ColorExt(pSym.strokeColorHex);
           lineOpacity = pSym.strokeOpacity * 255;

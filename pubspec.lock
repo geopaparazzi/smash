@@ -140,7 +140,7 @@ packages:
       name: dart_hydrologis_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0"
+    version: "0.5.0+2"
   dart_jts:
     dependency: transitive
     description:
@@ -409,7 +409,7 @@ packages:
     description:
       path: mapsforge_flutter
       ref: HEAD
-      resolved-ref: df0a58752770e9dc4e21cb39cd8eaf2eb477ec8f
+      resolved-ref: "17e11ad0f7adcebd78830f7dfee92179c7fe48b3"
       url: "https://github.com/moovida/mapsforge_flutter.git"
     source: git
     version: "0.0.1"
