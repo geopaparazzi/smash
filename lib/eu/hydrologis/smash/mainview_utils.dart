@@ -37,14 +37,22 @@ const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
 
 class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue,
-      {Color textColor, Color badgeColor, BadgePosition badgePosition}) {
+      {Color textColor,
+      Color badgeColor,
+      BadgePosition badgePosition,
+      double iconSize}) {
     if (badgeValue > 0) {
       return Badge(
         badgeColor: badgeColor != null ? badgeColor : SmashColors.mainSelection,
         shape: badgeValue > 999 ? BadgeShape.square : BadgeShape.circle,
         borderRadius: 20,
         toAnimate: false,
-        position: badgePosition,
+        position: badgePosition != null
+            ? badgePosition
+            : iconSize != null
+                ? BadgePosition.topLeft(
+                    top: -iconSize / 2, left: 0.1 * iconSize)
+                : null,
         badgeContent: Text(
           '$badgeValue',
           style: TextStyle(color: textColor != null ? textColor : Colors.white),
@@ -56,11 +64,15 @@ class DashboardUtils {
     }
   }
 
-  static Widget makeToolbarZoomBadge(Widget widget, int badgeValue) {
+  static Widget makeToolbarZoomBadge(Widget widget, int badgeValue,
+      {double iconSize}) {
     if (badgeValue > 0) {
       return Badge(
         badgeColor: SmashColors.mainDecorations,
         shape: BadgeShape.circle,
+        position: iconSize != null
+            ? BadgePosition.topRight(top: -iconSize / 2, right: -iconSize / 3)
+            : null,
         toAnimate: false,
         badgeContent: Text(
           '$badgeValue',

@@ -375,6 +375,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           DashboardUtils.makeToolbarBadge(
             LoggingButton(coachMarks.logsButtonKey, _iconSize),
             projectData != null ? projectData.logsCount : 0,
+            iconSize: _iconSize,
           ),
           Spacer(),
           GpsInfoButton(coachMarks.gpsButtonKey, _iconSize),
@@ -395,6 +396,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                 iconSize: _iconSize,
               ),
               mapState.zoom.toInt(),
+              iconSize: _iconSize,
             );
           }),
           IconButton(
@@ -532,6 +534,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         },
       ),
       projectData != null ? projectData.formNotesCount : 0,
+      iconSize: _iconSize,
     );
   }
 
@@ -597,6 +600,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         },
       ),
       projectData != null ? projectData.simpleNotesCount : 0,
+      iconSize: _iconSize,
     );
   }
 
