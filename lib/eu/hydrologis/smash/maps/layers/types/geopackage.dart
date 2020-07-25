@@ -10,11 +10,12 @@ import 'dart:typed_data';
 import 'dart:ui' as UI;
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Polygon;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide TextStyle;
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
@@ -39,11 +40,12 @@ class GeopackageSource extends VectorLayerSource {
   List<Geometry> _tableGeoms;
   Envelope _tableBounds;
   GeometryColumn _geometryColumn;
-  BasicStyle _basicStyle;
+  SldObjectParser _style;
 
   bool loaded = false;
   GeopackageDb db;
   int _srid;
+  TextStyle _textStyle;
 
   GeopackageSource.fromMap(Map<String, dynamic> map) {
     _tableName = map[LAYERSKEY_LABEL];
@@ -78,13 +80,59 @@ class GeopackageSource extends VectorLayerSource {
       }
 
       getDatabase();
+
+      _attribution = _attribution +
+          "${_geometryColumn.geometryType.getTypeName()} (${_tableGeoms.length}) ";
+
+      String sldString = db.getSld(_tableName);
+      if (sldString == null) {
+        if (_geometryColumn.geometryType.isPoint()) {
+          PointStyle ps = PointStyle();
+          sldString = SldObjectBuilder("simplepoint")
+              .addFeatureTypeStyle("fts")
+              .addRule("rule")
+              .addPointSymbolizer(ps)
+              .build();
+          db.updateSld(_tableName, sldString);
+        } else if (_geometryColumn.geometryType.isLine()) {
+          LineStyle ls = LineStyle();
+          sldString = SldObjectBuilder("simpleline")
+              .addFeatureTypeStyle("fts")
+              .addRule("rule")
+              .addLineSymbolizer(ls)
+              .build();
+          db.updateSld(_tableName, sldString);
+        } else if (_geometryColumn.geometryType.isPolygon()) {
+          PolygonStyle ps = PolygonStyle();
+          sldString = SldObjectBuilder("simplepolygon")
+              .addFeatureTypeStyle("fts")
+              .addRule("rule")
+              .addPolygonSymbolizer(ps)
+              .build();
+          db.updateSld(_tableName, sldString);
+        }
+      }
+      if (sldString != null) {
+        _style = SldObjectParser.fromString(sldString);
+        _style.parse();
+
+        if (_style.featureTypeStyles.first.rules.first.textSymbolizers.length >
+            0) {
+          _textStyle = _style
+              .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+        }
+      }
+
       _geometryColumn = db.getGeometryColumnsForTable(_tableName);
       _srid = _geometryColumn.srid;
 
 //      _tableBounds = db.getTableBounds(_tableName);
 
+      String userDataField = _textStyle != null ? _textStyle.labelName : null;
       _tableGeoms = db.getGeometriesIn(_tableName,
-          limit: maxFeaturesToLoad, envelope: limitBounds);
+          limit: maxFeaturesToLoad,
+          envelope: limitBounds,
+          userDataField: userDataField);
 
       var fromPrj = SmashPrj.fromSrid(_srid);
       SmashPrj.transformListToWgs84(fromPrj, _tableGeoms);
@@ -92,11 +140,6 @@ class GeopackageSource extends VectorLayerSource {
       _tableGeoms.forEach((g) {
         _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
       });
-
-      _attribution = _attribution +
-          "${_geometryColumn.geometryType.getTypeName()} (${_tableGeoms.length}) ";
-
-      _basicStyle = db.getBasicStyle(_tableName);
 
       loaded = true;
     }
@@ -162,9 +205,12 @@ class GeopackageSource extends VectorLayerSource {
       case EGeometryType.LINESTRING:
       case EGeometryType.MULTILINESTRING:
         List<Polyline> lines = [];
+
+        var lineStyle = _style
+            .featureTypeStyles.first.rules.first.lineSymbolizers.first.style;
         _tableGeoms.forEach((lineGeom) {
-          Color strokeColor = ColorExt(_basicStyle.strokecolor)
-              .withOpacity(_basicStyle.strokealpha);
+          Color strokeColor = ColorExt(lineStyle.strokeColorHex)
+              .withOpacity(lineStyle.strokeOpacity);
           for (int i = 0; i < lineGeom.getNumGeometries(); i++) {
             var geometryN = lineGeom.getGeometryN(i);
             List<LatLng> linePoints = geometryN
@@ -173,7 +219,7 @@ class GeopackageSource extends VectorLayerSource {
                 .toList();
             lines.add(Polyline(
                 points: linePoints,
-                strokeWidth: _basicStyle.width,
+                strokeWidth: lineStyle.strokeWidth,
                 color: strokeColor));
           }
         });
@@ -185,28 +231,44 @@ class GeopackageSource extends VectorLayerSource {
         break;
       case EGeometryType.POINT:
       case EGeometryType.MULTIPOINT:
+        var pointStyle = _style
+            .featureTypeStyles.first.rules.first.pointSymbolizers.first.style;
+        var iconData = SmashIcons.forSldWkName(pointStyle.markerName);
+        double size = pointStyle.markerSize * POINT_SIZE_FACTOR;
+
+        Color fillColorAlpha = ColorExt(pointStyle.fillColorHex)
+            .withOpacity(pointStyle.fillOpacity);
+        Color fillColor = ColorExt(pointStyle.fillColorHex);
+        Color textColor = ColorExt(_textStyle.textColor);
+
         List<Marker> points = [];
-        Color fillColorAlpha =
-            ColorExt(_basicStyle.fillcolor).withOpacity(_basicStyle.fillalpha);
-        Color fillColor = ColorExt(_basicStyle.fillcolor);
-        double size = _basicStyle.size * POINT_SIZE_FACTOR;
         var dataSize = _tableGeoms.length;
         for (int j = 0; j < dataSize; j++) {
           var pointGeom = _tableGeoms[j];
           for (int i = 0; i < pointGeom.getNumGeometries(); i++) {
             var geometryN = pointGeom.getGeometryN(i);
             var c = geometryN.getCoordinate();
+            Object userData = geometryN.getUserData();
+            Widget widget;
+            if (userData != null) {
+              widget = MarkerIcon(iconData, fillColorAlpha, size,
+                  userData.toString(), textColor, fillColorAlpha);
+            } else {
+              widget = Container(
+                child: Icon(
+                  iconData,
+                  size: size,
+                  color: fillColorAlpha,
+                ),
+              );
+            }
             Marker m = Marker(
               width: size,
               height: size,
               point: LatLng(c.y, c.x),
-              builder: (ctx) => new Container(
-                child: Icon(
-                  MdiIcons.circle,
-                  size: size,
-                  color: fillColorAlpha,
-                ),
-              ),
+              builder: (ctx) {
+                return widget;
+              },
             );
             points.add(m);
           }
@@ -237,11 +299,13 @@ class GeopackageSource extends VectorLayerSource {
         break;
       case EGeometryType.POLYGON:
       case EGeometryType.MULTIPOLYGON:
+        var polygonStyle = _style
+            .featureTypeStyles.first.rules.first.polygonSymbolizers.first.style;
         List<Polygon> polygons = [];
-        Color strokeColor = ColorExt(_basicStyle.strokecolor)
-            .withOpacity(_basicStyle.strokealpha);
-        Color fillColor =
-            ColorExt(_basicStyle.fillcolor).withOpacity(_basicStyle.fillalpha);
+        Color strokeColor = ColorExt(polygonStyle.strokeColorHex)
+            .withOpacity(polygonStyle.strokeOpacity);
+        Color fillColor = ColorExt(polygonStyle.fillColorHex)
+            .withOpacity(polygonStyle.fillOpacity);
         _tableGeoms.forEach((polyGeom) {
           for (int i = 0; i < polyGeom.getNumGeometries(); i++) {
             var geometryN = polyGeom.getGeometryN(i);
@@ -251,7 +315,7 @@ class GeopackageSource extends VectorLayerSource {
                 .toList();
             polygons.add(Polygon(
                 points: polyPoints,
-                borderStrokeWidth: _basicStyle.width,
+                borderStrokeWidth: polygonStyle.strokeWidth,
                 borderColor: strokeColor,
                 color: fillColor));
           }

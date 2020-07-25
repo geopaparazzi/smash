@@ -8,17 +8,16 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:badges/badges.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
+import 'package:share_extend/share_extend.dart';
 import 'package:smash/eu/hydrologis/smash/export/export_widget.dart';
 import 'package:smash/eu/hydrologis/smash/gps/geocoding.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/import/import_widget.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -31,7 +30,6 @@ import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:share_extend/share_extend.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
 
@@ -385,7 +383,7 @@ class DashboardUtils {
               sb.write("\nAccuracy: ");
               sb.write(pos.accuracy.toStringAsFixed(KEY_ELEV_DECIMALS));
               sb.write("\nTimestamp: ");
-              sb.write(TimeUtilities.ISO8601_TS_FORMATTER.format(
+              sb.write(HU.TimeUtilities.ISO8601_TS_FORMATTER.format(
                   DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
               sb.write("\n");
               sb.write(UrlUtilities.osmUrlFromLatLong(

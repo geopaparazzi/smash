@@ -6,15 +6,13 @@
 
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
-import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -1581,7 +1579,7 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
                 GpLogItem logItem = logItems[index];
                 Color c = levelToColor[logItem.level];
                 String msg = logItem.message;
-                String ts = TimeUtilities.ISO8601_TS_FORMATTER_MILLIS
+                String ts = HU.TimeUtilities.ISO8601_TS_FORMATTER_MILLIS
                     .format(DateTime.fromMillisecondsSinceEpoch(logItem.ts));
                 var iconData = levelToIcon[logItem.level];
 

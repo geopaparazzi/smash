@@ -34,7 +34,7 @@ class ShapefileSource extends VectorLayerSource {
   JTS.STRtree _featureTree;
   JTS.Envelope _shpBounds;
   bool loaded = false;
-  SldObject sld;
+  SldObjec sld;
 
   ShapefileSource.fromMap(Map<String, dynamic> map) {
     _name = map[LAYERSKEY_LABEL];

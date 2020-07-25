@@ -33,10 +33,10 @@ dependencies:
     git:
       url: https://github.com/moovida/smashlibs.git
 
-  dart_shp: ^0.3.1+1
+  dart_shp: ^0.3.1+2
     # path: ../dart_shp/
 
-  dart_hydrologis_utils: ^0.4.1
+  dart_hydrologis_utils: ^0.5.0
     # path: ../dart_hydrologis_utils/
 
   ##################################

@@ -3,18 +3,18 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-import 'dart:convert';
 import 'dart:ui';
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:image/image.dart' as IMG;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
-import 'package:image/image.dart' as IMG;
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -25,7 +25,7 @@ class PdfExporter {
 
   static Future<void> exportDb(
       GeopaparazziProjectDb db, File outputFile) async {
-    var dbName = FileUtilities.nameFromFile(db.path, false);
+    var dbName = HU.FileUtilities.nameFromFile(db.path, false);
     final Document pdf = Document(
       author: "Smash User",
       keywords: "SMASH, export, notes, gps, log",
@@ -65,7 +65,7 @@ class PdfExporter {
         row.add(note.lat.toStringAsFixed(6));
         row.add("${note.altim.toInt()}m");
         row.add(note.text);
-        row.add(TimeUtilities.ISO8601_TS_FORMATTER
+        row.add(HU.TimeUtilities.ISO8601_TS_FORMATTER
             .format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp)));
         var noteExt = note.noteExt;
 
@@ -144,7 +144,7 @@ class PdfExporter {
 
                   Uint8List imageDataBytes =
                       db.getImageDataBytes(image.imageDataId);
-                  List<int> resizeImage = ImageUtilities.resizeImage(
+                  List<int> resizeImage = HU.ImageUtilities.resizeImage(
                       imageDataBytes,
                       longestSizeTo: EXPORT_IMG_LONGSIZE);
                   IMG.Image img = IMG.decodeImage(resizeImage);
@@ -212,10 +212,10 @@ class PdfExporter {
             Bullet(text: "azimuth: ${image.azim}"),
             Bullet(
                 text:
-                    "timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}"),
+                    "timestamp: ${HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}"),
           ]);
           Uint8List imageDataBytes = db.getImageDataBytes(image.imageDataId);
-          List<int> resizeImage = ImageUtilities.resizeImage(imageDataBytes,
+          List<int> resizeImage = HU.ImageUtilities.resizeImage(imageDataBytes,
               longestSizeTo: EXPORT_IMG_LONGSIZE);
           IMG.Image img = IMG.decodeImage(resizeImage);
 
