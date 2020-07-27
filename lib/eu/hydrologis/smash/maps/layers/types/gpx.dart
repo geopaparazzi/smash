@@ -9,7 +9,6 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:gpx/gpx.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -305,19 +304,19 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                           padding: SmashUI.defaultPadding(),
                           child: LimitedBox(
                             maxHeight: 400,
-                            child: MaterialColorPicker(
-                                shrinkWrap: true,
-                                allowShades: false,
-                                circleSize: 45,
-                                onColorChange: (Color color) {
-                                  _pointColor = ColorExt.fromColor(color);
-                                  _somethingChanged = true;
-                                },
-                                onMainColorChange: (mColor) {
-                                  _pointColor = ColorExt.fromColor(mColor);
-                                  _somethingChanged = true;
-                                },
-                                selectedColor: Color(_pointColor.value)),
+                            // child: MaterialColorPicker(
+                            //     shrinkWrap: true,
+                            //     allowShades: false,
+                            //     circleSize: 45,
+                            //     onColorChange: (Color color) {
+                            //       _pointColor = ColorExt.fromColor(color);
+                            //       _somethingChanged = true;
+                            //     },
+                            //     onMainColorChange: (mColor) {
+                            //       _pointColor = ColorExt.fromColor(mColor);
+                            //       _somethingChanged = true;
+                            //     },
+                            //     selectedColor: Color(_pointColor.value)),
                           ),
                         ),
                         SmashUI.titleText("Waypoints Size"),
@@ -363,19 +362,19 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                           padding: SmashUI.defaultPadding(),
                           child: LimitedBox(
                             maxHeight: 400,
-                            child: MaterialColorPicker(
-                                shrinkWrap: true,
-                                allowShades: false,
-                                circleSize: 45,
-                                onColorChange: (Color color) {
-                                  _lineColor = ColorExt.fromColor(color);
-                                  _somethingChanged = true;
-                                },
-                                onMainColorChange: (mColor) {
-                                  _lineColor = ColorExt.fromColor(mColor);
-                                  _somethingChanged = true;
-                                },
-                                selectedColor: Color(_lineColor.value)),
+                            // child: MaterialColorPicker(
+                            //     shrinkWrap: true,
+                            //     allowShades: false,
+                            //     circleSize: 45,
+                            //     onColorChange: (Color color) {
+                            //       _lineColor = ColorExt.fromColor(color);
+                            //       _somethingChanged = true;
+                            //     },
+                            //     onMainColorChange: (mColor) {
+                            //       _lineColor = ColorExt.fromColor(mColor);
+                            //       _somethingChanged = true;
+                            //     },
+                            //     selectedColor: Color(_lineColor.value)),
                           ),
                         ),
                         SmashUI.titleText("Tracks/Routes Width"),

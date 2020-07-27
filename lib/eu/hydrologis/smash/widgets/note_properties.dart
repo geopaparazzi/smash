@@ -6,12 +6,10 @@
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 /// The notes properties view.
 class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
@@ -49,18 +47,20 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
       var color = SmashColors.mainDecorations;
       if (iconName == _marker) color = SmashColors.mainSelection;
       var but = GridTile(
-          child: Card(
-        margin: EdgeInsets.all(10),
-        elevation: 5,
-        color: SmashColors.mainBackground,
-        child: IconButton(
-          icon: Icon(getSmashIcon(iconName)),
-          color: color,
-          onPressed: () {
-            _marker = iconName;
-            _somethingChanged = true;
-            setState(() {});
-          },
+          child: FittedBox(
+        child: Card(
+          margin: EdgeInsets.all(10),
+          elevation: 5,
+          color: SmashColors.mainBackground,
+          child: IconButton(
+            icon: Icon(getSmashIcon(iconName)),
+            color: color,
+            onPressed: () {
+              _marker = iconName;
+              _somethingChanged = true;
+              setState(() {});
+            },
+          ),
         ),
       ));
       _iconButtons.add(but);
@@ -100,7 +100,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: EditableTextField(
-                              "Log Name",
+                              "Note",
                               _note.text,
                               (res) async {
                                 if (res == null || res.trim().length == 0) {
@@ -134,54 +134,53 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                     shape: SmashUI.defaultShapeBorder(),
                     child: Padding(
                       padding: SmashUI.defaultPadding(),
-                      child: MaterialColorPicker(
-                        shrinkWrap: true,
-                        allowShades: false,
-                        circleSize: 45,
-                        onColorChange: (Color color) {
-                          _noteColor = ColorExt.fromColor(color);
-                          _somethingChanged = true;
-                        },
-                        onMainColorChange: (mColor) {
-                          _noteColor = ColorExt.fromColor(mColor);
-                          _somethingChanged = true;
-                        },
-                        selectedColor: Color(_noteColor.value),
-                        colors: SmashColorPalette.getColorSwatchValues(),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Card(
-                    elevation: SmashUI.DEFAULT_ELEVATION,
-                    shape: SmashUI.defaultShapeBorder(),
-                    child: Padding(
-                      padding: SmashUI.defaultPadding(),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          SmashUI.normalText("Size"),
-                          Flexible(
-                              flex: 1,
-                              child: Slider(
-                                activeColor: SmashColors.mainSelection,
-                                min: 5,
-                                max: _maxSize,
-                                divisions: 99,
-                                onChanged: (newRating) {
-                                  _somethingChanged = true;
-                                  setState(() => _sizeSliderValue = newRating);
-                                },
-                                value: _sizeSliderValue,
-                              )),
-                          Container(
-                            width: 50.0,
-                            alignment: Alignment.center,
-                            child: SmashUI.normalText(
-                              '${_sizeSliderValue.toInt()}',
-                            ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              SmashUI.normalText("Color"),
+                              Flexible(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: SmashUI.DEFAULT_PADDING,
+                                        right: SmashUI.DEFAULT_PADDING),
+                                    child: ColorPickerButton(_noteColor,
+                                        (newColor) {
+                                      _noteColor = ColorExt.fromColor(newColor);
+                                      _somethingChanged = true;
+                                    }),
+                                  )),
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              SmashUI.normalText("Size"),
+                              Flexible(
+                                  flex: 1,
+                                  child: Slider(
+                                    activeColor: SmashColors.mainSelection,
+                                    min: 5,
+                                    max: _maxSize,
+                                    divisions: 99,
+                                    onChanged: (newRating) {
+                                      _somethingChanged = true;
+                                      setState(
+                                          () => _sizeSliderValue = newRating);
+                                    },
+                                    value: _sizeSliderValue,
+                                  )),
+                              Container(
+                                width: 50.0,
+                                alignment: Alignment.center,
+                                child: SmashUI.normalText(
+                                  '${_sizeSliderValue.toInt()}',
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

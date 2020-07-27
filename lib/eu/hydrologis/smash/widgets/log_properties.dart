@@ -6,7 +6,6 @@
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
@@ -145,20 +144,14 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       TableRow(
         children: [
           TableUtilities.cellForString("Color"),
-          LimitedBox(
-            maxHeight: 400,
-            child: MaterialColorPicker(
-                shrinkWrap: true,
-                allowShades: false,
-                onColorChange: (Color color) {
-                  _logColor = ColorExt.fromColor(color);
-                  _somethingChanged = true;
-                },
-                onMainColorChange: (mColor) {
-                  _logColor = ColorExt.fromColor(mColor);
-                  _somethingChanged = true;
-                },
-                selectedColor: Color(_logColor.value)),
+          TableCell(
+            child: Padding(
+              padding: SmashUI.defaultPadding(),
+              child: ColorPickerButton(Color(_logColor.value), (newColor) {
+                _logColor = ColorExt.fromColor(newColor);
+                _somethingChanged = true;
+              }),
+            ),
           ),
         ],
       ),

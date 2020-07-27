@@ -7,7 +7,6 @@
 import 'dart:core';
 import 'dart:io';
 
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:dart_shp/dart_shp.dart' hide Row;
@@ -15,7 +14,6 @@ import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';

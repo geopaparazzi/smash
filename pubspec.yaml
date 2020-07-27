@@ -29,9 +29,9 @@ dependencies:
     #  url: https://github.com/moovida/dart_hydrologis_db.git
 
   smashlibs:
-    # path: ../smashlibs/
-    git:
-      url: https://github.com/moovida/smashlibs.git
+    path: ../smashlibs/
+    # git:
+    #   url: https://github.com/moovida/smashlibs.git
 
   dart_shp: ^0.3.1+2
     # path: ../dart_shp/
@@ -110,12 +110,6 @@ dependencies:
   # UNKNOWN!!!
   geocoder: 0.2.1
 
-  # UNKNOWN!!!
-  animated_floatactionbuttons: ^0.1.0
-
-  # MIT
-  flutter_material_color_picker: ^1.0.5
-
   #MIT
   extended_image: ^0.7.3-dev
 
@@ -129,7 +123,7 @@ dependencies:
   url_launcher: ^5.4.2
 
   # Apache 2.0
-  gpx: ^0.0.3
+  gpx: ^1.0.1
 
   # Apache 2.0
   pdf: ^1.6.0

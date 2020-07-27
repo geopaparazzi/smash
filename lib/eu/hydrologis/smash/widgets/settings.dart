@@ -9,7 +9,6 @@ import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
@@ -338,8 +337,48 @@ class ScreenSettingState extends State<ScreenSetting> {
               color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
-                  ListTile(
-                    title: SmashUI.normalText(
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Color Picker to use"),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: DropdownButton<String>(
+                      value: GpPreferences().getStringSync(
+                          KEY_COLORPICKER_TYPE, ColorPickers.SWATCH_PICKER),
+                      isExpanded: true,
+                      items: [
+                        DropdownMenuItem(
+                          value: ColorPickers.SWATCH_PICKER,
+                          child: new Text(ColorPickers.SWATCH_PICKER),
+                        ),
+                        DropdownMenuItem(
+                          value: ColorPickers.COLOR_PICKER,
+                          child: new Text(ColorPickers.COLOR_PICKER),
+                        ),
+                        DropdownMenuItem(
+                          value: ColorPickers.PALETTE_PICKER,
+                          child: new Text(ColorPickers.PALETTE_PICKER),
+                        ),
+                      ],
+                      onChanged: (selected) async {
+                        await GpPreferences()
+                            .setString(KEY_COLORPICKER_TYPE, selected);
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Card(
+              margin: SmashUI.defaultMargin(),
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText(
                       "Map Center Cross",
                     ),
                   ),
@@ -350,26 +389,20 @@ class ScreenSettingState extends State<ScreenSetting> {
                       children: <Widget>[
                         SmashUI.normalText("Color"),
                         Expanded(
-                          child: MaterialColorPicker(
-                            shrinkWrap: true,
-                            allowShades: false,
-                            circleSize: 45,
-                            onColorChange: (Color color) async {
-                              centerCrossStyle.color = ColorExt.asHex(color);
-                              await centerCrossStyle.saveToPreferences();
-                              setState(() {});
-                            },
-                            onMainColorChange: (mColor) async {
-                              centerCrossStyle.color = ColorExt.asHex(mColor);
-                              await centerCrossStyle.saveToPreferences();
-                              SettingsWidget.reloadMapSettings(context);
-                              setState(() {});
-                            },
-                            selectedColor:
-                                Color(ColorExt(centerCrossStyle.color).value),
-                            colors: SmashColorPalette.getColorSwatchValues(),
+                            child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: SmashUI.DEFAULT_PADDING,
+                            right: SmashUI.DEFAULT_PADDING,
                           ),
-                        ),
+                          child: ColorPickerButton(
+                              Color(ColorExt(centerCrossStyle.color).value),
+                              (newColor) async {
+                            centerCrossStyle.color = ColorExt.asHex(newColor);
+                            await centerCrossStyle.saveToPreferences();
+                            SettingsWidget.reloadMapSettings(context);
+                            setState(() {});
+                          }),
+                        )),
                       ],
                     ),
                   ),
@@ -443,7 +476,10 @@ class ScreenSettingState extends State<ScreenSetting> {
               color: SmashColors.mainBackground,
               child: Column(
                 children: <Widget>[
-                  SmashUI.normalText("Map Tools Icon Size"),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Map Tools Icon Size"),
+                  ),
                   Padding(
                     padding: SmashUI.defaultPadding(),
                     child: Row(
