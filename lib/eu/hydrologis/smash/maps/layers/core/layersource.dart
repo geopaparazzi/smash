@@ -82,6 +82,9 @@ abstract class LayerSource {
   /// Returns true if the layersource can be styled or configured.
   bool hasProperties();
 
+  // Returns the widget to use to set the properties of the layer.
+  Widget getPropertiesWidget();
+
   /// Convert the source to json for persistence.
   String toJson();
 

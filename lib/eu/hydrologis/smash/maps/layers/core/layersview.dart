@@ -145,37 +145,9 @@ class LayersPageState extends State<LayersPage> {
             color: SmashColors.mainDecorations,
             icon: MdiIcons.palette,
             onTap: () async {
-              if (layerSourceItem is GpxSource) {
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            GpxPropertiesWidget(layerSourceItem)));
-                // } else if (layerSourceItem is ShapefileSource) {
-                //   await Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //           builder: (context) =>
-                //               ShpPropertiesWidget(layerSourceItem)));
-              } else if (layerSourceItem is WorldImageSource) {
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            TiffPropertiesWidget(layerSourceItem)));
-              } else if (layerSourceItem is WmsSource) {
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            WmsPropertiesWidget(layerSourceItem)));
-              } else if (layerSourceItem is TileSource) {
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            TileSourcePropertiesWidget(layerSourceItem)));
-              }
+              var propertiesWidget = layerSourceItem.getPropertiesWidget();
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => propertiesWidget));
             }));
       }
       secondaryActions.add(IconSlideAction(

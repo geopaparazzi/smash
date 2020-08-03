@@ -220,6 +220,10 @@ class WorldImageSource extends RasterLayerSource {
     return true;
   }
 
+  Widget getPropertiesWidget() {
+    return TiffPropertiesWidget(this);
+  }
+
   @override
   bool isZoomable() {
     return true;

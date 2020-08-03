@@ -150,6 +150,10 @@ class WmsSource extends RasterLayerSource {
     return true;
   }
 
+  Widget getPropertiesWidget() {
+    return WmsPropertiesWidget(this);
+  }
+
   @override
   bool isZoomable() {
     return _hasBounds;

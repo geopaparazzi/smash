@@ -221,6 +221,10 @@ class GpxSource extends VectorLayerSource {
     return true;
   }
 
+  Widget getPropertiesWidget() {
+    return GpxPropertiesWidget(this);
+  }
+
   @override
   bool isZoomable() {
     return true;

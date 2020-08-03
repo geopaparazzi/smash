@@ -399,6 +399,10 @@ class TileSource extends TiledRasterLayerSource {
     return canDoProperties;
   }
 
+  Widget getPropertiesWidget() {
+    return TileSourcePropertiesWidget(this);
+  }
+
   @override
   bool isZoomable() {
     return bounds != null;

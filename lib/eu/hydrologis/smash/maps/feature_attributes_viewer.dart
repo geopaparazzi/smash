@@ -8,7 +8,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
-import 'package:dart_jts/dart_jts.dart' as DJ;
+import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart' as FM;
@@ -117,7 +117,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     var centroid = geometry.getCentroid().getCoordinate();
 
     var geometryType = geometry.getGeometryType();
-    var gType = EGeometryType.forTypeName(geometryType);
+    var gType = JTS.EGeometryType.forTypeName(geometryType);
     if (gType.isPoint()) {
       double size = 30;
 
@@ -168,7 +168,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
       List<FM.Polygon> polygons = [];
       for (int i = 0; i < geometry.getNumGeometries(); i++) {
         var geometryN = geometry.getGeometryN(i);
-        if (geometryN is DJ.Polygon) {
+        if (geometryN is JTS.Polygon) {
           var exteriorRing = geometryN.getExteriorRing();
           List<LatLng> polyPoints = exteriorRing
               .getCoordinates()

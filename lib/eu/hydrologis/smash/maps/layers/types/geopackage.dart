@@ -340,6 +340,10 @@ class GeopackageSource extends VectorLayerSource {
     return false; // TODO at the moment they are fixed.
   }
 
+  Widget getPropertiesWidget() {
+    return null;
+  }
+
   @override
   bool isZoomable() {
     return _tableBounds != null;

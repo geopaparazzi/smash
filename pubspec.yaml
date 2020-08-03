@@ -18,7 +18,7 @@ dependencies:
   ##################################
 
   # apache 2
-  flutter_geopackage: ^0.2.0+1
+  flutter_geopackage: ^0.2.1+1
     # path: ../flutter_geopackage/
     #  git:
     #    url: https://github.com/moovida/flutter_geopackage.git
@@ -36,7 +36,7 @@ dependencies:
   dart_shp: ^0.3.1+2
     # path: ../dart_shp/
 
-  dart_hydrologis_utils: ^0.5.0+1
+  dart_hydrologis_utils: ^0.5.2
     # path: ../dart_hydrologis_utils/
 
   ##################################
