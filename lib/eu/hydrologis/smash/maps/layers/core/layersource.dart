@@ -165,6 +165,11 @@ abstract class LayerSource {
   }
 }
 
+/// Interface for SLD supporting layersources.
+abstract class SldLayerSource {
+  void updateStyle(String sldString);
+}
+
 /// Interface for vector data based layersources.
 abstract class VectorLayerSource extends LayerSource {
   Future<void> load(BuildContext context);

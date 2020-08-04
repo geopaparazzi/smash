@@ -19,10 +19,11 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
-class ShapefileSource extends VectorLayerSource {
+class ShapefileSource extends VectorLayerSource implements SldLayerSource {
   String _absolutePath;
   String _name;
   ShapefileFeatureReader _shpReader;
+  String sldPath;
 
   bool isVisible = true;
   String _attribution = "";
@@ -88,7 +89,7 @@ class ShapefileSource extends VectorLayerSource {
 
       _shpReader.close();
 
-      var sldPath = FileUtilities.joinPaths(parentFolder, _name + ".sld");
+      sldPath = FileUtilities.joinPaths(parentFolder, _name + ".sld");
       var sldFile = File(sldPath);
 
       if (sldFile.existsSync()) {
@@ -197,6 +198,7 @@ class ShapefileSource extends VectorLayerSource {
           iconData = SmashIcons.forSldWkName(pSym.markerName);
           pointsSize = pSym.markerSize * 3;
           pointFillColor = ColorExt(pSym.fillColorHex);
+          pointFillColor = pointFillColor.withOpacity(pSym.fillOpacity);
 
           if (_textStyle != null) {
             labelName = _textStyle.labelName;
@@ -225,9 +227,9 @@ class ShapefileSource extends VectorLayerSource {
                       iconData,
                       pointFillColor,
                       pointsSize,
-                      labelText,
+                      labelText.toString(),
                       labelColor,
-                      pointFillColor.withAlpha(80),
+                      pointFillColor,
                     ));
             waypoints.add(m);
           }
@@ -391,5 +393,17 @@ class ShapefileSource extends VectorLayerSource {
   @override
   int getSrid() {
     return _srid;
+  }
+
+  @override
+  void updateStyle(String newSldString) {
+    sldString = newSldString;
+    _style = SldObjectParser.fromString(sldString);
+    _style.parse();
+    if (_style.featureTypeStyles.first.rules.first.textSymbolizers.length > 0) {
+      _textStyle = _style
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+    }
+    FileUtilities.writeStringToFile(sldPath, sldString);
   }
 }

@@ -133,7 +133,7 @@ packages:
       name: dart_hydrologis_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.2"
+    version: "0.5.2+4"
   dart_jts:
     dependency: transitive
     description:
