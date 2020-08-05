@@ -245,7 +245,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1+1"
+    version: "0.2.1+2"
   flutter_image:
     dependency: transitive
     description:

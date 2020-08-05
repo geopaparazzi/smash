@@ -38,6 +38,9 @@ class SmashApp extends StatelessWidget {
     return MaterialApp(
       title: APP_NAME,
       //theme: Provider.of<ThemeState>(context).currentThemeData,
+      theme: ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       showPerformanceOverlay: false,

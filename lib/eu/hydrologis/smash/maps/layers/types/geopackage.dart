@@ -25,10 +25,10 @@ import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
-class GeopackageSource extends VectorLayerSource {
+class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   static final bool DO_RTREE_CHECK = false;
 
-  static final double POINT_SIZE_FACTOR = 2;
+  static final double POINT_SIZE_FACTOR = 3;
 
   String _absolutePath;
   String _tableName;
@@ -44,6 +44,10 @@ class GeopackageSource extends VectorLayerSource {
   bool loaded = false;
   GeopackageDb db;
   int _srid;
+
+  List<String> alphaFields = [];
+  String sldString;
+  EGeometryType geometryType;
 
   GeopackageSource.fromMap(Map<String, dynamic> map) {
     _tableName = map[LAYERSKEY_LABEL];
@@ -78,8 +82,16 @@ class GeopackageSource extends VectorLayerSource {
       }
 
       getDatabase();
+      _geometryColumn = db.getGeometryColumnsForTable(_tableName);
+      _srid = _geometryColumn.srid;
+      geometryType = _geometryColumn.geometryType;
+      var alphaFieldsTmp = db.getTableColumns(_tableName);
 
-      String sldString = db.getSld(_tableName);
+      alphaFields = alphaFieldsTmp.map((e) => e[0] as String).toList();
+      alphaFields
+          .removeWhere((name) => name == _geometryColumn.geometryColumnName);
+
+      sldString = db.getSld(_tableName);
       if (sldString == null) {
         if (_geometryColumn.geometryType.isPoint()) {
           sldString = DefaultSlds.simplePointSld();
@@ -102,9 +114,6 @@ class GeopackageSource extends VectorLayerSource {
               .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
         }
       }
-
-      _geometryColumn = db.getGeometryColumnsForTable(_tableName);
-      _srid = _geometryColumn.srid;
 
 //      _tableBounds = db.getTableBounds(_tableName);
 
@@ -217,11 +226,10 @@ class GeopackageSource extends VectorLayerSource {
         var pointStyle = _style
             .featureTypeStyles.first.rules.first.pointSymbolizers.first.style;
         var iconData = SmashIcons.forSldWkName(pointStyle.markerName);
-        double size = pointStyle.markerSize * POINT_SIZE_FACTOR;
+        double pointsSize = pointStyle.markerSize * POINT_SIZE_FACTOR;
 
-        Color fillColorAlpha = ColorExt(pointStyle.fillColorHex)
+        Color fillColor = ColorExt(pointStyle.fillColorHex)
             .withOpacity(pointStyle.fillOpacity);
-        Color fillColor = ColorExt(pointStyle.fillColorHex);
         Color textColor =
             _textStyle != null ? ColorExt(_textStyle.textColor) : null;
 
@@ -232,29 +240,48 @@ class GeopackageSource extends VectorLayerSource {
           for (int i = 0; i < pointGeom.getNumGeometries(); i++) {
             var geometryN = pointGeom.getGeometryN(i);
             var c = geometryN.getCoordinate();
-            Object userData = geometryN.getUserData();
-            Widget widget;
-            if (textColor != null) {
-              widget = MarkerIcon(iconData, fillColorAlpha, size,
-                  userData.toString(), textColor, fillColorAlpha);
-            } else {
-              widget = Container(
-                child: Icon(
-                  iconData,
-                  size: size,
-                  color: fillColorAlpha,
-                ),
-              );
+            String labelText = geometryN.getUserData()?.toString() ?? "";
+            double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
+            if (labelText == null) {
+              textExtraHeight = 0;
             }
             Marker m = Marker(
-              width: size,
-              height: size,
-              point: LatLng(c.y, c.x),
-              builder: (ctx) {
-                return widget;
-              },
-            );
+                width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
+                height: pointsSize + textExtraHeight,
+                point: LatLng(c.y, c.x),
+                // anchorPos: AnchorPos.exactly(
+                //     Anchor(pointsSize / 2, textExtraHeight + pointsSize / 2)),
+                builder: (ctx) => MarkerIcon(
+                      iconData,
+                      fillColor,
+                      pointsSize,
+                      labelText,
+                      textColor,
+                      fillColor.withAlpha(100),
+                    ));
             points.add(m);
+            // Widget widget;
+            // if (textColor != null) {
+            //   widget = MarkerIcon(iconData, fillColor, size,
+            //       userData.toString(), textColor, fillColor);
+            // } else {
+            //   widget = Container(
+            //     child: Icon(
+            //       iconData,
+            //       size: size,
+            //       color: fillColor,
+            //     ),
+            //   );
+            // }
+            // Marker m = Marker(
+            //   width: size,
+            //   height: size,
+            //   point: LatLng(c.y, c.x),
+            //   builder: (ctx) {
+            //     return widget;
+            //   },
+            // );
+            // points.add(m);
           }
         }
         var waypointsCluster = MarkerClusterLayerOptions(
@@ -265,9 +292,7 @@ class GeopackageSource extends VectorLayerSource {
           ),
           markers: points,
           polygonOptions: PolygonOptions(
-              borderColor: fillColor,
-              color: fillColorAlpha,
-              borderStrokeWidth: 3),
+              borderColor: fillColor, color: fillColor, borderStrokeWidth: 3),
           builder: (context, markers) {
             return FloatingActionButton(
               child: Text(markers.length.toString()),
@@ -337,11 +362,7 @@ class GeopackageSource extends VectorLayerSource {
 
   @override
   bool hasProperties() {
-    return false; // TODO at the moment they are fixed.
-  }
-
-  Widget getPropertiesWidget() {
-    return null;
+    return true;
   }
 
   @override
@@ -366,6 +387,32 @@ class GeopackageSource extends VectorLayerSource {
       }
     }
     return;
+  }
+
+  Widget getPropertiesWidget() {
+    return SldPropertiesEditor(sldString, geometryType,
+        alphaFields: alphaFields);
+  }
+
+  @override
+  void updateStyle(String newSldString) {
+    sldString = newSldString;
+    var _styleTmp = SldObjectParser.fromString(sldString);
+    _styleTmp.parse();
+
+    // check is label has changed, in that case a reload will be necessary
+    if (_styleTmp.featureTypeStyles.first.rules.first.textSymbolizers.length >
+        0) {
+      var textStyleTmp = _styleTmp
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+
+      if (_textStyle?.labelName != textStyleTmp.labelName) {
+        loaded = false;
+      }
+      _textStyle = textStyleTmp;
+    }
+    _style = _styleTmp;
+    db.updateSld(_tableName, sldString);
   }
 }
 

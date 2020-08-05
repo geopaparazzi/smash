@@ -206,7 +206,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
           }
         }
 
-        List<Marker> waypoints = [];
+        List<Marker> points = [];
 
         features.forEach((f) {
           var count = f.geometry.getNumGeometries();
@@ -221,17 +221,17 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
                 width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
                 height: pointsSize + textExtraHeight,
                 point: LatLng(l.getY(), l.getX()),
-                anchorPos: AnchorPos.exactly(
-                    Anchor(pointsSize / 2, textExtraHeight + pointsSize / 2)),
+                // anchorPos: AnchorPos.exactly(
+                //     Anchor(pointsSize / 2, textExtraHeight + pointsSize / 2)),
                 builder: (ctx) => MarkerIcon(
                       iconData,
                       pointFillColor,
                       pointsSize,
                       labelText.toString(),
                       labelColor,
-                      pointFillColor,
+                      pointFillColor.withAlpha(100),
                     ));
-            waypoints.add(m);
+            points.add(m);
           }
         });
         var waypointsCluster = MarkerClusterLayerOptions(
@@ -240,7 +240,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
           fitBoundsOptions: FitBoundsOptions(
             padding: EdgeInsets.all(50),
           ),
-          markers: waypoints,
+          markers: points,
           polygonOptions: PolygonOptions(
               borderColor: pointFillColor,
               color: pointFillColor.withOpacity(0.2),

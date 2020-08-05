@@ -5,8 +5,10 @@
  */
 
 import 'dart:core';
+import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:gpx/gpx.dart';
@@ -16,23 +18,23 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
-class GpxSource extends VectorLayerSource {
+class GpxSource extends VectorLayerSource implements SldLayerSource {
   String _absolutePath;
   String _name;
   Gpx _gpx;
-  Color pointFillColor = Colors.red;
-  Color lineStrokeColor = Colors.black;
-  double pointsSize = 10;
-  double lineWidth = 3;
   bool isVisible = true;
   String _attribution = "";
   int _srid = SmashPrj.EPSG4326_INT;
+  String sldPath;
 
   List<LatLng> _wayPoints = [];
   List<String> _wayPointNames = [];
   List<List<LatLng>> _tracksRoutes = [];
   LatLngBounds _gpxBounds = LatLngBounds();
   bool loaded = false;
+
+  String sldString;
+  SldObjectParser _style;
 
   GpxSource.fromMap(Map<String, dynamic> map) {
     _name = map[LAYERSKEY_LABEL];
@@ -46,9 +48,41 @@ class GpxSource extends VectorLayerSource {
 
   Future<void> load(BuildContext context) async {
     if (!loaded) {
-      _name = FileUtilities.nameFromFile(_absolutePath, false);
+      var parentFolder = FileUtilities.parentFolderFromFile(_absolutePath);
+
+      var fileName = FileUtilities.nameFromFile(_absolutePath, false);
+      _name ??= fileName;
+
+      sldPath = FileUtilities.joinPaths(parentFolder, fileName + ".sld");
+      var sldFile = File(sldPath);
+
+      if (sldFile.existsSync()) {
+        sldString = FileUtilities.readFile(sldPath);
+        _style = SldObjectParser.fromString(sldString);
+        _style.parse();
+      } else {
+        // create style for points, lines and text
+        sldString = DefaultSlds.simplePointSld();
+        _style = SldObjectParser.fromString(sldString);
+        _style.parse();
+        _style.featureTypeStyles.first.rules.first.addLineStyle(LineStyle());
+        _style.featureTypeStyles.first.rules.first.addTextStyle(TextStyle());
+        sldString = _style.toSldString();
+        FileUtilities.writeStringToFile(sldPath, sldString);
+      }
+
       var xml = FileUtilities.readFile(_absolutePath);
-      _gpx = GpxReader().fromString(xml);
+      try {
+        _gpx = GpxReader().fromString(xml);
+      } catch (e) {
+        SLogger().e("Error reading GPX file.", e);
+        throw e;
+      }
+
+      var tmp = _gpx.metadata?.name;
+      if (tmp != null && tmp.isNotEmpty) {
+        _name = tmp;
+      }
 
       int count = 1;
       _gpx.wpts.forEach((wpt) {
@@ -84,6 +118,7 @@ class GpxSource extends VectorLayerSource {
         List<LatLng> points = rt.rtepts.map((wpt) {
           var latLng = LatLng(wpt.lat, wpt.lon);
           _gpxBounds.extend(latLng);
+          return latLng;
         }).toList();
         _tracksRoutes.add(points);
       });
@@ -139,6 +174,29 @@ class GpxSource extends VectorLayerSource {
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
     load(context);
 
+    LineStyle lineStyle;
+    PointStyle pointStyle;
+    TextStyle textStyle;
+    if (_style.featureTypeStyles.isNotEmpty) {
+      var fts = _style.featureTypeStyles.first;
+      if (fts.rules.isNotEmpty) {
+        var rule = fts.rules.first;
+
+        if (rule.lineSymbolizers.isNotEmpty) {
+          lineStyle = rule.lineSymbolizers.first.style;
+        }
+        if (rule.pointSymbolizers.isNotEmpty) {
+          pointStyle = rule.pointSymbolizers.first.style;
+        }
+        if (rule.textSymbolizers.isNotEmpty) {
+          textStyle = rule.textSymbolizers.first.style;
+        }
+      }
+    }
+    lineStyle ??= LineStyle();
+    pointStyle ??= PointStyle();
+    textStyle ??= TextStyle();
+
     List<LayerOptions> layers = [];
 
     if (_tracksRoutes.isNotEmpty) {
@@ -146,8 +204,8 @@ class GpxSource extends VectorLayerSource {
       _tracksRoutes.forEach((linePoints) {
         lines.add(Polyline(
             points: linePoints,
-            strokeWidth: lineWidth,
-            color: lineStrokeColor));
+            strokeWidth: lineStyle.strokeWidth,
+            color: ColorExt(lineStyle.strokeColorHex)));
       });
 
       var lineLayer = PolylineLayerOptions(
@@ -157,22 +215,38 @@ class GpxSource extends VectorLayerSource {
       layers.add(lineLayer);
     }
     if (_wayPoints.isNotEmpty) {
+      var colorExt = ColorExt(pointStyle.fillColorHex);
+      var labelcolorExt = ColorExt(textStyle.textColor);
       List<Marker> waypoints = [];
-      _wayPoints.forEach((ll) {
+
+      for (var i = 0; i < _wayPoints.length; i++) {
+        var ll = _wayPoints[i];
+        var name = _wayPointNames[i];
+        if (textStyle.size == 0) {
+          name = null;
+        }
+
+        double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
+        if (name == null) {
+          textExtraHeight = 0;
+        }
+        var pointsSize = pointStyle.markerSize;
         Marker m = Marker(
-          width: pointsSize,
-          height: pointsSize,
-          point: ll,
-          builder: (ctx) => new Container(
-            child: Icon(
-              MdiIcons.circle,
-              size: pointsSize,
-              color: pointFillColor,
-            ),
-          ),
-        );
+            width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
+            height: pointsSize + textExtraHeight,
+            point: ll,
+            // anchorPos: AnchorPos.exactly(
+            //     Anchor(pointsSize / 2, textExtraHeight + pointsSize / 2)),
+            builder: (ctx) => MarkerIcon(
+                  MdiIcons.circle,
+                  colorExt,
+                  pointsSize,
+                  name,
+                  labelcolorExt,
+                  colorExt.withAlpha(100),
+                ));
         waypoints.add(m);
-      });
+      }
       var waypointsCluster = MarkerClusterLayerOptions(
         maxClusterRadius: 20,
         size: Size(40, 40),
@@ -181,14 +255,14 @@ class GpxSource extends VectorLayerSource {
         ),
         markers: waypoints,
         polygonOptions: PolygonOptions(
-            borderColor: pointFillColor,
-            color: pointFillColor.withOpacity(0.2),
+            borderColor: colorExt,
+            color: colorExt.withOpacity(0.2),
             borderStrokeWidth: 3),
         builder: (context, markers) {
           return FloatingActionButton(
             child: Text(markers.length.toString()),
             onPressed: null,
-            backgroundColor: pointFillColor,
+            backgroundColor: colorExt,
             foregroundColor: SmashColors.mainBackground,
             heroTag: null,
           );
@@ -234,6 +308,14 @@ class GpxSource extends VectorLayerSource {
   int getSrid() {
     return _srid;
   }
+
+  @override
+  void updateStyle(String newSldString) {
+    sldString = newSldString;
+    _style = SldObjectParser.fromString(sldString);
+    _style.parse();
+    FileUtilities.writeStringToFile(sldPath, sldString);
+  }
 }
 
 /// The notes properties page.
@@ -250,43 +332,60 @@ class GpxPropertiesWidget extends StatefulWidget {
 
 class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
   GpxSource _source;
-  double _pointSizeSliderValue = 10;
-  double _lineWidthSliderValue = 2;
-  double _maxSize = 100.0;
-  double _maxWidth = 20.0;
-  ColorExt _pointColor;
-  ColorExt _lineColor;
-  bool _somethingChanged = false;
+  double _maxSize = SmashUI.MAX_MARKER_SIZE;
+  double _minSize = SmashUI.MIN_MARKER_SIZE;
+  double _maxWidth = SmashUI.MAX_STROKE_SIZE;
+  double _minWidth = SmashUI.MIN_STROKE_SIZE;
+  LineStyle lineStyle;
+  PointStyle pointStyle;
+  TextStyle textStyle;
 
   GpxPropertiesWidgetState(this._source);
 
   @override
-  void initState() {
-    _pointSizeSliderValue = _source.pointsSize;
+  Widget build(BuildContext context) {
+    if (textStyle == null && _source._style.featureTypeStyles.isNotEmpty) {
+      var fts = _source._style.featureTypeStyles.first;
+      if (fts.rules.isNotEmpty) {
+        var rule = fts.rules.first;
+
+        if (rule.lineSymbolizers.isNotEmpty) {
+          lineStyle = rule.lineSymbolizers.first.style;
+        }
+        if (rule.pointSymbolizers.isNotEmpty) {
+          pointStyle = rule.pointSymbolizers.first.style;
+        }
+        if (rule.textSymbolizers.isNotEmpty) {
+          textStyle = rule.textSymbolizers.first.style;
+        }
+      }
+    }
+    lineStyle ??= LineStyle();
+    pointStyle ??= PointStyle();
+    textStyle ??= TextStyle();
+
+    double _pointSizeSliderValue = pointStyle.markerSize;
     if (_pointSizeSliderValue > _maxSize) {
       _pointSizeSliderValue = _maxSize;
+    } else if (_pointSizeSliderValue < _minSize) {
+      _pointSizeSliderValue = _minSize;
     }
-    _pointColor = ColorExt.fromColor(_source.pointFillColor);
+    ColorExt _pointColor = ColorExt(pointStyle.fillColorHex);
 
-    _lineWidthSliderValue = _source.lineWidth;
+    double _lineWidthSliderValue = lineStyle.strokeWidth;
     if (_lineWidthSliderValue > _maxWidth) {
       _lineWidthSliderValue = _maxWidth;
+    } else if (_lineWidthSliderValue < _minWidth) {
+      _lineWidthSliderValue = _minWidth;
     }
-    _lineColor = ColorExt.fromColor(_source.lineStrokeColor);
+    ColorExt _lineColor = ColorExt(lineStyle.strokeColorHex);
 
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          if (_somethingChanged) {
-            _source.pointFillColor = _pointColor;
-            _source.pointsSize = _pointSizeSliderValue;
-            _source.lineStrokeColor = _lineColor;
-            _source.lineWidth = _lineWidthSliderValue;
-          }
+          var sldString = SldObjectBuilder.buildFromFeatureTypeStyles(
+              _source._style.featureTypeStyles);
+
+          _source.updateStyle(sldString);
           return true;
         },
         child: Scaffold(
@@ -296,122 +395,169 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
           body: Center(
             child: ListView(
               children: <Widget>[
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Card(
-                    elevation: SmashUI.DEFAULT_ELEVATION,
-                    shape: SmashUI.defaultShapeBorder(),
-                    child: Column(
-                      children: <Widget>[
-                        SmashUI.titleText("Waypoints Color"),
-                        Padding(
-                          padding: SmashUI.defaultPadding(),
-                          child: LimitedBox(
-                            maxHeight: 400,
-                            // child: MaterialColorPicker(
-                            //     shrinkWrap: true,
-                            //     allowShades: false,
-                            //     circleSize: 45,
-                            //     onColorChange: (Color color) {
-                            //       _pointColor = ColorExt.fromColor(color);
-                            //       _somethingChanged = true;
-                            //     },
-                            //     onMainColorChange: (mColor) {
-                            //       _pointColor = ColorExt.fromColor(mColor);
-                            //       _somethingChanged = true;
-                            //     },
-                            //     selectedColor: Color(_pointColor.value)),
+                _source._wayPoints.isEmpty
+                    ? Container()
+                    : Padding(
+                        padding: SmashUI.defaultPadding(),
+                        child: Card(
+                          elevation: SmashUI.DEFAULT_ELEVATION,
+                          shape: SmashUI.defaultShapeBorder(),
+                          child: Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: SmashUI.defaultPadding(),
+                                  child: SmashUI.normalText(
+                                    "WAYPOINTS",
+                                    bold: true,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: SmashUI.normalText("Color"),
+                                    ),
+                                    Flexible(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: SmashUI.DEFAULT_PADDING,
+                                              right: SmashUI.DEFAULT_PADDING),
+                                          child: ColorPickerButton(_pointColor,
+                                              (newColor) {
+                                            pointStyle.fillColorHex =
+                                                ColorExt.asHex(newColor);
+                                          }),
+                                        )),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: SmashUI.normalText("Size"),
+                                    ),
+                                    Flexible(
+                                        flex: 1,
+                                        child: Slider(
+                                          activeColor:
+                                              SmashColors.mainSelection,
+                                          min: _minSize,
+                                          max: _maxSize,
+                                          divisions:
+                                              SmashUI.MINMAX_MARKER_DIVISIONS,
+                                          onChanged: (newSize) {
+                                            setState(() => pointStyle
+                                                .markerSize = newSize);
+                                          },
+                                          value: _pointSizeSliderValue,
+                                        )),
+                                    Container(
+                                      width: 50.0,
+                                      alignment: Alignment.center,
+                                      child: SmashUI.normalText(
+                                        '${_pointSizeSliderValue.toInt()}',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                CheckboxListTile(
+                                    title: SmashUI.normalText(
+                                        "View labels if available?"),
+                                    value: textStyle.size > 0,
+                                    onChanged: (newValue) {
+                                      setState(() => textStyle.size = newValue
+                                          ? 10
+                                          : 0); // to view label, size needs to be >0
+                                    }),
+                              ],
+                            ),
                           ),
                         ),
-                        SmashUI.titleText("Waypoints Size"),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Flexible(
-                                flex: 1,
-                                child: Slider(
-                                  activeColor: SmashColors.mainSelection,
-                                  min: 1.0,
-                                  max: _maxSize,
-                                  divisions: 20,
-                                  onChanged: (newRating) {
-                                    _somethingChanged = true;
-                                    setState(() =>
-                                        _pointSizeSliderValue = newRating);
-                                  },
-                                  value: _pointSizeSliderValue,
-                                )),
-                            Container(
-                              width: 50.0,
-                              alignment: Alignment.center,
-                              child: SmashUI.normalText(
-                                '${_pointSizeSliderValue.toInt()}',
-                              ),
+                      ),
+                _source._tracksRoutes.isEmpty
+                    ? Container()
+                    : Padding(
+                        padding: SmashUI.defaultPadding(),
+                        child: Card(
+                          elevation: SmashUI.DEFAULT_ELEVATION,
+                          shape: SmashUI.defaultShapeBorder(),
+                          child: Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: SmashUI.defaultPadding(),
+                                  child: SmashUI.normalText(
+                                    "TRACKS/ROUTES",
+                                    bold: true,
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: SmashUI.normalText("Color"),
+                                    ),
+                                    Flexible(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: SmashUI.DEFAULT_PADDING,
+                                              right: SmashUI.DEFAULT_PADDING),
+                                          child: ColorPickerButton(_lineColor,
+                                              (newColor) {
+                                            lineStyle.strokeColorHex =
+                                                ColorExt.asHex(newColor);
+                                          }),
+                                        )),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: SmashUI.normalText("Width"),
+                                    ),
+                                    Flexible(
+                                        flex: 1,
+                                        child: Slider(
+                                          activeColor:
+                                              SmashColors.mainSelection,
+                                          min: _minWidth,
+                                          max: _maxWidth,
+                                          divisions:
+                                              SmashUI.MINMAX_STROKE_DIVISIONS,
+                                          onChanged: (newRating) {
+                                            setState(() => lineStyle
+                                                .strokeWidth = newRating);
+                                          },
+                                          value: _lineWidthSliderValue,
+                                        )),
+                                    Container(
+                                      width: 50.0,
+                                      alignment: Alignment.center,
+                                      child: SmashUI.normalText(
+                                        '${_lineWidthSliderValue.toInt()}',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Card(
-                    elevation: SmashUI.DEFAULT_ELEVATION,
-                    shape: SmashUI.defaultShapeBorder(),
-                    child: Column(
-                      children: <Widget>[
-                        SmashUI.titleText("Tracks/Routes Color"),
-                        Padding(
-                          padding: SmashUI.defaultPadding(),
-                          child: LimitedBox(
-                            maxHeight: 400,
-                            // child: MaterialColorPicker(
-                            //     shrinkWrap: true,
-                            //     allowShades: false,
-                            //     circleSize: 45,
-                            //     onColorChange: (Color color) {
-                            //       _lineColor = ColorExt.fromColor(color);
-                            //       _somethingChanged = true;
-                            //     },
-                            //     onMainColorChange: (mColor) {
-                            //       _lineColor = ColorExt.fromColor(mColor);
-                            //       _somethingChanged = true;
-                            //     },
-                            //     selectedColor: Color(_lineColor.value)),
                           ),
                         ),
-                        SmashUI.titleText("Tracks/Routes Width"),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Flexible(
-                                flex: 1,
-                                child: Slider(
-                                  activeColor: SmashColors.mainSelection,
-                                  min: 1.0,
-                                  max: _maxWidth,
-                                  divisions: 20,
-                                  onChanged: (newRating) {
-                                    _somethingChanged = true;
-                                    setState(() =>
-                                        _lineWidthSliderValue = newRating);
-                                  },
-                                  value: _lineWidthSliderValue,
-                                )),
-                            Container(
-                              width: 50.0,
-                              alignment: Alignment.center,
-                              child: SmashUI.normalText(
-                                '${_lineWidthSliderValue.toInt()}',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ],
             ),
           ),
