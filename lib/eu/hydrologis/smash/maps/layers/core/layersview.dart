@@ -278,13 +278,28 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
     var ch = ConnectionsHandler();
     try {
       var db = ch.open(filePath);
+
+      // do features
       List<FeatureEntry> features = db.features();
-      for (var f in features) {
-        GeopackageSource gps = GeopackageSource(filePath, f.tableName);
-        gps.calculateSrid();
-        LayerManager().addLayerSource(gps);
+      List<String> selectedTables = [];
+      if (features.length == 1) {
+        selectedTables.add(features[0].tableName);
+      } else if (features.length > 1) {
+        var tableNames = features.map((f) => f.tableName).toList();
+        selectedTables = await showMultiSelectionComboDialog(
+            context, "Select table to load.", tableNames);
       }
 
+      if (selectedTables != null && selectedTables.isNotEmpty) {
+        for (var selectedTable in selectedTables) {
+          GeopackageSource gps = GeopackageSource(filePath, selectedTable);
+          await gps.load(context);
+          gps.calculateSrid();
+          LayerManager().addLayerSource(gps);
+        }
+      }
+
+      // do tiles
       List<TileEntry> tiles = db.tiles();
       tiles.forEach((t) {
         var ts = TileSource.Geopackage(filePath, t.tableName);

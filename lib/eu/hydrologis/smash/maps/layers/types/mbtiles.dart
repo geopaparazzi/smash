@@ -33,6 +33,7 @@ class SmashMBTilesImageProvider extends TileProvider {
   MBTilesDb open() {
     if (_loadedDb == null) {
       _loadedDb = MBTilesDb(mbtilesFile.path);
+      _loadedDb.open();
 
       try {
         var wesn = _loadedDb.getBounds();

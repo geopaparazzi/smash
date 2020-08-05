@@ -130,7 +130,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
         _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
       });
 
-      _attribution = _attribution +
+      _attribution =
           "${_geometryColumn.geometryType.getTypeName()} (${_tableGeoms.length}) ";
 
       loaded = true;
