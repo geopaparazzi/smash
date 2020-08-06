@@ -118,6 +118,7 @@ class FeatureInfoLayer extends StatelessWidget {
         .toList();
     EditableQueryResult totalQueryResult = EditableQueryResult();
     totalQueryResult.editable = [];
+    totalQueryResult.fieldAndTypemap = [];
     totalQueryResult.ids = [];
     totalQueryResult.primaryKeys = [];
     totalQueryResult.dbs = [];
@@ -134,6 +135,12 @@ class FeatureInfoLayer extends StatelessWidget {
           boundsGeomInSrid = tmp;
           boundMap[srid] = boundsGeomInSrid;
         }
+
+        var tableColumns = db.getTableColumns(vLayer.getName());
+        Map<String, String> typesMap = {};
+        tableColumns.forEach((column) {
+          typesMap[column[0]] = column[1];
+        });
         QueryResult queryResult =
             db.getTableData(vLayer.getName(), geometry: boundsGeomInSrid);
         if (queryResult.data.isNotEmpty) {
@@ -147,6 +154,7 @@ class FeatureInfoLayer extends StatelessWidget {
             totalQueryResult.ids.add(layerName);
             totalQueryResult.primaryKeys.add(pk);
             totalQueryResult.dbs.add(db);
+            totalQueryResult.fieldAndTypemap.add(typesMap);
             totalQueryResult.editable.add(true);
             if (srid != SmashPrj.EPSG4326_INT) {
               SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, g);
@@ -184,6 +192,7 @@ class EditableQueryResult extends QueryResult {
   List<String> primaryKeys;
   List<GeopackageDb> dbs;
   List<Map<String, dynamic>> attributes;
+  List<Map<String, String>> fieldAndTypemap;
 }
 
 class TapSelectionCircle extends StatefulWidget {

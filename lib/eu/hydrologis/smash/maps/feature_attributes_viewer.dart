@@ -107,6 +107,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     var geometry = f.geoms[_index];
 
     Map<String, dynamic> data = f.data[_index];
+    Map<String, String> typesMap = f.fieldAndTypemap[_index];
     var primaryKey;
     var db;
     if (f.editable[_index]) {
@@ -267,7 +268,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   flex: 1,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: getDataTable(tableName, data, primaryKey, db),
+                    child:
+                        getDataTable(tableName, data, primaryKey, db, typesMap),
                   ),
                 ),
               ],
@@ -303,7 +305,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   flex: 1,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: getDataTable(tableName, data, primaryKey, db),
+                    child:
+                        getDataTable(tableName, data, primaryKey, db, typesMap),
                   ),
                 ),
               ],
@@ -312,7 +315,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
   }
 
   Widget getDataTable(String tablename, Map<String, dynamic> data,
-      String primaryKey, GeopackageDb db) {
+      String primaryKey, GeopackageDb db, Map<String, String> typesMap) {
     List<DataRow> rows = [];
 
     data.forEach((key, value) {
@@ -338,10 +341,20 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                 } else if (value is double) {
                   data[key] = double.parse(result);
                 } else {
-                  SMLogger().e(
-                      "Could not find type for $key ($value) in table $tablename",
-                      null);
-                  return;
+                  var typeString = typesMap[key].toUpperCase();
+
+                  if (SqliteTypes.isString(typeString)) {
+                    data[key] = result;
+                  } else if (SqliteTypes.isInteger(typeString)) {
+                    data[key] = int.parse(result);
+                  } else if (SqliteTypes.isDouble(typeString)) {
+                    data[key] = double.parse(result);
+                  } else {
+                    SMLogger().e(
+                        "Could not find type for $key ($value) in table $tablename",
+                        null);
+                    return;
+                  }
                 }
                 var map = {
                   key: data[key],
