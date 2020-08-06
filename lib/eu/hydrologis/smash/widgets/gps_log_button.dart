@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -94,9 +95,9 @@ class _LoggingButtonState extends State<LoggingButton> {
 
         if (userString != null) {
           if (userString.trim().length == 0) userString = logName;
-          int logId = gpsLoggingState.startLogging(logName);
+          int logId = gpsLoggingState.startLogging(userString);
           if (logId == null) {
-            // TODO show error
+            SMLogger().e("Could not start logging: $userString", null);
           }
         }
       } else {
