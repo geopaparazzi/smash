@@ -110,11 +110,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
           _style.parse();
         }
       }
-      if (_style.featureTypeStyles.first.rules.first.textSymbolizers.length >
-          0) {
-        _textStyle = _style
-            .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
-      }
+      _textStyle = _style.getFirstTextStyle(false);
 
       _attribution = _attribution +
           "${features[0].geometry.getGeometryType()} (${features.length}) ";
@@ -186,169 +182,228 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     List<LayerOptions> layers = [];
 
     if (features.isNotEmpty) {
-      if (geometryType.isPoint()) {
-        var iconData = MdiIcons.circle;
-        double pointsSize = 10;
-        Color pointFillColor = Colors.red;
-        String labelName;
-        Color labelColor = Colors.black;
-        if (_style != null) {
-          var pSym =
-              _style.featureTypeStyles[0].rules[0].pointSymbolizers[0].style;
-          iconData = SmashIcons.forSldWkName(pSym.markerName);
-          pointsSize = pSym.markerSize * 3;
-          pointFillColor = ColorExt(pSym.fillColorHex);
-          pointFillColor = pointFillColor.withOpacity(pSym.fillOpacity);
+      List<List<Marker>> allPoints = [];
+      List<Polyline> allLines = [];
+      List<Polygon> allPolygons = [];
 
-          if (_textStyle != null) {
-            labelName = _textStyle.labelName;
-            labelColor = ColorExt(_textStyle.textColor);
+      Color pointFillColor;
+      _style.applyForEachRule((fts, Rule rule) {
+        if (geometryType.isPoint()) {
+          List<Marker> points = makeMarkersForRule(rule);
+          if (rule.pointSymbolizers.isNotEmpty && pointFillColor == null) {
+            pointFillColor =
+                ColorExt(rule.pointSymbolizers[0].style.fillColorHex);
           }
+          allPoints.add(points);
+        } else if (geometryType.isLine()) {
+          List<Polyline> lines = makeLinesForRule(rule);
+          allLines.addAll(lines);
+        } else if (geometryType.isPolygon()) {
+          List<Polygon> polygons = makePolygonsForRule(rule);
+          allPolygons.addAll(polygons);
         }
+      });
 
-        List<Marker> points = [];
-
-        features.forEach((f) {
-          var count = f.geometry.getNumGeometries();
-          for (var i = 0; i < count; i++) {
-            JTS.Point l = f.geometry.getGeometryN(i);
-            var labelText = f.attributes[labelName];
-            double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
-            if (labelText == null) {
-              textExtraHeight = 0;
-            }
-            Marker m = Marker(
-                width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
-                height: pointsSize + textExtraHeight,
-                point: LatLng(l.getY(), l.getX()),
-                // anchorPos: AnchorPos.exactly(
-                //     Anchor(pointsSize / 2, textExtraHeight + pointsSize / 2)),
-                builder: (ctx) => MarkerIcon(
-                      iconData,
-                      pointFillColor,
-                      pointsSize,
-                      labelText.toString(),
-                      labelColor,
-                      pointFillColor.withAlpha(100),
-                    ));
-            points.add(m);
-          }
-        });
-        var waypointsCluster = MarkerClusterLayerOptions(
-          maxClusterRadius: 20,
-          size: Size(40, 40),
-          fitBoundsOptions: FitBoundsOptions(
-            padding: EdgeInsets.all(50),
-          ),
-          markers: points,
-          polygonOptions: PolygonOptions(
-              borderColor: pointFillColor,
-              color: pointFillColor.withOpacity(0.2),
-              borderStrokeWidth: 3),
-          builder: (context, markers) {
-            return FloatingActionButton(
-              child: Text(markers.length.toString()),
-              onPressed: null,
-              backgroundColor: pointFillColor,
-              foregroundColor: SmashColors.mainBackground,
-              heroTag: null,
-            );
-          },
-        );
-        layers.add(waypointsCluster);
-      } else if (geometryType.isLine()) {
-        Color lineStrokeColor = Colors.black;
-        double lineWidth = 3;
-        double lineOpacity = 1;
-        if (_style != null) {
-          var pSym =
-              _style.featureTypeStyles[0].rules[0].lineSymbolizers[0].style;
-          lineWidth = pSym.strokeWidth;
-          lineStrokeColor = ColorExt(pSym.strokeColorHex);
-          lineOpacity = pSym.strokeOpacity * 255;
-          lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
-        }
-
-        List<Polyline> lines = [];
-        features.forEach((f) {
-          var count = f.geometry.getNumGeometries();
-          for (var i = 0; i < count; i++) {
-            JTS.LineString l = f.geometry.getGeometryN(i);
-            var linePoints =
-                l.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
-            lines.add(Polyline(
-                points: linePoints,
-                strokeWidth: lineWidth,
-                color: lineStrokeColor));
-          }
-        });
-
+      if (allPoints.isNotEmpty) {
+        addMarkerLayer(allPoints, layers, pointFillColor);
+      } else if (allLines.isNotEmpty) {
         var lineLayer = PolylineLayerOptions(
           polylineCulling: true,
-          polylines: lines,
+          polylines: allLines,
         );
         layers.add(lineLayer);
-      } else if (geometryType.isPolygon()) {
-        Color lineStrokeColor = Colors.black;
-        Color fillColor = Colors.black.withAlpha(100);
-        double lineWidth = 3;
-        double lineOpacity = 1;
-        if (_style != null) {
-          var pSym =
-              _style.featureTypeStyles[0].rules[0].polygonSymbolizers[0].style;
-          lineWidth = pSym.strokeWidth;
-          lineStrokeColor = ColorExt(pSym.strokeColorHex);
-          lineOpacity = pSym.strokeOpacity * 255;
-          lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
-
-          fillColor = ColorExt(pSym.fillColorHex)
-              .withAlpha((pSym.fillOpacity * 255).toInt());
-        }
-
-        List<Polygon> polygons = [];
-        features.forEach((f) {
-          var count = f.geometry.getNumGeometries();
-          for (var i = 0; i < count; i++) {
-            JTS.Polygon p = f.geometry.getGeometryN(i);
-            // ext ring
-            var extCoords = p
-                .getExteriorRing()
-                .getCoordinates()
-                .map((c) => LatLng(c.y, c.x))
-                .toList();
-
-            // inter rings
-            var numInteriorRing = p.getNumInteriorRing();
-            List<List<LatLng>> intRingCoords = [];
-            for (var i = 0; i < numInteriorRing; i++) {
-              var intCoords = p
-                  .getInteriorRingN(i)
-                  .getCoordinates()
-                  .map((c) => LatLng(c.y, c.x))
-                  .toList();
-              intRingCoords.add(intCoords);
-            }
-
-            polygons.add(Polygon(
-              points: extCoords,
-              borderStrokeWidth: lineWidth,
-              holePointsList: intRingCoords,
-              borderColor: lineStrokeColor,
-              color: fillColor,
-            ));
-          }
-        });
-
+      } else if (allPolygons.isNotEmpty) {
         var polygonLayer = PolygonLayerOptions(
           polygonCulling: true,
           // simplify: true,
-          polygons: polygons,
+          polygons: allPolygons,
         );
         layers.add(polygonLayer);
       }
     }
-
     return layers;
+  }
+
+  void addMarkerLayer(List<List<Marker>> allPoints, List<LayerOptions> layers,
+      Color pointFillColor) {
+    if (allPoints.length == 1) {
+      var waypointsCluster = MarkerClusterLayerOptions(
+        maxClusterRadius: 20,
+        size: Size(40, 40),
+        fitBoundsOptions: FitBoundsOptions(
+          padding: EdgeInsets.all(50),
+        ),
+        markers: allPoints[0],
+        polygonOptions: PolygonOptions(
+            borderColor: pointFillColor,
+            color: pointFillColor.withOpacity(0.2),
+            borderStrokeWidth: 3),
+        builder: (context, markers) {
+          return FloatingActionButton(
+            child: Text(markers.length.toString()),
+            onPressed: null,
+            backgroundColor: pointFillColor,
+            foregroundColor: SmashColors.mainBackground,
+            heroTag: null,
+          );
+        },
+      );
+      layers.add(waypointsCluster);
+    } else {
+      // in case of multiple rules, we would not know the color for a mixed cluster.
+      List<Marker> points = [];
+      allPoints.forEach((p) => points.addAll(p));
+      layers.add(MarkerLayerOptions(markers: points));
+    }
+  }
+
+  List<Polygon> makePolygonsForRule(Rule rule) {
+    List<Polygon> polygons = [];
+    var filter = rule.filter;
+    var key = filter?.uniqueValueKey;
+    var value = filter?.uniqueValueValue;
+
+    var polygonSymbolizersList = rule.polygonSymbolizers;
+    if (polygonSymbolizersList == null || polygonSymbolizersList.isEmpty) {
+      return [];
+    }
+    var polygonStyle = polygonSymbolizersList[0].style ??= PolygonStyle();
+
+    var lineWidth = polygonStyle.strokeWidth;
+    Color lineStrokeColor = ColorExt(polygonStyle.strokeColorHex);
+    var lineOpacity = polygonStyle.strokeOpacity * 255;
+    lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
+
+    Color fillColor = ColorExt(polygonStyle.fillColorHex)
+        .withAlpha((polygonStyle.fillOpacity * 255).toInt());
+
+    features.forEach((f) {
+      if (key == null || f.attributes[key]?.toString() == value) {
+        var count = f.geometry.getNumGeometries();
+        for (var i = 0; i < count; i++) {
+          JTS.Polygon p = f.geometry.getGeometryN(i);
+          // ext ring
+          var extCoords = p
+              .getExteriorRing()
+              .getCoordinates()
+              .map((c) => LatLng(c.y, c.x))
+              .toList();
+
+          // inter rings
+          var numInteriorRing = p.getNumInteriorRing();
+          List<List<LatLng>> intRingCoords = [];
+          for (var i = 0; i < numInteriorRing; i++) {
+            var intCoords = p
+                .getInteriorRingN(i)
+                .getCoordinates()
+                .map((c) => LatLng(c.y, c.x))
+                .toList();
+            intRingCoords.add(intCoords);
+          }
+
+          polygons.add(Polygon(
+            points: extCoords,
+            borderStrokeWidth: lineWidth,
+            holePointsList: intRingCoords,
+            borderColor: lineStrokeColor,
+            color: fillColor,
+          ));
+        }
+      }
+    });
+
+    return polygons;
+  }
+
+  List<Polyline> makeLinesForRule(Rule rule) {
+    List<Polyline> lines = [];
+    var filter = rule.filter;
+    var key = filter?.uniqueValueKey;
+    var value = filter?.uniqueValueValue;
+
+    var lineSymbolizersList = rule.lineSymbolizers;
+    if (lineSymbolizersList == null || lineSymbolizersList.isEmpty) {
+      return [];
+    }
+    var lineStyle = lineSymbolizersList[0].style ??= LineStyle();
+
+    var lineWidth = lineStyle.strokeWidth;
+    Color lineStrokeColor = ColorExt(lineStyle.strokeColorHex);
+    var lineOpacity = lineStyle.strokeOpacity * 255;
+    lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
+
+    features.forEach((f) {
+      if (key == null || f.attributes[key]?.toString() == value) {
+        var count = f.geometry.getNumGeometries();
+        for (var i = 0; i < count; i++) {
+          JTS.LineString l = f.geometry.getGeometryN(i);
+          var linePoints =
+              l.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
+          lines.add(Polyline(
+              points: linePoints,
+              strokeWidth: lineWidth,
+              color: lineStrokeColor));
+        }
+      }
+    });
+
+    return lines;
+  }
+
+  /// Create markers for a given [Rule].
+  List<Marker> makeMarkersForRule(Rule rule) {
+    List<Marker> points = [];
+    var filter = rule.filter;
+    var key = filter?.uniqueValueKey;
+    var value = filter?.uniqueValueValue;
+
+    var pointSymbolizersList = rule.pointSymbolizers;
+    if (pointSymbolizersList == null || pointSymbolizersList.isEmpty) {
+      return [];
+    }
+    var pointStyle = pointSymbolizersList[0].style ??= PointStyle();
+    var iconData = SmashIcons.forSldWkName(pointStyle.markerName);
+    var pointsSize = pointStyle.markerSize * 3;
+    Color pointFillColor = ColorExt(pointStyle.fillColorHex);
+    pointFillColor = pointFillColor.withOpacity(pointStyle.fillOpacity);
+
+    String labelName;
+    ColorExt labelColor;
+    if (_textStyle != null) {
+      labelName = _textStyle.labelName;
+      labelColor = ColorExt(_textStyle.textColor);
+    }
+
+    features.forEach((f) {
+      if (key == null || f.attributes[key]?.toString() == value) {
+        var count = f.geometry.getNumGeometries();
+        for (var i = 0; i < count; i++) {
+          JTS.Point l = f.geometry.getGeometryN(i);
+          var labelText = f.attributes[labelName];
+          double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
+          if (labelText == null) {
+            textExtraHeight = 0;
+          }
+          Marker m = Marker(
+              width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
+              height: pointsSize + textExtraHeight,
+              point: LatLng(l.getY(), l.getX()),
+              // anchorPos: AnchorPos.exactly(
+              //     Anchor(pointsSize / 2, textExtraHeight + pointsSize / 2)),
+              builder: (ctx) => MarkerIcon(
+                    iconData,
+                    pointFillColor,
+                    pointsSize,
+                    labelText.toString(),
+                    labelColor,
+                    pointFillColor.withAlpha(100),
+                  ));
+          points.add(m);
+        }
+      }
+    });
+
+    return points;
   }
 
   @override
