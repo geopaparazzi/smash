@@ -107,10 +107,11 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     var geometry = f.geoms[_index];
 
     Map<String, dynamic> data = f.data[_index];
-    Map<String, String> typesMap = f.fieldAndTypemap[_index];
+    Map<String, String> typesMap;
     var primaryKey;
     var db;
     if (f.editable[_index]) {
+      typesMap = f.fieldAndTypemap[_index];
       primaryKey = f.primaryKeys[_index];
       db = f.dbs[_index];
     }
