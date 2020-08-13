@@ -135,7 +135,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
 Future<String> handleLayers(BuildContext context) async {
   // init layer manager
   var layerManager = LayerManager();
-  await layerManager.initialize();
+  await layerManager.initialize(context);
   return null;
 }
 

@@ -171,12 +171,12 @@ abstract class SldLayerSource {
 }
 
 /// Interface for vector data based layersources.
-abstract class VectorLayerSource extends LayerSource {
-  Future<void> load(BuildContext context);
-}
+abstract class VectorLayerSource extends LoadableLayerSource {}
 
 /// Interface for raster data based layersources.
-abstract class RasterLayerSource extends LayerSource {
+abstract class RasterLayerSource extends LoadableLayerSource {}
+
+abstract class LoadableLayerSource extends LayerSource {
   Future<void> load(BuildContext context);
 }
 

@@ -23,13 +23,16 @@ class LayerManager {
   LayerManager._internal();
 
   /// Initialize the LayerManager by retrieving the layers from teh preferences.
-  Future<void> initialize() async {
+  Future<void> initialize(BuildContext context) async {
     List<String> layerSourcesList = await GpPreferences().getLayerInfoList();
     if (layerSourcesList.isNotEmpty) {
       _layerSources = [];
       for (var json in layerSourcesList) {
         var fromJson = LayerSource.fromJson(json);
         for (var source in fromJson) {
+          if (source is LoadableLayerSource) {
+            await source.load(context);
+          }
           if (source.getSrid() == null) {
             source.calculateSrid();
           }

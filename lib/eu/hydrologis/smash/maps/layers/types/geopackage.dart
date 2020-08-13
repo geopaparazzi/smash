@@ -117,7 +117,9 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
 
 //      _tableBounds = db.getTableBounds(_tableName);
 
-      String userDataField = _textStyle != null ? _textStyle.labelName : null;
+      String userDataField = _textStyle != null
+          ? _textStyle.labelName.length > 0 ? _textStyle.labelName : null
+          : null;
       _tableGeoms = db.getGeometriesIn(_tableName,
           limit: maxFeaturesToLoad,
           envelope: limitBounds,
@@ -228,10 +230,13 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
         var iconData = SmashIcons.forSldWkName(pointStyle.markerName);
         double pointsSize = pointStyle.markerSize * POINT_SIZE_FACTOR;
 
+        bool doLabels = _textStyle != null &&
+            _textStyle.labelName != null &&
+            _textStyle.labelName.trim().isNotEmpty;
+
         Color fillColor = ColorExt(pointStyle.fillColorHex)
             .withOpacity(pointStyle.fillOpacity);
-        Color textColor =
-            _textStyle != null ? ColorExt(_textStyle.textColor) : null;
+        Color textColor = doLabels ? ColorExt(_textStyle.textColor) : null;
 
         List<Marker> points = [];
         var dataSize = _tableGeoms.length;
@@ -240,7 +245,8 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
           for (int i = 0; i < pointGeom.getNumGeometries(); i++) {
             var geometryN = pointGeom.getGeometryN(i);
             var c = geometryN.getCoordinate();
-            String labelText = geometryN.getUserData()?.toString() ?? "";
+            String labelText =
+                doLabels ? geometryN.getUserData()?.toString() ?? "" : null;
             double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
             if (labelText == null) {
               textExtraHeight = 0;

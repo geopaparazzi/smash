@@ -29,9 +29,9 @@ dependencies:
     #  url: https://github.com/moovida/dart_hydrologis_db.git
 
   smashlibs:
-    # path: ../smashlibs/
-    git:
-      url: https://github.com/moovida/smashlibs.git
+    path: ../smashlibs/
+    # git:
+    #   url: https://github.com/moovida/smashlibs.git
 
   dart_shp: ^0.3.1
     # path: ../dart_shp/
