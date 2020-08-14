@@ -433,7 +433,9 @@ class GeopaparazziProjectDb extends SqliteDb {
   List<LogDataPoint> getLogDataPoints(int logId) {
     String logDataQuery = """
             select $LOGSDATA_COLUMN_ID, $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, 
-              $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_ALTIM, $LOGSDATA_COLUMN_TS 
+              $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_ALTIM, $LOGSDATA_COLUMN_TS ,
+              $LOGSDATA_COLUMN_LAT_FILTERED, $LOGSDATA_COLUMN_LON_FILTERED, 
+              $LOGSDATA_COLUMN_ACCURACY_FILTERED
             from $TABLE_GPSLOG_DATA where $LOGSDATA_COLUMN_LOGID=$logId
             order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS
             """;
@@ -446,7 +448,10 @@ class GeopaparazziProjectDb extends SqliteDb {
         ..lon = map[LOGSDATA_COLUMN_LON]
         ..logid = map[LOGSDATA_COLUMN_LOGID]
         ..altim = map[LOGSDATA_COLUMN_ALTIM]
-        ..ts = map[LOGSDATA_COLUMN_TS];
+        ..ts = map[LOGSDATA_COLUMN_TS]
+        ..filtered_lon = map[LOGSDATA_COLUMN_LON_FILTERED]
+        ..filtered_lat = map[LOGSDATA_COLUMN_LAT_FILTERED]
+        ..filtered_accuracy = map[LOGSDATA_COLUMN_ACCURACY_FILTERED];
       points.add(point);
     });
     return points;

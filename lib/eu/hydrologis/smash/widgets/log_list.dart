@@ -91,9 +91,12 @@ class LogListWidget extends StatefulWidget {
 class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
   List<dynamic> _logsList = [];
   bool _isLoading = true;
+  bool useGpsFilteredGenerally;
 
   @override
   void afterFirstLayout(BuildContext context) {
+    useGpsFilteredGenerally =
+        GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
     loadLogs();
   }
 
@@ -185,7 +188,8 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                 itemCount: _logsList.length,
                 itemBuilder: (context, index) {
                   Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
-                  return LogInfo(logItem, gpsState, db, loadLogs);
+                  return LogInfo(
+                      logItem, gpsState, db, loadLogs, useGpsFilteredGenerally);
                 }),
       ),
     );
@@ -193,12 +197,14 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
 }
 
 class LogInfo extends StatefulWidget {
-  GeopaparazziProjectDb db;
-  var gpsState;
-  var logItem;
-  var reloadLogFunction;
+  final GeopaparazziProjectDb db;
+  final gpsState;
+  final logItem;
+  final reloadLogFunction;
+  final useGpsFilteredGenerally;
 
-  LogInfo(this.logItem, this.gpsState, this.db, this.reloadLogFunction);
+  LogInfo(this.logItem, this.gpsState, this.db, this.reloadLogFunction,
+      this.useGpsFilteredGenerally);
 
   @override
   _LogInfoState createState() => _LogInfoState();
@@ -214,15 +220,24 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   @override
   void afterFirstLayout(BuildContext context) {
     timeString = _getTime(widget.logItem, widget.gpsState, widget.db);
-    lengthString = _getLength(widget.logItem, widget.gpsState);
-    List<double> upDown =
-        _getElevDelta(widget.logItem, widget.gpsState, widget.db);
-    if (upDown[0] == -1) {
+    // lengthString = _getLength(widget.logItem, widget.gpsState);
+    List<double> upDownLength = _getElevMinMaxAndLengthDelta(
+        widget.logItem, widget.gpsState, widget.db);
+    if (upDownLength[0] == -1) {
       upString = "- nv -";
       downString = "- nv -";
     } else {
-      upString = "${upDown[0].toInt()}m";
-      downString = "${upDown[1].toInt()}m";
+      upString = "${upDownLength[0].toInt()}m";
+      downString = "${upDownLength[1].toInt()}m";
+    }
+
+    var length = upDownLength[2];
+    if (length > 1000) {
+      var lengthKm = length / 1000;
+      var l = (lengthKm * 10).toInt() / 10.0;
+      lengthString = "${l.toStringAsFixed(1)} km";
+    } else {
+      lengthString = "${length.round()} m";
     }
     setState(() {});
   }
@@ -413,17 +428,30 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     }
   }
 
-  List<double> _getElevDelta(
+  List<double> _getElevMinMaxAndLengthDelta(
       Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
     double up = 0;
     double down = 0;
-    // if (item.name != "log_20200601_170019") {
-    //   return [-1, -1];
-    // }
     var pointsList = db.getLogDataPoints(item.id);
+
+    double length = 0;
     List<int> removeIndexesList = [];
-    // start removing subsequent duplicates
     for (int i = 0; i < pointsList.length - 1; i++) {
+      // calculate the length
+      LogDataPoint ldp1 = pointsList[i];
+      LogDataPoint ldp2 = pointsList[i + 1];
+      double distance;
+      if (widget.useGpsFilteredGenerally && ldp1.filtered_lat != null) {
+        distance = CoordinateUtilities.getDistance(
+            LatLng(ldp1.filtered_lat, ldp1.filtered_lon),
+            LatLng(ldp2.filtered_lat, ldp2.filtered_lon));
+      } else {
+        distance = CoordinateUtilities.getDistance(
+            LatLng(ldp1.lat, ldp1.lon), LatLng(ldp2.lat, ldp2.lon));
+      }
+      length += distance;
+
+      // start removing subsequent duplicates
       double elev1 = pointsList[i].altim;
       double elev2 = pointsList[i + 1].altim;
       if (elev2 - elev1 == 0) {
@@ -451,7 +479,8 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       }
     }
     removeIndexesList.reversed.toSet().forEach((index) {
-      var removeAt = pointsList.removeAt(index);
+      // var removeAt =
+      pointsList.removeAt(index);
       // print("Removed $index: ${removeAt.altim}");
     });
 
@@ -482,6 +511,6 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         deltaSum = 0;
       }
     }
-    return [up, down.abs()];
+    return [up, down.abs(), length];
   }
 }

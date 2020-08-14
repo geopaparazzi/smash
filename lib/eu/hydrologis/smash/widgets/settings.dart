@@ -874,6 +874,8 @@ class GpsSettingsState extends State<GpsSettings> {
         GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
     bool showValidGpsPointCount =
         GpPreferences().getBooleanSync(KEY_GPS_SHOW_VALID_POINTS, false);
+    bool useGpsFilteredGenerally =
+        GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
 
     // SmashLocationAccuracy locationAccuracy =
     //     SmashLocationAccuracy.fromPreferences();
@@ -1041,6 +1043,43 @@ class GpsSettingsState extends State<GpsSettings> {
                           var gpsState =
                               Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsTimeInterval = selected;
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Card(
+            margin: SmashUI.defaultMargin(),
+            color: SmashColors.mainBackground,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: SmashUI.normalText("Use GPS Filter", bold: true),
+                ),
+                ListTile(
+                  leading: Icon(MdiIcons.filter),
+                  title: Text(
+                      "${useGpsFilteredGenerally ? "Disable" : "Enable"} the use of filtered GPS in certain sections."),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: SmashUI.defaultTBPadding(),
+                        child: Text(
+                          "WARNING: This will affect sections as log statistics (length) or log charting.",
+                          textAlign: TextAlign.justify,
+                        ),
+                      ),
+                      Checkbox(
+                        value: useGpsFilteredGenerally,
+                        onChanged: (newValue) async {
+                          await GpPreferences().setBoolean(
+                              KEY_GPS_USE_FILTER_GENERALLY, newValue);
                           setState(() {});
                         },
                       ),
