@@ -13,8 +13,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -22,6 +20,7 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// Log object dedicated to the list widget containing logs.
 class Log4ListWidget {
@@ -285,8 +284,14 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         onTap: () async {
           SmashMapState mapState =
               Provider.of<SmashMapState>(context, listen: false);
-          LatLng position = db.getLogStartPosition(logItem.id);
-          mapState.center = Coordinate(position.longitude, position.latitude);
+          var logDataPoints = db.getLogDataPoints(logItem.id);
+          Envelope env = Envelope.empty();
+          logDataPoints.forEach((point) {
+            var lat = point.lat;
+            var lon = point.lon;
+            env.expandToInclude(lon, lat);
+          });
+          mapState.setBounds(env);
           Navigator.of(context).pop();
         }));
     actions.add(IconSlideAction(
@@ -298,6 +303,18 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             context,
             MaterialPageRoute(
                 builder: (context) => LogPropertiesWidget(logItem)));
+        setState(() {});
+      },
+    ));
+    actions.add(IconSlideAction(
+      caption: 'Profile View',
+      color: SmashColors.mainDecorations,
+      icon: MdiIcons.chartAreaspline,
+      onTap: () async {
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LogProfileView(logItem.id)));
         setState(() {});
       },
     ));
@@ -338,11 +355,6 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                     child: distIcon,
                   ),
                   Text(lengthString),
-                  Padding(
-                    padding: EdgeInsets.only(left: padLeft, right: pad),
-                    child: countIcon,
-                  ),
-                  Text(countString),
                 ],
               ),
               Row(
@@ -357,6 +369,11 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                     child: downIcon,
                   ),
                   Text(downString),
+                  Padding(
+                    padding: EdgeInsets.only(left: padLeft, right: pad),
+                    child: countIcon,
+                  ),
+                  Text(countString),
                 ],
               )
             ],
