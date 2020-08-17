@@ -536,7 +536,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.10.1"
+    version: "1.11.0"
   pedantic:
     dependency: transitive
     description:
@@ -701,7 +701,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: b69f726ec7ff3ca6880c4b28d9470e26b8a8caac
+      resolved-ref: "101c7fc38b729cba166fafc3835d48c318e3bbc5"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
