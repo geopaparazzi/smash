@@ -213,6 +213,7 @@ class LogInfo extends StatefulWidget {
 class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   String timeString = "- nv -";
   String lengthString = "- nv -";
+  String countString = "- nv -";
 
   String upString = "- nv -";
   String downString = "- nv -";
@@ -221,17 +222,20 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   void afterFirstLayout(BuildContext context) {
     timeString = _getTime(widget.logItem, widget.gpsState, widget.db);
     // lengthString = _getLength(widget.logItem, widget.gpsState);
-    List<double> upDownLength = _getElevMinMaxAndLengthDelta(
+    List<double> upDownLengthCount = _getElevMinMaxAndLengthDeltaCount(
         widget.logItem, widget.gpsState, widget.db);
-    if (upDownLength[0] == -1) {
+    if (upDownLengthCount[0] == -1) {
       upString = "- nv -";
       downString = "- nv -";
     } else {
-      upString = "${upDownLength[0].toInt()}m";
-      downString = "${upDownLength[1].toInt()}m";
+      upString = "${upDownLengthCount[0].toInt()}m";
+      downString = "${upDownLengthCount[1].toInt()}m";
     }
 
-    var length = upDownLength[2];
+    var count = upDownLengthCount[3];
+    countString = "${count.toInt()} pts";
+
+    var length = upDownLengthCount[2];
     if (length > 1000) {
       var lengthKm = length / 1000;
       var l = (lengthKm * 10).toInt() / 10.0;
@@ -254,6 +258,10 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     );
     var distIcon = Icon(
       MdiIcons.ruler,
+      size: size,
+    );
+    var countIcon = Icon(
+      MdiIcons.sigma,
       size: size,
     );
     var upIcon = Icon(
@@ -330,6 +338,11 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                     child: distIcon,
                   ),
                   Text(lengthString),
+                  Padding(
+                    padding: EdgeInsets.only(left: padLeft, right: pad),
+                    child: countIcon,
+                  ),
+                  Text(countString),
                 ],
               ),
               Row(
@@ -404,31 +417,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     }
   }
 
-  String _getLength(Log4ListWidget item, GpsState gpsState) {
-    double length = item.lengthm;
-    if (length == 0 &&
-        item.endTime == 0 &&
-        gpsState.isLogging &&
-        item.id == gpsState.currentLogId) {
-      var points = gpsState.currentLogPoints;
-      double sum = 0;
-      for (int i = 0; i < points.length - 1; i++) {
-        double distance =
-            CoordinateUtilities.getDistance(points[i], points[i + 1]);
-        sum += distance;
-      }
-      length = sum;
-    }
-    if (length > 1000) {
-      var lengthKm = length / 1000;
-      var l = (lengthKm * 10).toInt() / 10.0;
-      return "${l.toStringAsFixed(1)} km";
-    } else {
-      return "${length.round()} m";
-    }
-  }
-
-  List<double> _getElevMinMaxAndLengthDelta(
+  List<double> _getElevMinMaxAndLengthDeltaCount(
       Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
     double up = 0;
     double down = 0;
@@ -511,6 +500,6 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         deltaSum = 0;
       }
     }
-    return [up, down.abs(), length];
+    return [up, down.abs(), length, pointsList.length.toDouble()];
   }
 }

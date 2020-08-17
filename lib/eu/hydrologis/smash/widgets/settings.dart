@@ -1071,7 +1071,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       Padding(
                         padding: SmashUI.defaultTBPadding(),
                         child: Text(
-                          "WARNING: This will affect sections as log statistics (length) or log charting.",
+                          "WARNING: This will affect sections as log statistics (length) and log charting.",
                           textAlign: TextAlign.justify,
                         ),
                       ),

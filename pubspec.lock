@@ -126,7 +126,7 @@ packages:
       name: dart_hydrologis_db
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1+2"
+    version: "0.3.0+2"
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
@@ -245,7 +245,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.1+2"
+    version: "0.2.2+1"
   flutter_image:
     dependency: transitive
     description:
@@ -453,20 +453,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  moor:
-    dependency: transitive
-    description:
-      name: moor
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.3.1"
-  moor_ffi:
-    dependency: transitive
-    description:
-      name: moor_ffi
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.7.0"
   nested:
     dependency: transitive
     description:
@@ -835,7 +821,7 @@ packages:
       name: url_launcher_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2"
+    version: "0.1.2+1"
   utf:
     dependency: transitive
     description:
@@ -884,7 +870,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.0"
+    version: "4.4.0"
   yaml:
     dependency: transitive
     description:
