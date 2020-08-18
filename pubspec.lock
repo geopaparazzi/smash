@@ -282,7 +282,7 @@ packages:
       name: flutter_material_pickers
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.1"
+    version: "1.7.2"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -419,9 +419,11 @@ packages:
   map_elevation:
     dependency: "direct main"
     description:
-      name: map_elevation
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: infopoints_test2
+      resolved-ref: d521e8176374301b17fe719e8c4c95a0f142dc7c
+      url: "https://github.com/moovida/map_elevation.git"
+    source: git
     version: "1.0.2"
   mapsforge_flutter:
     dependency: "direct main"

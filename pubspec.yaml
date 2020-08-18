@@ -63,7 +63,10 @@ dependencies:
       ref: version4smash
 
   # GPL 3.0
-  map_elevation: ^1.0.2
+  map_elevation: #^1.0.2
+    git:
+      url: https://github.com/moovida/map_elevation.git
+      ref: infopoints_test2
 
   # MIT
   lat_lon_grid_plugin: #0.1.1

@@ -198,7 +198,7 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
 class LogInfo extends StatefulWidget {
   final GeopaparazziProjectDb db;
   final gpsState;
-  final logItem;
+  final Log4ListWidget logItem;
   final reloadLogFunction;
   final useGpsFilteredGenerally;
 
@@ -247,7 +247,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    var logItem = widget.logItem;
+    Log4ListWidget logItem = widget.logItem;
     var db = widget.db;
 
     var size = 15.0;
@@ -311,10 +311,8 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       color: SmashColors.mainDecorations,
       icon: MdiIcons.chartAreaspline,
       onTap: () async {
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => LogProfileView(logItem.id)));
+        await Navigator.push(context,
+            MaterialPageRoute(builder: (context) => LogProfileView(logItem)));
         setState(() {});
       },
     ));

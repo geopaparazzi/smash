@@ -6,21 +6,21 @@
 
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:map_elevation/map_elevation.dart';
-import 'package:mapsforge_flutter/core.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_jts/dart_jts.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 /// The log properties page.
 class LogPropertiesWidget extends StatefulWidget {
-  final _logItem;
+  final Log4ListWidget _logItem;
 
   LogPropertiesWidget(this._logItem);
 
@@ -220,37 +220,62 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
   }
 }
 
-class LogProfileView extends StatefulWidget {
-  final logId;
+class LatLngExt extends ElevationPoint {
+  double prog;
+  double speed;
+  int ts;
 
-  LogProfileView(this.logId, {Key key}) : super(key: key);
+  LatLngExt(double latitude, double longitude, double altim, this.prog,
+      this.speed, this.ts)
+      : super(latitude, longitude, altim);
+}
+
+class LogProfileView extends StatefulWidget {
+  final Log4ListWidget logItem;
+
+  LogProfileView(this.logItem, {Key key}) : super(key: key);
 
   @override
   _LogProfileViewState createState() => _LogProfileViewState();
 }
 
 class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
-  LatLng hoverPoint;
-  List<LatLng> points = [];
-  List<ElevationPoint> elevationPoints = [];
+  LatLngExt hoverPoint;
+  List<LatLngExt> points = [];
   LatLng center;
+  double totalLengthMeters;
 
   void afterFirstLayout(BuildContext context) {
     ProjectState project = Provider.of<ProjectState>(context, listen: false);
-    var logDataPoints = project.projectDb.getLogDataPoints(widget.logId);
+    var logDataPoints = project.projectDb.getLogDataPoints(widget.logItem.id);
     bool useGpsFilteredGenerally =
         GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
+    LatLngExt prevll;
+    double progressiveMeters = 0;
     logDataPoints.forEach((p) {
-      LatLng ll;
+      LatLng llTmp;
       if (useGpsFilteredGenerally && p.filtered_accuracy != null) {
-        ll = LatLng(p.filtered_lat, p.filtered_lon);
+        llTmp = LatLng(p.filtered_lat, p.filtered_lon);
       } else {
-        ll = LatLng(p.lat, p.lon);
+        llTmp = LatLng(p.lat, p.lon);
       }
-      points.add(ll);
-      elevationPoints.add(ElevationPoint(ll, p.altim));
-    });
+      LatLngExt llExt;
+      if (prevll == null) {
+        llExt = LatLngExt(llTmp.latitude, llTmp.longitude, p.altim, 0, 0, p.ts);
+      } else {
+        var distanceMeters = CoordinateUtilities.getDistance(prevll, llTmp);
+        progressiveMeters += distanceMeters;
+        var deltaTs = (p.ts - prevll.ts) / 1000;
+        var speedMS = distanceMeters / deltaTs;
 
+        llExt =
+            LatLngExt(p.lat, p.lon, p.altim, progressiveMeters, speedMS, p.ts);
+      }
+
+      points.add(llExt);
+      prevll = llExt;
+    });
+    totalLengthMeters = progressiveMeters;
     Envelope env = Envelope.empty();
     logDataPoints.forEach((point) {
       var lat = point.lat;
@@ -281,9 +306,65 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
 
     var height = ScreenUtilities.getHeight(context);
 
+    var progNew;
+    String progString;
+    if (hoverPoint != null) {
+      if (hoverPoint.prog > 1000) {
+        var progKm = hoverPoint.prog / 1000.0;
+        progNew = "${progKm.toStringAsFixed(1)} km";
+      } else {
+        progNew = "${hoverPoint.prog.toInt()} m";
+      }
+      progString = "Progressive: $progNew";
+    }
+    var totalNew;
+    String totalString;
+    if (totalLengthMeters != null) {
+      if (totalLengthMeters > 1000) {
+        var totalKm = totalLengthMeters / 1000.0;
+        totalNew = "${totalKm.toStringAsFixed(1)} km";
+      } else {
+        totalNew = "${totalLengthMeters.toInt()} m";
+      }
+      totalString = "Total: $totalNew";
+    }
+
+    int durationMillis = widget.logItem.endTime - widget.logItem.startTime;
+    double durationSeconds = durationMillis / 1000;
+    String durationStr = "${durationSeconds.toInt()} sec";
+    if (durationSeconds > 60) {
+      double durationMinutes = durationSeconds / 60;
+      double leftSeconds = durationSeconds % 60;
+      durationStr = "${durationMinutes.toInt()} min";
+      if (leftSeconds > 0) {
+        durationStr += ", ${leftSeconds.toInt()} sec";
+      }
+      if (durationMinutes > 60) {
+        double durationhours = durationMinutes / 60;
+        double leftMinutes = durationMinutes % 60;
+        durationStr = "${durationhours.toInt()} h";
+        if (leftMinutes > 0) {
+          durationStr += ", ${leftMinutes.toInt()} min";
+        }
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("GPS Log Profile View"),
+        actions: [
+          IconButton(
+            icon: Icon(MdiIcons.palette),
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LogPropertiesWidget(widget.logItem)));
+              setState(() {});
+            },
+          )
+        ],
       ),
       body: center == null
           ? SmashCircularProgress(label: "Loading data...")
@@ -305,14 +386,54 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                       Polyline(
                         // An optional tag to distinguish polylines in callback
                         points: points,
-                        color: Colors.red,
-                        strokeWidth: 3.0,
+                        color: ColorExt(widget.logItem.color),
+                        strokeWidth: widget.logItem.width,
                       ),
                     ],
                   ),
                   MarkerLayerOptions(markers: markers),
                 ],
               ),
+              hoverPoint != null
+                  ? Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      // height: height / 3,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: SmashColors.mainBackground.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Padding(
+                          padding: SmashUI.defaultPadding(),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: SmashUI.normalText(widget.logItem.name,
+                                    bold: true, underline: true),
+                              ),
+                              SmashUI.normalText("Duration: $durationStr"),
+                              SmashUI.normalText(
+                                  "Timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(hoverPoint.ts))}"),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: SmashUI.normalText(totalString),
+                              ),
+                              SmashUI.normalText(progString),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: SmashUI.normalText(
+                                    "Speed: ${hoverPoint.speed.toStringAsFixed(0)} m/s (${(hoverPoint.speed * 3.6).toStringAsFixed(0)} km/h)"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
               Positioned(
                 bottom: 0,
                 left: 0,
@@ -327,7 +448,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                       onNotification:
                           (ElevationHoverNotification notification) {
                         setState(() {
-                          hoverPoint = notification.position;
+                          hoverPoint = notification.elevationPoint;
                         });
 
                         return true;
@@ -336,7 +457,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                         padding: const EdgeInsets.only(
                             top: 6.0, bottom: 6, right: 6),
                         child: Elevation(
-                          elevationPoints,
+                          points,
                           color: Colors.grey.withOpacity(opacity),
                           // elevationGradientColors: ElevationGradientColors(
                           //     gt10: Colors.green.withOpacity(opacity),
@@ -345,7 +466,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                         ),
                       )),
                 ),
-              )
+              ),
             ]),
     );
   }
