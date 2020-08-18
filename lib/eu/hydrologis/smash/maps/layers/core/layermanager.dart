@@ -30,14 +30,17 @@ class LayerManager {
       for (var json in layerSourcesList) {
         var fromJson = LayerSource.fromJson(json);
         for (var source in fromJson) {
-          if (source is LoadableLayerSource) {
-            await source.load(context);
-          }
-          if (source.getSrid() == null) {
-            source.calculateSrid();
+          var absolutePath = source.getAbsolutePath();
+          if (absolutePath != null && File(absolutePath).existsSync()) {
+            if (source is LoadableLayerSource) {
+              await source.load(context);
+            }
+            if (source.getSrid() == null) {
+              source.calculateSrid();
+            }
+            _layerSources.add(source);
           }
         }
-        _layerSources.addAll(fromJson);
       }
       ;
     } else {
