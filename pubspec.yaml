@@ -4,7 +4,7 @@
 name: smash
 description: The Smart Mobile Application for Surveyor's Happyness.
 
-version: 1.4.0+22 # we keep the build number growing to have it properly handled in android
+version: 1.4.0+23 # we keep the build number growing to have it properly handled in android
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
