@@ -113,9 +113,30 @@ class MapsforgeTileProvider extends FM.TileProvider {
 
     _graphicFactory = FlutterGraphicFactory();
     SymbolCache symbolCache = SymbolCache();
-    RenderThemeBuilder renderThemeBuilder =
-        RenderThemeBuilder(_graphicFactory, _displayModel, symbolCache);
-    String content = await rootBundle.loadString("assets/defaultrender.xml");
+
+    String content;
+    // TODO enable when external themes supported in mapsforge_flutter
+    // var parentFolder = FileUtilities.parentFolderFromFile(_mapsforgeFile.path);
+    // var nameNoExt = FileUtilities.nameFromFile(_mapsforgeFile.path, false);
+    // var resourcesFolderPath = FileUtilities.joinPaths(parentFolder, nameNoExt);
+    // Directory resourcesFolderFile = Directory(resourcesFolderPath);
+    // File xmlFile;
+    // String relativePath;
+    // if (resourcesFolderFile.existsSync()) {
+    //   // check if rendertheme xml exists
+    //   var xmlPath = resourcesFolderPath + ".xml";
+    //   xmlFile = File(xmlPath);
+    //   if (xmlFile.existsSync()) {
+    //     relativePath = resourcesFolderPath;
+    //     content = FileUtilities.readFile(xmlPath);
+    //   }
+    // }
+    // if (content == null) {
+    content = await rootBundle.loadString("assets/defaultrender.xml");
+    // }
+
+    RenderThemeBuilder renderThemeBuilder = RenderThemeBuilder(
+        _graphicFactory, _displayModel, symbolCache); //, relativePath);
     renderThemeBuilder.parseXml(content);
     _renderTheme = renderThemeBuilder.build();
 

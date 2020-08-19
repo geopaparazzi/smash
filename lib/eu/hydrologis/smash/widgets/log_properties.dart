@@ -448,7 +448,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                       onNotification:
                           (ElevationHoverNotification notification) {
                         setState(() {
-                          hoverPoint = notification.elevationPoint;
+                          hoverPoint = notification.position;
                         });
 
                         return true;
