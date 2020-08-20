@@ -306,16 +306,11 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
 
     var height = ScreenUtilities.getHeight(context);
 
-    var progNew;
     String progString;
     if (hoverPoint != null) {
-      if (hoverPoint.prog > 1000) {
-        var progKm = hoverPoint.prog / 1000.0;
-        progNew = "${progKm.toStringAsFixed(1)} km";
-      } else {
-        progNew = "${hoverPoint.prog.toInt()} m";
-      }
-      progString = "Distance at position: $progNew";
+      var prog = hoverPoint.prog;
+      var progFormatted = StringUtilities.formatMeters(prog);
+      progString = "Distance at position: $progFormatted";
     }
     var totalNew;
     String totalString;
@@ -330,11 +325,12 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     }
 
     int durationMillis = widget.logItem.endTime - widget.logItem.startTime;
-    String durationStr = getDurationStringFromMillis(durationMillis);
+    String durationStr = StringUtilities.formatDurationMillis(durationMillis);
     String currentTouchStr;
     if (hoverPoint != null) {
       int currentTouchMillis = hoverPoint.ts - widget.logItem.startTime;
-      currentTouchStr = getDurationStringFromMillis(currentTouchMillis);
+      currentTouchStr =
+          StringUtilities.formatDurationMillis(currentTouchMillis);
     }
 
     return Scaffold(
@@ -461,27 +457,5 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
               ),
             ]),
     );
-  }
-
-  String getDurationStringFromMillis(int durationMillis) {
-    double durationSeconds = durationMillis / 1000;
-    String durationStr = "${durationSeconds.toInt()} sec";
-    if (durationSeconds > 60) {
-      double durationMinutes = durationSeconds / 60;
-      double leftSeconds = durationSeconds % 60;
-      durationStr = "${durationMinutes.toInt()} min";
-      if (leftSeconds > 0) {
-        durationStr += ", ${leftSeconds.toInt()} sec";
-      }
-      if (durationMinutes > 60) {
-        double durationhours = durationMinutes / 60;
-        double leftMinutes = durationMinutes % 60;
-        durationStr = "${durationhours.toInt()} h";
-        if (leftMinutes > 0) {
-          durationStr += ", ${leftMinutes.toInt()} min";
-        }
-      }
-    }
-    return durationStr;
   }
 }

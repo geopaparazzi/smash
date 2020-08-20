@@ -56,7 +56,7 @@ packages:
       name: barcode
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.16.1"
+    version: "1.17.0"
   cached_network_image:
     dependency: transitive
     description:
@@ -133,7 +133,7 @@ packages:
       name: dart_hydrologis_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.2+7"
+    version: "0.5.2+8"
   dart_jts:
     dependency: transitive
     description:
@@ -879,7 +879,7 @@ packages:
       name: xdg_directories
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   xml:
     dependency: transitive
     description:
