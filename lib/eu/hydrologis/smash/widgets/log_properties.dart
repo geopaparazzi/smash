@@ -315,7 +315,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       } else {
         progNew = "${hoverPoint.prog.toInt()} m";
       }
-      progString = "Progressive: $progNew";
+      progString = "Distance at position: $progNew";
     }
     var totalNew;
     String totalString;
@@ -326,27 +326,15 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       } else {
         totalNew = "${totalLengthMeters.toInt()} m";
       }
-      totalString = "Total: $totalNew";
+      totalString = "Total distance: $totalNew";
     }
 
     int durationMillis = widget.logItem.endTime - widget.logItem.startTime;
-    double durationSeconds = durationMillis / 1000;
-    String durationStr = "${durationSeconds.toInt()} sec";
-    if (durationSeconds > 60) {
-      double durationMinutes = durationSeconds / 60;
-      double leftSeconds = durationSeconds % 60;
-      durationStr = "${durationMinutes.toInt()} min";
-      if (leftSeconds > 0) {
-        durationStr += ", ${leftSeconds.toInt()} sec";
-      }
-      if (durationMinutes > 60) {
-        double durationhours = durationMinutes / 60;
-        double leftMinutes = durationMinutes % 60;
-        durationStr = "${durationhours.toInt()} h";
-        if (leftMinutes > 0) {
-          durationStr += ", ${leftMinutes.toInt()} min";
-        }
-      }
+    String durationStr = getDurationStringFromMillis(durationMillis);
+    String currentTouchStr;
+    if (hoverPoint != null) {
+      int currentTouchMillis = hoverPoint.ts - widget.logItem.startTime;
+      currentTouchStr = getDurationStringFromMillis(currentTouchMillis);
     }
 
     return Scaffold(
@@ -415,9 +403,12 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                                 child: SmashUI.normalText(widget.logItem.name,
                                     bold: true, underline: true),
                               ),
-                              SmashUI.normalText("Duration: $durationStr"),
+                              SmashUI.normalText(
+                                  "Total duration: $durationStr"),
                               SmashUI.normalText(
                                   "Timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(hoverPoint.ts))}"),
+                              SmashUI.normalText(
+                                  "Duration at position: $currentTouchStr"),
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: SmashUI.normalText(totalString),
@@ -438,7 +429,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                 bottom: 0,
                 left: 0,
                 right: 0,
-                height: height / 3,
+                height: height / 4,
                 child: Container(
                   decoration: BoxDecoration(
                       color: SmashColors.mainBackground.withOpacity(0.5),
@@ -458,7 +449,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                             top: 6.0, bottom: 6, right: 6),
                         child: Elevation(
                           points,
-                          color: Colors.grey.withOpacity(opacity),
+                          color:
+                              SmashColors.mainDecorations.withOpacity(opacity),
                           // elevationGradientColors: ElevationGradientColors(
                           //     gt10: Colors.green.withOpacity(opacity),
                           //     gt20: Colors.orangeAccent.withOpacity(opacity),
@@ -469,5 +461,27 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
               ),
             ]),
     );
+  }
+
+  String getDurationStringFromMillis(int durationMillis) {
+    double durationSeconds = durationMillis / 1000;
+    String durationStr = "${durationSeconds.toInt()} sec";
+    if (durationSeconds > 60) {
+      double durationMinutes = durationSeconds / 60;
+      double leftSeconds = durationSeconds % 60;
+      durationStr = "${durationMinutes.toInt()} min";
+      if (leftSeconds > 0) {
+        durationStr += ", ${leftSeconds.toInt()} sec";
+      }
+      if (durationMinutes > 60) {
+        double durationhours = durationMinutes / 60;
+        double leftMinutes = durationMinutes % 60;
+        durationStr = "${durationhours.toInt()} h";
+        if (leftMinutes > 0) {
+          durationStr += ", ${leftMinutes.toInt()} min";
+        }
+      }
+    }
+    return durationStr;
   }
 }
