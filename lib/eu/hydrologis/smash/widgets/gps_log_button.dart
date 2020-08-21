@@ -73,7 +73,7 @@ class _LoggingButtonState extends State<LoggingButton> {
     if (gpsLoggingState.isLogging) {
       var stopLogging = await showConfirmDialog(context, "Stop Logging?",
           "Stop logging and close the current GPS log?");
-      if (stopLogging) {
+      if (stopLogging != null && stopLogging) {
         gpsLoggingState.stopLogging();
         ProjectState projectState =
             Provider.of<ProjectState>(context, listen: false);

@@ -5,6 +5,7 @@
  */
 import 'dart:async';
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -78,13 +79,50 @@ class CurrentGpsLogLayer extends StatelessWidget {
             ..strokeWidth = currentGpsLogLayerOpts.logWidth;
         }
 
-        return CustomPaint(
-          painter: CurrentLogPathPainter(
-              logPaint,
-              filteredLogPaint,
-              gpsState.currentLogPoints,
-              gpsState.currentFilteredLogPoints,
-              map),
+        var currentLogStats = gpsState.getCurrentLogStats();
+        double distanceMeter = currentLogStats[0] as double;
+        double distanceMeterFiltered = currentLogStats[1] as double;
+        int timestampDelta = currentLogStats[2] as int;
+
+        var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
+        var distStr = StringUtilities.formatMeters(distanceMeter);
+        var distFilteredStr =
+            StringUtilities.formatMeters(distanceMeterFiltered);
+
+        return Stack(
+          children: [
+            CustomPaint(
+              painter: CurrentLogPathPainter(
+                  logPaint,
+                  filteredLogPaint,
+                  gpsState.currentLogPoints,
+                  gpsState.currentFilteredLogPoints,
+                  map),
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: SmashColors.mainBackground.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(8)),
+                child: Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SmashUI.normalText("Time: $timeStr"),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: SmashUI.normalText(
+                            "Dist: $distStr ($distFilteredStr)"),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         );
       } else {
         return Container();

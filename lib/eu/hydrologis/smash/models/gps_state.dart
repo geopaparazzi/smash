@@ -30,7 +30,12 @@ class GpsState extends ChangeNotifierPlus {
   bool doTestLog = false;
 
   List<LatLng> _currentLogPoints = [];
+  double _currentLogProgressive;
+  double _currentFilteredLogProgressive;
+  int _currentLogTimeDeltaMillis;
+  int _currentLogTimeInitMillis;
   List<LatLng> _currentFilteredLogPoints = [];
+
   String logMode;
   String filteredLogMode;
   String notesMode;
@@ -117,9 +122,51 @@ class GpsState extends ChangeNotifierPlus {
       ldp.filtered_lon = longitudeFiltered;
       _projectState.projectDb.addGpsLogPoint(currentLogId, ldp);
     }
+
+    if (_currentLogProgressive == null) {
+      _currentLogProgressive = 0.0;
+      _currentFilteredLogProgressive = 0.0;
+    }
+    // original log
+    var newPosLatLon = LatLng(latitude, longitude);
+    if (_currentLogPoints.isNotEmpty) {
+      var distanceMeters =
+          CoordinateUtilities.getDistance(_currentLogPoints.last, newPosLatLon);
+      _currentLogProgressive += distanceMeters;
+    }
+    _currentLogPoints.add(newPosLatLon);
+
+    // filtered log
+    if (latitudeFiltered != null) {
+      var newFilteredPosLatLon = LatLng(latitudeFiltered, longitudeFiltered);
+      if (_currentFilteredLogPoints.isNotEmpty) {
+        var distanceMeters = CoordinateUtilities.getDistance(
+            _currentFilteredLogPoints.last, newFilteredPosLatLon);
+        _currentFilteredLogProgressive += distanceMeters;
+      }
+      _currentFilteredLogPoints.add(newFilteredPosLatLon);
+    }
+
+    // time delta
+    if (_currentLogTimeInitMillis == null) {
+      _currentLogTimeInitMillis = timestamp;
+    }
+    _currentLogTimeDeltaMillis = timestamp - _currentLogTimeInitMillis;
+  }
+
+  /// Get the stats of the current log in the form: [progressiveM, filteredProgressiveM, timedelta]
+  List<dynamic> getCurrentLogStats() {
+    return [
+      _currentLogProgressive,
+      _currentFilteredLogProgressive,
+      _currentLogTimeDeltaMillis
+    ];
   }
 
   int addGpsLog(String logName) {
+    _currentLogProgressive = null;
+    _currentFilteredLogProgressive = null;
+    _currentLogTimeDeltaMillis = null;
     if (_projectState != null) {
       Log l = new Log();
       l.text = logName;

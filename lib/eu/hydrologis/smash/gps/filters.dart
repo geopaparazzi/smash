@@ -120,6 +120,9 @@ class GpsFilterManager {
             CoordinateUtilities.getDistance(previousPosLatLon, newPosLatLon);
         var deltaSecondsLastLogged =
             ((ts - _previousLogPosition.time) / 1000).round();
+        if (deltaSecondsLastLogged < 0) {
+          deltaSecondsLastLogged = 0;
+        }
         msg.distanceLastEvent = distanceLastLogged;
         var isPassingFilters =
             passesFilters(distanceLastLogged, deltaSecondsLastLogged, msg);
@@ -129,10 +132,6 @@ class GpsFilterManager {
             // if logging add to visible log and into db
             if (_gpsState.isLogging && _gpsState.currentLogId != null) {
               msg.isLogging = true;
-              _gpsState.currentLogPoints.add(newPosLatLon);
-              var newFilteredPosLatLon =
-                  LatLng(position.filteredLatitude, position.filteredLongitude);
-              _gpsState.currentFilteredLogPoints.add(newFilteredPosLatLon);
               _gpsState.addLogPoint(position.longitude, position.latitude,
                   position.altitude, ts, position.accuracy,
                   accuracyFiltered: position.filteredAccuracy,

@@ -188,7 +188,8 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                 itemBuilder: (context, index) {
                   Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
                   return LogInfo(
-                      logItem, gpsState, db, loadLogs, useGpsFilteredGenerally);
+                      logItem, gpsState, db, loadLogs, useGpsFilteredGenerally,
+                      key: Key("${logItem.id}"));
                 }),
       ),
     );
@@ -203,7 +204,9 @@ class LogInfo extends StatefulWidget {
   final useGpsFilteredGenerally;
 
   LogInfo(this.logItem, this.gpsState, this.db, this.reloadLogFunction,
-      this.useGpsFilteredGenerally);
+      this.useGpsFilteredGenerally,
+      {Key key})
+      : super(key: key);
 
   @override
   _LogInfoState createState() => _LogInfoState();
