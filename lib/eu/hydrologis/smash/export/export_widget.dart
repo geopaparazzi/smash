@@ -10,6 +10,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/export/gpx_kml_export.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/export/gss_export.dart';
 /*
@@ -29,7 +30,11 @@ class ExportWidget extends StatefulWidget {
 
 class _ExportWidgetState extends State<ExportWidget> {
   int _pdfBuildStatus = 0;
-  String _outPath = "";
+  String _pdfOutPath = "";
+  int _gpxBuildStatus = 0;
+  String _gpxOutPath = "";
+  int _kmlBuildStatus = 0;
+  String _kmlOutPath = "";
 
   Future<void> buildPdf(BuildContext context) async {
     var exportsFolder = await Workspace.getExportsFolder();
@@ -41,10 +46,32 @@ class _ExportWidgetState extends State<ExportWidget> {
     await PdfExporter.exportDb(db, File(outFilePath));
 
     setState(() {
-      _outPath = outFilePath;
+      _pdfOutPath = outFilePath;
       _pdfBuildStatus = 2;
     });
-//    showInfoDialog(context, "Exported to $outFilePath");
+  }
+
+  Future<void> buildGpx(BuildContext context, bool doKml) async {
+    var exportsFolder = await Workspace.getExportsFolder();
+    var ts = TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now());
+
+    var ext = doKml ? "kml" : "gpx";
+
+    var outFilePath =
+        FileUtilities.joinPaths(exportsFolder.path, "smash_export_$ts.$ext");
+    var projectState = Provider.of<ProjectState>(context, listen: false);
+    var db = projectState.projectDb;
+    await GpxExporter.exportDb(db, File(outFilePath), doKml);
+
+    setState(() {
+      if (doKml) {
+        _kmlOutPath = outFilePath;
+        _kmlBuildStatus = 2;
+      } else {
+        _gpxOutPath = outFilePath;
+        _gpxBuildStatus = 2;
+      }
+    });
   }
 
   @override
@@ -68,13 +95,59 @@ class _ExportWidgetState extends State<ExportWidget> {
                       ),
             title: Text("${_pdfBuildStatus == 2 ? 'PDF exported' : 'PDF'}"),
             subtitle: Text(
-                "${_pdfBuildStatus == 2 ? _outPath : 'Export project to Portable Document Format'}"),
+                "${_pdfBuildStatus == 2 ? _pdfOutPath : 'Export project to Portable Document Format'}"),
             onTap: () {
               setState(() {
-                _outPath = "";
+                _pdfOutPath = "";
                 _pdfBuildStatus = 1;
               });
               buildPdf(context);
+//              Navigator.pop(context);
+            }),
+        ListTile(
+            leading: _gpxBuildStatus == 0
+                ? Icon(
+                    MdiIcons.mapMarker,
+                    color: SmashColors.mainDecorations,
+                  )
+                : _gpxBuildStatus == 1
+                    ? CircularProgressIndicator()
+                    : Icon(
+                        Icons.check,
+                        color: SmashColors.mainDecorations,
+                      ),
+            title: Text("${_gpxBuildStatus == 2 ? 'GPX exported' : 'GPX'}"),
+            subtitle: Text(
+                "${_gpxBuildStatus == 2 ? _gpxOutPath : 'Export project to GPX'}"),
+            onTap: () {
+              setState(() {
+                _gpxOutPath = "";
+                _gpxBuildStatus = 1;
+              });
+              buildGpx(context, false);
+//              Navigator.pop(context);
+            }),
+        ListTile(
+            leading: _kmlBuildStatus == 0
+                ? Icon(
+                    MdiIcons.googleEarth,
+                    color: SmashColors.mainDecorations,
+                  )
+                : _kmlBuildStatus == 1
+                    ? CircularProgressIndicator()
+                    : Icon(
+                        Icons.check,
+                        color: SmashColors.mainDecorations,
+                      ),
+            title: Text("${_kmlBuildStatus == 2 ? 'KML exported' : 'KML'}"),
+            subtitle: Text(
+                "${_kmlBuildStatus == 2 ? _kmlOutPath : 'Export project to KML'}"),
+            onTap: () {
+              setState(() {
+                _kmlOutPath = "";
+                _kmlBuildStatus = 1;
+              });
+              buildGpx(context, true);
 //              Navigator.pop(context);
             }),
         ListTile(
