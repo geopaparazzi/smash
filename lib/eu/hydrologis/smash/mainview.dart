@@ -88,8 +88,9 @@ class MainViewWidgetState extends State<MainViewWidget>
     _mapController = MapController();
     mapState.mapController = _mapController;
 
-    bool doNoteInGps = GpPreferences().getBooleanSync(KEY_DO_NOTE_IN_GPS, true);
-    gpsState.insertInGpsQuiet = doNoteInGps;
+    int noteInGpsMode = GpPreferences()
+        .getIntSync(KEY_DO_NOTE_IN_GPS, POINT_INSERTION_MODE_GPS);
+    gpsState.insertInGpsQuiet = noteInGpsMode;
     // check center on gps
     bool centerOnGps = GpPreferences().getCenterOnGps();
     mapState.centerOnGpsQuiet = centerOnGps;
@@ -464,7 +465,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         onTap: () async {
           var gpsState =
               Provider.of<GpsState>(mapBuilder.context, listen: false);
-          var doNoteInGps = gpsState.insertInGps;
+          var noteInGpsMode = gpsState.insertInGpsMode;
           var titleWithMode = Column(
             children: [
               SmashUI.titleText("Form Notes",
@@ -487,17 +488,17 @@ class MainViewWidgetState extends State<MainViewWidget>
           var selectedSection = await showComboDialog(
               mapBuilder.context, titleWithMode, sectionNames, iconNames);
           // refresh mode
-          doNoteInGps = gpsState.insertInGps;
+          noteInGpsMode = gpsState.insertInGpsMode;
           if (selectedSection != null) {
             Widget appbarWidget = getDialogTitleWithInsertionMode(
-                selectedSection, doNoteInGps, SmashColors.mainBackground);
+                selectedSection, noteInGpsMode, SmashColors.mainBackground);
 
             var selectedIndex = sectionNames.indexOf(selectedSection);
             var iconName = iconNames[selectedIndex];
             var sectionMap = allSectionsMap[selectedSection];
             var jsonString = jsonEncode(sectionMap);
             Note note = DataLoaderUtilities.addNote(
-                mapBuilder, doNoteInGps, _mapController,
+                mapBuilder, noteInGpsMode, _mapController,
                 text: selectedSection,
                 form: jsonString,
                 iconName: iconName,
@@ -509,7 +510,8 @@ class MainViewWidgetState extends State<MainViewWidget>
                   sectionMap,
                   appbarWidget,
                   selectedSection,
-                  doNoteInGps
+                  noteInGpsMode == POINT_INSERTION_MODE_GPS ||
+                          noteInGpsMode == POINT_INSERTION_MODE_GPSFILTERED
                       ? gpsState.lastGpsPosition
                       : _mapController.center,
                   note.id,
@@ -570,17 +572,22 @@ class MainViewWidgetState extends State<MainViewWidget>
           List<String> types = ["note", "image"];
           var selectedType =
               await showComboDialog(mapBuilder.context, titleWithMode, types);
-          var doNoteInGps = gpsState.insertInGps;
+          var noteInGpsMode = gpsState.insertInGpsMode;
           if (selectedType == types[0]) {
             Note note = DataLoaderUtilities.addNote(
-                mapBuilder, doNoteInGps, _mapController);
+                mapBuilder, noteInGpsMode, _mapController);
             await Navigator.push(
                 mapBuilder.context,
                 MaterialPageRoute(
                     builder: (context) => NotePropertiesWidget(note)));
           } else if (selectedType == types[1]) {
-            await DataLoaderUtilities.addImage(mapBuilder.context,
-                doNoteInGps ? gpsState.lastGpsPosition : _mapController.center);
+            await DataLoaderUtilities.addImage(
+                mapBuilder.context,
+                noteInGpsMode == POINT_INSERTION_MODE_GPS ||
+                        noteInGpsMode == POINT_INSERTION_MODE_GPSFILTERED
+                    ? gpsState.lastGpsPosition
+                    : _mapController.center,
+                noteInGpsMode == POINT_INSERTION_MODE_GPSFILTERED);
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
             projectState.reloadProject(context);
@@ -750,7 +757,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 }
 
 Widget getDialogTitleWithInsertionMode(
-    String title, bool doNoteInGps, Color color) {
+    String title, int noteInGpsMode, Color color) {
   return Row(
     children: [
       Expanded(
@@ -758,15 +765,20 @@ Widget getDialogTitleWithInsertionMode(
         padding: SmashUI.defaultRigthPadding(),
         child: SmashUI.titleText(title, color: color, bold: true),
       )),
-      doNoteInGps
+      noteInGpsMode == POINT_INSERTION_MODE_GPS
           ? Icon(
-              Icons.gps_fixed,
+              MdiIcons.crosshairsGps,
               color: color,
             )
-          : Icon(
-              Icons.center_focus_weak,
-              color: color,
-            ),
+          : noteInGpsMode == POINT_INSERTION_MODE_GPS
+              ? Icon(
+                  MdiIcons.filter,
+                  color: color,
+                )
+              : Icon(
+                  MdiIcons.imageFilterCenterFocus,
+                  color: color,
+                ),
     ],
   );
 }
@@ -780,17 +792,18 @@ class GpsInsertionModeSelector extends StatefulWidget {
 }
 
 class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
-  bool _doInGps = true;
+  int _mode = POINT_INSERTION_MODE_GPS;
 
   @override
   Widget build(BuildContext context) {
-    _doInGps = GpPreferences().getBooleanSync(KEY_DO_NOTE_IN_GPS, true);
+    _mode = GpPreferences()
+        .getIntSync(KEY_DO_NOTE_IN_GPS, POINT_INSERTION_MODE_GPS);
 
     var gpsState = Provider.of<GpsState>(context, listen: false);
 
     if (!gpsState.hasFix()) {
-      _doInGps = false;
-      gpsState.insertInGpsQuiet = _doInGps;
+      _mode = POINT_INSERTION_MODE_MAPCENTER;
+      gpsState.insertInGpsQuiet = _mode;
     }
 
     List<bool> sel = [];
@@ -799,27 +812,26 @@ class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
     if (gpsState.hasFix()) {
       buttons.add(Padding(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SmashUI.smallText("GPS", bold: true),
-            Icon(SmashIcons.locationIcon),
-          ],
-        ),
+        child: Tooltip(
+            message: "Enter note in GPS position.",
+            child: Icon(SmashIcons.locationIcon)),
       ));
-      sel.add(_doInGps);
+      sel.add(_mode == POINT_INSERTION_MODE_GPS);
+      buttons.add(Padding(
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: Tooltip(
+            message: "Enter note in FILTERED GPS position.",
+            child: Icon(MdiIcons.filter)),
+      ));
+      sel.add(_mode == POINT_INSERTION_MODE_GPSFILTERED);
     }
     buttons.add(Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(MdiIcons.imageFilterCenterFocus),
-          SmashUI.smallText("Map Center", bold: true),
-        ],
-      ),
+      child: Tooltip(
+          message: "Enter note in the map center.",
+          child: Icon(MdiIcons.imageFilterCenterFocus)),
     ));
-    sel.add(!_doInGps);
+    sel.add(_mode == POINT_INSERTION_MODE_MAPCENTER);
 
     return Container(
       child: ToggleButtons(
@@ -836,13 +848,19 @@ class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
         onPressed: !gpsState.hasFix()
             ? null
             : (index) async {
-                print("${sel[0]}   ${sel[1]}");
-                var doGps = !sel[0];
+                int selMode;
+                if (index == 0) {
+                  selMode = POINT_INSERTION_MODE_GPS;
+                } else if (index == 1) {
+                  selMode = POINT_INSERTION_MODE_GPSFILTERED;
+                } else {
+                  selMode = POINT_INSERTION_MODE_MAPCENTER;
+                }
                 var gpsState = Provider.of<GpsState>(context, listen: false);
-                gpsState.insertInGpsQuiet = doGps;
+                gpsState.insertInGpsQuiet = selMode;
 
-                await GpPreferences().setBoolean(KEY_DO_NOTE_IN_GPS, doGps);
-
+                await GpPreferences().setInt(KEY_DO_NOTE_IN_GPS, selMode);
+                _mode = selMode;
                 setState(() {});
               },
       ),

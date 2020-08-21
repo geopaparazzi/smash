@@ -6,6 +6,7 @@
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:latlong/latlong.dart';
+import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
@@ -23,7 +24,7 @@ class GpsState extends ChangeNotifierPlus {
   bool _isLogging = false;
   int _currentLogId;
   ProjectState _projectState;
-  bool _insertInGps = true;
+  int _insertInGpsMode = POINT_INSERTION_MODE_GPS;
 
   int gpsMinDistance = 1;
   int gpsTimeInterval = 1;
@@ -80,22 +81,22 @@ class GpsState extends ChangeNotifierPlus {
     }
   }
 
-  bool get insertInGps => _insertInGps;
+  int get insertInGpsMode => _insertInGpsMode;
 
   bool get isLogging => _isLogging;
 
   int get currentLogId => _currentLogId;
 
   /// Set the _insertInGps without triggering a global notification.
-  set insertInGpsQuiet(bool newInsertInGps) {
-    if (_insertInGps != newInsertInGps) {
-      _insertInGps = newInsertInGps;
+  set insertInGpsQuiet(int newInsertInGpsMode) {
+    if (_insertInGpsMode != newInsertInGpsMode) {
+      _insertInGpsMode = newInsertInGpsMode;
     }
   }
 
-  set insertInGps(bool newInsertInGps) {
-    if (_insertInGps != newInsertInGps) {
-      insertInGpsQuiet = newInsertInGps;
+  set insertInGpsMode(int newInsertInGpsMode) {
+    if (_insertInGpsMode != newInsertInGpsMode) {
+      insertInGpsQuiet = newInsertInGpsMode;
       notifyListenersMsg("insertInGps");
     }
   }

@@ -15,6 +15,7 @@ import 'package:latlong/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -28,27 +29,38 @@ import 'package:smashlibs/smashlibs.dart';
 
 class DataLoaderUtilities {
   static Note addNote(
-      SmashMapBuilder mapBuilder, bool doInGps, MapController mapController,
+      SmashMapBuilder mapBuilder, int doInGpsMode, MapController mapController,
       {String form, String iconName, String color, String text}) {
     int ts = DateTime.now().millisecondsSinceEpoch;
     SmashPosition pos;
     double lon;
     double lat;
-    if (doInGps) {
+    double altim;
+    if (doInGpsMode == POINT_INSERTION_MODE_GPS) {
       pos = Provider.of<GpsState>(mapBuilder.context, listen: false)
           .lastGpsPosition;
+      lon = pos.longitude;
+      lat = pos.latitude;
+      altim = pos.altitude;
+    } else if (doInGpsMode == POINT_INSERTION_MODE_GPSFILTERED) {
+      pos = Provider.of<GpsState>(mapBuilder.context, listen: false)
+          .lastGpsPosition;
+      lon = pos.filteredLongitude;
+      lat = pos.filteredLatitude;
+      altim = pos.altitude;
     } else {
       var center = mapController.center;
       lon = center.longitude;
       lat = center.latitude;
+      altim = -1;
     }
     Note note = Note()
       ..text = text ??= "note"
       ..description = "POI"
       ..timeStamp = ts
-      ..lon = pos != null ? pos.longitude : lon
-      ..lat = pos != null ? pos.latitude : lat
-      ..altim = pos != null ? pos.altitude : -1;
+      ..lon = lon
+      ..lat = lat
+      ..altim = altim;
     if (form != null) {
       note.form = form;
     }
@@ -81,16 +93,22 @@ class DataLoaderUtilities {
   /// If [noteId] is specified, the image is added to a specific note.
   static Future<void> addImage(
     BuildContext parentContext,
-    dynamic position, {
+    dynamic position,
+    bool usefiltered, {
     int noteId,
   }) async {
     DbImage dbImage = DbImage()
       ..timeStamp = DateTime.now().millisecondsSinceEpoch
       ..isDirty = 1;
 
-    if (position is LocationDto) {
-      dbImage.lon = position.longitude;
-      dbImage.lat = position.latitude;
+    if (position is SmashPosition) {
+      if (usefiltered) {
+        dbImage.lon = position.filteredLongitude;
+        dbImage.lat = position.filteredLatitude;
+      } else {
+        dbImage.lon = position.longitude;
+        dbImage.lat = position.latitude;
+      }
       dbImage.altim = position.altitude;
       dbImage.azim = position.heading;
     } else {
@@ -513,8 +531,8 @@ class DataLoaderUtilities {
     });
   }
 
-  static PolylineLayerOptions loadLogLinesLayer(GeopaparazziProjectDb db, bool doOrig,
-      bool doFiltered, bool doOrigTransp, bool doFilteredTransp)  {
+  static PolylineLayerOptions loadLogLinesLayer(GeopaparazziProjectDb db,
+      bool doOrig, bool doFiltered, bool doOrigTransp, bool doFilteredTransp) {
     String logsQuery = '''
         select l.$LOGS_COLUMN_ID, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH 
         from $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
@@ -536,7 +554,7 @@ class DataLoaderUtilities {
         $LOGSDATA_COLUMN_LAT_FILTERED, $LOGSDATA_COLUMN_LON_FILTERED
         from $TABLE_GPSLOG_DATA order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS
         ''';
-    var resLogData =  db.select(logDataQuery);
+    var resLogData = db.select(logDataQuery);
     resLogData.forEach((map) {
       var logid = map[LOGSDATA_COLUMN_LOGID];
       var log = logs[logid];

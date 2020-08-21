@@ -31,7 +31,10 @@ import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS";
+const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS_MODE";
+const int POINT_INSERTION_MODE_GPS = 0;
+const int POINT_INSERTION_MODE_GPSFILTERED = 1;
+const int POINT_INSERTION_MODE_MAPCENTER = 2;
 
 class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue,
