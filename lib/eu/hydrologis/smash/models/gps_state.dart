@@ -221,6 +221,9 @@ class GpsState extends ChangeNotifierPlus {
     _isLogging = false;
     _currentLogPoints.clear();
     _currentFilteredLogPoints.clear();
+    _currentLogProgressive = null;
+    _currentFilteredLogProgressive = null;
+    _currentLogTimeDeltaMillis = null;
 
     if (_projectState != null) {
       int endTs = DateTime.now().millisecondsSinceEpoch;
