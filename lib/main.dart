@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/models/geometryeditor_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/ruler_state.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -29,6 +30,7 @@ void main() => runApp(MultiProvider(
         ChangeNotifierProvider(create: (_) => SmashMapState()),
         ChangeNotifierProvider(create: (_) => InfoToolState()),
         ChangeNotifierProvider(create: (_) => RulerState()),
+        ChangeNotifierProvider(create: (_) => GeometryEditorState()),
       ],
       child: SmashApp(),
     ));

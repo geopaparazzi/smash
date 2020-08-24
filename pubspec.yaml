@@ -47,6 +47,14 @@ dependencies:
   # OTHERS
   ##################################
 
+  flutter_map_dragmarker:
+    git:
+      url: https://github.com/ibrierley/flutter_map_dragmarker.git  
+  
+  flutter_map_line_editor:
+    git:
+      url: https://github.com/ibrierley/flutter_map_line_editor.git  
+
   # MIT
   sqlite3_flutter_libs: ^0.2.0
 

@@ -458,17 +458,7 @@ class MainViewWidgetState extends State<MainViewWidget>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          InkWell(
-            // key: coachMarks.simpleNotesButtonKey,
-            child: Padding(
-              padding: SmashUI.defaultPadding(),
-              child: Icon(
-                MdiIcons.pencil,
-                color: SmashColors.mainBackground,
-                size: _iconSize,
-              ),
-            ),
-          ),
+          GeomEditorButton(_iconSize),
           FeatureQueryButton(_iconSize),
           RulerButton(_iconSize),
         ],
