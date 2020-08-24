@@ -5,6 +5,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/ruler_state.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +23,6 @@ class _FeatureQueryButtonState extends State<FeatureQueryButton> {
   @override
   Widget build(BuildContext context) {
     return Consumer<InfoToolState>(builder: (context, infoState, child) {
-      // infoState.isEnabled
       return GestureDetector(
         child: InkWell(
           // key: coachMarks.simpleNotesButtonKey,
@@ -40,6 +40,43 @@ class _FeatureQueryButtonState extends State<FeatureQueryButton> {
         onTap: () {
           setState(() {
             infoState.setEnabled(!infoState.isEnabled);
+          });
+        },
+      );
+    });
+  }
+}
+
+class RulerButton extends StatefulWidget {
+  final _iconSize;
+
+  RulerButton(this._iconSize, {Key key}) : super(key: key);
+
+  @override
+  _RulerButtonState createState() => _RulerButtonState();
+}
+
+class _RulerButtonState extends State<RulerButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<RulerState>(builder: (context, rulerState, child) {
+      return GestureDetector(
+        child: InkWell(
+          // key: coachMarks.simpleNotesButtonKey,
+          child: Padding(
+            padding: SmashUI.defaultPadding(),
+            child: Icon(
+              MdiIcons.ruler,
+              color: rulerState.isEnabled
+                  ? SmashColors.mainSelection
+                  : SmashColors.mainBackground,
+              size: widget._iconSize,
+            ),
+          ),
+        ),
+        onTap: () {
+          setState(() {
+            rulerState.setEnabled(!rulerState.isEnabled);
           });
         },
       );

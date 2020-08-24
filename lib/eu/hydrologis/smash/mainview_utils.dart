@@ -245,40 +245,9 @@ class DashboardUtils {
         ),
       ))
       ..add(getPositionTools(c, backColor, iconSize, context))
-      ..add(getVectorTools(c, backColor, iconSize, context))
       ..add(getExtras(c, backColor, iconSize, context));
 
     return list;
-  }
-
-  static Container getVectorTools(
-      Color c, Color backColor, double iconSize, BuildContext context) {
-    return Container(
-      color: backColor,
-      child: ExpansionTile(
-          title: SmashUI.normalText(
-            "Feature tools",
-            bold: true,
-            color: c,
-          ),
-          children: [
-            ListTile(
-              title: SmashUI.normalText(
-                "Query layers",
-                bold: true,
-                color: c,
-              ),
-              leading:
-                  Consumer<InfoToolState>(builder: (context, infoState, child) {
-                return Checkbox(
-                    value: infoState.isEnabled,
-                    onChanged: (value) {
-                      infoState.setEnabled(value);
-                    });
-              }),
-            ),
-          ]),
-    );
   }
 
   static Container getExtras(
@@ -286,6 +255,7 @@ class DashboardUtils {
     return Container(
       color: backColor,
       child: ExpansionTile(
+          initiallyExpanded: true,
           title: SmashUI.normalText(
             "Extras",
             bold: true,
@@ -396,16 +366,6 @@ class DashboardUtils {
               ShareHandler.shareText(sb.toString());
             },
           ),
-          Consumer<SmashMapState>(builder: (context, mapState, child) {
-            return ListTile(
-              title: SmashUI.normalText("Center on GPS", bold: true, color: c),
-              leading: Checkbox(
-                  value: mapState.centerOnGps,
-                  onChanged: (value) {
-                    mapState.centerOnGps = value;
-                  }),
-            );
-          }),
           Platform.isAndroid && EXPERIMENTAL_ROTATION_ENABLED
               ? Consumer<SmashMapState>(builder: (context, mapState, child) {
                   return ListTile(

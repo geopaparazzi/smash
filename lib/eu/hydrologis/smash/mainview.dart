@@ -28,6 +28,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart'
 import 'package:smash/eu/hydrologis/smash/maps/plugins/gps_position_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/heatmap.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/ruler_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -316,23 +317,8 @@ class MainViewWidgetState extends State<MainViewWidget>
           // ),
 
           bottomNavigationBar: _iconMode == IconMode.NAVIGATION_MODE
-              ? GestureDetector(
-                  child:
-                      addBottomNavigationBar(mapBuilder, projectData, mapState),
-                  onHorizontalDragEnd: (details) {
-                    setState(() {
-                      _iconMode = IconMode.TOOL_MODE;
-                    });
-                  },
-                )
-              : GestureDetector(
-                  child: addBottomToolsBar(mapBuilder, projectData, mapState),
-                  onHorizontalDragEnd: (details) {
-                    setState(() {
-                      _iconMode = IconMode.NAVIGATION_MODE;
-                    });
-                  },
-                ),
+              ? addBottomNavigationBar(mapBuilder, projectData, mapState)
+              : addBottomToolsBar(mapBuilder, projectData, mapState),
         ),
         onWillPop: () async {
           return Future.value(false);
@@ -484,17 +470,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             ),
           ),
           FeatureQueryButton(_iconSize),
-          InkWell(
-            // key: coachMarks.simpleNotesButtonKey,
-            child: Padding(
-              padding: SmashUI.defaultPadding(),
-              child: Icon(
-                MdiIcons.ruler,
-                color: SmashColors.mainBackground,
-                size: _iconSize,
-              ),
-            ),
-          ),
+          RulerButton(_iconSize),
         ],
       ),
     );
@@ -790,6 +766,9 @@ class MainViewWidgetState extends State<MainViewWidget>
       ));
       pluginsList.add(ScaleLayerPlugin());
     }
+
+    layers.add(RulerPluginOptions(tapAreaPixelSize: 1));
+    pluginsList.add(RulerPlugin());
   }
 
   ProjectData addProjectMarkers(
