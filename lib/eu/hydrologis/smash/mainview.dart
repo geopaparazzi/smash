@@ -41,6 +41,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/toolbar_tools.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 import 'mainview_utils.dart';
@@ -315,8 +316,23 @@ class MainViewWidgetState extends State<MainViewWidget>
           // ),
 
           bottomNavigationBar: _iconMode == IconMode.NAVIGATION_MODE
-              ? addBottomNavigationBar(mapBuilder, projectData, mapState)
-              : addBottomToolsBar(mapBuilder, projectData, mapState),
+              ? GestureDetector(
+                  child:
+                      addBottomNavigationBar(mapBuilder, projectData, mapState),
+                  onHorizontalDragEnd: (details) {
+                    setState(() {
+                      _iconMode = IconMode.TOOL_MODE;
+                    });
+                  },
+                )
+              : GestureDetector(
+                  child: addBottomToolsBar(mapBuilder, projectData, mapState),
+                  onHorizontalDragEnd: (details) {
+                    setState(() {
+                      _iconMode = IconMode.NAVIGATION_MODE;
+                    });
+                  },
+                ),
         ),
         onWillPop: () async {
           return Future.value(false);
@@ -467,17 +483,7 @@ class MainViewWidgetState extends State<MainViewWidget>
               ),
             ),
           ),
-          InkWell(
-            // key: coachMarks.simpleNotesButtonKey,
-            child: Padding(
-              padding: SmashUI.defaultPadding(),
-              child: Icon(
-                MdiIcons.layersSearch,
-                color: SmashColors.mainBackground,
-                size: _iconSize,
-              ),
-            ),
-          ),
+          FeatureQueryButton(_iconSize),
           InkWell(
             // key: coachMarks.simpleNotesButtonKey,
             child: Padding(
