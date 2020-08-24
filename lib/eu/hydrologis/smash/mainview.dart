@@ -52,6 +52,8 @@ class MainViewWidget extends StatefulWidget {
   MainViewWidgetState createState() => new MainViewWidgetState();
 }
 
+enum IconMode { NAVIGATION_MODE, TOOL_MODE }
+
 class MainViewWidgetState extends State<MainViewWidget>
     with WidgetsBindingObserver, AfterLayoutMixin {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -69,6 +71,8 @@ class MainViewWidgetState extends State<MainViewWidget>
   double _iconSize;
 
   Timer _centerOnGpsTimer;
+
+  IconMode _iconMode = IconMode.NAVIGATION_MODE;
 
   @override
   void initState() {
@@ -240,10 +244,37 @@ class MainViewWidgetState extends State<MainViewWidget>
                 layers: layers,
                 mapController: _mapController,
               ),
-              Center(
-                child: mapBuilder.inProgress
-                    ? SmashCircularProgress(label: "Loading data...")
-                    : Container(),
+              mapBuilder.inProgress
+                  ? Center(
+                      child: SmashCircularProgress(label: "Loading data..."))
+                  : Container(),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: _iconMode == IconMode.NAVIGATION_MODE
+                    ? IconButton(
+                        icon: Icon(
+                          MdiIcons.forwardburger,
+                          color: SmashColors.mainDecorations,
+                          size: 32,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _iconMode = IconMode.TOOL_MODE;
+                          });
+                        },
+                      )
+                    : IconButton(
+                        icon: Icon(
+                          MdiIcons.backburger,
+                          color: SmashColors.mainDecorations,
+                          size: 32,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _iconMode = IconMode.NAVIGATION_MODE;
+                          });
+                        },
+                      ),
               )
             ],
           ),
@@ -283,8 +314,9 @@ class MainViewWidgetState extends State<MainViewWidget>
           //   )),
           // ),
 
-          bottomNavigationBar:
-              addBottomToolBar(mapBuilder, projectData, mapState),
+          bottomNavigationBar: _iconMode == IconMode.NAVIGATION_MODE
+              ? addBottomNavigationBar(mapBuilder, projectData, mapState)
+              : addBottomToolsBar(mapBuilder, projectData, mapState),
         ),
         onWillPop: () async {
           return Future.value(false);
@@ -364,7 +396,7 @@ class MainViewWidgetState extends State<MainViewWidget>
     ];
   }
 
-  BottomAppBar addBottomToolBar(SmashMapBuilder mapBuilder,
+  BottomAppBar addBottomNavigationBar(SmashMapBuilder mapBuilder,
       ProjectData projectData, SmashMapState mapState) {
     return BottomAppBar(
       color: SmashColors.mainDecorations,
@@ -411,6 +443,51 @@ class MainViewWidgetState extends State<MainViewWidget>
               color: SmashColors.mainBackground,
             ),
             iconSize: _iconSize,
+          ),
+        ],
+      ),
+    );
+  }
+
+  BottomAppBar addBottomToolsBar(SmashMapBuilder mapBuilder,
+      ProjectData projectData, SmashMapState mapState) {
+    return BottomAppBar(
+      color: SmashColors.mainDecorations,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          InkWell(
+            // key: coachMarks.simpleNotesButtonKey,
+            child: Padding(
+              padding: SmashUI.defaultPadding(),
+              child: Icon(
+                MdiIcons.pencil,
+                color: SmashColors.mainBackground,
+                size: _iconSize,
+              ),
+            ),
+          ),
+          InkWell(
+            // key: coachMarks.simpleNotesButtonKey,
+            child: Padding(
+              padding: SmashUI.defaultPadding(),
+              child: Icon(
+                MdiIcons.layersSearch,
+                color: SmashColors.mainBackground,
+                size: _iconSize,
+              ),
+            ),
+          ),
+          InkWell(
+            // key: coachMarks.simpleNotesButtonKey,
+            child: Padding(
+              padding: SmashUI.defaultPadding(),
+              child: Icon(
+                MdiIcons.ruler,
+                color: SmashColors.mainBackground,
+                size: _iconSize,
+              ),
+            ),
           ),
         ],
       ),
