@@ -168,6 +168,7 @@ class GpsState extends ChangeNotifierPlus {
     _currentLogProgressive = null;
     _currentFilteredLogProgressive = null;
     _currentLogTimeDeltaMillis = null;
+    _currentLogTimeInitMillis = null;
     if (_projectState != null) {
       Log l = new Log();
       l.text = logName;
@@ -225,6 +226,7 @@ class GpsState extends ChangeNotifierPlus {
     _currentLogProgressive = null;
     _currentFilteredLogProgressive = null;
     _currentLogTimeDeltaMillis = null;
+    _currentLogTimeInitMillis = null;
 
     if (_projectState != null) {
       int endTs = DateTime.now().millisecondsSinceEpoch;
