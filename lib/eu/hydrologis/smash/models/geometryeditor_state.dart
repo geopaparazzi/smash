@@ -70,8 +70,9 @@ class GeometryEditManager {
 
     var env =
         Envelope.fromCoordinate(Coordinate(point.longitude, point.latitude));
-    env.expandByDistance(0.00001);
+    env.expandByDistance(0.0001);
 
+    var touchGeomLL = GeometryUtilities.fromEnvelope(env, makeCircle: false);
     var touchGeom = GeometryUtilities.fromEnvelope(env, makeCircle: false);
 
     var currentEditing = editorState.editableGeometry;
@@ -88,28 +89,35 @@ class GeometryEditManager {
       var geomsIntersected = db.getGeometriesIn(tableName,
           envelope: touchGeom.getEnvelopeInternal(), userDataField: primaryKey);
       if (geomsIntersected.isNotEmpty) {
-        var geometry = geomsIntersected.first;
+        // find touching
+        for (var geometry in geomsIntersected) {
+          // project to lat/long for editing
+          SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, geometry);
+          if (geometry.intersects(touchGeomLL)) {
+            var id = int.parse(geometry.getUserData().toString());
+            if (currentEditing != null && currentEditing.id == id) {
+              continue;
+            }
+            EditableGeometry editGeom = EditableGeometry();
+            editGeom.geometry = geometry;
+            editGeom.db = db;
+            editGeom.id = id;
+            editGeom.table = tableName;
+            editorState.editableGeometry = editGeom;
 
-        // project to lat/long for editing
-        SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, geometry);
-
-        var id = int.parse(geometry.getUserData().toString());
-
-        if (currentEditing != null && currentEditing.id == id) {
-          continue;
+            SmashMapBuilder builder =
+                Provider.of<SmashMapBuilder>(context, listen: false);
+            builder.reBuild();
+            return;
+          }
         }
-        EditableGeometry editGeom = EditableGeometry();
-        editGeom.geometry = geometry;
-        editGeom.db = db;
-        editGeom.id = id;
-        editGeom.table = tableName;
-        editorState.editableGeometry = editGeom;
-
-        SmashMapBuilder builder =
-            Provider.of<SmashMapBuilder>(context, listen: false);
-        builder.reBuild();
-        break;
       }
     }
+
+    // if it arrives here, no geom is selected
+    editorState.editableGeometry = null;
+    SmashMapBuilder builder =
+        Provider.of<SmashMapBuilder>(context, listen: false);
+    builder.reBuild();
   }
 }

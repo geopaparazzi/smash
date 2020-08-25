@@ -215,8 +215,9 @@ class MainViewWidgetState extends State<MainViewWidget>
       }
       var polyEditor = new PolyEditor(
         points: geomPoints,
-        pointIcon: Icon(Icons.crop_square, size: 23),
-        intermediateIcon: Icon(Icons.lens, size: 15, color: Colors.grey),
+        pointIcon: Icon(MdiIcons.circle, size: 10, color: Colors.red),
+        intermediateIcon:
+            Icon(MdiIcons.circle, size: 5, color: Colors.red[100]),
         callbackRefresh: () {
           setState(() {});
         },
