@@ -196,9 +196,9 @@ class EditableQueryResult extends QueryResult {
 }
 
 class TapSelectionCircle extends StatefulWidget {
-  double size;
-  var shape;
-  var color;
+  final double size;
+  final shape;
+  final color;
 
   TapSelectionCircle(
       {this.shape = BoxShape.rectangle,

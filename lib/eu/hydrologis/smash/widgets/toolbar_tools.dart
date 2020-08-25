@@ -4,12 +4,80 @@
  * found in the LICENSE file.
  */
 import 'package:flutter/material.dart';
+import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/geometryeditor_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/ruler_state.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+
+enum ToolbarState {
+  MAIN_VIEW,
+  EDITING,
+}
+
+class BottomToolsBar extends StatefulWidget {
+  final _iconSize;
+  BottomToolsBar(this._iconSize, {Key key}) : super(key: key);
+
+  @override
+  _BottomToolsBarState createState() => _BottomToolsBarState();
+}
+
+class _BottomToolsBarState extends State<BottomToolsBar> {
+  ToolbarState toolbarState = ToolbarState.MAIN_VIEW;
+
+  @override
+  Widget build(BuildContext context) {
+    // if (toolbarState == ToolbarState.MAIN_VIEW) {
+    return BottomAppBar(
+      color: SmashColors.mainDecorations,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          GeomEditorButton(widget._iconSize),
+          FeatureQueryButton(widget._iconSize),
+          RulerButton(widget._iconSize),
+          Spacer(),
+          Consumer<SmashMapState>(builder: (context, mapState, child) {
+            return DashboardUtils.makeToolbarZoomBadge(
+              IconButton(
+                onPressed: () {
+                  mapState.zoomIn();
+                },
+                tooltip: 'Zoom in',
+                icon: Icon(
+                  SmashIcons.zoomInIcon,
+                  color: SmashColors.mainBackground,
+                ),
+                iconSize: widget._iconSize,
+              ),
+              mapState.zoom.toInt(),
+              iconSize: widget._iconSize,
+            );
+          }),
+          Consumer<SmashMapState>(builder: (context, mapState, child) {
+            return IconButton(
+              onPressed: () {
+                mapState.zoomOut();
+              },
+              tooltip: 'Zoom out',
+              icon: Icon(
+                SmashIcons.zoomOutIcon,
+                color: SmashColors.mainBackground,
+              ),
+              iconSize: widget._iconSize,
+            );
+          }),
+        ],
+      ),
+    );
+    // }
+  }
+}
 
 class FeatureQueryButton extends StatefulWidget {
   final _iconSize;
@@ -113,6 +181,9 @@ class _GeomEditorButtonState extends State<GeomEditorButton> {
         onTap: () {
           setState(() {
             editorState.isEnabled = !editorState.isEnabled;
+            SmashMapBuilder mapBuilder =
+                Provider.of<SmashMapBuilder>(context, listen: false);
+            mapBuilder.reBuild();
           });
         },
       );

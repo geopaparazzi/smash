@@ -12,7 +12,10 @@ import 'package:after_layout/after_layout.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_dragmarker/dragmarker.dart';
+import 'package:flutter_map_line_editor/polyeditor.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
 import 'package:latlong/latlong.dart';
@@ -22,6 +25,7 @@ import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersview.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/current_log_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
@@ -30,6 +34,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/heatmap.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/ruler_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/models/geometryeditor_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
@@ -198,6 +203,30 @@ class MainViewWidgetState extends State<MainViewWidget>
     ProjectData projectData = addProjectMarkers(projectState, layers);
     addPluginsPostLayers(pluginsList, layers);
 
+    GeometryEditorState editorState =
+        Provider.of<GeometryEditorState>(context, listen: false);
+    if (editorState.editableGeometry != null) {
+      var geom = editorState.editableGeometry.geometry;
+      var gType = EGeometryType.forGeometry(geom);
+      List<LatLng> geomPoints = [];
+      if (gType.isLine()) {
+        geomPoints =
+            geom.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
+      }
+      var polyEditor = new PolyEditor(
+        points: geomPoints,
+        pointIcon: Icon(Icons.crop_square, size: 23),
+        intermediateIcon: Icon(Icons.lens, size: 15, color: Colors.grey),
+        callbackRefresh: () {
+          setState(() {});
+        },
+      );
+      layers.add(
+        DragMarkerPluginOptions(markers: polyEditor.edit()),
+      );
+      pluginsList.add(DragMarkerPlugin());
+    }
+
     return WillPopScope(
         // check when the app is left
         child: new Scaffold(
@@ -241,6 +270,9 @@ class MainViewWidgetState extends State<MainViewWidget>
                         Coordinate(newPosition.center.longitude,
                             newPosition.center.latitude),
                         newPosition.zoom);
+                  },
+                  onTap: (point) {
+                    GeometryEditManager().onMapTap(context, point);
                   },
                 ),
                 layers: layers,
@@ -318,7 +350,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 
           bottomNavigationBar: _iconMode == IconMode.NAVIGATION_MODE
               ? addBottomNavigationBar(mapBuilder, projectData, mapState)
-              : addBottomToolsBar(mapBuilder, projectData, mapState),
+              : BottomToolsBar(_iconSize),
         ),
         onWillPop: () async {
           return Future.value(false);
@@ -446,21 +478,6 @@ class MainViewWidgetState extends State<MainViewWidget>
             ),
             iconSize: _iconSize,
           ),
-        ],
-      ),
-    );
-  }
-
-  BottomAppBar addBottomToolsBar(SmashMapBuilder mapBuilder,
-      ProjectData projectData, SmashMapState mapState) {
-    return BottomAppBar(
-      color: SmashColors.mainDecorations,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          GeomEditorButton(_iconSize),
-          FeatureQueryButton(_iconSize),
-          RulerButton(_iconSize),
         ],
       ),
     );
