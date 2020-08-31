@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -18,6 +19,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/mapsforge.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/mbtiles.dart';
+import 'package:proj4dart/proj4dart.dart' as PROJ;
 
 class TileSource extends TiledRasterLayerSource {
   String name;
@@ -271,10 +273,21 @@ class TileSource extends TiledRasterLayerSource {
         bounds = prov.bounds;
         prov.dispose();
       } else if (FileManager.isGeopackage(getAbsolutePath())) {
-        var prov = GeopackageImageProvider(File(absolutePath), name);
-        prov.open();
-        bounds = prov.bounds;
-        prov.dispose();
+        var ch = ConnectionsHandler();
+        var db = ch.open(absolutePath, tableName: name);
+        var tileEntry = db.tile(name);
+        var env = tileEntry.bounds;
+        if (tileEntry.srid != Proj.EPSG4326_INT) {
+          env = Proj.transformEnvelopeToWgs84(
+              PROJ.Projection("EPSG:${tileEntry.srid}"), env);
+        }
+
+        bounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
+            LatLng(env.getMaxY(), env.getMaxX()));
+        // var prov = GeopackageImageProvider(File(absolutePath), name);
+        // prov.open();
+        // bounds = prov.bounds;
+        // prov.dispose();
       }
     }
     return bounds;
@@ -316,18 +329,47 @@ class TileSource extends TiledRasterLayerSource {
         )
       ];
     } else if (FileManager.isGeopackage(getAbsolutePath())) {
-      var tileProvider = GeopackageImageProvider(File(absolutePath), name);
-      tileProvider.open();
-      return [
-        TileLayerOptions(
-          tileProvider: tileProvider,
-          maxZoom: maxZoom.toDouble(),
-          tms: true,
-          backgroundColor: Colors.transparent,
+      var ch = ConnectionsHandler();
+      var db = ch.open(absolutePath, tableName: name);
+      var tileEntry = db.tile(name);
+      var to4326function;
+      if (tileEntry.srid != Proj.EPSG4326_INT) {
+        to4326function = (var envelope) {
+          return Proj.transformEnvelopeToWgs84(
+              PROJ.Projection("EPSG:${tileEntry.srid}"), envelope);
+        };
+      }
+      TilesFetcher fetcher = TilesFetcher(tileEntry);
+      var lazyTiles =
+          fetcher.getAllLazyTiles(db, to4326BoundsConverter: to4326function);
+      var overlayImages = lazyTiles.map((lt) {
+        var minX = lt.tileBoundsLatLong.getMinX();
+        var minY = lt.tileBoundsLatLong.getMinY();
+        var maxX = lt.tileBoundsLatLong.getMaxX();
+        var maxY = lt.tileBoundsLatLong.getMaxY();
+
+        return OverlayImage(
+          bounds: LatLngBounds(LatLng(minY, minX), LatLng(maxY, maxX)),
           opacity: opacityPercentage / 100.0,
-          retinaMode: false, // not supported
-        )
+          imageProvider: GeopackageImageProvider(lt),
+        );
+      }).toList();
+      return [
+        OverlayImageLayerOptions(overlayImages: overlayImages),
       ];
+
+      // var tileProvider = GeopackageImageProvider(File(absolutePath), name);
+      // tileProvider.open();
+      // return [
+      //   TileLayerOptions(
+      //     tileProvider: tileProvider,
+      //     maxZoom: maxZoom.toDouble(),
+      //     tms: true,
+      //     backgroundColor: Colors.transparent,
+      //     opacity: opacityPercentage / 100.0,
+      //     retinaMode: false, // not supported
+      //   )
+      // ];
     } else if (isOnlineService()) {
       if (isWms) {
         return [

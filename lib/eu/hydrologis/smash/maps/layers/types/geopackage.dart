@@ -422,131 +422,178 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   }
 }
 
-var _emptyImageBytes;
-
-class GeopackageImageProvider extends TileProvider {
-  final File geopackageFile;
-  final String tableName;
-
-  GeopackageDb _loadedDb;
-  bool isDisposed = true;
-  LatLngBounds _bounds;
-  Uint8List _emptyImageBytes;
-
-  GeopackageImageProvider(this.geopackageFile, this.tableName);
-
-  GeopackageDb open() {
-    if (_loadedDb == null || !_loadedDb.isOpen()) {
-      var ch = ConnectionsHandler();
-      _loadedDb = ch.open(geopackageFile.path, tableName: tableName);
-    }
-    if (isDisposed) {
-      _loadedDb.openOrCreate();
-
-      try {
-        TileEntry tile = _loadedDb.tile(tableName);
-        Envelope bounds = tile.getBounds();
-        Envelope bounds4326 = MercatorUtils.convert3857To4326Env(bounds);
-        var w = bounds4326.getMinX();
-        var e = bounds4326.getMaxX();
-        var s = bounds4326.getMinY();
-        var n = bounds4326.getMaxY();
-
-        LatLngBounds b = LatLngBounds();
-        b.extend(LatLng(s, w));
-        b.extend(LatLng(n, e));
-        _bounds = b;
-
-//        UI.Image _emptyImage = await ImageWidgetUtilities.transparentImage();
-//        var byteData = await _emptyImage.toByteData(format: UI.ImageByteFormat.png);
-//        _emptyImageBytes = byteData.buffer.asUint8List();
-
-      } catch (e, s) {
-        SMLogger().e("Error getting geopackage bounds or empty image.", s);
-      }
-
-      isDisposed = false;
-    }
-
-    return _loadedDb;
-  }
-
-  LatLngBounds get bounds => this._bounds;
+class GeopackageImageProvider extends ImageProvider<GeopackageImageProvider> {
+  LazyGpkgTile _tile;
+  GeopackageImageProvider(this._tile);
 
   @override
-  void dispose() {
-    // dispose of db connections is done when layers are removed
-  }
-
-  @override
-  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
-    var x = coords.x.round();
-    var y = options.tms
-        ? invertY(coords.y.round(), coords.z.round())
-        : coords.y.round();
-    var z = coords.z.round();
-
-    return GeopackageImage(
-        geopackageFile.path, tableName, Coords<int>(x, y)..z = z);
-  }
-}
-
-class GeopackageImage extends ImageProvider<GeopackageImage> {
-  final String databasePath;
-  String tableName;
-  final Coords<int> coords;
-  GeopackageImage(this.databasePath, this.tableName, this.coords);
-
-  @override
-  ImageStreamCompleter load(GeopackageImage key, DecoderCallback decoder) {
-    // TODo check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
+  ImageStreamCompleter load(
+      GeopackageImageProvider key, DecoderCallback decoder) {
     return MultiFrameImageStreamCompleter(
-        codec: _loadAsync(key),
-        scale: 1,
-        informationCollector: () sync* {
-          yield DiagnosticsProperty<ImageProvider>('Image provider', this);
-          yield DiagnosticsProperty<ImageProvider>('Image key', key);
-        });
+      codec: loadAsync(key),
+      scale: 1,
+      informationCollector: () sync* {
+        yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+        yield DiagnosticsProperty<GeopackageImageProvider>('Image key', key);
+      },
+    );
   }
 
-  Future<UI.Codec> _loadAsync(GeopackageImage key) async {
+  Future<UI.Codec> loadAsync(GeopackageImageProvider key) async {
     assert(key == this);
 
-    final db =
-        ConnectionsHandler().open(key.databasePath, tableName: key.tableName);
-    var tileBytes = db.getTile(tableName, coords.x, coords.y, coords.z);
-    if (tileBytes != null) {
-      Uint8List bytes = tileBytes;
-      return await PaintingBinding.instance.instantiateImageCodec(bytes);
-    } else {
-      // TODO get from other zoomlevels
-      if (_emptyImageBytes == null) {
-        ByteData imageData = await rootBundle.load('assets/emptytile256.png');
-        _emptyImageBytes = imageData.buffer.asUint8List();
+    try {
+      _tile.fetch();
+      if (_tile.tileImageBytes != null) {
+        return await PaintingBinding.instance
+            .instantiateImageCodec(_tile.tileImageBytes);
       }
-      if (_emptyImageBytes != null) {
-        var bytes = _emptyImageBytes;
-        return await PaintingBinding.instance.instantiateImageCodec(bytes);
-      } else {
-        return Future<UI.Codec>.error(
-            'Failed to load tile for coords: $coords');
-      }
+    } catch (e) {
+      print(e); // ignore later
     }
+
+    return Future<UI.Codec>.error('Failed to load tile: $_tile');
   }
 
   @override
-  Future<GeopackageImage> obtainKey(ImageConfiguration configuration) {
+  Future<GeopackageImageProvider> obtainKey(ImageConfiguration configuration) {
     return SynchronousFuture(this);
   }
 
   @override
-  int get hashCode => coords.hashCode;
+  int get hashCode => _tile.hashCode;
 
   @override
   bool operator ==(other) {
-    return other is GeopackageImage && coords == other.coords;
+    return other is GeopackageImageProvider && _tile == other._tile;
   }
 }
+
+// var _emptyImageBytes;
+
+// class GeopackageImageProvider extends TileProvider {
+//   final File geopackageFile;
+//   final String tableName;
+
+//   GeopackageDb _loadedDb;
+//   bool isDisposed = true;
+//   LatLngBounds _bounds;
+//   Uint8List _emptyImageBytes;
+
+//   GeopackageImageProvider(this.geopackageFile, this.tableName);
+
+//   GeopackageDb open() {
+//     if (_loadedDb == null || !_loadedDb.isOpen()) {
+//       var ch = ConnectionsHandler();
+//       _loadedDb = ch.open(geopackageFile.path, tableName: tableName);
+//     }
+//     if (isDisposed) {
+//       _loadedDb.openOrCreate();
+
+//       try {
+//         TileEntry tile = _loadedDb.tile(tableName);
+//         Envelope bounds = tile.getBounds();
+//         Envelope bounds4326 = MercatorUtils.convert3857To4326Env(bounds);
+//         var w = bounds4326.getMinX();
+//         var e = bounds4326.getMaxX();
+//         var s = bounds4326.getMinY();
+//         var n = bounds4326.getMaxY();
+
+//         LatLngBounds b = LatLngBounds();
+//         b.extend(LatLng(s, w));
+//         b.extend(LatLng(n, e));
+//         _bounds = b;
+
+// //        UI.Image _emptyImage = await ImageWidgetUtilities.transparentImage();
+// //        var byteData = await _emptyImage.toByteData(format: UI.ImageByteFormat.png);
+// //        _emptyImageBytes = byteData.buffer.asUint8List();
+
+//       } catch (e, s) {
+//         SMLogger().e("Error getting geopackage bounds or empty image.", s);
+//       }
+
+//       isDisposed = false;
+//     }
+
+//     return _loadedDb;
+//   }
+
+//   LatLngBounds get bounds => this._bounds;
+
+//   @override
+//   void dispose() {
+//     // dispose of db connections is done when layers are removed
+//   }
+
+//   @override
+//   ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
+//     var x = coords.x.round();
+//     var y = options.tms
+//         ? invertY(coords.y.round(), coords.z.round())
+//         : coords.y.round();
+//     var z = coords.z.round();
+
+//     return GeopackageImage(
+//         geopackageFile.path, tableName, Coords<int>(x, y)..z = z);
+//   }
+// }
+
+// class GeopackageImage extends ImageProvider<GeopackageImage> {
+//   final String databasePath;
+//   String tableName;
+//   final Coords<int> coords;
+//   GeopackageImage(this.databasePath, this.tableName, this.coords);
+
+//   @override
+//   ImageStreamCompleter load(GeopackageImage key, DecoderCallback decoder) {
+//     // TODo check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
+//     return MultiFrameImageStreamCompleter(
+//         codec: _loadAsync(key),
+//         scale: 1,
+//         informationCollector: () sync* {
+//           yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+//           yield DiagnosticsProperty<ImageProvider>('Image key', key);
+//         });
+//   }
+
+//   Future<UI.Codec> _loadAsync(GeopackageImage key) async {
+//     assert(key == this);
+
+//     final db =
+//         ConnectionsHandler().open(key.databasePath, tableName: key.tableName);
+//     var tileBytes = db.getTile(tableName, coords.x, coords.y, coords.z);
+//     if (tileBytes != null) {
+//       Uint8List bytes = tileBytes;
+//       return await PaintingBinding.instance.instantiateImageCodec(bytes);
+//     } else {
+//       // TODO get from other zoomlevels
+//       if (_emptyImageBytes == null) {
+//         ByteData imageData = await rootBundle.load('assets/emptytile256.png');
+//         _emptyImageBytes = imageData.buffer.asUint8List();
+//       }
+//       if (_emptyImageBytes != null) {
+//         var bytes = _emptyImageBytes;
+//         return await PaintingBinding.instance.instantiateImageCodec(bytes);
+//       } else {
+//         return Future<UI.Codec>.error(
+//             'Failed to load tile for coords: $coords');
+//       }
+//     }
+//   }
+
+//   @override
+//   Future<GeopackageImage> obtainKey(ImageConfiguration configuration) {
+//     return SynchronousFuture(this);
+//   }
+
+//   @override
+//   int get hashCode => coords.hashCode;
+
+//   @override
+//   bool operator ==(other) {
+//     return other is GeopackageImage && coords == other.coords;
+//   }
+// }
 
 ///// The notes properties page.
 //class GeopackagePropertiesWidget extends StatefulWidget {
