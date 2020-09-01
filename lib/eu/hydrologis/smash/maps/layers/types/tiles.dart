@@ -235,7 +235,7 @@ class TileSource extends TiledRasterLayerSource {
     this.maxZoom = 22;
     this.isVisible = true;
     this.isTms = true;
-    this.canDoProperties = false;
+    this.canDoProperties = true;
     getBounds();
   }
 

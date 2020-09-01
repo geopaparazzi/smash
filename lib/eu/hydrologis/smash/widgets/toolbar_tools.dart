@@ -38,7 +38,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          GeomEditorButton(widget._iconSize),
+          // TODO GeomEditorButton(widget._iconSize),
           FeatureQueryButton(widget._iconSize),
           RulerButton(widget._iconSize),
           Spacer(),
