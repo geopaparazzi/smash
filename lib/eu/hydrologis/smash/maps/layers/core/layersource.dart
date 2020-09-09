@@ -34,6 +34,7 @@ const LAYERSKEY_ATTRIBUTION = 'attribution';
 const LAYERSKEY_SUBDOMAINS = 'subdomains';
 const LAYERSKEY_MINZOOM = 'minzoom';
 const LAYERSKEY_MAXZOOM = 'maxzoom';
+const LAYERSKEY_GPKG_DOOVERLAY = "geopackage_dooverlay";
 const DEFAULT_MINZOOM = 1;
 const DEFAULT_MAXZOOM = 19;
 

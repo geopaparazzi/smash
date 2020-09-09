@@ -34,6 +34,7 @@ class TileSource extends TiledRasterLayerSource {
   bool isVisible = true;
   bool isTms = false;
   bool isWms = false;
+  bool doGpkgAsOverlay;
   double opacityPercentage = 100;
   List<int> rgbToHide;
   int _srid = SmashPrj.EPSG3857_INT;
@@ -52,6 +53,7 @@ class TileSource extends TiledRasterLayerSource {
     this.isTms: false,
     this.opacityPercentage: 100,
     this.rgbToHide,
+    this.doGpkgAsOverlay,
   });
 
   TileSource.fromMap(Map<String, dynamic> map) {
@@ -66,6 +68,7 @@ class TileSource extends TiledRasterLayerSource {
     this.attribution = map[LAYERSKEY_ATTRIBUTION];
     this.isVisible = map[LAYERSKEY_ISVISIBLE];
     this.opacityPercentage = (map[LAYERSKEY_OPACITY] ?? 100).toDouble();
+    this.doGpkgAsOverlay = map[LAYERSKEY_GPKG_DOOVERLAY];
 
     var c2hide = map[LAYERSKEY_COLORTOHIDE];
     if (c2hide != null) {
@@ -248,6 +251,7 @@ class TileSource extends TiledRasterLayerSource {
     this.isVisible = true;
     this.isTms = true;
     this.canDoProperties = true;
+    this.doGpkgAsOverlay = false;
     getBounds();
   }
 
@@ -343,45 +347,47 @@ class TileSource extends TiledRasterLayerSource {
     } else if (FileManager.isGeopackage(getAbsolutePath())) {
       var ch = ConnectionsHandler();
       var db = ch.open(absolutePath, tableName: name);
-      var tileEntry = db.tile(name);
-      var to4326function;
-      if (tileEntry.srid != Proj.EPSG4326_INT) {
-        to4326function = (var envelope) {
-          return Proj.transformEnvelopeToWgs84(
-              PROJ.Projection("EPSG:${tileEntry.srid}"), envelope);
-        };
+
+      if (doGpkgAsOverlay != null && doGpkgAsOverlay) {
+        var tileEntry = db.tile(name);
+        var to4326function;
+        if (tileEntry.srid != Proj.EPSG4326_INT) {
+          to4326function = (var envelope) {
+            return Proj.transformEnvelopeToWgs84(
+                PROJ.Projection("EPSG:${tileEntry.srid}"), envelope);
+          };
+        }
+        TilesFetcher fetcher = TilesFetcher(tileEntry);
+        var lazyTiles =
+            fetcher.getAllLazyTiles(db, to4326BoundsConverter: to4326function);
+        var overlayImages = lazyTiles.map((lt) {
+          var minX = lt.tileBoundsLatLong.getMinX();
+          var minY = lt.tileBoundsLatLong.getMinY();
+          var maxX = lt.tileBoundsLatLong.getMaxX();
+          var maxY = lt.tileBoundsLatLong.getMaxY();
+
+          return OverlayImage(
+            bounds: LatLngBounds(LatLng(minY, minX), LatLng(maxY, maxX)),
+            opacity: opacityPercentage / 100.0,
+            imageProvider: GeopackageLazyTileImageProvider(lt, rgbToHide),
+          );
+        }).toList();
+        return [
+          OverlayImageLayerOptions(overlayImages: overlayImages),
+        ];
+      } else {
+        var tileProvider = GeopackageTileImageProvider(db, name);
+        return [
+          TileLayerOptions(
+            tileProvider: tileProvider,
+            maxZoom: maxZoom.toDouble(),
+            tms: true,
+            backgroundColor: Colors.transparent,
+            opacity: opacityPercentage / 100.0,
+            retinaMode: false, // not supported
+          )
+        ];
       }
-      TilesFetcher fetcher = TilesFetcher(tileEntry);
-      var lazyTiles =
-          fetcher.getAllLazyTiles(db, to4326BoundsConverter: to4326function);
-      var overlayImages = lazyTiles.map((lt) {
-        var minX = lt.tileBoundsLatLong.getMinX();
-        var minY = lt.tileBoundsLatLong.getMinY();
-        var maxX = lt.tileBoundsLatLong.getMaxX();
-        var maxY = lt.tileBoundsLatLong.getMaxY();
-
-        return OverlayImage(
-          bounds: LatLngBounds(LatLng(minY, minX), LatLng(maxY, maxX)),
-          opacity: opacityPercentage / 100.0,
-          imageProvider: GeopackageImageProvider(lt, rgbToHide),
-        );
-      }).toList();
-      return [
-        OverlayImageLayerOptions(overlayImages: overlayImages),
-      ];
-
-      // var tileProvider = GeopackageImageProvider(File(absolutePath), name);
-      // tileProvider.open();
-      // return [
-      //   TileLayerOptions(
-      //     tileProvider: tileProvider,
-      //     maxZoom: maxZoom.toDouble(),
-      //     tms: true,
-      //     backgroundColor: Colors.transparent,
-      //     opacity: opacityPercentage / 100.0,
-      //     retinaMode: false, // not supported
-      //   )
-      // ];
     } else if (isOnlineService()) {
       if (isWms) {
         return [
@@ -430,6 +436,10 @@ class TileSource extends TiledRasterLayerSource {
       var cJoin = rgbToHide.join(",");
       colorToHideLine = "\"$LAYERSKEY_COLORTOHIDE\":\"$cJoin\",";
     }
+    var doGeopkgMode = "";
+    if (doGpkgAsOverlay != null) {
+      doGeopkgMode = "\"$LAYERSKEY_GPKG_DOOVERLAY\":$doGpkgAsOverlay,";
+    }
 
     var json = '''
     {
@@ -443,6 +453,7 @@ class TileSource extends TiledRasterLayerSource {
         "$LAYERSKEY_SRID": $_srid,
         "$LAYERSKEY_TYPE": "$LAYERSTYPE_TMS",
         $colorToHideLine
+        $doGeopkgMode
         "$LAYERSKEY_ISVISIBLE": $isVisible ${subdomains.isNotEmpty ? "," : ""}
         ${subdomains.isNotEmpty ? "\"subdomains\": \"${subdomains.join(',')}\"" : ""}
     }
@@ -498,6 +509,8 @@ class TileSourcePropertiesWidgetState
   Color _hideColor = Colors.white;
   bool _somethingChanged = false;
   bool useHideColor = false;
+  bool isGeopackage = false;
+  bool doGpkgAsOverlay;
 
   TileSourcePropertiesWidgetState(this._source);
 
@@ -518,6 +531,11 @@ class TileSourcePropertiesWidgetState
           Color.fromARGB(255, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
     }
 
+    if (this._source.doGpkgAsOverlay != null) {
+      isGeopackage = true;
+      doGpkgAsOverlay = this._source.doGpkgAsOverlay;
+    }
+
     super.initState();
   }
 
@@ -536,6 +554,7 @@ class TileSourcePropertiesWidgetState
             } else {
               _source.rgbToHide = null;
             }
+            _source.doGpkgAsOverlay = doGpkgAsOverlay;
           }
           return true;
         },
@@ -589,6 +608,32 @@ class TileSourcePropertiesWidgetState
                   ),
                 ),
               ),
+              if (isGeopackage)
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Card(
+                    shape: SmashUI.defaultShapeBorder(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        CheckboxListTile(
+                          value: doGpkgAsOverlay,
+                          title: Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                                "Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections)."),
+                          ),
+                          onChanged: (newValue) {
+                            setState(() {
+                              doGpkgAsOverlay = newValue;
+                              _somethingChanged = true;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED)
                 Padding(
                   padding: SmashUI.defaultPadding(),

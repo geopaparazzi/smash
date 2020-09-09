@@ -65,6 +65,7 @@ class LayersPageState extends State<LayersPage> {
 
                   if (wmsLayerSource != null) {
                     LayerManager().addLayerSource(wmsLayerSource);
+                    _somethingChanged = true;
                     setState(() {});
                   }
                 },
@@ -87,6 +88,7 @@ class LayersPageState extends State<LayersPage> {
 
                   if (selectedPath != null) {
                     await loadLayer(context, selectedPath);
+                    _somethingChanged = true;
                     setState(() {});
                   }
                 },
@@ -153,6 +155,7 @@ class LayersPageState extends State<LayersPage> {
                   (layerSourceItem as SldLayerSource).updateStyle(newSldString);
                 }
               }
+              _somethingChanged = true;
             }));
       }
       secondaryActions.add(IconSlideAction(

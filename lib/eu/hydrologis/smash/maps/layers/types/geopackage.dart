@@ -425,25 +425,27 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   }
 }
 
-class GeopackageImageProvider extends ImageProvider<GeopackageImageProvider> {
+class GeopackageLazyTileImageProvider
+    extends ImageProvider<GeopackageLazyTileImageProvider> {
   LazyGpkgTile _tile;
   List<int> _rgbToHide;
-  GeopackageImageProvider(this._tile, this._rgbToHide);
+  GeopackageLazyTileImageProvider(this._tile, this._rgbToHide);
 
   @override
   ImageStreamCompleter load(
-      GeopackageImageProvider key, DecoderCallback decoder) {
+      GeopackageLazyTileImageProvider key, DecoderCallback decoder) {
     return MultiFrameImageStreamCompleter(
       codec: loadAsync(key),
       scale: 1,
       informationCollector: () sync* {
         yield DiagnosticsProperty<ImageProvider>('Image provider', this);
-        yield DiagnosticsProperty<GeopackageImageProvider>('Image key', key);
+        yield DiagnosticsProperty<GeopackageLazyTileImageProvider>(
+            'Image key', key);
       },
     );
   }
 
-  Future<UI.Codec> loadAsync(GeopackageImageProvider key) async {
+  Future<UI.Codec> loadAsync(GeopackageLazyTileImageProvider key) async {
     assert(key == this);
 
     try {
@@ -466,7 +468,8 @@ class GeopackageImageProvider extends ImageProvider<GeopackageImageProvider> {
   }
 
   @override
-  Future<GeopackageImageProvider> obtainKey(ImageConfiguration configuration) {
+  Future<GeopackageLazyTileImageProvider> obtainKey(
+      ImageConfiguration configuration) {
     return SynchronousFuture(this);
   }
 
@@ -481,137 +484,93 @@ class GeopackageImageProvider extends ImageProvider<GeopackageImageProvider> {
 
   @override
   bool operator ==(other) {
-    return other is GeopackageImageProvider &&
+    return other is GeopackageLazyTileImageProvider &&
         _tile == other._tile &&
         _rgbToHide == other._rgbToHide;
   }
 }
 
-// var _emptyImageBytes;
+var _emptyImageBytes;
 
-// class GeopackageImageProvider extends TileProvider {
-//   final File geopackageFile;
-//   final String tableName;
+/// Tile image provider for geopackage raster tiles.
+///
+/// This works different than the overlay image version (which could make things go OOM).
+class GeopackageTileImageProvider extends TileProvider {
+  GeopackageDb _loadedDb;
+  String _tableName;
 
-//   GeopackageDb _loadedDb;
-//   bool isDisposed = true;
-//   LatLngBounds _bounds;
-//   Uint8List _emptyImageBytes;
+  GeopackageTileImageProvider(this._loadedDb, this._tableName);
 
-//   GeopackageImageProvider(this.geopackageFile, this.tableName);
+  @override
+  void dispose() {
+    // dispose of db connections is done when layers are removed
+  }
 
-//   GeopackageDb open() {
-//     if (_loadedDb == null || !_loadedDb.isOpen()) {
-//       var ch = ConnectionsHandler();
-//       _loadedDb = ch.open(geopackageFile.path, tableName: tableName);
-//     }
-//     if (isDisposed) {
-//       _loadedDb.openOrCreate();
+  @override
+  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
+    var x = coords.x.round();
+    var y = options.tms
+        ? invertY(coords.y.round(), coords.z.round())
+        : coords.y.round();
+    var z = coords.z.round();
 
-//       try {
-//         TileEntry tile = _loadedDb.tile(tableName);
-//         Envelope bounds = tile.getBounds();
-//         Envelope bounds4326 = MercatorUtils.convert3857To4326Env(bounds);
-//         var w = bounds4326.getMinX();
-//         var e = bounds4326.getMaxX();
-//         var s = bounds4326.getMinY();
-//         var n = bounds4326.getMaxY();
+    return GeopackageTileImage(_loadedDb, _tableName, Coords<int>(x, y)..z = z);
+  }
+}
 
-//         LatLngBounds b = LatLngBounds();
-//         b.extend(LatLng(s, w));
-//         b.extend(LatLng(n, e));
-//         _bounds = b;
+class GeopackageTileImage extends ImageProvider<GeopackageTileImage> {
+  final GeopackageDb database;
+  String tableName;
+  final Coords<int> coords;
+  GeopackageTileImage(this.database, this.tableName, this.coords);
 
-// //        UI.Image _emptyImage = await ImageWidgetUtilities.transparentImage();
-// //        var byteData = await _emptyImage.toByteData(format: UI.ImageByteFormat.png);
-// //        _emptyImageBytes = byteData.buffer.asUint8List();
+  @override
+  ImageStreamCompleter load(GeopackageTileImage key, DecoderCallback decoder) {
+    return MultiFrameImageStreamCompleter(
+        codec: _loadAsync(key),
+        scale: 1,
+        informationCollector: () sync* {
+          yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+          yield DiagnosticsProperty<ImageProvider>('Image key', key);
+        });
+  }
 
-//       } catch (e, s) {
-//         SMLogger().e("Error getting geopackage bounds or empty image.", s);
-//       }
+  Future<UI.Codec> _loadAsync(GeopackageTileImage key) async {
+    assert(key == this);
 
-//       isDisposed = false;
-//     }
+    var tileBytes = database.getTile(tableName, coords.x, coords.y, coords.z);
+    if (tileBytes != null) {
+      Uint8List bytes = tileBytes;
+      return await PaintingBinding.instance.instantiateImageCodec(bytes);
+    } else {
+      // TODO get from other zoomlevels
+      if (_emptyImageBytes == null) {
+        ByteData imageData = await rootBundle.load('assets/emptytile256.png');
+        _emptyImageBytes = imageData.buffer.asUint8List();
+      }
+      if (_emptyImageBytes != null) {
+        var bytes = _emptyImageBytes;
+        return await PaintingBinding.instance.instantiateImageCodec(bytes);
+      } else {
+        return Future<UI.Codec>.error(
+            'Failed to load tile for coords: $coords');
+      }
+    }
+  }
 
-//     return _loadedDb;
-//   }
+  @override
+  Future<GeopackageTileImage> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture(this);
+  }
 
-//   LatLngBounds get bounds => this._bounds;
+  @override
+  int get hashCode => coords.hashCode;
 
-//   @override
-//   void dispose() {
-//     // dispose of db connections is done when layers are removed
-//   }
-
-//   @override
-//   ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
-//     var x = coords.x.round();
-//     var y = options.tms
-//         ? invertY(coords.y.round(), coords.z.round())
-//         : coords.y.round();
-//     var z = coords.z.round();
-
-//     return GeopackageImage(
-//         geopackageFile.path, tableName, Coords<int>(x, y)..z = z);
-//   }
-// }
-
-// class GeopackageImage extends ImageProvider<GeopackageImage> {
-//   final String databasePath;
-//   String tableName;
-//   final Coords<int> coords;
-//   GeopackageImage(this.databasePath, this.tableName, this.coords);
-
-//   @override
-//   ImageStreamCompleter load(GeopackageImage key, DecoderCallback decoder) {
-//     // TODo check on new DecoderCallBack that was added ( PaintingBinding.instance.instantiateImageCodec ? )
-//     return MultiFrameImageStreamCompleter(
-//         codec: _loadAsync(key),
-//         scale: 1,
-//         informationCollector: () sync* {
-//           yield DiagnosticsProperty<ImageProvider>('Image provider', this);
-//           yield DiagnosticsProperty<ImageProvider>('Image key', key);
-//         });
-//   }
-
-//   Future<UI.Codec> _loadAsync(GeopackageImage key) async {
-//     assert(key == this);
-
-//     final db =
-//         ConnectionsHandler().open(key.databasePath, tableName: key.tableName);
-//     var tileBytes = db.getTile(tableName, coords.x, coords.y, coords.z);
-//     if (tileBytes != null) {
-//       Uint8List bytes = tileBytes;
-//       return await PaintingBinding.instance.instantiateImageCodec(bytes);
-//     } else {
-//       // TODO get from other zoomlevels
-//       if (_emptyImageBytes == null) {
-//         ByteData imageData = await rootBundle.load('assets/emptytile256.png');
-//         _emptyImageBytes = imageData.buffer.asUint8List();
-//       }
-//       if (_emptyImageBytes != null) {
-//         var bytes = _emptyImageBytes;
-//         return await PaintingBinding.instance.instantiateImageCodec(bytes);
-//       } else {
-//         return Future<UI.Codec>.error(
-//             'Failed to load tile for coords: $coords');
-//       }
-//     }
-//   }
-
-//   @override
-//   Future<GeopackageImage> obtainKey(ImageConfiguration configuration) {
-//     return SynchronousFuture(this);
-//   }
-
-//   @override
-//   int get hashCode => coords.hashCode;
-
-//   @override
-//   bool operator ==(other) {
-//     return other is GeopackageImage && coords == other.coords;
-//   }
-// }
+  @override
+  bool operator ==(other) {
+    return other is GeopackageTileImage && coords == other.coords;
+  }
+}
 
 ///// The notes properties page.
 //class GeopackagePropertiesWidget extends StatefulWidget {

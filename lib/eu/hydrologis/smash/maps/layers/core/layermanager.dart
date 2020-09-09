@@ -28,10 +28,14 @@ class LayerManager {
     if (layerSourcesList.isNotEmpty) {
       _layerSources = [];
       for (var json in layerSourcesList) {
+        print(json);
         var fromJson = LayerSource.fromJson(json);
         for (var source in fromJson) {
           var absolutePath = source.getAbsolutePath();
-          if (absolutePath != null && File(absolutePath).existsSync()) {
+          var url = source.getUrl();
+          bool isFile = absolutePath != null && File(absolutePath).existsSync();
+          bool isurl = url != null && url.trim().isNotEmpty;
+          if (isFile || isurl) {
             if (source is LoadableLayerSource) {
               await source.load(context);
             }
@@ -42,7 +46,6 @@ class LayerManager {
           }
         }
       }
-      ;
     } else {
       _layerSources = [TileSource.Open_Street_Map_Standard()..isVisible = true];
     }

@@ -30,7 +30,7 @@ class WmsSource extends RasterLayerSource {
     _layerName = map[LAYERSKEY_LABEL];
     isVisible = map[LAYERSKEY_ISVISIBLE] ?? true;
     opacityPercentage = (map[LAYERSKEY_OPACITY] ?? 100).toDouble();
-    imageFormat = map[LAYERSKEY_FORMAT] ?? LAYERSTYPE_FORMAT_JPG;
+    imageFormat = map[LAYERSKEY_FORMAT] ?? LAYERSTYPE_FORMAT_PNG;
     attribution = map[LAYERSKEY_ATTRIBUTION] ?? "";
 
     _srid = map[LAYERSKEY_SRID] ?? SmashPrj.EPSG3857_INT;
@@ -121,7 +121,7 @@ class WmsSource extends RasterLayerSource {
 
     List<LayerOptions> layers = [
       TileLayerOptions(
-        opacity: opacityPercentage / 100,
+        opacity: opacityPercentage / 100.0,
         backgroundColor: Colors.transparent,
         wmsOptions: WMSTileLayerOptions(
           // Set the WMS layer's CRS
@@ -167,7 +167,7 @@ class WmsSource extends RasterLayerSource {
 
 /// The tiff properties page.
 class WmsPropertiesWidget extends StatefulWidget {
-  WmsSource _source;
+  final WmsSource _source;
   WmsPropertiesWidget(this._source);
 
   @override
