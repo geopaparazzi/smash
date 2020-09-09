@@ -24,6 +24,7 @@ import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
+import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smash/eu/hydrologis/smash/util/network.dart';
 import 'package:smash/eu/hydrologis/smash/util/urls.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
@@ -366,7 +367,7 @@ class DashboardUtils {
               ShareHandler.shareText(sb.toString());
             },
           ),
-          Platform.isAndroid && EXPERIMENTAL_ROTATION_ENABLED
+          Platform.isAndroid && EXPERIMENTAL_ROTATION__ENABLED
               ? Consumer<SmashMapState>(builder: (context, mapState, child) {
                   return ListTile(
                     title: SmashUI.normalText("Rotate map with GPS",

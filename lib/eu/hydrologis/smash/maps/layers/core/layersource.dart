@@ -29,6 +29,7 @@ const LAYERSKEY_LABEL = 'label';
 const LAYERSKEY_SRID = 'srid';
 const LAYERSKEY_ISVISIBLE = 'isvisible';
 const LAYERSKEY_OPACITY = 'opacity';
+const LAYERSKEY_COLORTOHIDE = 'colortohide';
 const LAYERSKEY_ATTRIBUTION = 'attribution';
 const LAYERSKEY_SUBDOMAINS = 'subdomains';
 const LAYERSKEY_MINZOOM = 'minzoom';

@@ -14,6 +14,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
@@ -34,6 +35,7 @@ class TileSource extends TiledRasterLayerSource {
   bool isTms = false;
   bool isWms = false;
   double opacityPercentage = 100;
+  List<int> rgbToHide;
   int _srid = SmashPrj.EPSG3857_INT;
 
   bool canDoProperties = true;
@@ -49,6 +51,7 @@ class TileSource extends TiledRasterLayerSource {
     this.isVisible: true,
     this.isTms: false,
     this.opacityPercentage: 100,
+    this.rgbToHide,
   });
 
   TileSource.fromMap(Map<String, dynamic> map) {
@@ -64,6 +67,15 @@ class TileSource extends TiledRasterLayerSource {
     this.isVisible = map[LAYERSKEY_ISVISIBLE];
     this.opacityPercentage = (map[LAYERSKEY_OPACITY] ?? 100).toDouble();
 
+    var c2hide = map[LAYERSKEY_COLORTOHIDE];
+    if (c2hide != null) {
+      var split = c2hide.split(",");
+      this.rgbToHide = [
+        int.parse(split[0]),
+        int.parse(split[1]),
+        int.parse(split[2]),
+      ];
+    }
     _srid = map[LAYERSKEY_SRID] ?? _srid;
 
     var subDomains = map['subdomains'] as String;
@@ -351,7 +363,7 @@ class TileSource extends TiledRasterLayerSource {
         return OverlayImage(
           bounds: LatLngBounds(LatLng(minY, minX), LatLng(maxY, maxX)),
           opacity: opacityPercentage / 100.0,
-          imageProvider: GeopackageImageProvider(lt),
+          imageProvider: GeopackageImageProvider(lt, rgbToHide),
         );
       }).toList();
       return [
@@ -413,6 +425,12 @@ class TileSource extends TiledRasterLayerSource {
         savePath != null ? "\"$LAYERSKEY_FILE\": \"$savePath\"," : "";
     var urlLine = url != null ? "\"$LAYERSKEY_URL\": \"$url\"," : "";
 
+    var colorToHideLine = "";
+    if (rgbToHide != null) {
+      var cJoin = rgbToHide.join(",");
+      colorToHideLine = "\"$LAYERSKEY_COLORTOHIDE\":\"$cJoin\",";
+    }
+
     var json = '''
     {
         "$LAYERSKEY_LABEL": "$name",
@@ -424,6 +442,7 @@ class TileSource extends TiledRasterLayerSource {
         "$LAYERSKEY_ATTRIBUTION": "$attribution",
         "$LAYERSKEY_SRID": $_srid,
         "$LAYERSKEY_TYPE": "$LAYERSTYPE_TMS",
+        $colorToHideLine
         "$LAYERSKEY_ISVISIBLE": $isVisible ${subdomains.isNotEmpty ? "," : ""}
         ${subdomains.isNotEmpty ? "\"subdomains\": \"${subdomains.join(',')}\"" : ""}
     }
@@ -476,7 +495,9 @@ class TileSourcePropertiesWidgetState
     extends State<TileSourcePropertiesWidget> {
   TileSource _source;
   double _opacitySliderValue = 100;
+  Color _hideColor = Colors.white;
   bool _somethingChanged = false;
+  bool useHideColor = false;
 
   TileSourcePropertiesWidgetState(this._source);
 
@@ -490,6 +511,13 @@ class TileSourcePropertiesWidgetState
       _opacitySliderValue = 0;
     }
 
+    var rgbToHide = _source.rgbToHide;
+    if (rgbToHide != null) {
+      useHideColor = true;
+      _hideColor =
+          Color.fromARGB(255, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
+    }
+
     super.initState();
   }
 
@@ -499,6 +527,15 @@ class TileSourcePropertiesWidgetState
         onWillPop: () async {
           if (_somethingChanged) {
             _source.opacityPercentage = _opacitySliderValue;
+            if (useHideColor) {
+              _source.rgbToHide = [
+                _hideColor.red,
+                _hideColor.green,
+                _hideColor.blue
+              ];
+            } else {
+              _source.rgbToHide = null;
+            }
           }
           return true;
         },
@@ -552,6 +589,48 @@ class TileSourcePropertiesWidgetState
                   ),
                 ),
               ),
+              if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED)
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Card(
+                    shape: SmashUI.defaultShapeBorder(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(MdiIcons.eyedropperVariant),
+                          title: Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text("Color to hide"),
+                          ),
+                          subtitle: Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: SmashUI.defaultPadding(),
+                                  child:
+                                      ColorPickerButton(_hideColor, (newColor) {
+                                    _hideColor = ColorExt.fromColor(newColor);
+                                    _somethingChanged = true;
+                                  }),
+                                ),
+                              ),
+                              Checkbox(
+                                value: useHideColor,
+                                onChanged: (value) {
+                                  setState(() {
+                                    useHideColor = value;
+                                    _somethingChanged = true;
+                                  });
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
         ));

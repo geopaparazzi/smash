@@ -42,6 +42,7 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/util/coachmarks.dart';
+import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_info_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';
@@ -181,7 +182,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         Provider.of<SmashMapState>(mapBuilder.context, listen: false);
 
     if (_mapController != null && _mapController.ready) {
-      if (EXPERIMENTAL_ROTATION_ENABLED) {
+      if (EXPERIMENTAL_ROTATION__ENABLED) {
         // check map centering and rotation
         if (mapState.rotateOnHeading) {
           GpsState gpsState = Provider.of<GpsState>(context, listen: false);

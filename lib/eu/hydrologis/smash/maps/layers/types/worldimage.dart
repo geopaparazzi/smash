@@ -6,7 +6,10 @@
 
 import 'dart:core';
 import 'dart:io';
+import 'dart:ui' as ui;
+import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:image/image.dart' as IMG;
@@ -14,6 +17,7 @@ import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4dart;
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
@@ -24,9 +28,10 @@ class WorldImageSource extends RasterLayerSource {
   bool isVisible = true;
   LatLngBounds _imageBounds;
   bool loaded = false;
-  MemoryImage _memoryImage;
+  MyMemoryImage _memoryImage;
   int _srid;
   var originPrj;
+  List<int> rgbToHide;
 
   WorldImageSource.fromMap(Map<String, dynamic> map) {
     String relativePath = map[LAYERSKEY_FILE];
@@ -36,7 +41,18 @@ class WorldImageSource extends RasterLayerSource {
     _srid = map[LAYERSKEY_SRID];
     isVisible = map[LAYERSKEY_ISVISIBLE];
 
-    opacityPercentage = map[LAYERSKEY_OPACITY] ?? 100;
+    opacityPercentage = (map[LAYERSKEY_OPACITY] ?? 100).toDouble();
+
+    var c2hide = map[LAYERSKEY_COLORTOHIDE];
+    if (c2hide != null) {
+      var split = c2hide.split(",");
+      this.rgbToHide = [
+        int.parse(split[0]),
+        int.parse(split[1]),
+        int.parse(split[2]),
+      ];
+    }
+
     if (_srid == null) {
       getSridFromPath();
     }
@@ -83,7 +99,7 @@ class WorldImageSource extends RasterLayerSource {
     return null;
   }
 
-  Future<void> load(BuildContext context) {
+  Future<void> load(BuildContext context) async {
     if (!loaded) {
       // print("LOAD WORLD FILE");
       _name = FileUtilities.nameFromFile(_absolutePath, false);
@@ -96,17 +112,25 @@ class WorldImageSource extends RasterLayerSource {
       }
 
       var ext = FileUtilities.getExtension(_absolutePath);
-      IMG.Image _decodedImage;
       var bytes = imageFile.readAsBytesSync();
+      IMG.Image _decodedImage = IMG.decodeImage(bytes);
+      if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && rgbToHide != null) {
+        ImageUtilities.colorToAlphaBlend(
+            _decodedImage, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
+      }
+
       if (ext == FileManager.JPG_EXT) {
-        _decodedImage = IMG.decodeJpg(bytes);
-        _memoryImage = MemoryImage(bytes);
+        if (rgbToHide != null) {
+          bytes = IMG.encodeJpg(_decodedImage);
+        }
+        _memoryImage = MyMemoryImage(bytes, rgbToHide);
       } else if (ext == FileManager.PNG_EXT) {
-        _decodedImage = IMG.decodePng(bytes);
-        _memoryImage = MemoryImage(bytes);
+        if (rgbToHide != null) {
+          bytes = IMG.encodePng(_decodedImage);
+        }
+        _memoryImage = MyMemoryImage(bytes, rgbToHide);
       } else if (ext == FileManager.TIF_EXT) {
-        _decodedImage = IMG.decodeTiff(bytes);
-        _memoryImage = MemoryImage(IMG.encodeJpg(_decodedImage));
+        _memoryImage = MyMemoryImage(IMG.encodeJpg(_decodedImage), rgbToHide);
       }
 
       var width = _decodedImage.width;
@@ -249,7 +273,9 @@ class TiffPropertiesWidget extends StatefulWidget {
 class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
   WorldImageSource _source;
   double _opacitySliderValue = 100;
+  Color _hideColor = Colors.white;
   bool _somethingChanged = false;
+  bool useHideColor = false;
 
   TiffPropertiesWidgetState(this._source);
 
@@ -263,6 +289,13 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
       _opacitySliderValue = 0;
     }
 
+    var rgbToHide = _source.rgbToHide;
+    if (rgbToHide != null) {
+      useHideColor = true;
+      _hideColor =
+          Color.fromARGB(255, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
+    }
+
     super.initState();
   }
 
@@ -272,6 +305,16 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
         onWillPop: () async {
           if (_somethingChanged) {
             _source.opacityPercentage = _opacitySliderValue;
+            if (useHideColor) {
+              _source.rgbToHide = [
+                _hideColor.red,
+                _hideColor.green,
+                _hideColor.blue
+              ];
+              _source.loaded = false;
+            } else {
+              _source.rgbToHide = null;
+            }
           }
           return true;
         },
@@ -325,8 +368,107 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
                   ),
                 ),
               ),
+              if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED)
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Card(
+                    shape: SmashUI.defaultShapeBorder(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(MdiIcons.eyedropperVariant),
+                          title: Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text("Color to hide"),
+                          ),
+                          subtitle: Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: SmashUI.defaultPadding(),
+                                  child:
+                                      ColorPickerButton(_hideColor, (newColor) {
+                                    _hideColor = ColorExt.fromColor(newColor);
+                                    _somethingChanged = true;
+                                  }),
+                                ),
+                              ),
+                              Checkbox(
+                                value: useHideColor,
+                                onChanged: (value) {
+                                  setState(() {
+                                    useHideColor = value;
+                                    _somethingChanged = true;
+                                  });
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
         ));
   }
+}
+
+class MyMemoryImage extends ImageProvider<MyMemoryImage> {
+  /// Creates an object that decodes a [Uint8List] buffer as an image.
+  ///
+  /// The arguments must not be null.
+  const MyMemoryImage(this.bytes, this.rgbToHide) : assert(bytes != null);
+
+  /// The bytes to decode into an image.
+  final Uint8List bytes;
+  final List<int> rgbToHide;
+
+  /// The scale to place in the [ImageInfo] object of the image.
+  final double scale = 1.0;
+
+  @override
+  Future<MyMemoryImage> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<MyMemoryImage>(this);
+  }
+
+  @override
+  ImageStreamCompleter load(MyMemoryImage key, DecoderCallback decode) {
+    return MultiFrameImageStreamCompleter(
+      codec: _loadAsync(key, decode),
+      scale: key.scale,
+      debugLabel: 'MyMemoryImage(${describeIdentity(key.bytes)})',
+    );
+  }
+
+  Future<ui.Codec> _loadAsync(MyMemoryImage key, DecoderCallback decode) async {
+    assert(key == this);
+
+    return await PaintingBinding.instance.instantiateImageCodec(bytes);
+    // return decode(bytes);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) return false;
+    return other is MyMemoryImage &&
+        other.bytes == bytes &&
+        other.scale == scale &&
+        other.rgbToHide == rgbToHide;
+  }
+
+  @override
+  int get hashCode {
+    if (rgbToHide != null) {
+      return hashValues(
+          bytes.hashCode, scale, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
+    }
+    return hashValues(bytes.hashCode, scale);
+  }
+
+  @override
+  String toString() =>
+      '${objectRuntimeType(this, 'MyMemoryImage')}(${describeIdentity(bytes)}, scale: $scale)';
 }

@@ -276,6 +276,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
     }
   } else if (FileManager.isGeopackage(filePath)) {
     var ch = ConnectionsHandler();
+    ch.forceRasterMobileCompatibility = false;
     try {
       var db = ch.open(filePath);
 

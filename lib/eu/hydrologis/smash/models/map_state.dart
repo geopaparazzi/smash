@@ -10,8 +10,6 @@ import 'package:latlong/latlong.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 
-const EXPERIMENTAL_ROTATION_ENABLED = false;
-
 /// Current state of the Map view.
 ///
 /// This provides tracking of map view and general status.
@@ -113,7 +111,7 @@ class SmashMapState extends ChangeNotifierPlus {
     _center = newCenter;
     _zoom = newZoom;
   }
-  
+
   Future<void> persistLastPosition() async {
     await GpPreferences().setLastPosition(_center.x, _center.y, _zoom);
   }

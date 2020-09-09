@@ -22,9 +22,12 @@ import 'package:latlong/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:image/image.dart' as IMG;
 
+/// Geopackage vector data layer.
 class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   static final bool DO_RTREE_CHECK = false;
 
@@ -424,7 +427,8 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
 
 class GeopackageImageProvider extends ImageProvider<GeopackageImageProvider> {
   LazyGpkgTile _tile;
-  GeopackageImageProvider(this._tile);
+  List<int> _rgbToHide;
+  GeopackageImageProvider(this._tile, this._rgbToHide);
 
   @override
   ImageStreamCompleter load(
@@ -445,8 +449,14 @@ class GeopackageImageProvider extends ImageProvider<GeopackageImageProvider> {
     try {
       _tile.fetch();
       if (_tile.tileImageBytes != null) {
-        return await PaintingBinding.instance
-            .instantiateImageCodec(_tile.tileImageBytes);
+        var finalBytes = _tile.tileImageBytes;
+        if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && _rgbToHide != null) {
+          final image = IMG.decodeImage(_tile.tileImageBytes);
+          ImageUtilities.colorToAlphaBlend(
+              image, _rgbToHide[0], _rgbToHide[1], _rgbToHide[2]);
+          finalBytes = IMG.encodePng(image);
+        }
+        return await PaintingBinding.instance.instantiateImageCodec(finalBytes);
       }
     } catch (e) {
       print(e); // ignore later
@@ -461,11 +471,19 @@ class GeopackageImageProvider extends ImageProvider<GeopackageImageProvider> {
   }
 
   @override
-  int get hashCode => _tile.hashCode;
+  int get hashCode {
+    var objects = [_tile.tableName, _tile.xTile, _tile.yTile, _tile.zoomLevel];
+    if (_rgbToHide != null) {
+      objects.addAll(_rgbToHide);
+    }
+    return hashObjects(objects);
+  }
 
   @override
   bool operator ==(other) {
-    return other is GeopackageImageProvider && _tile == other._tile;
+    return other is GeopackageImageProvider &&
+        _tile == other._tile &&
+        _rgbToHide == other._rgbToHide;
   }
 }
 

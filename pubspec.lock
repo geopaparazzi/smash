@@ -140,7 +140,7 @@ packages:
       name: dart_hydrologis_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.2+8"
+    version: "0.5.3+1"
   dart_jts:
     dependency: transitive
     description:
@@ -778,7 +778,7 @@ packages:
       name: sqlite3
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.4"
+    version: "0.1.5"
   sqlite3_flutter_libs:
     dependency: "direct main"
     description:
@@ -855,7 +855,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.5.1"
+    version: "5.5.3"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -883,7 +883,7 @@ packages:
       name: url_launcher_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.3"
+    version: "0.1.3+1"
   utf:
     dependency: transitive
     description:
@@ -932,7 +932,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.4.1"
+    version: "4.5.0"
   yaml:
     dependency: transitive
     description:
