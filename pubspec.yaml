@@ -7,7 +7,7 @@ description: The Smart Mobile Application for Surveyor's Happyness.
 version: 1.4.0+23 # we keep the build number growing to have it properly handled in android
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -40,7 +40,7 @@ dependencies:
     # path: ../dart_shp/
 
   dart_hydrologis_utils:
-    ^0.5.2
+    ^0.5.3
     # path: ../dart_hydrologis_utils/
 
   ##################################
