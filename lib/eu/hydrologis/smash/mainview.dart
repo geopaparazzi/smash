@@ -288,6 +288,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                 alignment: Alignment.bottomRight,
                 child: _iconMode == IconMode.NAVIGATION_MODE
                     ? IconButton(
+                        key: coachMarks.toolbarButtonKey,
                         icon: Icon(
                           MdiIcons.forwardburger,
                           color: SmashColors.mainDecorations,

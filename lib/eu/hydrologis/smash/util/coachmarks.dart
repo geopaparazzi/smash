@@ -15,12 +15,13 @@ class MainViewCoachMarks {
   GlobalKey zoomOutButtonKey = GlobalKey();
   GlobalKey toolsButtonKey = GlobalKey();
   GlobalKey drawerButtonKey = GlobalKey();
+  GlobalKey toolbarButtonKey = GlobalKey();
   GlobalKey coachMarkButtonKey = GlobalKey();
 
   List<TargetFocus> targets = List();
 
   void initCoachMarks() {
-    var all = 10;
+    var all = 11;
     var i = 1;
     const s = "Single tap: ";
     const l = "Long tap: ";
@@ -99,6 +100,17 @@ class MainViewCoachMarks {
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: zoomOutButtonKey,
+      contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
+      shape: ShapeLightFocus.Circle,
+    ));
+
+    title = "$i/$all Bottom Tools Button";
+    singleTap = "Toggle bottom tools bar. ";
+    longTap = null;
+    doubleTap = null;
+    targets.add(TargetFocus(
+      identify: "Target ${i++}",
+      keyTarget: toolbarButtonKey,
       contents: [getContentTarget(title, singleTap, longTap, doubleTap)],
       shape: ShapeLightFocus.Circle,
     ));
@@ -234,7 +246,7 @@ class MainViewCoachMarks {
         opacityShadow: 0.7, finish: () {
       // print("finish");
     }, clickTarget: (target) {
-      print(target);
+      // print(target);
     }, clickSkip: () {
       // print("skip");
     })
