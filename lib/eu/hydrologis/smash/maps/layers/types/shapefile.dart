@@ -67,6 +67,17 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
       }
 
       var fromPrj = SmashPrj.fromImageFile(_absolutePath);
+      if (fromPrj != null) {
+        var srid = SmashPrj.getSrid(fromPrj);
+        if (srid == null) {
+          var prjPath = SmashPrj.getPrjForImage(_absolutePath);
+          var wktPrj = FileUtilities.readFile(prjPath);
+          srid = SmashPrj.getSridFromWkt(wktPrj);
+        }
+        if (srid != null) {
+          _srid = srid;
+        }
+      }
 
       _shpBounds = JTS.Envelope.empty();
       _featureTree = JTS.STRtree();

@@ -195,16 +195,17 @@ class LayersPageState extends State<LayersPage> {
                       "The proj is not supported. Tap to solve.",
                       style: TextStyle(color: SmashColors.mainDanger),
                     ),
-          onTap: () {
+          onTap: () async {
             if (!prjSupported) {
               // showWarningDialog(context, "Need to add prj: $srid");
 
-              Navigator.push(
+              await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ProjectionsSettings(
                             epsgToDownload: srid,
                           )));
+              setState(() {});
             }
           },
           leading: Icon(
