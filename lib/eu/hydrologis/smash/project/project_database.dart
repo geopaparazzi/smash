@@ -430,6 +430,28 @@ class GeopaparazziProjectDb extends SqliteDb {
     return logs;
   }
 
+  Log getLogById(int logId) {
+    String logsQuery = '''
+        select $LOGS_COLUMN_ID, $LOGS_COLUMN_STARTTS, $LOGS_COLUMN_ENDTS, $LOGS_COLUMN_TEXT, $LOGS_COLUMN_ISDIRTY, $LOGS_COLUMN_LENGTHM
+        from $TABLE_GPSLOGS
+        where $LOGS_COLUMN_ID=$logId
+    ''';
+
+    var resLogs = select(logsQuery);
+    if (resLogs.length == 1) {
+      var map = resLogs.first;
+      Log log = Log()
+        ..id = map[LOGS_COLUMN_ID]
+        ..startTime = map[LOGS_COLUMN_STARTTS]
+        ..endTime = map[LOGS_COLUMN_ENDTS]
+        ..text = map[LOGS_COLUMN_TEXT]
+        ..isDirty = map[LOGS_COLUMN_ISDIRTY]
+        ..lengthm = map[LOGS_COLUMN_LENGTHM];
+      return log;
+    }
+    return null;
+  }
+
   List<LogDataPoint> getLogDataPoints(int logId) {
     String logDataQuery = """
             select $LOGSDATA_COLUMN_ID, $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, 

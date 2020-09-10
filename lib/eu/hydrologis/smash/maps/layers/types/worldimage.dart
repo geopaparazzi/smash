@@ -115,7 +115,7 @@ class WorldImageSource extends RasterLayerSource {
       var bytes = imageFile.readAsBytesSync();
       IMG.Image _decodedImage = IMG.decodeImage(bytes);
       if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && rgbToHide != null) {
-        ImageUtilities.colorToAlphaBlend(
+        ImageUtilities.colorToAlphaImg(
             _decodedImage, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
       }
 
@@ -130,7 +130,7 @@ class WorldImageSource extends RasterLayerSource {
         }
         _memoryImage = MyMemoryImage(bytes, rgbToHide);
       } else if (ext == FileManager.TIF_EXT) {
-        _memoryImage = MyMemoryImage(IMG.encodeJpg(_decodedImage), rgbToHide);
+        _memoryImage = MyMemoryImage(IMG.encodePng(_decodedImage), rgbToHide);
       }
 
       var width = _decodedImage.width;

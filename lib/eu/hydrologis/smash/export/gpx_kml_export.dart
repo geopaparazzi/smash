@@ -24,7 +24,7 @@ class GpxExporter {
     gpx.creator = "SMASH - http://www.geopaparazzi.eu using dart-gpx library.";
     gpx.metadata = Metadata();
     gpx.metadata.keywords = "SMASH, export, notes, gps, log";
-    gpx.metadata.name = "SMASH PDF Report of project: $dbName";
+    gpx.metadata.name = "SMASH GPX of project: $dbName";
     gpx.metadata.time = DateTime.now();
     List<Wpt> wpts = [];
     gpx.wpts = wpts;
@@ -84,6 +84,60 @@ class GpxExporter {
     } else {
       var gpxString = GpxWriter().asString(gpx, pretty: true);
       await outputFile.writeAsString(gpxString);
+    }
+  }
+
+  static Future<void> exportLog(
+      GeopaparazziProjectDb db, int logId, String outputFolderPath,
+      {bool doKml = false}) async {
+    bool useFiltered =
+        GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
+
+    Log log = db.getLogById(logId);
+    if (log != null) {
+      var logName = log.text;
+      var gpx = Gpx();
+      gpx.creator =
+          "SMASH - http://www.geopaparazzi.eu using dart-gpx library.";
+      gpx.metadata = Metadata();
+      gpx.metadata.keywords = "SMASH, export, log";
+      gpx.metadata.name = "$logName";
+      gpx.metadata.time = DateTime.now();
+      List<Wpt> wpts = [];
+      gpx.wpts = wpts;
+
+      List<Trk> trks = [];
+      gpx.trks = trks;
+
+      List<Wpt> segmentPts = [];
+      List<LogDataPoint> logDataPoints = db.getLogDataPoints(log.id);
+      logDataPoints.forEach((logPoint) {
+        var wpt = Wpt(
+          lat: useFiltered ? logPoint.filtered_lat : logPoint.lat,
+          lon: useFiltered ? logPoint.filtered_lon : logPoint.lon,
+          ele: logPoint.altim,
+          name: logPoint.id.toString(),
+          time: DateTime.fromMillisecondsSinceEpoch(logPoint.ts),
+        );
+        segmentPts.add(wpt);
+      });
+      Trkseg logSegment = Trkseg(trkpts: segmentPts);
+      List<Trkseg> segments = [logSegment];
+      var t = Trk(name: log.text, number: log.id, trksegs: segments);
+      trks.add(t);
+
+      var ext = doKml ? "kml" : "gpx";
+      logName = logName.replaceAll(" ", "_").replaceAll("\\s+", "_");
+      var outFilePath =
+          HU.FileUtilities.joinPaths(outputFolderPath, "$logName.$ext");
+      var outputFile = File(outFilePath);
+      if (doKml) {
+        var kmlString = KmlWriter().asString(gpx, pretty: true);
+        await outputFile.writeAsString(kmlString);
+      } else {
+        var gpxString = GpxWriter().asString(gpx, pretty: true);
+        await outputFile.writeAsString(gpxString);
+      }
     }
   }
 }

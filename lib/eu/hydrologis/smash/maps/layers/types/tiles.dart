@@ -619,7 +619,7 @@ class TileSourcePropertiesWidgetState
                         CheckboxListTile(
                           value: doGpkgAsOverlay,
                           title: Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
+                            padding: SmashUI.defaultPadding(),
                             child: Text(
                                 "Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections)."),
                           ),

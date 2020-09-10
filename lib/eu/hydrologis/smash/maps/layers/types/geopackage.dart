@@ -530,7 +530,7 @@ class GeopackageLazyTileImageProvider
         var finalBytes = _tile.tileImageBytes;
         if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && _rgbToHide != null) {
           final image = IMG.decodeImage(_tile.tileImageBytes);
-          ImageUtilities.colorToAlphaBlend(
+          ImageUtilities.colorToAlphaImg(
               image, _rgbToHide[0], _rgbToHide[1], _rgbToHide[2]);
           finalBytes = IMG.encodePng(image);
         }

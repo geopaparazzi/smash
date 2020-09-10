@@ -13,6 +13,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/export/gpx_kml_export.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -20,6 +21,7 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// Log object dedicated to the list widget containing logs.
@@ -319,6 +321,21 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         setState(() {});
       },
     ));
+    secondaryActions.add(IconSlideAction(
+        caption: 'To GPX',
+        color: SmashColors.mainDecorations,
+        icon: MdiIcons.mapMarker,
+        onTap: () async {
+          var exportsFolder = await Workspace.getExportsFolder();
+          try {
+            await GpxExporter.exportLog(db, logItem.id, exportsFolder.path);
+            showInfoDialog(context, "GPX saved in export folder.");
+          } catch (e, s) {
+            SMLogger().e("Error exporting log GPX", s);
+            showErrorDialog(
+                context, "An error occurred while exporting log to GPX.");
+          }
+        }));
     secondaryActions.add(IconSlideAction(
         caption: 'Delete',
         color: SmashColors.mainDanger,
