@@ -10,7 +10,7 @@ import 'dart:typed_data';
 import 'dart:ui' as UI;
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:dart_jts/dart_jts.dart' hide Polygon;
+import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter/services.dart' show rootBundle;
@@ -29,8 +29,6 @@ import 'package:image/image.dart' as IMG;
 
 /// Geopackage vector data layer.
 class GeopackageSource extends VectorLayerSource implements SldLayerSource {
-  static final bool DO_RTREE_CHECK = false;
-
   static final double POINT_SIZE_FACTOR = 3;
 
   String _absolutePath;
@@ -38,8 +36,8 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   bool isVisible = true;
   String _attribution = "";
 
-  List<Geometry> _tableGeoms;
-  Envelope _tableBounds;
+  QueryResult _tableData;
+  JTS.Envelope _tableBounds;
   GeometryColumn _geometryColumn;
   SldObjectParser _style;
   TextStyle _textStyle;
@@ -50,7 +48,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
 
   List<String> alphaFields = [];
   String sldString;
-  EGeometryType geometryType;
+  JTS.EGeometryType geometryType;
 
   GeopackageSource.fromMap(Map<String, dynamic> map) {
     _tableName = map[LAYERSKEY_LABEL];
@@ -70,7 +68,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
       bool loadOnlyVisible =
           GpPreferences().getBooleanSync(KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
 
-      Envelope limitBounds;
+      JTS.Envelope limitBounds;
       if (loadOnlyVisible) {
         var mapState = Provider.of<SmashMapState>(context, listen: false);
         if (mapState.mapController != null) {
@@ -79,8 +77,8 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
           var s = bounds.south;
           var e = bounds.east;
           var w = bounds.west;
-          limitBounds =
-              Envelope.fromCoordinates(Coordinate(w, s), Coordinate(e, n));
+          limitBounds = JTS.Envelope.fromCoordinates(
+              JTS.Coordinate(w, s), JTS.Coordinate(e, n));
         }
       }
 
@@ -117,26 +115,24 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
               .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
         }
       }
-
-//      _tableBounds = db.getTableBounds(_tableName);
-
-      String userDataField = _textStyle != null
-          ? _textStyle.labelName.length > 0 ? _textStyle.labelName : null
-          : null;
-      _tableGeoms = db.getGeometriesIn(_tableName,
-          limit: maxFeaturesToLoad,
-          envelope: limitBounds,
-          userDataField: userDataField);
+      if (maxFeaturesToLoad == -1) {
+        maxFeaturesToLoad = null;
+      }
+      _tableData = db.getTableData(
+        _tableName,
+        limit: maxFeaturesToLoad,
+        envelope: limitBounds,
+      );
 
       var fromPrj = SmashPrj.fromSrid(_srid);
-      SmashPrj.transformListToWgs84(fromPrj, _tableGeoms);
-      _tableBounds = Envelope.empty();
-      _tableGeoms.forEach((g) {
+      SmashPrj.transformListToWgs84(fromPrj, _tableData.geoms);
+      _tableBounds = JTS.Envelope.empty();
+      _tableData.geoms.forEach((g) {
         _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
       });
 
       _attribution =
-          "${_geometryColumn.geometryType.getTypeName()} (${_tableGeoms.length}) ";
+          "${_geometryColumn.geometryType.getTypeName()} (${_tableData.geoms.length}) ";
 
       loaded = true;
     }
@@ -151,7 +147,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   }
 
   bool hasData() {
-    return _tableGeoms != null && _tableGeoms.length > 0;
+    return _tableData != null && _tableData.geoms.length > 0;
   }
 
   String getAbsolutePath() {
@@ -194,160 +190,240 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
 
   @override
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
-    load(context);
+    await load(context);
 
     List<LayerOptions> layers = [];
+    if (_tableData.geoms.isNotEmpty) {
+      List<List<Marker>> allPoints = [];
+      List<Polyline> allLines = [];
+      List<Polygon> allPolygons = [];
 
-    switch (_geometryColumn.geometryType) {
-      case EGeometryType.LINESTRING:
-      case EGeometryType.MULTILINESTRING:
-        List<Polyline> lines = [];
-
-        var lineStyle = _style
-            .featureTypeStyles.first.rules.first.lineSymbolizers.first.style;
-        _tableGeoms.forEach((lineGeom) {
-          Color strokeColor = ColorExt(lineStyle.strokeColorHex)
-              .withOpacity(lineStyle.strokeOpacity);
-          for (int i = 0; i < lineGeom.getNumGeometries(); i++) {
-            var geometryN = lineGeom.getGeometryN(i);
-            List<LatLng> linePoints = geometryN
-                .getCoordinates()
-                .map((c) => LatLng(c.y, c.x))
-                .toList();
-            lines.add(Polyline(
-                points: linePoints,
-                strokeWidth: lineStyle.strokeWidth,
-                color: strokeColor));
+      Color pointFillColor;
+      _style.applyForEachRule((fts, Rule rule) {
+        if (geometryType.isPoint()) {
+          List<Marker> points = makeMarkersForRule(rule);
+          if (rule.pointSymbolizers.isNotEmpty && pointFillColor == null) {
+            pointFillColor =
+                ColorExt(rule.pointSymbolizers[0].style.fillColorHex);
           }
-        });
+          allPoints.add(points);
+        } else if (geometryType.isLine()) {
+          List<Polyline> lines = makeLinesForRule(rule);
+          allLines.addAll(lines);
+        } else if (geometryType.isPolygon()) {
+          List<Polygon> polygons = makePolygonsForRule(rule);
+          allPolygons.addAll(polygons);
+        }
+      });
+
+      if (allPoints.isNotEmpty) {
+        addMarkerLayer(allPoints, layers, pointFillColor);
+      } else if (allLines.isNotEmpty) {
         var lineLayer = PolylineLayerOptions(
           polylineCulling: true,
-          polylines: lines,
+          polylines: allLines,
         );
         layers.add(lineLayer);
-        break;
-      case EGeometryType.POINT:
-      case EGeometryType.MULTIPOINT:
-        var pointStyle = _style
-            .featureTypeStyles.first.rules.first.pointSymbolizers.first.style;
-        var iconData = SmashIcons.forSldWkName(pointStyle.markerName);
-        double pointsSize = pointStyle.markerSize * POINT_SIZE_FACTOR;
-
-        bool doLabels = _textStyle != null &&
-            _textStyle.labelName != null &&
-            _textStyle.labelName.trim().isNotEmpty;
-
-        Color fillColor = ColorExt(pointStyle.fillColorHex)
-            .withOpacity(pointStyle.fillOpacity);
-        Color textColor = doLabels ? ColorExt(_textStyle.textColor) : null;
-
-        List<Marker> points = [];
-        var dataSize = _tableGeoms.length;
-        for (int j = 0; j < dataSize; j++) {
-          var pointGeom = _tableGeoms[j];
-          for (int i = 0; i < pointGeom.getNumGeometries(); i++) {
-            var geometryN = pointGeom.getGeometryN(i);
-            var c = geometryN.getCoordinate();
-            String labelText =
-                doLabels ? geometryN.getUserData()?.toString() ?? "" : null;
-            double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
-            if (labelText == null) {
-              textExtraHeight = 0;
-            }
-            Marker m = Marker(
-                width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
-                height: pointsSize + textExtraHeight,
-                point: LatLng(c.y, c.x),
-                // anchorPos: AnchorPos.exactly(
-                //     Anchor(pointsSize / 2, textExtraHeight + pointsSize / 2)),
-                builder: (ctx) => MarkerIcon(
-                      iconData,
-                      fillColor,
-                      pointsSize,
-                      labelText,
-                      textColor,
-                      fillColor.withAlpha(100),
-                    ));
-            points.add(m);
-            // Widget widget;
-            // if (textColor != null) {
-            //   widget = MarkerIcon(iconData, fillColor, size,
-            //       userData.toString(), textColor, fillColor);
-            // } else {
-            //   widget = Container(
-            //     child: Icon(
-            //       iconData,
-            //       size: size,
-            //       color: fillColor,
-            //     ),
-            //   );
-            // }
-            // Marker m = Marker(
-            //   width: size,
-            //   height: size,
-            //   point: LatLng(c.y, c.x),
-            //   builder: (ctx) {
-            //     return widget;
-            //   },
-            // );
-            // points.add(m);
-          }
-        }
-        var waypointsCluster = MarkerClusterLayerOptions(
-          maxClusterRadius: 20,
-          size: Size(40, 40),
-          fitBoundsOptions: FitBoundsOptions(
-            padding: EdgeInsets.all(50),
-          ),
-          markers: points,
-          polygonOptions: PolygonOptions(
-              borderColor: fillColor, color: fillColor, borderStrokeWidth: 3),
-          builder: (context, markers) {
-            return FloatingActionButton(
-              child: Text(markers.length.toString()),
-              onPressed: null,
-              backgroundColor: fillColor,
-              foregroundColor: SmashColors.mainBackground,
-              heroTag: null,
-            );
-          },
+      } else if (allPolygons.isNotEmpty) {
+        var polygonLayer = PolygonLayerOptions(
+          polygonCulling: true,
+          // simplify: true,
+          polygons: allPolygons,
         );
-        layers.add(waypointsCluster);
+        layers.add(polygonLayer);
+      }
+    }
+    return layers;
+  }
 
-        break;
-      case EGeometryType.POLYGON:
-      case EGeometryType.MULTIPOLYGON:
-        var polygonStyle = _style
-            .featureTypeStyles.first.rules.first.polygonSymbolizers.first.style;
-        List<Polygon> polygons = [];
-        Color strokeColor = ColorExt(polygonStyle.strokeColorHex)
-            .withOpacity(polygonStyle.strokeOpacity);
-        Color fillColor = ColorExt(polygonStyle.fillColorHex)
-            .withOpacity(polygonStyle.fillOpacity);
-        _tableGeoms.forEach((polyGeom) {
-          for (int i = 0; i < polyGeom.getNumGeometries(); i++) {
-            var geometryN = polyGeom.getGeometryN(i);
-            List<LatLng> polyPoints = geometryN
+  List<Polygon> makePolygonsForRule(Rule rule) {
+    List<Polygon> polygons = [];
+    var filter = rule.filter;
+    var key = filter?.uniqueValueKey;
+    var value = filter?.uniqueValueValue;
+
+    var polygonSymbolizersList = rule.polygonSymbolizers;
+    if (polygonSymbolizersList == null || polygonSymbolizersList.isEmpty) {
+      return [];
+    }
+    var polygonStyle = polygonSymbolizersList[0].style ??= PolygonStyle();
+
+    var lineWidth = polygonStyle.strokeWidth;
+    Color lineStrokeColor = ColorExt(polygonStyle.strokeColorHex);
+    var lineOpacity = polygonStyle.strokeOpacity * 255;
+    lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
+
+    Color fillColor = ColorExt(polygonStyle.fillColorHex)
+        .withAlpha((polygonStyle.fillOpacity * 255).toInt());
+
+    var featureCount = _tableData.geoms.length;
+    for (var i = 0; i < featureCount; i++) {
+      var geom = _tableData.geoms[i];
+      var attributes = _tableData.data[i];
+      if (key == null || attributes[key]?.toString() == value) {
+        var count = geom.getNumGeometries();
+        for (var i = 0; i < count; i++) {
+          JTS.Polygon p = geom.getGeometryN(i);
+          // ext ring
+          var extCoords = p
+              .getExteriorRing()
+              .getCoordinates()
+              .map((c) => LatLng(c.y, c.x))
+              .toList();
+
+          // inter rings
+          var numInteriorRing = p.getNumInteriorRing();
+          List<List<LatLng>> intRingCoords = [];
+          for (var i = 0; i < numInteriorRing; i++) {
+            var intCoords = p
+                .getInteriorRingN(i)
                 .getCoordinates()
                 .map((c) => LatLng(c.y, c.x))
                 .toList();
-            polygons.add(Polygon(
-                points: polyPoints,
-                borderStrokeWidth: polygonStyle.strokeWidth,
-                borderColor: strokeColor,
-                color: fillColor));
+            intRingCoords.add(intCoords);
           }
-        });
-        var polyLayer = PolygonLayerOptions(
-          polygonCulling: true,
-          polygons: polygons,
-        );
-        layers.add(polyLayer);
-        break;
-      default:
+
+          polygons.add(Polygon(
+            points: extCoords,
+            borderStrokeWidth: lineWidth,
+            holePointsList: intRingCoords,
+            borderColor: lineStrokeColor,
+            color: fillColor,
+          ));
+        }
+      }
     }
 
-    return layers;
+    return polygons;
+  }
+
+  List<Polyline> makeLinesForRule(Rule rule) {
+    List<Polyline> lines = [];
+    var filter = rule.filter;
+    var key = filter?.uniqueValueKey;
+    var value = filter?.uniqueValueValue;
+
+    var lineSymbolizersList = rule.lineSymbolizers;
+    if (lineSymbolizersList == null || lineSymbolizersList.isEmpty) {
+      return [];
+    }
+    var lineStyle = lineSymbolizersList[0].style ??= LineStyle();
+
+    var lineWidth = lineStyle.strokeWidth;
+    Color lineStrokeColor = ColorExt(lineStyle.strokeColorHex);
+    var lineOpacity = lineStyle.strokeOpacity * 255;
+    lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
+
+    var featureCount = _tableData.geoms.length;
+    for (var i = 0; i < featureCount; i++) {
+      var geom = _tableData.geoms[i];
+      var attributes = _tableData.data[i];
+      if (key == null || attributes[key]?.toString() == value) {
+        var count = geom.getNumGeometries();
+        for (var i = 0; i < count; i++) {
+          JTS.LineString l = geom.getGeometryN(i);
+          var linePoints =
+              l.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
+          lines.add(Polyline(
+              points: linePoints,
+              strokeWidth: lineWidth,
+              color: lineStrokeColor));
+        }
+      }
+    }
+
+    return lines;
+  }
+
+  /// Create markers for a given [Rule].
+  List<Marker> makeMarkersForRule(Rule rule) {
+    List<Marker> points = [];
+    var filter = rule.filter;
+    var key = filter?.uniqueValueKey;
+    var value = filter?.uniqueValueValue;
+
+    var pointSymbolizersList = rule.pointSymbolizers;
+    if (pointSymbolizersList == null || pointSymbolizersList.isEmpty) {
+      return [];
+    }
+    var pointStyle = pointSymbolizersList[0].style ??= PointStyle();
+    var iconData = SmashIcons.forSldWkName(pointStyle.markerName);
+    var pointsSize = pointStyle.markerSize * 3;
+    Color pointFillColor = ColorExt(pointStyle.fillColorHex);
+    pointFillColor = pointFillColor.withOpacity(pointStyle.fillOpacity);
+
+    String labelName;
+    ColorExt labelColor;
+    if (_textStyle != null) {
+      labelName = _textStyle.labelName;
+      labelColor = ColorExt(_textStyle.textColor);
+    }
+
+    var featureCount = _tableData.geoms.length;
+    for (var i = 0; i < featureCount; i++) {
+      var geom = _tableData.geoms[i];
+      var attributes = _tableData.data[i];
+      if (key == null || attributes[key]?.toString() == value) {
+        var count = geom.getNumGeometries();
+        for (var i = 0; i < count; i++) {
+          JTS.Point l = geom.getGeometryN(i);
+          var labelText = attributes[labelName];
+          double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
+          if (labelText == null) {
+            textExtraHeight = 0;
+          }
+          Marker m = Marker(
+              width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
+              height: pointsSize + textExtraHeight,
+              point: LatLng(l.getY(), l.getX()),
+              // anchorPos: AnchorPos.exactly(
+              //     Anchor(pointsSize / 2, textExtraHeight + pointsSize / 2)),
+              builder: (ctx) => MarkerIcon(
+                    iconData,
+                    pointFillColor,
+                    pointsSize,
+                    labelText.toString(),
+                    labelColor,
+                    pointFillColor.withAlpha(100),
+                  ));
+          points.add(m);
+        }
+      }
+    }
+    return points;
+  }
+
+  void addMarkerLayer(List<List<Marker>> allPoints, List<LayerOptions> layers,
+      Color pointFillColor) {
+    if (allPoints.length == 1) {
+      var waypointsCluster = MarkerClusterLayerOptions(
+        maxClusterRadius: 20,
+        size: Size(40, 40),
+        fitBoundsOptions: FitBoundsOptions(
+          padding: EdgeInsets.all(50),
+        ),
+        markers: allPoints[0],
+        polygonOptions: PolygonOptions(
+            borderColor: pointFillColor,
+            color: pointFillColor.withOpacity(0.2),
+            borderStrokeWidth: 3),
+        builder: (context, markers) {
+          return FloatingActionButton(
+            child: Text(markers.length.toString()),
+            onPressed: null,
+            backgroundColor: pointFillColor,
+            foregroundColor: SmashColors.mainBackground,
+            heroTag: null,
+          );
+        },
+      );
+      layers.add(waypointsCluster);
+    } else {
+      // in case of multiple rules, we would not know the color for a mixed cluster.
+      List<Marker> points = [];
+      allPoints.forEach((p) => points.addAll(p));
+      layers.add(MarkerLayerOptions(markers: points));
+    }
   }
 
   @override
