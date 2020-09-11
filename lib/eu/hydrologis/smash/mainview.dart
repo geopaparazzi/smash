@@ -399,7 +399,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           color: SmashColors.mainDecorations,
         ),
         onTap: () async {
-          bool doExit = await showConfirmDialog(
+          bool doExit = await SmashDialogs.showConfirmDialog(
               mapBuilder.context,
               "Are you sure you want to close the project?",
               "Active operations will be stopped.");
@@ -554,7 +554,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             iconNames.add(icon4section);
           });
 
-          var selectedSection = await showComboDialog(
+          var selectedSection = await SmashDialogs.showComboDialog(
               mapBuilder.context, titleWithMode, sectionNames, iconNames);
           // refresh mode
           noteInGpsMode = gpsState.insertInGpsMode;
@@ -639,8 +639,8 @@ class MainViewWidgetState extends State<MainViewWidget>
             ],
           );
           List<String> types = ["note", "image"];
-          var selectedType =
-              await showComboDialog(mapBuilder.context, titleWithMode, types);
+          var selectedType = await SmashDialogs.showComboDialog(
+              mapBuilder.context, titleWithMode, types);
           var noteInGpsMode = gpsState.insertInGpsMode;
           if (selectedType == types[0]) {
             Note note = DataLoaderUtilities.addNote(

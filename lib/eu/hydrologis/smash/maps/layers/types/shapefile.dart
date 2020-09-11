@@ -27,7 +27,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
 
   bool isVisible = true;
   String _attribution = "";
-  int _srid = SmashPrj.EPSG4326_INT;
+  int _srid; //SmashPrj.EPSG4326_INT;
 
   List<Feature> features = [];
   JTS.STRtree _featureTree;

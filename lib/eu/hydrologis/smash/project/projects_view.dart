@@ -180,7 +180,7 @@ class ProjectView extends StatelessWidget {
   _createNewProjectAndOpenMainView(BuildContext context) async {
     String projectName =
         "smash_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
-    var userString = await showInputDialog(
+    var userString = await SmashDialogs.showInputDialog(
       context,
       "New Project",
       "Enter a name for the new project or accept the proposed.",

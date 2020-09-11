@@ -328,7 +328,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
               onTap: () async {
             if (editable) {
               var pkValue = data[primaryKey];
-              var result = await showInputDialog(
+              var result = await SmashDialogs.showInputDialog(
                 context,
                 "Set new value",
                 key,

@@ -112,7 +112,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                 IconButton(
                   icon: Icon(MdiIcons.restore),
                   onPressed: () async {
-                    var doIt = await showConfirmDialog(context,
+                    var doIt = await SmashDialogs.showConfirmDialog(context,
                         "Set project to DIRTY?", "This can't be undone!");
                     if (doIt) {
                       widget.projectDb.updateDirty(true);
@@ -127,7 +127,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                 IconButton(
                   icon: Icon(MdiIcons.wiperWash),
                   onPressed: () async {
-                    var doIt = await showConfirmDialog(context,
+                    var doIt = await SmashDialogs.showConfirmDialog(context,
                         "Set project to CLEAN?", "This can't be undone!");
                     if (doIt) {
                       widget.projectDb.updateDirty(false);
@@ -251,7 +251,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
               icon: Icon(SmashIcons.upload),
               onPressed: () async {
                 if (!await NetworkUtilities.isConnected()) {
-                  showOperationNeedsNetwork(context);
+                  SmashDialogs.showOperationNeedsNetwork(context);
                 } else {
                   await uploadProjectData();
                 }

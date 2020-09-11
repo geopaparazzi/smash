@@ -193,7 +193,7 @@ class _NoteInfoState extends State<NoteInfo> {
         color: SmashColors.mainDanger,
         icon: MdiIcons.delete,
         onTap: () async {
-          bool doDelete = await showConfirmDialog(
+          bool doDelete = await SmashDialogs.showConfirmDialog(
               context, "DELETE", 'Are you sure you want to delete the note?');
           if (doDelete) {
             if (dynNote is Note) {

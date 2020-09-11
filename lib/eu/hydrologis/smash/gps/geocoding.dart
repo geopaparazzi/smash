@@ -53,7 +53,7 @@ class GeocodingPageState extends State<GeocodingPage> {
     }
     searching = false;
     if (addresses == null || addresses.isEmpty) {
-      showWarningDialog(context, "Could not find any address.");
+      SmashDialogs.showWarningDialog(context, "Could not find any address.");
     } else {
       setState(() {
         _addresses.clear();
@@ -90,7 +90,7 @@ class GeocodingPageState extends State<GeocodingPage> {
             onPressed: () {
               String query = textEditingController.text;
               if (query.trim().isEmpty) {
-                showWarningDialog(
+                SmashDialogs.showWarningDialog(
                     context, "Nothing to look for. Insert an address.");
                 return;
               }

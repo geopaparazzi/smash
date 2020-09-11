@@ -136,11 +136,13 @@ class DownloadMapFromListTileProgressWidgetState
       },
       onTap: () async {
         if (_downloading) {
-          showWarningDialog(context,
+          SmashDialogs.showWarningDialog(context,
               "This file is already in the process of being downloaded.");
           return;
         }
-        bool doDownload = await showConfirmDialog(context, "Download",
+        bool doDownload = await SmashDialogs.showConfirmDialog(
+            context,
+            "Download",
             "Download file $name to the device? This can take some time.");
         if (doDownload) {
           await downloadFile();

@@ -326,7 +326,7 @@ class DataLoaderUtilities {
                             ),
                             iconSize: SmashUI.MEDIUM_ICON_SIZE,
                             onPressed: () async {
-                              var doRemove = await showConfirmDialog(
+                              var doRemove = await SmashDialogs.showConfirmDialog(
                                   ctx,
                                   "Remove Note",
                                   "Are you sure you want to remove note ${note.id}?");
@@ -485,7 +485,7 @@ class DataLoaderUtilities {
                           ),
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () async {
-                            var doRemove = await showConfirmDialog(
+                            var doRemove = await SmashDialogs.showConfirmDialog(
                                 ctx,
                                 "Remove Image",
                                 "Are you sure you want to remove image ${image.id}?");

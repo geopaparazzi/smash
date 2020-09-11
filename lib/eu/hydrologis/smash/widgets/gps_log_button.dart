@@ -71,8 +71,8 @@ class _LoggingButtonState extends State<LoggingButton> {
 
   _toggleLoggingFunction(BuildContext context, GpsState gpsLoggingState) async {
     if (gpsLoggingState.isLogging) {
-      var stopLogging = await showConfirmDialog(context, "Stop Logging?",
-          "Stop logging and close the current GPS log?");
+      var stopLogging = await SmashDialogs.showConfirmDialog(context,
+          "Stop Logging?", "Stop logging and close the current GPS log?");
       if (stopLogging != null && stopLogging) {
         gpsLoggingState.stopLogging();
         ProjectState projectState =
@@ -84,7 +84,7 @@ class _LoggingButtonState extends State<LoggingButton> {
         String logName =
             "log_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
 
-        String userString = await showInputDialog(
+        String userString = await SmashDialogs.showInputDialog(
           context,
           "New Log",
           "Enter a name for the new log",
@@ -101,7 +101,7 @@ class _LoggingButtonState extends State<LoggingButton> {
           }
         }
       } else {
-        showOperationNeedsGps(context);
+        SmashDialogs.showOperationNeedsGps(context);
       }
     }
   }

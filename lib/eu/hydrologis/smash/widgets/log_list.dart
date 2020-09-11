@@ -329,10 +329,10 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
           var exportsFolder = await Workspace.getExportsFolder();
           try {
             await GpxExporter.exportLog(db, logItem.id, exportsFolder.path);
-            showInfoDialog(context, "GPX saved in export folder.");
+            SmashDialogs.showInfoDialog(context, "GPX saved in export folder.");
           } catch (e, s) {
             SMLogger().e("Error exporting log GPX", s);
-            showErrorDialog(
+            SmashDialogs.showErrorDialog(
                 context, "An error occurred while exporting log to GPX.");
           }
         }));
@@ -341,7 +341,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         color: SmashColors.mainDanger,
         icon: MdiIcons.delete,
         onTap: () async {
-          bool doDelete = await showConfirmDialog(
+          bool doDelete = await SmashDialogs.showConfirmDialog(
               context, "DELETE", 'Are you sure you want to delete the log?');
           if (doDelete) {
             db.deleteGpslog(logItem.id);

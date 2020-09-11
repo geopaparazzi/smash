@@ -89,6 +89,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           showSettingsSheet(context);
         });
 
+    final ListTile crsSettingTile = ListTile(
+        leading: Icon(
+          ProjectionsSettingsState.iconData,
+          color: SmashColors.mainDecorations,
+        ),
+        title: SmashUI.normalText(ProjectionsSettingsState.title),
+        subtitle: Text(ProjectionsSettingsState.subtitle),
+        trailing: Icon(Icons.arrow_right),
+        onTap: () {
+          _selectedSetting = ProjectionsSettings();
+          showSettingsSheet(context);
+        });
+
     final ListTile deviceSettingTile = ListTile(
         leading: Icon(
           DeviceSettingsState.iconData,
@@ -137,6 +150,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         screenSettingTile,
         cameraSettingTile,
         vectorLayerSettingTile,
+        crsSettingTile,
         deviceSettingTile,
         gssSettingTile,
         diagnosticsSettingTile,

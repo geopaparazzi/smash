@@ -57,7 +57,8 @@ class SmashFormHelper implements AFormhelper {
         }
         return value;
       } else {
-        showWarningDialog(context, "Could not save image in database.");
+        SmashDialogs.showWarningDialog(
+            context, "Could not save image in database.");
         return null;
       }
     }

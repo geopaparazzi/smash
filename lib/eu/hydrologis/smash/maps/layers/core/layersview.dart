@@ -182,7 +182,7 @@ class LayersPageState extends State<LayersPage> {
           ),
           subtitle: prjSupported == null
               ? Text(
-                  "The proj could not be recognised. Will try to load anyway.",
+                  "The proj could not be recognised. Tap to enter epsg manually.",
                   style: TextStyle(color: SmashColors.mainDanger),
                 )
               : prjSupported
@@ -196,8 +196,16 @@ class LayersPageState extends State<LayersPage> {
                       style: TextStyle(color: SmashColors.mainDanger),
                     ),
           onTap: () async {
-            if (!prjSupported) {
+            if (prjSupported == null || !prjSupported) {
               // showWarningDialog(context, "Need to add prj: $srid");
+              if (prjSupported == null && srid == null) {
+                int epsg = await SmashDialogs.showEpsgInputDialog(context);
+                if (epsg != null) {
+                  srid = epsg;
+                } else {
+                  return;
+                }
+              }
 
               await Navigator.push(
                   context,
@@ -265,10 +273,10 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
     var worldFile = WorldImageSource.getWorldFile(filePath);
     var prjFile = SmashPrj.getPrjForImage(filePath);
     if (worldFile == null) {
-      showWarningDialog(context,
+      SmashDialogs.showWarningDialog(context,
           "Only image files with world file definition are supported.");
     } else if (prjFile == null) {
-      showWarningDialog(
+      SmashDialogs.showWarningDialog(
           context, "Only image files with prj file definition are supported.");
     } else {
       WorldImageSource worldLayer = WorldImageSource(filePath);
@@ -291,7 +299,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
         selectedTables.add(features[0].tableName);
       } else if (features.length > 1) {
         var tableNames = features.map((f) => f.tableName).toList();
-        selectedTables = await showMultiSelectionComboDialog(
+        selectedTables = await SmashDialogs.showMultiSelectionComboDialog(
             context, "Select table to load.", tableNames);
       }
 
@@ -315,7 +323,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       ch?.close(filePath);
     }
   } else {
-    showWarningDialog(context, "File format not supported.");
+    SmashDialogs.showWarningDialog(context, "File format not supported.");
   }
   return false;
 }

@@ -160,7 +160,8 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
 
                 var rel = Workspace.makeRelative(importFilePath);
                 if (!File(importFilePath).existsSync()) {
-                  showWarningDialog(context, "The file $rel doesn't exist");
+                  SmashDialogs.showWarningDialog(
+                      context, "The file $rel doesn't exist");
                 } else {
                   var json = FileUtilities.readFile(importFilePath);
                   var mapList = jsonDecode(json);
@@ -507,7 +508,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
   void _submitDetails() async {
     final FormState formState = _formKey.currentState;
     if (!formState.validate()) {
-      showWarningDialog(context, 'Please check your data');
+      SmashDialogs.showWarningDialog(context, 'Please check your data');
     } else {
       formState.save();
       bool okToGo = await showDialog(
@@ -744,7 +745,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
   void _submitDetails() async {
     final FormState formState = _formKey.currentState;
     if (!formState.validate()) {
-      showWarningDialog(context, 'Please check your data');
+      SmashDialogs.showWarningDialog(context, 'Please check your data');
     } else {
       formState.save();
       bool okToGo = await showDialog(

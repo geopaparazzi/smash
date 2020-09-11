@@ -226,7 +226,7 @@ class DashboardUtils {
                   IOS_DOCUMENTSFOLDER + Workspace.makeRelative(projectPath);
             }
             var isLandscape = ScreenUtilities.isLandscape(context);
-            showInfoDialog(
+            SmashDialogs.showInfoDialog(
                 mapBuilder.context,
                 "Project: ${projectState.projectName}\nDatabase: $projectPath"
                     .trim(),
