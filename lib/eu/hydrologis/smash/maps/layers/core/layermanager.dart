@@ -28,7 +28,6 @@ class LayerManager {
     if (layerSourcesList.isNotEmpty) {
       _layerSources = [];
       for (var json in layerSourcesList) {
-        print(json);
         var fromJson = LayerSource.fromJson(json);
         for (var source in fromJson) {
           var absolutePath = source.getAbsolutePath();
