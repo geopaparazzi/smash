@@ -271,7 +271,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
     }
   } else if (FileManager.isWorldImage(filePath)) {
     var worldFile = WorldImageSource.getWorldFile(filePath);
-    var prjFile = SmashPrj.getPrjForImage(filePath);
+    var prjFile = SmashPrj.getPrjPath(filePath);
     if (worldFile == null) {
       SmashDialogs.showWarningDialog(context,
           "Only image files with world file definition are supported.");

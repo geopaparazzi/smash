@@ -67,7 +67,7 @@ class WorldImageSource extends RasterLayerSource {
     originPrj = SmashPrj.fromImageFile(_absolutePath);
     _srid = SmashPrj.getSrid(originPrj);
     if (_srid == null) {
-      var prjPath = SmashPrj.getPrjForImage(_absolutePath);
+      var prjPath = SmashPrj.getPrjPath(_absolutePath);
       var prjFile = File(prjPath);
       if (prjFile.existsSync()) {
         var wktPrj = FileUtilities.readFile(prjPath);
