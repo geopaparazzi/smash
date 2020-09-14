@@ -251,7 +251,7 @@ class TileSource extends TiledRasterLayerSource {
     this.isVisible = true;
     this.isTms = true;
     this.canDoProperties = true;
-    this.doGpkgAsOverlay = false;
+    this.doGpkgAsOverlay = true;
     getBounds();
   }
 

@@ -14,8 +14,7 @@ import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter_map/flutter_map.dart' hide Projection;
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:proj4dart/src/classes/projection.dart';
+import 'package:proj4dart/proj4dart.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -67,26 +66,16 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
         alphaFields.add(_shpReader.header.getFieldName(i));
       }
 
-      Projection fromPrj = SmashPrj.fromImageFile(_absolutePath);
+      Projection fromPrj = SmashPrj.fromDataFile(_absolutePath);
       if (fromPrj != null) {
         var srid = SmashPrj.getSrid(fromPrj);
         if (srid == null) {
-          var prjPath = SmashPrj.getPrjPath(_absolutePath);
-          var wktPrj = FileUtilities.readFile(prjPath);
-          srid = SmashPrj.getSridFromWkt(wktPrj);
+          srid = SmashPrj.getSridFromDataFile(_absolutePath);
         }
-        if (srid != null) {
-          _srid = srid;
+        if (srid == null) {
+          _srid = await SmashPrj.getSridFromMatchingInPreferences(fromPrj);
         } else {
-          var prjList = await SmashPrj.getPrjInfoFromPreferences();
-          var matchingPi = prjList.firstWhere(
-            (pi) {
-              var p = Projection.parse(pi.prjData);
-              return SmashPrj.areEqual(p, fromPrj);
-            },
-            orElse: () => null,
-          );
-          _srid = matchingPi?.epsg;
+          _srid = srid;
         }
       }
 

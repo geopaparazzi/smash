@@ -14,7 +14,7 @@ packages:
       name: ansicolor
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.4"
   archive:
     dependency: transitive
     description:
@@ -328,7 +328,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.8"
+    version: "1.0.9"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -403,7 +403,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.14"
+    version: "2.1.15"
   image_picker:
     dependency: transitive
     description:
@@ -747,7 +747,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "935cc41065cf4a8614cc1ba46fd92f271e6205bb"
+      resolved-ref: "7134673facf49b1a74bfb098f7a32430cf24b149"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

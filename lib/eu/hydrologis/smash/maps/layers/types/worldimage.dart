@@ -11,7 +11,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/flutter_map.dart' hide Projection;
 import 'package:image/image.dart' as IMG;
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -30,7 +30,6 @@ class WorldImageSource extends RasterLayerSource {
   bool loaded = false;
   MyMemoryImage _memoryImage;
   int _srid;
-  var originPrj;
   List<int> rgbToHide;
 
   WorldImageSource.fromMap(Map<String, dynamic> map) {
@@ -52,28 +51,10 @@ class WorldImageSource extends RasterLayerSource {
         int.parse(split[2]),
       ];
     }
-
-    if (_srid == null) {
-      getSridFromPath();
-    }
   }
 
   WorldImageSource(this._absolutePath) {
     _name = FileUtilities.nameFromFile(_absolutePath, false);
-    getSridFromPath();
-  }
-
-  void getSridFromPath() {
-    originPrj = SmashPrj.fromImageFile(_absolutePath);
-    _srid = SmashPrj.getSrid(originPrj);
-    if (_srid == null) {
-      var prjPath = SmashPrj.getPrjPath(_absolutePath);
-      var prjFile = File(prjPath);
-      if (prjFile.existsSync()) {
-        var wktPrj = FileUtilities.readFile(prjPath);
-        _srid = SmashPrj.getSridFromWkt(wktPrj);
-      }
-    }
   }
 
   static String getWorldFile(String imagePath) {
@@ -103,38 +84,33 @@ class WorldImageSource extends RasterLayerSource {
     if (!loaded) {
       // print("LOAD WORLD FILE");
       _name = FileUtilities.nameFromFile(_absolutePath, false);
-      File imageFile = new File(_absolutePath);
 
-      if (_srid == null) {
-        getSridFromPath();
-      } else {
-        originPrj = SmashPrj.fromSrid(_srid);
-      }
-
-      var ext = FileUtilities.getExtension(_absolutePath);
-      var bytes = imageFile.readAsBytesSync();
-      IMG.Image _decodedImage = IMG.decodeImage(bytes);
-      if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && rgbToHide != null) {
-        ImageUtilities.colorToAlphaImg(
-            _decodedImage, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
-      }
-
-      if (ext == FileManager.JPG_EXT) {
-        if (rgbToHide != null) {
-          bytes = IMG.encodeJpg(_decodedImage);
+      var fromPrj = SmashPrj.fromDataFile(_absolutePath);
+      if (fromPrj != null) {
+        var srid = SmashPrj.getSrid(fromPrj);
+        if (srid == null) {
+          srid = SmashPrj.getSridFromDataFile(_absolutePath);
         }
-        _memoryImage = MyMemoryImage(bytes, rgbToHide);
-      } else if (ext == FileManager.PNG_EXT) {
-        if (rgbToHide != null) {
-          bytes = IMG.encodePng(_decodedImage);
+        if (srid == null) {
+          _srid = await SmashPrj.getSridFromMatchingInPreferences(fromPrj);
+        } else {
+          _srid = srid;
         }
-        _memoryImage = MyMemoryImage(bytes, rgbToHide);
-      } else if (ext == FileManager.TIF_EXT) {
-        _memoryImage = MyMemoryImage(IMG.encodePng(_decodedImage), rgbToHide);
       }
 
-      var width = _decodedImage.width;
-      var height = _decodedImage.height;
+      // IMG.Image _decodedImage = getImage(_absolutePath);
+      Map<String, dynamic> params = {
+        "path": _absolutePath,
+      };
+      if (rgbToHide != null) {
+        params['r'] = rgbToHide[0];
+        params['g'] = rgbToHide[1];
+        params['b'] = rgbToHide[2];
+      }
+      var res = await compute(getImage, params);
+      _memoryImage = res[0];
+      var width = res[1];
+      var height = res[2];
 
       var worldFile = getWorldFile(_absolutePath);
       var tfwList = FileUtilities.readFileToList(worldFile);
@@ -150,8 +126,8 @@ class WorldImageSource extends RasterLayerSource {
 
       var ll = proj4dart.Point(x: west, y: south);
       var ur = proj4dart.Point(x: east, y: north);
-      var llDest = SmashPrj.transformToWgs84(originPrj, ll);
-      var urDest = SmashPrj.transformToWgs84(originPrj, ur);
+      var llDest = SmashPrj.transformToWgs84(fromPrj, ll);
+      var urDest = SmashPrj.transformToWgs84(fromPrj, ur);
 
       _imageBounds = LatLngBounds(
         LatLng(llDest.y, llDest.x),
@@ -160,6 +136,39 @@ class WorldImageSource extends RasterLayerSource {
 
       loaded = true;
     }
+  }
+
+  static List<dynamic> getImage(var map) {
+    var path = map['path'];
+    var r = map['r'];
+    var g = map['g'];
+    var b = map['b'];
+    File imageFile = new File(path);
+    var ext = FileUtilities.getExtension(path);
+    var bytes = imageFile.readAsBytesSync();
+    IMG.Image _decodedImage = IMG.decodeImage(bytes);
+    if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && r != null) {
+      ImageUtilities.colorToAlphaImg(_decodedImage, r, g, b);
+    }
+
+    var width = _decodedImage.width;
+    var height = _decodedImage.height;
+
+    var _memoryImage;
+    if (ext == FileManager.JPG_EXT) {
+      if (required != null) {
+        bytes = IMG.encodeJpg(_decodedImage);
+      }
+      _memoryImage = MyMemoryImage(bytes, r);
+    } else if (ext == FileManager.PNG_EXT) {
+      if (required != null) {
+        bytes = IMG.encodePng(_decodedImage);
+      }
+      _memoryImage = MyMemoryImage(bytes, r);
+    } else if (ext == FileManager.TIF_EXT) {
+      _memoryImage = MyMemoryImage(IMG.encodePng(_decodedImage), r);
+    }
+    return [_memoryImage, width, height];
   }
 
   bool hasData() {

@@ -37,6 +37,8 @@ class LayersPage extends StatefulWidget {
 class LayersPageState extends State<LayersPage> {
   bool _somethingChanged = false;
 
+  bool isLoadingData = false;
+
   @override
   Widget build(BuildContext context) {
     List<LayerSource> _layersList =
@@ -74,7 +76,9 @@ class LayersPageState extends State<LayersPage> {
               IconButton(
                 icon: Icon(MdiIcons.map),
                 onPressed: () async {
-                  //Navigator.of(context).pop();
+                  setState(() {
+                    isLoadingData = true;
+                  });
                   var lastUsedFolder = await Workspace.getLastUsedFolder();
                   var allowed = <String>[]
                     ..addAll(FileManager.ALLOWED_VECTOR_DATA_EXT)
@@ -86,28 +90,38 @@ class LayersPageState extends State<LayersPage> {
                           builder: (context) =>
                               FileBrowser(false, allowed, lastUsedFolder)));
 
-                  if (selectedPath != null) {
-                    await loadLayer(context, selectedPath);
-                    _somethingChanged = true;
-                    setState(() {});
-                  }
+                  loadSelectedFile(selectedPath, context);
                 },
                 tooltip: "Load local datasets",
               ),
             ],
           ),
-          body: ReorderableListView(
-            children: listItems,
-            onReorder: (oldIndex, newIndex) {
-              if (oldIndex != newIndex) {
-                setState(() {
-                  LayerManager().moveLayer(oldIndex, newIndex);
-                  _somethingChanged = true;
-                });
-              }
-            },
-          ),
+          body: isLoadingData
+              ? SmashCircularProgress(
+                  label: "Loading...",
+                )
+              : ReorderableListView(
+                  children: listItems,
+                  onReorder: (oldIndex, newIndex) {
+                    if (oldIndex != newIndex) {
+                      setState(() {
+                        LayerManager().moveLayer(oldIndex, newIndex);
+                        _somethingChanged = true;
+                      });
+                    }
+                  },
+                ),
         ));
+  }
+
+  Future loadSelectedFile(selectedPath, BuildContext context) async {
+    if (selectedPath != null) {
+      await loadLayer(context, selectedPath);
+      _somethingChanged = true;
+    }
+    setState(() {
+      isLoadingData = false;
+    });
   }
 
   List<Widget> createLayersList(
@@ -280,7 +294,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
           context, "Only image files with prj file definition are supported.");
     } else {
       WorldImageSource worldLayer = WorldImageSource(filePath);
-      // await worldLayer.load(context);
+      await worldLayer.load(context);
       if (worldLayer.hasData()) {
         LayerManager().addLayerSource(worldLayer);
         return true;
