@@ -34,8 +34,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS_MODE";
 const int POINT_INSERTION_MODE_GPS = 0;
-const int POINT_INSERTION_MODE_GPSFILTERED = 1;
-const int POINT_INSERTION_MODE_MAPCENTER = 2;
+const int POINT_INSERTION_MODE_MAPCENTER = 1;
 
 class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue,

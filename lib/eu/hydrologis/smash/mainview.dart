@@ -103,6 +103,7 @@ class MainViewWidgetState extends State<MainViewWidget>
     int noteInGpsMode = GpPreferences()
         .getIntSync(KEY_DO_NOTE_IN_GPS, POINT_INSERTION_MODE_GPS);
     gpsState.insertInGpsQuiet = noteInGpsMode;
+
     // check center on gps
     bool centerOnGps = GpPreferences().getCenterOnGps();
     mapState.centerOnGpsQuiet = centerOnGps;
@@ -579,8 +580,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                   sectionMap,
                   appbarWidget,
                   selectedSection,
-                  noteInGpsMode == POINT_INSERTION_MODE_GPS ||
-                          noteInGpsMode == POINT_INSERTION_MODE_GPSFILTERED
+                  noteInGpsMode == POINT_INSERTION_MODE_GPS
                       ? gpsState.lastGpsPosition
                       : _mapController.center,
                   note.id,
@@ -652,11 +652,10 @@ class MainViewWidgetState extends State<MainViewWidget>
           } else if (selectedType == types[1]) {
             await DataLoaderUtilities.addImage(
                 mapBuilder.context,
-                noteInGpsMode == POINT_INSERTION_MODE_GPS ||
-                        noteInGpsMode == POINT_INSERTION_MODE_GPSFILTERED
+                noteInGpsMode == POINT_INSERTION_MODE_GPS
                     ? gpsState.lastGpsPosition
                     : _mapController.center,
-                noteInGpsMode == POINT_INSERTION_MODE_GPSFILTERED);
+                gpsState.useFilteredGps);
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
             projectState.reloadProject(context);
@@ -842,15 +841,10 @@ Widget getDialogTitleWithInsertionMode(
               MdiIcons.crosshairsGps,
               color: color,
             )
-          : noteInGpsMode == POINT_INSERTION_MODE_GPS
-              ? Icon(
-                  MdiIcons.filter,
-                  color: color,
-                )
-              : Icon(
-                  MdiIcons.imageFilterCenterFocus,
-                  color: color,
-                ),
+          : Icon(
+              MdiIcons.imageFilterCenterFocus,
+              color: color,
+            ),
     ],
   );
 }
@@ -889,13 +883,6 @@ class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
             child: Icon(SmashIcons.locationIcon)),
       ));
       sel.add(_mode == POINT_INSERTION_MODE_GPS);
-      buttons.add(Padding(
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Tooltip(
-            message: "Enter note in FILTERED GPS position.",
-            child: Icon(MdiIcons.filter)),
-      ));
-      sel.add(_mode == POINT_INSERTION_MODE_GPSFILTERED);
     }
     buttons.add(Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -923,9 +910,8 @@ class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
                 int selMode;
                 if (index == 0) {
                   selMode = POINT_INSERTION_MODE_GPS;
-                } else if (index == 1) {
-                  selMode = POINT_INSERTION_MODE_GPSFILTERED;
                 } else {
+                  //if (index == 1) {
                   selMode = POINT_INSERTION_MODE_MAPCENTER;
                 }
                 var gpsState = Provider.of<GpsState>(context, listen: false);

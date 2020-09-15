@@ -15,6 +15,7 @@ import 'package:background_locator/location_settings.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
+import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -296,14 +297,22 @@ class GpsHandler {
     port = ReceivePort();
     IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
     port.listen((dynamic data) {
-      KalmanFilter kalman = KalmanFilter.getInstance();
-      kalman.process(
-          data.latitude, data.longitude, data.accuracy, data.time, data.speed);
-
-      _onPositionUpdate(SmashPosition.fromLocation(data,
-          filteredLatitude: kalman.latitude,
-          filteredLongitude: kalman.longitude,
-          filteredAccuracy: kalman.accuracy));
+      if (data != null) {
+        KalmanFilter kalman = KalmanFilter.getInstance();
+        SmashPosition position;
+        if (_gpsState.doTestLog) {
+          // Use the mocked log
+          position = Testlog.getNext(kalman);
+        } else {
+          kalman.process(data.latitude, data.longitude, data.accuracy,
+              data.time, data.speed);
+          position = SmashPosition.fromLocation(data,
+              filteredLatitude: kalman.latitude,
+              filteredLongitude: kalman.longitude,
+              filteredAccuracy: kalman.accuracy);
+        }
+        _onPositionUpdate(position);
+      }
     });
     // init platform state
     if (isInit) await GPS.BackgroundLocator.initialize();

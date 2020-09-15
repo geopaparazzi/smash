@@ -37,17 +37,18 @@ class DataLoaderUtilities {
     double lat;
     double altim;
     if (doInGpsMode == POINT_INSERTION_MODE_GPS) {
-      pos = Provider.of<GpsState>(mapBuilder.context, listen: false)
-          .lastGpsPosition;
-      lon = pos.longitude;
-      lat = pos.latitude;
-      altim = pos.altitude;
-    } else if (doInGpsMode == POINT_INSERTION_MODE_GPSFILTERED) {
-      pos = Provider.of<GpsState>(mapBuilder.context, listen: false)
-          .lastGpsPosition;
-      lon = pos.filteredLongitude;
-      lat = pos.filteredLatitude;
-      altim = pos.altitude;
+      var gpsState = Provider.of<GpsState>(mapBuilder.context, listen: false);
+      pos = gpsState.lastGpsPosition;
+
+      if (!gpsState.useFilteredGps) {
+        lon = pos.longitude;
+        lat = pos.latitude;
+        altim = pos.altitude;
+      } else {
+        lon = pos.filteredLongitude;
+        lat = pos.filteredLatitude;
+        altim = pos.altitude;
+      }
     } else {
       var center = mapController.center;
       lon = center.longitude;

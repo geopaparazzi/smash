@@ -24,7 +24,12 @@ class GpsState extends ChangeNotifierPlus {
   bool _isLogging = false;
   int _currentLogId;
   ProjectState _projectState;
+
+  /// the gps insertion mode for notes. This can be GPS or map center.
   int _insertInGpsMode = POINT_INSERTION_MODE_GPS;
+
+  /// Use the iltered GPS instead of the original GPS.
+  bool _useFilteredGps;
 
   int gpsMinDistance = 1;
   int gpsTimeInterval = 1;
@@ -83,9 +88,22 @@ class GpsState extends ChangeNotifierPlus {
 
   int get insertInGpsMode => _insertInGpsMode;
 
+  bool get useFilteredGps {
+    if (_useFilteredGps == null) {
+      _useFilteredGps =
+          GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
+    }
+    return _useFilteredGps;
+  }
+
   bool get isLogging => _isLogging;
 
   int get currentLogId => _currentLogId;
+
+  /// Set the _insertInGps without triggering a global notification.
+  set useFilteredGpsQuiet(bool newUseFilteredGps) {
+    _useFilteredGps = newUseFilteredGps;
+  }
 
   /// Set the _insertInGps without triggering a global notification.
   set insertInGpsQuiet(int newInsertInGpsMode) {

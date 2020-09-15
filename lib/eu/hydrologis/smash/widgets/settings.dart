@@ -1092,6 +1092,9 @@ class GpsSettingsState extends State<GpsSettings> {
                       Checkbox(
                         value: useGpsFilteredGenerally,
                         onChanged: (newValue) async {
+                          var gpsState =
+                              Provider.of<GpsState>(context, listen: false);
+                          gpsState.useFilteredGpsQuiet = newValue;
                           await GpPreferences().setBoolean(
                               KEY_GPS_USE_FILTER_GENERALLY, newValue);
                           setState(() {});

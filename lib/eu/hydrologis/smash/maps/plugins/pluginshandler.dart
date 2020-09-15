@@ -14,15 +14,20 @@ var PLUGINMAP = {};
 class PluginsHandler {
   final String key;
   final String label;
+  final bool onByDefault;
   static const HEATMAP_WORKING = false;
 
-  const PluginsHandler._(this.key, this.label);
+  const PluginsHandler._(this.key, this.label, this.onByDefault);
 
-  static const SCALE = const PluginsHandler._(KEY_PLUGIN_SCALE, "Scalebar");
-  static const GRID = const PluginsHandler._(KEY_PLUGIN_GRID, "Grid");
-  static const CROSS = const PluginsHandler._(KEY_PLUGIN_CROSS, "Center Cross");
-  static const GPS = const PluginsHandler._(KEY_PLUGIN_GPS, "GPS Position");
-  static const LOG_HEATMAP = const PluginsHandler._(KEY_PLUGIN_LOGSHEATMAP, "Logs Heatmap");
+  static const SCALE =
+      const PluginsHandler._(KEY_PLUGIN_SCALE, "Scalebar", true);
+  static const GRID = const PluginsHandler._(KEY_PLUGIN_GRID, "Grid", false);
+  static const CROSS =
+      const PluginsHandler._(KEY_PLUGIN_CROSS, "Center Cross", true);
+  static const GPS =
+      const PluginsHandler._(KEY_PLUGIN_GPS, "GPS Position", true);
+  static const LOG_HEATMAP =
+      const PluginsHandler._(KEY_PLUGIN_LOGSHEATMAP, "Logs Heatmap", false);
 
   static List<PluginsHandler> values() {
     return [
@@ -30,7 +35,7 @@ class PluginsHandler {
       GRID,
       CROSS,
       GPS,
-     // LOG_HEATMAP, TODO add when ready
+      // LOG_HEATMAP, TODO add when ready
     ];
   }
 
@@ -44,7 +49,7 @@ class PluginsHandler {
   }
 
   bool isOn() {
-    return PLUGINMAP[key] ??= GpPreferences().getBooleanSync(key, true);
+    return PLUGINMAP[key] ??= GpPreferences().getBooleanSync(key, onByDefault);
   }
 
   Future toggle(bool setOn) async {

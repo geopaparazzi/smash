@@ -98,7 +98,15 @@ class CurrentLogPathPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     var pos = gpsState.lastGpsPosition;
     if (pos != null && gpsState.status != GpsStatus.OFF) {
-      LatLng posLL = LatLng(pos.latitude, pos.longitude);
+      LatLng posLL;
+      var accuracy;
+      if (gpsState.useFilteredGps) {
+        posLL = LatLng(pos.filteredLatitude, pos.filteredLongitude);
+        accuracy = pos.filteredAccuracy;
+      } else {
+        posLL = LatLng(pos.latitude, pos.longitude);
+        accuracy = pos.accuracy;
+      }
       var bounds = map.getBounds();
       if (!bounds.contains(posLL)) {
         return;
@@ -127,9 +135,8 @@ class CurrentLogPathPainter extends CustomPainter {
       double centerX = posPixel.x - pixelOrigin.x;
       double centerY = (posPixel.y - pixelOrigin.y);
 
-      if (pos.accuracy != null) {
-        var radiusLL =
-            calculateEndingGlobalCoordinates(posLL, 90, pos.accuracy);
+      if (accuracy != null) {
+        var radiusLL = calculateEndingGlobalCoordinates(posLL, 90, accuracy);
         CustomPoint tmpPixel = map.project(radiusLL);
         double tmpX = tmpPixel.x - pixelOrigin.x;
         double accuracyRadius = (centerX - tmpX).abs();

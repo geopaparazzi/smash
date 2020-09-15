@@ -177,13 +177,6 @@ class CurrentLogPathPainter extends CustomPainter {
         path2.lineTo(center2X, center2Y);
       }
 
-      // connect filtered to gps position. Else it can looks
-      // lagging behind. Just for show.
-      CustomPoint extra = map.project(currentLogPoints.last);
-      double centerExtraX = extra.x - pixelOrigin.x;
-      double centerExtraY = (extra.y - pixelOrigin.y);
-      path2.lineTo(centerExtraX, centerExtraY);
-
       canvas.drawPath(path2, filtereLogPaint);
     }
   }

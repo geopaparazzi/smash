@@ -92,8 +92,6 @@ class GpsFilterManager {
     // set last event ts that is used to define the 'no fix' interval
     _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
 
-    position = GpsFilterManager().checkTestMock() ?? position;
-
     if (position != null) {
       msg.timestamp = position.time; //stamp;
       msg.mocked = false; //position.mocked;
@@ -167,14 +165,6 @@ class GpsFilterManager {
 
     return distanceLastEvent > _gpsState.gpsMinDistance &&
         deltaSecondsLastEvent > _gpsState.gpsTimeInterval;
-  }
-
-  SmashPosition checkTestMock() {
-    if (_gpsState.doTestLog) {
-      // Use the mocked log
-      return Testlog.getNext(KalmanFilter.getInstance());
-    }
-    return null;
   }
 }
 
