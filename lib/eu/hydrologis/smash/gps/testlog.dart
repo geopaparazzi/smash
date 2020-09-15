@@ -2630,7 +2630,7 @@ def db = HM.connectSpatialite(path)
 try {
     def sql = """
         select lon, lat, altim, ts, accuracy, filtered_lon, filtered_lat
-        from gpslogsdata order by ts 
+        from gpslogsdata where logid=2 order by ts 
     """
     
     def result = db.getTableRecordsMapFromRawSql(sql, -1);
