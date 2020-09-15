@@ -19,7 +19,6 @@ import 'package:smash/eu/hydrologis/smash/gps/geocoding.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/import/import_widget.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -387,38 +386,12 @@ class DashboardUtils {
     );
   }
 
-  // static Future _createNewProject(BuildContext context) async {
-  //   String projectName =
-  //       "smash_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
-
-  //   var userString = await showInputDialog(
-  //     context,
-  //     "New Project",
-  //     "Enter a name for the new project or accept the proposed.",
-  //     hintText: '',
-  //     defaultText: projectName,
-  //     validationFunction: fileNameValidator,
-  //   );
-  //   if (userString != null) {
-  //     if (userString.trim().length == 0) userString = projectName;
-  //     var file = await Workspace.getProjectsFolder();
-  //     var newPath = join(file.path, userString);
-  //     if (!newPath.endsWith(".gpap")) {
-  //       newPath = "$newPath.gpap";
-  //     }
-  //     var gpFile = new File(newPath);
-  //     var projectState = Provider.of<ProjectState>(context, listen: false);
-  //     await projectState.setNewProject(gpFile.path, context);
-  //   }
-
-  //   Navigator.of(context).pop();
-  // }
-
   static Icon getGpsStatusIcon(GpsStatus status, [double iconSize]) {
     Color color;
     IconData iconData;
     switch (status) {
       case GpsStatus.OFF:
+      case GpsStatus.NOGPS:
         {
           color = SmashColors.gpsOff;
           iconData = Icons.gps_off;

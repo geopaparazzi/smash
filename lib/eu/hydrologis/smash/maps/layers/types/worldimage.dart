@@ -98,7 +98,6 @@ class WorldImageSource extends RasterLayerSource {
         }
       }
 
-      // IMG.Image _decodedImage = getImage(_absolutePath);
       Map<String, dynamic> params = {
         "path": _absolutePath,
       };
@@ -143,6 +142,7 @@ class WorldImageSource extends RasterLayerSource {
     var r = map['r'];
     var g = map['g'];
     var b = map['b'];
+    List<int> rgb = [r, g, b];
     File imageFile = new File(path);
     var ext = FileUtilities.getExtension(path);
     var bytes = imageFile.readAsBytesSync();
@@ -159,14 +159,14 @@ class WorldImageSource extends RasterLayerSource {
       if (required != null) {
         bytes = IMG.encodeJpg(_decodedImage);
       }
-      _memoryImage = MyMemoryImage(bytes, r);
+      _memoryImage = MyMemoryImage(bytes, rgb);
     } else if (ext == FileManager.PNG_EXT) {
       if (required != null) {
         bytes = IMG.encodePng(_decodedImage);
       }
-      _memoryImage = MyMemoryImage(bytes, r);
+      _memoryImage = MyMemoryImage(bytes, rgb);
     } else if (ext == FileManager.TIF_EXT) {
-      _memoryImage = MyMemoryImage(IMG.encodePng(_decodedImage), r);
+      _memoryImage = MyMemoryImage(IMG.encodePng(_decodedImage), rgb);
     }
     return [_memoryImage, width, height];
   }
@@ -320,10 +320,10 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
                 _hideColor.green,
                 _hideColor.blue
               ];
-              _source.loaded = false;
             } else {
               _source.rgbToHide = null;
             }
+            _source.loaded = false;
           }
           return true;
         },

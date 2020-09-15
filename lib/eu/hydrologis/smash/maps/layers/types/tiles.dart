@@ -541,6 +541,12 @@ class TileSourcePropertiesWidgetState
 
   @override
   Widget build(BuildContext context) {
+    var absolutePath = widget._source.getAbsolutePath();
+    bool showColorHide = false;
+    if (absolutePath != null) {
+      showColorHide = FileManager.isGeopackage(absolutePath);
+    }
+
     return WillPopScope(
         onWillPop: () async {
           if (_somethingChanged) {
@@ -634,7 +640,7 @@ class TileSourcePropertiesWidgetState
                     ),
                   ),
                 ),
-              if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED)
+              if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && showColorHide)
                 Padding(
                   padding: SmashUI.defaultPadding(),
                   child: Card(
