@@ -147,8 +147,14 @@ class MainViewWidgetState extends State<MainViewWidget>
         if (mapState.centerOnGps) {
           GpsState gpsState = Provider.of<GpsState>(context, listen: false);
           if (gpsState.lastGpsPosition != null) {
-            LatLng posLL = LatLng(gpsState.lastGpsPosition.latitude,
-                gpsState.lastGpsPosition.longitude);
+            LatLng posLL;
+            if (gpsState.useFilteredGps) {
+              posLL = LatLng(gpsState.lastGpsPosition.filteredLatitude,
+                  gpsState.lastGpsPosition.filteredLongitude);
+            } else {
+              posLL = LatLng(gpsState.lastGpsPosition.latitude,
+                  gpsState.lastGpsPosition.longitude);
+            }
             _mapController?.move(posLL, _mapController?.zoom);
           }
         }

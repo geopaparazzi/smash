@@ -100,17 +100,20 @@ class CurrentLogPathPainter extends CustomPainter {
     if (pos != null &&
         gpsState.status != GpsStatus.OFF &&
         gpsState.status != GpsStatus.NOGPS) {
-      LatLng posLL;
+      LatLng mainPosLL;
+      LatLng secPosLL;
       var accuracy;
       if (gpsState.useFilteredGps) {
-        posLL = LatLng(pos.filteredLatitude, pos.filteredLongitude);
+        mainPosLL = LatLng(pos.filteredLatitude, pos.filteredLongitude);
+        secPosLL = LatLng(pos.latitude, pos.longitude);
         accuracy = pos.filteredAccuracy;
       } else {
-        posLL = LatLng(pos.latitude, pos.longitude);
+        secPosLL = LatLng(pos.filteredLatitude, pos.filteredLongitude);
+        mainPosLL = LatLng(pos.latitude, pos.longitude);
         accuracy = pos.accuracy;
       }
       var bounds = map.getBounds();
-      if (!bounds.contains(posLL)) {
+      if (!bounds.contains(mainPosLL)) {
         return;
       }
 
@@ -131,22 +134,39 @@ class CurrentLogPathPainter extends CustomPainter {
         paintFill = paintFillBlack;
       }
 
-      CustomPoint posPixel = map.project(posLL);
       CustomPoint pixelOrigin = map.getPixelOrigin();
       var radius = gpsPositionLayerOpts.markerSize / 2;
-      double centerX = posPixel.x - pixelOrigin.x;
-      double centerY = (posPixel.y - pixelOrigin.y);
+
+      CustomPoint mainPosPixel = map.project(mainPosLL);
+      double mainCenterX = mainPosPixel.x - pixelOrigin.x;
+      double mainCenterY = (mainPosPixel.y - pixelOrigin.y);
+
+      CustomPoint secPosPixel = map.project(secPosLL);
+      double secCenterX = secPosPixel.x - pixelOrigin.x;
+      double secCenterY = (secPosPixel.y - pixelOrigin.y);
+
+      var secPaint = Paint()
+        ..color = Colors.red.withAlpha(100)
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(Offset(secCenterX, secCenterY), 4, secPaint);
+      var secLinePaint = Paint()
+        ..color = Colors.red.withAlpha(100)
+        ..strokeWidth = 1
+        ..style = PaintingStyle.stroke;
+      canvas.drawLine(Offset(secCenterX, secCenterY),
+          Offset(mainCenterX, mainCenterY), secLinePaint);
 
       if (accuracy != null) {
-        var radiusLL = calculateEndingGlobalCoordinates(posLL, 90, accuracy);
+        var radiusLL =
+            calculateEndingGlobalCoordinates(mainPosLL, 90, accuracy);
         CustomPoint tmpPixel = map.project(radiusLL);
         double tmpX = tmpPixel.x - pixelOrigin.x;
-        double accuracyRadius = (centerX - tmpX).abs();
+        double accuracyRadius = (mainCenterX - tmpX).abs();
 
         canvas.drawCircle(
-            Offset(centerX, centerY), accuracyRadius, accuracyStroke);
+            Offset(mainCenterX, mainCenterY), accuracyRadius, accuracyStroke);
         canvas.drawCircle(
-            Offset(centerX, centerY), accuracyRadius, accuracyFill);
+            Offset(mainCenterX, mainCenterY), accuracyRadius, accuracyFill);
       }
 
       if (pos.heading != null && pos.heading > 0) {
@@ -154,13 +174,14 @@ class CurrentLogPathPainter extends CustomPainter {
         double rad = degToRadian(heading);
 
         var rect = Rect.fromCircle(
-            center: Offset(centerX, centerY), radius: radius * 0.7);
+            center: Offset(mainCenterX, mainCenterY), radius: radius * 0.7);
 
         var delta = math.pi / 4;
 
         canvas.drawArc(
             rect, rad + delta / 2, math.pi * 2 - delta, false, paintStroke);
-        canvas.drawCircle(Offset(centerX, centerY), radius * 0.3, paintFill);
+        canvas.drawCircle(
+            Offset(mainCenterX, mainCenterY), radius * 0.3, paintFill);
 
         delta = delta * 1.1;
         var paintStrokeOver = Paint()
@@ -173,10 +194,12 @@ class CurrentLogPathPainter extends CustomPainter {
         canvas.drawArc(
             rect, rad + delta / 2, math.pi * 2 - delta, false, paintStrokeOver);
         canvas.drawCircle(
-            Offset(centerX, centerY), radius * 0.2, paintFillOver);
+            Offset(mainCenterX, mainCenterY), radius * 0.2, paintFillOver);
       } else {
-        canvas.drawCircle(Offset(centerX, centerY), radius * 0.7, paintStroke);
-        canvas.drawCircle(Offset(centerX, centerY), radius * 0.3, paintFill);
+        canvas.drawCircle(
+            Offset(mainCenterX, mainCenterY), radius * 0.7, paintStroke);
+        canvas.drawCircle(
+            Offset(mainCenterX, mainCenterY), radius * 0.3, paintFill);
 
         var paintStrokeOver = Paint()
           ..color = color
@@ -186,9 +209,9 @@ class CurrentLogPathPainter extends CustomPainter {
           ..color = color
           ..style = PaintingStyle.fill;
         canvas.drawCircle(
-            Offset(centerX, centerY), radius * 0.7, paintStrokeOver);
+            Offset(mainCenterX, mainCenterY), radius * 0.7, paintStrokeOver);
         canvas.drawCircle(
-            Offset(centerX, centerY), radius * 0.2, paintFillOver);
+            Offset(mainCenterX, mainCenterY), radius * 0.2, paintFillOver);
       }
     }
   }
