@@ -42,7 +42,10 @@ class _LoggingButtonState extends State<LoggingButton> {
           ),
         ),
         onTap: () {
-          _toggleLoggingFunction(context, gpsState);
+          if (gpsState.status != GpsStatus.NOGPS &&
+              gpsState.status != GpsStatus.OFF) {
+            _toggleLoggingFunction(context, gpsState);
+          }
         },
         onLongPress: () {
           ProjectState projectState =

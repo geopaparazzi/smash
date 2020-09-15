@@ -9,6 +9,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
@@ -24,29 +25,45 @@ class LayerManager {
 
   /// Initialize the LayerManager by retrieving the layers from teh preferences.
   Future<void> initialize(BuildContext context) async {
-    List<String> layerSourcesList = await GpPreferences().getLayerInfoList();
-    if (layerSourcesList.isNotEmpty) {
-      _layerSources = [];
-      for (var json in layerSourcesList) {
-        var fromJson = LayerSource.fromJson(json);
-        for (var source in fromJson) {
-          var absolutePath = source.getAbsolutePath();
-          var url = source.getUrl();
-          bool isFile = absolutePath != null && File(absolutePath).existsSync();
-          bool isurl = url != null && url.trim().isNotEmpty;
-          if (isFile || isurl) {
-            if (source is LoadableLayerSource) {
-              await source.load(context);
+    SMLogger().d("START: Initializing layer manager.");
+    try {
+      List<String> layerSourcesList = await GpPreferences().getLayerInfoList();
+      SMLogger()
+          .d("--> Sources found in preferences: ${layerSourcesList.length}");
+      if (layerSourcesList.isNotEmpty) {
+        _layerSources = [];
+        var json;
+        try {
+          for (json in layerSourcesList) {
+            var fromJson = LayerSource.fromJson(json);
+            for (var source in fromJson) {
+              SMLogger().d("--> loading: ${source.getName()}");
+              var absolutePath = source.getAbsolutePath();
+              var url = source.getUrl();
+              bool isFile =
+                  absolutePath != null && File(absolutePath).existsSync();
+              bool isurl = url != null && url.trim().isNotEmpty;
+              if (isFile || isurl) {
+                if (source is LoadableLayerSource) {
+                  await source.load(context);
+                }
+                if (source.getSrid() == null) {
+                  source.calculateSrid();
+                }
+                _layerSources.add(source);
+              }
             }
-            if (source.getSrid() == null) {
-              source.calculateSrid();
-            }
-            _layerSources.add(source);
           }
+        } on Exception catch (e, s) {
+          SMLogger().e("An error occurred while loading layer: $json", s);
         }
+      } else {
+        _layerSources = [
+          TileSource.Open_Street_Map_Standard()..isVisible = true
+        ];
       }
-    } else {
-      _layerSources = [TileSource.Open_Street_Map_Standard()..isVisible = true];
+    } finally {
+      SMLogger().d("END: Initializing layer manager.");
     }
   }
 

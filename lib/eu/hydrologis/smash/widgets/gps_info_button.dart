@@ -33,6 +33,14 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   @override
   Widget build(BuildContext context) {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
+      if (gpsState.status == GpsStatus.NOGPS) {
+        return Container(
+          key: widget._key,
+          width: 1,
+          height: 1,
+        );
+      }
+
       bool showAllGpsPointCount =
           GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
       bool showValidGpsPointCount =

@@ -36,7 +36,7 @@ class CoordinateUtilities {
   }
 }
 
-enum GpsStatus { OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
+enum GpsStatus { NOGPS, OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
 const String ARG_LATITUDE = 'latitude';
 const String ARG_LONGITUDE = 'longitude';
 const String ARG_ACCURACY = 'accuracy';

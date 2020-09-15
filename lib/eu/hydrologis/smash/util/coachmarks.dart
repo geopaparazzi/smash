@@ -60,7 +60,7 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all GPS Info Button";
+    title = "$i/$all GPS Info Button (if applicable)";
     singleTap = "${s}center map on GPS position";
     longTap = "${l}show GPS info";
     doubleTap = "${d}toggle automatic center on GPS";

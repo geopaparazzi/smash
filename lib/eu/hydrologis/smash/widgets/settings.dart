@@ -12,6 +12,7 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -141,12 +142,14 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           showSettingsSheet(context);
         });
 
+    GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("Settings"),
       ),
       body: ListView(children: <Widget>[
-        gpsSettingTile,
+        if (gpsState.status != GpsStatus.NOGPS) gpsSettingTile,
         screenSettingTile,
         cameraSettingTile,
         vectorLayerSettingTile,

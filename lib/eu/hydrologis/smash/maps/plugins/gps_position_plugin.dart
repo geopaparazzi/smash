@@ -97,7 +97,9 @@ class CurrentLogPathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var pos = gpsState.lastGpsPosition;
-    if (pos != null && gpsState.status != GpsStatus.OFF) {
+    if (pos != null &&
+        gpsState.status != GpsStatus.OFF &&
+        gpsState.status != GpsStatus.NOGPS) {
       LatLng posLL;
       var accuracy;
       if (gpsState.useFilteredGps) {

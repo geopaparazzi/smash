@@ -18,7 +18,7 @@ import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 ///
 /// Provides tracking of position and parameters related to GPS state.
 class GpsState extends ChangeNotifierPlus {
-  GpsStatus _status = GpsStatus.OFF;
+  GpsStatus _status = GpsStatus.NOGPS;
   SmashPosition _lastPosition;
 
   bool _isLogging = false;
