@@ -1073,19 +1073,19 @@ class GpsSettingsState extends State<GpsSettings> {
               children: <Widget>[
                 Padding(
                   padding: SmashUI.defaultPadding(),
-                  child: SmashUI.normalText("Use GPS Filter", bold: true),
+                  child: SmashUI.normalText("GPS Filter", bold: true),
                 ),
                 ListTile(
                   leading: Icon(MdiIcons.filter),
                   title: Text(
-                      "${useGpsFilteredGenerally ? "Disable" : "Enable"} the use of filtered GPS in certain sections."),
+                      "${useGpsFilteredGenerally ? "Disable" : "Enable"} the use of filtered GPS."),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
                         padding: SmashUI.defaultTBPadding(),
                         child: Text(
-                          "WARNING: This will affect sections as log statistics (length) and log charting.",
+                          "WARNING: This will affect GPS position, notes insertion, log statistics and charting.",
                           textAlign: TextAlign.justify,
                         ),
                       ),
