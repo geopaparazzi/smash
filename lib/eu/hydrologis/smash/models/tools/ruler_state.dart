@@ -5,8 +5,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 
 class RulerState extends ChangeNotifier {
+  static final type = BottomToolbarToolsRegistry.RULER;
+
   bool isEnabled = false;
 
   double xTapPosition;

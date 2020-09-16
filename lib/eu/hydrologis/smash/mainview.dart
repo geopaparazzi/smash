@@ -34,11 +34,12 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/heatmap.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/ruler_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/models/geometryeditor_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/util/coachmarks.dart';
@@ -314,6 +315,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                           size: 32,
                         ),
                         onPressed: () {
+                          BottomToolbarToolsRegistry.disableAll(context);
                           setState(() {
                             _iconMode = IconMode.NAVIGATION_MODE;
                           });

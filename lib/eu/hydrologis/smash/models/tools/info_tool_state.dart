@@ -11,8 +11,11 @@ import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 
 class InfoToolState extends ChangeNotifier {
+  static final type = BottomToolbarToolsRegistry.FEATUREINFO;
+
   bool isEnabled = false;
   bool isSearching = false;
 

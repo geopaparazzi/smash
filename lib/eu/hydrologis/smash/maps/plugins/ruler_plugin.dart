@@ -12,7 +12,7 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart' hide Path;
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/models/ruler_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/ruler_state.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// A plugin that handles tap info from vector layers

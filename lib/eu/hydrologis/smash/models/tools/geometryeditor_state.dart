@@ -8,21 +8,23 @@ import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:latlong/latlong.dart';
-import 'package:proj4dart/src/classes/projection.dart';
+import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:provider/provider.dart';
 
 class GeometryEditorState extends ChangeNotifier {
+  static final type = BottomToolbarToolsRegistry.GEOMEDITOR;
+
   bool _isEnabled = false;
   EditableGeometry _editableItem;
 
   bool get isEnabled => _isEnabled;
 
-  set isEnabled(bool isEnabled) {
+  void setEnabled(bool isEnabled) {
     this._isEnabled = isEnabled;
 
     if (!_isEnabled) {

@@ -8,11 +8,12 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
 import 'package:flutter/material.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
-import 'package:smash/eu/hydrologis/smash/models/geometryeditor_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/info_tool_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
-import 'package:smash/eu/hydrologis/smash/models/ruler_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/ruler_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -110,7 +111,8 @@ class _FeatureQueryButtonState extends State<FeatureQueryButton> {
         ),
         onTap: () {
           setState(() {
-            infoState.setEnabled(!infoState.isEnabled);
+            BottomToolbarToolsRegistry.setEnabled(context,
+                BottomToolbarToolsRegistry.FEATUREINFO, !infoState.isEnabled);
           });
         },
       );
@@ -156,7 +158,8 @@ class RulerButton extends StatelessWidget {
           child: w,
         ),
         onTap: () {
-          rulerState.setEnabled(!rulerState.isEnabled);
+          BottomToolbarToolsRegistry.setEnabled(
+              context, BottomToolbarToolsRegistry.RULER, !rulerState.isEnabled);
         },
       );
     });
@@ -192,7 +195,8 @@ class _GeomEditorButtonState extends State<GeomEditorButton> {
         ),
         onTap: () {
           setState(() {
-            editorState.isEnabled = !editorState.isEnabled;
+            BottomToolbarToolsRegistry.setEnabled(context,
+                BottomToolbarToolsRegistry.GEOMEDITOR, !editorState.isEnabled);
             SmashMapBuilder mapBuilder =
                 Provider.of<SmashMapBuilder>(context, listen: false);
             mapBuilder.reBuild();
