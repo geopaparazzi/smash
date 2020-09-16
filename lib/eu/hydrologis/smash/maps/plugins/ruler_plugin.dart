@@ -73,25 +73,6 @@ class _RulerPluginLayerState extends State<RulerPluginLayer> {
               )),
         );
       }
-
-      if (lengthMeters != null) {
-        stackWidgets.add(
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: SmashColors.mainBackground.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(8)),
-              child: Padding(
-                padding: SmashUI.defaultPadding(),
-                child: SmashUI.normalText(
-                    "Length: ${StringUtilities.formatMeters(lengthMeters)}"),
-              ),
-            ),
-          ),
-        );
-      }
-
       stackWidgets.add(
         GestureDetector(
           onPanDown: (details) {
@@ -102,6 +83,7 @@ class _RulerPluginLayerState extends State<RulerPluginLayer> {
             CustomPoint pixelOrigin = widget.map.getPixelOrigin();
             runningPointLL = widget.map.unproject(
                 CustomPoint(pixelOrigin.x + p.dx, pixelOrigin.y + (p.dy)));
+            rulerState.lengthMeters = lengthMeters;
             setState(() {});
           },
           onPanUpdate: (details) {
@@ -113,12 +95,14 @@ class _RulerPluginLayerState extends State<RulerPluginLayer> {
                   CustomPoint(pixelOrigin.x + p.dx, pixelOrigin.y + (p.dy)));
               lengthMeters +=
                   CoordinateUtilities.getDistance(runningPointLL, tmpPointLL);
+              rulerState.lengthMeters = lengthMeters;
               runningPointLL = tmpPointLL;
               setState(() {});
             }
           },
           onPanEnd: (e) async {
             // finish line
+            rulerState.lengthMeters = null;
             setState(() {
               pointsList = null;
               lengthMeters = null;

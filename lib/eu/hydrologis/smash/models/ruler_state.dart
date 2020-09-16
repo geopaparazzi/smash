@@ -11,6 +11,14 @@ class RulerState extends ChangeNotifier {
 
   double xTapPosition;
   double yTapPosition;
+  double _lengthMeters;
+
+  double get lengthMeters => _lengthMeters;
+
+  set lengthMeters(double newLength) {
+    _lengthMeters = newLength;
+    notifyListeners();
+  }
 
   void setTapAreaCenter(double x, double y) {
     xTapPosition = x;

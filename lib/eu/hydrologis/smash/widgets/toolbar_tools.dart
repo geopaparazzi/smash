@@ -3,6 +3,9 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
+import 'package:badges/badges.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
+    hide TextStyle;
 import 'package:flutter/material.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/geometryeditor_state.dart';
@@ -115,36 +118,45 @@ class _FeatureQueryButtonState extends State<FeatureQueryButton> {
   }
 }
 
-class RulerButton extends StatefulWidget {
+class RulerButton extends StatelessWidget {
   final _iconSize;
 
   RulerButton(this._iconSize, {Key key}) : super(key: key);
 
   @override
-  _RulerButtonState createState() => _RulerButtonState();
-}
-
-class _RulerButtonState extends State<RulerButton> {
-  @override
   Widget build(BuildContext context) {
     return Consumer<RulerState>(builder: (context, rulerState, child) {
+      Widget w = InkWell(
+        child: Icon(
+          MdiIcons.ruler,
+          color: rulerState.isEnabled
+              ? SmashColors.mainSelection
+              : SmashColors.mainBackground,
+          size: _iconSize,
+        ),
+      );
+      if (rulerState.lengthMeters != null) {
+        w = Badge(
+          badgeColor: SmashColors.mainSelection,
+          shape: BadgeShape.square,
+          borderRadius: 10,
+          toAnimate: false,
+          position:
+              BadgePosition.topLeft(top: -_iconSize / 2, left: 0.1 * _iconSize),
+          badgeContent: Text(
+            StringUtilities.formatMeters(rulerState.lengthMeters),
+            style: TextStyle(color: Colors.white),
+          ),
+          child: w,
+        );
+      }
       return GestureDetector(
         child: Padding(
           padding: SmashUI.defaultPadding(),
-          child: InkWell(
-            child: Icon(
-              MdiIcons.ruler,
-              color: rulerState.isEnabled
-                  ? SmashColors.mainSelection
-                  : SmashColors.mainBackground,
-              size: widget._iconSize,
-            ),
-          ),
+          child: w,
         ),
         onTap: () {
-          setState(() {
-            rulerState.setEnabled(!rulerState.isEnabled);
-          });
+          rulerState.setEnabled(!rulerState.isEnabled);
         },
       );
     });
