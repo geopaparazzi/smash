@@ -512,7 +512,7 @@ class GeopackageLazyTileImageProvider
       GeopackageLazyTileImageProvider key, DecoderCallback decoder) {
     return MultiFrameImageStreamCompleter(
       codec: loadAsync(key),
-      scale: 1,
+      scale: 1.0,
       informationCollector: () sync* {
         yield DiagnosticsProperty<ImageProvider>('Image provider', this);
         yield DiagnosticsProperty<GeopackageLazyTileImageProvider>(

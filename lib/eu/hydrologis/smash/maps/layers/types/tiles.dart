@@ -389,19 +389,21 @@ class TileSource extends TiledRasterLayerSource {
         ];
       }
     } else if (isOnlineService()) {
+      TileProvider tileProvider =
+          ExceptionsToTrack.getDefaultForOnlineServices();
       if (isWms) {
-        return [
-          TileLayerOptions(
-            wmsOptions: WMSTileLayerOptions(
-              baseUrl: url,
-              layers: [name],
-            ),
-            backgroundColor: Colors.transparent,
-            opacity: opacityPercentage / 100.0,
-            maxZoom: maxZoom.toDouble(),
-            retinaMode: retinaModeOn,
-          )
-        ];
+        var tileLayerOptions = TileLayerOptions(
+          wmsOptions: WMSTileLayerOptions(
+            baseUrl: url,
+            layers: [name],
+          ),
+          backgroundColor: Colors.transparent,
+          opacity: opacityPercentage / 100.0,
+          maxZoom: maxZoom.toDouble(),
+          retinaMode: retinaModeOn,
+          tileProvider: tileProvider,
+        );
+        return [tileLayerOptions];
       } else {
         return [
           TileLayerOptions(
@@ -412,6 +414,7 @@ class TileSource extends TiledRasterLayerSource {
             maxZoom: maxZoom.toDouble(),
             subdomains: subdomains,
             retinaMode: retinaModeOn,
+            tileProvider: tileProvider,
           )
         ];
       }
