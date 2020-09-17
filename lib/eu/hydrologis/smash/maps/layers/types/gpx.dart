@@ -15,6 +15,7 @@ import 'package:gpx/gpx.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
@@ -101,10 +102,18 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
         _attribution = _attribution + "Wpts(${_gpx.wpts.length}) ";
       }
 
+      double lengthMeters = 0;
+      var prevLatLng;
       _gpx.trks.forEach((trk) {
         trk.trksegs.forEach((trkSeg) {
           List<LatLng> points = trkSeg.trkpts.map((wpt) {
             var latLng = LatLng(wpt.lat, wpt.lon);
+            if (prevLatLng != null) {
+              var distance =
+                  CoordinateUtilities.getDistance(prevLatLng, latLng);
+              lengthMeters += distance;
+            }
+            prevLatLng = latLng;
             _gpxBounds.extend(latLng);
             return latLng;
           }).toList();
@@ -112,18 +121,36 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
         });
       });
       if (_gpx.trks.isNotEmpty) {
-        _attribution = _attribution + "Trks(${_gpx.trks.length}) ";
+        String info = "${_gpx.trks.length}";
+        if (_gpx.trks.length == 1) {
+          // for single track we also give the length in meters
+          info = StringUtilities.formatMeters(lengthMeters);
+        }
+        _attribution = _attribution + "Trks( $info ) ";
       }
+
+      lengthMeters = 0;
+      prevLatLng = null;
       _gpx.rtes.forEach((rt) {
         List<LatLng> points = rt.rtepts.map((wpt) {
           var latLng = LatLng(wpt.lat, wpt.lon);
+          if (prevLatLng != null) {
+            var distance = CoordinateUtilities.getDistance(prevLatLng, latLng);
+            lengthMeters += distance;
+          }
+          prevLatLng = latLng;
           _gpxBounds.extend(latLng);
           return latLng;
         }).toList();
         _tracksRoutes.add(points);
       });
       if (_gpx.rtes.isNotEmpty) {
-        _attribution = _attribution + "Rtes(${_gpx.rtes.length}) ";
+        String info = "${_gpx.rtes.length}";
+        if (_gpx.rtes.length == 1) {
+          // for single track we also give the length in meters
+          info = StringUtilities.formatMeters(lengthMeters);
+        }
+        _attribution = _attribution + "Rtes( $info ) ";
       }
       loaded = true;
     }
