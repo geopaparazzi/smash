@@ -32,7 +32,6 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
   List<String> _wayPointNames = [];
   List<List<LatLng>> _tracksRoutes = [];
   LatLngBounds _gpxBounds = LatLngBounds();
-  bool loaded = false;
 
   String sldString;
   SldObjectParser _style;
@@ -48,7 +47,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
   GpxSource(this._absolutePath);
 
   Future<void> load(BuildContext context) async {
-    if (!loaded) {
+    if (!isLoaded) {
       var parentFolder = FileUtilities.parentFolderFromFile(_absolutePath);
 
       var fileName = FileUtilities.nameFromFile(_absolutePath, false);
@@ -152,7 +151,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
         }
         _attribution = _attribution + "Rtes( $info ) ";
       }
-      loaded = true;
+      isLoaded = true;
     }
   }
 
@@ -314,7 +313,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
     _gpx = null;
     _name = null;
     _absolutePath = null;
-    loaded = false;
+    isLoaded = false;
   }
 
   @override

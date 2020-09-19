@@ -23,8 +23,6 @@ class WmsSource extends RasterLayerSource {
   String attribution = "";
   int _srid = SmashPrj.EPSG3857_INT;
 
-  bool loaded = false;
-
   WmsSource.fromMap(Map<String, dynamic> map) {
     _getCapabilitiesUrl = map[LAYERSKEY_URL];
     _layerName = map[LAYERSKEY_LABEL];

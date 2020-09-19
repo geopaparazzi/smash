@@ -44,7 +44,7 @@ class LayerManager {
                   absolutePath != null && File(absolutePath).existsSync();
               bool isurl = url != null && url.trim().isNotEmpty;
               if (isFile || isurl) {
-                if (source is LoadableLayerSource) {
+                if (source is LoadableLayerSource && source.isActive()) {
                   await source.load(context);
                 }
                 if (source.getSrid() == null) {

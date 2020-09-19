@@ -27,7 +27,7 @@ class WorldImageSource extends RasterLayerSource {
   double opacityPercentage = 100;
   bool isVisible = true;
   LatLngBounds _imageBounds;
-  bool loaded = false;
+
   MyMemoryImage _memoryImage;
   int _srid;
   List<int> rgbToHide;
@@ -81,7 +81,7 @@ class WorldImageSource extends RasterLayerSource {
   }
 
   Future<void> load(BuildContext context) async {
-    if (!loaded) {
+    if (!isLoaded) {
       // print("LOAD WORLD FILE");
       _name = FileUtilities.nameFromFile(_absolutePath, false);
 
@@ -133,7 +133,7 @@ class WorldImageSource extends RasterLayerSource {
         LatLng(urDest.y, urDest.x),
       );
 
-      loaded = true;
+      isLoaded = true;
     }
   }
 
@@ -244,7 +244,7 @@ class WorldImageSource extends RasterLayerSource {
     _name = null;
 
     _imageBounds = LatLngBounds();
-    loaded = false;
+    isLoaded = false;
     _memoryImage = null;
   }
 
@@ -323,7 +323,7 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
             } else {
               _source.rgbToHide = null;
             }
-            _source.loaded = false;
+            _source.isLoaded = false;
           }
           return true;
         },

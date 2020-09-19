@@ -32,7 +32,6 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
   List<Feature> features = [];
   JTS.STRtree _featureTree;
   JTS.Envelope _shpBounds;
-  bool loaded = false;
   SldObjectParser _style;
   TextStyle _textStyle;
 
@@ -51,7 +50,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
   ShapefileSource(this._absolutePath);
 
   Future<void> load(BuildContext context) async {
-    if (!loaded) {
+    if (!isLoaded) {
       _name = FileUtilities.nameFromFile(_absolutePath, false);
 
       var parentFolder = FileUtilities.parentFolderFromFile(_absolutePath);
@@ -126,7 +125,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
       _attribution = _attribution +
           "${features[0].geometry.getGeometryType()} (${features.length}) ";
 
-      loaded = true;
+      isLoaded = true;
     }
   }
 
@@ -438,7 +437,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     _shpReader = null;
     _name = null;
     _absolutePath = null;
-    loaded = false;
+    isLoaded = false;
   }
 
   @override

@@ -126,14 +126,15 @@ class LayersPageState extends State<LayersPage> {
 
   List<Widget> createLayersList(
       List<LayerSource> _layersList, BuildContext context) {
-    return _layersList.map((layerSourceItem) {
+    final List fixedList = Iterable<int>.generate(_layersList.length).toList();
+    return fixedList.map((idx) {
+      var layerSourceItem = _layersList[idx];
       var srid = layerSourceItem.getSrid();
       bool prjSupported;
       if (srid != null) {
         var projection = SmashPrj.fromSrid(srid);
         prjSupported = projection != null;
       }
-
       List<Widget> actions = [];
       List<Widget> secondaryActions = [];
 
@@ -185,8 +186,9 @@ class LayersPageState extends State<LayersPage> {
             setState(() {});
           }));
 
+      var key = "$idx-${layerSourceItem.getName()}";
       return Slidable(
-        key: ValueKey(layerSourceItem),
+        key: Key(key),
         actionPane: SlidableDrawerActionPane(),
         actionExtentRatio: 0.25,
         child: ListTile(
@@ -195,41 +197,30 @@ class LayersPageState extends State<LayersPage> {
             scrollDirection: Axis.horizontal,
           ),
           subtitle: prjSupported == null
-              ? Text(
-                  "The proj could not be recognised. Tap to enter epsg manually.",
-                  style: TextStyle(color: SmashColors.mainDanger),
+              ? FlatButton(
+                  child: Text(
+                    "The proj could not be recognised. Tap to enter epsg manually.",
+                    style: TextStyle(color: SmashColors.mainDanger),
+                  ),
+                  onPressed: () async {
+                    await fixMissingPrj(prjSupported, srid);
+                  },
                 )
-              : prjSupported
-                  ? SingleChildScrollView(
+              : !prjSupported
+                  ? FlatButton(
+                      child: Text(
+                        "The proj is not supported. Tap to solve.",
+                        style: TextStyle(color: SmashColors.mainDanger),
+                      ),
+                      onPressed: () async {
+                        await fixMissingPrj(prjSupported, srid);
+                      },
+                    )
+                  : SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Text(
                           'EPSG:$srid ${layerSourceItem.getAttribution()}'),
-                    )
-                  : Text(
-                      "The proj is not supported. Tap to solve.",
-                      style: TextStyle(color: SmashColors.mainDanger),
                     ),
-          onTap: () async {
-            if (prjSupported == null || !prjSupported) {
-              // showWarningDialog(context, "Need to add prj: $srid");
-              if (prjSupported == null && srid == null) {
-                int epsg = await SmashDialogs.showEpsgInputDialog(context);
-                if (epsg != null) {
-                  srid = epsg;
-                } else {
-                  return;
-                }
-              }
-
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProjectionsSettings(
-                            epsgToDownload: srid,
-                          )));
-              setState(() {});
-            }
-          },
           leading: Icon(
             SmashIcons.forPath(
                 layerSourceItem.getAbsolutePath() ?? layerSourceItem.getUrl()),
@@ -241,13 +232,54 @@ class LayersPageState extends State<LayersPage> {
               onChanged: (isVisible) async {
                 layerSourceItem.setActive(isVisible);
                 _somethingChanged = true;
-                setState(() {});
+                if (isVisible &&
+                    layerSourceItem is LoadableLayerSource &&
+                    !layerSourceItem.isLoaded) {
+                  setState(() {
+                    isLoadingData = true;
+                    loadLayerWithProgressEnd(layerSourceItem, context);
+                  });
+                } else {
+                  setState(() {});
+                }
               }),
         ),
         actions: actions,
         secondaryActions: secondaryActions,
       );
     }).toList();
+  }
+
+  Future<void> fixMissingPrj(var prjSupported, var srid) async {
+    if (prjSupported == null || !prjSupported) {
+      bool goToPrjPage = true;
+      if (prjSupported == null && srid == null) {
+        int epsg = await SmashDialogs.showEpsgInputDialog(context);
+        if (epsg != null) {
+          srid = epsg;
+        } else {
+          goToPrjPage = false;
+        }
+      }
+
+      if (goToPrjPage) {
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProjectionsSettings(
+                      epsgToDownload: srid,
+                    )));
+        setState(() {});
+      }
+    }
+  }
+
+  Future<void> loadLayerWithProgressEnd(
+      LoadableLayerSource layerSourceItem, BuildContext context) async {
+    await layerSourceItem.load(context);
+    setState(() {
+      isLoadingData = false;
+    });
   }
 
   void setLayersOnChange(List<LayerSource> _layersList) {

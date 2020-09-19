@@ -350,7 +350,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         }));
 
     return Slidable(
-      key: ValueKey(logItem),
+      key: Key("logview-${logItem.id}"),
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: ListTile(

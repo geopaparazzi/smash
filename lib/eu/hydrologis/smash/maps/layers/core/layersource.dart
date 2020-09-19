@@ -179,6 +179,8 @@ abstract class VectorLayerSource extends LoadableLayerSource {}
 abstract class RasterLayerSource extends LoadableLayerSource {}
 
 abstract class LoadableLayerSource extends LayerSource {
+  bool isLoaded = false;
+
   Future<void> load(BuildContext context);
 }
 

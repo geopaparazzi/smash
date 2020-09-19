@@ -42,7 +42,6 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   SldObjectParser _style;
   TextStyle _textStyle;
 
-  bool loaded = false;
   GeopackageDb db;
   int _srid;
 
@@ -62,7 +61,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   GeopackageSource(this._absolutePath, this._tableName);
 
   Future<void> load(BuildContext context) async {
-    if (!loaded) {
+    if (!isLoaded) {
       int maxFeaturesToLoad =
           GpPreferences().getIntSync(KEY_VECTOR_MAX_FEATURES, -1);
       bool loadOnlyVisible =
@@ -125,16 +124,18 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
       );
 
       var fromPrj = SmashPrj.fromSrid(_srid);
-      SmashPrj.transformListToWgs84(fromPrj, _tableData.geoms);
-      _tableBounds = JTS.Envelope.empty();
-      _tableData.geoms.forEach((g) {
-        _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
-      });
+      if (fromPrj != null) {
+        SmashPrj.transformListToWgs84(fromPrj, _tableData.geoms);
+        _tableBounds = JTS.Envelope.empty();
+        _tableData.geoms.forEach((g) {
+          _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
+        });
 
-      _attribution =
-          "${_geometryColumn.geometryType.getTypeName()} (${_tableData.geoms.length}) ";
+        _attribution =
+            "${_geometryColumn.geometryType.getTypeName()} (${_tableData.geoms.length}) ";
 
-      loaded = true;
+        isLoaded = true;
+      }
     }
   }
 
@@ -492,7 +493,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
           .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
 
       if (_textStyle?.labelName != textStyleTmp.labelName) {
-        loaded = false;
+        isLoaded = false;
       }
       _textStyle = textStyleTmp;
     }
