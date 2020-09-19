@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:flutter_map/plugin_api.dart';
 
+/// Enable geometry editing
+const EXPERIMENTAL_GEOMEDITOR__ENABLED = false;
+
 /// Enable rotation of map
 const EXPERIMENTAL_ROTATION__ENABLED = false;
 

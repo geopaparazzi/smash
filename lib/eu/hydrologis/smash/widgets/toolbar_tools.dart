@@ -14,6 +14,7 @@ import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/ruler_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
+import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +43,8 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          // TODO GeomEditorButton(widget._iconSize),
+          if (EXPERIMENTAL_GEOMEDITOR__ENABLED)
+            GeomEditorButton(widget._iconSize),
           FeatureQueryButton(widget._iconSize),
           RulerButton(widget._iconSize),
           Spacer(),
@@ -96,25 +98,28 @@ class _FeatureQueryButtonState extends State<FeatureQueryButton> {
   @override
   Widget build(BuildContext context) {
     return Consumer<InfoToolState>(builder: (context, infoState, child) {
-      return GestureDetector(
-        child: Padding(
-          padding: SmashUI.defaultPadding(),
-          child: InkWell(
-            child: Icon(
-              MdiIcons.layersSearch,
-              color: infoState.isEnabled
-                  ? SmashColors.mainSelection
-                  : SmashColors.mainBackground,
-              size: widget._iconSize,
+      return Tooltip(
+        message: "Query features from loaded vector layers.",
+        child: GestureDetector(
+          child: Padding(
+            padding: SmashUI.defaultPadding(),
+            child: InkWell(
+              child: Icon(
+                MdiIcons.layersSearch,
+                color: infoState.isEnabled
+                    ? SmashColors.mainSelection
+                    : SmashColors.mainBackground,
+                size: widget._iconSize,
+              ),
             ),
           ),
+          onTap: () {
+            setState(() {
+              BottomToolbarToolsRegistry.setEnabled(context,
+                  BottomToolbarToolsRegistry.FEATUREINFO, !infoState.isEnabled);
+            });
+          },
         ),
-        onTap: () {
-          setState(() {
-            BottomToolbarToolsRegistry.setEnabled(context,
-                BottomToolbarToolsRegistry.FEATUREINFO, !infoState.isEnabled);
-          });
-        },
       );
     });
   }
@@ -152,15 +157,18 @@ class RulerButton extends StatelessWidget {
           child: w,
         );
       }
-      return GestureDetector(
-        child: Padding(
-          padding: SmashUI.defaultPadding(),
-          child: w,
+      return Tooltip(
+        message: "Measure distances on the map with your finger.",
+        child: GestureDetector(
+          child: Padding(
+            padding: SmashUI.defaultPadding(),
+            child: w,
+          ),
+          onTap: () {
+            BottomToolbarToolsRegistry.setEnabled(context,
+                BottomToolbarToolsRegistry.RULER, !rulerState.isEnabled);
+          },
         ),
-        onTap: () {
-          BottomToolbarToolsRegistry.setEnabled(
-              context, BottomToolbarToolsRegistry.RULER, !rulerState.isEnabled);
-        },
       );
     });
   }
@@ -180,28 +188,33 @@ class _GeomEditorButtonState extends State<GeomEditorButton> {
   Widget build(BuildContext context) {
     return Consumer<GeometryEditorState>(
         builder: (context, editorState, child) {
-      return GestureDetector(
-        child: Padding(
-          padding: SmashUI.defaultPadding(),
-          child: InkWell(
-            child: Icon(
-              MdiIcons.vectorLine,
-              color: editorState.isEnabled
-                  ? SmashColors.mainSelection
-                  : SmashColors.mainBackground,
-              size: widget._iconSize,
+      return Tooltip(
+        message: "Modify geometries in editable vector layers.",
+        child: GestureDetector(
+          child: Padding(
+            padding: SmashUI.defaultPadding(),
+            child: InkWell(
+              child: Icon(
+                MdiIcons.vectorLine,
+                color: editorState.isEnabled
+                    ? SmashColors.mainSelection
+                    : SmashColors.mainBackground,
+                size: widget._iconSize,
+              ),
             ),
           ),
+          onTap: () {
+            setState(() {
+              BottomToolbarToolsRegistry.setEnabled(
+                  context,
+                  BottomToolbarToolsRegistry.GEOMEDITOR,
+                  !editorState.isEnabled);
+              SmashMapBuilder mapBuilder =
+                  Provider.of<SmashMapBuilder>(context, listen: false);
+              mapBuilder.reBuild();
+            });
+          },
         ),
-        onTap: () {
-          setState(() {
-            BottomToolbarToolsRegistry.setEnabled(context,
-                BottomToolbarToolsRegistry.GEOMEDITOR, !editorState.isEnabled);
-            SmashMapBuilder mapBuilder =
-                Provider.of<SmashMapBuilder>(context, listen: false);
-            mapBuilder.reBuild();
-          });
-        },
       );
     });
   }
