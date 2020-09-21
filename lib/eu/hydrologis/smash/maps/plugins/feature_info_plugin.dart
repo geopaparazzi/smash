@@ -5,6 +5,7 @@
  */
 import 'dart:async';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
@@ -136,22 +137,22 @@ class FeatureInfoLayer extends StatelessWidget {
           boundMap[srid] = boundsGeomInSrid;
         }
 
-        var tableColumns = db.getTableColumns(vLayer.getName());
+        var layerName = SqlName(vLayer.getName());
+        var tableColumns = db.getTableColumns(layerName);
         Map<String, String> typesMap = {};
         tableColumns.forEach((column) {
           typesMap[column[0]] = column[1];
         });
         QueryResult queryResult =
-            db.getTableData(vLayer.getName(), geometry: boundsGeomInSrid);
+            db.getTableData(layerName, geometry: boundsGeomInSrid);
         if (queryResult.data.isNotEmpty) {
-          var layerName = vLayer.getName();
-          print("Found data for: " + layerName);
+          print("Found data for: " + layerName.name);
 
           var pk = db.getPrimaryKey(layerName);
 
           var dataPrj = SmashPrj.fromSrid(srid);
           queryResult.geoms.forEach((g) {
-            totalQueryResult.ids.add(layerName);
+            totalQueryResult.ids.add(layerName.name);
             totalQueryResult.primaryKeys.add(pk);
             totalQueryResult.dbs.add(db);
             totalQueryResult.fieldAndTypemap.add(typesMap);

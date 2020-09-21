@@ -7,6 +7,7 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
@@ -291,7 +292,7 @@ class TileSource extends TiledRasterLayerSource {
       } else if (FileManager.isGeopackage(getAbsolutePath())) {
         var ch = ConnectionsHandler();
         var db = ch.open(absolutePath, tableName: name);
-        var tileEntry = db.tile(name);
+        var tileEntry = db.tile(SqlName(name));
         var env = tileEntry.bounds;
         if (tileEntry.srid != Proj.EPSG4326_INT) {
           env = Proj.transformEnvelopeToWgs84(
@@ -349,7 +350,7 @@ class TileSource extends TiledRasterLayerSource {
       var db = ch.open(absolutePath, tableName: name);
 
       if (doGpkgAsOverlay != null && doGpkgAsOverlay) {
-        var tileEntry = db.tile(name);
+        var tileEntry = db.tile(SqlName(name));
         var to4326function;
         if (tileEntry.srid != Proj.EPSG4326_INT) {
           to4326function = (var envelope) {
@@ -376,7 +377,7 @@ class TileSource extends TiledRasterLayerSource {
           OverlayImageLayerOptions(overlayImages: overlayImages),
         ];
       } else {
-        var tileProvider = GeopackageTileImageProvider(db, name);
+        var tileProvider = GeopackageTileImageProvider(db, SqlName(name));
         return [
           TileLayerOptions(
             tileProvider: tileProvider,

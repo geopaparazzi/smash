@@ -9,6 +9,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as UI;
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:flutter/foundation.dart';
@@ -82,26 +83,27 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
       }
 
       getDatabase();
-      _geometryColumn = db.getGeometryColumnsForTable(_tableName);
+      var sqlName = SqlName(_tableName);
+      _geometryColumn = db.getGeometryColumnsForTable(sqlName);
       _srid = _geometryColumn.srid;
       geometryType = _geometryColumn.geometryType;
-      var alphaFieldsTmp = db.getTableColumns(_tableName);
+      var alphaFieldsTmp = db.getTableColumns(sqlName);
 
       alphaFields = alphaFieldsTmp.map((e) => e[0] as String).toList();
       alphaFields
           .removeWhere((name) => name == _geometryColumn.geometryColumnName);
 
-      sldString = db.getSld(_tableName);
+      sldString = db.getSld(sqlName);
       if (sldString == null) {
         if (_geometryColumn.geometryType.isPoint()) {
           sldString = DefaultSlds.simplePointSld();
-          db.updateSld(_tableName, sldString);
+          db.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isLine()) {
           sldString = DefaultSlds.simpleLineSld();
-          db.updateSld(_tableName, sldString);
+          db.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isPolygon()) {
           sldString = DefaultSlds.simplePolygonSld();
-          db.updateSld(_tableName, sldString);
+          db.updateSld(sqlName, sldString);
         }
       }
       if (sldString != null) {
@@ -118,7 +120,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
         maxFeaturesToLoad = null;
       }
       _tableData = db.getTableData(
-        _tableName,
+        SqlName(_tableName),
         limit: maxFeaturesToLoad,
         envelope: limitBounds,
       );
@@ -468,7 +470,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
         getDatabase();
       }
       if (_srid == null) {
-        _geometryColumn = db.getGeometryColumnsForTable(_tableName);
+        _geometryColumn = db.getGeometryColumnsForTable(SqlName(_tableName));
         _srid = _geometryColumn.srid;
       }
     }
@@ -498,7 +500,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
       _textStyle = textStyleTmp;
     }
     _style = _styleTmp;
-    db.updateSld(_tableName, sldString);
+    db.updateSld(SqlName(_tableName), sldString);
   }
 }
 
@@ -574,7 +576,7 @@ var _emptyImageBytes;
 /// This works different than the overlay image version (which could make things go OOM).
 class GeopackageTileImageProvider extends TileProvider {
   GeopackageDb _loadedDb;
-  String _tableName;
+  SqlName _tableName;
 
   GeopackageTileImageProvider(this._loadedDb, this._tableName);
 
@@ -597,7 +599,7 @@ class GeopackageTileImageProvider extends TileProvider {
 
 class GeopackageTileImage extends ImageProvider<GeopackageTileImage> {
   final GeopackageDb database;
-  String tableName;
+  SqlName tableName;
   final Coords<int> coords;
   GeopackageTileImage(this.database, this.tableName, this.coords);
 

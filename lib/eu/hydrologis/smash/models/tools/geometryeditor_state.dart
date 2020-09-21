@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
@@ -87,8 +88,8 @@ class GeometryEditManager {
       SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, touchGeom);
 
       var tableName = vLayer.getName();
-      var primaryKey = db.getPrimaryKey(tableName);
-      var geomsIntersected = db.getGeometriesIn(tableName,
+      var primaryKey = db.getPrimaryKey(SqlName(tableName));
+      var geomsIntersected = db.getGeometriesIn(SqlName(tableName),
           envelope: touchGeom.getEnvelopeInternal(), userDataField: primaryKey);
       if (geomsIntersected.isNotEmpty) {
         // find touching

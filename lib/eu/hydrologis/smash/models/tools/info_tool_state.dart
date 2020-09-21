@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
@@ -57,7 +58,7 @@ class InfoToolState extends ChangeNotifier {
         if (vLayer is GeopackageSource) {
           var db = ConnectionsHandler().open(vLayer.getAbsolutePath());
           QueryResult queryResult =
-              db.getTableData(vLayer.getName(), envelope: env);
+              db.getTableData(SqlName(vLayer.getName()), envelope: env);
           if (queryResult.data.isNotEmpty) {
             print("Found data for: " + vLayer.getName());
           }
