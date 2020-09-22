@@ -570,7 +570,7 @@ class GeopaparazziProjectDb extends SqliteDb {
   ///
   /// @param id the log's id.
   bool deleteGpslog(int logId) {
-    return Transaction(this).runInTransaction((_db) {
+    return Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
       // delete log
       String sql = "delete from $TABLE_GPSLOGS where $LOGS_COLUMN_ID = $logId";
       _db.execute(sql);
@@ -586,7 +586,7 @@ class GeopaparazziProjectDb extends SqliteDb {
 
   /// Merge gps logs [mergeLogs] into the master [logId].
   bool mergeGpslogs(int logId, List<int> mergeLogs) {
-    return Transaction(this).runInTransaction((_db) {
+    return Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
       for (var mergeLogId in mergeLogs) {
         // assign all data of the log to the new log
         String sql =
@@ -859,7 +859,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     bool hasNotesExt = hasTable(SqlName(TABLE_NOTESEXT));
     if (!hasNotesExt) {
       SMLogger().w("Adding extra database table $TABLE_NOTESEXT.");
-      Transaction(this).runInTransaction((_db) {
+      Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
         var split =
             CREATE_NOTESEXT_STATEMENT.replaceAll("\n", "").trim().split(";");
         for (int i = 0; i < split.length; i++) {
@@ -881,7 +881,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     });
     if (!hasFiltered) {
       SMLogger().w("Adding extra columns for filtered data to log.");
-      Transaction(this).runInTransaction((_db) {
+      Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
         String sql =
             "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_ACCURACY real;";
         _db.execute(sql);

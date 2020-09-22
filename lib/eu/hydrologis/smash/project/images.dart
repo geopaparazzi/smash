@@ -41,14 +41,21 @@ class ImageWidgetUtilities {
       ..thumb = thumbBytes
       ..data = imageBytes;
 
-    return Transaction(db).runInTransaction((_db) {
-      int imgDataId = _db.insertMap(TABLE_IMAGE_DATA, imgData.toMap());
-      dbImageToCompleteAndSave.imageDataId = imgDataId;
-      int imgId = _db.insertMap(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
-      if (imgId == null) {
-        SMLogger().e("Could not save image to db: $path", null);
+    return Transaction(db).runInTransaction((GeopaparazziProjectDb _db) {
+      try {
+        int imgDataId =
+            _db.insertMap(SqlName(TABLE_IMAGE_DATA), imgData.toMap());
+        dbImageToCompleteAndSave.imageDataId = imgDataId;
+        int imgId = _db.insertMap(
+            SqlName(TABLE_IMAGES), dbImageToCompleteAndSave.toMap());
+        if (imgId == null) {
+          SMLogger().e("Could not save image to db: $path", null);
+        }
+        return imgId;
+      } on Exception catch (e) {
+        print(e);
       }
-      return imgId;
+      return null;
     });
   }
 
