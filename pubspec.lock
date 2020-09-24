@@ -46,10 +46,12 @@ packages:
   badges:
     dependency: "direct main"
     description:
-      name: badges
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.1"
+      path: "."
+      ref: HEAD
+      resolved-ref: "1f50f6c48a20d5b189d61ff5cd67ce9c295e17ad"
+      url: "https://github.com/yako-dev/flutter_badges.git"
+    source: git
+    version: "1.1.3"
   barcode:
     dependency: transitive
     description:
@@ -170,7 +172,7 @@ packages:
       name: device_info
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2+7"
+    version: "0.4.2+8"
   device_info_platform_interface:
     dependency: transitive
     description:
@@ -191,14 +193,14 @@ packages:
       name: extended_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.4"
+    version: "1.1.1"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.3"
+    version: "0.3.0"
   ffi:
     dependency: transitive
     description:
@@ -328,7 +330,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.11"
   flutter_slidable:
     dependency: "direct main"
     description:
@@ -410,7 +412,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7+9"
+    version: "0.6.7+11"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -576,6 +578,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  path_provider_windows:
+    dependency: transitive
+    description:
+      name: path_provider_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.4+1"
   pdf:
     dependency: "direct main"
     description:
@@ -618,13 +627,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1"
-  platform_detect:
-    dependency: transitive
-    description:
-      name: platform_detect
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.4.0"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -660,13 +662,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.0"
-  pub_semver:
-    dependency: transitive
-    description:
-      name: pub_semver
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.4.4"
   qr:
     dependency: transitive
     description:
@@ -708,7 +703,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.10"
+    version: "0.5.12"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -737,6 +732,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2+7"
+  shared_preferences_windows:
+    dependency: transitive
+    description:
+      name: shared_preferences_windows
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -855,7 +857,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.6.0"
+    version: "5.7.1"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -883,7 +885,7 @@ packages:
       name: url_launcher_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.3+2"
+    version: "0.1.4+1"
   url_launcher_windows:
     dependency: transitive
     description:
@@ -919,6 +921,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0-nullsafety.2"
+  win32:
+    dependency: transitive
+    description:
+      name: win32
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.7.3"
   wkt_parser:
     dependency: transitive
     description:

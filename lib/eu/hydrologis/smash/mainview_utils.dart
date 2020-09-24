@@ -50,8 +50,8 @@ class DashboardUtils {
         position: badgePosition != null
             ? badgePosition
             : iconSize != null
-                ? BadgePosition.topLeft(
-                    top: -iconSize / 2, left: 0.1 * iconSize)
+                ? BadgePosition.topStart(
+                    top: -iconSize / 2, start: 0.1 * iconSize)
                 : null,
         badgeContent: Text(
           '$badgeValue',
@@ -71,7 +71,7 @@ class DashboardUtils {
         badgeColor: SmashColors.mainDecorations,
         shape: BadgeShape.circle,
         position: iconSize != null
-            ? BadgePosition.topRight(top: -iconSize / 2, right: -iconSize / 3)
+            ? BadgePosition.topEnd(top: -iconSize / 2, end: -iconSize / 3)
             : null,
         toAnimate: false,
         badgeContent: Text(

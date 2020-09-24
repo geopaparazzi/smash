@@ -148,8 +148,8 @@ class RulerButton extends StatelessWidget {
           shape: BadgeShape.square,
           borderRadius: 10,
           toAnimate: false,
-          position:
-              BadgePosition.topLeft(top: -_iconSize / 2, left: 0.1 * _iconSize),
+          position: BadgePosition.topStart(
+              top: -_iconSize / 2, start: 0.1 * _iconSize),
           badgeContent: Text(
             StringUtilities.formatMeters(rulerState.lengthMeters),
             style: TextStyle(color: Colors.white),

@@ -100,7 +100,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             button, GpsHandler().allPointsCount,
             textColor: SmashColors.mainBackground,
             badgeColor: SmashColors.mainDecorations,
-            badgePosition: BadgePosition.bottomLeft());
+            badgePosition: BadgePosition.bottomStart());
       }
 
       return button;
