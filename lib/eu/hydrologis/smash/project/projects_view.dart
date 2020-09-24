@@ -66,7 +66,10 @@ class ProjectView extends StatelessWidget {
                                   FileManager.ALLOWED_PROJECT_EXT,
                                   lastUsedFolder,
                                 )));
-                    await _openMainViewOnProject(context, selectedPath);
+
+                    if (selectedPath != null) {
+                      await _openMainViewOnProject(context, selectedPath);
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
