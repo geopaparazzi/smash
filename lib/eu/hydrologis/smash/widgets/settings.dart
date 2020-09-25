@@ -13,6 +13,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
@@ -887,6 +888,8 @@ class GpsSettingsState extends State<GpsSettings> {
     int timeInterval =
         GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS[1]);
     bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
+    var testlogDurationKey = "KEY_GPS_TESTLOG_DURATIONMILLIS";
+    int testLogDuration = GpPreferences().getIntSync(testlogDurationKey, 500);
     bool showAllGpsPointCount =
         GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
     bool showValidGpsPointCount =
@@ -1125,13 +1128,6 @@ class GpsSettingsState extends State<GpsSettings> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Padding(
-                        padding: SmashUI.defaultTBPadding(),
-                        child: Text(
-                          "WARNING: This needs a working gps fix since it modifies the incoming gps points with those of the demo.",
-                          textAlign: TextAlign.justify,
-                        ),
-                      ),
                       Checkbox(
                         value: doTestLog,
                         onChanged: (newValue) async {
@@ -1145,6 +1141,30 @@ class GpsSettingsState extends State<GpsSettings> {
                       ),
                     ],
                   ),
+                ),
+                ListTile(
+                  leading: Icon(MdiIcons.timer),
+                  title: Text("Set duration for GPS points in milliseconds."),
+                  subtitle: FlatButton(
+                      onPressed: () async {
+                        var newValue = await SmashDialogs.showInputDialog(
+                            context, "SETTING", "Set Mocked GPS duration",
+                            defaultText: "$testLogDuration",
+                            validationFunction: (value) {
+                          if (int.tryParse(value) == null) {
+                            return "The value has to be an integer.";
+                          }
+                          return null;
+                        });
+                        if (newValue != null) {
+                          var newMillis = int.parse(newValue);
+                          TestLogStream().setNewDuration(newMillis);
+                          await GpPreferences()
+                              .setInt(testlogDurationKey, newMillis);
+                          setState(() {});
+                        }
+                      },
+                      child: Text("$testLogDuration milliseconds")),
                 ),
               ],
             ),

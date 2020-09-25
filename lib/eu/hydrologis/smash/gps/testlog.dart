@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:dart_jts/dart_jts.dart';
@@ -100,6 +101,54 @@ class Testlog {
     }
 
     return double.nan;
+  }
+}
+
+class TestLogStream {
+  static final TestLogStream _singleton = TestLogStream._internal();
+  factory TestLogStream() {
+    return _singleton;
+  }
+  TestLogStream._internal();
+
+  final kalman = KalmanFilter();
+  StreamController<SmashPosition> _controller =
+      StreamController<SmashPosition>();
+  Timer timer;
+  bool isActive = false;
+
+  int millisecondsDuration = 500;
+
+  setNewDuration(int durationMillis) {
+    millisecondsDuration = durationMillis;
+    stop();
+    start();
+  }
+
+  void start() {
+    if (timer != null) {
+      return;
+    }
+    isActive = true;
+    timer = Timer.periodic(Duration(milliseconds: millisecondsDuration), (t) {
+      _controller.sink.add(Testlog.getNext(kalman));
+    });
+  }
+
+  Stream<SmashPosition> get stream {
+    return _controller.stream;
+  }
+
+  void stop() {
+    if (timer != null) {
+      isActive = false;
+      timer.cancel();
+      timer = null;
+    }
+  }
+
+  closeStream() {
+    _controller.close();
   }
 }
 

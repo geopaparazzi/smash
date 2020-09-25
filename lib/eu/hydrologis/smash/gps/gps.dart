@@ -12,7 +12,6 @@ import 'package:background_locator/background_locator.dart' as GPS;
 import 'package:background_locator/keys.dart';
 import 'package:background_locator/location_dto.dart';
 import 'package:background_locator/location_settings.dart';
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
@@ -235,9 +234,19 @@ class GpsHandler {
     _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) async {
       await initGpsWithCheck();
     });
+
+    // activate test stream, even if it will be silent
+    TestLogStream().stream.listen((SmashPosition pos) {
+      _onPositionUpdate(pos);
+    });
   }
 
   Future initGpsWithCheck() async {
+    if (_gpsState.doTestLog) {
+      TestLogStream().start();
+    } else {
+      TestLogStream().stop();
+    }
     if (port == null) {
       SMLogger().i("Initialize geolocator");
       await closeGpsIsolate();
@@ -265,13 +274,15 @@ class GpsHandler {
 
   /// Returns true if the gps currently has a fix or is logging.
   bool hasFix() {
-    var hasFix = _gpsState.status == GpsStatus.ON_WITH_FIX;
+    var hasFix =
+        _gpsState.status == GpsStatus.ON_WITH_FIX || TestLogStream().isActive;
     var isLogging = _gpsState.status == GpsStatus.LOGGING;
     return hasFix || isLogging;
   }
 
   // Checks if the gps is on or off.
   bool isGpsOn() {
+    if (TestLogStream().isActive) return true;
     if (port == null) return false;
     return _locationServiceEnabled;
   }
@@ -297,20 +308,17 @@ class GpsHandler {
     port = ReceivePort();
     IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
     port.listen((dynamic data) {
+      if (TestLogStream().isActive) {
+        return;
+      }
       if (data != null) {
         KalmanFilter kalman = KalmanFilter.getInstance();
-        SmashPosition position;
-        if (_gpsState.doTestLog) {
-          // Use the mocked log
-          position = Testlog.getNext(kalman);
-        } else {
-          kalman.process(data.latitude, data.longitude, data.accuracy,
-              data.time, data.speed);
-          position = SmashPosition.fromLocation(data,
-              filteredLatitude: kalman.latitude,
-              filteredLongitude: kalman.longitude,
-              filteredAccuracy: kalman.accuracy);
-        }
+        kalman.process(data.latitude, data.longitude, data.accuracy, data.time,
+            data.speed);
+        var position = SmashPosition.fromLocation(data,
+            filteredLatitude: kalman.latitude,
+            filteredLongitude: kalman.longitude,
+            filteredAccuracy: kalman.accuracy);
         _onPositionUpdate(position);
       }
     });

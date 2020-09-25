@@ -70,12 +70,20 @@ class GpsFilterManager {
 
   /// Check if the GPS has a fix based on the time passed from the last gps position event.
   void checkFix() {
-    var currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
-    _lastFixDelta = currentTimeMillis - _lastGpsEventTs;
-    if (_lastFixDelta > MAX_DELTA_FOR_FIX) {
-      // if for so many seconds there is no gps event, we can assume it has no fix
-      if (_gpsState.status != GpsStatus.ON_NO_FIX) {
-        _gpsState.status = GpsStatus.ON_NO_FIX;
+    if (TestLogStream().isActive) {
+      var status =
+          _gpsState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
+      if (_gpsState.status != status) {
+        _gpsState.status = status;
+      }
+    } else {
+      var currentTimeMillis = DateTime.now().millisecondsSinceEpoch;
+      _lastFixDelta = currentTimeMillis - _lastGpsEventTs;
+      if (_lastFixDelta > MAX_DELTA_FOR_FIX) {
+        // if for so many seconds there is no gps event, we can assume it has no fix
+        if (_gpsState.status != GpsStatus.ON_NO_FIX) {
+          _gpsState.status = GpsStatus.ON_NO_FIX;
+        }
       }
     }
   }
@@ -86,6 +94,21 @@ class GpsFilterManager {
   ///
   /// Returns true if the point was not blocked.
   bool onNewPositionEvent(SmashPosition position) {
+    if (position != null && position.mocked) {
+      if (_gpsState.isLogging && _gpsState.currentLogId != null) {
+        _gpsState.addLogPoint(position.longitude, position.latitude,
+            position.altitude, position.time.round(), position.accuracy,
+            accuracyFiltered: position.filteredAccuracy,
+            latitudeFiltered: position.filteredLatitude,
+            longitudeFiltered: position.filteredLongitude);
+      }
+      _previousLogPosition = position;
+      _gpsState.statusQuiet =
+          _gpsState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
+      _gpsState.lastGpsPosition = position;
+      return true;
+    }
+
     GpsFilterManagerMessage msg = GpsFilterManagerMessage();
     msg.lastFixDelta = _lastFixDelta;
 
