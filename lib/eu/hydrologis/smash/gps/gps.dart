@@ -11,7 +11,10 @@ import 'dart:ui';
 import 'package:background_locator/background_locator.dart' as GPS;
 import 'package:background_locator/keys.dart';
 import 'package:background_locator/location_dto.dart';
-import 'package:background_locator/location_settings.dart';
+import 'package:background_locator/settings/android_settings.dart';
+import 'package:background_locator/settings/ios_settings.dart';
+import 'package:background_locator/settings/locator_settings.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
@@ -213,10 +216,6 @@ class GpsHandler {
     send?.send(locationDto);
   }
 
-  static void notificationCallback() {
-    print('User clicked on the notification');
-  }
-
   Future<void> init(GpsState initGpsState) async {
     SMLogger().i("Init GpsHandler");
     if (SmashPlatform.isDesktop()) {
@@ -305,6 +304,10 @@ class GpsHandler {
   }
 
   Future startGpsIsolate(bool isInit) async {
+    if (IsolateNameServer.lookupPortByName(_isolateName) != null) {
+      IsolateNameServer.removePortNameMapping(_isolateName);
+    }
+
     port = ReceivePort();
     IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
     port.listen((dynamic data) {
@@ -320,6 +323,40 @@ class GpsHandler {
             filteredLongitude: kalman.longitude,
             filteredAccuracy: kalman.accuracy);
         _onPositionUpdate(position);
+
+        var pos =
+            "lat: ${position.latitude}, lon: ${position.longitude}, acc: ${position.accuracy.round()}m";
+        var posLines =
+            "lat: ${position.latitude}\nlon: ${position.longitude}\nacc: ${position.accuracy.round()}m";
+        var extraPos = """altitude: ${position.altitude.round()}m
+speed: ${(position.speed * 3.6).toStringAsFixed(0)}km/h
+heading: ${position.heading.round()}
+time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(position.time.toInt()))}""";
+
+        var title = "SMASH is active";
+        var msg = pos;
+        var bigMsg = posLines + "\n" + extraPos;
+        if (_gpsState.isLogging) {
+          title = "SMASH is logging";
+
+          var currentLogStats = _gpsState.getCurrentLogStats();
+          double distanceMeter = currentLogStats[0] as double;
+          double distanceMeterFiltered = currentLogStats[1] as double;
+          int timestampDelta = currentLogStats[2] as int;
+
+          var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
+          var distStr = StringUtilities.formatMeters(distanceMeter);
+          var distFilteredStr =
+              StringUtilities.formatMeters(distanceMeterFiltered);
+
+          if (timeStr != null) {
+            msg = "$timeStr, $distStr ($distFilteredStr)";
+            bigMsg = msg + "\n" + bigMsg;
+          }
+        }
+
+        GPS.BackgroundLocator.updateNotificationText(
+            title: title, msg: msg, bigMsg: bigMsg);
       }
     });
     // init platform state
@@ -327,19 +364,29 @@ class GpsHandler {
 
     var smashLocationAccuracy = SmashLocationAccuracy.fromPreferences();
     SMLogger().i("Register for location updates.");
-    var locationSettings = LocationSettings(
-        notificationTitle: "SMASH location service is active.",
-        notificationMsg: "",
-        notificationIcon: "smash_notification",
-        wakeLockTime: 20,
-        autoStop: false,
-        accuracy: smashLocationAccuracy.accuracy,
-        interval: 1);
+    var androidNotificationSettings = AndroidNotificationSettings(
+      notificationChannelName: 'Location tracking',
+      notificationTitle: "SMASH location service is active.",
+      notificationMsg: "",
+      notificationBigMsg:
+          'Background location is on to keep the app registering the location even when the app is in background.',
+      notificationIcon: "smash_notification",
+      notificationIconColor: SmashColors.mainDecorations,
+    );
     GPS.BackgroundLocator.registerLocationUpdate(
       callback,
       //optional
-      androidNotificationCallback: notificationCallback,
-      settings: locationSettings,
+      autoStop: false,
+      androidSettings: AndroidSettings(
+          accuracy: smashLocationAccuracy.accuracy,
+          interval: 1,
+          distanceFilter: 0,
+          wakeLockTime: 20,
+          androidNotificationSettings: androidNotificationSettings),
+      iosSettings: IOSSettings(
+        accuracy: LocationAccuracy.NAVIGATION,
+        distanceFilter: 0,
+      ),
     );
     SMLogger().i("Geolocator initialized.");
   }
