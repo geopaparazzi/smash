@@ -243,11 +243,11 @@ class MainViewCoachMarks {
         alignSkip: Alignment.topCenter,
         textSkip: "",
         paddingFocus: 10,
-        opacityShadow: 0.7, finish: () {
+        opacityShadow: 0.7, onFinish: () {
       // print("finish");
-    }, clickTarget: (target) {
+    }, onClickTarget: (target) {
       // print(target);
-    }, clickSkip: () {
+    }, onClickSkip: () {
       // print("skip");
     })
       ..show();

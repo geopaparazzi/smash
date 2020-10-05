@@ -97,7 +97,7 @@ dependencies:
       url: https://github.com/yako-dev/flutter_badges.git
 
   # MIT
-  tutorial_coach_mark: ^0.3.0
+  tutorial_coach_mark: ^0.5.1
 
   # MIT
   after_layout: ^1.0.7+2
@@ -154,7 +154,7 @@ dependencies:
 
 dev_dependencies:
   # MIT
-  flutter_launcher_icons: ^0.7.4
+  flutter_launcher_icons: ^0.8.1
 
 #  flutter_test:
 #    sdk: flutter
