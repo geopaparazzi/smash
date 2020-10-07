@@ -7,9 +7,11 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/export/geopackage_export.dart';
 import 'package:smash/eu/hydrologis/smash/export/gpx_kml_export.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/export/gss_export.dart';
@@ -35,6 +37,8 @@ class _ExportWidgetState extends State<ExportWidget> {
   String _gpxOutPath = "";
   int _kmlBuildStatus = 0;
   String _kmlOutPath = "";
+  int _gpkgBuildStatus = 0;
+  String _gpkgOutPath = "";
 
   Future<void> buildPdf(BuildContext context) async {
     var exportsFolder = await Workspace.getExportsFolder();
@@ -48,6 +52,21 @@ class _ExportWidgetState extends State<ExportWidget> {
     setState(() {
       _pdfOutPath = outFilePath;
       _pdfBuildStatus = 2;
+    });
+  }
+
+  Future<void> buildGeopackage(BuildContext context) async {
+    var exportsFolder = await Workspace.getExportsFolder();
+    var ts = TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now());
+    var outFilePath =
+        FileUtilities.joinPaths(exportsFolder.path, "smash_export_$ts.gpkg");
+    var projectState = Provider.of<ProjectState>(context, listen: false);
+    var db = projectState.projectDb;
+    await GeopackageExporter.exportDb(db, File(outFilePath));
+
+    setState(() {
+      _gpkgOutPath = outFilePath;
+      _gpkgBuildStatus = 2;
     });
   }
 
@@ -148,6 +167,30 @@ class _ExportWidgetState extends State<ExportWidget> {
                 _kmlBuildStatus = 1;
               });
               buildGpx(context, true);
+//              Navigator.pop(context);
+            }),
+        ListTile(
+            leading: _gpkgBuildStatus == 0
+                ? Icon(
+                    MdiIcons.packageVariant,
+                    color: SmashColors.mainDecorations,
+                  )
+                : _gpkgBuildStatus == 1
+                    ? CircularProgressIndicator()
+                    : Icon(
+                        Icons.check,
+                        color: SmashColors.mainDecorations,
+                      ),
+            title: Text(
+                "${_gpkgBuildStatus == 2 ? 'Geopackage exported' : 'Geopackage'}"),
+            subtitle: Text(
+                "${_gpkgBuildStatus == 2 ? _gpkgOutPath : 'Export project to Geopackage'}"),
+            onTap: () async {
+              setState(() {
+                _gpkgOutPath = "";
+                _gpkgBuildStatus = 1;
+              });
+              await buildGeopackage(context);
 //              Navigator.pop(context);
             }),
         ListTile(

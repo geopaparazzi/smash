@@ -42,6 +42,8 @@ dependencies:
   dart_hydrologis_utils:
     ^0.5.3
     # path: ../dart_hydrologis_utils/
+  
+  dart_jts: ^0.0.5+6
 
   ##################################
   # OTHERS

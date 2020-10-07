@@ -144,7 +144,7 @@ packages:
     source: hosted
     version: "0.5.3+1"
   dart_jts:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: dart_jts
       url: "https://pub.dartlang.org"
