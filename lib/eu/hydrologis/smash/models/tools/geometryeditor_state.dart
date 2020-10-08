@@ -218,7 +218,7 @@ class GeometryEditManager {
 
     var env =
         Envelope.fromCoordinate(Coordinate(point.longitude, point.latitude));
-    env.expandByDistance(0.0001);
+    env.expandByDistance(0.001);
 
     var touchGeomLL = GeometryUtilities.fromEnvelope(env, makeCircle: false);
     var touchGeom = GeometryUtilities.fromEnvelope(env, makeCircle: false);
@@ -246,17 +246,23 @@ class GeometryEditManager {
             // if (currentEditing != null && currentEditing.id == id) {
             //   continue;
             // }
-            EditableGeometry editGeom = EditableGeometry();
-            editGeom.geometry = geometry;
-            editGeom.db = db;
-            editGeom.id = id;
-            editGeom.table = tableName;
-            editorState.editableGeometry = editGeom;
-            _isEditing = false;
 
-            SmashMapBuilder builder =
-                Provider.of<SmashMapBuilder>(context, listen: false);
-            builder.reBuild();
+            if (geometry.getNumGeometries() > 1) {
+              SmashDialogs.showWarningDialog(context,
+                  "Selected multi-Geometry, which is not supported for editing.");
+            } else {
+              EditableGeometry editGeom = EditableGeometry();
+              editGeom.geometry = geometry;
+              editGeom.db = db;
+              editGeom.id = id;
+              editGeom.table = tableName;
+              editorState.editableGeometry = editGeom;
+              _isEditing = false;
+
+              SmashMapBuilder builder =
+                  Provider.of<SmashMapBuilder>(context, listen: false);
+              builder.reBuild();
+            }
             return;
           }
         }
@@ -295,6 +301,12 @@ class GeometryEditManager {
       var newPoint = pointEditor.point;
       geom = gf.createPoint(Coordinate(newPoint.longitude, newPoint.latitude));
     }
+
+    if (geometryColumn.srid != SmashPrj.EPSG4326_INT) {
+      var to = SmashPrj.fromSrid(geometryColumn.srid);
+      SmashPrj.transformGeometry(SmashPrj.EPSG4326, to, geom);
+    }
+
     var geomBytes = GeoPkgGeomWriter().write(geom);
 
     var newRow = {geometryColumn.geometryColumnName: geomBytes};
