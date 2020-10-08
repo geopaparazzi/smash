@@ -59,6 +59,7 @@ class GeometryEditManager {
   List<Polyline> polyLines;
   Polyline editPolyline;
   PolyEditor polyEditor;
+  DragMarker pointEditor;
   bool _isEditing = false;
 
   factory GeometryEditManager() {
@@ -67,32 +68,62 @@ class GeometryEditManager {
 
   GeometryEditManager._internal();
 
-  void startEditing(EditableGeometry editGeometry, Function callbackRefresh) {
+  void startEditing(EditableGeometry editGeometry, Function callbackRefresh,
+      {EGeometryType geomType}) {
     if (!_isEditing) {
       List<LatLng> geomPoints = [];
       bool addClosePathMarker = true;
       if (editGeometry != null) {
-        var gType = EGeometryType.forGeometry(editGeometry.geometry);
-        if (gType.isLine()) {
+        geomType = EGeometryType.forGeometry(editGeometry.geometry);
+        if (geomType.isLine()) {
           addClosePathMarker = false;
           geomPoints = editGeometry.geometry
               .getCoordinates()
               .map((c) => LatLng(c.y, c.x))
               .toList();
+        } else if (geomType.isPolygon()) {
+          addClosePathMarker = true;
+          geomPoints = editGeometry.geometry
+              .getCoordinates()
+              .map((c) => LatLng(c.y, c.x))
+              .toList();
+        } else if (geomType.isPoint()) {
+          addClosePathMarker = false;
+          var coord = editGeometry.geometry.getCoordinate();
+
+          pointEditor = DragMarker(
+            point: LatLng(coord.y, coord.x),
+            width: 80.0,
+            height: 80.0,
+            builder: (ctx) =>
+                Container(child: Icon(Icons.crop_square, size: 23)),
+            onDragEnd: (details, point) {
+              print('Finished Drag $details $point');
+            },
+            updateMapNearEdge: false,
+          );
         }
       }
 
-      polyLines = [];
-      editPolyline = new Polyline(color: Colors.deepOrange, points: geomPoints);
-      polyEditor = new PolyEditor(
-        addClosePathMarker: addClosePathMarker,
-        points: editPolyline.points,
-        pointIcon: Icon(Icons.crop_square, size: 23),
-        intermediateIcon: Icon(Icons.lens, size: 15, color: Colors.grey),
-        callbackRefresh: callbackRefresh,
-      );
+      if (geomType.isPoint()) {
+        polyEditor = null;
+        polyLines = null;
+        editPolyline = null;
+      } else {
+        pointEditor = null;
+        polyLines = [];
+        editPolyline =
+            new Polyline(color: Colors.deepOrange, points: geomPoints);
+        polyEditor = new PolyEditor(
+          addClosePathMarker: addClosePathMarker,
+          points: geomPoints,
+          pointIcon: Icon(Icons.crop_square, size: 23),
+          intermediateIcon: Icon(Icons.lens, size: 15, color: Colors.grey),
+          callbackRefresh: callbackRefresh,
+        );
 
-      polyLines.add(editPolyline);
+        polyLines.add(editPolyline);
+      }
       _isEditing = true;
     }
   }
@@ -108,14 +139,20 @@ class GeometryEditManager {
 
   void addPoint(LatLng ll) {
     if (_isEditing) {
-      polyEditor.add(editPolyline.points, ll);
+      if (polyEditor != null) {
+        polyEditor.add(editPolyline.points, ll);
+      }
     }
   }
 
   void addEditLayers(List<LayerOptions> layers) {
     if (_isEditing) {
-      layers.add(PolylineLayerOptions(polylines: polyLines));
-      layers.add(DragMarkerPluginOptions(markers: polyEditor.edit()));
+      if (polyEditor != null) {
+        layers.add(PolylineLayerOptions(polylines: polyLines));
+        layers.add(DragMarkerPluginOptions(markers: polyEditor.edit()));
+      } else if (pointEditor != null) {
+        layers.add(DragMarkerPluginOptions(markers: [pointEditor]));
+      }
     }
   }
 
@@ -127,7 +164,9 @@ class GeometryEditManager {
 
   void onMapTap(BuildContext context, LatLng point) {
     if (_isEditing) {
-      addPoint(point);
+      if (polyEditor != null) {
+        addPoint(point);
+      }
     }
   }
 
@@ -141,6 +180,7 @@ class GeometryEditManager {
 
     List<LayerSource> geopackageLayers = LayerManager()
         .getLayerSources()
+        .reversed
         .where((l) => l is GeopackageSource && l.isActive())
         .toList();
 
@@ -153,7 +193,7 @@ class GeometryEditManager {
 
     var currentEditing = editorState.editableGeometry;
 
-    for (var vLayer in geopackageLayers) {
+    for (LayerSource vLayer in geopackageLayers) {
       var srid = vLayer.getSrid();
       var db = ConnectionsHandler().open(vLayer.getAbsolutePath());
       // create the env
@@ -171,15 +211,16 @@ class GeometryEditManager {
           SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, geometry);
           if (geometry.intersects(touchGeomLL)) {
             var id = int.parse(geometry.getUserData().toString());
-            if (currentEditing != null && currentEditing.id == id) {
-              continue;
-            }
+            // if (currentEditing != null && currentEditing.id == id) {
+            //   continue;
+            // }
             EditableGeometry editGeom = EditableGeometry();
             editGeom.geometry = geometry;
             editGeom.db = db;
             editGeom.id = id;
             editGeom.table = tableName;
             editorState.editableGeometry = editGeom;
+            _isEditing = false;
 
             SmashMapBuilder builder =
                 Provider.of<SmashMapBuilder>(context, listen: false);
@@ -196,5 +237,34 @@ class GeometryEditManager {
     SmashMapBuilder builder =
         Provider.of<SmashMapBuilder>(context, listen: false);
     builder.reBuild();
+  }
+
+  void saveCurrentEdit(GeometryEditorState geomEditState) {
+    var editableGeometry = geomEditState.editableGeometry;
+    GeopackageDb db = editableGeometry.db;
+
+    var tableName = SqlName(editableGeometry.table);
+    var primaryKey = db.getPrimaryKey(tableName);
+    var geometryColumn = db.getGeometryColumnsForTable(tableName);
+    var gType = geometryColumn.geometryType;
+    var gf = GeometryFactory.defaultPrecision();
+    Geometry geom;
+    if (gType.isLine()) {
+      var newPoints = editPolyline.points;
+      geom = gf.createLineString(
+          newPoints.map((c) => Coordinate(c.longitude, c.latitude)).toList());
+    } else if (gType.isPolygon()) {
+      var newPoints = editPolyline.points;
+      var linearRing = gf.createLinearRing(
+          newPoints.map((c) => Coordinate(c.longitude, c.latitude)).toList());
+      geom = gf.createPolygon(linearRing, null);
+    } else if (gType.isPoint()) {
+      var newPoint = pointEditor.point;
+      geom = gf.createPoint(Coordinate(newPoint.longitude, newPoint.latitude));
+    }
+    var geomBytes = GeoPkgGeomWriter().write(geom);
+
+    var newRow = {geometryColumn.geometryColumnName: geomBytes};
+    db.updateMap(tableName, newRow, "$primaryKey=${editableGeometry.id}");
   }
 }

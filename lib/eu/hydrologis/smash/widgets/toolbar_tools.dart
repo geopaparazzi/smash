@@ -151,38 +151,24 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           ),
         ),
         onTap: () async {
-          var newPoints = GeometryEditManager().editPolyline.points;
           var editableGeometry = geomEditState.editableGeometry;
-          GeopackageDb db = editableGeometry.db;
+          GeometryEditManager().saveCurrentEdit(geomEditState);
 
-          var tableName = SqlName(editableGeometry.table);
-          var primaryKey = db.getPrimaryKey(tableName);
-          var geometryColumn = db.getGeometryColumnsForTable(tableName);
-          var gType = geometryColumn.geometryType;
-          var gf = GeometryFactory.defaultPrecision();
-          Geometry geom;
-          if (gType.isLine()) {
-            geom = gf.createLineString(newPoints
-                .map((c) => Coordinate(c.longitude, c.latitude))
-                .toList());
-          }
-          var geomBytes = GeoPkgGeomWriter().write(geom);
-
-          var newRow = {geometryColumn.geometryColumnName: geomBytes};
-          db.updateMap(tableName, newRow, "$primaryKey=${editableGeometry.id}");
-
+          // stop editing
           geomEditState.editableGeometry = null;
           GeometryEditManager().stopEditing();
 
+          // reload layer geoms
           var layerSources = LayerManager().getLayerSources(onlyActive: true);
           layerSources.forEach((layer) {
             if (layer is GeopackageSource &&
                 layer.getName() == editableGeometry.table &&
-                layer.db == db) {
+                layer.db == editableGeometry.db) {
               layer.isLoaded = false;
             }
           });
 
+          // rebuild map
           SmashMapBuilder mapBuilder =
               Provider.of<SmashMapBuilder>(context, listen: false);
           var layers = await LayerManager().loadLayers(mapBuilder.context);
