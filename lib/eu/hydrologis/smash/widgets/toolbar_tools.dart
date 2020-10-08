@@ -11,8 +11,10 @@ import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
+import 'package:smash/eu/hydrologis/smash/maps/feature_attributes_viewer.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -61,6 +63,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
             children: <Widget>[
               getAddFeatureButton(),
               getRemoveFeatureButton(),
+              getOpenFeatureAttributesButton(geomEditState),
               getSaveFeatureButton(geomEditState),
               getCancelEditButton(geomEditState),
               Spacer(),
@@ -232,6 +235,73 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
             //   mapBuilder.reBuild();
             // });
           });
+        },
+      ),
+    );
+  }
+
+  Widget getOpenFeatureAttributesButton(
+      GeometryEditorState geometryEditorState) {
+    return Tooltip(
+      message: "Show feature attributes.",
+      child: GestureDetector(
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: InkWell(
+            child: Icon(
+              MdiIcons.tableEdit,
+              color: SmashColors.mainBackground,
+              size: widget._iconSize,
+            ),
+          ),
+        ),
+        onTap: () {
+          var editableGeometry = geometryEditorState.editableGeometry;
+          var id = editableGeometry.id;
+          if (id != null) {
+            var table = editableGeometry.table;
+            var db = editableGeometry.db;
+            var tableName = SqlName(table);
+            var key = db.getPrimaryKey(tableName);
+            var geometryColumn = db.getGeometryColumnsForTable(tableName);
+            var tableColumns = db.getTableColumns(tableName);
+            Map<String, String> typesMap = {};
+            tableColumns.forEach((column) {
+              typesMap[column[0]] = column[1];
+            });
+            var tableData = db.getTableData(tableName, where: "$key=$id");
+            if (tableData.data.isNotEmpty) {
+              EditableQueryResult totalQueryResult = EditableQueryResult();
+              totalQueryResult.editable = [true];
+              totalQueryResult.fieldAndTypemap = [];
+              totalQueryResult.ids = [];
+              totalQueryResult.primaryKeys = [];
+              totalQueryResult.dbs = [];
+              tableData.geoms.forEach((g) {
+                totalQueryResult.ids.add(table);
+                totalQueryResult.primaryKeys.add(key);
+                totalQueryResult.dbs.add(db);
+                totalQueryResult.fieldAndTypemap.add(typesMap);
+                totalQueryResult.editable.add(true);
+                if (geometryColumn.srid != SmashPrj.EPSG4326_INT) {
+                  var from = SmashPrj.fromSrid(geometryColumn.srid);
+                  SmashPrj.transformGeometryToWgs84(from, g);
+                }
+                totalQueryResult.geoms.add(g);
+              });
+              tableData.data.forEach((d) {
+                totalQueryResult.data.add(d);
+              });
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          FeatureAttributesViewer(totalQueryResult)));
+            }
+          } else {
+            SmashDialogs.showWarningDialog(context,
+                "The feature does not have a primary key. Editing is not allowed.");
+          }
         },
       ),
     );
