@@ -4,10 +4,15 @@
  * found in the LICENSE file.
  */
 import 'package:badges/badges.dart';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -19,11 +24,6 @@ import 'package:smashlibs/smashlibs.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-enum ToolbarState {
-  MAIN_VIEW,
-  EDITING,
-}
-
 class BottomToolsBar extends StatefulWidget {
   final _iconSize;
   BottomToolsBar(this._iconSize, {Key key}) : super(key: key);
@@ -33,55 +33,222 @@ class BottomToolsBar extends StatefulWidget {
 }
 
 class _BottomToolsBarState extends State<BottomToolsBar> {
-  ToolbarState toolbarState = ToolbarState.MAIN_VIEW;
-
   @override
   Widget build(BuildContext context) {
-    // if (toolbarState == ToolbarState.MAIN_VIEW) {
-    return BottomAppBar(
-      color: SmashColors.mainDecorations,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          if (EXPERIMENTAL_GEOMEDITOR__ENABLED)
-            GeomEditorButton(widget._iconSize),
-          FeatureQueryButton(widget._iconSize),
-          RulerButton(widget._iconSize),
-          Spacer(),
-          Consumer<SmashMapState>(builder: (context, mapState, child) {
-            return DashboardUtils.makeToolbarZoomBadge(
-              IconButton(
-                onPressed: () {
-                  mapState.zoomIn();
-                },
-                tooltip: 'Zoom in',
-                icon: Icon(
-                  SmashIcons.zoomInIcon,
-                  color: SmashColors.mainBackground,
-                ),
-                iconSize: widget._iconSize,
-              ),
-              mapState.zoom.toInt(),
-              iconSize: widget._iconSize,
-            );
-          }),
-          Consumer<SmashMapState>(builder: (context, mapState, child) {
-            return IconButton(
-              onPressed: () {
-                mapState.zoomOut();
-              },
-              tooltip: 'Zoom out',
-              icon: Icon(
-                SmashIcons.zoomOutIcon,
-                color: SmashColors.mainBackground,
-              ),
-              iconSize: widget._iconSize,
-            );
-          }),
-        ],
+    return Consumer<GeometryEditorState>(
+        builder: (context, geomEditState, child) {
+      if (geomEditState.editableGeometry == null) {
+        return BottomAppBar(
+          color: SmashColors.mainDecorations,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              if (EXPERIMENTAL_GEOMEDITOR__ENABLED)
+                GeomEditorButton(widget._iconSize),
+              FeatureQueryButton(widget._iconSize),
+              RulerButton(widget._iconSize),
+              Spacer(),
+              getZoomIn(),
+              getZoomOut(),
+            ],
+          ),
+        );
+      } else {
+        return BottomAppBar(
+          color: SmashColors.mainDecorations,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              getAddFeatureButton(),
+              getRemoveFeatureButton(),
+              getSaveFeatureButton(geomEditState),
+              getCancelEditButton(geomEditState),
+              Spacer(),
+              getZoomIn(),
+              getZoomOut(),
+            ],
+          ),
+        );
+      }
+    });
+  }
+
+  Consumer<SmashMapState> getZoomOut() {
+    return Consumer<SmashMapState>(builder: (context, mapState, child) {
+      return IconButton(
+        onPressed: () {
+          mapState.zoomOut();
+        },
+        tooltip: 'Zoom out',
+        icon: Icon(
+          SmashIcons.zoomOutIcon,
+          color: SmashColors.mainBackground,
+        ),
+        iconSize: widget._iconSize,
+      );
+    });
+  }
+
+  Consumer<SmashMapState> getZoomIn() {
+    return Consumer<SmashMapState>(builder: (context, mapState, child) {
+      return DashboardUtils.makeToolbarZoomBadge(
+        IconButton(
+          onPressed: () {
+            mapState.zoomIn();
+          },
+          tooltip: 'Zoom in',
+          icon: Icon(
+            SmashIcons.zoomInIcon,
+            color: SmashColors.mainBackground,
+          ),
+          iconSize: widget._iconSize,
+        ),
+        mapState.zoom.toInt(),
+        iconSize: widget._iconSize,
+      );
+    });
+  }
+
+  Widget getCancelEditButton(GeometryEditorState geomEditState) {
+    return Tooltip(
+      message: "Cancel current edit.",
+      child: GestureDetector(
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: InkWell(
+            child: Icon(
+              MdiIcons.markerCancel,
+              color: SmashColors.mainBackground,
+              size: widget._iconSize,
+            ),
+          ),
+        ),
+        onLongPress: () {
+          setState(() {
+            geomEditState.editableGeometry = null;
+            GeometryEditManager().stopEditing();
+            SmashMapBuilder mapBuilder =
+                Provider.of<SmashMapBuilder>(context, listen: false);
+            mapBuilder.reBuild();
+          });
+        },
       ),
     );
-    // }
+  }
+
+  Widget getSaveFeatureButton(GeometryEditorState geomEditState) {
+    return Tooltip(
+      message: "Save current edit.",
+      child: GestureDetector(
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: InkWell(
+            child: Icon(
+              MdiIcons.contentSaveEdit,
+              color: SmashColors.mainBackground,
+              size: widget._iconSize,
+            ),
+          ),
+        ),
+        onTap: () async {
+          var newPoints = GeometryEditManager().editPolyline.points;
+          var editableGeometry = geomEditState.editableGeometry;
+          GeopackageDb db = editableGeometry.db;
+
+          var tableName = SqlName(editableGeometry.table);
+          var primaryKey = db.getPrimaryKey(tableName);
+          var geometryColumn = db.getGeometryColumnsForTable(tableName);
+          var gType = geometryColumn.geometryType;
+          var gf = GeometryFactory.defaultPrecision();
+          Geometry geom;
+          if (gType.isLine()) {
+            geom = gf.createLineString(newPoints
+                .map((c) => Coordinate(c.longitude, c.latitude))
+                .toList());
+          }
+          var geomBytes = GeoPkgGeomWriter().write(geom);
+
+          var newRow = {geometryColumn.geometryColumnName: geomBytes};
+          db.updateMap(tableName, newRow, "$primaryKey=${editableGeometry.id}");
+
+          geomEditState.editableGeometry = null;
+          GeometryEditManager().stopEditing();
+
+          var layerSources = LayerManager().getLayerSources(onlyActive: true);
+          layerSources.forEach((layer) {
+            if (layer is GeopackageSource &&
+                layer.getName() == editableGeometry.table &&
+                layer.db == db) {
+              layer.isLoaded = false;
+            }
+          });
+
+          SmashMapBuilder mapBuilder =
+              Provider.of<SmashMapBuilder>(context, listen: false);
+          var layers = await LayerManager().loadLayers(mapBuilder.context);
+          mapBuilder.oneShotUpdateLayers = layers;
+          setState(() {
+            mapBuilder.reBuild();
+          });
+        },
+      ),
+    );
+  }
+
+  Widget getAddFeatureButton() {
+    return Tooltip(
+      message: "Add a new feature.",
+      child: GestureDetector(
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: InkWell(
+            child: Icon(
+              MdiIcons.plus,
+              color: SmashColors.mainBackground,
+              size: widget._iconSize,
+            ),
+          ),
+        ),
+        onTap: () {
+          setState(() {
+            GeometryEditManager().stopEditing();
+            GeometryEditManager().startEditing(null, () {
+              SmashMapBuilder mapBuilder =
+                  Provider.of<SmashMapBuilder>(context, listen: false);
+              mapBuilder.reBuild();
+            });
+          });
+        },
+      ),
+    );
+  }
+
+  Widget getRemoveFeatureButton() {
+    return Tooltip(
+      message: "Remove selected feature.",
+      child: GestureDetector(
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: InkWell(
+            child: Icon(
+              MdiIcons.minus,
+              color: SmashColors.mainBackground,
+              size: widget._iconSize,
+            ),
+          ),
+        ),
+        onTap: () {
+          setState(() {
+            // GeometryEditManager().stopEditing();
+            // GeometryEditManager().startEditing(null, () {
+            //   SmashMapBuilder mapBuilder =
+            //       Provider.of<SmashMapBuilder>(context, listen: false);
+            //   mapBuilder.reBuild();
+            // });
+          });
+        },
+      ),
+    );
   }
 }
 

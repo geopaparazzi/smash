@@ -5,6 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +15,11 @@ import 'package:provider/provider.dart';
 class SmashMapBuilder extends ChangeNotifierPlus {
   BuildContext context;
   GlobalKey<ScaffoldState> scaffoldKey;
+
+  /// List of rebuilt layers in case they are reloaded from outside the mapview.
+  ///
+  /// These are set to null after use.
+  List<LayerOptions> _oneShotUpdateLayers;
 
   bool _inProgress = false;
 
@@ -29,6 +35,18 @@ class SmashMapBuilder extends ChangeNotifierPlus {
   setInProgress(bool progress) {
     _inProgress = progress;
     notifyListeners();
+  }
+
+  set oneShotUpdateLayers(List<LayerOptions> newLayers) {
+    _oneShotUpdateLayers = newLayers;
+  }
+
+  List<LayerOptions> get oneShotUpdateLayers {
+    try {
+      return _oneShotUpdateLayers;
+    } finally {
+      _oneShotUpdateLayers = null;
+    }
   }
 
   static void reBuildStatic(BuildContext context) {

@@ -170,7 +170,6 @@ class MainViewWidgetState extends State<MainViewWidget>
 
   @override
   Widget build(BuildContext context) {
-    print("BUIIIIIILD!!!");
     return Consumer<SmashMapBuilder>(builder: (context, mapBuilder, child) {
       mapBuilder.context = context;
       mapBuilder.scaffoldKey = _scaffoldKey;
@@ -202,7 +201,12 @@ class MainViewWidgetState extends State<MainViewWidget>
         }
       }
     }
-
+    // check if layers have been reloaded from another section
+    // and in case use those
+    var oneShotUpdateLayers = mapBuilder.oneShotUpdateLayers;
+    if (oneShotUpdateLayers != null) {
+      _activeLayers = oneShotUpdateLayers;
+    }
     layers.addAll(_activeLayers);
 
     var pluginsList = <MapPlugin>[];
@@ -213,26 +217,12 @@ class MainViewWidgetState extends State<MainViewWidget>
     GeometryEditorState editorState =
         Provider.of<GeometryEditorState>(context, listen: false);
     if (editorState.editableGeometry != null) {
-      var geom = editorState.editableGeometry.geometry;
-      var gType = EGeometryType.forGeometry(geom);
-      List<LatLng> geomPoints = [];
-      if (gType.isLine()) {
-        geomPoints =
-            geom.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
-      }
-      var polyEditor = new PolyEditor(
-        points: geomPoints,
-        pointIcon: Icon(MdiIcons.circle, size: 10, color: Colors.red),
-        intermediateIcon:
-            Icon(MdiIcons.circle, size: 5, color: Colors.red[100]),
-        callbackRefresh: () {
-          setState(() {});
-        },
-      );
-      layers.add(
-        DragMarkerPluginOptions(markers: polyEditor.edit()),
-      );
-      pluginsList.add(DragMarkerPlugin());
+      GeometryEditManager().startEditing(editorState.editableGeometry, () {
+        setState(() {});
+      });
+
+      GeometryEditManager().addEditPlugins(pluginsList);
+      GeometryEditManager().addEditLayers(layers);
     }
 
     return WillPopScope(
@@ -281,6 +271,9 @@ class MainViewWidgetState extends State<MainViewWidget>
                   },
                   onTap: (point) {
                     GeometryEditManager().onMapTap(context, point);
+                  },
+                  onLongPress: (point) {
+                    GeometryEditManager().onMapLongTap(context, point);
                   },
                 ),
                 layers: layers,
