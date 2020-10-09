@@ -273,7 +273,8 @@ class MainViewWidgetState extends State<MainViewWidget>
                     GeometryEditManager().onMapTap(context, point);
                   },
                   onLongPress: (point) {
-                    GeometryEditManager().onMapLongTap(context, point);
+                    GeometryEditManager().onMapLongTap(
+                        context, point, _mapController.zoom.round());
                   },
                 ),
                 layers: layers,

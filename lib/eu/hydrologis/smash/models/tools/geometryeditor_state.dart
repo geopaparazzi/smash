@@ -19,6 +19,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class GeometryEditorState extends ChangeNotifier {
   static final type = BottomToolbarToolsRegistry.GEOMEDITOR;
@@ -56,12 +57,57 @@ class EditableGeometry {
 class GeometryEditManager {
   static final GeometryEditManager _singleton = GeometryEditManager._internal();
 
-  static final Icon dragHandlerIcon = Icon(Icons.crop_square, size: 23);
-  static final Icon intermediateHandlerIcon =
-      Icon(Icons.lens, size: 15, color: Colors.grey);
+  static final Widget dragHandlerIcon = Stack(
+    alignment: Alignment.center,
+    children: [
+      Icon(MdiIcons.squareRounded, size: 22, color: Colors.black),
+      Icon(
+        MdiIcons.squareRounded,
+        size: 16,
+        color: Colors.yellow,
+      )
+    ],
+  );
+  static final Widget intermediateHandlerIcon = Stack(
+    alignment: Alignment.center,
+    children: [
+      Icon(MdiIcons.circle, size: 17, color: Colors.black),
+      Icon(MdiIcons.plusCircle, size: 13, color: Colors.yellow)
+    ],
+  );
   static final Color editBorder = Colors.yellow;
+  static final Color editBackBorder = Colors.black;
   static final Color editFill = Colors.yellow.withOpacity(0.3);
   static final double editStrokeWidth = 3.0;
+
+  static const List<double> ZOOM2TOUCHRADIUS = [
+    2, // zoom 0
+    2, // zoom 1
+    2, // zoom 2
+    2, // zoom 3
+    1, // zoom 4
+    1, // zoom 5
+    1, // zoom 6
+    0.1, // zoom 7
+    0.1, // zoom 8
+    0.01, // zoom 9
+    0.01, // zoom 10
+    0.001, // zoom 11
+    0.001, // zoom 12
+    0.001, // zoom 13
+    0.0001, // zoom 14
+    0.0001, // zoom 15
+    0.0001, // zoom 16
+    0.0001, // zoom 17
+    0.0001, // zoom 18
+    0.00001, // zoom 19
+    0.00001, // zoom 20
+    0.00001, // zoom 21
+    0.000001, // zoom 22
+    0.000001, // zoom 23
+    0.000001, // zoom 24
+    0.000001, // zoom 25
+  ];
 
   PolyEditor polyEditor;
   List<Polyline> polyLines;
@@ -119,6 +165,12 @@ class GeometryEditManager {
             borderStrokeWidth: editStrokeWidth,
             points: geomPoints,
           );
+          var backEditPolygon = new Polygon(
+            color: editFill.withAlpha(0),
+            borderColor: editBackBorder,
+            borderStrokeWidth: editStrokeWidth + 3,
+            points: geomPoints,
+          );
           polyEditor = new PolyEditor(
             addClosePathMarker: true,
             points: geomPoints,
@@ -127,6 +179,7 @@ class GeometryEditManager {
             callbackRefresh: callbackRefresh,
           );
 
+          polygons.add(backEditPolygon);
           polygons.add(editPolygon);
         } else if (geomType.isPoint()) {
           var coord = editGeometry.geometry.getCoordinate();
@@ -203,7 +256,8 @@ class GeometryEditManager {
   }
 
   /// On map long tap, if the editor state is on, the feature is selected or deselected.
-  void onMapLongTap(BuildContext context, LatLng point) {
+  Future<void> onMapLongTap(
+      BuildContext context, LatLng point, int zoom) async {
     GeometryEditorState editorState =
         Provider.of<GeometryEditorState>(context, listen: false);
     if (!editorState.isEnabled) {
@@ -216,57 +270,83 @@ class GeometryEditManager {
         .where((l) => l is GeopackageSource && l.isActive())
         .toList();
 
+    var radius = ZOOM2TOUCHRADIUS[zoom];
+
     var env =
         Envelope.fromCoordinate(Coordinate(point.longitude, point.latitude));
-    env.expandByDistance(0.001);
-
-    var touchGeomLL = GeometryUtilities.fromEnvelope(env, makeCircle: false);
-    var touchGeom = GeometryUtilities.fromEnvelope(env, makeCircle: false);
+    env.expandByDistance(radius);
 
     var currentEditing = editorState.editableGeometry;
 
+    EditableGeometry editGeom;
+    double minDist = 1000000000;
     for (LayerSource vLayer in geopackageLayers) {
       var srid = vLayer.getSrid();
       var db = ConnectionsHandler().open(vLayer.getAbsolutePath());
       // create the env
       var dataPrj = SmashPrj.fromSrid(srid);
-      SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, touchGeom);
+
+      // create the touch point and buffer in the current layer prj
+      var touchBufferLayerPrj =
+          GeometryUtilities.fromEnvelope(env, makeCircle: false);
+      var touchPointLayerPrj = GeometryFactory.defaultPrecision()
+          .createPoint(Coordinate(point.longitude, point.latitude));
+      SmashPrj.transformGeometry(
+          SmashPrj.EPSG4326, dataPrj, touchBufferLayerPrj);
+      SmashPrj.transformGeometry(
+          SmashPrj.EPSG4326, dataPrj, touchPointLayerPrj);
 
       var tableName = vLayer.getName();
-      var primaryKey = db.getPrimaryKey(SqlName(tableName));
-      var geomsIntersected = db.getGeometriesIn(SqlName(tableName),
-          envelope: touchGeom.getEnvelopeInternal(), userDataField: primaryKey);
+      var sqlName = SqlName(tableName);
+      var gc = db.getGeometryColumnsForTable(sqlName);
+      var primaryKey = db.getPrimaryKey(sqlName);
+      // if polygon, then it has to be inside,
+      // for other types we use the buffer
+      Envelope checkEnv;
+      Geometry checkGeom;
+      if (gc.geometryType.isPolygon()) {
+        checkEnv = touchPointLayerPrj.getEnvelopeInternal();
+        checkGeom = touchPointLayerPrj;
+      } else {
+        checkEnv = touchBufferLayerPrj.getEnvelopeInternal();
+        checkGeom = touchBufferLayerPrj;
+      }
+      var geomsIntersected = db.getGeometriesIn(sqlName,
+          envelope: checkEnv, userDataField: primaryKey);
+
       if (geomsIntersected.isNotEmpty) {
         // find touching
         for (var geometry in geomsIntersected) {
-          // project to lat/long for editing
-          SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, geometry);
-          if (geometry.intersects(touchGeomLL)) {
+          if (geometry.intersects(checkGeom)) {
             var id = int.parse(geometry.getUserData().toString());
-            // if (currentEditing != null && currentEditing.id == id) {
-            //   continue;
-            // }
-
-            if (geometry.getNumGeometries() > 1) {
-              SmashDialogs.showWarningDialog(context,
-                  "Selected multi-Geometry, which is not supported for editing.");
-            } else {
-              EditableGeometry editGeom = EditableGeometry();
+            // distance always from touch center
+            double distance = geometry.distance(touchPointLayerPrj);
+            if (distance < minDist) {
+              // transform to 4326 for editing
+              SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, geometry);
+              minDist = distance;
+              editGeom = EditableGeometry();
               editGeom.geometry = geometry;
               editGeom.db = db;
               editGeom.id = id;
               editGeom.table = tableName;
-              editorState.editableGeometry = editGeom;
-              _isEditing = false;
-
-              SmashMapBuilder builder =
-                  Provider.of<SmashMapBuilder>(context, listen: false);
-              builder.reBuild();
             }
-            return;
           }
         }
       }
+    }
+    if (editGeom != null) {
+      if (editGeom.geometry.getNumGeometries() > 1) {
+        SmashDialogs.showWarningDialog(context,
+            "Selected multi-Geometry, which is not supported for editing.");
+      } else {
+        editorState.editableGeometry = editGeom;
+        _isEditing = false;
+        SmashMapBuilder builder =
+            Provider.of<SmashMapBuilder>(context, listen: false);
+        builder.reBuild();
+      }
+      return;
     }
 
     // if it arrives here, no geom is selected
@@ -275,6 +355,22 @@ class GeometryEditManager {
     SmashMapBuilder builder =
         Provider.of<SmashMapBuilder>(context, listen: false);
     builder.reBuild();
+
+    // propose to add a new geometry here if no geometry was selected
+    if (currentEditing == null) {
+      Map<String, LayerSource> name2SourceMap = {};
+      geopackageLayers.forEach((element) {
+        name2SourceMap[element.getName()] = element;
+      });
+      var selectedName = await SmashDialogs.showComboDialog(
+          context,
+          "Create a new feature in the selected layer?",
+          name2SourceMap.keys.toList());
+      if (selectedName != null) {
+        var geopackageLayer = name2SourceMap[selectedName];
+        print(geopackageLayer.getName());
+      }
+    }
   }
 
   void saveCurrentEdit(GeometryEditorState geomEditState) {

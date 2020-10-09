@@ -193,7 +193,7 @@ packages:
       name: extended_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.2"
+    version: "1.2.0"
   extended_image_library:
     dependency: transitive
     description:
@@ -290,7 +290,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "7f2e984119bfd1a7c33474a4c5e8eda87dd25ae0"
+      resolved-ref: e79778e317535f79d427a7b73304065bed7e6d55
       url: "https://github.com/ibrierley/flutter_map_line_editor.git"
     source: git
     version: "1.0.0+1"
@@ -733,11 +733,9 @@ packages:
   smashlibs:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: b983fdd71d007e731e438e3c550142522966d36d
-      url: "https://github.com/moovida/smashlibs.git"
-    source: git
+      path: "../smashlibs"
+      relative: true
+    source: path
     version: "1.0.0"
   source_span:
     dependency: transitive
