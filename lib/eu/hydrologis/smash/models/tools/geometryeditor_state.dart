@@ -480,4 +480,23 @@ class GeometryEditManager {
     var newRow = {geometryColumn.geometryColumnName: geomBytes};
     db.updateMap(tableName, newRow, "$primaryKey=${editableGeometry.id}");
   }
+
+  /// Deletes the feature of the currentl selected geometry from the database.
+  bool deleteCurrentSelection(GeometryEditorState geomEditState) {
+    var editableGeometry = geomEditState.editableGeometry;
+    if (editableGeometry != null) {
+      var id = editableGeometry.id;
+      if (id != null) {
+        var table = SqlName(editableGeometry.table);
+        var db = editableGeometry.db;
+        var pk = db.getPrimaryKey(table);
+        var sql = "delete from ${table.fixedName} where $pk=$id";
+        db.execute(sql);
+
+        geomEditState.editableGeometry = null;
+        return true;
+      }
+    }
+    return false;
+  }
 }

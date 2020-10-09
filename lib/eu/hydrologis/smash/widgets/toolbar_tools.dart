@@ -61,7 +61,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              getRemoveFeatureButton(),
+              getRemoveFeatureButton(geomEditState),
               getOpenFeatureAttributesButton(geomEditState),
               getSaveFeatureButton(geomEditState),
               getCancelEditButton(geomEditState),
@@ -211,7 +211,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
   //   );
   // }
 
-  Widget getRemoveFeatureButton() {
+  Widget getRemoveFeatureButton(GeometryEditorState geomEditState) {
     return Tooltip(
       message: "Remove selected feature.",
       child: GestureDetector(
@@ -225,15 +225,27 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
             ),
           ),
         ),
-        onTap: () {
-          setState(() {
-            // GeometryEditManager().stopEditing();
-            // GeometryEditManager().startEditing(null, () {
-            //   SmashMapBuilder mapBuilder =
-            //       Provider.of<SmashMapBuilder>(context, listen: false);
-            //   mapBuilder.reBuild();
-            // });
-          });
+        onTap: () async {
+          var t = geomEditState.editableGeometry.table;
+          var db = geomEditState.editableGeometry.db;
+          bool hasDeleted =
+              GeometryEditManager().deleteCurrentSelection(geomEditState);
+          if (hasDeleted) {
+            // reload layer geoms
+            var layerSources = LayerManager().getLayerSources(onlyActive: true);
+            var layer = layerSources.firstWhere((layer) {
+              return layer is GeopackageSource &&
+                  layer.getName() == t &&
+                  layer.db == db;
+            });
+            (layer as GeopackageSource).isLoaded = false;
+
+            SmashMapBuilder mapBuilder =
+                Provider.of<SmashMapBuilder>(context, listen: false);
+            var layers = await LayerManager().loadLayers(mapBuilder.context);
+            mapBuilder.oneShotUpdateLayers = layers;
+            mapBuilder.reBuild();
+          }
         },
       ),
     );
