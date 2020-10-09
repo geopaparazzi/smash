@@ -352,24 +352,96 @@ class GeometryEditManager {
     // if it arrives here, no geom is selected
     editorState.editableGeometry = null;
     stopEditing();
-    SmashMapBuilder builder =
-        Provider.of<SmashMapBuilder>(context, listen: false);
-    builder.reBuild();
 
     // propose to add a new geometry here if no geometry was selected
     if (currentEditing == null) {
-      Map<String, LayerSource> name2SourceMap = {};
+      Map<String, GeopackageSource> name2SourceMap = {};
       geopackageLayers.forEach((element) {
-        name2SourceMap[element.getName()] = element;
+        if (element is GeopackageSource) {
+          name2SourceMap[element.getName()] = element;
+        }
       });
       var selectedName = await SmashDialogs.showComboDialog(
           context,
           "Create a new feature in the selected layer?",
-          name2SourceMap.keys.toList());
+          name2SourceMap.keys.toList(),
+          allowCancel: true);
       if (selectedName != null) {
         var geopackageLayer = name2SourceMap[selectedName];
-        print(geopackageLayer.getName());
+        var db = geopackageLayer.db;
+        var table = geopackageLayer.getName();
+        var tableColumns = db.getTableColumns(SqlName(table));
+
+        // check if there is a pk and if the columns are set to be non null in other case
+        bool hasPk = false;
+        bool hasNonNull = false;
+        tableColumns.forEach((tc) {
+          var pk = tc[2];
+          if (pk == 1) {
+            hasPk = true;
+          } else {
+            var nonNull = tc[3];
+            if (nonNull == 1) {
+              hasNonNull = true;
+            }
+          }
+        });
+        if (!hasPk || hasNonNull) {
+          await SmashDialogs.showWarningDialog(context,
+              "Currently only editing of tables with a primary key and nullable columns is supported.");
+          return;
+        }
+
+        // create a minimal geometry to work on
+        var tableName = SqlName(table);
+        var gc = db.getGeometryColumnsForTable(tableName);
+        var gType = gc.geometryType;
+        Geometry geometry;
+        var gf = GeometryFactory.defaultPrecision();
+        var dataPrj = SmashPrj.fromSrid(geopackageLayer.getSrid());
+        var d = 0.0001;
+        if (gType.isPoint()) {
+          geometry =
+              gf.createPoint(Coordinate(point.longitude, point.latitude));
+        } else if (gType.isLine()) {
+          geometry = gf.createLineString([
+            Coordinate(point.longitude, point.latitude),
+            Coordinate(point.longitude + d, point.latitude)
+          ]);
+        } else if (gType.isPolygon()) {
+          geometry = gf.createPolygonFromCoords([
+            Coordinate(point.longitude, point.latitude),
+            Coordinate(point.longitude + d, point.latitude),
+            Coordinate(point.longitude, point.latitude + d),
+            Coordinate(point.longitude, point.latitude),
+          ]);
+        }
+        SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, geometry);
+        var geomBytes = GeoPkgGeomWriter().write(geometry);
+        var sql =
+            "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
+        var lastId =
+            db.execute(sql, arguments: [geomBytes], getLastInsertId: true);
+
+        EditableGeometry editGeom2 = EditableGeometry();
+        editGeom2.geometry = geometry;
+        editGeom2.db = db;
+        editGeom2.id = lastId;
+        editGeom2.table = table;
+        editorState.editableGeometry = editGeom;
+
+        // reload layer geoms
+        geopackageLayer.isLoaded = false;
+        SmashMapBuilder mapBuilder =
+            Provider.of<SmashMapBuilder>(context, listen: false);
+        var layers = await LayerManager().loadLayers(mapBuilder.context);
+        mapBuilder.oneShotUpdateLayers = layers;
+        mapBuilder.reBuild();
       }
+    } else {
+      SmashMapBuilder builder =
+          Provider.of<SmashMapBuilder>(context, listen: false);
+      builder.reBuild();
     }
   }
 

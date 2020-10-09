@@ -135,7 +135,7 @@ packages:
       name: dart_hydrologis_db
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0+1"
+    version: "0.4.1"
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
@@ -254,7 +254,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.1"
+    version: "0.4.2"
   flutter_image:
     dependency: transitive
     description:

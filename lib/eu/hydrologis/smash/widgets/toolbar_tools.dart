@@ -61,7 +61,6 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              getAddFeatureButton(),
               getRemoveFeatureButton(),
               getOpenFeatureAttributesButton(geomEditState),
               getSaveFeatureButton(geomEditState),
@@ -184,33 +183,33 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
     );
   }
 
-  Widget getAddFeatureButton() {
-    return Tooltip(
-      message: "Add a new feature.",
-      child: GestureDetector(
-        child: Padding(
-          padding: SmashUI.defaultPadding(),
-          child: InkWell(
-            child: Icon(
-              MdiIcons.plus,
-              color: SmashColors.mainBackground,
-              size: widget._iconSize,
-            ),
-          ),
-        ),
-        onTap: () {
-          setState(() {
-            GeometryEditManager().stopEditing();
-            GeometryEditManager().startEditing(null, () {
-              SmashMapBuilder mapBuilder =
-                  Provider.of<SmashMapBuilder>(context, listen: false);
-              mapBuilder.reBuild();
-            });
-          });
-        },
-      ),
-    );
-  }
+  // Widget getAddFeatureButton() {
+  //   return Tooltip(
+  //     message: "Add a new feature.",
+  //     child: GestureDetector(
+  //       child: Padding(
+  //         padding: SmashUI.defaultPadding(),
+  //         child: InkWell(
+  //           child: Icon(
+  //             MdiIcons.plus,
+  //             color: SmashColors.mainBackground,
+  //             size: widget._iconSize,
+  //           ),
+  //         ),
+  //       ),
+  //       onTap: () {
+  //         setState(() {
+  //           GeometryEditManager().stopEditing();
+  //           GeometryEditManager().startEditing(null, () {
+  //             SmashMapBuilder mapBuilder =
+  //                 Provider.of<SmashMapBuilder>(context, listen: false);
+  //             mapBuilder.reBuild();
+  //           });
+  //         });
+  //       },
+  //     ),
+  //   );
+  // }
 
   Widget getRemoveFeatureButton() {
     return Tooltip(
@@ -220,7 +219,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           padding: SmashUI.defaultPadding(),
           child: InkWell(
             child: Icon(
-              MdiIcons.minus,
+              MdiIcons.trashCan,
               color: SmashColors.mainBackground,
               size: widget._iconSize,
             ),

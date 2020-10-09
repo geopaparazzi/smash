@@ -556,7 +556,8 @@ class MainViewWidgetState extends State<MainViewWidget>
           });
 
           var selectedSection = await SmashDialogs.showComboDialog(
-              mapBuilder.context, titleWithMode, sectionNames, iconNames);
+              mapBuilder.context, titleWithMode, sectionNames,
+              iconNames: iconNames);
           // refresh mode
           noteInGpsMode = gpsState.insertInGpsMode;
           if (selectedSection != null) {
