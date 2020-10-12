@@ -733,9 +733,11 @@ packages:
   smashlibs:
     dependency: "direct main"
     description:
-      path: "../smashlibs"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "7b3bd6ea6c5d16e272b68fb6a02c0179c6fc3427"
+      url: "https://github.com/moovida/smashlibs.git"
+    source: git
     version: "1.0.0"
   source_span:
     dependency: transitive
