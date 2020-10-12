@@ -372,9 +372,13 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
           JTS.Point l = geom.getGeometryN(i);
           var labelText = attributes[labelName];
           double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
+          String labelTextString;
           if (labelText == null) {
             textExtraHeight = 0;
+          } else {
+            labelTextString = labelText.toString();
           }
+
           Marker m = Marker(
               width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
               height: pointsSize + textExtraHeight,
@@ -385,7 +389,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
                     iconData,
                     pointFillColor,
                     pointsSize,
-                    labelText.toString(),
+                    labelTextString,
                     labelColor,
                     pointFillColor.withAlpha(100),
                   ));

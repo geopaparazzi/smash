@@ -40,12 +40,15 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Online Sources Catalog"),
-          bottom: TabBar(tabs: [
-            Tab(text: "TMS"),
-            Tab(text: "WMS"),
-          ]),
-        ),
+            title: Text("Online Sources Catalog"),
+            bottom: TabBar(tabs: [
+              Tab(text: "TMS"),
+              Tab(text: "WMS"),
+            ]),
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context),
+            )),
         endDrawer: Builder(
           builder: (BuildContext context) {
             return buildDrawer(context);

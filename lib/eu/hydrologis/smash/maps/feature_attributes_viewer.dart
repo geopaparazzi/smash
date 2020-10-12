@@ -361,8 +361,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   key: data[key],
                 };
                 var where = "$primaryKey=$pkValue";
-                var i = db.updateMap(SqlName(tablename), map, where);
-                print("Updated: $i");
+                db.updateMap(SqlName(tablename), map, where);
                 setState(() {});
               }
             }

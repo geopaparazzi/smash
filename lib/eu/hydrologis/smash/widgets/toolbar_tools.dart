@@ -161,23 +161,8 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           GeometryEditManager().stopEditing();
 
           // reload layer geoms
-          var layerSources = LayerManager().getLayerSources(onlyActive: true);
-          layerSources.forEach((layer) {
-            if (layer is GeopackageSource &&
-                layer.getName() == editableGeometry.table &&
-                layer.db == editableGeometry.db) {
-              layer.isLoaded = false;
-            }
-          });
-
-          // rebuild map
-          SmashMapBuilder mapBuilder =
-              Provider.of<SmashMapBuilder>(context, listen: false);
-          var layers = await LayerManager().loadLayers(mapBuilder.context);
-          mapBuilder.oneShotUpdateLayers = layers;
-          setState(() {
-            mapBuilder.reBuild();
-          });
+          await reloadGeopackageLayers(
+              editableGeometry.db, editableGeometry.table);
         },
       ),
     );
@@ -232,23 +217,28 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
               GeometryEditManager().deleteCurrentSelection(geomEditState);
           if (hasDeleted) {
             // reload layer geoms
-            var layerSources = LayerManager().getLayerSources(onlyActive: true);
-            var layer = layerSources.firstWhere((layer) {
-              return layer is GeopackageSource &&
-                  layer.getName() == t &&
-                  layer.db == db;
-            });
-            (layer as GeopackageSource).isLoaded = false;
-
-            SmashMapBuilder mapBuilder =
-                Provider.of<SmashMapBuilder>(context, listen: false);
-            var layers = await LayerManager().loadLayers(mapBuilder.context);
-            mapBuilder.oneShotUpdateLayers = layers;
-            mapBuilder.reBuild();
+            await reloadGeopackageLayers(db, t);
           }
         },
       ),
     );
+  }
+
+  Future<void> reloadGeopackageLayers(GeopackageDb db, String table) async {
+    // reload layer geoms
+    var layerSources = LayerManager().getLayerSources(onlyActive: true);
+    var layer = layerSources.firstWhere((layer) {
+      return layer is GeopackageSource &&
+          layer.getName() == table &&
+          layer.db == db;
+    });
+    (layer as GeopackageSource).isLoaded = false;
+
+    SmashMapBuilder mapBuilder =
+        Provider.of<SmashMapBuilder>(context, listen: false);
+    var layers = await LayerManager().loadLayers(mapBuilder.context);
+    mapBuilder.oneShotUpdateLayers = layers;
+    mapBuilder.reBuild();
   }
 
   Widget getOpenFeatureAttributesButton(
@@ -266,7 +256,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
             ),
           ),
         ),
-        onTap: () {
+        onTap: () async {
           var editableGeometry = geometryEditorState.editableGeometry;
           var id = editableGeometry.id;
           if (id != null) {
@@ -303,11 +293,13 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
               tableData.data.forEach((d) {
                 totalQueryResult.data.add(d);
               });
-              Navigator.push(
+              await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
                           FeatureAttributesViewer(totalQueryResult)));
+              // reload layer geoms
+              await reloadGeopackageLayers(db, table);
             }
           } else {
             SmashDialogs.showWarningDialog(context,
