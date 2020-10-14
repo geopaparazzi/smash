@@ -22,6 +22,23 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
+const SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE = 'SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE';
+const SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE =
+    'SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE';
+const SETTINGS_EDIT_HANLDE_ICON_SIZES = [
+  10,
+  15,
+  20,
+  25,
+  30,
+  35,
+  40,
+  50,
+  60,
+  80,
+  100
+];
+
 class SettingsWidget extends StatefulWidget {
   SettingsWidget({Key key}) : super(key: key);
 
@@ -1385,6 +1402,10 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
     int maxFeaturesToLoad =
         GpPreferences().getIntSync(KEY_VECTOR_MAX_FEATURES, -1);
     int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);
+    int handleIconSize =
+        GpPreferences().getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25);
+    int intermediateHandleIconSize = GpPreferences()
+        .getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20);
 
     return Scaffold(
       appBar: new AppBar(
@@ -1504,6 +1525,71 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                           onChanged: (selected) async {
                             await GpPreferences()
                                 .setInt(KEY_VECTOR_TAPAREA_SIZE, selected);
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Card(
+              margin: SmashUI.defaultMargin(),
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Editing tool", bold: true),
+                  ),
+                  ListTile(
+                    leading: Icon(MdiIcons.gestureTap),
+                    title: Text("Editing drag handler icon size."),
+                    subtitle: Wrap(
+                      children: <Widget>[
+                        DropdownButton<int>(
+                          value: handleIconSize,
+                          isExpanded: true,
+                          items: SETTINGS_EDIT_HANLDE_ICON_SIZES.map((i) {
+                            return DropdownMenuItem<int>(
+                              child: Text(
+                                "$i px",
+                                textAlign: TextAlign.center,
+                              ),
+                              value: i,
+                            );
+                          }).toList(),
+                          onChanged: (selected) async {
+                            await GpPreferences().setInt(
+                                SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, selected);
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(MdiIcons.gestureTap),
+                    title: Text("Editing intermediate drag handler icon size."),
+                    subtitle: Wrap(
+                      children: <Widget>[
+                        DropdownButton<int>(
+                          value: intermediateHandleIconSize,
+                          isExpanded: true,
+                          items: SETTINGS_EDIT_HANLDE_ICON_SIZES.map((i) {
+                            return DropdownMenuItem<int>(
+                              child: Text(
+                                "$i px",
+                                textAlign: TextAlign.center,
+                              ),
+                              value: i,
+                            );
+                          }).toList(),
+                          onChanged: (selected) async {
+                            await GpPreferences().setInt(
+                                SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE,
+                                selected);
                             setState(() {});
                           },
                         ),

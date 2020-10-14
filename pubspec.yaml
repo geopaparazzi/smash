@@ -54,6 +54,7 @@ dependencies:
       url: https://github.com/ibrierley/flutter_map_dragmarker.git  
   
   flutter_map_line_editor:
+    # path: ../flutter_map_line_editor/
     git:
       url: https://github.com/ibrierley/flutter_map_line_editor.git  
 

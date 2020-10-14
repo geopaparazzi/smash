@@ -11,13 +11,14 @@ import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_dragmarker/dragmarker.dart';
 import 'package:flutter_map_line_editor/polyeditor.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong/latlong.dart' hide Path;
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -57,24 +58,6 @@ class EditableGeometry {
 class GeometryEditManager {
   static final GeometryEditManager _singleton = GeometryEditManager._internal();
 
-  static final Widget dragHandlerIcon = Stack(
-    alignment: Alignment.center,
-    children: [
-      Icon(MdiIcons.squareRounded, size: 22, color: Colors.black),
-      Icon(
-        MdiIcons.squareRounded,
-        size: 16,
-        color: Colors.yellow,
-      )
-    ],
-  );
-  static final Widget intermediateHandlerIcon = Stack(
-    alignment: Alignment.center,
-    children: [
-      Icon(MdiIcons.circle, size: 17, color: Colors.black),
-      Icon(MdiIcons.plusCircle, size: 13, color: Colors.yellow)
-    ],
-  );
   static final Color editBorder = Colors.yellow;
   static final Color editBackBorder = Colors.black;
   static final Color editFill = Colors.yellow.withOpacity(0.3);
@@ -132,6 +115,32 @@ class GeometryEditManager {
       if (editGeometry != null) {
         resetToNulls();
 
+        double handleIconSize = GpPreferences()
+            .getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25)
+            .toDouble();
+        double intermediateHandleIconSize = GpPreferences()
+            .getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20)
+            .toDouble();
+        Widget dragHandlerIcon = Container(
+          decoration: BoxDecoration(
+              color: Colors.yellow,
+              borderRadius:
+                  BorderRadius.all(Radius.circular(handleIconSize / 4)),
+              border: Border.all(color: Colors.black, width: 2)),
+        );
+        Widget intermediateHandlerIcon = Container(
+          child: Icon(
+            MdiIcons.plus,
+            size: intermediateHandleIconSize / 2,
+            color: Colors.black,
+          ),
+          decoration: BoxDecoration(
+              color: Colors.yellow,
+              borderRadius:
+                  BorderRadius.all(Radius.circular(intermediateHandleIconSize)),
+              border: Border.all(color: Colors.black, width: 2)),
+        );
+
         geomType = EGeometryType.forGeometry(editGeometry.geometry);
         if (geomType.isLine()) {
           var geomPoints = editGeometry.geometry
@@ -147,6 +156,9 @@ class GeometryEditManager {
             addClosePathMarker: false,
             points: geomPoints,
             pointIcon: dragHandlerIcon,
+            pointIconSize: Size(handleIconSize, handleIconSize),
+            intermediateIconSize:
+                Size(intermediateHandleIconSize, intermediateHandleIconSize),
             intermediateIcon: intermediateHandlerIcon,
             callbackRefresh: callbackRefresh,
           );
@@ -176,6 +188,9 @@ class GeometryEditManager {
             points: geomPoints,
             pointIcon: dragHandlerIcon,
             intermediateIcon: intermediateHandlerIcon,
+            pointIconSize: Size(handleIconSize, handleIconSize),
+            intermediateIconSize:
+                Size(intermediateHandleIconSize, intermediateHandleIconSize),
             callbackRefresh: callbackRefresh,
           );
 
@@ -186,8 +201,8 @@ class GeometryEditManager {
 
           pointEditor = DragMarker(
             point: LatLng(coord.y, coord.x),
-            width: 80.0,
-            height: 80.0,
+            width: handleIconSize,
+            height: handleIconSize,
             builder: (ctx) => Container(child: dragHandlerIcon),
             onDragEnd: (details, point) {},
             updateMapNearEdge: false,
@@ -498,5 +513,23 @@ class GeometryEditManager {
       }
     }
     return false;
+  }
+}
+
+/// Clip widget in triangle shape
+class PlusClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    Path path = Path();
+    path.moveTo(size.width / 2, size.height * .8);
+    path.lineTo(size.width, 0);
+
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper old) {
+    return old != this;
   }
 }

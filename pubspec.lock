@@ -290,7 +290,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: e79778e317535f79d427a7b73304065bed7e6d55
+      resolved-ref: "81c2820a7eccfc73ca8f2c327a81537198f764d0"
       url: "https://github.com/ibrierley/flutter_map_line_editor.git"
     source: git
     version: "1.0.0+1"
