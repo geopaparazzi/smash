@@ -91,6 +91,10 @@ dependencies:
       url: https://github.com/moovida/mapsforge_flutter.git
       path: mapsforge_flutter
 
+
+  # MIT
+  permission_handler: ^4.4.0+hotfix.2
+
   # BSD License
   synchronized: ^2.2.0+1
 

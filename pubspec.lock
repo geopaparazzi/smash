@@ -586,7 +586,7 @@ packages:
     source: hosted
     version: "1.9.2"
   permission_handler:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: permission_handler
       url: "https://pub.dartlang.org"

@@ -7,6 +7,7 @@ import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
@@ -187,10 +188,19 @@ Future<String> handleWorkspace(BuildContext context) async {
 
 Future<String> handleLocationPermission(BuildContext context) async {
   if (!SmashPlatform.isDesktop()) {
-    var locationPermission =
-        await PermissionManager().add(PERMISSIONS.LOCATION).check();
-    if (!locationPermission) {
-      return "Location permission is mandatory to open SMASH.";
+    PermissionStatus permission = await PermissionHandler()
+        .checkPermissionStatus(PermissionGroup.location);
+    if (permission != PermissionStatus.granted) {
+      await SmashDialogs.showWarningDialog(context,
+          """This app collects location data to your device to enable gps logs recording even when the app is closed or not in use. No data is shared, it is only saved locally to the device.
+
+If you do not give permission to the  background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.
+          """);
+      var locationPermission =
+          await PermissionManager().add(PERMISSIONS.LOCATION).check();
+      if (!locationPermission) {
+        return "Location permission is mandatory to open SMASH.";
+      }
     }
   }
   return null;
@@ -216,7 +226,7 @@ class ProgressTile extends StatefulWidget {
   final iconData;
 
   final initMsg;
-  Future<String> Function(BuildContext) processFunction;
+  final Future<String> Function(BuildContext) processFunction;
 
   ProgressTile(this.iconData, this.initMsg, this.doneMsg, this.orderNotifier,
       this.order, this.processFunction);
