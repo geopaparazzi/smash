@@ -93,12 +93,14 @@ class AboutPageState extends State<AboutPage> {
                         "Partially supported by the project Steep Stream of the University of Trento."),
                   ),
                   ListTile(
-                    title: Text("You might also be interested in"),
+                    title: Text("Privacy Policy"),
                     subtitle: Text(
-                        "Geopaparazzi is a complete and mature android-only digital field mapping application by the same authors of SMASH."),
+                        "Tap here to see the privacy policy that covers user and location data."),
                     onTap: () async {
-                      if (await canLaunch("http://www.geopaparazzi.org")) {
-                        await launch("http://www.geopaparazzi.org");
+                      if (await canLaunch(
+                          "https://www.hydrologis.com/geo_privacy_policy")) {
+                        await launch(
+                            "https://www.hydrologis.com/geo_privacy_policy");
                       }
                     },
                   ),
