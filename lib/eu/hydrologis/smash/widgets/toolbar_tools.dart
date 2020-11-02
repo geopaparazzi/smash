@@ -372,7 +372,7 @@ class RulerButton extends StatelessWidget {
         w = Badge(
           badgeColor: SmashColors.mainSelection,
           shape: BadgeShape.square,
-          borderRadius: 10,
+          borderRadius: BorderRadius.circular(10.0),
           toAnimate: false,
           position: BadgePosition.topStart(
               top: -_iconSize / 2, start: 0.1 * _iconSize),

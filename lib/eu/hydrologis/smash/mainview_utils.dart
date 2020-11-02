@@ -45,7 +45,7 @@ class DashboardUtils {
       return Badge(
         badgeColor: badgeColor != null ? badgeColor : SmashColors.mainSelection,
         shape: badgeValue > 999 ? BadgeShape.square : BadgeShape.circle,
-        borderRadius: 20,
+        borderRadius: BorderRadius.circular(20.0),
         toAnimate: false,
         position: badgePosition != null
             ? badgePosition
