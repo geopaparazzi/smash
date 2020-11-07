@@ -6,6 +6,7 @@
 
 import 'dart:core';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:flutter/material.dart' hide TextStyle;
@@ -13,8 +14,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:gpx/gpx.dart';
 import 'package:latlong/latlong.dart';
+import 'package:map_elevation/map_elevation.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:rainbow_color/rainbow_color.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
@@ -35,6 +38,9 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
 
   String sldString;
   SldObjectParser _style;
+  double minLineElev = double.infinity;
+  double maxLineElev = double.negativeInfinity;
+  bool _doElevationColor = false;
 
   GpxSource.fromMap(Map<String, dynamic> map) {
     _name = map[LAYERSKEY_LABEL];
@@ -42,6 +48,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
     _absolutePath = Workspace.makeAbsolute(relativePath);
     isVisible = map[LAYERSKEY_ISVISIBLE];
     _srid = map[LAYERSKEY_SRID] ?? _srid;
+    _doElevationColor = map[LAYERSKEY_DOELEVATIONCOLORS] ?? false;
   }
 
   GpxSource(this._absolutePath);
@@ -106,7 +113,14 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
       _gpx.trks.forEach((trk) {
         trk.trksegs.forEach((trkSeg) {
           List<LatLng> points = trkSeg.trkpts.map((wpt) {
-            var latLng = LatLng(wpt.lat, wpt.lon);
+            LatLng latLng;
+            if (wpt.ele == null || !_doElevationColor) {
+              latLng = LatLng(wpt.lat, wpt.lon);
+            } else {
+              latLng = ElevationPoint(wpt.lat, wpt.lon, wpt.ele);
+              minLineElev = min(minLineElev, wpt.ele);
+              maxLineElev = max(maxLineElev, wpt.ele);
+            }
             if (prevLatLng != null) {
               var distance =
                   CoordinateUtilities.getDistance(prevLatLng, latLng);
@@ -132,7 +146,14 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
       prevLatLng = null;
       _gpx.rtes.forEach((rt) {
         List<LatLng> points = rt.rtepts.map((wpt) {
-          var latLng = LatLng(wpt.lat, wpt.lon);
+          var latLng;
+          if (wpt.ele == null || !_doElevationColor) {
+            latLng = LatLng(wpt.lat, wpt.lon);
+          } else {
+            latLng = ElevationPoint(wpt.lat, wpt.lon, wpt.ele);
+            minLineElev = min(minLineElev, wpt.ele);
+            maxLineElev = max(maxLineElev, wpt.ele);
+          }
           if (prevLatLng != null) {
             var distance = CoordinateUtilities.getDistance(prevLatLng, latLng);
             lengthMeters += distance;
@@ -190,7 +211,8 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
         "$LAYERSKEY_LABEL": "$_name",
         "$LAYERSKEY_FILE":"$relativePath",
         "$LAYERSKEY_SRID": $_srid,
-        "$LAYERSKEY_ISVISIBLE": $isVisible 
+        "$LAYERSKEY_ISVISIBLE": $isVisible,
+        "$LAYERSKEY_DOELEVATIONCOLORS": $_doElevationColor
     }
     ''';
     return json;
@@ -227,12 +249,72 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
 
     if (_tracksRoutes.isNotEmpty) {
       List<Polyline> lines = [];
-      _tracksRoutes.forEach((linePoints) {
-        lines.add(Polyline(
+
+      if (_doElevationColor &&
+          _tracksRoutes.isNotEmpty &&
+          _tracksRoutes[0].isNotEmpty &&
+          _tracksRoutes[0][0] is ElevationPoint) {
+        Rainbow rb =
+            Rainbow(rangeStart: minLineElev, rangeEnd: maxLineElev, spectrum: [
+          ColorExt("#FFFF00"),
+          ColorExt("#00FF00"),
+          ColorExt("#00FFFF"),
+          ColorExt("#0000FF"),
+          ColorExt("#FF00FF"),
+          ColorExt("#FF0000"),
+        ]);
+        _tracksRoutes.forEach((linePoints) {
+          List<Polyline> backLines = [];
+          List<Polyline> coloredLines = [];
+          for (var i = 0; i < linePoints.length - 1; i++) {
+            ElevationPoint p1 = linePoints[i];
+            ElevationPoint p2 = linePoints[i + 1];
+            List<Color> grad = [
+              rb[p1.altitude],
+              rb[p2.altitude],
+            ];
+
+            List<LatLng> pts = [p1, p2];
+            coloredLines.add(Polyline(
+              points: pts,
+              strokeWidth: lineStyle.strokeWidth,
+              gradientColors: grad,
+            ));
+            backLines.add(Polyline(
+              points: pts,
+              strokeWidth: lineStyle.strokeWidth + 2,
+              color: Colors.black,
+            ));
+          }
+          lines.addAll(backLines);
+          lines.addAll(coloredLines);
+
+          // List<Color> grad = [];
+          // for (var i = 0; i < linePoints.length; i++) {
+          //   ElevationPoint p1 = linePoints[i];
+          //   grad.add(rb[p1.altitude]);
+          // }
+
+          // lines.add(Polyline(
+          //   points: linePoints,
+          //   strokeWidth: lineStyle.strokeWidth + 2,
+          //   color: Colors.black,
+          // ));
+          // lines.add(Polyline(
+          //   points: linePoints,
+          //   strokeWidth: lineStyle.strokeWidth,
+          //   gradientColors: grad,
+          // ));
+        });
+      } else {
+        _tracksRoutes.forEach((linePoints) {
+          lines.add(Polyline(
             points: linePoints,
             strokeWidth: lineStyle.strokeWidth,
-            color: ColorExt(lineStyle.strokeColorHex)));
-      });
+            color: ColorExt(lineStyle.strokeColorHex),
+          ));
+        });
+      }
 
       var lineLayer = PolylineLayerOptions(
         polylineCulling: true,
@@ -406,6 +488,8 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
     }
     ColorExt _lineColor = ColorExt(lineStyle.strokeColorHex);
 
+    bool doElev = _source._doElevationColor;
+
     return WillPopScope(
         onWillPop: () async {
           var sldString = SldObjectBuilder.buildFromFeatureTypeStyles(
@@ -577,6 +661,28 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                         '${_lineWidthSliderValue.toInt()}',
                                       ),
                                     ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: SmashUI.normalText(
+                                          "Color by elevation"),
+                                    ),
+                                    Flexible(
+                                        flex: 1,
+                                        child: Checkbox(
+                                          value: doElev,
+                                          onChanged: (newSel) {
+                                            setState(() {
+                                              _source._doElevationColor =
+                                                  newSel;
+                                            });
+                                          },
+                                        )),
                                   ],
                                 ),
                               ],
