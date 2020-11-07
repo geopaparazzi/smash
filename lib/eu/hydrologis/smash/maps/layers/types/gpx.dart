@@ -19,6 +19,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
@@ -114,7 +115,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
         trk.trksegs.forEach((trkSeg) {
           List<LatLng> points = trkSeg.trkpts.map((wpt) {
             LatLng latLng;
-            if (wpt.ele == null || !_doElevationColor) {
+            if (wpt.ele == null) {
               latLng = LatLng(wpt.lat, wpt.lon);
             } else {
               latLng = ElevationPoint(wpt.lat, wpt.lon, wpt.ele);
@@ -147,7 +148,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
       _gpx.rtes.forEach((rt) {
         List<LatLng> points = rt.rtepts.map((wpt) {
           var latLng;
-          if (wpt.ele == null || !_doElevationColor) {
+          if (wpt.ele == null) {
             latLng = LatLng(wpt.lat, wpt.lon);
           } else {
             latLng = ElevationPoint(wpt.lat, wpt.lon, wpt.ele);
@@ -255,14 +256,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
           _tracksRoutes[0].isNotEmpty &&
           _tracksRoutes[0][0] is ElevationPoint) {
         Rainbow rb =
-            Rainbow(rangeStart: minLineElev, rangeEnd: maxLineElev, spectrum: [
-          ColorExt("#FFFF00"),
-          ColorExt("#00FF00"),
-          ColorExt("#00FFFF"),
-          ColorExt("#0000FF"),
-          ColorExt("#FF00FF"),
-          ColorExt("#FF0000"),
-        ]);
+            LineColorUtility.getColorInterpolator(minLineElev, maxLineElev);
         _tracksRoutes.forEach((linePoints) {
           List<Polyline> backLines = [];
           List<Polyline> coloredLines = [];

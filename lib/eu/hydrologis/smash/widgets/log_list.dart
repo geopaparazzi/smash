@@ -20,6 +20,7 @@ import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
+import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -399,7 +400,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         ),
         leading: Icon(
           SmashIcons.logIcon,
-          color: ColorExt(logItem.color),
+          color: ColorExt(LineColorUtility.splitLogColor(logItem)[0]),
           size: SmashUI.MEDIUM_ICON_SIZE,
         ),
         trailing: Checkbox(

@@ -4,6 +4,8 @@
  * found in the LICENSE file.
  */
 
+import 'dart:math';
+
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart';
@@ -12,8 +14,10 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:map_elevation/map_elevation.dart';
 import 'package:provider/provider.dart';
+import 'package:rainbow_color/rainbow_color.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -34,6 +38,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
   Log4ListWidget _logItem;
   double _widthSliderValue;
   ColorExt _logColor;
+  bool _doElev = false;
   double maxWidth = 20.0;
   bool _somethingChanged = false;
 
@@ -45,7 +50,10 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
     if (_widthSliderValue > maxWidth) {
       _widthSliderValue = maxWidth;
     }
-    _logColor = ColorExt(_logItem.color);
+
+    var logColor = LineColorUtility.splitLogColor(_logItem);
+    _logColor = ColorExt(logColor[0]);
+    _doElev = logColor[1];
 
     super.initState();
   }
@@ -57,7 +65,9 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
           if (_somethingChanged) {
             // save color and width
             _logItem.width = _widthSliderValue;
-            _logItem.color = ColorExt.asHex(_logColor);
+
+            var c = ColorExt.asHex(_logColor);
+            LineColorUtility.setColor(_logItem, c, doElev: _doElev);
 
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
@@ -150,6 +160,13 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       ),
       TableRow(
         children: [
+          TableUtilities.cellForString("Duration"),
+          TableUtilities.cellForString(StringUtilities.formatDurationMillis(
+              _logItem.endTime - _logItem.startTime)),
+        ],
+      ),
+      TableRow(
+        children: [
           TableUtilities.cellForString("Color"),
           TableCell(
             child: Padding(
@@ -158,6 +175,27 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                 _logColor = ColorExt.fromColor(newColor);
                 _somethingChanged = true;
               }),
+            ),
+          ),
+        ],
+      ),
+      TableRow(
+        children: [
+          TableUtilities.cellForString("Color by elev"),
+          TableCell(
+            child: Padding(
+              padding: SmashUI.defaultPadding(),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Checkbox(
+                  value: _doElev,
+                  onChanged: (newSel) {
+                    _doElev = newSel;
+                    _somethingChanged = true;
+                    setState(() {});
+                  },
+                ),
+              ),
             ),
           ),
         ],
@@ -244,6 +282,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
   List<LatLngExt> points = [];
   LatLng center;
   double totalLengthMeters;
+  double minLineElev = double.infinity;
+  double maxLineElev = double.negativeInfinity;
 
   void afterFirstLayout(BuildContext context) {
     ProjectState project = Provider.of<ProjectState>(context, listen: false);
@@ -273,6 +313,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       }
 
       points.add(llExt);
+      minLineElev = min(minLineElev, p.altim);
+      maxLineElev = max(maxLineElev, p.altim);
       prevll = llExt;
     });
     totalLengthMeters = progressiveMeters;
@@ -333,6 +375,57 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
           StringUtilities.formatDurationMillis(currentTouchMillis);
     }
 
+    PolylineLayerOptions polygon;
+    if (center != null) {
+      var clrSplit = LineColorUtility.splitLogColor(widget.logItem);
+      bool doElev = clrSplit[1];
+      if (doElev) {
+        List<Polyline> lines = [];
+        Rainbow rb =
+            LineColorUtility.getColorInterpolator(minLineElev, maxLineElev);
+        List<Polyline> backLines = [];
+        List<Polyline> coloredLines = [];
+        for (var i = 0; i < points.length - 1; i++) {
+          LatLngExt p1 = points[i];
+          LatLngExt p2 = points[i + 1];
+          List<Color> grad = [
+            rb[p1.altitude],
+            rb[p2.altitude],
+          ];
+
+          List<LatLng> pts = [p1, p2];
+          coloredLines.add(Polyline(
+            points: pts,
+            strokeWidth: widget.logItem.width,
+            gradientColors: grad,
+          ));
+          backLines.add(Polyline(
+            points: pts,
+            strokeWidth: widget.logItem.width + 2,
+            color: Colors.black,
+          ));
+        }
+        lines.addAll(backLines);
+        lines.addAll(coloredLines);
+        polygon = PolylineLayerOptions(
+          polylineCulling: true,
+          polylines: lines,
+        );
+      } else {
+        polygon = PolylineLayerOptions(
+          polylineCulling: true,
+          polylines: [
+            Polyline(
+              points: points,
+              color:
+                  ColorExt(LineColorUtility.splitLogColor(widget.logItem)[0]),
+              strokeWidth: widget.logItem.width,
+            ),
+          ],
+        );
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("GPS Log Profile View"),
@@ -364,17 +457,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     subdomains: ['a', 'b', 'c'],
                   ),
-                  PolylineLayerOptions(
-                    // Will only render visible polylines, increasing performance
-                    polylines: [
-                      Polyline(
-                        // An optional tag to distinguish polylines in callback
-                        points: points,
-                        color: ColorExt(widget.logItem.color),
-                        strokeWidth: widget.logItem.width,
-                      ),
-                    ],
-                  ),
+                  polygon,
                   MarkerLayerOptions(markers: markers),
                 ],
               ),

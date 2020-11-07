@@ -245,9 +245,15 @@ class GeometryEditManager {
     if (_isEditing) {
       if (polyEditor != null) {
         if (editPolyline != null) {
-          layers.add(PolylineLayerOptions(polylines: polyLines));
+          layers.add(PolylineLayerOptions(
+            polylineCulling: true,
+            polylines: polyLines,
+          ));
         } else if (editPolygon != null) {
-          layers.add(PolygonLayerOptions(polygons: polygons));
+          layers.add(PolygonLayerOptions(
+            polygonCulling: true,
+            polygons: polygons,
+          ));
         }
         layers.add(DragMarkerPluginOptions(markers: polyEditor.edit()));
       } else if (pointEditor != null) {
