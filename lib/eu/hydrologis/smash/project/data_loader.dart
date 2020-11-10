@@ -28,6 +28,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -551,16 +552,20 @@ class DataLoaderUtilities {
       var color = map["color"];
       var width = map["width"];
 
-      logs[id] = [color, width, <ElevationPoint>[], <ElevationPoint>[]];
+      logs[id] = [color, width, <LatLngExt>[], <LatLngExt>[]];
     });
 
     String logDataQuery = '''
         select $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_LAT, $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_ALTIM, 
-        $LOGSDATA_COLUMN_LAT_FILTERED, $LOGSDATA_COLUMN_LON_FILTERED
+        $LOGSDATA_COLUMN_LAT_FILTERED, $LOGSDATA_COLUMN_LON_FILTERED,
+        $LOGSDATA_COLUMN_ACCURACY, $LOGSDATA_COLUMN_TS
         from $TABLE_GPSLOG_DATA order by $LOGSDATA_COLUMN_LOGID, $LOGSDATA_COLUMN_TS
         ''';
     var resLogData = db.select(logDataQuery);
     var rangeMap = <int, List<double>>{};
+    var prevTs;
+    var prevLatLng;
+    var prevLatLngFiltered;
     resLogData.forEach((map) {
       var logid = map[LOGSDATA_COLUMN_LOGID];
       var log = logs[logid];
@@ -573,20 +578,41 @@ class DataLoaderUtilities {
         var newMax = max(minMax[1], altim as double);
         rangeMap[logid] = [newMin, newMax];
 
+        var ts = map[LOGSDATA_COLUMN_TS]?.toInt();
+        var acc = map[LOGSDATA_COLUMN_ACCURACY];
         if (doOrig) {
           var lat = map[LOGSDATA_COLUMN_LAT];
           var lon = map[LOGSDATA_COLUMN_LON];
+          var speed = 0.0;
+          if (prevTs != null) {
+            var distanceMeters =
+                CoordinateUtilities.getDistance(LatLng(lat, lon), prevLatLng);
+            var deltaTs = (ts - prevTs) / 1000;
+            speed = distanceMeters / deltaTs;
+          }
           var coordsList = log[2];
-          coordsList.add(ElevationPoint(lat, lon, altim));
+          var ll = LatLngExt(lat, lon, altim, -1, speed, ts, acc);
+          coordsList.add(ll);
+          prevLatLng = ll;
         }
         if (doFiltered) {
           var latF = map[LOGSDATA_COLUMN_LAT_FILTERED];
           if (latF != null) {
             var lonF = map[LOGSDATA_COLUMN_LON_FILTERED];
+            var speed = 0.0;
+            if (prevTs != null) {
+              var distanceMeters = CoordinateUtilities.getDistance(
+                  LatLng(latF, lonF), prevLatLngFiltered);
+              var deltaTs = (ts - prevTs) / 1000;
+              speed = distanceMeters / deltaTs;
+            }
             var coordsListF = log[3];
-            coordsListF.add(ElevationPoint(latF, lonF, altim));
+            var ll = LatLngExt(latF, lonF, altim, -1, speed, ts, acc);
+            coordsListF.add(ll);
+            prevLatLngFiltered = ll;
           }
         }
+        prevTs = ts;
       }
     });
 
@@ -597,38 +623,14 @@ class DataLoaderUtilities {
         var width = list[1];
         List<ElevationPoint> points = list[2];
 
-        var colorElev = LineColorUtility.splitLogColorString(color);
+        var colorElev = EnhancedColorUtility.splitEnhancedColorString(color);
         var colString = colorElev[0];
-        bool doelev = colorElev[1];
+        ColorTables ct = colorElev[1];
 
-        if (doelev) {
+        if (ct.isValid()) {
           var minMax = rangeMap[logId];
-          Rainbow rb =
-              LineColorUtility.getColorInterpolator(minMax[0], minMax[1]);
-          List<Polyline> backLines = [];
-          List<Polyline> coloredLines = [];
-          for (var i = 0; i < points.length - 1; i++) {
-            ElevationPoint p1 = points[i];
-            ElevationPoint p2 = points[i + 1];
-            List<Color> grad = [
-              rb[p1.altitude],
-              rb[p2.altitude],
-            ];
-
-            List<LatLng> pts = [p1, p2];
-            coloredLines.add(Polyline(
-              points: pts,
-              strokeWidth: width,
-              gradientColors: grad,
-            ));
-            backLines.add(Polyline(
-              points: pts,
-              strokeWidth: width + 2,
-              color: Colors.black,
-            ));
-          }
-          lines.addAll(backLines);
-          lines.addAll(coloredLines);
+          EnhancedColorUtility.buildPolylines(
+              lines, points, ct, width, minMax[0], minMax[1]);
         } else {
           dynamic colorObj = ColorExt(colString);
           if (doOrigTransp) {
@@ -646,38 +648,14 @@ class DataLoaderUtilities {
         var width = list[1];
         var points = list[3];
         if (points.length > 1) {
-          var colorElev = LineColorUtility.splitLogColorString(color);
-          var colString = colorElev[0];
-          bool doElev = colorElev[1];
+          var colorItems = EnhancedColorUtility.splitEnhancedColorString(color);
+          var colString = colorItems[0];
+          var ct = colorItems[1];
 
-          if (doElev) {
+          if (ct.isValid()) {
             var minMax = rangeMap[logId];
-            Rainbow rb =
-                LineColorUtility.getColorInterpolator(minMax[0], minMax[1]);
-            List<Polyline> backLines = [];
-            List<Polyline> coloredLines = [];
-            for (var i = 0; i < points.length - 1; i++) {
-              ElevationPoint p1 = points[i];
-              ElevationPoint p2 = points[i + 1];
-              List<Color> grad = [
-                rb[p1.altitude],
-                rb[p2.altitude],
-              ];
-
-              List<LatLng> pts = [p1, p2];
-              coloredLines.add(Polyline(
-                points: pts,
-                strokeWidth: width,
-                gradientColors: grad,
-              ));
-              backLines.add(Polyline(
-                points: pts,
-                strokeWidth: width + 2,
-                color: Colors.black,
-              ));
-            }
-            lines.addAll(backLines);
-            lines.addAll(coloredLines);
+            EnhancedColorUtility.buildPolylines(
+                lines, points, ct, width, minMax[0], minMax[1]);
           } else {
             dynamic colorObj = ColorExt(colString);
             if (doFilteredTransp) {

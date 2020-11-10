@@ -400,7 +400,8 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         ),
         leading: Icon(
           SmashIcons.logIcon,
-          color: ColorExt(LineColorUtility.splitLogColor(logItem)[0]),
+          color: ColorExt(
+              EnhancedColorUtility.splitEnhancedColorString(logItem.color)[0]),
           size: SmashUI.MEDIUM_ICON_SIZE,
         ),
         trailing: Checkbox(

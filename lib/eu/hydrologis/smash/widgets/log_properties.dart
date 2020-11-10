@@ -38,7 +38,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
   Log4ListWidget _logItem;
   double _widthSliderValue;
   ColorExt _logColor;
-  bool _doElev = false;
+  ColorTables _ct = ColorTables.none;
   double maxWidth = 20.0;
   bool _somethingChanged = false;
 
@@ -51,9 +51,10 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       _widthSliderValue = maxWidth;
     }
 
-    var logColor = LineColorUtility.splitLogColor(_logItem);
+    var logColor =
+        EnhancedColorUtility.splitEnhancedColorString(_logItem.color);
     _logColor = ColorExt(logColor[0]);
-    _doElev = logColor[1];
+    _ct = logColor[1];
 
     super.initState();
   }
@@ -67,7 +68,10 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
             _logItem.width = _widthSliderValue;
 
             var c = ColorExt.asHex(_logColor);
-            LineColorUtility.setColor(_logItem, c, doElev: _doElev);
+            var newColorString =
+                EnhancedColorUtility.buildEnhancedColor(c, ct: _ct);
+
+            _logItem.color = newColorString;
 
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
@@ -181,18 +185,29 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       ),
       TableRow(
         children: [
-          TableUtilities.cellForString("Color by elev"),
+          TableUtilities.cellForString("Palette"),
           TableCell(
             child: Padding(
               padding: SmashUI.defaultPadding(),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Checkbox(
-                  value: _doElev,
-                  onChanged: (newSel) {
-                    _doElev = newSel;
-                    _somethingChanged = true;
-                    setState(() {});
+                child: DropdownButton<ColorTables>(
+                  value: _ct,
+                  isExpanded: false,
+                  items: ColorTables.valuesLogs.map((i) {
+                    return DropdownMenuItem<ColorTables>(
+                      child: Text(
+                        i.name,
+                        textAlign: TextAlign.center,
+                      ),
+                      value: i,
+                    );
+                  }).toList(),
+                  onChanged: (selectedCt) async {
+                    setState(() {
+                      _ct = selectedCt;
+                      _somethingChanged = true;
+                    });
                   },
                 ),
               ),
@@ -261,10 +276,11 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 class LatLngExt extends ElevationPoint {
   double prog;
   double speed;
+  double accuracy;
   int ts;
 
   LatLngExt(double latitude, double longitude, double altim, this.prog,
-      this.speed, this.ts)
+      this.speed, this.ts, this.accuracy)
       : super(latitude, longitude, altim);
 }
 
@@ -301,15 +317,16 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       }
       LatLngExt llExt;
       if (prevll == null) {
-        llExt = LatLngExt(llTmp.latitude, llTmp.longitude, p.altim, 0, 0, p.ts);
+        llExt = LatLngExt(
+            llTmp.latitude, llTmp.longitude, p.altim, 0, 0, p.ts, p.accuracy);
       } else {
         var distanceMeters = CoordinateUtilities.getDistance(prevll, llTmp);
         progressiveMeters += distanceMeters;
         var deltaTs = (p.ts - prevll.ts) / 1000;
         var speedMS = distanceMeters / deltaTs;
 
-        llExt =
-            LatLngExt(p.lat, p.lon, p.altim, progressiveMeters, speedMS, p.ts);
+        llExt = LatLngExt(p.lat, p.lon, p.altim, progressiveMeters, speedMS,
+            p.ts, p.accuracy);
       }
 
       points.add(llExt);
@@ -375,50 +392,28 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
           StringUtilities.formatDurationMillis(currentTouchMillis);
     }
 
-    PolylineLayerOptions polygon;
+    PolylineLayerOptions polylines;
     if (center != null) {
-      var clrSplit = LineColorUtility.splitLogColor(widget.logItem);
-      bool doElev = clrSplit[1];
-      if (doElev) {
+      var clrSplit =
+          EnhancedColorUtility.splitEnhancedColorString(widget.logItem.color);
+      ColorTables colorTable = clrSplit[1];
+      if (colorTable.isValid()) {
         List<Polyline> lines = [];
-        Rainbow rb =
-            LineColorUtility.getColorInterpolator(minLineElev, maxLineElev);
-        List<Polyline> backLines = [];
-        List<Polyline> coloredLines = [];
-        for (var i = 0; i < points.length - 1; i++) {
-          LatLngExt p1 = points[i];
-          LatLngExt p2 = points[i + 1];
-          List<Color> grad = [
-            rb[p1.altitude],
-            rb[p2.altitude],
-          ];
+        EnhancedColorUtility.buildPolylines(lines, points, colorTable,
+            widget.logItem.width, minLineElev, maxLineElev);
 
-          List<LatLng> pts = [p1, p2];
-          coloredLines.add(Polyline(
-            points: pts,
-            strokeWidth: widget.logItem.width,
-            gradientColors: grad,
-          ));
-          backLines.add(Polyline(
-            points: pts,
-            strokeWidth: widget.logItem.width + 2,
-            color: Colors.black,
-          ));
-        }
-        lines.addAll(backLines);
-        lines.addAll(coloredLines);
-        polygon = PolylineLayerOptions(
+        polylines = PolylineLayerOptions(
           polylineCulling: true,
           polylines: lines,
         );
       } else {
-        polygon = PolylineLayerOptions(
+        polylines = PolylineLayerOptions(
           polylineCulling: true,
           polylines: [
             Polyline(
               points: points,
-              color:
-                  ColorExt(LineColorUtility.splitLogColor(widget.logItem)[0]),
+              color: ColorExt(EnhancedColorUtility.splitEnhancedColorString(
+                  widget.logItem.color)[0]),
               strokeWidth: widget.logItem.width,
             ),
           ],
@@ -457,7 +452,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     subdomains: ['a', 'b', 'c'],
                   ),
-                  polygon,
+                  polylines,
                   MarkerLayerOptions(markers: markers),
                 ],
               ),
@@ -498,6 +493,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                                 child: SmashUI.normalText(
                                     "Speed: ${hoverPoint.speed.toStringAsFixed(0)} m/s (${(hoverPoint.speed * 3.6).toStringAsFixed(0)} km/h)"),
                               ),
+                              SmashUI.normalText(
+                                  "Elevation: ${hoverPoint.altitude.toInt()}m"),
                             ],
                           ),
                         ),

@@ -41,7 +41,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
   SldObjectParser _style;
   double minLineElev = double.infinity;
   double maxLineElev = double.negativeInfinity;
-  bool _doElevationColor = false;
+  ColorTables _colorTable = ColorTables.none;
 
   GpxSource.fromMap(Map<String, dynamic> map) {
     _name = map[LAYERSKEY_LABEL];
@@ -49,7 +49,8 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
     _absolutePath = Workspace.makeAbsolute(relativePath);
     isVisible = map[LAYERSKEY_ISVISIBLE];
     _srid = map[LAYERSKEY_SRID] ?? _srid;
-    _doElevationColor = map[LAYERSKEY_DOELEVATIONCOLORS] ?? false;
+    var colorTableString = map[LAYERSKEY_COLORTABLE] ?? ColorTables.none.name;
+    _colorTable = ColorTables.forName(colorTableString) ?? ColorTables.none;
   }
 
   GpxSource(this._absolutePath);
@@ -213,7 +214,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
         "$LAYERSKEY_FILE":"$relativePath",
         "$LAYERSKEY_SRID": $_srid,
         "$LAYERSKEY_ISVISIBLE": $isVisible,
-        "$LAYERSKEY_DOELEVATIONCOLORS": $_doElevationColor
+        "$LAYERSKEY_COLORTABLE": "${_colorTable.name}"
     }
     ''';
     return json;
@@ -251,54 +252,13 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
     if (_tracksRoutes.isNotEmpty) {
       List<Polyline> lines = [];
 
-      if (_doElevationColor &&
+      if (_colorTable.isValid() &&
           _tracksRoutes.isNotEmpty &&
           _tracksRoutes[0].isNotEmpty &&
           _tracksRoutes[0][0] is ElevationPoint) {
-        Rainbow rb =
-            LineColorUtility.getColorInterpolator(minLineElev, maxLineElev);
         _tracksRoutes.forEach((linePoints) {
-          List<Polyline> backLines = [];
-          List<Polyline> coloredLines = [];
-          for (var i = 0; i < linePoints.length - 1; i++) {
-            ElevationPoint p1 = linePoints[i];
-            ElevationPoint p2 = linePoints[i + 1];
-            List<Color> grad = [
-              rb[p1.altitude],
-              rb[p2.altitude],
-            ];
-
-            List<LatLng> pts = [p1, p2];
-            coloredLines.add(Polyline(
-              points: pts,
-              strokeWidth: lineStyle.strokeWidth,
-              gradientColors: grad,
-            ));
-            backLines.add(Polyline(
-              points: pts,
-              strokeWidth: lineStyle.strokeWidth + 2,
-              color: Colors.black,
-            ));
-          }
-          lines.addAll(backLines);
-          lines.addAll(coloredLines);
-
-          // List<Color> grad = [];
-          // for (var i = 0; i < linePoints.length; i++) {
-          //   ElevationPoint p1 = linePoints[i];
-          //   grad.add(rb[p1.altitude]);
-          // }
-
-          // lines.add(Polyline(
-          //   points: linePoints,
-          //   strokeWidth: lineStyle.strokeWidth + 2,
-          //   color: Colors.black,
-          // ));
-          // lines.add(Polyline(
-          //   points: linePoints,
-          //   strokeWidth: lineStyle.strokeWidth,
-          //   gradientColors: grad,
-          // ));
+          lines = EnhancedColorUtility.buildPolylines(lines, linePoints,
+              _colorTable, lineStyle.strokeWidth, minLineElev, maxLineElev);
         });
       } else {
         _tracksRoutes.forEach((linePoints) {
@@ -482,7 +442,7 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
     }
     ColorExt _lineColor = ColorExt(lineStyle.strokeColorHex);
 
-    bool doElev = _source._doElevationColor;
+    ColorTables ct = _source._colorTable;
 
     return WillPopScope(
         onWillPop: () async {
@@ -663,20 +623,29 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                     Padding(
                                       padding:
                                           const EdgeInsets.only(right: 8.0),
-                                      child: SmashUI.normalText(
-                                          "Color by elevation"),
+                                      child: SmashUI.normalText("Palette"),
                                     ),
                                     Flexible(
-                                        flex: 1,
-                                        child: Checkbox(
-                                          value: doElev,
-                                          onChanged: (newSel) {
-                                            setState(() {
-                                              _source._doElevationColor =
-                                                  newSel;
-                                            });
-                                          },
-                                        )),
+                                      flex: 1,
+                                      child: DropdownButton<ColorTables>(
+                                        value: ct,
+                                        isExpanded: false,
+                                        items: ColorTables.valuesGpx.map((i) {
+                                          return DropdownMenuItem<ColorTables>(
+                                            child: Text(
+                                              i.name,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            value: i,
+                                          );
+                                        }).toList(),
+                                        onChanged: (selectedCt) async {
+                                          setState(() {
+                                            _source._colorTable = selectedCt;
+                                          });
+                                        },
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ],
