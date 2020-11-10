@@ -209,7 +209,6 @@ class EnhancedColorUtility {
         minSpeed = min(minSpeed, p.speed);
         maxSpeed = max(maxSpeed, p.speed);
       }
-      print("$minSpeed / $maxSpeed");
       var rb = colorTable.getColorInterpolator(min: minSpeed, max: maxSpeed);
 
       List<Polyline> back = [];

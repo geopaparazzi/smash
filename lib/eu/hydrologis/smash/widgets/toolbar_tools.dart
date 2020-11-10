@@ -120,7 +120,9 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           child: InkWell(
             child: Icon(
               MdiIcons.markerCancel,
-              color: SmashColors.mainBackground,
+              color: geomEditState.editableGeometry != null
+                  ? SmashColors.mainSelection
+                  : SmashColors.mainBackground,
               size: widget._iconSize,
             ),
           ),
@@ -147,7 +149,9 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           child: InkWell(
             child: Icon(
               MdiIcons.contentSaveEdit,
-              color: SmashColors.mainBackground,
+              color: geomEditState.editableGeometry != null
+                  ? SmashColors.mainSelection
+                  : SmashColors.mainBackground,
               size: widget._iconSize,
             ),
           ),
