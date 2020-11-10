@@ -350,6 +350,22 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
           }
         }));
 
+    var logColorObject =
+        EnhancedColorUtility.splitEnhancedColorString(logItem.color);
+    var icon;
+    if (logColorObject[1] != ColorTables.none) {
+      icon = Icon(
+        MdiIcons.palette,
+        color: ColorExt(logColorObject[0]),
+        size: SmashUI.MEDIUM_ICON_SIZE,
+      );
+    } else {
+      icon = Icon(
+        SmashIcons.logIcon,
+        color: ColorExt(logColorObject[0]),
+        size: SmashUI.MEDIUM_ICON_SIZE,
+      );
+    }
     return Slidable(
       key: Key("logview-${logItem.id}"),
       actionPane: SlidableDrawerActionPane(),
@@ -398,12 +414,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             ],
           ),
         ),
-        leading: Icon(
-          SmashIcons.logIcon,
-          color: ColorExt(
-              EnhancedColorUtility.splitEnhancedColorString(logItem.color)[0]),
-          size: SmashUI.MEDIUM_ICON_SIZE,
-        ),
+        leading: icon,
         trailing: Checkbox(
             value: logItem.isVisible == 1 ? true : false,
             onChanged: (isVisible) async {
