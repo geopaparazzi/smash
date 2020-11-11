@@ -214,7 +214,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
             ),
           ),
         ),
-        onTap: () async {
+        onLongPress: () async {
           var t = geomEditState.editableGeometry.table;
           var db = geomEditState.editableGeometry.db;
           bool hasDeleted =
