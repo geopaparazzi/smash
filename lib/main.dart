@@ -259,12 +259,12 @@ Future<String> handleWorkspace(BuildContext context) async {
 Future<String> handleLocationPermission(BuildContext context) async {
   try {
     if (!SmashPlatform.isDesktop()) {
-      var status = await Permission.location.status;
+      var status = await Permission.locationAlways.status;
       if (status != PermissionStatus.granted) {
         await SmashDialogs.showWarningDialog(context,
-            """This app collects location data to your device to enable gps logs recording even when the app is closed or not in use. No data is shared, it is only saved locally to the device.
+            """This app collects location data to your device to enable gps logs recording even when the app is placed in background. No data is shared, it is only saved locally to the device.
 
-If you do not give permission to the  background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.
+If you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.
           """);
         var locationPermission =
             await PermissionManager().add(PERMISSIONS.LOCATION).check();
