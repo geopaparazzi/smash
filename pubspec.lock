@@ -414,7 +414,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.18"
+    version: "2.1.19"
   image_picker:
     dependency: transitive
     description:
@@ -635,14 +635,14 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.4.0+hotfix.4"
+    version: "5.0.1+1"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "2.0.1"
   petitparser:
     dependency: transitive
     description:
@@ -800,7 +800,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "16369d83763f4cb18e502f14099fce4ba2bbaa2b"
+      resolved-ref: dea5e9359b8d8ec5814b47f4cba3054132184947
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

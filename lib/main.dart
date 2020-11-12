@@ -22,6 +22,7 @@ import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:stack_trace/stack_trace.dart';
 import 'package:catcher/catcher.dart';
 
@@ -258,9 +259,8 @@ Future<String> handleWorkspace(BuildContext context) async {
 Future<String> handleLocationPermission(BuildContext context) async {
   try {
     if (!SmashPlatform.isDesktop()) {
-      PermissionStatus permission = await PermissionHandler()
-          .checkPermissionStatus(PermissionGroup.location);
-      if (permission != PermissionStatus.granted) {
+      var status = await Permission.location.status;
+      if (status != PermissionStatus.granted) {
         await SmashDialogs.showWarningDialog(context,
             """This app collects location data to your device to enable gps logs recording even when the app is closed or not in use. No data is shared, it is only saved locally to the device.
 
@@ -352,9 +352,15 @@ class _ProgressTileState extends State<ProgressTile> {
       leading: Icon(widget.iconData),
       title: error == null
           ? Text(isDone ? widget.doneMsg : widget.initMsg)
-          : Text(
-              error,
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+          : FlatButton(
+              child: Text(
+                "An error occurred. Tap to view.",
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+              onPressed: () async {
+                await SmashDialogs.showErrorDialog(context, error);
+              },
             ),
     );
   }
