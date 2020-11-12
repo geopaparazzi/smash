@@ -27,6 +27,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersview.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/current_log_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/fences_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/gps_position_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/heatmap.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
@@ -42,6 +43,7 @@ import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/util/coachmarks.dart';
 import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
+import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_info_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';
@@ -376,6 +378,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             color: SmashColors.mainDecorations,
           ),
           onTap: () async {
+            await FenceMaster().writeFences();
             if (gpsIsOff) {
               gpsState.status = GpsStatus.ON_NO_FIX;
               await GpsHandler().init(gpsState);
@@ -405,6 +408,7 @@ class MainViewWidgetState extends State<MainViewWidget>
               "Are you sure you want to close the project?",
               "Active operations will be stopped.");
           if (doExit != null && doExit) {
+            await FenceMaster().writeFences();
             await mapState.persistLastPosition();
             await disposeProject(context);
             await GpsHandler().close();
@@ -706,6 +710,10 @@ class MainViewWidgetState extends State<MainViewWidget>
 
   void addPluginsPreLayers(
       List<MapPlugin> pluginsList, List<LayerOptions> layers) {
+    if (PluginsHandler.FENCE.isOn()) {
+      layers.add(FencesPluginOption());
+      pluginsList.add(FencesPlugin());
+    }
     if (PluginsHandler.GRID.isOn()) {
       var gridLayer = MapPluginLatLonGridOptions(
         lineColor: SmashColors.mainDecorations,

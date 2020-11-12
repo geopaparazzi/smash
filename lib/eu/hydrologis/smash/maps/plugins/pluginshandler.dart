@@ -8,6 +8,7 @@ const KEY_PLUGIN_GRID = "KEY_PLUGIN_GRID";
 const KEY_PLUGIN_CROSS = "KEY_PLUGIN_CROSS";
 const KEY_PLUGIN_GPS = "KEY_PLUGIN_GPS";
 const KEY_PLUGIN_LOGSHEATMAP = "KEY_PLUGIN_LOGSHEATMAP";
+const KEY_PLUGIN_FENCE = "KEY_PLUGIN_FENCE";
 
 var PLUGINMAP = {};
 
@@ -26,6 +27,7 @@ class PluginsHandler {
       const PluginsHandler._(KEY_PLUGIN_CROSS, "Center Cross", true);
   static const GPS =
       const PluginsHandler._(KEY_PLUGIN_GPS, "GPS Position", true);
+  static const FENCE = const PluginsHandler._(KEY_PLUGIN_FENCE, "Fences", true);
   static const LOG_HEATMAP =
       const PluginsHandler._(KEY_PLUGIN_LOGSHEATMAP, "Logs Heatmap", false);
 
@@ -35,6 +37,7 @@ class PluginsHandler {
       GRID,
       CROSS,
       GPS,
+      FENCE,
       // LOG_HEATMAP, TODO add when ready
     ];
   }

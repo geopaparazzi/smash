@@ -49,6 +49,12 @@ dependencies:
   # OTHERS
   ##################################
 
+  # Apache 2.0
+  catcher: ^0.3.22
+
+  # MIT
+  flutter_ringtone_player: 2.0.0
+
   flutter_map_dragmarker:
     git:
       url: https://github.com/ibrierley/flutter_map_dragmarker.git  

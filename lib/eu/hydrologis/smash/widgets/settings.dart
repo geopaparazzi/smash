@@ -1371,6 +1371,7 @@ class _PluginsViewSettingState extends State<PluginsViewSetting> {
         PluginCheckboxWidget(PluginsHandler.GRID.key),
         PluginCheckboxWidget(PluginsHandler.CROSS.key),
         PluginCheckboxWidget(PluginsHandler.GPS.key),
+        PluginCheckboxWidget(PluginsHandler.FENCE.key),
         PluginsHandler.HEATMAP_WORKING
             ? PluginCheckboxWidget(PluginsHandler.LOG_HEATMAP.key)
             : Container(),

@@ -61,12 +61,12 @@ class GpsPositionLayer extends StatelessWidget {
     GpsState gpsState = Provider.of<GpsState>(context, listen: false);
 
     return CustomPaint(
-      painter: CurrentLogPathPainter(gpsPositionLayerOpts, gpsState, map),
+      painter: CurrentGpsPositionPainter(gpsPositionLayerOpts, gpsState, map),
     );
   }
 }
 
-class CurrentLogPathPainter extends CustomPainter {
+class CurrentGpsPositionPainter extends CustomPainter {
   MapState map;
   GpsState gpsState;
   GpsPositionPluginOption gpsPositionLayerOpts;
@@ -92,7 +92,7 @@ class CurrentLogPathPainter extends CustomPainter {
     ..color = Colors.blue.withAlpha(50)
     ..style = PaintingStyle.fill;
 
-  CurrentLogPathPainter(this.gpsPositionLayerOpts, this.gpsState, this.map);
+  CurrentGpsPositionPainter(this.gpsPositionLayerOpts, this.gpsState, this.map);
 
   @override
   void paint(Canvas canvas, Size size) {
