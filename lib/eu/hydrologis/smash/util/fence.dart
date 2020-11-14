@@ -14,6 +14,7 @@ import 'package:smashlibs/smashlibs.dart';
 class FenceMaster {
   static final KEY = "KEY_PREFERENCES_FENCES";
   static final DEFAULT_FENCE_RADIUS = 500.0;
+  static const DEFAULT_SOUND_DURATION = 5;
   static final FenceMaster _singleton = FenceMaster._internal();
 
   static final JSON_TS = "ts";
@@ -108,15 +109,20 @@ class FenceMaster {
       // entered new fence
       currentFence = fence;
       fence.onEnter.playTone();
-      Future.delayed(const Duration(seconds: (5)), () {
+      Future.delayed(
+          const Duration(seconds: (FenceMaster.DEFAULT_SOUND_DURATION)), () {
         fence.onEnter.stopCurrentTone();
       });
-    } else if (fence == null && currentFence != null && fence.onExit != null) {
+    } else if (fence == null &&
+        currentFence != null &&
+        currentFence.onExit != null) {
       // exited fence
+      var tmpFence = currentFence;
       currentFence = null;
-      fence.onEnter.playTone();
-      Future.delayed(const Duration(seconds: (5)), () {
-        fence.onEnter.stopCurrentTone();
+      tmpFence.onExit.playTone();
+      Future.delayed(
+          const Duration(seconds: (FenceMaster.DEFAULT_SOUND_DURATION)), () {
+        tmpFence.onExit.stopCurrentTone();
       });
     }
   }
