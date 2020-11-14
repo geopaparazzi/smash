@@ -428,7 +428,13 @@ class FenceButton extends StatelessWidget {
         ),
         onTap: () async {
           var mapState = Provider.of<SmashMapState>(context, listen: false);
-          Fence newFence = await showFenceInputDialog(context, mapState.center);
+
+          Fence tmpfence = Fence()
+            ..lat = mapState.center.y
+            ..lon = mapState.center.x;
+
+          Fence newFence = await FenceMaster()
+              .showFencePropertiesDialog(context, tmpfence, false);
           if (newFence != null) {
             FenceMaster().addFence(newFence);
             var mapBuilder =
@@ -438,118 +444,19 @@ class FenceButton extends StatelessWidget {
         },
         onLongPress: () async {
           var mapState = Provider.of<SmashMapState>(context, listen: false);
-          var toRemove = FenceMaster().findIn(mapState.center);
-          if (toRemove != null) {
-            var res = await SmashDialogs.showConfirmDialog(
-                context,
-                "Remove fence",
-                "Are you sure you want to remove fence: ${toRemove.name}");
-            if (res) {
-              var removed = FenceMaster().remove(toRemove);
-              if (removed) {
-                var mapBuilder =
-                    Provider.of<SmashMapBuilder>(context, listen: false);
-                mapBuilder.reBuild();
-              }
-            }
+          var editFence = FenceMaster().findIn(mapState.center);
+          if (editFence != null) {
+            await FenceMaster()
+                .showFencePropertiesDialog(context, editFence, true);
+            var mapBuilder =
+                Provider.of<SmashMapBuilder>(context, listen: false);
+            mapBuilder.reBuild();
           }
         },
       ),
     );
     ;
   }
-}
-
-Future<Fence> showFenceInputDialog(
-    BuildContext context, Coordinate coord) async {
-  String nameInput = "a new fence";
-  String radiusInputMeters = "${FenceMaster.DEFAULT_FENCE_RADIUS}";
-  String nameErrorText;
-  String radiusErrorText;
-
-  var nameEC = new TextEditingController(text: nameInput);
-  var nameID = new InputDecoration(
-      labelText: "Label", hintText: "A name for the fence.");
-  var nameWidget = new TextFormField(
-    controller: nameEC,
-    autovalidateMode: AutovalidateMode.always,
-    autofocus: false,
-    decoration: nameID,
-    validator: (txt) {
-      nameInput = txt;
-      nameErrorText = txt.isEmpty ? "The name needs to be defined." : null;
-      return nameErrorText;
-    },
-  );
-  var radiusEC = new TextEditingController(text: radiusInputMeters);
-  var radiusID = new InputDecoration(
-      labelText: "Radius", hintText: "The fence radius in meters.");
-  var radiusWidget = new TextFormField(
-    controller: radiusEC,
-    autofocus: false,
-    autovalidateMode: AutovalidateMode.always,
-    decoration: radiusID,
-    validator: (txt) {
-      radiusInputMeters = txt;
-      radiusErrorText = txt.isEmpty || double.tryParse(txt) == null
-          ? "The radius needs to be a positive number in meters."
-          : null;
-      return radiusErrorText;
-    },
-  );
-
-  return showDialog<Fence>(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text("Enter fence parameters"),
-        content: Builder(builder: (context) {
-          var width = MediaQuery.of(context).size.width;
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: width,
-              child: new Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: nameWidget,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: radiusWidget,
-                  ),
-                ],
-              ),
-            ),
-          );
-        }),
-        actions: <Widget>[
-          FlatButton(
-            child: Text("Cancel"),
-            onPressed: () {
-              Navigator.of(context).pop(null);
-            },
-          ),
-          FlatButton(
-            child: Text("Ok"),
-            onPressed: () {
-              if (radiusErrorText == null && nameErrorText == null) {
-                Fence fence = Fence()
-                  ..lat = coord.y
-                  ..lon = coord.x
-                  ..name = nameInput
-                  ..radius = double.tryParse(radiusInputMeters) ?? 100;
-                Navigator.of(context).pop(fence);
-              }
-            },
-          ),
-        ],
-      );
-    },
-  );
 }
 
 class GeomEditorButton extends StatefulWidget {

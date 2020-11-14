@@ -1,16 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
+    hide TextStyle;
 import 'package:dart_jts/dart_jts.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/util/notifications.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class FenceMaster {
   static final KEY = "KEY_PREFERENCES_FENCES";
-  static final DEFAULT_FENCE_RADIUS = 500;
+  static final DEFAULT_FENCE_RADIUS = 500.0;
   static final FenceMaster _singleton = FenceMaster._internal();
 
   static final JSON_TS = "ts";
@@ -18,9 +21,9 @@ class FenceMaster {
   static final JSON_RADIUS_METERS = "radm";
   static final JSON_LAT = "lat";
   static final JSON_LON = "lon";
+  static final JSON_ONENTER = "onenter";
+  static final JSON_ONEXIT = "onexit";
 
-  bool ringOnEnter = true;
-  bool ringOnExit = true;
   Fence currentFence;
   bool firstPositionUpdate = true;
 
@@ -44,7 +47,9 @@ class FenceMaster {
               ..name = fenceMap[JSON_NAME]
               ..radius = fenceMap[JSON_RADIUS_METERS]
               ..lat = fenceMap[JSON_LAT]
-              ..lon = fenceMap[JSON_LON];
+              ..lon = fenceMap[JSON_LON]
+              ..onEnter = ENotificationSounds.forName(fenceMap[JSON_ONENTER])
+              ..onExit = ENotificationSounds.forName(fenceMap[JSON_ONEXIT]);
             var ts = fenceMap[JSON_TS];
             if (ts != null) {
               fence.creationTs = ts;
@@ -99,63 +104,232 @@ class FenceMaster {
       currentFence = fence;
       return;
     }
-    if (fence != null && currentFence == null) {
+    if (fence != null && currentFence == null && fence.onEnter != null) {
       // entered new fence
-      if (ringOnEnter) {
-        currentFence = fence;
-        // ring
-        FlutterRingtonePlayer.play(
-          android: AndroidSounds.ringtone,
-          ios: IosSounds.glass,
-          looping: true,
-          volume: 0.1,
-          asAlarm: false,
-        );
-        Future.delayed(const Duration(seconds: (5)), () {
-          FlutterRingtonePlayer.stop();
-        });
-      }
-    } else if (fence == null && currentFence != null) {
+      currentFence = fence;
+      fence.onEnter.playTone();
+      Future.delayed(const Duration(seconds: (5)), () {
+        fence.onEnter.stopCurrentTone();
+      });
+    } else if (fence == null && currentFence != null && fence.onExit != null) {
       // exited fence
-      if (ringOnExit) {
-        currentFence = null;
-        // ring
-        FlutterRingtonePlayer.play(
-          android: AndroidSounds.ringtone,
-          ios: IosSounds.glass,
-          looping: true,
-          volume: 0.1,
-          asAlarm: false,
-        );
-        Future.delayed(const Duration(seconds: (5)), () {
-          FlutterRingtonePlayer.stop();
-        });
-      }
+      currentFence = null;
+      fence.onEnter.playTone();
+      Future.delayed(const Duration(seconds: (5)), () {
+        fence.onEnter.stopCurrentTone();
+      });
     }
+  }
+
+  Future<Fence> showFencePropertiesDialog(
+      BuildContext context, Fence fence, bool allowDelete) async {
+    return await showDialog<Fence>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Fence Properties"),
+          content: Builder(builder: (context) {
+            var width = MediaQuery.of(context).size.width;
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                child: Container(
+                  width: width,
+                  child: FencePropertiesContainer(fence),
+                ),
+              ),
+            );
+          }),
+          actions: <Widget>[
+            if (allowDelete)
+              FlatButton(
+                child: Text(
+                  "DELETE",
+                  style: TextStyle(color: SmashColors.mainDanger),
+                ),
+                onPressed: () async {
+                  var res = await SmashDialogs.showConfirmDialog(
+                      context,
+                      "Remove fence",
+                      "Are you sure you want to remove fence: ${fence.name}");
+                  if (res) {
+                    FenceMaster().remove(fence);
+                  }
+                  Navigator.of(context).pop(null);
+                },
+              ),
+            FlatButton(
+              child: Text("CANCEL"),
+              onPressed: () {
+                Navigator.of(context).pop(null);
+              },
+            ),
+            FlatButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop(fence);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
 class Fence {
   int creationTs;
-  String name;
-  double radius;
+  String name = "a new fence";
+  double radius = FenceMaster.DEFAULT_FENCE_RADIUS;
   double lat;
   double lon;
+  ENotificationSounds onEnter = ENotificationSounds.nosound;
+  ENotificationSounds onExit = ENotificationSounds.nosound;
+
   Geometry buffer;
 
   Fence() : creationTs = DateTime.now().millisecondsSinceEpoch;
 
   dynamic toJson() {
     return {
-      FenceMaster.JSON_NAME: name,
+      FenceMaster.JSON_TS: creationTs,
       FenceMaster.JSON_NAME: name,
       FenceMaster.JSON_RADIUS_METERS: radius,
       FenceMaster.JSON_LAT: lat,
       FenceMaster.JSON_LON: lon,
+      FenceMaster.JSON_ONENTER: onEnter.name,
+      FenceMaster.JSON_ONEXIT: onExit.name,
     };
   }
 
   operator ==(other) => creationTs == other.creationTs;
 
   int get hashCode => HashUtilities.hashObjects([creationTs]);
+}
+
+class FencePropertiesContainer extends StatefulWidget {
+  final Fence fence;
+
+  FencePropertiesContainer(this.fence, {Key key}) : super(key: key);
+
+  @override
+  _FencePropertiesContainerState createState() =>
+      _FencePropertiesContainerState(fence);
+}
+
+class _FencePropertiesContainerState extends State<FencePropertiesContainer> {
+  final Fence fence;
+
+  _FencePropertiesContainerState(this.fence) {}
+
+  @override
+  Widget build(BuildContext context) {
+    var nameEC = new TextEditingController(text: fence.name);
+    var nameID = new InputDecoration(
+        labelText: "Label", hintText: "A name for the fence.");
+    var nameWidget = new TextFormField(
+      controller: nameEC,
+      autovalidateMode: AutovalidateMode.always,
+      autofocus: false,
+      decoration: nameID,
+      validator: (txt) {
+        fence.name = txt;
+        var nameErrorText =
+            txt.isEmpty ? "The name needs to be defined." : null;
+        return nameErrorText;
+      },
+    );
+    var radiusEC = new TextEditingController(text: fence.radius.toString());
+    var radiusID = new InputDecoration(
+        labelText: "Radius", hintText: "The fence radius in meters.");
+    var radiusWidget = new TextFormField(
+      controller: radiusEC,
+      autofocus: false,
+      autovalidateMode: AutovalidateMode.always,
+      decoration: radiusID,
+      validator: (txt) {
+        double rad = double.tryParse(txt);
+        if (rad != null) {
+          fence.radius = rad;
+        }
+        var radiusErrorText = txt.isEmpty || rad == null
+            ? "The radius needs to be a positive number in meters."
+            : null;
+        return radiusErrorText;
+      },
+    );
+
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: nameWidget,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: radiusWidget,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Padding(
+                  padding: SmashUI.defaultRigthPadding() * 2,
+                  child: SmashUI.smallText("On enter"),
+                ),
+                DropdownButton<ENotificationSounds>(
+                  items: ENotificationSounds.values
+                      .map((ns) => DropdownMenuItem<ENotificationSounds>(
+                            value: ns,
+                            child: Text(
+                              ns.name,
+                              textAlign: TextAlign.center,
+                            ),
+                          ))
+                      .toList(),
+                  value: fence.onEnter,
+                  onChanged: (newNs) {
+                    setState(() {
+                      fence.onEnter = newNs;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Padding(
+                  padding: SmashUI.defaultRigthPadding() * 2,
+                  child: SmashUI.smallText("On exit"),
+                ),
+                DropdownButton<ENotificationSounds>(
+                  items: ENotificationSounds.values
+                      .map((ns) => DropdownMenuItem<ENotificationSounds>(
+                            value: ns,
+                            child: Text(
+                              ns.name,
+                              textAlign: TextAlign.center,
+                            ),
+                          ))
+                      .toList(),
+                  value: fence.onExit,
+                  onChanged: (newNs) {
+                    setState(() {
+                      fence.onExit = newNs;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

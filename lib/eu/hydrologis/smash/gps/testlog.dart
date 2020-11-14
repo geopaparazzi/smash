@@ -109,8 +109,13 @@ class TestLogStream {
   factory TestLogStream() {
     return _singleton;
   }
-  TestLogStream._internal();
+  TestLogStream._internal() {
+    if (_streamSubscription == null) {
+      _streamSubscription = _controller.stream.listen((event) {});
+    }
+  }
 
+  StreamSubscription<SmashPosition> _streamSubscription;
   final kalman = KalmanFilter();
   StreamController<SmashPosition> _controller =
       StreamController<SmashPosition>();
@@ -135,8 +140,8 @@ class TestLogStream {
     });
   }
 
-  Stream<SmashPosition> get stream {
-    return _controller.stream;
+  StreamSubscription<SmashPosition> get streamSubscription {
+    return _streamSubscription;
   }
 
   void stop() {

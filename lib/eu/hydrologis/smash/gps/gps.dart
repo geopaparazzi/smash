@@ -237,7 +237,7 @@ class GpsHandler {
     });
 
     // activate test stream, even if it will be silent
-    TestLogStream().stream.listen((SmashPosition pos) {
+    TestLogStream().streamSubscription.onData((SmashPosition pos) {
       _onPositionUpdate(pos);
     });
   }
