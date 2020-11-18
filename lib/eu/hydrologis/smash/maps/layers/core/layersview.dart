@@ -360,11 +360,21 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
 
       // do tiles
       List<TileEntry> tiles = db.tiles();
-      tiles.forEach((t) {
-        var ts = TileSource.Geopackage(filePath, t.tableName.name);
-        LayerManager().addLayerSource(ts);
-        return true;
-      });
+      selectedTables = [];
+      if (tiles.length == 1) {
+        selectedTables.add(tiles[0].tableName.name);
+      } else if (tiles.length > 1) {
+        var tableNames = tiles.map((t) => t.tableName.name).toList();
+        selectedTables = await SmashDialogs.showMultiSelectionComboDialog(
+            context, "Select table to load.", tableNames);
+      }
+      if (selectedTables != null && selectedTables.isNotEmpty) {
+        for (var selectedTable in selectedTables) {
+          var ts = TileSource.Geopackage(filePath, selectedTable);
+          LayerManager().addLayerSource(ts);
+          return true;
+        }
+      }
     } finally {
       ch?.close(filePath);
     }

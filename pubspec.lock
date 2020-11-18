@@ -256,7 +256,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2"
+    version: "0.4.2+1"
   flutter_image:
     dependency: transitive
     description:
@@ -831,7 +831,7 @@ packages:
       name: sqlite3
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.7"
+    version: "0.1.8"
   sqlite3_flutter_libs:
     dependency: "direct main"
     description:
@@ -985,7 +985,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.3"
+    version: "1.7.4"
   wkt_parser:
     dependency: transitive
     description:
