@@ -10,6 +10,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
+import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
@@ -444,7 +445,8 @@ class FenceButton extends StatelessWidget {
         },
         onLongPress: () async {
           var mapState = Provider.of<SmashMapState>(context, listen: false);
-          var editFence = FenceMaster().findIn(mapState.center);
+          var editFence = FenceMaster()
+              .findIn(LatLng(mapState.center.y, mapState.center.x));
           if (editFence != null) {
             await FenceMaster()
                 .showFencePropertiesDialog(context, editFence, true);

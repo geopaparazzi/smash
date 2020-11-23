@@ -16,6 +16,7 @@ import 'package:background_locator/settings/ios_settings.dart';
 import 'package:background_locator/settings/locator_settings.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Distance;
+import 'package:geodesy/geodesy.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
@@ -26,17 +27,18 @@ import 'package:smashlibs/smashlibs.dart';
 
 /// Utilities to work with coordinates.
 class CoordinateUtilities {
+  static final Geodesy geodesy = Geodesy();
+
   /// Get the distance between two latlong coordinates in meters, if not otherwise specified by [unit].
-  static double getDistance(LatLng ll1, LatLng ll2, {unit: LengthUnit.Meter}) {
-    final Distance distance = Distance();
-    return distance.as(unit, ll1, ll2);
+  static double getDistance(LatLng ll1, LatLng ll2) {
+    return geodesy.distanceBetweenTwoGeoPoints(ll1, ll2);
   }
 
   /// Get the offset coordinate given a starting point, a distance in meters and an azimuth angle.
   static LatLng getAtOffset(
       LatLng coordinate, double distanceInMeter, double azimuth) {
-    final Distance distance = Distance();
-    return distance.offset(coordinate, distanceInMeter, azimuth);
+    return geodesy.destinationPointByDistanceAndBearing(
+        coordinate, distanceInMeter, azimuth);
   }
 }
 
@@ -295,8 +297,10 @@ class GpsHandler {
       filteredPointsCount++;
     }
 
-    FenceMaster()
-        .onPositionUpdate(Coordinate(position.longitude, position.latitude));
+    if (FenceMaster().hasFences) {
+      FenceMaster()
+          .onPositionUpdate(LatLng(position.latitude, position.longitude));
+    }
   }
 
   /// Close the handler.

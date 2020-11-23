@@ -5,10 +5,10 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifications.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class FenceMaster {
@@ -28,12 +28,16 @@ class FenceMaster {
   Fence currentFence;
   bool firstPositionUpdate = true;
 
+  bool _hasFences = false;
+
   List<Fence> fencesList;
 
   factory FenceMaster() {
     return _singleton;
   }
   FenceMaster._internal();
+
+  bool get hasFences => _hasFences;
 
   void readFences() {
     currentFence = null;
@@ -69,34 +73,37 @@ class FenceMaster {
 
   void addFence(Fence fence) {
     fencesList.add(fence);
-
-    // add the buffer geom to use for intersection checks
-    LatLng offsetLL = CoordinateUtilities.getAtOffset(
-        LatLng(fence.lat, fence.lon), fence.radius, 90);
-    var delta = (fence.lon - offsetLL.longitude).abs();
-    var buffer = GeometryFactory.defaultPrecision()
-        .createPoint(Coordinate(fence.lon, fence.lat))
-        .buffer(delta);
-    fence.buffer = buffer;
+    _hasFences = true;
   }
 
   bool remove(Fence remFence) {
-    return fencesList.remove(remFence);
+    if (!_hasFences) {
+      return false;
+    }
+    var removed = fencesList.remove(remFence);
+    _hasFences = fencesList.isNotEmpty;
+    return removed;
   }
 
-  Fence findIn(Coordinate center) {
-    var centerP = GeometryFactory.defaultPrecision().createPoint(center);
-    for (var i = 0; i < fencesList.length; i++) {
-      var fence = fencesList[i];
-      if (fence.buffer.intersects(centerP)) {
-        return fence;
+  Fence findIn(LatLng center) {
+    if (!_hasFences) {
+      return null;
+    }
+    if (_hasFences) {
+      for (var i = 0; i < fencesList.length; i++) {
+        var fence = fencesList[i];
+        var distance = CoordinateUtilities.getDistance(
+            center, LatLng(fence.lat, fence.lon));
+        if (distance <= fence.radius) {
+          return fence;
+        }
       }
     }
     return null;
   }
 
-  Future<void> onPositionUpdate(Coordinate coordinate) async {
-    if (fencesList.isEmpty) {
+  Future<void> onPositionUpdate(LatLng coordinate) async {
+    if (_hasFences) {
       return;
     }
     var fence = findIn(coordinate);
@@ -105,25 +112,29 @@ class FenceMaster {
       currentFence = fence;
       return;
     }
-    if (fence != null && currentFence == null && fence.onEnter != null) {
+    if (fence != null && currentFence == null) {
       // entered new fence
+      SMLogger().d("ENTER ${fence.name}");
       currentFence = fence;
-      fence.onEnter.playTone();
-      Future.delayed(
-          const Duration(seconds: (FenceMaster.DEFAULT_SOUND_DURATION)), () {
-        fence.onEnter.stopCurrentTone();
-      });
-    } else if (fence == null &&
-        currentFence != null &&
-        currentFence.onExit != null) {
+      if (fence.onEnter != null &&
+          fence.onEnter != ENotificationSounds.nosound) {
+        SMLogger().d("ENTER RING ${fence.name}");
+        await fence.onEnter
+            .playTone(durationSeconds: FenceMaster.DEFAULT_SOUND_DURATION);
+      }
+      SMLogger().d("ENTER POST ${fence.name}");
+    } else if (fence == null && currentFence != null) {
       // exited fence
       var tmpFence = currentFence;
       currentFence = null;
-      tmpFence.onExit.playTone();
-      Future.delayed(
-          const Duration(seconds: (FenceMaster.DEFAULT_SOUND_DURATION)), () {
-        tmpFence.onExit.stopCurrentTone();
-      });
+      SMLogger().d("EXIT ${tmpFence.name}");
+      if (tmpFence.onExit != null &&
+          tmpFence.onExit != ENotificationSounds.nosound) {
+        SMLogger().d("EXIT RING ${tmpFence.name}");
+        await tmpFence.onExit
+            .playTone(durationSeconds: FenceMaster.DEFAULT_SOUND_DURATION);
+      }
+      SMLogger().d("EXIT POST ${tmpFence.name}");
     }
   }
 
@@ -192,8 +203,6 @@ class Fence {
   double lon;
   ENotificationSounds onEnter = ENotificationSounds.nosound;
   ENotificationSounds onExit = ENotificationSounds.nosound;
-
-  Geometry buffer;
 
   Fence() : creationTs = DateTime.now().millisecondsSinceEpoch;
 

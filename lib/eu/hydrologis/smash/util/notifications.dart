@@ -1,4 +1,5 @@
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
+import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 
 /// Helper class to play simple notification sounds.
 class ENotificationSounds {
@@ -28,7 +29,11 @@ class ENotificationSounds {
     return this != nosound;
   }
 
-  Future<void> playTone({loop: true, volume: 0.1, asAlarm: false}) async {
+  Future<void> playTone(
+      {loop: true,
+      volume: 0.1,
+      asAlarm: false,
+      durationSeconds: FenceMaster.DEFAULT_SOUND_DURATION}) async {
     await FlutterRingtonePlayer.play(
       android: AndroidSound(androidCode),
       ios: IosSound(iosCode),
@@ -36,6 +41,11 @@ class ENotificationSounds {
       volume: volume,
       asAlarm: asAlarm,
     );
+    Future.delayed(
+        const Duration(seconds: (FenceMaster.DEFAULT_SOUND_DURATION)),
+        () async {
+      await FlutterRingtonePlayer.stop();
+    });
   }
 
   Future<void> stopCurrentTone() async {

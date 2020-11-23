@@ -3,6 +3,7 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
+import 'package:catcher/catcher.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
@@ -10,21 +11,19 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/tools/ruler_state.dart';
-import 'package:smash/eu/hydrologis/smash/util/fence.dart';
-import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/ruler_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:smash/eu/hydrologis/smash/util/fence.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 import 'package:stack_trace/stack_trace.dart';
-import 'package:catcher/catcher.dart';
 
 void main() {
   /// STEP 1. Create catcher configuration.
