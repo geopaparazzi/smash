@@ -13,6 +13,7 @@ import 'package:latlong/latlong.dart' hide Path;
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
+import 'package:smash/eu/hydrologis/smash/util/notifications.dart';
 
 /// Plugin to show the current GPS log
 class FencesPlugin implements MapPlugin {
@@ -32,46 +33,49 @@ class FencesPlugin implements MapPlugin {
 }
 
 class FencesPluginOption extends LayerOptions {
-  Color color;
-  double width;
+  static double width = 2;
 
-  FencesPluginOption({
-    this.color = Colors.red,
-    this.width = 2,
-  });
+  Paint noSoundFillColor = Paint()
+    ..color = Colors.grey.withAlpha(60)
+    ..style = PaintingStyle.fill;
+  Paint fillColor = Paint()
+    ..color = Colors.red.withAlpha(60)
+    ..style = PaintingStyle.fill;
+
+  Paint noSoundStrokeColor = Paint()
+    ..color = Colors.grey
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = width;
+  Paint enterSoundStrokeColor = Paint()
+    ..color = Colors.green
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = width;
+  Paint exitSoundStrokeColor = Paint()
+    ..color = Colors.blue
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = width;
 }
 
 class FencesLayer extends StatelessWidget {
   final FencesPluginOption opts;
   final MapState mapState;
   final Stream<Null> stream;
-  Paint fillPaint;
-  Paint strokePaint;
 
-  FencesLayer(this.opts, this.mapState, this.stream) {
-    fillPaint = Paint()
-      ..color = opts.color.withAlpha(60)
-      ..style = PaintingStyle.fill;
-    strokePaint = Paint()
-      ..color = opts.color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = opts.width;
-  }
+  FencesLayer(this.opts, this.mapState, this.stream) {}
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: CurrentLogPathPainter(fillPaint, strokePaint, mapState),
+      painter: CurrentLogPathPainter(opts, mapState),
     );
   }
 }
 
 class CurrentLogPathPainter extends CustomPainter {
   MapState map;
-  Paint fillPaint;
-  Paint strokePaint;
+  FencesPluginOption opts;
 
-  CurrentLogPathPainter(this.fillPaint, this.strokePaint, this.map);
+  CurrentLogPathPainter(this.opts, this.map);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -82,16 +86,17 @@ class CurrentLogPathPainter extends CustomPainter {
       var fence = fencesList[i];
 
       LatLng center = LatLng(fence.lat, fence.lon);
-      // var offsetLL = calculateEndingGlobalCoordinates(center, 90, fence.radius);
-      LatLng offsetLL =
+      LatLng offsetX =
           CoordinateUtilities.getAtOffset(center, fence.radius, 90);
-      double delta = (offsetLL.longitude - center.longitude).abs();
+      double deltaX = (offsetX.longitude - center.longitude).abs();
+      LatLng offsetY = CoordinateUtilities.getAtOffset(center, fence.radius, 0);
+      double deltaY = (offsetY.latitude - center.latitude).abs();
 
       Envelope env = Envelope(
-          center.longitude - delta,
-          center.longitude + delta,
-          center.latitude - delta,
-          center.latitude + delta);
+          center.longitude - deltaX,
+          center.longitude + deltaX,
+          center.latitude - deltaY,
+          center.latitude + deltaY);
 
       if (!mapEnv.intersectsEnvelope(env)) {
         continue;
@@ -103,12 +108,40 @@ class CurrentLogPathPainter extends CustomPainter {
       double mainCenterX = mainPosPixel.x - pixelOrigin.x;
       double mainCenterY = (mainPosPixel.y - pixelOrigin.y);
 
-      CustomPoint tmpPixel = map.project(offsetLL);
-      double tmpX = tmpPixel.x - pixelOrigin.x;
-      double r = (mainCenterX - tmpX).abs();
+      CustomPoint tmpPixelX = map.project(offsetX);
+      double tmpX = tmpPixelX.x - pixelOrigin.x;
+      double rX = (mainCenterX - tmpX).abs();
+      CustomPoint tmpPixelY = map.project(offsetY);
+      double tmpY = tmpPixelY.y - pixelOrigin.y;
+      double rY = (mainCenterY - tmpY).abs();
 
-      canvas.drawCircle(Offset(mainCenterX, mainCenterY), r, fillPaint);
-      canvas.drawCircle(Offset(mainCenterX, mainCenterY), r, strokePaint);
+      bool hasEnter = fence.onEnter != ENotificationSounds.nosound;
+      bool hasExit = fence.onExit != ENotificationSounds.nosound;
+
+      Rect rect = Rect.fromPoints(Offset(mainCenterX - rX, mainCenterY - rY),
+          Offset(mainCenterX + rX, mainCenterY + rY));
+      Rect rectEnter = Rect.fromPoints(
+          Offset(mainCenterX - rX - FencesPluginOption.width,
+              mainCenterY - rY - FencesPluginOption.width),
+          Offset(mainCenterX + rX + FencesPluginOption.width,
+              mainCenterY + rY + FencesPluginOption.width));
+      Rect rectExit = Rect.fromPoints(
+          Offset(mainCenterX - rX + FencesPluginOption.width,
+              mainCenterY - rY + FencesPluginOption.width),
+          Offset(mainCenterX + rX - FencesPluginOption.width,
+              mainCenterY + rY - FencesPluginOption.width));
+      if (hasExit || hasEnter) {
+        canvas.drawOval(rect, opts.fillColor);
+        if (hasEnter) {
+          canvas.drawOval(rectEnter, opts.enterSoundStrokeColor);
+        }
+        if (hasExit) {
+          canvas.drawOval(rectExit, opts.exitSoundStrokeColor);
+        }
+      } else {
+        canvas.drawOval(rect, opts.noSoundFillColor);
+        canvas.drawOval(rect, opts.noSoundStrokeColor);
+      }
     }
   }
 
