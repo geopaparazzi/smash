@@ -103,7 +103,7 @@ class FenceMaster {
   }
 
   Future<void> onPositionUpdate(LatLng coordinate) async {
-    if (_hasFences) {
+    if (!_hasFences) {
       return;
     }
     var fence = findIn(coordinate);
