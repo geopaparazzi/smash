@@ -18,7 +18,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
 
 const LAYERSKEY_FILE = 'file';
 const LAYERSKEY_URL = 'url';
@@ -120,7 +120,7 @@ abstract class LayerSource {
         ShapefileSource shp = ShapefileSource.fromMap(map);
         return [shp];
       } else if (file != null && FileManager.isWorldImage(file)) {
-        WorldImageSource world = WorldImageSource.fromMap(map);
+        GeoImageSource world = GeoImageSource.fromMap(map);
         return [world];
       } else if (file != null && FileManager.isGeopackage(file)) {
         bool isVector = map[LAYERSKEY_ISVECTOR];

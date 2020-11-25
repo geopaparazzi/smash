@@ -14,7 +14,7 @@ packages:
       name: ansicolor
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.5"
+    version: "1.1.1"
   archive:
     dependency: transitive
     description:
@@ -223,7 +223,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.13"
+    version: "2.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -365,7 +365,7 @@ packages:
       name: fluttertoast
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.1.1"
+    version: "7.1.4"
   geocoder:
     dependency: "direct main"
     description:
@@ -380,6 +380,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.2"
+  geoimage:
+    dependency: "direct main"
+    description:
+      name: geoimage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   gpx:
     dependency: "direct main"
     description:
@@ -628,7 +635,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.11.2"
+    version: "1.12.0"
   pedantic:
     dependency: transitive
     description:
@@ -807,7 +814,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "131bc25788777cba346604ff4bb96a0c842af11f"
+      resolved-ref: aec25144dd58538ef8724eb55f7c13b5ee837f23
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

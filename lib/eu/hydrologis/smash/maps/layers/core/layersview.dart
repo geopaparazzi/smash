@@ -13,6 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:geoimage/geoimage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
@@ -24,7 +25,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/worldimage.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 
 class LayersPage extends StatefulWidget {
@@ -315,17 +316,23 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       LayerManager().addLayerSource(shpLayer);
       return true;
     }
-  } else if (FileManager.isWorldImage(filePath)) {
-    var worldFile = WorldImageSource.getWorldFile(filePath);
-    var prjFile = SmashPrj.getPrjPath(filePath);
-    if (worldFile == null) {
-      SmashDialogs.showWarningDialog(context,
-          "Only image files with world file definition are supported.");
-    } else if (prjFile == null) {
-      SmashDialogs.showWarningDialog(
-          context, "Only image files with prj file definition are supported.");
-    } else {
-      WorldImageSource worldLayer = WorldImageSource(filePath);
+  } else if (GeoimageUtils.isGeoImage(filePath)) {
+    bool canLoad = true;
+    if (!GeoimageUtils.isTiff(filePath)) {
+      var worldFile = GeoimageUtils.getWorldFile(filePath);
+      var prjFile = GeoimageUtils.getPrjFile(filePath);
+      if (worldFile == null) {
+        canLoad = false;
+        SmashDialogs.showWarningDialog(context,
+            "Only image files with world file definition are supported.");
+      } else if (prjFile == null) {
+        canLoad = false;
+        SmashDialogs.showWarningDialog(context,
+            "Only image files with prj file definition are supported.");
+      }
+    }
+    if (canLoad) {
+      GeoImageSource worldLayer = GeoImageSource(filePath);
       await worldLayer.load(context);
       if (worldLayer.hasData()) {
         LayerManager().addLayerSource(worldLayer);

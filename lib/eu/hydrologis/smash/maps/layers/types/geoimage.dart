@@ -12,6 +12,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart' hide Projection;
+import 'package:geoimage/geoimage.dart';
 import 'package:image/image.dart' as IMG;
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -21,7 +22,7 @@ import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
-class WorldImageSource extends RasterLayerSource {
+class GeoImageSource extends RasterLayerSource {
   String _absolutePath;
   String _name;
   double opacityPercentage = 100;
@@ -32,7 +33,7 @@ class WorldImageSource extends RasterLayerSource {
   int _srid;
   List<int> rgbToHide;
 
-  WorldImageSource.fromMap(Map<String, dynamic> map) {
+  GeoImageSource.fromMap(Map<String, dynamic> map) {
     String relativePath = map[LAYERSKEY_FILE];
     _name = FileUtilities.nameFromFile(relativePath, false);
     _absolutePath = Workspace.makeAbsolute(relativePath);
@@ -53,31 +54,8 @@ class WorldImageSource extends RasterLayerSource {
     }
   }
 
-  WorldImageSource(this._absolutePath) {
+  GeoImageSource(this._absolutePath) {
     _name = FileUtilities.nameFromFile(_absolutePath, false);
-  }
-
-  static String getWorldFile(String imagePath) {
-    String folder = FileUtilities.parentFolderFromFile(imagePath);
-    var name = FileUtilities.nameFromFile(imagePath, false);
-    var ext = FileUtilities.getExtension(imagePath);
-    var wldExt;
-    if (ext == FileManager.JPG_EXT) {
-      wldExt = FileManager.JPG_WLD_EXT;
-    } else if (ext == FileManager.PNG_EXT) {
-      wldExt = FileManager.PNG_WLD_EXT;
-    } else if (ext == FileManager.TIF_EXT) {
-      wldExt = FileManager.TIF_WLD_EXT;
-    } else {
-      return null;
-    }
-
-    var wldPath = FileUtilities.joinPaths(folder, name + "." + wldExt);
-    var wldFile = File(wldPath);
-    if (wldFile.existsSync()) {
-      return wldPath;
-    }
-    return null;
   }
 
   Future<void> load(BuildContext context) async {
@@ -85,18 +63,23 @@ class WorldImageSource extends RasterLayerSource {
       // print("LOAD WORLD FILE");
       _name = FileUtilities.nameFromFile(_absolutePath, false);
 
-      var fromPrj = SmashPrj.fromDataFile(_absolutePath);
-      if (fromPrj != null) {
-        var srid = SmashPrj.getSrid(fromPrj);
-        if (srid == null) {
-          srid = SmashPrj.getSridFromDataFile(_absolutePath);
-        }
-        if (srid == null) {
-          _srid = await SmashPrj.getSridFromMatchingInPreferences(fromPrj);
-        } else {
-          _srid = srid;
-        }
-      }
+      // GeoImage geoImage = GeoImage(File(_absolutePath));
+      // geoImage.read();
+
+      // var geoInfo = geoImage.geoInfo;
+
+      // var fromPrj = SmashPrj.fromDataFile(_absolutePath);
+      // if (fromPrj != null) {
+      //   var srid = SmashPrj.getSrid(fromPrj);
+      //   if (srid == null) {
+      //     srid = SmashPrj.getSridFromDataFile(_absolutePath);
+      //   }
+      //   if (srid == null) {
+      //     _srid = await SmashPrj.getSridFromMatchingInPreferences(fromPrj);
+      //   } else {
+      //     _srid = srid;
+      //   }
+      // }
 
       Map<String, dynamic> params = {
         "path": _absolutePath,
@@ -108,23 +91,33 @@ class WorldImageSource extends RasterLayerSource {
       }
       var res = await compute(getImage, params);
       _memoryImage = res[0];
-      var width = res[1];
-      var height = res[2];
+      GeoInfo geoInfo = res[1];
+      if (geoInfo.srid != -1) {
+        _srid = geoInfo.srid;
+      } else if (geoInfo.prjWkt != null) {
+        _srid = SmashPrj.getSridFromWkt(geoInfo.prjWkt);
+      }
+      var fromPrj = SmashPrj.fromSrid(_srid);
 
-      var worldFile = getWorldFile(_absolutePath);
-      var tfwList = FileUtilities.readFileToList(worldFile);
-      var xRes = double.parse(tfwList[0]);
-      var yRes = -double.parse(tfwList[3]);
-      var xExtent = width * xRes;
-      var yExtent = height * yRes;
+      // var worldFile = getWorldFile(_absolutePath);
+      // var tfwList = FileUtilities.readFileToList(worldFile);
+      // var xRes = double.parse(tfwList[0]);
+      // var yRes = -double.parse(tfwList[3]);
+      // var xExtent = width * xRes;
+      // var yExtent = height * yRes;
 
-      var west = double.parse(tfwList[4]) - xRes / 2.0;
-      var north = double.parse(tfwList[5]) + yRes / 2.0;
-      var east = west + xExtent;
-      var south = north - yExtent;
+      // var west = double.parse(tfwList[4]) - xRes / 2.0;
+      // var north = double.parse(tfwList[5]) + yRes / 2.0;
+      // var east = west + xExtent;
+      // var south = north - yExtent;
+      if (fromPrj == null) {
+        isLoaded = false;
+        return;
+      }
 
-      var ll = proj4dart.Point(x: west, y: south);
-      var ur = proj4dart.Point(x: east, y: north);
+      var wEnv = geoInfo.worldEnvelope;
+      var ll = proj4dart.Point(x: wEnv.getMinX(), y: wEnv.getMinY());
+      var ur = proj4dart.Point(x: wEnv.getMaxX(), y: wEnv.getMaxY());
       var llDest = SmashPrj.transformToWgs84(fromPrj, ll);
       var urDest = SmashPrj.transformToWgs84(fromPrj, ur);
 
@@ -144,31 +137,41 @@ class WorldImageSource extends RasterLayerSource {
     var b = map['b'];
     List<int> rgb = [r, g, b];
     File imageFile = new File(path);
+
+    GeoImage geoImage = GeoImage(imageFile);
+    geoImage.read();
+
+    var geoInfo = geoImage.geoInfo;
+
+    IMG.Image _decodedImage = geoImage.image;
+
     var ext = FileUtilities.getExtension(path);
-    var bytes = imageFile.readAsBytesSync();
-    IMG.Image _decodedImage = IMG.decodeImage(bytes);
+    var bytes = geoImage.imageBytes;
+    // IMG.Image _decodedImage = IMG.decodeImage(bytes);
+    bool changed = false;
     if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && r != null) {
       ImageUtilities.colorToAlphaImg(_decodedImage, r, g, b);
+      changed = true;
     }
-
-    var width = _decodedImage.width;
-    var height = _decodedImage.height;
 
     var _memoryImage;
     if (ext == FileManager.JPG_EXT) {
-      if (required != null) {
+      if (changed) {
         bytes = IMG.encodeJpg(_decodedImage);
       }
       _memoryImage = MyMemoryImage(bytes, rgb);
     } else if (ext == FileManager.PNG_EXT) {
-      if (required != null) {
+      if (changed) {
         bytes = IMG.encodePng(_decodedImage);
       }
       _memoryImage = MyMemoryImage(bytes, rgb);
     } else if (ext == FileManager.TIF_EXT) {
-      _memoryImage = MyMemoryImage(IMG.encodePng(_decodedImage), rgb);
+      if (changed) {
+        bytes = IMG.encodePng(_decodedImage);
+      }
+      _memoryImage = MyMemoryImage(bytes, rgb);
     }
-    return [_memoryImage, width, height];
+    return [_memoryImage, geoInfo];
   }
 
   bool hasData() {
@@ -270,7 +273,7 @@ class WorldImageSource extends RasterLayerSource {
 
 /// The tiff properties page.
 class TiffPropertiesWidget extends StatefulWidget {
-  final WorldImageSource _source;
+  final GeoImageSource _source;
   TiffPropertiesWidget(this._source);
 
   @override
@@ -280,7 +283,7 @@ class TiffPropertiesWidget extends StatefulWidget {
 }
 
 class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
-  WorldImageSource _source;
+  GeoImageSource _source;
   double _opacitySliderValue = 100;
   Color _hideColor = Colors.white;
   bool _somethingChanged = false;
@@ -456,7 +459,6 @@ class MyMemoryImage extends ImageProvider<MyMemoryImage> {
     assert(key == this);
 
     return await PaintingBinding.instance.instantiateImageCodec(bytes);
-    // return decode(bytes);
   }
 
   @override
