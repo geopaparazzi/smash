@@ -202,7 +202,7 @@ packages:
       name: extended_image_library
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   ffi:
     dependency: transitive
     description:
@@ -814,7 +814,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: aec25144dd58538ef8724eb55f7c13b5ee837f23
+      resolved-ref: "70a2b4af71d9519ce2af989316146380786055b0"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
