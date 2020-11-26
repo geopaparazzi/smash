@@ -28,6 +28,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
+import 'package:smash/eu/hydrologis/smash/util/urls.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -278,6 +279,10 @@ class DataLoaderUtilities {
                             onPressed: () {
                               var label =
                                   "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
+                              var urlStr = UrlUtilities.osmUrlFromLatLong(
+                                  note.lat, note.lon,
+                                  withMarker: true);
+                              label = "$label\n$urlStr";
                               ShareHandler.shareText(label);
                               mapBuilder.scaffoldKey.currentState
                                   .hideCurrentSnackBar();
@@ -477,6 +482,10 @@ class DataLoaderUtilities {
                           onPressed: () async {
                             var label =
                                 "image: ${image.text}\nlat: ${image.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)}\nlon: ${image.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
+                            var urlStr = UrlUtilities.osmUrlFromLatLong(
+                                image.lat, image.lon,
+                                withMarker: true);
+                            label = "$label\n$urlStr";
                             var uint8list =
                                 db.getImageDataBytes(image.imageDataId);
                             await ShareHandler.shareImage(label, uint8list);

@@ -812,11 +812,9 @@ packages:
   smashlibs:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: aec25144dd58538ef8724eb55f7c13b5ee837f23
-      url: "https://github.com/moovida/smashlibs.git"
-    source: git
+      path: "../smashlibs"
+      relative: true
+    source: path
     version: "1.0.0"
   source_span:
     dependency: transitive

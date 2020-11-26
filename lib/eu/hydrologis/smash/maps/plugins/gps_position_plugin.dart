@@ -6,6 +6,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -92,7 +93,8 @@ class CurrentGpsPositionPainter extends CustomPainter {
     ..color = Colors.blue.withAlpha(50)
     ..style = PaintingStyle.fill;
 
-  CurrentGpsPositionPainter(this.gpsPositionLayerOpts, this.gpsState, this.map);
+  CurrentGpsPositionPainter(this.gpsPositionLayerOpts, this.gpsState, this.map)
+      : super(repaint: gpsState);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -217,5 +219,7 @@ class CurrentGpsPositionPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
 }
