@@ -124,21 +124,21 @@ class TileSource extends TiledRasterLayerSource {
     this.canDoProperties = true,
   });
 
-  TileSource.Stamen_Watercolor({
-    this.name: "Stamen Watercolor",
-    this.url: "http://c.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
-    this.attribution:
-        "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL",
-    this.minZoom: DEFAULT_MINZOOM,
-    this.maxZoom: DEFAULT_MAXZOOM,
-    this.isVisible: true,
-    this.isTms: false,
-    this.canDoProperties = true,
-  });
+  // TileSource.Stamen_Watercolor({
+  //   this.name: "Stamen Watercolor",
+  //   this.url: "https://c.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg",
+  //   this.attribution:
+  //       "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL",
+  //   this.minZoom: DEFAULT_MINZOOM,
+  //   this.maxZoom: DEFAULT_MAXZOOM,
+  //   this.isVisible: true,
+  //   this.isTms: false,
+  //   this.canDoProperties = true,
+  // });
 
   TileSource.Opnvkarte_Transport({
     this.name: "Opnvkarte Transport",
-    this.url: "http://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
+    this.url: "https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png",
     this.attribution: "OpenStreetMap, ODbL",
     this.minZoom: DEFAULT_MINZOOM,
     this.maxZoom: DEFAULT_MAXZOOM,

@@ -193,7 +193,6 @@ final List<TileSource> onlinesTilesSources = [
   TileSource.Open_Street_Map_Standard(),
   TileSource.Wikimedia_Map(),
   TileSource.Opnvkarte_Transport(),
-  TileSource.Stamen_Watercolor(),
   TileSource.OpenTopoMap(),
   TileSource.Esri_Satellite(),
 ];
