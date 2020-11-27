@@ -16,6 +16,7 @@ import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
@@ -282,29 +283,38 @@ class TileSource extends TiledRasterLayerSource {
 
   Future<LatLngBounds> getBounds() async {
     if (bounds == null) {
-      if (FileManager.isMapsforge(getAbsolutePath())) {
-        bounds = await getMapsforgeBounds(File(absolutePath));
-      } else if (FileManager.isMbtiles(getAbsolutePath())) {
-        var prov = SmashMBTilesImageProvider(File(absolutePath));
-        prov.open();
-        bounds = prov.bounds;
-        prov.dispose();
-      } else if (FileManager.isGeopackage(getAbsolutePath())) {
-        var ch = ConnectionsHandler();
-        var db = ch.open(absolutePath, tableName: name);
-        var tileEntry = db.tile(SqlName(name));
-        var env = tileEntry.bounds;
-        if (tileEntry.srid != Proj.EPSG4326_INT) {
-          env = Proj.transformEnvelopeToWgs84(
-              PROJ.Projection("EPSG:${tileEntry.srid}"), env);
-        }
+      try {
+        if (FileManager.isMapsforge(getAbsolutePath())) {
+          bounds = await getMapsforgeBounds(File(absolutePath));
+        } else if (FileManager.isMbtiles(getAbsolutePath())) {
+          var prov = SmashMBTilesImageProvider(File(absolutePath));
+          prov.open();
+          bounds = prov.bounds;
+          prov.dispose();
+        } else if (FileManager.isGeopackage(getAbsolutePath())) {
+          var ch = ConnectionsHandler();
+          var db = ch.open(absolutePath, tableName: name);
+          var tileEntry = db.tile(SqlName(name));
+          if (tileEntry != null) {
+            var env = tileEntry.bounds;
+            if (tileEntry.srid != Proj.EPSG4326_INT) {
+              env = Proj.transformEnvelopeToWgs84(
+                  PROJ.Projection("EPSG:${tileEntry.srid}"), env);
+            }
 
-        bounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
-            LatLng(env.getMaxY(), env.getMaxX()));
-        // var prov = GeopackageImageProvider(File(absolutePath), name);
-        // prov.open();
-        // bounds = prov.bounds;
-        // prov.dispose();
+            bounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
+                LatLng(env.getMaxY(), env.getMaxX()));
+          } else {
+            throw ArgumentError(
+                "No tile entry found for table $name in db: $absolutePath");
+          }
+          // var prov = GeopackageImageProvider(File(absolutePath), name);
+          // prov.open();
+          // bounds = prov.bounds;
+          // prov.dispose();
+        }
+      } catch (e, s) {
+        SMLogger().e("En error occurred while loading ", s);
       }
     }
     return bounds;
