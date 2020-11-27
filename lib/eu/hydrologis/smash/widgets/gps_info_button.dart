@@ -15,6 +15,7 @@ import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
@@ -40,7 +41,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
           height: 1,
         );
       }
-
+      var mapState = Provider.of<SmashMapState>(context, listen: false);
       bool showAllGpsPointCount =
           GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
       bool showValidGpsPointCount =
@@ -66,26 +67,46 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         onDoubleTap: () {
           var mapState = Provider.of<SmashMapState>(context, listen: false);
           mapState.centerOnGps = !mapState.centerOnGps;
+          setState(() {});
         },
-        child: Transform.scale(
-          scale: 1.3,
-          child: FloatingActionButton(
-            key: widget._key,
-            elevation: 1,
-            backgroundColor: SmashColors.mainDecorations,
-            child: DashboardUtils.getGpsStatusIcon(
-                gpsState.status, widget._iconSize),
-            onPressed: () {
-              if (gpsState.hasFix() || gpsState.status == GpsStatus.ON_NO_FIX) {
-                var pos = gpsState.lastGpsPosition;
-                SmashMapState mapState =
-                    Provider.of<SmashMapState>(context, listen: false);
-                if (pos != null) {
-                  var newCenter = Coordinate(pos.longitude, pos.latitude);
-                  mapState.center = newCenter;
-                }
-              }
-            },
+        child: SizedBox(
+          height: widget._iconSize * 1.3,
+          width: widget._iconSize * 1.3,
+          child: Stack(
+            // fit: StackFit.loose,
+            children: [
+              Transform.scale(
+                scale: 1.3,
+                child: FloatingActionButton(
+                  key: widget._key,
+                  elevation: 1,
+                  backgroundColor: SmashColors.mainDecorations,
+                  child: DashboardUtils.getGpsStatusIcon(
+                      gpsState.status, widget._iconSize),
+                  onPressed: () {
+                    if (gpsState.hasFix() ||
+                        gpsState.status == GpsStatus.ON_NO_FIX) {
+                      var pos = gpsState.lastGpsPosition;
+                      SmashMapState mapState =
+                          Provider.of<SmashMapState>(context, listen: false);
+                      if (pos != null) {
+                        var newCenter = Coordinate(pos.longitude, pos.latitude);
+                        mapState.center = newCenter;
+                      }
+                    }
+                  },
+                ),
+              ),
+              if (mapState.centerOnGps)
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Icon(
+                    MdiIcons.magnet,
+                    size: widget._iconSize / 2,
+                    color: SmashColors.mainSelection,
+                  ),
+                )
+            ],
           ),
         ),
       );
