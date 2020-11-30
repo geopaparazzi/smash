@@ -165,10 +165,10 @@ class GeoImageSource extends RasterLayerSource {
         bytes = IMG.encodePng(_decodedImage);
       }
       _memoryImage = MyMemoryImage(bytes, rgb);
-    } else if (ext == FileManager.TIF_EXT) {
-      if (changed) {
-        bytes = IMG.encodePng(_decodedImage);
-      }
+    } else if (GeoimageUtils.isTiff(path)) {
+      // if (changed) {
+      bytes = IMG.encodeJpg(_decodedImage, quality: 90);
+      // }
       _memoryImage = MyMemoryImage(bytes, rgb);
     }
     return [_memoryImage, geoInfo];
