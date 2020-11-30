@@ -365,7 +365,7 @@ packages:
       name: fluttertoast
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.1.4"
+    version: "7.1.5"
   geocoder:
     dependency: "direct main"
     description:
@@ -814,7 +814,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "70a2b4af71d9519ce2af989316146380786055b0"
+      resolved-ref: "7ae478d0151e5f9bb2a0b9659b8ec7974a2ce0fb"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
