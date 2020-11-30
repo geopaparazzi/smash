@@ -170,9 +170,13 @@ class DashboardUtils {
           color: c,
         ),
         onTap: () async {
-          var urlString = "https://www.geopaparazzi.org/smash/index.html";
-          if (await canLaunch(urlString)) {
-            await launch(urlString);
+          if (!await HU.NetworkUtilities.isConnected()) {
+            SmashDialogs.showOperationNeedsNetwork(context);
+          } else {
+            var urlString = "https://www.geopaparazzi.org/smash/index.html";
+            if (await canLaunch(urlString)) {
+              await launch(urlString);
+            }
           }
         },
       ),

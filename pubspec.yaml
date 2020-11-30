@@ -170,7 +170,7 @@ dependencies:
   stack_trace: 1.9.3
 
   # BSD
-  url_launcher: ^5.4.2
+  url_launcher: ^5.7.10
 
   # Apache 2.0
   gpx: ^1.1.0
