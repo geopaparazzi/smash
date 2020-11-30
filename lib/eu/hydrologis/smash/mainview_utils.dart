@@ -170,7 +170,7 @@ class DashboardUtils {
           color: c,
         ),
         onTap: () async {
-          var urlString = "http://www.geopaparazzi.org/smash/index.html";
+          var urlString = "https://www.geopaparazzi.org/smash/index.html";
           if (await canLaunch(urlString)) {
             await launch(urlString);
           }
