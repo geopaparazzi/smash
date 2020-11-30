@@ -128,8 +128,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                           ),
                           Table(
                             columnWidths: {
-                              0: FlexColumnWidth(0.2),
-                              1: FlexColumnWidth(0.8),
+                              0: FlexColumnWidth(0.3),
+                              1: FlexColumnWidth(0.7),
                             },
                             children: _getInfoTableCells(context),
                           ),
