@@ -136,9 +136,9 @@ dependencies:
   #    <true/>
 
   # GPL 3.0
-  background_locator: 1.2.2+1
-    # git:
-    #   url: https://github.com/moovida/background_locator.git
+  background_locator: #1.2.2+1
+    git:
+      url: https://github.com/rekab-app/background_locator.git
 
   # MIT
   # geolocator: ^5.3.0

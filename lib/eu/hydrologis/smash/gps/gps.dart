@@ -387,6 +387,7 @@ time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSince
       //optional
       autoStop: false,
       androidSettings: AndroidSettings(
+          client: LocationClient.android,
           accuracy: smashLocationAccuracy.accuracy,
           interval: 1,
           distanceFilter: 0,

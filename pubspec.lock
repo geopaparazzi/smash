@@ -39,9 +39,11 @@ packages:
   background_locator:
     dependency: "direct main"
     description:
-      name: background_locator
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "8767342cc0977669b409dfcdbf63d7e696e062c5"
+      url: "https://github.com/rekab-app/background_locator.git"
+    source: git
     version: "1.2.2+1"
   badges:
     dependency: "direct main"
