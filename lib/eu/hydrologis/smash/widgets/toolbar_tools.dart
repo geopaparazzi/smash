@@ -277,7 +277,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
             });
             var tableData = db.getTableData(tableName, where: "$key=$id");
             if (tableData.data.isNotEmpty) {
-              EditableQueryResult totalQueryResult = EditableQueryResult();
+              EditableGPQueryResult totalQueryResult = EditableGPQueryResult();
               totalQueryResult.editable = [true];
               totalQueryResult.fieldAndTypemap = [];
               totalQueryResult.ids = [];

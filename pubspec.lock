@@ -61,6 +61,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.17.1"
+  buffer:
+    dependency: transitive
+    description:
+      name: buffer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.7"
   cached_network_image:
     dependency: transitive
     description:
@@ -137,7 +144,7 @@ packages:
       name: dart_hydrologis_db
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.1"
+    version: "0.5.0+2"
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
@@ -152,6 +159,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.6"
+  dart_postgis:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "8fe645a0c5030d33a28f1eb1de3852858d40aa06"
+      url: "https://github.com/moovida/dart_postgis"
+    source: git
+    version: "0.1.0"
   dart_shp:
     dependency: "direct main"
     description:
@@ -258,7 +274,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.2+1"
+    version: "0.4.3"
   flutter_image:
     dependency: transitive
     description:
@@ -687,6 +703,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  postgres:
+    dependency: transitive
+    description:
+      name: postgres
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
   process:
     dependency: transitive
     description:

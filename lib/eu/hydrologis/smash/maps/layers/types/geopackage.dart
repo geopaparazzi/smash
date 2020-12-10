@@ -37,7 +37,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   bool isVisible = true;
   String _attribution = "";
 
-  QueryResult _tableData;
+  GPQueryResult _tableData;
   JTS.Envelope _tableBounds;
   GeometryColumn _geometryColumn;
   SldObjectParser _style;

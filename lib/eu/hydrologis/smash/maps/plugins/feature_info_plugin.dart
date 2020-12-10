@@ -117,7 +117,7 @@ class FeatureInfoLayer extends StatelessWidget {
         .getLayerSources()
         .where((l) => l is VectorLayerSource && l.isActive())
         .toList();
-    EditableQueryResult totalQueryResult = EditableQueryResult();
+    EditableGPQueryResult totalQueryResult = EditableGPQueryResult();
     totalQueryResult.editable = [];
     totalQueryResult.fieldAndTypemap = [];
     totalQueryResult.ids = [];
@@ -143,7 +143,7 @@ class FeatureInfoLayer extends StatelessWidget {
         tableColumns.forEach((column) {
           typesMap[column[0]] = column[1];
         });
-        QueryResult queryResult =
+        GPQueryResult queryResult =
             db.getTableData(layerName, geometry: boundsGeomInSrid);
         if (queryResult.data.isNotEmpty) {
           print("Found data for: " + layerName.name);
@@ -188,7 +188,7 @@ class FeatureInfoLayer extends StatelessWidget {
   }
 }
 
-class EditableQueryResult extends QueryResult {
+class EditableGPQueryResult extends GPQueryResult {
   List<bool> editable;
   List<String> primaryKeys;
   List<GeopackageDb> dbs;

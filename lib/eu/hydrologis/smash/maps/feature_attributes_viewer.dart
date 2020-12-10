@@ -21,7 +21,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
 
 class FeatureAttributesViewer extends StatefulWidget {
-  final EditableQueryResult features;
+  final EditableGPQueryResult features;
 
   FeatureAttributesViewer(this.features, {Key key}) : super(key: key);
 
@@ -42,7 +42,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     _total = widget.features.geoms.length;
 
     _mapController.onReady.then((v) {
-      QueryResult f = widget.features;
+      GPQueryResult f = widget.features;
       var geometry = f.geoms[_index];
       var env = geometry.getEnvelopeInternal();
       var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
@@ -97,7 +97,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     Color borderFill = Colors.yellow;
     Color fillPoly = Colors.yellow.withOpacity(0.3);
 
-    EditableQueryResult f = widget.features;
+    EditableGPQueryResult f = widget.features;
     var layers = <LayerOptions>[];
 
     if (baseLayer != null) {

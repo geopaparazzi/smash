@@ -39,8 +39,8 @@ class GeopaparazziProjectDb extends SqliteDb {
 
   GeopaparazziProjectDb(dbPath) : super(dbPath);
 
-  open({Function dbCreateFunction}) {
-    super.open(dbCreateFunction: createDatabase);
+  open({Function populateFunction}) {
+    super.open(populateFunction: createDatabase);
   }
 
   /// Get the count of the current notes
@@ -51,7 +51,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     var resNotes = select("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
     var resNote = resNotes.first;
-    var count = resNote["count"];
+    var count = resNote.get("count");
     return count;
   }
 
@@ -66,7 +66,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     var resNotes = select("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
     var resNote = resNotes.first;
-    var count = resNote["count"];
+    var count = resNote.get("count");
     return count;
   }
 
@@ -81,7 +81,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     var resNotes = select("SELECT count(*) as count FROM $TABLE_NOTES$where");
 
     var resNote = resNotes.first;
-    var count = resNote["count"];
+    var count = resNote.get("count");
     return count;
   }
 
@@ -119,36 +119,36 @@ class GeopaparazziProjectDb extends SqliteDb {
 
     List<Note> notes = [];
     var resNotes = select(sql);
-    for (var resNoteMap in resNotes) {
+    resNotes.forEach((QueryResultRow resNoteMap) {
       Note note = Note()
-        ..id = resNoteMap[NOTES_COLUMN_ID]
-        ..lon = resNoteMap[NOTES_COLUMN_LON]
-        ..lat = resNoteMap[NOTES_COLUMN_LAT]
-        ..altim = resNoteMap[NOTES_COLUMN_ALTIM]
-        ..timeStamp = resNoteMap[NOTES_COLUMN_TS]
-        ..description = resNoteMap[NOTES_COLUMN_DESCRIPTION]
-        ..text = resNoteMap[NOTES_COLUMN_TEXT]
-        ..form = resNoteMap[NOTES_COLUMN_FORM]
-        ..style = resNoteMap[NOTES_COLUMN_STYLE]
-        ..isDirty = resNoteMap[NOTES_COLUMN_ISDIRTY];
+        ..id = resNoteMap.get(NOTES_COLUMN_ID)
+        ..lon = resNoteMap.get(NOTES_COLUMN_LON)
+        ..lat = resNoteMap.get(NOTES_COLUMN_LAT)
+        ..altim = resNoteMap.get(NOTES_COLUMN_ALTIM)
+        ..timeStamp = resNoteMap.get(NOTES_COLUMN_TS)
+        ..description = resNoteMap.get(NOTES_COLUMN_DESCRIPTION)
+        ..text = resNoteMap.get(NOTES_COLUMN_TEXT)
+        ..form = resNoteMap.get(NOTES_COLUMN_FORM)
+        ..style = resNoteMap.get(NOTES_COLUMN_STYLE)
+        ..isDirty = resNoteMap.get(NOTES_COLUMN_ISDIRTY);
 
       // we can add the extended part
       NoteExt noteExt = NoteExt();
-      if (resNoteMap[extid] != null) {
-        noteExt.id = resNoteMap[extid];
+      if (resNoteMap.get(extid) != null) {
+        noteExt.id = resNoteMap.get(extid);
         noteExt.noteId = note.id;
-        var marker = resNoteMap[NOTESEXT_COLUMN_MARKER];
+        var marker = resNoteMap.get(NOTESEXT_COLUMN_MARKER);
         if (marker != null) noteExt.marker = marker;
-        var _size = resNoteMap[NOTESEXT_COLUMN_SIZE];
+        var _size = resNoteMap.get(NOTESEXT_COLUMN_SIZE);
         if (_size != null) noteExt.size = _size;
-        var _rotation = resNoteMap[NOTESEXT_COLUMN_ROTATION];
+        var _rotation = resNoteMap.get(NOTESEXT_COLUMN_ROTATION);
         if (_rotation != null) noteExt.rotation = _rotation;
-        var _color = resNoteMap[NOTESEXT_COLUMN_COLOR];
+        var _color = resNoteMap.get(NOTESEXT_COLUMN_COLOR);
         if (_color != null) noteExt.color = _color;
-        noteExt.accuracy = resNoteMap[NOTESEXT_COLUMN_ACCURACY];
-        noteExt.heading = resNoteMap[NOTESEXT_COLUMN_HEADING];
-        noteExt.speed = resNoteMap[NOTESEXT_COLUMN_SPEED];
-        noteExt.speedaccuracy = resNoteMap[NOTESEXT_COLUMN_SPEEDACCURACY];
+        noteExt.accuracy = resNoteMap.get(NOTESEXT_COLUMN_ACCURACY);
+        noteExt.heading = resNoteMap.get(NOTESEXT_COLUMN_HEADING);
+        noteExt.speed = resNoteMap.get(NOTESEXT_COLUMN_SPEED);
+        noteExt.speedaccuracy = resNoteMap.get(NOTESEXT_COLUMN_SPEEDACCURACY);
       } else {
         // insert the note ext
         noteExt.noteId = note.id;
@@ -157,7 +157,7 @@ class GeopaparazziProjectDb extends SqliteDb {
       }
       note.noteExt = noteExt;
       notes.add(note);
-    }
+    });
     return notes;
   }
 
@@ -181,34 +181,34 @@ class GeopaparazziProjectDb extends SqliteDb {
     var resNoteMap = resNotes.first;
 
     Note note = Note()
-      ..id = resNoteMap[NOTES_COLUMN_ID]
-      ..lon = resNoteMap[NOTES_COLUMN_LON]
-      ..lat = resNoteMap[NOTES_COLUMN_LAT]
-      ..altim = resNoteMap[NOTES_COLUMN_ALTIM]
-      ..timeStamp = resNoteMap[NOTES_COLUMN_TS]
-      ..description = resNoteMap[NOTES_COLUMN_DESCRIPTION]
-      ..text = resNoteMap[NOTES_COLUMN_TEXT]
-      ..form = resNoteMap[NOTES_COLUMN_FORM]
-      ..style = resNoteMap[NOTES_COLUMN_STYLE]
-      ..isDirty = resNoteMap[NOTES_COLUMN_ISDIRTY];
+      ..id = resNoteMap.get(NOTES_COLUMN_ID)
+      ..lon = resNoteMap.get(NOTES_COLUMN_LON)
+      ..lat = resNoteMap.get(NOTES_COLUMN_LAT)
+      ..altim = resNoteMap.get(NOTES_COLUMN_ALTIM)
+      ..timeStamp = resNoteMap.get(NOTES_COLUMN_TS)
+      ..description = resNoteMap.get(NOTES_COLUMN_DESCRIPTION)
+      ..text = resNoteMap.get(NOTES_COLUMN_TEXT)
+      ..form = resNoteMap.get(NOTES_COLUMN_FORM)
+      ..style = resNoteMap.get(NOTES_COLUMN_STYLE)
+      ..isDirty = resNoteMap.get(NOTES_COLUMN_ISDIRTY);
 
     // we can add the extended part
     NoteExt noteExt = NoteExt();
-    if (resNoteMap[extid] != null) {
-      noteExt.id = resNoteMap[extid];
+    if (resNoteMap.get(extid) != null) {
+      noteExt.id = resNoteMap.get(extid);
       noteExt.noteId = note.id;
-      var marker = resNoteMap[NOTESEXT_COLUMN_MARKER];
+      var marker = resNoteMap.get(NOTESEXT_COLUMN_MARKER);
       if (marker != null) noteExt.marker = marker;
-      var _size = resNoteMap[NOTESEXT_COLUMN_SIZE];
+      var _size = resNoteMap.get(NOTESEXT_COLUMN_SIZE);
       if (_size != null) noteExt.size = _size;
-      var _rotation = resNoteMap[NOTESEXT_COLUMN_ROTATION];
+      var _rotation = resNoteMap.get(NOTESEXT_COLUMN_ROTATION);
       if (_rotation != null) noteExt.rotation = _rotation;
-      var _color = resNoteMap[NOTESEXT_COLUMN_COLOR];
+      var _color = resNoteMap.get(NOTESEXT_COLUMN_COLOR);
       if (_color != null) noteExt.color = _color;
-      noteExt.accuracy = resNoteMap[NOTESEXT_COLUMN_ACCURACY];
-      noteExt.heading = resNoteMap[NOTESEXT_COLUMN_HEADING];
-      noteExt.speed = resNoteMap[NOTESEXT_COLUMN_SPEED];
-      noteExt.speedaccuracy = resNoteMap[NOTESEXT_COLUMN_SPEEDACCURACY];
+      noteExt.accuracy = resNoteMap.get(NOTESEXT_COLUMN_ACCURACY);
+      noteExt.heading = resNoteMap.get(NOTESEXT_COLUMN_HEADING);
+      noteExt.speed = resNoteMap.get(NOTESEXT_COLUMN_SPEED);
+      noteExt.speedaccuracy = resNoteMap.get(NOTESEXT_COLUMN_SPEEDACCURACY);
     } else {
       // insert the note ext
       noteExt.noteId = note.id;
@@ -238,7 +238,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     var resImages = select("SELECT count(*) as count FROM $TABLE_IMAGES$where");
 
     var resImage = resImages.first;
-    var count = resImage["count"];
+    var count = resImage.get("count");
     return count;
   }
 
@@ -312,7 +312,7 @@ class GeopaparazziProjectDb extends SqliteDb {
           "SELECT $IMAGESDATA_COLUMN_ID, length($IMAGESDATA_COLUMN_IMAGE) as blobsize FROM $TABLE_IMAGE_DATA $whereStr";
       var res = select(sizeQuery);
       if (res.length == 1) {
-        int blobSize = res.first['blobsize'];
+        int blobSize = res.first.get('blobsize');
         List<int> total = List();
         if (blobSize > MAXBLOBSIZE) {
           for (int i = 1; i <= blobSize; i = i + MAXBLOBSIZE) {
@@ -324,7 +324,7 @@ class GeopaparazziProjectDb extends SqliteDb {
             String tmpQuery =
                 "SELECT substr($IMAGESDATA_COLUMN_IMAGE, $from, $size) as partialblob FROM $TABLE_IMAGE_DATA $whereStr";
             var res2 = select(tmpQuery);
-            var partial = res2.first['partialblob'];
+            var partial = res2.first.get('partialblob');
             total.addAll(partial);
           }
           imageDataBytes = Uint8List.fromList(total);
@@ -400,7 +400,7 @@ class GeopaparazziProjectDb extends SqliteDb {
     var resMap = select(sql);
 
     var res = resMap.first;
-    var count = res["count"];
+    var count = res.get("count");
     return count;
   }
 
@@ -417,14 +417,14 @@ class GeopaparazziProjectDb extends SqliteDb {
 
     var resLogs = select(logsQuery);
     List<Log> logs = [];
-    resLogs.forEach((map) {
+    resLogs.forEach((QueryResultRow map) {
       Log log = Log()
-        ..id = map[LOGS_COLUMN_ID]
-        ..startTime = map[LOGS_COLUMN_STARTTS]
-        ..endTime = map[LOGS_COLUMN_ENDTS]
-        ..text = map[LOGS_COLUMN_TEXT]
-        ..isDirty = map[LOGS_COLUMN_ISDIRTY]
-        ..lengthm = map[LOGS_COLUMN_LENGTHM];
+        ..id = map.get(LOGS_COLUMN_ID)
+        ..startTime = map.get(LOGS_COLUMN_STARTTS)
+        ..endTime = map.get(LOGS_COLUMN_ENDTS)
+        ..text = map.get(LOGS_COLUMN_TEXT)
+        ..isDirty = map.get(LOGS_COLUMN_ISDIRTY)
+        ..lengthm = map.get(LOGS_COLUMN_LENGTHM);
       logs.add(log);
     });
     return logs;
@@ -441,12 +441,12 @@ class GeopaparazziProjectDb extends SqliteDb {
     if (resLogs.length == 1) {
       var map = resLogs.first;
       Log log = Log()
-        ..id = map[LOGS_COLUMN_ID]
-        ..startTime = map[LOGS_COLUMN_STARTTS]
-        ..endTime = map[LOGS_COLUMN_ENDTS]
-        ..text = map[LOGS_COLUMN_TEXT]
-        ..isDirty = map[LOGS_COLUMN_ISDIRTY]
-        ..lengthm = map[LOGS_COLUMN_LENGTHM];
+        ..id = map.get(LOGS_COLUMN_ID)
+        ..startTime = map.get(LOGS_COLUMN_STARTTS)
+        ..endTime = map.get(LOGS_COLUMN_ENDTS)
+        ..text = map.get(LOGS_COLUMN_TEXT)
+        ..isDirty = map.get(LOGS_COLUMN_ISDIRTY)
+        ..lengthm = map.get(LOGS_COLUMN_LENGTHM);
       return log;
     }
     return null;
@@ -463,17 +463,17 @@ class GeopaparazziProjectDb extends SqliteDb {
             """;
     List<LogDataPoint> points = [];
     var resLogData = select(logDataQuery);
-    resLogData.forEach((map) {
+    resLogData.forEach((QueryResultRow map) {
       LogDataPoint point = LogDataPoint()
-        ..id = map[LOGSDATA_COLUMN_ID]
-        ..lat = map[LOGSDATA_COLUMN_LAT]
-        ..lon = map[LOGSDATA_COLUMN_LON]
-        ..logid = map[LOGSDATA_COLUMN_LOGID]
-        ..altim = map[LOGSDATA_COLUMN_ALTIM]
-        ..ts = map[LOGSDATA_COLUMN_TS]
-        ..filtered_lon = map[LOGSDATA_COLUMN_LON_FILTERED]
-        ..filtered_lat = map[LOGSDATA_COLUMN_LAT_FILTERED]
-        ..filtered_accuracy = map[LOGSDATA_COLUMN_ACCURACY_FILTERED];
+        ..id = map.get(LOGSDATA_COLUMN_ID)
+        ..lat = map.get(LOGSDATA_COLUMN_LAT)
+        ..lon = map.get(LOGSDATA_COLUMN_LON)
+        ..logid = map.get(LOGSDATA_COLUMN_LOGID)
+        ..altim = map.get(LOGSDATA_COLUMN_ALTIM)
+        ..ts = map.get(LOGSDATA_COLUMN_TS)
+        ..filtered_lon = map.get(LOGSDATA_COLUMN_LON_FILTERED)
+        ..filtered_lat = map.get(LOGSDATA_COLUMN_LAT_FILTERED)
+        ..filtered_accuracy = map.get(LOGSDATA_COLUMN_ACCURACY_FILTERED);
       points.add(point);
     });
     return points;
@@ -489,11 +489,11 @@ class GeopaparazziProjectDb extends SqliteDb {
     if (resLogData.length == 1) {
       var map = resLogData.first;
       LogProperty prop = LogProperty()
-        ..id = map[LOGSPROP_COLUMN_ID]
-        ..color = map[LOGSPROP_COLUMN_COLOR]
-        ..isVisible = map[LOGSPROP_COLUMN_VISIBLE]
-        ..width = map[LOGSPROP_COLUMN_WIDTH]
-        ..logid = map[LOGSPROP_COLUMN_LOGID];
+        ..id = map.get(LOGSPROP_COLUMN_ID)
+        ..color = map.get(LOGSPROP_COLUMN_COLOR)
+        ..isVisible = map.get(LOGSPROP_COLUMN_VISIBLE)
+        ..width = map.get(LOGSPROP_COLUMN_WIDTH)
+        ..logid = map.get(LOGSPROP_COLUMN_LOGID);
       return prop;
     }
     return null;
@@ -511,8 +511,8 @@ class GeopaparazziProjectDb extends SqliteDb {
     var resList = select(sql);
     if (resList.length == 1) {
       var map = resList.first;
-      var lon = map[LOGSDATA_COLUMN_LON];
-      var lat = map[LOGSDATA_COLUMN_LAT];
+      var lon = map.get(LOGSDATA_COLUMN_LON);
+      var lat = map.get(LOGSDATA_COLUMN_LAT);
       return LatLng(lat, lon);
     }
     return null;
@@ -529,14 +529,14 @@ class GeopaparazziProjectDb extends SqliteDb {
 
     List<LogDataPoint> data = [];
     var resList = select(sql);
-    resList.forEach((map) {
+    resList.forEach((QueryResultRow map) {
       LogDataPoint ldp = LogDataPoint()
-        ..id = map[LOGSDATA_COLUMN_ID]
-        ..logid = map[LOGSDATA_COLUMN_LOGID]
-        ..lon = map[LOGSDATA_COLUMN_LON]
-        ..lat = map[LOGSDATA_COLUMN_LAT]
-        ..altim = map[LOGSDATA_COLUMN_ALTIM]
-        ..ts = map[LOGSDATA_COLUMN_TS];
+        ..id = map.get(LOGSDATA_COLUMN_ID)
+        ..logid = map.get(LOGSDATA_COLUMN_LOGID)
+        ..lon = map.get(LOGSDATA_COLUMN_LON)
+        ..lat = map.get(LOGSDATA_COLUMN_LAT)
+        ..altim = map.get(LOGSDATA_COLUMN_ALTIM)
+        ..ts = map.get(LOGSDATA_COLUMN_TS);
       data.add(ldp);
     });
     return data;
@@ -663,10 +663,10 @@ class GeopaparazziProjectDb extends SqliteDb {
 
     var res = select(sql);
     LatLng previousPosition;
-    for (var map in res) {
-      var lon = map[LOGSDATA_COLUMN_LON];
-      var lat = map[LOGSDATA_COLUMN_LAT];
-      var ts = map[LOGSDATA_COLUMN_TS];
+    res.forEach((QueryResultRow map) {
+      var lon = map.get(LOGSDATA_COLUMN_LON);
+      var lat = map.get(LOGSDATA_COLUMN_LAT);
+      // var ts = map.get(LOGSDATA_COLUMN_TS);
       LatLng pos = LatLng(lat, lon);
       if (previousPosition != null) {
         var distanceMeters =
@@ -674,7 +674,7 @@ class GeopaparazziProjectDb extends SqliteDb {
         summedDistance += distanceMeters;
       }
       previousPosition = pos;
-    }
+    });
 
     // update the value
     String updateSql = '''

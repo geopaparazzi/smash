@@ -57,7 +57,7 @@ class InfoToolState extends ChangeNotifier {
       for (var vLayer in visibleVectorLayers) {
         if (vLayer is GeopackageSource) {
           var db = ConnectionsHandler().open(vLayer.getAbsolutePath());
-          QueryResult queryResult =
+          GPQueryResult queryResult =
               db.getTableData(SqlName(vLayer.getName()), envelope: env);
           if (queryResult.data.isNotEmpty) {
             print("Found data for: " + vLayer.getName());
