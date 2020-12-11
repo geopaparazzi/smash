@@ -25,46 +25,37 @@ import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:stack_trace/stack_trace.dart';
 
+const DOCATCHER = false;
+
 void main() {
-  /// STEP 1. Create catcher configuration.
-  /// Debug configuration with dialog report mode and console handler. It will show dialog and once user accepts it, error will be shown   /// in console.
-  CatcherOptions debugOptions =
-      CatcherOptions(DialogReportMode(), [ConsoleHandler()]);
+  if (DOCATCHER) {
+    CatcherOptions debugOptions =
+        CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
+    CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
+      EmailManualHandler(["feedback@geopaparazzi.eu"])
+    ]);
 
-  /// Release configuration. Same as above, but once user accepts dialog, user will be prompted to send email with crash to support.
-  CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
-    EmailManualHandler(["feedback@geopaparazzi.eu"])
-  ]);
+    Catcher(getMainWidget(),
+        debugConfig: debugOptions, releaseConfig: releaseOptions);
+  } else {
+    runApp(getMainWidget());
+  }
+}
 
-  Catcher(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => ProjectState()),
-          ChangeNotifierProvider(create: (_) => SmashMapBuilder()),
-          ChangeNotifierProvider(create: (_) => ThemeState()),
-          ChangeNotifierProvider(create: (_) => GpsState()),
-          ChangeNotifierProvider(create: (_) => SmashMapState()),
-          ChangeNotifierProvider(create: (_) => InfoToolState()),
-          ChangeNotifierProvider(create: (_) => RulerState()),
-          ChangeNotifierProvider(create: (_) => GeometryEditorState()),
-        ],
-        child: SmashApp(),
-      ),
-      debugConfig: debugOptions,
-      releaseConfig: releaseOptions);
-  // runApp(MultiProvider(
-  //   providers: [
-  //     ChangeNotifierProvider(create: (_) => ProjectState()),
-  //     ChangeNotifierProvider(create: (_) => SmashMapBuilder()),
-  //     ChangeNotifierProvider(create: (_) => ThemeState()),
-  //     ChangeNotifierProvider(create: (_) => GpsState()),
-  //     ChangeNotifierProvider(create: (_) => SmashMapState()),
-  //     ChangeNotifierProvider(create: (_) => InfoToolState()),
-  //     ChangeNotifierProvider(create: (_) => RulerState()),
-  //     ChangeNotifierProvider(create: (_) => GeometryEditorState()),
-  //   ],
-  //   child: SmashApp(),
-  // ));
+MultiProvider getMainWidget() {
+  return MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => ProjectState()),
+      ChangeNotifierProvider(create: (_) => SmashMapBuilder()),
+      ChangeNotifierProvider(create: (_) => ThemeState()),
+      ChangeNotifierProvider(create: (_) => GpsState()),
+      ChangeNotifierProvider(create: (_) => SmashMapState()),
+      ChangeNotifierProvider(create: (_) => InfoToolState()),
+      ChangeNotifierProvider(create: (_) => RulerState()),
+      ChangeNotifierProvider(create: (_) => GeometryEditorState()),
+    ],
+    child: SmashApp(),
+  );
 }
 // void main() => runApp(SmashApp());
 

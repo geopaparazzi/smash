@@ -39,6 +39,7 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
   String _dbUrl;
   String _user;
   String _pwd;
+  String _where;
 
   List<String> alphaFields = [];
   String sldString;
@@ -46,10 +47,11 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
 
   PostgisSource.fromMap(Map<String, dynamic> map) {
     _tableName = map[LAYERSKEY_LABEL];
-    _dbUrl = map[LAYERSKEY_URL]; // host:port/dbname
+    _dbUrl = map[LAYERSKEY_URL]; // postgis:host:port/dbname
     _user = map[LAYERSKEY_USER];
     _pwd = map[LAYERSKEY_PWD];
-    isVisible = map[LAYERSKEY_ISVISIBLE];
+    _where = map[LAYERSKEY_WHERE];
+    isVisible = map[LAYERSKEY_ISVISIBLE] ?? true;
 
     _srid = map[LAYERSKEY_SRID];
   }
@@ -119,6 +121,7 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
         SqlName(_tableName),
         limit: maxFeaturesToLoad,
         envelope: limitBounds,
+        where: _where,
       );
 
       var fromPrj = SmashPrj.fromSrid(_srid);
@@ -131,6 +134,9 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
 
         _attribution =
             "${_geometryColumn.geometryType.getTypeName()} (${_tableData.geoms.length}) ";
+        if (_where != null) {
+          _attribution += " (where $_where)";
+        }
 
         isLoaded = true;
       }
@@ -168,6 +174,10 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
     return _attribution;
   }
 
+  String getWhere() {
+    return _where;
+  }
+
   bool isActive() {
     return isVisible;
   }
@@ -177,6 +187,10 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
   }
 
   String toJson() {
+    String w = "";
+    if (_where != null) {
+      w = """ "$LAYERSKEY_WHERE": "$_where", """;
+    }
     var json = '''
     {
         "$LAYERSKEY_LABEL": "$_tableName",
@@ -185,6 +199,7 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
         "$LAYERSKEY_PWD":"$_pwd",
         "$LAYERSKEY_ISVECTOR": true,
         "$LAYERSKEY_SRID": $_srid,
+        $w
         "$LAYERSKEY_ISVISIBLE": $isVisible 
     }
     ''';
@@ -536,10 +551,10 @@ class PostgisConnectionsHandler {
       String _dbUrl, String tableName, String user, String pwd) async {
     PostgisDb db = _connectionsMap[_dbUrl];
     if (db == null) {
-      // _dbUrl = host:port/dbname
+      // _dbUrl = postgis:host:port/dbname
       var split = _dbUrl.split(RegExp(r":|/"));
-      var port = int.tryParse(split[1]) ?? 5432;
-      db = PostgisDb(split[0], split[2], port: port, user: user, pwd: pwd);
+      var port = int.tryParse(split[2]) ?? 5432;
+      db = PostgisDb(split[1], split[3], port: port, user: user, pwd: pwd);
       await db.open();
 
       _connectionsMap[_dbUrl] = db;

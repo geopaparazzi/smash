@@ -11,6 +11,7 @@ import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -24,6 +25,7 @@ const LAYERSKEY_FILE = 'file';
 const LAYERSKEY_URL = 'url';
 const LAYERSKEY_USER = 'user';
 const LAYERSKEY_PWD = 'pwd';
+const LAYERSKEY_WHERE = 'where';
 const LAYERSKEY_TYPE = 'type';
 const LAYERSKEY_FORMAT = 'format';
 const LAYERSKEY_ISVECTOR = 'isVector';
@@ -116,6 +118,7 @@ abstract class LayerSource {
 
       String file = map[LAYERSKEY_FILE];
       String type = map[LAYERSKEY_TYPE];
+      String url = map[LAYERSKEY_URL];
       if (type != null && type == LAYERSTYPE_WMS) {
         var wms = WmsSource.fromMap(map);
         return [wms];
@@ -137,6 +140,12 @@ abstract class LayerSource {
           GeopackageSource gpkg = GeopackageSource.fromMap(map);
           return [gpkg];
         }
+      } else if (url != null && url.toLowerCase().startsWith("postgis")) {
+        String user = map[LAYERSKEY_USER];
+        String pwd = map[LAYERSKEY_PWD];
+        String tableName = map[LAYERSKEY_LABEL];
+        PostgisSource pg = PostgisSource(url, tableName, user, pwd);
+        return [pg];
       } else {
         TileSource ts = TileSource.fromMap(map);
         return [ts];

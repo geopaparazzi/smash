@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:flutter/material.dart';
@@ -30,31 +31,35 @@ class FeatureAttributesViewer extends StatefulWidget {
       _FeatureAttributesViewerState();
 }
 
-class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
+class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
+    with AfterLayoutMixin {
   int _index = 0;
   int _total;
-  MapController _mapController;
+  MapController _mapController = MapController();
   var _baseLayer;
+  bool _loading = true;
 
   @override
-  void initState() {
-    _mapController = MapController();
+  void afterFirstLayout(BuildContext context) async {
+    await setBaseLayer();
+
     _total = widget.features.geoms.length;
 
-    _mapController.onReady.then((v) {
-      EditableQueryResult f = widget.features;
-      var geometry = f.geoms[_index];
-      var env = geometry.getEnvelopeInternal();
-      var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
-          LatLng(env.getMaxY(), env.getMaxX()));
+    EditableQueryResult f = widget.features;
+    var geometry = f.geoms[_index];
+    var env = geometry.getEnvelopeInternal();
+    var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
+        LatLng(env.getMaxY(), env.getMaxX()));
 
+    _mapController.onReady.then((v) {
       _mapController.fitBounds(latLngBounds);
     });
 
-    super.initState();
+    _loading = false;
+    setState(() {});
   }
 
-  Future<LayerOptions> getBaseLayer() async {
+  Future<void> setBaseLayer() async {
     var activeBaseLayers = LayerManager().getLayerSources(onlyActive: true);
     if (activeBaseLayers.isNotEmpty) {
       var baseLayers = await activeBaseLayers[0].toLayers(context);
@@ -65,32 +70,12 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
             break;
           }
         }
-        return _baseLayer;
       }
     }
-    return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_baseLayer == null) {
-      return FutureBuilder<LayerOptions>(
-        future: getBaseLayer(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return buildInFuture(snapshot.data, context);
-          } else {
-            return Center(
-                child: SmashCircularProgress(label: "Loading data..."));
-          }
-        },
-      );
-    } else {
-      return buildInFuture(_baseLayer, context);
-    }
-  }
-
-  Scaffold buildInFuture(LayerOptions baseLayer, BuildContext context) {
     var isLandscape = ScreenUtilities.isLandscape(context);
 
     Color border = Colors.black;
@@ -100,8 +85,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     EditableQueryResult f = widget.features;
     var layers = <LayerOptions>[];
 
-    if (baseLayer != null) {
-      layers.add(baseLayer);
+    if (_baseLayer != null) {
+      layers.add(_baseLayer);
     }
     _total = f.geoms.length;
     var geometry = f.geoms[_index];
@@ -237,81 +222,83 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
               ]
             : [],
       ),
-      body: isLandscape
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: SmashColors.tableBorder,
-                      width: 2,
+      body: _loading
+          ? SmashCircularProgress(label: "Loading data...")
+          : isLandscape
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: SmashColors.tableBorder,
+                          width: 2,
+                        ),
+                      ),
+                      width: MediaQuery.of(context).size.height / 2,
+                      height: double.infinity,
+                      child: FlutterMap(
+                        options: new MapOptions(
+                          center: LatLng(centroid.y, centroid.x),
+                          // TODO getCenterFromBounds(latLngBounds, mapState),
+                          zoom: 15,
+                          // TODO getZoomFromBounds(latLngBounds, mapState),
+                          minZoom: 7,
+                          maxZoom: 19,
+                        ),
+                        layers: layers,
+                        mapController: _mapController,
+                      ),
                     ),
-                  ),
-                  width: MediaQuery.of(context).size.height / 2,
-                  height: double.infinity,
-                  child: FlutterMap(
-                    options: new MapOptions(
-                      center: LatLng(centroid.y, centroid.x),
-                      // TODO getCenterFromBounds(latLngBounds, mapState),
-                      zoom: 15,
-                      // TODO getZoomFromBounds(latLngBounds, mapState),
-                      minZoom: 7,
-                      maxZoom: 19,
+                    Expanded(
+                      flex: 1,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: getDataTable(
+                            tableName, data, primaryKey, db, typesMap),
+                      ),
                     ),
-                    layers: layers,
-                    mapController: _mapController,
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child:
-                        getDataTable(tableName, data, primaryKey, db, typesMap),
-                  ),
-                ),
-              ],
-            )
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: SmashColors.tableBorder,
-                      width: 2,
+                  ],
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: SmashColors.tableBorder,
+                          width: 2,
+                        ),
+                      ),
+                      height: MediaQuery.of(context).size.height / 3,
+                      width: double.infinity,
+                      child: FlutterMap(
+                        options: new MapOptions(
+                          center: LatLng(centroid.y, centroid.x),
+                          // TODO getCenterFromBounds(latLngBounds, mapState),
+                          zoom: 15,
+                          // TODO getZoomFromBounds(latLngBounds, mapState),
+                          minZoom: 7,
+                          maxZoom: 19,
+                        ),
+                        layers: layers,
+                        mapController: _mapController,
+                      ),
                     ),
-                  ),
-                  height: MediaQuery.of(context).size.height / 3,
-                  width: double.infinity,
-                  child: FlutterMap(
-                    options: new MapOptions(
-                      center: LatLng(centroid.y, centroid.x),
-                      // TODO getCenterFromBounds(latLngBounds, mapState),
-                      zoom: 15,
-                      // TODO getZoomFromBounds(latLngBounds, mapState),
-                      minZoom: 7,
-                      maxZoom: 19,
+                    Expanded(
+                      flex: 1,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: getDataTable(
+                            tableName, data, primaryKey, db, typesMap),
+                      ),
                     ),
-                    layers: layers,
-                    mapController: _mapController,
-                  ),
+                  ],
                 ),
-                Expanded(
-                  flex: 1,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child:
-                        getDataTable(tableName, data, primaryKey, db, typesMap),
-                  ),
-                ),
-              ],
-            ),
     );
   }
 
