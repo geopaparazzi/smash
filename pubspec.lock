@@ -164,7 +164,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "369370ade8a87037b63ce970c193d770875d54e4"
+      resolved-ref: "4ee1c03dd12d76aa6958954418b351cf77267f81"
       url: "https://github.com/moovida/dart_postgis"
     source: git
     version: "0.1.0"

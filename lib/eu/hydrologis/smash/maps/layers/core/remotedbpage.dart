@@ -60,12 +60,17 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
           String table = source.getName();
           String user = source.getUser();
           String where = source.getWhere();
+          if (where != null && where.isNotEmpty) {
+            where = "\nwhere: $where";
+          } else {
+            where = "";
+          }
 
           return ListTile(
             title: Text(url),
             subtitle: Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Text("table: $table\nuser: $user\nwhere: $where"),
+              child: Text("table: $table\nuser: $user$where"),
             ),
             isThreeLine: true,
             trailing: Row(

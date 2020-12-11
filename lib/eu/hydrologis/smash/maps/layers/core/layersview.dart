@@ -199,7 +199,8 @@ class LayersPageState extends State<LayersPage> {
                   MaterialPageRoute(builder: (context) => propertiesWidget));
               if (newSldString != null) {
                 if (layerSourceItem is SldLayerSource) {
-                  (layerSourceItem as SldLayerSource).updateStyle(newSldString);
+                  await (layerSourceItem as SldLayerSource)
+                      .updateStyle(newSldString);
                 }
               }
               _somethingChanged = true;

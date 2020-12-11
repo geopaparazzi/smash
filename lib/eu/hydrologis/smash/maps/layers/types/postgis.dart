@@ -51,6 +51,9 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
     _user = map[LAYERSKEY_USER];
     _pwd = map[LAYERSKEY_PWD];
     _where = map[LAYERSKEY_WHERE];
+    if (_where != null && _where.isEmpty) {
+      _where = null;
+    }
     isVisible = map[LAYERSKEY_ISVISIBLE] ?? true;
 
     _srid = map[LAYERSKEY_SRID];
@@ -90,18 +93,17 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
       alphaFields
           .removeWhere((name) => name == _geometryColumn.geometryColumnName);
 
-      // TODO
-      // sldString = db.getSld(sqlName);
+      sldString = await db.getSld(sqlName);
       if (sldString == null) {
         if (_geometryColumn.geometryType.isPoint()) {
           sldString = DefaultSlds.simplePointSld();
-          // db.updateSld(sqlName, sldString);
+          await db.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isLine()) {
           sldString = DefaultSlds.simpleLineSld();
-          // db.updateSld(sqlName, sldString);
+          await db.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isPolygon()) {
           sldString = DefaultSlds.simplePolygonSld();
-          // db.updateSld(sqlName, sldString);
+          await db.updateSld(sqlName, sldString);
         }
       }
       if (sldString != null) {
@@ -117,16 +119,24 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
       if (maxFeaturesToLoad == -1) {
         maxFeaturesToLoad = null;
       }
-      _tableData = await db.getTableData(
-        SqlName(_tableName),
-        limit: maxFeaturesToLoad,
-        envelope: limitBounds,
-        where: _where,
-      );
 
-      var fromPrj = SmashPrj.fromSrid(_srid);
-      if (fromPrj != null) {
-        SmashPrj.transformListToWgs84(fromPrj, _tableData.geoms);
+      var dataPrj = SmashPrj.fromSrid(_srid);
+      if (dataPrj != null) {
+        if (_srid != SmashPrj.EPSG4326_INT) {
+          var boundsPolygon =
+              PostgisUtils.createPolygonFromEnvelope(limitBounds);
+          SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, boundsPolygon);
+          limitBounds = boundsPolygon.getEnvelopeInternal();
+        }
+        _tableData = await db.getTableData(
+          SqlName(_tableName),
+          limit: maxFeaturesToLoad,
+          envelope: limitBounds,
+          where: _where,
+        );
+        if (_srid != SmashPrj.EPSG4326_INT) {
+          SmashPrj.transformListToWgs84(dataPrj, _tableData.geoms);
+        }
         _tableBounds = JTS.Envelope.empty();
         _tableData.geoms.forEach((g) {
           _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
@@ -503,7 +513,7 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
   }
 
   @override
-  void updateStyle(String newSldString) {
+  void updateStyle(String newSldString) async {
     sldString = newSldString;
     var _styleTmp = SldObjectParser.fromString(sldString);
     _styleTmp.parse();
@@ -520,8 +530,7 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
       _textStyle = textStyleTmp;
     }
     _style = _styleTmp;
-    // TODO
-    // db.updateSld(SqlName(_tableName), sldString);
+    await db.updateSld(SqlName(_tableName), sldString);
   }
 }
 
