@@ -141,6 +141,10 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     return null;
   }
 
+  String getUser() => null;
+
+  String getPassword() => null;
+
   String getName() {
     return _name;
   }

@@ -7,11 +7,13 @@ import 'dart:async';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart';
+import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/feature_attributes_viewer.dart';
@@ -99,7 +101,8 @@ class FeatureInfoLayer extends StatelessWidget {
                     infoToolState.isSearching = true;
                     infoToolState.setTapAreaCenter(
                         p.dx - radius, height - p.dy - radius);
-                    queryLayers(envelope, infoToolState, projectState, context);
+                    await queryLayers(
+                        envelope, infoToolState, projectState, context);
                   },
                 )
               : Container(),
@@ -108,16 +111,17 @@ class FeatureInfoLayer extends StatelessWidget {
     });
   }
 
-  void queryLayers(Envelope env, InfoToolState state, ProjectState projectState,
-      BuildContext context) {
+  Future<void> queryLayers(Envelope env, InfoToolState state,
+      ProjectState projectState, BuildContext context) async {
     var boundsGeom = GeometryUtilities.fromEnvelope(env, makeCircle: true);
+    boundsGeom.setSRID(4326);
     var boundMap = {4326: boundsGeom};
 
     List<LayerSource> visibleVectorLayers = LayerManager()
         .getLayerSources()
         .where((l) => l is VectorLayerSource && l.isActive())
         .toList();
-    EditableGPQueryResult totalQueryResult = EditableGPQueryResult();
+    EditableQueryResult totalQueryResult = EditableQueryResult();
     totalQueryResult.editable = [];
     totalQueryResult.fieldAndTypemap = [];
     totalQueryResult.ids = [];
@@ -134,6 +138,7 @@ class FeatureInfoLayer extends StatelessWidget {
           var dataPrj = SmashPrj.fromSrid(srid);
           SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, tmp);
           boundsGeomInSrid = tmp;
+          boundsGeomInSrid.setSRID(srid);
           boundMap[srid] = boundsGeomInSrid;
         }
 
@@ -149,6 +154,50 @@ class FeatureInfoLayer extends StatelessWidget {
           print("Found data for: " + layerName.name);
 
           var pk = db.getPrimaryKey(layerName);
+
+          var dataPrj = SmashPrj.fromSrid(srid);
+          queryResult.geoms.forEach((g) {
+            totalQueryResult.ids.add(layerName.name);
+            totalQueryResult.primaryKeys.add(pk);
+            totalQueryResult.dbs.add(db);
+            totalQueryResult.fieldAndTypemap.add(typesMap);
+            totalQueryResult.editable.add(true);
+            if (srid != SmashPrj.EPSG4326_INT) {
+              SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, g);
+            }
+            totalQueryResult.geoms.add(g);
+          });
+          queryResult.data.forEach((d) {
+            totalQueryResult.data.add(d);
+          });
+        }
+      } else if (vLayer is PostgisSource) {
+        var srid = vLayer.getSrid();
+        var boundsGeomInSrid = boundMap[srid];
+        var db = await PostgisConnectionsHandler().open(vLayer.getUrl(),
+            vLayer.getName(), vLayer.getUser(), vLayer.getPassword());
+        if (boundsGeomInSrid == null) {
+          // create the env
+          var tmp = GeometryUtilities.fromEnvelope(env, makeCircle: true);
+          var dataPrj = SmashPrj.fromSrid(srid);
+          SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, tmp);
+          boundsGeomInSrid = tmp;
+          boundsGeomInSrid.setSRID(srid);
+          boundMap[srid] = boundsGeomInSrid;
+        }
+
+        var layerName = SqlName(vLayer.getName());
+        var tableColumns = await db.getTableColumns(layerName);
+        Map<String, String> typesMap = {};
+        tableColumns.forEach((column) {
+          typesMap[column[0]] = column[1];
+        });
+        PGQueryResult queryResult =
+            await db.getTableData(layerName, geometry: boundsGeomInSrid);
+        if (queryResult.data.isNotEmpty) {
+          print("Found data for: " + layerName.name);
+
+          var pk = await db.getPrimaryKey(layerName);
 
           var dataPrj = SmashPrj.fromSrid(srid);
           queryResult.geoms.forEach((g) {
@@ -188,10 +237,14 @@ class FeatureInfoLayer extends StatelessWidget {
   }
 }
 
-class EditableGPQueryResult extends GPQueryResult {
+class EditableQueryResult {
+  List<String> ids;
+  List<Geometry> geoms = [];
+  List<Map<String, dynamic>> data = [];
+
   List<bool> editable;
   List<String> primaryKeys;
-  List<GeopackageDb> dbs;
+  List<dynamic> dbs;
   List<Map<String, dynamic>> attributes;
   List<Map<String, String>> fieldAndTypemap;
 }

@@ -22,6 +22,8 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
 
 const LAYERSKEY_FILE = 'file';
 const LAYERSKEY_URL = 'url';
+const LAYERSKEY_USER = 'user';
+const LAYERSKEY_PWD = 'pwd';
 const LAYERSKEY_TYPE = 'type';
 const LAYERSKEY_FORMAT = 'format';
 const LAYERSKEY_ISVECTOR = 'isVector';
@@ -54,6 +56,10 @@ abstract class LayerSource {
 
   /// Get the name for this layerSource.
   String getName();
+
+  String getUser();
+
+  String getPassword();
 
   /// Get the optional attribution of the dataset.
   String getAttribution();
@@ -175,6 +181,9 @@ abstract class SldLayerSource {
 
 /// Interface for vector data based layersources.
 abstract class VectorLayerSource extends LoadableLayerSource {}
+
+/// Interface for editable vector data based layersources.
+abstract class EditableVectorLayerSource extends VectorLayerSource {}
 
 /// Interface for raster data based layersources.
 abstract class RasterLayerSource extends LoadableLayerSource {}

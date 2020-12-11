@@ -371,6 +371,10 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
     return _srid;
   }
 
+  String getUser() => null;
+
+  String getPassword() => null;
+
   @override
   void updateStyle(String newSldString) {
     sldString = newSldString;

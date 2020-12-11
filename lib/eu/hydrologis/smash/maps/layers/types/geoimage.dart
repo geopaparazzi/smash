@@ -186,6 +186,10 @@ class GeoImageSource extends RasterLayerSource {
     return null;
   }
 
+  String getUser() => null;
+
+  String getPassword() => null;
+
   String getName() {
     return _name;
   }

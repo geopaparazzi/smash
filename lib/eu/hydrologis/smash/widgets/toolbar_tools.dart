@@ -16,7 +16,9 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/maps/feature_attributes_viewer.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
@@ -166,8 +168,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           GeometryEditManager().stopEditing();
 
           // reload layer geoms
-          await reloadGeopackageLayers(
-              editableGeometry.db, editableGeometry.table);
+          await reloadDbLayers(editableGeometry.db, editableGeometry.table);
         },
       ),
     );
@@ -222,22 +223,25 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
               GeometryEditManager().deleteCurrentSelection(geomEditState);
           if (hasDeleted) {
             // reload layer geoms
-            await reloadGeopackageLayers(db, t);
+            await reloadDbLayers(db, t);
           }
         },
       ),
     );
   }
 
-  Future<void> reloadGeopackageLayers(GeopackageDb db, String table) async {
+  Future<void> reloadDbLayers(dynamic db, String table) async {
     // reload layer geoms
     var layerSources = LayerManager().getLayerSources(onlyActive: true);
     var layer = layerSources.firstWhere((layer) {
-      return layer is GeopackageSource &&
+      var isGpkg = layer is GeopackageSource &&
           layer.getName() == table &&
           layer.db == db;
+      var isPostgis =
+          layer is PostgisSource && layer.getName() == table && layer.db == db;
+      return isGpkg || isPostgis;
     });
-    (layer as GeopackageSource).isLoaded = false;
+    (layer as LoadableLayerSource).isLoaded = false;
 
     SmashMapBuilder mapBuilder =
         Provider.of<SmashMapBuilder>(context, listen: false);
@@ -268,16 +272,16 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
             var table = editableGeometry.table;
             var db = editableGeometry.db;
             var tableName = SqlName(table);
-            var key = db.getPrimaryKey(tableName);
-            var geometryColumn = db.getGeometryColumnsForTable(tableName);
-            var tableColumns = db.getTableColumns(tableName);
+            var key = await db.getPrimaryKey(tableName);
+            var geometryColumn = await db.getGeometryColumnsForTable(tableName);
+            var tableColumns = await db.getTableColumns(tableName);
             Map<String, String> typesMap = {};
             tableColumns.forEach((column) {
               typesMap[column[0]] = column[1];
             });
-            var tableData = db.getTableData(tableName, where: "$key=$id");
+            var tableData = await db.getTableData(tableName, where: "$key=$id");
             if (tableData.data.isNotEmpty) {
-              EditableGPQueryResult totalQueryResult = EditableGPQueryResult();
+              EditableQueryResult totalQueryResult = EditableQueryResult();
               totalQueryResult.editable = [true];
               totalQueryResult.fieldAndTypemap = [];
               totalQueryResult.ids = [];
@@ -304,7 +308,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
                       builder: (context) =>
                           FeatureAttributesViewer(totalQueryResult)));
               // reload layer geoms
-              await reloadGeopackageLayers(db, table);
+              await reloadDbLayers(db, table);
             }
           } else {
             SmashDialogs.showWarningDialog(context,

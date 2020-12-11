@@ -21,7 +21,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
 
 class FeatureAttributesViewer extends StatefulWidget {
-  final EditableGPQueryResult features;
+  final EditableQueryResult features;
 
   FeatureAttributesViewer(this.features, {Key key}) : super(key: key);
 
@@ -42,7 +42,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     _total = widget.features.geoms.length;
 
     _mapController.onReady.then((v) {
-      GPQueryResult f = widget.features;
+      EditableQueryResult f = widget.features;
       var geometry = f.geoms[_index];
       var env = geometry.getEnvelopeInternal();
       var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
@@ -97,7 +97,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
     Color borderFill = Colors.yellow;
     Color fillPoly = Colors.yellow.withOpacity(0.3);
 
-    EditableGPQueryResult f = widget.features;
+    EditableQueryResult f = widget.features;
     var layers = <LayerOptions>[];
 
     if (baseLayer != null) {
@@ -316,7 +316,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
   }
 
   Widget getDataTable(String tablename, Map<String, dynamic> data,
-      String primaryKey, GeopackageDb db, Map<String, String> typesMap) {
+      String primaryKey, dynamic db, Map<String, String> typesMap) {
     List<DataRow> rows = [];
 
     data.forEach((key, value) {
@@ -361,7 +361,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
                   key: data[key],
                 };
                 var where = "$primaryKey=$pkValue";
-                db.updateMap(SqlName(tablename), map, where);
+                await db.updateMap(SqlName(tablename), map, where);
                 setState(() {});
               }
             }

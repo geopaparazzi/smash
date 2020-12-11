@@ -5,61 +5,56 @@
  */
 
 import 'dart:core';
-import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui' as UI;
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' as JTS;
-import 'package:flutter/foundation.dart';
+import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart' hide TextStyle;
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/widgets.dart' hide TextStyle;
-import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
-import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
-import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:image/image.dart' as IMG;
 
-/// Geopackage vector data layer.
-class GeopackageSource extends VectorLayerSource implements SldLayerSource {
+/// Postgis vector data layer.
+class PostgisSource extends VectorLayerSource implements SldLayerSource {
   static final double POINT_SIZE_FACTOR = 3;
 
-  String _absolutePath;
   String _tableName;
   bool isVisible = true;
   String _attribution = "";
 
-  GPQueryResult _tableData;
+  PGQueryResult _tableData;
   JTS.Envelope _tableBounds;
   GeometryColumn _geometryColumn;
   SldObjectParser _style;
   TextStyle _textStyle;
 
-  GeopackageDb db;
+  PostgisDb db;
   int _srid;
+  String _dbUrl;
+  String _user;
+  String _pwd;
 
   List<String> alphaFields = [];
   String sldString;
   JTS.EGeometryType geometryType;
 
-  GeopackageSource.fromMap(Map<String, dynamic> map) {
+  PostgisSource.fromMap(Map<String, dynamic> map) {
     _tableName = map[LAYERSKEY_LABEL];
-    String relativePath = map[LAYERSKEY_FILE];
-    _absolutePath = Workspace.makeAbsolute(relativePath);
+    _dbUrl = map[LAYERSKEY_URL]; // host:port/dbname
+    _user = map[LAYERSKEY_USER];
+    _pwd = map[LAYERSKEY_PWD];
     isVisible = map[LAYERSKEY_ISVISIBLE];
 
     _srid = map[LAYERSKEY_SRID];
   }
 
-  GeopackageSource(this._absolutePath, this._tableName);
+  PostgisSource(this._dbUrl, this._tableName, this._user, this._pwd);
 
   Future<void> load(BuildContext context) async {
     if (!isLoaded) {
@@ -82,28 +77,29 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
         }
       }
 
-      getDatabase();
+      await getDatabase();
       var sqlName = SqlName(_tableName);
-      _geometryColumn = db.getGeometryColumnsForTable(sqlName);
+      _geometryColumn = await db.getGeometryColumnsForTable(sqlName);
       _srid = _geometryColumn.srid;
       geometryType = _geometryColumn.geometryType;
-      var alphaFieldsTmp = db.getTableColumns(sqlName);
+      var alphaFieldsTmp = await db.getTableColumns(sqlName);
 
       alphaFields = alphaFieldsTmp.map((e) => e[0] as String).toList();
       alphaFields
           .removeWhere((name) => name == _geometryColumn.geometryColumnName);
 
-      sldString = db.getSld(sqlName);
+      // TODO
+      // sldString = db.getSld(sqlName);
       if (sldString == null) {
         if (_geometryColumn.geometryType.isPoint()) {
           sldString = DefaultSlds.simplePointSld();
-          db.updateSld(sqlName, sldString);
+          // db.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isLine()) {
           sldString = DefaultSlds.simpleLineSld();
-          db.updateSld(sqlName, sldString);
+          // db.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isPolygon()) {
           sldString = DefaultSlds.simplePolygonSld();
-          db.updateSld(sqlName, sldString);
+          // db.updateSld(sqlName, sldString);
         }
       }
       if (sldString != null) {
@@ -119,7 +115,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
       if (maxFeaturesToLoad == -1) {
         maxFeaturesToLoad = null;
       }
-      _tableData = db.getTableData(
+      _tableData = await db.getTableData(
         SqlName(_tableName),
         limit: maxFeaturesToLoad,
         envelope: limitBounds,
@@ -141,11 +137,10 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
     }
   }
 
-  getDatabase() {
-    var ch = ConnectionsHandler();
-    // ch.doRtreeCheck = DO_RTREE_CHECK;
+  getDatabase() async {
+    var ch = PostgisConnectionsHandler();
     if (db == null) {
-      db = ch.open(_absolutePath, tableName: _tableName);
+      db = await ch.open(_dbUrl, _tableName, _user, _pwd);
     }
   }
 
@@ -154,16 +149,16 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   }
 
   String getAbsolutePath() {
-    return _absolutePath;
-  }
-
-  String getUrl() {
     return null;
   }
 
-  String getUser() => null;
+  String getUrl() {
+    return _dbUrl;
+  }
 
-  String getPassword() => null;
+  String getUser() => _user;
+
+  String getPassword() => _pwd;
 
   String getName() {
     return _tableName;
@@ -182,11 +177,12 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
   }
 
   String toJson() {
-    var relativePath = Workspace.makeRelative(_absolutePath);
     var json = '''
     {
         "$LAYERSKEY_LABEL": "$_tableName",
-        "$LAYERSKEY_FILE":"$relativePath",
+        "$LAYERSKEY_URL":"$_dbUrl",
+        "$LAYERSKEY_USER":"$_user",
+        "$LAYERSKEY_PWD":"$_pwd",
         "$LAYERSKEY_ISVECTOR": true,
         "$LAYERSKEY_SRID": $_srid,
         "$LAYERSKEY_ISVISIBLE": $isVisible 
@@ -453,7 +449,7 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
 
   @override
   void disposeSource() {
-    ConnectionsHandler().close(getAbsolutePath(), tableName: getName());
+    PostgisConnectionsHandler().close(getAbsolutePath(), tableName: getName());
   }
 
   @override
@@ -473,15 +469,16 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
 
   @override
   void calculateSrid() {
-    if (_srid == null) {
-      if (db == null) {
-        getDatabase();
-      }
-      if (_srid == null) {
-        _geometryColumn = db.getGeometryColumnsForTable(SqlName(_tableName));
-        _srid = _geometryColumn.srid;
-      }
-    }
+    // TODO check
+    // if (_srid == null) {
+    //   if (db == null) {
+    //     getDatabase();
+    //   }
+    //   if (_srid == null) {
+    //     _geometryColumn = db.getGeometryColumnsForTable(SqlName(_tableName));
+    //     _srid = _geometryColumn.srid;
+    //   }
+    // }
     return;
   }
 
@@ -508,337 +505,90 @@ class GeopackageSource extends VectorLayerSource implements SldLayerSource {
       _textStyle = textStyleTmp;
     }
     _style = _styleTmp;
-    db.updateSld(SqlName(_tableName), sldString);
+    // TODO
+    // db.updateSld(SqlName(_tableName), sldString);
   }
 }
 
-class GeopackageLazyTileImageProvider
-    extends ImageProvider<GeopackageLazyTileImageProvider> {
-  LazyGpkgTile _tile;
-  List<int> _rgbToHide;
-  GeopackageLazyTileImageProvider(this._tile, this._rgbToHide);
+class PostgisConnectionsHandler {
+  static final PostgisConnectionsHandler _singleton =
+      PostgisConnectionsHandler._internal();
 
-  @override
-  ImageStreamCompleter load(
-      GeopackageLazyTileImageProvider key, DecoderCallback decoder) {
-    return MultiFrameImageStreamCompleter(
-      codec: loadAsync(key),
-      scale: 1.0,
-      informationCollector: () sync* {
-        yield DiagnosticsProperty<ImageProvider>('Image provider', this);
-        yield DiagnosticsProperty<GeopackageLazyTileImageProvider>(
-            'Image key', key);
-      },
-    );
+  factory PostgisConnectionsHandler() {
+    return _singleton;
   }
 
-  Future<UI.Codec> loadAsync(GeopackageLazyTileImageProvider key) async {
-    assert(key == this);
+  PostgisConnectionsHandler._internal();
 
-    try {
-      _tile.fetch();
-      if (_tile.tileImageBytes != null) {
-        var finalBytes = _tile.tileImageBytes;
-        if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && _rgbToHide != null) {
-          final image = IMG.decodeImage(_tile.tileImageBytes);
-          ImageUtilities.colorToAlphaImg(
-              image, _rgbToHide[0], _rgbToHide[1], _rgbToHide[2]);
-          finalBytes = IMG.encodePng(image);
+  /// Map containing a mapping of db paths and db connections.
+  Map<String, PostgisDb> _connectionsMap = {};
+
+  /// Map containing a mapping of db paths opened tables.
+  ///
+  /// The db can be closed only when all tables have been removed.
+  Map<String, List<String>> _tableNamesMap = {};
+
+  /// Open a new db or retrieve it from the cache.
+  ///
+  /// The [tableName] can be added to keep track of the tables that
+  /// still need an open connection boudn to a given [_dbUrl].
+  Future<PostgisDb> open(
+      String _dbUrl, String tableName, String user, String pwd) async {
+    PostgisDb db = _connectionsMap[_dbUrl];
+    if (db == null) {
+      // _dbUrl = host:port/dbname
+      var split = _dbUrl.split(RegExp(r":|/"));
+      var port = int.tryParse(split[1]) ?? 5432;
+      db = PostgisDb(split[0], split[2], port: port, user: user, pwd: pwd);
+      await db.open();
+
+      _connectionsMap[_dbUrl] = db;
+    }
+    var namesList = _tableNamesMap[_dbUrl];
+    if (namesList == null) {
+      namesList = List<String>();
+      _tableNamesMap[_dbUrl] = namesList;
+    }
+    if (tableName != null && !namesList.contains(tableName)) {
+      namesList.add(tableName);
+    }
+    return db;
+  }
+
+  /// Close an existing db connection, if all tables bound to it were released.
+  Future<void> close(String path, {String tableName}) async {
+    var tableNamesList = _tableNamesMap[path];
+    if (tableNamesList != null && tableNamesList.contains(tableName)) {
+      tableNamesList.remove(tableName);
+    }
+    if (tableNamesList == null || tableNamesList.length == 0) {
+      // ok to close db and remove the connection
+      _tableNamesMap.remove(path);
+      PostgisDb db = _connectionsMap.remove(path);
+      await db?.close();
+    }
+  }
+
+  Future<void> closeAll() async {
+    _tableNamesMap.clear();
+    Iterable<PostgisDb> values = _connectionsMap.values;
+    for (PostgisDb c in values) {
+      await c.close();
+    }
+  }
+
+  List<String> getOpenDbReport() {
+    List<String> msgs = [];
+    if (_tableNamesMap.length > 0) {
+      _tableNamesMap.forEach((p, n) {
+        msgs.add("Database: $p");
+        if (n != null && n.length > 0) {
+          msgs.add("-> with tables: ${n.join("; ")}");
         }
-        return await PaintingBinding.instance.instantiateImageCodec(finalBytes);
-      }
-    } catch (e) {
-      print(e); // ignore later
-    }
-
-    return Future<UI.Codec>.error('Failed to load tile: $_tile');
-  }
-
-  @override
-  Future<GeopackageLazyTileImageProvider> obtainKey(
-      ImageConfiguration configuration) {
-    return SynchronousFuture(this);
-  }
-
-  @override
-  int get hashCode {
-    var objects = [_tile.tableName, _tile.xTile, _tile.yTile, _tile.zoomLevel];
-    if (_rgbToHide != null) {
-      objects.addAll(_rgbToHide);
-    }
-    return hashObjects(objects);
-  }
-
-  @override
-  bool operator ==(other) {
-    return other is GeopackageLazyTileImageProvider &&
-        _tile == other._tile &&
-        _rgbToHide == other._rgbToHide;
-  }
-}
-
-var _emptyImageBytes;
-
-/// Tile image provider for geopackage raster tiles.
-///
-/// This works different than the overlay image version (which could make things go OOM).
-class GeopackageTileImageProvider extends TileProvider {
-  GeopackageDb _loadedDb;
-  SqlName _tableName;
-
-  GeopackageTileImageProvider(this._loadedDb, this._tableName);
-
-  @override
-  void dispose() {
-    // dispose of db connections is done when layers are removed
-  }
-
-  @override
-  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
-    var x = coords.x.round();
-    var y = options.tms
-        ? invertY(coords.y.round(), coords.z.round())
-        : coords.y.round();
-    var z = coords.z.round();
-
-    return GeopackageTileImage(_loadedDb, _tableName, Coords<int>(x, y)..z = z);
-  }
-}
-
-class GeopackageTileImage extends ImageProvider<GeopackageTileImage> {
-  final GeopackageDb database;
-  SqlName tableName;
-  final Coords<int> coords;
-  GeopackageTileImage(this.database, this.tableName, this.coords);
-
-  @override
-  ImageStreamCompleter load(GeopackageTileImage key, DecoderCallback decoder) {
-    return MultiFrameImageStreamCompleter(
-        codec: _loadAsync(key),
-        scale: 1,
-        informationCollector: () sync* {
-          yield DiagnosticsProperty<ImageProvider>('Image provider', this);
-          yield DiagnosticsProperty<ImageProvider>('Image key', key);
-        });
-  }
-
-  Future<UI.Codec> _loadAsync(GeopackageTileImage key) async {
-    assert(key == this);
-
-    var tileBytes = database.getTile(tableName, coords.x, coords.y, coords.z);
-    if (tileBytes != null) {
-      Uint8List bytes = tileBytes;
-      return await PaintingBinding.instance.instantiateImageCodec(bytes);
+      });
     } else {
-      // TODO get from other zoomlevels
-      if (_emptyImageBytes == null) {
-        ByteData imageData = await rootBundle.load('assets/emptytile256.png');
-        _emptyImageBytes = imageData.buffer.asUint8List();
-      }
-      if (_emptyImageBytes != null) {
-        var bytes = _emptyImageBytes;
-        return await PaintingBinding.instance.instantiateImageCodec(bytes);
-      } else {
-        return Future<UI.Codec>.error(
-            'Failed to load tile for coords: $coords');
-      }
+      msgs.add("No database connection.");
     }
-  }
-
-  @override
-  Future<GeopackageTileImage> obtainKey(ImageConfiguration configuration) {
-    return SynchronousFuture(this);
-  }
-
-  @override
-  int get hashCode => coords.hashCode;
-
-  @override
-  bool operator ==(other) {
-    return other is GeopackageTileImage && coords == other.coords;
+    return msgs;
   }
 }
-
-///// The notes properties page.
-//class GeopackagePropertiesWidget extends StatefulWidget {
-//  GeopackageSource _source;
-//  Function _reloadLayersFunction;
-//
-//  GeopackagePropertiesWidget(this._source, this._reloadLayersFunction);
-//
-//  @override
-//  State<StatefulWidget> createState() {
-//    return GeopackagePropertiesWidgetState(_source);
-//  }
-//}
-//
-//class GeopackagePropertiesWidgetState extends State<GeopackagePropertiesWidget> {
-//  GeopackageSource _source;
-//  double _pointSizeSliderValue = 10;
-//  double _lineWidthSliderValue = 2;
-//  double _maxSize = 100.0;
-//  double _maxWidth = 20.0;
-//  ColorExt _pointColor;
-//  ColorExt _lineColor;
-//  bool _somethingChanged = false;
-//
-//  GeopackagePropertiesWidgetState(this._source);
-//
-//  @override
-//  void initState() {
-//    _pointSizeSliderValue = _source.pointsSize;
-//    if (_pointSizeSliderValue > _maxSize) {
-//      _pointSizeSliderValue = _maxSize;
-//    }
-//    _pointColor = ColorExt.fromColor(_source.pointFillColor);
-//
-//    _lineWidthSliderValue = _source.lineWidth;
-//    if (_lineWidthSliderValue > _maxWidth) {
-//      _lineWidthSliderValue = _maxWidth;
-//    }
-//    _lineColor = ColorExt.fromColor(_source.lineStrokeColor);
-//
-//    super.initState();
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return WillPopScope(
-//        onWillPop: () async {
-//          if (_somethingChanged) {
-//            _source.pointFillColor = _pointColor;
-//            _source.pointsSize = _pointSizeSliderValue;
-//            _source.lineStrokeColor = _lineColor;
-//            _source.lineWidth = _lineWidthSliderValue;
-//
-//            widget._reloadLayersFunction();
-//          }
-//          return true;
-//        },
-//        child: Scaffold(
-//          appBar: AppBar(
-//            title: Text("Geopackage Properties"),
-//          ),
-//          body: Center(
-//            child: ListView(
-//              children: <Widget>[
-//                Padding(
-//                  padding: SmashUI.defaultPadding(),
-//                  child: Card(
-//                    elevation: SmashUI.DEFAULT_ELEVATION,
-//                    shape: SmashUI.defaultShapeBorder(),
-//                    child: Column(
-//                      children: <Widget>[
-//                        SmashUI.titleText("Waypoints Color"),
-//                        Padding(
-//                          padding: SmashUI.defaultPadding(),
-//                          child: LimitedBox(
-//                            maxHeight: 400,
-//                            child: MaterialColorPicker(
-//                                shrinkWrap: true,
-//                                allowShades: false,
-//                                circleSize: 45,
-//                                onColorChange: (Color color) {
-//                                  _pointColor = ColorExt.fromColor(color);
-//                                  _somethingChanged = true;
-//                                },
-//                                onMainColorChange: (mColor) {
-//                                  _pointColor = ColorExt.fromColor(mColor);
-//                                  _somethingChanged = true;
-//                                },
-//                                selectedColor: Color(_pointColor.value)),
-//                          ),
-//                        ),
-//                        SmashUI.titleText("Waypoints Size"),
-//                        Row(
-//                          mainAxisSize: MainAxisSize.max,
-//                          children: <Widget>[
-//                            Flexible(
-//                                flex: 1,
-//                                child: Slider(
-//                                  activeColor: SmashColors.mainSelection,
-//                                  min: 1.0,
-//                                  max: _maxSize,
-//                                  divisions: 20,
-//                                  onChanged: (newRating) {
-//                                    _somethingChanged = true;
-//                                    setState(() => _pointSizeSliderValue = newRating);
-//                                  },
-//                                  value: _pointSizeSliderValue,
-//                                )),
-//                            Container(
-//                              width: 50.0,
-//                              alignment: Alignment.center,
-//                              child: SmashUI.normalText(
-//                                '${_pointSizeSliderValue.toInt()}',
-//                              ),
-//                            ),
-//                          ],
-//                        ),
-//                      ],
-//                    ),
-//                  ),
-//                ),
-//                Padding(
-//                  padding: SmashUI.defaultPadding(),
-//                  child: Card(
-//                    elevation: SmashUI.DEFAULT_ELEVATION,
-//                    shape: SmashUI.defaultShapeBorder(),
-//                    child: Column(
-//                      children: <Widget>[
-//                        SmashUI.titleText("Tracks/Routes Color"),
-//                        Padding(
-//                          padding: SmashUI.defaultPadding(),
-//                          child: LimitedBox(
-//                            maxHeight: 400,
-//                            child: MaterialColorPicker(
-//                                shrinkWrap: true,
-//                                allowShades: false,
-//                                circleSize: 45,
-//                                onColorChange: (Color color) {
-//                                  _lineColor = ColorExt.fromColor(color);
-//                                  _somethingChanged = true;
-//                                },
-//                                onMainColorChange: (mColor) {
-//                                  _lineColor = ColorExt.fromColor(mColor);
-//                                  _somethingChanged = true;
-//                                },
-//                                selectedColor: Color(_lineColor.value)),
-//                          ),
-//                        ),
-//                        SmashUI.titleText("Tracks/Routes Width"),
-//                        Row(
-//                          mainAxisSize: MainAxisSize.max,
-//                          children: <Widget>[
-//                            Flexible(
-//                                flex: 1,
-//                                child: Slider(
-//                                  activeColor: SmashColors.mainSelection,
-//                                  min: 1.0,
-//                                  max: _maxWidth,
-//                                  divisions: 20,
-//                                  onChanged: (newRating) {
-//                                    _somethingChanged = true;
-//                                    setState(() => _lineWidthSliderValue = newRating);
-//                                  },
-//                                  value: _lineWidthSliderValue,
-//                                )),
-//                            Container(
-//                              width: 50.0,
-//                              alignment: Alignment.center,
-//                              child: SmashUI.normalText(
-//                                '${_lineWidthSliderValue.toInt()}',
-//                              ),
-//                            ),
-//                          ],
-//                        ),
-//                      ],
-//                    ),
-//                  ),
-//                ),
-//              ],
-//            ),
-//          ),
-//        ));
-//  }
-//}

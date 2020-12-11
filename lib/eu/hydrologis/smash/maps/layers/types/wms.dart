@@ -53,6 +53,10 @@ class WmsSource extends RasterLayerSource {
     return _getCapabilitiesUrl;
   }
 
+  String getUser() => null;
+
+  String getPassword() => null;
+
   String getName() {
     return _layerName;
   }

@@ -50,7 +50,7 @@ class GeometryEditorState extends ChangeNotifier {
 class EditableGeometry {
   int id;
   String table;
-  GeopackageDb db;
+  dynamic db;
 
   Geometry geometry;
 }

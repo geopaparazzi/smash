@@ -269,6 +269,10 @@ class TileSource extends TiledRasterLayerSource {
     return name;
   }
 
+  String getUser() => null;
+
+  String getPassword() => null;
+
   String getAttribution() {
     return attribution;
   }

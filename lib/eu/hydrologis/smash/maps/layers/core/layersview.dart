@@ -16,6 +16,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:geoimage/geoimage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
@@ -58,6 +59,23 @@ class LayersPageState extends State<LayersPage> {
           appBar: AppBar(
             title: Text("Layer List"),
             actions: <Widget>[
+              IconButton(
+                icon: Icon(MdiIcons.database),
+                onPressed: () async {
+                  setState(() {
+                    isLoadingData = true;
+                  });
+                  PostgisSource postgisSource = PostgisSource(
+                      "localhost:5432/database_2020", "pipes", "god", "god");
+                  await postgisSource.load(context);
+                  LayerManager().addLayerSource(postgisSource);
+                  _somethingChanged = true;
+                  setState(() {
+                    isLoadingData = false;
+                  });
+                },
+                tooltip: "Load remote database",
+              ),
               IconButton(
                 icon: Icon(MdiIcons.earth),
                 onPressed: () async {

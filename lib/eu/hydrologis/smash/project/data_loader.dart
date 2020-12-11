@@ -9,6 +9,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:background_locator/location_dto.dart';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -556,10 +557,10 @@ class DataLoaderUtilities {
 
     var resLogs = db.select(logsQuery);
     Map<int, List> logs = Map();
-    resLogs.forEach((map) {
-      var id = map['_id'];
-      var color = map["color"];
-      var width = map["width"];
+    resLogs.forEach((QueryResultRow map) {
+      var id = map.get('_id');
+      var color = map.get("color");
+      var width = map.get("width");
 
       logs[id] = [color, width, <LatLngExt>[], <LatLngExt>[]];
     });
@@ -575,11 +576,11 @@ class DataLoaderUtilities {
     var prevTs;
     var prevLatLng;
     var prevLatLngFiltered;
-    resLogData.forEach((map) {
-      var logid = map[LOGSDATA_COLUMN_LOGID];
+    resLogData.forEach((QueryResultRow map) {
+      var logid = map.get(LOGSDATA_COLUMN_LOGID);
       var log = logs[logid];
       if (log != null) {
-        var altim = map[LOGSDATA_COLUMN_ALTIM];
+        var altim = map.get(LOGSDATA_COLUMN_ALTIM);
 
         var minMax =
             rangeMap[logid] ?? [double.infinity, double.negativeInfinity];
@@ -587,11 +588,11 @@ class DataLoaderUtilities {
         var newMax = max(minMax[1], altim as double);
         rangeMap[logid] = [newMin, newMax];
 
-        var ts = map[LOGSDATA_COLUMN_TS]?.toInt();
-        var acc = map[LOGSDATA_COLUMN_ACCURACY];
+        var ts = map.get(LOGSDATA_COLUMN_TS)?.toInt();
+        var acc = map.get(LOGSDATA_COLUMN_ACCURACY);
         if (doOrig) {
-          var lat = map[LOGSDATA_COLUMN_LAT];
-          var lon = map[LOGSDATA_COLUMN_LON];
+          var lat = map.get(LOGSDATA_COLUMN_LAT);
+          var lon = map.get(LOGSDATA_COLUMN_LON);
           var speed = 0.0;
           if (prevTs != null) {
             var distanceMeters =
@@ -605,9 +606,9 @@ class DataLoaderUtilities {
           prevLatLng = ll;
         }
         if (doFiltered) {
-          var latF = map[LOGSDATA_COLUMN_LAT_FILTERED];
+          var latF = map.get(LOGSDATA_COLUMN_LAT_FILTERED);
           if (latF != null) {
-            var lonF = map[LOGSDATA_COLUMN_LON_FILTERED];
+            var lonF = map.get(LOGSDATA_COLUMN_LON_FILTERED);
             var speed = 0.0;
             if (prevTs != null) {
               var distanceMeters = CoordinateUtilities.getDistance(
