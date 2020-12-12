@@ -21,7 +21,7 @@ import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// Postgis vector data layer.
-class PostgisSource extends VectorLayerSource implements SldLayerSource {
+class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
   static final double POINT_SIZE_FACTOR = 3;
 
   String _tableName;
@@ -40,6 +40,7 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
   String _user;
   String _pwd;
   String _where;
+  JTS.Envelope _limitBounds;
 
   List<String> alphaFields = [];
   String sldString;
@@ -54,12 +55,23 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
     if (_where != null && _where.isEmpty) {
       _where = null;
     }
+    var bounds = map[LAYERSKEY_BOUNDS];
+    if (bounds != null && bounds.isNotEmpty) {
+      var boundsSplit = bounds.split(";"); // wesn
+      _limitBounds = JTS.Envelope(
+          double.parse(boundsSplit[0]),
+          double.parse(boundsSplit[1]),
+          double.parse(boundsSplit[2]),
+          double.parse(boundsSplit[3]));
+    }
+
     isVisible = map[LAYERSKEY_ISVISIBLE] ?? true;
 
     _srid = map[LAYERSKEY_SRID];
   }
 
-  PostgisSource(this._dbUrl, this._tableName, this._user, this._pwd);
+  PostgisSource(this._dbUrl, this._tableName, this._user, this._pwd,
+      this._limitBounds, this._where);
 
   Future<void> load(BuildContext context) async {
     if (!isLoaded) {
@@ -68,17 +80,18 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
       bool loadOnlyVisible =
           GpPreferences().getBooleanSync(KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
 
-      JTS.Envelope limitBounds;
       if (loadOnlyVisible) {
-        var mapState = Provider.of<SmashMapState>(context, listen: false);
-        if (mapState.mapController != null) {
-          var bounds = mapState.mapController.bounds;
-          var n = bounds.north;
-          var s = bounds.south;
-          var e = bounds.east;
-          var w = bounds.west;
-          limitBounds = JTS.Envelope.fromCoordinates(
-              JTS.Coordinate(w, s), JTS.Coordinate(e, n));
+        if (_limitBounds == null) {
+          var mapState = Provider.of<SmashMapState>(context, listen: false);
+          if (mapState.mapController != null) {
+            var bounds = mapState.mapController.bounds;
+            var n = bounds.north;
+            var s = bounds.south;
+            var e = bounds.east;
+            var w = bounds.west;
+            _limitBounds = JTS.Envelope.fromCoordinates(
+                JTS.Coordinate(w, s), JTS.Coordinate(e, n));
+          }
         }
       }
 
@@ -121,17 +134,18 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
       }
 
       var dataPrj = SmashPrj.fromSrid(_srid);
+      var limitBoundsData = _limitBounds;
       if (dataPrj != null) {
-        if (_srid != SmashPrj.EPSG4326_INT) {
+        if (_srid != SmashPrj.EPSG4326_INT && _limitBounds != null) {
           var boundsPolygon =
-              PostgisUtils.createPolygonFromEnvelope(limitBounds);
+              PostgisUtils.createPolygonFromEnvelope(_limitBounds);
           SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, boundsPolygon);
-          limitBounds = boundsPolygon.getEnvelopeInternal();
+          limitBoundsData = boundsPolygon.getEnvelopeInternal();
         }
         _tableData = await db.getTableData(
           SqlName(_tableName),
           limit: maxFeaturesToLoad,
-          envelope: limitBounds,
+          envelope: limitBoundsData,
           where: _where,
         );
         if (_srid != SmashPrj.EPSG4326_INT) {
@@ -201,6 +215,12 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
     if (_where != null) {
       w = """ "$LAYERSKEY_WHERE": "$_where", """;
     }
+
+    String b = "";
+    if (_limitBounds != null) {
+      // wesn
+      b = """ "$LAYERSKEY_BOUNDS": "${_limitBounds.getMinX()};${_limitBounds.getMaxX()};${_limitBounds.getMinY()};${_limitBounds.getMaxY()}", """;
+    }
     var json = '''
     {
         "$LAYERSKEY_LABEL": "$_tableName",
@@ -209,6 +229,7 @@ class PostgisSource extends VectorLayerSource implements SldLayerSource {
         "$LAYERSKEY_PWD":"$_pwd",
         "$LAYERSKEY_ISVECTOR": true,
         "$LAYERSKEY_SRID": $_srid,
+        $b
         $w
         "$LAYERSKEY_ISVISIBLE": $isVisible 
     }

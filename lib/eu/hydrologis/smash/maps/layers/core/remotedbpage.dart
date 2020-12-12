@@ -6,6 +6,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
@@ -27,6 +28,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
   List<LayerSource> sources = [];
 
   void loadConfig() {
+    sources = [];
     var dbJson = GpPreferences().getStringSync(key, "");
     var list = dbJson.isEmpty ? [] : jsonDecode(dbJson);
     if (list.isNotEmpty) {
@@ -66,46 +68,79 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
             where = "";
           }
 
-          return ListTile(
-            title: Text(url),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text("table: $table\nuser: $user$where"),
-            ),
-            isThreeLine: true,
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    MdiIcons.pencil,
-                    color: SmashColors.mainDecorations,
-                  ),
-                  onPressed: () async {
-                    var dbConfigMap = jsonDecode(source.toJson());
-                    var newMap = await showRemoteDbPropertiesDialog(
-                        context, dbConfigMap, true);
-                    if (newMap != null) {
-                      var dbJson = GpPreferences().getStringSync(key, "");
-                      var list = jsonDecode(dbJson);
-                      list.add(newMap);
-                      var jsonString = jsonEncode(list);
-                      await GpPreferences().setString(key, jsonString);
-                      setState(() {});
-                    }
-                  },
+          List<Widget> secondaryActions = [];
+          secondaryActions.add(IconSlideAction(
+              caption: 'Delete',
+              color: SmashColors.mainDanger,
+              icon: MdiIcons.delete,
+              onTap: () async {
+                bool doDelete = await SmashDialogs.showConfirmDialog(
+                    context,
+                    "DELETE",
+                    'Are you sure you want to delete the database configuration?');
+                if (doDelete) {
+                  sources.removeAt(index);
+                  var list =
+                      sources.map((s) => jsonDecode(s.toJson())).toList();
+                  var jsonString = jsonEncode(list);
+                  await GpPreferences().setString(key, jsonString);
+                  loadConfig();
+                  setState(() {});
+                }
+              }));
+          List<Widget> actions = [];
+          actions.add(IconSlideAction(
+              caption: 'Edit',
+              icon: MdiIcons.pencil,
+              color: SmashColors.mainDecorations,
+              onTap: () async {
+                var dbConfigMap = jsonDecode(source.toJson());
+                var newMap =
+                    await showRemoteDbPropertiesDialog(context, dbConfigMap);
+                if (newMap != null) {
+                  var dbJson = GpPreferences().getStringSync(key, "");
+                  var list = jsonDecode(dbJson);
+                  list.add(newMap);
+                  var jsonString = jsonEncode(list);
+                  await GpPreferences().setString(key, jsonString);
+                  setState(() {});
+                }
+              }));
+
+          return Slidable(
+            actionPane: SlidableDrawerActionPane(),
+            actionExtentRatio: 0.25,
+            actions: actions,
+            secondaryActions: secondaryActions,
+            child: ListTile(
+              title: Text(url),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text("table: $table  user: $user$where"),
+              ),
+              leading: FittedBox(
+                fit: BoxFit.cover,
+                child: Icon(
+                  MdiIcons.database,
+                  color: SmashColors.mainDecorations,
                 ),
-                IconButton(
-                  icon: Icon(
-                    MdiIcons.openInApp,
-                    color: SmashColors.mainDecorations,
-                  ),
-                  onPressed: () async {
-                    Navigator.of(context).pop(source);
-                    // }
-                  },
-                )
-              ],
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: "Load in map.",
+                    icon: Icon(
+                      MdiIcons.openInApp,
+                      color: SmashColors.mainDecorations,
+                    ),
+                    onPressed: () async {
+                      Navigator.of(context).pop(source);
+                      // }
+                    },
+                  )
+                ],
+              ),
             ),
           );
         },
@@ -114,8 +149,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
         child: Icon(MdiIcons.plus),
         onPressed: () async {
           Map<String, dynamic> dbConfigMap = {};
-          var newMap =
-              await showRemoteDbPropertiesDialog(context, dbConfigMap, false);
+          var newMap = await showRemoteDbPropertiesDialog(context, dbConfigMap);
           if (newMap != null) {
             var dbJson = GpPreferences().getStringSync(key, "");
             var list = dbJson.isEmpty ? [] : jsonDecode(dbJson);
@@ -132,8 +166,8 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
   }
 }
 
-Future<Map<String, dynamic>> showRemoteDbPropertiesDialog(BuildContext context,
-    Map<String, dynamic> dbConfigMap, bool allowDelete) async {
+Future<Map<String, dynamic>> showRemoteDbPropertiesDialog(
+    BuildContext context, Map<String, dynamic> dbConfigMap) async {
   return await showDialog<Map<String, dynamic>>(
     context: context,
     barrierDismissible: false,
@@ -153,23 +187,6 @@ Future<Map<String, dynamic>> showRemoteDbPropertiesDialog(BuildContext context,
           );
         }),
         actions: <Widget>[
-          if (allowDelete)
-            FlatButton(
-              child: Text(
-                "DELETE",
-                style: TextStyle(color: SmashColors.mainDanger),
-              ),
-              onPressed: () async {
-                var res = await SmashDialogs.showConfirmDialog(
-                    context,
-                    "Remove database",
-                    "Are you sure you want to remove the database configuration: ${dbConfigMap[LAYERSKEY_LABEL]}");
-                if (res) {
-                  // FenceMaster().remove(dbConfigMap);
-                }
-                Navigator.of(context).pop(null);
-              },
-            ),
           FlatButton(
             child: Text("CANCEL"),
             onPressed: () {

@@ -73,11 +73,6 @@ class LayersPageState extends State<LayersPage> {
                         builder: (BuildContext context) => RemoteDbsWidget(),
                       ));
                   if (source is PostgisSource) {
-                    // PostgisSource postgisSource = PostgisSource(
-                    //     "postgis:localhost:5432/database_2020",
-                    //     "pipes",
-                    //     "god",
-                    //     "god");
                     await source.load(context);
                     LayerManager().addLayerSource(source);
                     _somethingChanged = true;

@@ -8,6 +8,7 @@ import 'dart:convert';
 import 'dart:core';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -26,6 +27,7 @@ const LAYERSKEY_URL = 'url';
 const LAYERSKEY_USER = 'user';
 const LAYERSKEY_PWD = 'pwd';
 const LAYERSKEY_WHERE = 'where';
+const LAYERSKEY_BOUNDS = 'bounds';
 const LAYERSKEY_TYPE = 'type';
 const LAYERSKEY_FORMAT = 'format';
 const LAYERSKEY_ISVECTOR = 'isVector';
@@ -141,10 +143,7 @@ abstract class LayerSource {
           return [gpkg];
         }
       } else if (url != null && url.toLowerCase().startsWith("postgis")) {
-        String user = map[LAYERSKEY_USER];
-        String pwd = map[LAYERSKEY_PWD];
-        String tableName = map[LAYERSKEY_LABEL];
-        PostgisSource pg = PostgisSource(url, tableName, user, pwd);
+        PostgisSource pg = PostgisSource.fromMap(map);
         return [pg];
       } else {
         TileSource ts = TileSource.fromMap(map);
@@ -161,25 +160,57 @@ abstract class LayerSource {
       if (getUrl() != null &&
           (getName() != other.getName() || getUrl() != other.getUrl())) {
         return false;
-      } else if (getAbsolutePath() != null &&
+      }
+      if (getAbsolutePath() != null &&
           (getName() != other.getName() ||
               getAbsolutePath() != other.getAbsolutePath())) {
         return false;
-      } else {
-        return true;
       }
+      if (this is DbVectorLayerSource &&
+          other is DbVectorLayerSource &&
+          !areDbSame(this, other)) {
+        return false;
+      }
+      return true;
     } else {
       return false;
     }
   }
 
+  bool areDbSame(DbVectorLayerSource db1, DbVectorLayerSource db2) {
+    var where1 = db1.getWhere() ?? "";
+    var where2 = db2.getWhere() ?? "";
+    var user1 = db1.getUser() ?? "";
+    var user2 = db2.getUser() ?? "";
+    var pwd1 = db1.getPassword() ?? "";
+    var pwd2 = db2.getPassword() ?? "";
+    return where1 == where2 && user1 == user2 && pwd1 == pwd2;
+  }
+
   int get hashCode {
+    var obj = [];
     if (getUrl() != null) {
-      return getUrl().hashCode;
-    } else if (getAbsolutePath() != null) {
-      return getAbsolutePath().hashCode;
+      obj.add(getUrl());
     }
-    return getName().hashCode;
+    if (getAbsolutePath() != null) {
+      obj.add(getAbsolutePath());
+    }
+    if (getName() != null) {
+      obj.add(getName());
+    }
+    if (this is DbVectorLayerSource) {
+      if ((this as DbVectorLayerSource).getWhere() != null) {
+        obj.add((this as DbVectorLayerSource).getWhere());
+      }
+      if ((this as DbVectorLayerSource).getUser() != null) {
+        obj.add((this as DbVectorLayerSource).getUser());
+      }
+      if ((this as DbVectorLayerSource).getPassword() != null) {
+        obj.add((this as DbVectorLayerSource).getPassword());
+      }
+    }
+
+    return HashUtilities.hashObjects(obj);
   }
 }
 
@@ -190,6 +221,13 @@ abstract class SldLayerSource {
 
 /// Interface for vector data based layersources.
 abstract class VectorLayerSource extends LoadableLayerSource {}
+
+/// Interface for database vector sources.
+abstract class DbVectorLayerSource extends VectorLayerSource {
+  String getWhere();
+  String getUser();
+  String getPassword();
+}
 
 /// Interface for editable vector data based layersources.
 abstract class EditableVectorLayerSource extends VectorLayerSource {}
