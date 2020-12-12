@@ -161,7 +161,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
         ),
         onTap: () async {
           var editableGeometry = geomEditState.editableGeometry;
-          GeometryEditManager().saveCurrentEdit(geomEditState);
+          await GeometryEditManager().saveCurrentEdit(geomEditState);
 
           // stop editing
           geomEditState.editableGeometry = null;
@@ -220,7 +220,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           var t = geomEditState.editableGeometry.table;
           var db = geomEditState.editableGeometry.db;
           bool hasDeleted =
-              GeometryEditManager().deleteCurrentSelection(geomEditState);
+              await GeometryEditManager().deleteCurrentSelection(geomEditState);
           if (hasDeleted) {
             // reload layer geoms
             await reloadDbLayers(db, t);

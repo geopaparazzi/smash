@@ -6,6 +6,7 @@
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' hide Polygon;
+import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -16,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
@@ -285,10 +287,10 @@ class GeometryEditManager {
       return;
     }
 
-    List<LayerSource> geopackageLayers = LayerManager()
+    List<LayerSource> editableLayers = LayerManager()
         .getLayerSources()
         .reversed
-        .where((l) => l is GeopackageSource && l.isActive())
+        .where((l) => l is DbVectorLayerSource && l.isActive())
         .toList();
 
     var radius = ZOOM2TOUCHRADIUS[zoom];
@@ -301,9 +303,9 @@ class GeometryEditManager {
 
     EditableGeometry editGeom;
     double minDist = 1000000000;
-    for (LayerSource vLayer in geopackageLayers) {
+    for (LayerSource vLayer in editableLayers) {
       var srid = vLayer.getSrid();
-      var db = ConnectionsHandler().open(vLayer.getAbsolutePath());
+      var db = await DbVectorLayerSource.getDb(vLayer);
       // create the env
       var dataPrj = SmashPrj.fromSrid(srid);
 
@@ -319,8 +321,8 @@ class GeometryEditManager {
 
       var tableName = vLayer.getName();
       var sqlName = SqlName(tableName);
-      var gc = db.getGeometryColumnsForTable(sqlName);
-      var primaryKey = db.getPrimaryKey(sqlName);
+      var gc = await db.getGeometryColumnsForTable(sqlName);
+      var primaryKey = await db.getPrimaryKey(sqlName);
       // if polygon, then it has to be inside,
       // for other types we use the buffer
       Envelope checkEnv;
@@ -332,7 +334,7 @@ class GeometryEditManager {
         checkEnv = touchBufferLayerPrj.getEnvelopeInternal();
         checkGeom = touchBufferLayerPrj;
       }
-      var geomsIntersected = db.getGeometriesIn(sqlName,
+      var geomsIntersected = await db.getGeometriesIn(sqlName,
           envelope: checkEnv, userDataField: primaryKey);
 
       if (geomsIntersected.isNotEmpty) {
@@ -376,9 +378,9 @@ class GeometryEditManager {
 
     // propose to add a new geometry here if no geometry was selected
     if (currentEditing == null) {
-      Map<String, GeopackageSource> name2SourceMap = {};
-      geopackageLayers.forEach((element) {
-        if (element is GeopackageSource) {
+      Map<String, DbVectorLayerSource> name2SourceMap = {};
+      editableLayers.forEach((element) {
+        if (element is DbVectorLayerSource) {
           name2SourceMap[element.getName()] = element;
         }
       });
@@ -392,10 +394,10 @@ class GeometryEditManager {
             name2SourceMap.keys.toList(),
             allowCancel: true);
         if (selectedName != null) {
-          var geopackageLayer = name2SourceMap[selectedName];
-          var db = geopackageLayer.db;
-          var table = geopackageLayer.getName();
-          var tableColumns = db.getTableColumns(SqlName(table));
+          var vectorLayer = name2SourceMap[selectedName];
+          var db = await DbVectorLayerSource.getDb(vectorLayer);
+          var table = vectorLayer.getName();
+          var tableColumns = await db.getTableColumns(SqlName(table));
 
           // check if there is a pk and if the columns are set to be non null in other case
           bool hasPk = false;
@@ -419,11 +421,11 @@ class GeometryEditManager {
 
           // create a minimal geometry to work on
           var tableName = SqlName(table);
-          var gc = db.getGeometryColumnsForTable(tableName);
+          var gc = await db.getGeometryColumnsForTable(tableName);
           var gType = gc.geometryType;
           Geometry geometry;
           var gf = GeometryFactory.defaultPrecision();
-          var dataPrj = SmashPrj.fromSrid(geopackageLayer.getSrid());
+          var dataPrj = SmashPrj.fromSrid(vectorLayer.getSrid());
           var d = 0.0001;
           if (gType.isPoint()) {
             geometry =
@@ -442,11 +444,18 @@ class GeometryEditManager {
             ]);
           }
           SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, geometry);
-          var geomBytes = GeoPkgGeomWriter().write(geometry);
           var sql =
               "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
-          var lastId =
-              db.execute(sql, arguments: [geomBytes], getLastInsertId: true);
+          var lastId;
+          if (vectorLayer is GeopackageSource) {
+            var geomBytes = GeoPkgGeomWriter().write(geometry);
+            lastId =
+                db.execute(sql, arguments: [geomBytes], getLastInsertId: true);
+          } else if (vectorLayer is PostgisSource) {
+            var geomHexed = BinaryWriter().writeHexed(geometry);
+            lastId = await db.execute(sql,
+                arguments: [geomHexed], getLastInsertId: true);
+          }
 
           EditableGeometry editGeom2 = EditableGeometry();
           editGeom2.geometry = geometry;
@@ -456,7 +465,7 @@ class GeometryEditManager {
           editorState.editableGeometry = editGeom;
 
           // reload layer geoms
-          geopackageLayer.isLoaded = false;
+          vectorLayer.isLoaded = false;
           SmashMapBuilder mapBuilder =
               Provider.of<SmashMapBuilder>(context, listen: false);
           var layers = await LayerManager().loadLayers(mapBuilder.context);
@@ -471,53 +480,72 @@ class GeometryEditManager {
     }
   }
 
-  void saveCurrentEdit(GeometryEditorState geomEditState) {
-    var editableGeometry = geomEditState.editableGeometry;
-    GeopackageDb db = editableGeometry.db;
+  Future<void> saveCurrentEdit(GeometryEditorState geomEditState) async {
+    if (editPolyline != null) {
+      var editableGeometry = geomEditState.editableGeometry;
+      var db = editableGeometry.db;
 
-    var tableName = SqlName(editableGeometry.table);
-    var primaryKey = db.getPrimaryKey(tableName);
-    var geometryColumn = db.getGeometryColumnsForTable(tableName);
-    var gType = geometryColumn.geometryType;
-    var gf = GeometryFactory.defaultPrecision();
-    Geometry geom;
-    if (gType.isLine()) {
-      var newPoints = editPolyline.points;
-      geom = gf.createLineString(
-          newPoints.map((c) => Coordinate(c.longitude, c.latitude)).toList());
-    } else if (gType.isPolygon()) {
-      var newPoints = editPolygon.points;
-      newPoints.add(newPoints[0]);
-      var linearRing = gf.createLinearRing(
-          newPoints.map((c) => Coordinate(c.longitude, c.latitude)).toList());
-      geom = gf.createPolygon(linearRing, null);
-    } else if (gType.isPoint()) {
-      var newPoint = pointEditor.point;
-      geom = gf.createPoint(Coordinate(newPoint.longitude, newPoint.latitude));
+      var tableName = SqlName(editableGeometry.table);
+      var primaryKey = await db.getPrimaryKey(tableName);
+      var geometryColumn = await db.getGeometryColumnsForTable(tableName);
+      EGeometryType gType = geometryColumn.geometryType;
+      var gf = GeometryFactory.defaultPrecision();
+      Geometry geom;
+      if (gType.isLine()) {
+        var newPoints = editPolyline.points;
+        geom = gf.createLineString(
+            newPoints.map((c) => Coordinate(c.longitude, c.latitude)).toList());
+        if (gType.isMulti()) {
+          geom = gf.createMultiLineString([geom]);
+        }
+      } else if (gType.isPolygon()) {
+        var newPoints = editPolygon.points;
+        newPoints.add(newPoints[0]);
+        var linearRing = gf.createLinearRing(
+            newPoints.map((c) => Coordinate(c.longitude, c.latitude)).toList());
+        geom = gf.createPolygon(linearRing, null);
+        if (gType.isMulti()) {
+          geom = gf.createMultiPolygon([geom]);
+        }
+      } else if (gType.isPoint()) {
+        var newPoint = pointEditor.point;
+        geom =
+            gf.createPoint(Coordinate(newPoint.longitude, newPoint.latitude));
+        if (gType.isMulti()) {
+          geom = gf.createMultiPoint([geom]);
+        }
+      }
+
+      geom.setSRID(geometryColumn.srid);
+      if (geometryColumn.srid != SmashPrj.EPSG4326_INT) {
+        var to = SmashPrj.fromSrid(geometryColumn.srid);
+        SmashPrj.transformGeometry(SmashPrj.EPSG4326, to, geom);
+      }
+
+      Map<String, dynamic> newRow;
+      if (db is GeopackageDb) {
+        var geomBytes = GeoPkgGeomWriter().write(geom);
+        newRow = {geometryColumn.geometryColumnName: geomBytes};
+      } else if (db is PostgisDb) {
+        var geomHexed = BinaryWriter().writeHexed(geom);
+        newRow = {geometryColumn.geometryColumnName: geomHexed};
+      }
+      await db.updateMap(
+          tableName, newRow, "$primaryKey=${editableGeometry.id}");
     }
-
-    if (geometryColumn.srid != SmashPrj.EPSG4326_INT) {
-      var to = SmashPrj.fromSrid(geometryColumn.srid);
-      SmashPrj.transformGeometry(SmashPrj.EPSG4326, to, geom);
-    }
-
-    var geomBytes = GeoPkgGeomWriter().write(geom);
-
-    var newRow = {geometryColumn.geometryColumnName: geomBytes};
-    db.updateMap(tableName, newRow, "$primaryKey=${editableGeometry.id}");
   }
 
   /// Deletes the feature of the currentl selected geometry from the database.
-  bool deleteCurrentSelection(GeometryEditorState geomEditState) {
+  Future<bool> deleteCurrentSelection(GeometryEditorState geomEditState) async {
     var editableGeometry = geomEditState.editableGeometry;
     if (editableGeometry != null) {
       var id = editableGeometry.id;
       if (id != null) {
         var table = SqlName(editableGeometry.table);
         var db = editableGeometry.db;
-        var pk = db.getPrimaryKey(table);
+        var pk = await db.getPrimaryKey(table);
         var sql = "delete from ${table.fixedName} where $pk=$id";
-        db.execute(sql);
+        await db.execute(sql);
 
         geomEditState.editableGeometry = null;
         return true;

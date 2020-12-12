@@ -29,7 +29,8 @@ import 'package:smashlibs/smashlibs.dart';
 import 'package:image/image.dart' as IMG;
 
 /// Geopackage vector data layer.
-class GeopackageSource extends VectorLayerSource implements SldLayerSource {
+class GeopackageSource extends EditableVectorLayerSource
+    implements SldLayerSource {
   static final double POINT_SIZE_FACTOR = 3;
 
   String _absolutePath;

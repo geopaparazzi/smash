@@ -11,6 +11,7 @@ import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
@@ -223,10 +224,21 @@ abstract class SldLayerSource {
 abstract class VectorLayerSource extends LoadableLayerSource {}
 
 /// Interface for database vector sources.
-abstract class DbVectorLayerSource extends VectorLayerSource {
+abstract class DbVectorLayerSource extends EditableVectorLayerSource {
   String getWhere();
   String getUser();
   String getPassword();
+
+  static Future<dynamic> getDb(LayerSource source) async {
+    if (source is GeopackageSource) {
+      return Future.value(ConnectionsHandler().open(source.getAbsolutePath()));
+    } else if (source is PostgisSource) {
+      return await PostgisConnectionsHandler().open(source.getUrl(),
+          source.getName(), source.getUser(), source.getPassword());
+    } else {
+      throw ArgumentError("Layersource is not a db source: $source");
+    }
+  }
 }
 
 /// Interface for editable vector data based layersources.
