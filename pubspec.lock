@@ -144,7 +144,7 @@ packages:
       name: dart_hydrologis_db
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0+3"
+    version: "0.5.0+5"
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
@@ -164,7 +164,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ea4c0d9a1c9e2089aa1ebae50c78ad1474f19aee
+      resolved-ref: "713ab983a555356a5f2bc0de15b0a8c2fcb37ce2"
       url: "https://github.com/moovida/dart_postgis"
     source: git
     version: "0.1.0"

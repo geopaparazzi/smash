@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
 import 'package:flutter/material.dart';
@@ -97,11 +98,13 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
                 var newMap =
                     await showRemoteDbPropertiesDialog(context, dbConfigMap);
                 if (newMap != null) {
-                  var dbJson = GpPreferences().getStringSync(key, "");
-                  var list = jsonDecode(dbJson);
-                  list.add(newMap);
+                  var layerSource = DbVectorLayerSource.fromMap(newMap);
+                  sources[index] = layerSource;
+                  var list =
+                      sources.map((s) => jsonDecode(s.toJson())).toList();
                   var jsonString = jsonEncode(list);
                   await GpPreferences().setString(key, jsonString);
+                  loadConfig();
                   setState(() {});
                 }
               }));
@@ -217,12 +220,8 @@ class RemoteDbPropertiesContainer extends StatefulWidget {
 class _RemoteDbPropertiesContainerState
     extends State<RemoteDbPropertiesContainer> {
   final Map<String, dynamic> sourceMap;
-  // String host = "localhost";
-  // String port = "5432";
-  // String tableName = "";
-  // String user = "";
-  // String pwd = "";
-  // String where = "";
+  List<String> _geomTables;
+  bool _isLoadingGeomTables = false;
 
   _RemoteDbPropertiesContainerState(this.sourceMap) {}
 
@@ -231,7 +230,7 @@ class _RemoteDbPropertiesContainerState
     // _dbUrl = postgis:host:port/dbname
     var url = sourceMap[LAYERSKEY_URL] ?? "postgis:localhost:5432/dbname";
     var user = sourceMap[LAYERSKEY_USER] ?? "";
-    var tableName = sourceMap[LAYERSKEY_LABEL] ?? "";
+    String tableName = sourceMap[LAYERSKEY_LABEL] ?? "";
     var pwd = sourceMap[LAYERSKEY_PWD] ?? "";
     var where = sourceMap[LAYERSKEY_WHERE] ?? "";
 
@@ -278,20 +277,82 @@ class _RemoteDbPropertiesContainerState
         return errorText;
       },
     );
-    var tableEC = new TextEditingController(text: tableName);
-    var tableID = new InputDecoration(labelText: "table");
-    var tableWidget = new TextFormField(
-      controller: tableEC,
-      autovalidateMode: AutovalidateMode.always,
-      autofocus: false,
-      decoration: tableID,
-      validator: (txt) {
-        sourceMap[LAYERSKEY_LABEL] = txt;
-        var errorText =
-            txt.isEmpty ? "The table name needs to be defined." : null;
-        return errorText;
-      },
-    );
+
+    Widget tableWidget;
+    if (_isLoadingGeomTables) {
+      tableWidget = SmashCircularProgress(label: "loading tables...");
+    } else if (_geomTables != null) {
+      if (!_geomTables.contains(tableName)) {
+        tableName = _geomTables[0];
+        sourceMap[LAYERSKEY_LABEL] = tableName;
+      }
+      tableWidget = DropdownButton<String>(
+        isDense: false,
+        isExpanded: true,
+        value: tableName,
+        items: _geomTables
+            .map((table) => DropdownMenuItem<String>(
+                  child: Text(table),
+                  value: table,
+                ))
+            .toList(),
+        onChanged: (newSelection) {
+          sourceMap[LAYERSKEY_LABEL] = newSelection;
+          setState(() {});
+        },
+      );
+    } else {
+      var tableEC = new TextEditingController(text: tableName);
+      var tableID = new InputDecoration(labelText: "table");
+      var tableTextWidget = new TextFormField(
+        controller: tableEC,
+        autovalidateMode: AutovalidateMode.always,
+        autofocus: false,
+        decoration: tableID,
+        validator: (txt) {
+          sourceMap[LAYERSKEY_LABEL] = txt;
+          var errorText =
+              txt.isEmpty ? "The table name needs to be defined." : null;
+          return errorText;
+        },
+      );
+      tableWidget = Row(
+        children: [
+          Expanded(child: tableTextWidget),
+          IconButton(
+            icon: Icon(MdiIcons.refresh),
+            onPressed: () async {
+              setState(() {
+                _isLoadingGeomTables = true;
+              });
+              var s = PostgisSource.fromMap(sourceMap);
+              var db = await PostgisConnectionsHandler()
+                  .open(s.getUrl(), s.getName(), s.getUser(), s.getPassword());
+              if (db != null) {
+                var tables = await db.getTables(true);
+                _geomTables = [];
+                for (var tableName in tables) {
+                  bool isGeom =
+                      await db.getGeometryColumnsForTable(tableName) != null;
+                  if (isGeom) {
+                    _geomTables.add(tableName.name);
+                  }
+                }
+                setState(() {
+                  _isLoadingGeomTables = false;
+                });
+              } else {
+                setState(() {
+                  _isLoadingGeomTables = false;
+                });
+                SmashDialogs.showWarningDialog(context,
+                    "Unable to connect to the database. Check parameters and network.");
+              }
+            },
+          )
+        ],
+      );
+    }
     var whereEC = new TextEditingController(text: where);
     var whereID = new InputDecoration(labelText: "optional where condition");
     var whereWidget = new TextFormField(
