@@ -44,7 +44,7 @@ class GpsFilterManager {
 
   factory GpsFilterManager() => _instance;
 
-  static const MAX_DELTA_FOR_FIX = 15000.0;
+  static const MAX_DELTA_FOR_FIX = 60000.0;
   int _lastGpsEventTs;
   bool filtersEnabled = true;
 

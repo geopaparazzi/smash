@@ -72,7 +72,7 @@ class LayersPageState extends State<LayersPage> {
                       MaterialPageRoute(
                         builder: (BuildContext context) => RemoteDbsWidget(),
                       ));
-                  if (source is PostgisSource) {
+                  if (source != null) {
                     await source.load(context);
                     LayerManager().addLayerSource(source);
                     _somethingChanged = true;

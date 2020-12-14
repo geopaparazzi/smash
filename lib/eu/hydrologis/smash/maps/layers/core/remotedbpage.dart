@@ -33,10 +33,9 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
     var list = dbJson.isEmpty ? [] : jsonDecode(dbJson);
     if (list.isNotEmpty) {
       list.forEach((dynamic map) {
-        var url = map[LAYERSKEY_URL];
-        if (url != null && url.startsWith("postgis")) {
-          var postgisSource = PostgisSource.fromMap(map);
-          sources.add(postgisSource);
+        var layerSource = DbVectorLayerSource.fromMap(map);
+        if (layerSource != null) {
+          sources.add(layerSource);
         }
       });
     }
@@ -57,7 +56,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
       body: ListView.builder(
         itemCount: sources.length,
         itemBuilder: (BuildContext context, int index) {
-          PostgisSource source = sources[index];
+          DbVectorLayerSource source = sources[index];
           String url = source.getUrl();
           String table = source.getName();
           String user = source.getUser();

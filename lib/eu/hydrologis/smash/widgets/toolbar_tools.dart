@@ -234,12 +234,11 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
     // reload layer geoms
     var layerSources = LayerManager().getLayerSources(onlyActive: true);
     var layer = layerSources.firstWhere((layer) {
-      var isGpkg = layer is GeopackageSource &&
+      var isDbVector = DbVectorLayerSource.isDbVectorLayerSource(layer);
+      bool isEqual = isDbVector &&
           layer.getName() == table &&
-          layer.db == db;
-      var isPostgis =
-          layer is PostgisSource && layer.getName() == table && layer.db == db;
-      return isGpkg || isPostgis;
+          (layer as DbVectorLayerSource).db == db;
+      return isEqual;
     });
     (layer as LoadableLayerSource).isLoaded = false;
 

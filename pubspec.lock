@@ -164,7 +164,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "4ee1c03dd12d76aa6958954418b351cf77267f81"
+      resolved-ref: ea4c0d9a1c9e2089aa1ebae50c78ad1474f19aee
       url: "https://github.com/moovida/dart_postgis"
     source: git
     version: "0.1.0"
@@ -241,7 +241,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -274,7 +274,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3"
+    version: "0.4.3+1"
   flutter_image:
     dependency: transitive
     description:

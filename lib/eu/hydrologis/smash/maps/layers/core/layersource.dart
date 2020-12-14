@@ -229,15 +229,46 @@ abstract class DbVectorLayerSource extends EditableVectorLayerSource {
   String getUser();
   String getPassword();
 
+  dynamic get db;
+
   static Future<dynamic> getDb(LayerSource source) async {
-    if (source is GeopackageSource) {
-      return Future.value(ConnectionsHandler().open(source.getAbsolutePath()));
-    } else if (source is PostgisSource) {
-      return await PostgisConnectionsHandler().open(source.getUrl(),
-          source.getName(), source.getUser(), source.getPassword());
+    if (!(source is DbVectorLayerSource)) {
+      return null;
+    }
+    DbVectorLayerSource dbSource = source;
+    if (dbSource.db != null) {
+      return dbSource.db;
+    }
+    if (dbSource is GeopackageSource) {
+      return Future.value(
+          ConnectionsHandler().open(dbSource.getAbsolutePath()));
+    } else if (dbSource is PostgisSource) {
+      return await PostgisConnectionsHandler().open(dbSource.getUrl(),
+          dbSource.getName(), dbSource.getUser(), dbSource.getPassword());
     } else {
       throw ArgumentError("Layersource is not a db source: $source");
     }
+  }
+
+  static LayerSource fromMap(Map<String, dynamic> map) {
+    var url = map[LAYERSKEY_URL];
+    if (url != null && url.startsWith("postgis")) {
+      return PostgisSource.fromMap(map);
+    }
+    var file = map[LAYERSKEY_FILE];
+    var isVector = map[LAYERSKEY_ISVECTOR];
+    if (file != null &&
+        FileManager.isGeopackage(file) &&
+        isVector != null &&
+        isVector) {
+      return GeopackageSource.fromMap(map);
+    }
+
+    return null;
+  }
+
+  static bool isDbVectorLayerSource(LayerSource source) {
+    return source is GeopackageSource || source is PostgisSource;
   }
 }
 

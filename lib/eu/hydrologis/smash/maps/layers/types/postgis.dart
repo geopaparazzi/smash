@@ -34,7 +34,7 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
   SldObjectParser _style;
   TextStyle _textStyle;
 
-  PostgisDb db;
+  PostgisDb _pgDb;
   int _srid;
   String _dbUrl;
   String _user;
@@ -96,27 +96,31 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
       }
 
       await getDatabase();
+      if (_pgDb == null) {
+        isLoaded = false;
+        return;
+      }
       var sqlName = SqlName(_tableName);
-      _geometryColumn = await db.getGeometryColumnsForTable(sqlName);
+      _geometryColumn = await _pgDb.getGeometryColumnsForTable(sqlName);
       _srid = _geometryColumn.srid;
       geometryType = _geometryColumn.geometryType;
-      var alphaFieldsTmp = await db.getTableColumns(sqlName);
+      var alphaFieldsTmp = await _pgDb.getTableColumns(sqlName);
 
       alphaFields = alphaFieldsTmp.map((e) => e[0] as String).toList();
       alphaFields
           .removeWhere((name) => name == _geometryColumn.geometryColumnName);
 
-      sldString = await db.getSld(sqlName);
+      sldString = await _pgDb.getSld(sqlName);
       if (sldString == null) {
         if (_geometryColumn.geometryType.isPoint()) {
           sldString = DefaultSlds.simplePointSld();
-          await db.updateSld(sqlName, sldString);
+          await _pgDb.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isLine()) {
           sldString = DefaultSlds.simpleLineSld();
-          await db.updateSld(sqlName, sldString);
+          await _pgDb.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isPolygon()) {
           sldString = DefaultSlds.simplePolygonSld();
-          await db.updateSld(sqlName, sldString);
+          await _pgDb.updateSld(sqlName, sldString);
         }
       }
       if (sldString != null) {
@@ -142,7 +146,7 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
           SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, boundsPolygon);
           limitBoundsData = boundsPolygon.getEnvelopeInternal();
         }
-        _tableData = await db.getTableData(
+        _tableData = await _pgDb.getTableData(
           SqlName(_tableName),
           limit: maxFeaturesToLoad,
           envelope: limitBoundsData,
@@ -167,10 +171,12 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
     }
   }
 
+  dynamic get db => _pgDb;
+
   getDatabase() async {
     var ch = PostgisConnectionsHandler();
-    if (db == null) {
-      db = await ch.open(_dbUrl, _tableName, _user, _pwd);
+    if (_pgDb == null) {
+      _pgDb = await ch.open(_dbUrl, _tableName, _user, _pwd);
     }
   }
 
@@ -517,11 +523,11 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
   void calculateSrid() {
     // TODO check
     // if (_srid == null) {
-    //   if (db == null) {
+    //   if (_pgDb == null) {
     //     getDatabase();
     //   }
     //   if (_srid == null) {
-    //     _geometryColumn = db.getGeometryColumnsForTable(SqlName(_tableName));
+    //     _geometryColumn = _pgDb.getGeometryColumnsForTable(SqlName(_tableName));
     //     _srid = _geometryColumn.srid;
     //   }
     // }
@@ -551,7 +557,7 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
       _textStyle = textStyleTmp;
     }
     _style = _styleTmp;
-    await db.updateSld(SqlName(_tableName), sldString);
+    await _pgDb.updateSld(SqlName(_tableName), sldString);
   }
 }
 
@@ -585,7 +591,10 @@ class PostgisConnectionsHandler {
       var split = _dbUrl.split(RegExp(r":|/"));
       var port = int.tryParse(split[2]) ?? 5432;
       db = PostgisDb(split[1], split[3], port: port, user: user, pwd: pwd);
-      await db.open();
+      bool opened = await db.open();
+      if (!opened) {
+        return null;
+      }
 
       _connectionsMap[_dbUrl] = db;
     }

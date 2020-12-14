@@ -128,10 +128,11 @@ class FeatureInfoLayer extends StatelessWidget {
     totalQueryResult.primaryKeys = [];
     totalQueryResult.dbs = [];
     for (var vLayer in visibleVectorLayers) {
-      if (vLayer is GeopackageSource) {
+      if (DbVectorLayerSource.isDbVectorLayerSource(vLayer)) {
+        var db = await DbVectorLayerSource.getDb(vLayer);
+
         var srid = vLayer.getSrid();
         var boundsGeomInSrid = boundMap[srid];
-        var db = ConnectionsHandler().open(vLayer.getAbsolutePath());
         if (boundsGeomInSrid == null) {
           // create the env
           var tmp = GeometryUtilities.fromEnvelope(env, makeCircle: true);
@@ -141,58 +142,13 @@ class FeatureInfoLayer extends StatelessWidget {
           boundsGeomInSrid.setSRID(srid);
           boundMap[srid] = boundsGeomInSrid;
         }
-
-        var layerName = SqlName(vLayer.getName());
-        var tableColumns = db.getTableColumns(layerName);
-        Map<String, String> typesMap = {};
-        tableColumns.forEach((column) {
-          typesMap[column[0]] = column[1];
-        });
-        GPQueryResult queryResult =
-            db.getTableData(layerName, geometry: boundsGeomInSrid);
-        if (queryResult.data.isNotEmpty) {
-          print("Found data for: " + layerName.name);
-
-          var pk = db.getPrimaryKey(layerName);
-
-          var dataPrj = SmashPrj.fromSrid(srid);
-          queryResult.geoms.forEach((g) {
-            totalQueryResult.ids.add(layerName.name);
-            totalQueryResult.primaryKeys.add(pk);
-            totalQueryResult.dbs.add(db);
-            totalQueryResult.fieldAndTypemap.add(typesMap);
-            totalQueryResult.editable.add(true);
-            if (srid != SmashPrj.EPSG4326_INT) {
-              SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, g);
-            }
-            totalQueryResult.geoms.add(g);
-          });
-          queryResult.data.forEach((d) {
-            totalQueryResult.data.add(d);
-          });
-        }
-      } else if (vLayer is PostgisSource) {
-        var srid = vLayer.getSrid();
-        var boundsGeomInSrid = boundMap[srid];
-        var db = await PostgisConnectionsHandler().open(vLayer.getUrl(),
-            vLayer.getName(), vLayer.getUser(), vLayer.getPassword());
-        if (boundsGeomInSrid == null) {
-          // create the env
-          var tmp = GeometryUtilities.fromEnvelope(env, makeCircle: true);
-          var dataPrj = SmashPrj.fromSrid(srid);
-          SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, tmp);
-          boundsGeomInSrid = tmp;
-          boundsGeomInSrid.setSRID(srid);
-          boundMap[srid] = boundsGeomInSrid;
-        }
-
         var layerName = SqlName(vLayer.getName());
         var tableColumns = await db.getTableColumns(layerName);
         Map<String, String> typesMap = {};
         tableColumns.forEach((column) {
           typesMap[column[0]] = column[1];
         });
-        PGQueryResult queryResult =
+        dynamic queryResult =
             await db.getTableData(layerName, geometry: boundsGeomInSrid);
         if (queryResult.data.isNotEmpty) {
           print("Found data for: " + layerName.name);

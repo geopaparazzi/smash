@@ -447,14 +447,10 @@ class GeometryEditManager {
           var sql =
               "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
           var lastId;
-          if (vectorLayer is GeopackageSource) {
-            var geomBytes = GeoPkgGeomWriter().write(geometry);
+          if (vectorLayer is DbVectorLayerSource) {
+            var sqlObj = db.geometryToSql(geometry);
             lastId =
-                db.execute(sql, arguments: [geomBytes], getLastInsertId: true);
-          } else if (vectorLayer is PostgisSource) {
-            var geomHexed = BinaryWriter().writeHexed(geometry);
-            lastId = await db.execute(sql,
-                arguments: [geomHexed], getLastInsertId: true);
+                db.execute(sql, arguments: [sqlObj], getLastInsertId: true);
           }
 
           EditableGeometry editGeom2 = EditableGeometry();
@@ -522,14 +518,8 @@ class GeometryEditManager {
         SmashPrj.transformGeometry(SmashPrj.EPSG4326, to, geom);
       }
 
-      Map<String, dynamic> newRow;
-      if (db is GeopackageDb) {
-        var geomBytes = GeoPkgGeomWriter().write(geom);
-        newRow = {geometryColumn.geometryColumnName: geomBytes};
-      } else if (db is PostgisDb) {
-        var geomHexed = BinaryWriter().writeHexed(geom);
-        newRow = {geometryColumn.geometryColumnName: geomHexed};
-      }
+      dynamic sqlObj = db.geometryToSql(geom);
+      Map<String, dynamic> newRow = {geometryColumn.geometryColumnName: sqlObj};
       await db.updateMap(
           tableName, newRow, "$primaryKey=${editableGeometry.id}");
     }

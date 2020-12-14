@@ -149,10 +149,10 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                 orderNotifier,
                 5,
                 handleProjections),
-            ProgressTile(MdiIcons.layers, "Loading layers list...",
-                "Layers list loaded.", orderNotifier, 6, handleLayers),
             ProgressTile(MdiIcons.gate, "Loading fences...", "Fences loaded.",
-                orderNotifier, 7, handleFences),
+                orderNotifier, 6, handleFences),
+            ProgressTile(MdiIcons.layers, "Loading layers list...",
+                "Layers list loaded.", orderNotifier, 7, handleLayers),
           ],
         ),
       );
@@ -309,6 +309,7 @@ class ProgressTile extends StatefulWidget {
 
 class _ProgressTileState extends State<ProgressTile> {
   bool isDone = false;
+  bool isStarted = false;
   String error;
 
   @override
@@ -326,6 +327,9 @@ class _ProgressTileState extends State<ProgressTile> {
   }
 
   process() async {
+    setState(() {
+      isStarted = true;
+    });
     error = await widget.processFunction(context);
     if (error == null) {
       // we can move on
@@ -333,15 +337,30 @@ class _ProgressTileState extends State<ProgressTile> {
     }
     setState(() {
       isDone = true;
+      isStarted = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyle;
+    if (isStarted) {
+      textStyle = TextStyle(
+        color: SmashColors.mainSelection,
+        fontWeight: FontWeight.bold,
+      );
+    }
+    var color = isStarted ? SmashColors.mainSelection : null;
     return ListTile(
-      leading: Icon(widget.iconData),
+      leading: Icon(
+        widget.iconData,
+        color: color,
+      ),
       title: error == null
-          ? Text(isDone ? widget.doneMsg : widget.initMsg)
+          ? Text(
+              isDone ? widget.doneMsg : widget.initMsg,
+              style: textStyle,
+            )
           : FlatButton(
               child: Text(
                 "An error occurred. Tap to view.",

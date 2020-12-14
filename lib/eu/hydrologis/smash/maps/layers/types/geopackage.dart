@@ -29,8 +29,7 @@ import 'package:smashlibs/smashlibs.dart';
 import 'package:image/image.dart' as IMG;
 
 /// Geopackage vector data layer.
-class GeopackageSource extends EditableVectorLayerSource
-    implements SldLayerSource {
+class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
   static final double POINT_SIZE_FACTOR = 3;
 
   String _absolutePath;
@@ -44,7 +43,7 @@ class GeopackageSource extends EditableVectorLayerSource
   SldObjectParser _style;
   TextStyle _textStyle;
 
-  GeopackageDb db;
+  GeopackageDb _gpkgDb;
   int _srid;
 
   List<String> alphaFields = [];
@@ -83,28 +82,28 @@ class GeopackageSource extends EditableVectorLayerSource
         }
       }
 
-      getDatabase();
+      _getDatabase();
       var sqlName = SqlName(_tableName);
-      _geometryColumn = db.getGeometryColumnsForTable(sqlName);
+      _geometryColumn = _gpkgDb.getGeometryColumnsForTable(sqlName);
       _srid = _geometryColumn.srid;
       geometryType = _geometryColumn.geometryType;
-      var alphaFieldsTmp = db.getTableColumns(sqlName);
+      var alphaFieldsTmp = _gpkgDb.getTableColumns(sqlName);
 
       alphaFields = alphaFieldsTmp.map((e) => e[0] as String).toList();
       alphaFields
           .removeWhere((name) => name == _geometryColumn.geometryColumnName);
 
-      sldString = db.getSld(sqlName);
+      sldString = _gpkgDb.getSld(sqlName);
       if (sldString == null) {
         if (_geometryColumn.geometryType.isPoint()) {
           sldString = DefaultSlds.simplePointSld();
-          db.updateSld(sqlName, sldString);
+          _gpkgDb.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isLine()) {
           sldString = DefaultSlds.simpleLineSld();
-          db.updateSld(sqlName, sldString);
+          _gpkgDb.updateSld(sqlName, sldString);
         } else if (_geometryColumn.geometryType.isPolygon()) {
           sldString = DefaultSlds.simplePolygonSld();
-          db.updateSld(sqlName, sldString);
+          _gpkgDb.updateSld(sqlName, sldString);
         }
       }
       if (sldString != null) {
@@ -120,7 +119,7 @@ class GeopackageSource extends EditableVectorLayerSource
       if (maxFeaturesToLoad == -1) {
         maxFeaturesToLoad = null;
       }
-      _tableData = db.getTableData(
+      _tableData = _gpkgDb.getTableData(
         SqlName(_tableName),
         limit: maxFeaturesToLoad,
         envelope: limitBounds,
@@ -142,11 +141,13 @@ class GeopackageSource extends EditableVectorLayerSource
     }
   }
 
-  getDatabase() {
+  dynamic get db => _gpkgDb;
+
+  _getDatabase() {
     var ch = ConnectionsHandler();
     // ch.doRtreeCheck = DO_RTREE_CHECK;
-    if (db == null) {
-      db = ch.open(_absolutePath, tableName: _tableName);
+    if (_gpkgDb == null) {
+      _gpkgDb = ch.open(_absolutePath, tableName: _tableName);
     }
   }
 
@@ -475,11 +476,12 @@ class GeopackageSource extends EditableVectorLayerSource
   @override
   void calculateSrid() {
     if (_srid == null) {
-      if (db == null) {
-        getDatabase();
+      if (_gpkgDb == null) {
+        _getDatabase();
       }
       if (_srid == null) {
-        _geometryColumn = db.getGeometryColumnsForTable(SqlName(_tableName));
+        _geometryColumn =
+            _gpkgDb.getGeometryColumnsForTable(SqlName(_tableName));
         _srid = _geometryColumn.srid;
       }
     }
@@ -509,8 +511,11 @@ class GeopackageSource extends EditableVectorLayerSource
       _textStyle = textStyleTmp;
     }
     _style = _styleTmp;
-    db.updateSld(SqlName(_tableName), sldString);
+    _gpkgDb.updateSld(SqlName(_tableName), sldString);
   }
+
+  @override
+  String getWhere() => "";
 }
 
 class GeopackageLazyTileImageProvider

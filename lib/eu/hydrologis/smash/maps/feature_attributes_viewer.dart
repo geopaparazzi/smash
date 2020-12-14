@@ -242,9 +242,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                       child: FlutterMap(
                         options: new MapOptions(
                           center: LatLng(centroid.y, centroid.x),
-                          // TODO getCenterFromBounds(latLngBounds, mapState),
                           zoom: 15,
-                          // TODO getZoomFromBounds(latLngBounds, mapState),
                           minZoom: 7,
                           maxZoom: 19,
                         ),
@@ -279,9 +277,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                       child: FlutterMap(
                         options: new MapOptions(
                           center: LatLng(centroid.y, centroid.x),
-                          // TODO getCenterFromBounds(latLngBounds, mapState),
                           zoom: 15,
-                          // TODO getZoomFromBounds(latLngBounds, mapState),
                           minZoom: 7,
                           maxZoom: 19,
                         ),
@@ -293,8 +289,11 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                       flex: 1,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
-                        child: getDataTable(
-                            tableName, data, primaryKey, db, typesMap),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: getDataTable(
+                              tableName, data, primaryKey, db, typesMap),
+                        ),
                       ),
                     ),
                   ],
