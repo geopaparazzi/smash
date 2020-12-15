@@ -58,7 +58,9 @@ android {
     }
     buildTypes {
         release {
+            // useProguard true
             minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.release
         }
     }
