@@ -519,6 +519,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
     return _srid;
   }
 
+  IconData getIcon() => SmashIcons.iconTypePostgis;
+
   @override
   void calculateSrid() {
     // TODO check

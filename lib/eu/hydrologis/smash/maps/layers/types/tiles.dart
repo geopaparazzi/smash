@@ -285,6 +285,8 @@ class TileSource extends TiledRasterLayerSource {
     isVisible = active;
   }
 
+  IconData getIcon() => SmashIcons.iconTypeRaster;
+
   Future<LatLngBounds> getBounds() async {
     if (bounds == null) {
       try {

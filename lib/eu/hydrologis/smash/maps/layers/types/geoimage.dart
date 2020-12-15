@@ -186,6 +186,8 @@ class GeoImageSource extends RasterLayerSource {
     return null;
   }
 
+  IconData getIcon() => SmashIcons.iconTypeRaster;
+
   String getUser() => null;
 
   String getPassword() => null;

@@ -161,6 +161,8 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     isVisible = active;
   }
 
+  IconData getIcon() => SmashIcons.iconTypeShp;
+
   String toJson() {
     var relativePath = Workspace.makeRelative(_absolutePath);
     var json = '''

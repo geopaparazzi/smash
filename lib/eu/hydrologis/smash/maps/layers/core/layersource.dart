@@ -107,6 +107,9 @@ abstract class LayerSource {
   /// For sources that only read the srid onLoad, calculateSrid might be necessary before to avoid loading all data.
   int getSrid();
 
+  /// Get the proper icon for this layer.
+  IconData getIcon();
+
   /// This can be used to calculate the srid if an async moment can be exploited and is necessary.
   ///
   /// After this getSrid is assured to have the right srid.

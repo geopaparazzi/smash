@@ -375,6 +375,8 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
 
   String getPassword() => null;
 
+  IconData getIcon() => SmashIcons.iconTypeGpx;
+
   @override
   void updateStyle(String newSldString) {
     sldString = newSldString;

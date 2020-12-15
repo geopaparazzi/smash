@@ -163,6 +163,8 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
     return null;
   }
 
+  IconData getIcon() => SmashIcons.iconTypeGeopackage;
+
   String getUser() => null;
 
   String getPassword() => null;

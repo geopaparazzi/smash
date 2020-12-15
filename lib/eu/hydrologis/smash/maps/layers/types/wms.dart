@@ -69,6 +69,8 @@ class WmsSource extends RasterLayerSource {
     return isVisible;
   }
 
+  IconData getIcon() => SmashIcons.iconTypeRaster;
+
   void setActive(bool active) {
     isVisible = active;
   }

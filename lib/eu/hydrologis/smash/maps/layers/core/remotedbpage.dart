@@ -72,7 +72,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
           secondaryActions.add(IconSlideAction(
               caption: 'Delete',
               color: SmashColors.mainDanger,
-              icon: MdiIcons.delete,
+              icon: SmashIcons.deleteIcon,
               onTap: () async {
                 bool doDelete = await SmashDialogs.showConfirmDialog(
                     context,
@@ -91,7 +91,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
           List<Widget> actions = [];
           actions.add(IconSlideAction(
               caption: 'Edit',
-              icon: MdiIcons.pencil,
+              icon: SmashIcons.editIcon,
               color: SmashColors.mainDecorations,
               onTap: () async {
                 var dbConfigMap = jsonDecode(source.toJson());
@@ -123,7 +123,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
               leading: FittedBox(
                 fit: BoxFit.cover,
                 child: Icon(
-                  MdiIcons.database,
+                  source.getIcon(),
                   color: SmashColors.mainDecorations,
                 ),
               ),
