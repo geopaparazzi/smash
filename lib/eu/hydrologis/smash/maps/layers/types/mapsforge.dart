@@ -148,11 +148,13 @@ class MapsforgeTileProvider extends FM.TileProvider {
 
     if (DOCACHE) {
       // create a mbtiles cache
-      String chachePath = _mapsforgeFile.path + ".mbtiles";
-      var name = FileUtilities.nameFromFile(chachePath, false);
-      _mbtilesCache = MBTilesDb(chachePath);
+      String cachePath = _mapsforgeFile.path + ".mbtiles";
+      if (!File(cachePath).existsSync()) {
+        SMLogger().d("Creating mbtiles cache in $cachePath");
+      }
+      var name = FileUtilities.nameFromFile(cachePath, false);
+      _mbtilesCache = MBTilesDb(cachePath);
       _mbtilesCache.open();
-      SMLogger().d("Creating mbtiles cache in $chachePath");
 
       BoundingBox bBox = _mapDataStore.boundingBox;
       _mbtilesCache.fillMetadata(bBox.maxLatitude, bBox.minLatitude,
