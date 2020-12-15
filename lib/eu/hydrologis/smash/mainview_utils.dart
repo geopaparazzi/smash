@@ -349,24 +349,26 @@ class DashboardUtils {
             onTap: () {
               var gpsState = Provider.of<GpsState>(context, listen: false);
               var pos = gpsState.lastGpsPosition;
-              StringBuffer sb = StringBuffer();
-              sb.write("Latitude: ");
-              sb.write(pos.latitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
-              sb.write("\nLongitude: ");
-              sb.write(pos.longitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
-              sb.write("\nAltitude: ");
-              sb.write(pos.altitude.toStringAsFixed(KEY_ELEV_DECIMALS));
-              sb.write("\nAccuracy: ");
-              sb.write(pos.accuracy.toStringAsFixed(KEY_ELEV_DECIMALS));
-              sb.write("\nTimestamp: ");
-              sb.write(HU.TimeUtilities.ISO8601_TS_FORMATTER.format(
-                  DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
-              sb.write("\n");
-              sb.write(UrlUtilities.osmUrlFromLatLong(
-                  pos.latitude, pos.longitude,
-                  withMarker: true));
+              if (pos != null) {
+                StringBuffer sb = StringBuffer();
+                sb.write("Latitude: ");
+                sb.write(pos.latitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
+                sb.write("\nLongitude: ");
+                sb.write(pos.longitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
+                sb.write("\nAltitude: ");
+                sb.write(pos.altitude.toStringAsFixed(KEY_ELEV_DECIMALS));
+                sb.write("\nAccuracy: ");
+                sb.write(pos.accuracy.toStringAsFixed(KEY_ELEV_DECIMALS));
+                sb.write("\nTimestamp: ");
+                sb.write(HU.TimeUtilities.ISO8601_TS_FORMATTER.format(
+                    DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
+                sb.write("\n");
+                sb.write(UrlUtilities.osmUrlFromLatLong(
+                    pos.latitude, pos.longitude,
+                    withMarker: true));
 
-              ShareHandler.shareText(sb.toString());
+                ShareHandler.shareText(sb.toString());
+              }
             },
           ),
           Platform.isAndroid && EXPERIMENTAL_ROTATION__ENABLED

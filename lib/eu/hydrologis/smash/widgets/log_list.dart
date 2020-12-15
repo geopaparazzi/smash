@@ -42,14 +42,14 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
   @override
   Log4ListWidget fromMap(dynamic map) {
     Log4ListWidget l = new Log4ListWidget()
-      ..id = map[LOGS_COLUMN_ID]
-      ..name = map[LOGS_COLUMN_TEXT]
-      ..startTime = map[LOGS_COLUMN_STARTTS]
-      ..endTime = map[LOGS_COLUMN_ENDTS]
-      ..lengthm = map[LOGS_COLUMN_LENGTHM]
-      ..color = map[LOGSPROP_COLUMN_COLOR]
-      ..width = map[LOGSPROP_COLUMN_WIDTH]
-      ..isVisible = map[LOGSPROP_COLUMN_VISIBLE];
+      ..id = map.get(LOGS_COLUMN_ID)
+      ..name = map.get(LOGS_COLUMN_TEXT)
+      ..startTime = map.get(LOGS_COLUMN_STARTTS)
+      ..endTime = map.get(LOGS_COLUMN_ENDTS)
+      ..lengthm = map.get(LOGS_COLUMN_LENGTHM)
+      ..color = map.get(LOGSPROP_COLUMN_COLOR)
+      ..width = map.get(LOGSPROP_COLUMN_WIDTH)
+      ..isVisible = map.get(LOGSPROP_COLUMN_VISIBLE);
     return l;
   }
 
