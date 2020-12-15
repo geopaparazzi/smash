@@ -339,6 +339,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                   } else {
                     SMLogger().e(
                         "Could not find type for $key ($value) in table $tablename",
+                        null,
                         null);
                     return;
                   }

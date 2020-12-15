@@ -7,16 +7,15 @@
 import 'dart:typed_data';
 import 'dart:ui' as UI;
 
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 
 class ImageWidgetUtilities {
   static Image imageFromBytes(Uint8List bytes) {
@@ -46,7 +45,7 @@ class ImageWidgetUtilities {
       dbImageToCompleteAndSave.imageDataId = imgDataId;
       int imgId = _db.insertMap(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
       if (imgId == null) {
-        SMLogger().e("Could not save image to db: $path", null);
+        SMLogger().e("Could not save image to db: $path", null, null);
       }
       return imgId;
     });

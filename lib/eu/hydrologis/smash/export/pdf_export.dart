@@ -162,8 +162,8 @@ class PdfExporter {
                       ]);
                   formWidgetList.add(c);
                 }
-              } catch (e, s) {
-                SMLogger().e("Error exporting image to pdf document", s);
+              } on Exception catch (e, s) {
+                SMLogger().e("Error exporting image to pdf document", e, s);
               }
             } else if (type == TYPE_DYNAMICSTRING) {
               var p = Paragraph(text: '$label: ');

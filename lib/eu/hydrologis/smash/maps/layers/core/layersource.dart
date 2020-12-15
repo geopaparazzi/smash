@@ -7,21 +7,20 @@
 import 'dart:convert';
 import 'dart:core';
 
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
-import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
-import 'package:smashlibs/smashlibs.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 const LAYERSKEY_FILE = 'file';
 const LAYERSKEY_URL = 'url';
@@ -153,8 +152,8 @@ abstract class LayerSource {
         TileSource ts = TileSource.fromMap(map);
         return [ts];
       }
-    } catch (e, s) {
-      SMLogger().e("Error while loading layer: \n$json", s);
+    } on Exception catch (e, s) {
+      SMLogger().e("Error while loading layer: \n$json", e, s);
       return [];
     }
   }

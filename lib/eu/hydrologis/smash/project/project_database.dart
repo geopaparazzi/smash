@@ -704,10 +704,11 @@ class GeopaparazziProjectDb extends SqliteDb {
       if (extCount != 1) {
         SMLogger().e(
             "Note ext values not updated for note $noteId and noteext $noteExtId",
+            null,
             null);
       }
     } else {
-      SMLogger().e("Note not updated for note $noteId", null);
+      SMLogger().e("Note not updated for note $noteId", null, null);
     }
     return count;
   }

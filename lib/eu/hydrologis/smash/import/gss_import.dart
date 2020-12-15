@@ -9,13 +9,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:smash/eu/hydrologis/smash/gss/gss_utilities.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:smash/eu/hydrologis/smash/gss/gss_utilities.dart';
 
 class GssImportWidget extends StatefulWidget {
   GssImportWidget({Key key}) : super(key: key);
@@ -119,7 +118,7 @@ class _GssImportWidgetState extends State<GssImportWidget>
       setState(() {
         _status = 1;
       });
-    } catch (e, s) {
+    } on Exception catch (e, s) {
       if (e is DioError) {
         var code = e.response.statusCode;
         var msg = e.response.statusMessage;
@@ -128,14 +127,14 @@ class _GssImportWidgetState extends State<GssImportWidget>
             _status = 13;
           });
         } else {
-          SMLogger().e(msg, s);
+          SMLogger().e(msg, e, s);
         }
       } else {
-        print(e);
         setState(() {
           _status = 12;
         });
-        SMLogger().e("An error occurred while downloading GSS data list.", s);
+        SMLogger()
+            .e("An error occurred while downloading GSS data list.", e, s);
       }
     }
   }

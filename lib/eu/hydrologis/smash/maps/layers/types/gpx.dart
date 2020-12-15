@@ -83,8 +83,8 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
       var xml = FileUtilities.readFile(_absolutePath);
       try {
         _gpx = GpxReader().fromString(xml);
-      } catch (e) {
-        SLogger().e("Error reading GPX file.", e);
+      } catch (e, s) {
+        SLogger().e("Error reading GPX file.", e, s);
         throw e;
       }
 

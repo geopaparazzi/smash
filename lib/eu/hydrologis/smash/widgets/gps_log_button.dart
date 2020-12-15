@@ -100,7 +100,7 @@ class _LoggingButtonState extends State<LoggingButton> {
           if (userString.trim().length == 0) userString = logName;
           int logId = gpsLoggingState.startLogging(userString);
           if (logId == null) {
-            SMLogger().e("Could not start logging: $userString", null);
+            SMLogger().e("Could not start logging: $userString", null, null);
           }
         }
       } else {

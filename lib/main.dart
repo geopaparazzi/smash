@@ -167,7 +167,7 @@ Future<String> handleFences(BuildContext context) async {
     FenceMaster().readFences();
   } on Exception catch (e, s) {
     var msg = "Error while reading fences.";
-    return logMsg(msg, s);
+    return logMsg(msg, e, s);
   }
   return null;
 }
@@ -179,7 +179,7 @@ Future<String> handleLayers(BuildContext context) async {
     await layerManager.initialize(context);
   } on Exception catch (e, s) {
     var msg = "Error while loading layers.";
-    return logMsg(msg, s);
+    return logMsg(msg, e, s);
   }
   return null;
 }
@@ -195,14 +195,14 @@ Future<String> handleProjections(BuildContext context) async {
       try {
         int.parse(epsg);
         Projection.add('EPSG:$epsg', def);
-      } catch (e, s) {
-        SMLogger().e("Error adding projection $projDef", s);
+      } on Exception catch (e, s) {
+        SMLogger().e("Error adding projection $projDef", e, s);
       }
     }
     return null;
   } on Exception catch (e, s) {
     var msg = "Error while reading projections.";
-    return logMsg(msg, s);
+    return logMsg(msg, e, s);
   }
 }
 
@@ -212,7 +212,7 @@ Future<String> handleTags(BuildContext context) async {
     await TagsManager().readFileTags();
   } on Exception catch (e, s) {
     var msg = "Error while reading tags.";
-    return logMsg(msg, s);
+    return logMsg(msg, e, s);
   }
   return null;
 }
@@ -229,7 +229,7 @@ Future<String> handlePreferences(BuildContext context) async {
     return null;
   } on Exception catch (e, s) {
     var msg = "Error while reading preferences.";
-    return logMsg(msg, s);
+    return logMsg(msg, e, s);
   }
 }
 
@@ -242,7 +242,7 @@ Future<String> handleWorkspace(BuildContext context) async {
     return null;
   } on Exception catch (e, s) {
     var msg = "Error during workspace initialization.";
-    return logMsg(msg, s);
+    return logMsg(msg, e, s);
   }
 }
 
@@ -266,7 +266,7 @@ If you do not give permission to the background location service in the next dia
     return null;
   } on Exception catch (e, s) {
     var msg = "Error during permission handling.";
-    return logMsg(msg, s);
+    return logMsg(msg, e, s);
   }
 }
 
@@ -281,8 +281,8 @@ Future<String> handleStoragePermission(BuildContext context) async {
   return null;
 }
 
-String logMsg(String msg, StackTrace s) {
-  SMLogger().e(msg, s);
+String logMsg(String msg, Exception e, StackTrace s) {
+  SMLogger().e(msg, e, s);
   if (s != null) {
     msg += "\n" + Trace.format(s);
   }

@@ -144,7 +144,7 @@ packages:
       name: dart_hydrologis_db
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.1"
+    version: "0.6.0"
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
@@ -165,7 +165,7 @@ packages:
       name: dart_postgis
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.0+1"
   dart_shp:
     dependency: "direct main"
     description:
@@ -272,7 +272,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3+1"
+    version: "0.4.3+2"
   flutter_image:
     dependency: transitive
     description:
@@ -837,7 +837,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "73145a7225b542c8a36788ff287b10ab23d3f9b4"
+      resolved-ref: "886db144ead640a49b8565cac906989372a90409"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

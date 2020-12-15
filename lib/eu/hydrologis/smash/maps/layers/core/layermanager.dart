@@ -55,7 +55,7 @@ class LayerManager {
             }
           }
         } on Exception catch (e, s) {
-          SMLogger().e("An error occurred while loading layer: $json", s);
+          SMLogger().e("An error occurred while loading layer: $json", e, s);
         }
       } else {
         _layerSources = [

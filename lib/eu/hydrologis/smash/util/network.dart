@@ -6,7 +6,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -76,8 +75,8 @@ class DownloadMapFromListTileProgressWidgetState
         // TODO fix the below
 //        widget._mainEventsHandler.reloadLayersFunction();
       }
-    } catch (e, s) {
-      SMLogger().e("Error downloading file ${widget._downloadUrl}", s);
+    } on Exception catch (e, s) {
+      SMLogger().e("Error downloading file ${widget._downloadUrl}", e, s);
     }
 
     setState(() {

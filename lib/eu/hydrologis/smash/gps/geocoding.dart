@@ -48,8 +48,8 @@ class GeocodingPageState extends State<GeocodingPage> {
     List<Address> addresses;
     try {
       addresses = await Geocoder.local.findAddressesFromQuery(query);
-    } catch (e, s) {
-      SMLogger().e("Unable to geocode $query", s);
+    } on Exception catch (e, s) {
+      SMLogger().e("Unable to geocode $query", e, s);
     }
     searching = false;
     if (addresses == null || addresses.isEmpty) {

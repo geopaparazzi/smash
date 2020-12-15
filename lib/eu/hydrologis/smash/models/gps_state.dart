@@ -224,8 +224,8 @@ class GpsState extends ChangeNotifierPlus {
       notifyListenersMsg("startLogging");
 
       return logId;
-    } catch (e, s) {
-      SMLogger().e("Error creating new gps log", s);
+    } on Exception catch (e, s) {
+      SMLogger().e("Error creating new gps log", e, s);
       return null;
     }
   }

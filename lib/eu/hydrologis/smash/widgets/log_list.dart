@@ -325,8 +325,8 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
           try {
             await GpxExporter.exportLog(db, logItem.id, exportsFolder.path);
             SmashDialogs.showInfoDialog(context, "GPX saved in export folder.");
-          } catch (e, s) {
-            SMLogger().e("Error exporting log GPX", s);
+          } on Exception catch (e, s) {
+            SMLogger().e("Error exporting log GPX", e, s);
             SmashDialogs.showErrorDialog(
                 context, "An error occurred while exporting log to GPX.");
           }

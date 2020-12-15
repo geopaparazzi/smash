@@ -59,8 +59,8 @@ class ProjectState extends ChangeNotifierPlus {
       _db = GeopaparazziProjectDb(_projectPath);
       _db.open();
       SMLogger().i("Db opened: $_projectPath");
-    } catch (e) {
-      SMLogger().e("Error opening project db: ", e);
+    } on Exception catch (e, s) {
+      SMLogger().e("Error opening project db: ", e, s);
     }
 
     _db.createNecessaryExtraTables();

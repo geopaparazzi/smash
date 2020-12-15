@@ -319,8 +319,8 @@ class TileSource extends TiledRasterLayerSource {
           // bounds = prov.bounds;
           // prov.dispose();
         }
-      } catch (e, s) {
-        SMLogger().e("En error occurred while loading ", s);
+      } on Exception catch (e, s) {
+        SMLogger().e("En error occurred while loading ", e, s);
       }
     }
     return bounds;

@@ -49,7 +49,7 @@ class ImageWidgetUtilities {
         int imgId = _db.insertMap(
             SqlName(TABLE_IMAGES), dbImageToCompleteAndSave.toMap());
         if (imgId == null) {
-          SMLogger().e("Could not save image to db: $path", null);
+          SMLogger().e("Could not save image to db: $path", null, null);
         }
         return imgId;
       } on Exception catch (e) {
