@@ -129,24 +129,19 @@ class DbImageData {
 
 class ImageQueryBuilder extends QueryObjectBuilder<DbImage> {
   @override
-  DbImage fromMap(dynamic map) {
+  DbImage fromRow(QueryResultRow map) {
     DbImage image = DbImage()
-      ..id = map[IMAGES_COLUMN_ID]
-      ..lon = map[IMAGES_COLUMN_LON]
-      ..lat = map[IMAGES_COLUMN_LAT]
-      ..altim = map[IMAGES_COLUMN_ALTIM]
-      ..timeStamp = map[IMAGES_COLUMN_TS]
-      ..azim = map[IMAGES_COLUMN_AZIM]
-      ..text = map[IMAGES_COLUMN_TEXT]
-      ..isDirty = map[IMAGES_COLUMN_ISDIRTY]
-      ..noteId = map[IMAGES_COLUMN_NOTE_ID]
-      ..imageDataId = map[IMAGES_COLUMN_IMAGEDATA_ID];
+      ..id = map.get(IMAGES_COLUMN_ID)
+      ..lon = map.get(IMAGES_COLUMN_LON)
+      ..lat = map.get(IMAGES_COLUMN_LAT)
+      ..altim = map.get(IMAGES_COLUMN_ALTIM)
+      ..timeStamp = map.get(IMAGES_COLUMN_TS)
+      ..azim = map.get(IMAGES_COLUMN_AZIM)
+      ..text = map.get(IMAGES_COLUMN_TEXT)
+      ..isDirty = map.get(IMAGES_COLUMN_ISDIRTY)
+      ..noteId = map.get(IMAGES_COLUMN_NOTE_ID)
+      ..imageDataId = map.get(IMAGES_COLUMN_IMAGEDATA_ID);
     return image;
-  }
-
-  @override
-  String insertSql() {
-    return null;
   }
 
   @override
@@ -172,16 +167,11 @@ class ImageDataQueryBuilder extends QueryObjectBuilder<DbImageData> {
   ImageDataQueryBuilder({this.doData: true, this.doThumb: true});
 
   @override
-  DbImageData fromMap(dynamic map) {
-    DbImageData imageData = DbImageData()..id = map[IMAGESDATA_COLUMN_ID];
-    if (doData) imageData.data = map[IMAGESDATA_COLUMN_IMAGE];
-    if (doThumb) imageData.thumb = map[IMAGESDATA_COLUMN_THUMBNAIL];
+  DbImageData fromRow(QueryResultRow map) {
+    DbImageData imageData = DbImageData()..id = map.get(IMAGESDATA_COLUMN_ID);
+    if (doData) imageData.data = map.get(IMAGESDATA_COLUMN_IMAGE);
+    if (doThumb) imageData.thumb = map.get(IMAGESDATA_COLUMN_THUMBNAIL);
     return imageData;
-  }
-
-  @override
-  String insertSql() {
-    return null;
   }
 
   @override

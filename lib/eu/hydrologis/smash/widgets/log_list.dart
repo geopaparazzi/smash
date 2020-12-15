@@ -40,7 +40,7 @@ class Log4ListWidget {
 /// [QueryObjectBuilder] to allow easy extraction from the db.
 class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
   @override
-  Log4ListWidget fromMap(dynamic map) {
+  Log4ListWidget fromRow(QueryResultRow map) {
     Log4ListWidget l = new Log4ListWidget()
       ..id = map.get(LOGS_COLUMN_ID)
       ..name = map.get(LOGS_COLUMN_TEXT)
@@ -51,12 +51,6 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
       ..width = map.get(LOGSPROP_COLUMN_WIDTH)
       ..isVisible = map.get(LOGSPROP_COLUMN_VISIBLE);
     return l;
-  }
-
-  @override
-  String insertSql() {
-    // TODO
-    return null;
   }
 
   @override

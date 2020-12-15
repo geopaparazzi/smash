@@ -247,6 +247,10 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
     await load(context);
 
+    if (_tableData == null) {
+      return null;
+    }
+
     List<LayerOptions> layers = [];
     if (_tableData.geoms.isNotEmpty) {
       List<List<Marker>> allPoints = [];
