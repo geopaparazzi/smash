@@ -162,11 +162,9 @@ packages:
   dart_postgis:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "713ab983a555356a5f2bc0de15b0a8c2fcb37ce2"
-      url: "https://github.com/moovida/dart_postgis"
-    source: git
+      name: dart_postgis
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.1.0"
   dart_shp:
     dependency: "direct main"
@@ -837,9 +835,11 @@ packages:
   smashlibs:
     dependency: "direct main"
     description:
-      path: "../smashlibs"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "73145a7225b542c8a36788ff287b10ab23d3f9b4"
+      url: "https://github.com/moovida/smashlibs.git"
+    source: git
     version: "1.0.0"
   source_span:
     dependency: transitive
