@@ -247,9 +247,11 @@ class PdfExporter {
               alignment: Alignment.centerRight,
               margin: const EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
               padding: const EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
-              decoration: const BoxDecoration(
-                  border: BoxBorder(
-                      bottom: true, width: 0.5, color: PdfColors.grey)),
+              decoration: BoxDecoration(
+                  border: Border.all(
+                      style: BorderStyle.solid,
+                      width: 0.5,
+                      color: PdfColors.grey)),
               child: Text('Report of project $dbName',
                   style: Theme.of(context)
                       .defaultTextStyle
