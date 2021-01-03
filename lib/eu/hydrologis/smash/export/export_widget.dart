@@ -62,12 +62,21 @@ class _ExportWidgetState extends State<ExportWidget> {
         FileUtilities.joinPaths(exportsFolder.path, "smash_export_$ts.gpkg");
     var projectState = Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
-    await GeopackageExporter.exportDb(db, File(outFilePath));
+    String errorString =
+        await GeopackageExporter.exportDb(db, File(outFilePath));
 
-    setState(() {
-      _gpkgOutPath = outFilePath;
-      _gpkgBuildStatus = 2;
-    });
+    if (errorString != null) {
+      SmashDialogs.showWarningDialog(context, errorString);
+      setState(() {
+        _gpkgOutPath = "";
+        _gpkgBuildStatus = 0;
+      });
+    } else {
+      setState(() {
+        _gpkgOutPath = outFilePath;
+        _gpkgBuildStatus = 2;
+      });
+    }
   }
 
   Future<void> buildGpx(BuildContext context, bool doKml) async {

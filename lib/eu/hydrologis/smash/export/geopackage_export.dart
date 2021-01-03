@@ -16,10 +16,10 @@ import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class GeopackageExporter {
-  static Future<void> exportDb(
+  static Future<String> exportDb(
       GeopaparazziProjectDb db, File outputFile) async {
     if (await outputFile.exists()) {
-      throw StateError("Not writing over existing file.");
+      return "Not writing over existing file.";
     }
     bool useFiltered =
         GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
@@ -30,6 +30,10 @@ class GeopackageExporter {
     exportNotesTable(newDb, db);
     exportImagesTable(newDb, db);
     exportLogsTable(newDb, db, useFiltered);
+
+    newDb.close();
+
+    return null;
   }
 
   static void exportNotesTable(GeopackageDb newDb, GeopaparazziProjectDb gpDb) {

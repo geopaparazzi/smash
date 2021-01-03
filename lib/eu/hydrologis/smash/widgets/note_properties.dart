@@ -113,6 +113,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                               },
                               validationFunction: noEmptyValidator,
                               doBold: true,
+                              hintText: "note",
                             ),
                           ),
                           Table(
