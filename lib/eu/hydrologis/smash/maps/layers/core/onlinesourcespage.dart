@@ -307,6 +307,16 @@ class OnlineSourceCard extends StatefulWidget {
 class _OnlineSourceCardState extends State<OnlineSourceCard> {
   @override
   Widget build(BuildContext context) {
+    var lastPosition = GpPreferences().getLastPositionSync();
+    var lon = 11.33140;
+    var lat = 46.47781;
+    var zoom = 13.0;
+    if (lastPosition != null) {
+      lon = lastPosition[0];
+      lat = lastPosition[1];
+      zoom = lastPosition[2];
+    }
+
     return Center(
       child: Card(
         child: Column(
@@ -324,8 +334,8 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                     height: 100,
                     child: FlutterMap(
                       options: new MapOptions(
-                        center: new LatLng(46.47781, 11.33140),
-                        zoom: 13.0,
+                        center: new LatLng(lat, lon),
+                        zoom: zoom,
                       ),
                       layers: widget.layers,
                     ),
@@ -611,6 +621,7 @@ class WmsData {
   String attribution;
   String minZoom;
   String maxZoom;
+  String format = LAYERSTYPE_FORMAT_JPG;
 }
 
 class AddWmsStepper extends StatefulWidget {
@@ -624,6 +635,39 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   static WmsData wmsData = WmsData();
   List<Step> steps = [
+    Step(
+      title: const Text("Insert the url of the service."),
+      subtitle: Text("The base url ending with question mark."),
+      isActive: true,
+      state: StepState.indexed,
+      content: Column(
+        children: <Widget>[
+          TextFormField(
+            keyboardType: TextInputType.text,
+            autocorrect: false,
+            onSaved: (String value) {
+              if (value.contains("?")) {
+                var markIndex = value.indexOf("?");
+                value = value.substring(0, markIndex + 1);
+              }
+              wmsData.url = value;
+            },
+            validator: (value) {
+              if (value.isEmpty ||
+                  value.length < 1 ||
+                  !value.toLowerCase().startsWith("http")) {
+                return 'Please enter a valid WMS URL';
+              }
+              return null;
+            },
+            decoration: InputDecoration(
+              labelText: "enter URL",
+              icon: const Icon(MdiIcons.link),
+            ),
+          ),
+        ],
+      ),
+    ),
     Step(
       title: const Text("Set WMS layer name"),
       isActive: true,
@@ -651,34 +695,18 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
       ),
     ),
     Step(
-      title: const Text("Insert the url of the service."),
-      subtitle: Text("The base url ending with question mark."),
+      title: const Text("Set WMS image format"),
       isActive: true,
       state: StepState.indexed,
-      content: Column(
-        children: <Widget>[
-          TextFormField(
-            keyboardType: TextInputType.text,
-            autocorrect: false,
-            onSaved: (String value) {
-              print(value);
-              wmsData.url = value;
-            },
-            validator: (value) {
-              if (value.isEmpty ||
-                  value.length < 1 ||
-                  !value.toLowerCase().startsWith("http")) {
-                return 'Please enter a valid WMS URL';
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              labelText: "enter URL",
-              icon: const Icon(MdiIcons.link),
-            ),
-          ),
-        ],
-      ),
+      content: Column(children: <Widget>[
+        StringCombo([
+          LAYERSTYPE_FORMAT_JPG,
+          LAYERSTYPE_FORMAT_PNG,
+          LAYERSTYPE_FORMAT_TIFF
+        ], LAYERSTYPE_FORMAT_JPG, (newSelection) {
+          wmsData.format = newSelection;
+        }),
+      ]),
     ),
     Step(
       title: const Text("Add an attribution."),
@@ -761,6 +789,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
                   new Text("Layer: " + wmsData.layer),
                   new Text("URL: " + wmsData.url),
                   new Text("Attribution: " + wmsData.attribution ?? "- nv -"),
+                  new Text("Format: ${wmsData.format ?? ""}"),
                   new Text("Min zoom: ${wmsData.minZoom ?? ""}"),
                   new Text("Max zoom: ${wmsData.maxZoom ?? ""}"),
                 ],
@@ -792,6 +821,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
             "$LAYERSKEY_OPACITY": 100,
             "$LAYERSKEY_ATTRIBUTION": "${wmsData.attribution ?? ""}",
             "$LAYERSKEY_TYPE": "$LAYERSTYPE_WMS",
+            "$LAYERSKEY_FORMAT": "${wmsData.format}",
             "$LAYERSKEY_ISVISIBLE": true
         }
         ''';

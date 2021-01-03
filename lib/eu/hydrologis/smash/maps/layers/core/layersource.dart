@@ -49,6 +49,7 @@ const LAYERSTYPE_WMS = 'wms';
 const LAYERSTYPE_TMS = 'tms';
 const LAYERSTYPE_FORMAT_JPG = "image/jpeg";
 const LAYERSTYPE_FORMAT_PNG = "image/png";
+const LAYERSTYPE_FORMAT_TIFF = "image/tiff";
 
 /// A generic persistable layer source.
 abstract class LayerSource {
