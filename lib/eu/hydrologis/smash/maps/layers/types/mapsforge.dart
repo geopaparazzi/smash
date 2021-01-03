@@ -37,20 +37,6 @@ const MAPSFORGE_TILESIZE = 256.0;
 
 const DOCACHE = true;
 
-/// Load a mapsforge layer from file.
-Future<TileLayerOptions> loadMapsforgeLayer(File file) async {
-  var mapsforgeTileProvider =
-      MapsforgeTileProvider(file, tileSize: MAPSFORGE_TILESIZE);
-  await mapsforgeTileProvider.open();
-  return TileLayerOptions(
-    tileProvider: mapsforgeTileProvider,
-    tileSize: MAPSFORGE_TILESIZE,
-    keepBuffer: 2,
-    backgroundColor: SmashColors.mainBackground,
-    maxZoom: 24,
-  );
-}
-
 /// Fills the base cache for a given mapsforge [file].
 Future<void> fillBaseCache(File file) async {
   SMLogger().d("Filling mbtiles cache in ${file.path}");

@@ -43,6 +43,12 @@ class TileSource extends TiledRasterLayerSource {
 
   bool canDoProperties = true;
 
+  Function errorTileCallback = (tile, exception) {
+    // ignore tiles that can't load to avoid
+    SMLogger().e("Unable to load tile: ${tile.coordsKey}", exception, null);
+  };
+  bool overrideTilesOnUrlChange = true;
+
   TileSource({
     this.name,
     this.absolutePath,
@@ -345,6 +351,8 @@ class TileSource extends TiledRasterLayerSource {
           backgroundColor: Colors.transparent,
           opacity: opacityPercentage / 100.0,
           retinaMode: false, // not supported
+          overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+          errorTileCallback: errorTileCallback,
         )
       ];
     } else if (FileManager.isMbtiles(getAbsolutePath())) {
@@ -359,6 +367,8 @@ class TileSource extends TiledRasterLayerSource {
           backgroundColor: Colors.transparent,
           opacity: opacityPercentage / 100.0,
           retinaMode: false, // not supported
+          overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+          errorTileCallback: errorTileCallback,
         )
       ];
     } else if (FileManager.isGeopackage(getAbsolutePath())) {
@@ -402,6 +412,8 @@ class TileSource extends TiledRasterLayerSource {
             backgroundColor: Colors.transparent,
             opacity: opacityPercentage / 100.0,
             retinaMode: false, // not supported
+            overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+            errorTileCallback: errorTileCallback,
           )
         ];
       }
@@ -419,6 +431,8 @@ class TileSource extends TiledRasterLayerSource {
           maxZoom: maxZoom.toDouble(),
           retinaMode: retinaModeOn,
           tileProvider: tileProvider,
+          overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+          errorTileCallback: errorTileCallback,
         );
         return [tileLayerOptions];
       } else {
@@ -432,6 +446,8 @@ class TileSource extends TiledRasterLayerSource {
             subdomains: subdomains,
             retinaMode: retinaModeOn,
             tileProvider: tileProvider,
+            overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+            errorTileCallback: errorTileCallback,
           )
         ];
       }

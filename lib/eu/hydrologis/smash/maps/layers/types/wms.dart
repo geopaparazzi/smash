@@ -9,6 +9,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
@@ -22,6 +23,12 @@ class WmsSource extends RasterLayerSource {
   bool _hasBounds = false;
   String attribution = "";
   int _srid = SmashPrj.EPSG3857_INT;
+
+  Function errorTileCallback = (tile, exception) {
+    // ignore tiles that can't load to avoid
+    SMLogger().e("Unable to load WMS tile: ${tile.coordsKey}", exception, null);
+  };
+  bool overrideTilesOnUrlChange = true;
 
   WmsSource.fromMap(Map<String, dynamic> map) {
     _getCapabilitiesUrl = map[LAYERSKEY_URL];
@@ -135,6 +142,8 @@ class WmsSource extends RasterLayerSource {
           baseUrl: _getCapabilitiesUrl,
           layers: [_layerName],
         ),
+        overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+        errorTileCallback: errorTileCallback,
       )
     ];
 

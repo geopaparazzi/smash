@@ -265,7 +265,7 @@ packages:
       name: flutter_colorpicker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.4"
+    version: "0.3.5"
   flutter_geopackage:
     dependency: "direct main"
     description:
@@ -306,7 +306,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: c3ef9fb937a148db3e0f4f9bb24001d75f179b54
+      resolved-ref: "44803f9f3c4de1d94bef95a9637c5c180247dc8f"
       url: "https://github.com/ibrierley/flutter_map_dragmarker.git"
     source: git
     version: "1.0.0+1"

@@ -19,6 +19,7 @@ import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -301,6 +302,12 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
   double minLineElev = double.infinity;
   double maxLineElev = double.negativeInfinity;
 
+  Function errorTileCallback = (tile, exception) {
+    // ignore tiles that can't load to avoid
+    SMLogger().e("Unable to load tile: ${tile.coordsKey}", exception, null);
+  };
+  bool overrideTilesOnUrlChange = true;
+
   void afterFirstLayout(BuildContext context) {
     ProjectState project = Provider.of<ProjectState>(context, listen: false);
     var logDataPoints = project.projectDb.getLogDataPoints(widget.logItem.id);
@@ -451,6 +458,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                     urlTemplate:
                         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                     subdomains: ['a', 'b', 'c'],
+                    overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+                    errorTileCallback: errorTileCallback,
                   ),
                   polylines,
                   MarkerLayerOptions(markers: markers),
