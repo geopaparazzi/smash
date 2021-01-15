@@ -525,8 +525,9 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
     } else {
       formState.save();
       bool okToGo = await showDialog(
-          context: context,
-          child: new AlertDialog(
+        context: context,
+        builder: (_) {
+          return new AlertDialog(
             title: new Text("Details"),
             content: new SingleChildScrollView(
               child: new ListBody(
@@ -554,7 +555,9 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
                 },
               ),
             ],
-          ));
+          );
+        },
+      );
 
       if (okToGo != null && okToGo) {
         var json = '''
@@ -781,35 +784,37 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
       formState.save();
       bool okToGo = await showDialog(
           context: context,
-          child: new AlertDialog(
-            title: new Text("Details"),
-            content: new SingleChildScrollView(
-              child: new ListBody(
-                children: <Widget>[
-                  new Text("Layer: " + wmsData.layer),
-                  new Text("URL: " + wmsData.url),
-                  new Text("Attribution: " + wmsData.attribution ?? "- nv -"),
-                  new Text("Format: ${wmsData.format ?? ""}"),
-                  new Text("Min zoom: ${wmsData.minZoom ?? ""}"),
-                  new Text("Max zoom: ${wmsData.maxZoom ?? ""}"),
-                ],
+          builder: (_) {
+            return new AlertDialog(
+              title: new Text("Details"),
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
+                    new Text("Layer: " + wmsData.layer),
+                    new Text("URL: " + wmsData.url),
+                    new Text("Attribution: " + wmsData.attribution ?? "- nv -"),
+                    new Text("Format: ${wmsData.format ?? ""}"),
+                    new Text("Min zoom: ${wmsData.minZoom ?? ""}"),
+                    new Text("Max zoom: ${wmsData.maxZoom ?? ""}"),
+                  ],
+                ),
               ),
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('CANCEL'),
-                onPressed: () {
-                  Navigator.pop(context, false);
-                },
-              ),
-              new FlatButton(
-                child: new Text('OK'),
-                onPressed: () {
-                  Navigator.pop(context, true);
-                },
-              ),
-            ],
-          ));
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text('CANCEL'),
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                ),
+                new FlatButton(
+                  child: new Text('OK'),
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                ),
+              ],
+            );
+          });
 
       if (okToGo != null && okToGo) {
         var json = '''
