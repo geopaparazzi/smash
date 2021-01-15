@@ -312,13 +312,16 @@ class GeometryEditManager {
       // create the touch point and buffer in the current layer prj
       var touchBufferLayerPrj =
           GeometryUtilities.fromEnvelope(env, makeCircle: false);
+      touchBufferLayerPrj.setSRID(srid);
       var touchPointLayerPrj = GeometryFactory.defaultPrecision()
           .createPoint(Coordinate(point.longitude, point.latitude));
-      SmashPrj.transformGeometry(
-          SmashPrj.EPSG4326, dataPrj, touchBufferLayerPrj);
-      SmashPrj.transformGeometry(
-          SmashPrj.EPSG4326, dataPrj, touchPointLayerPrj);
-
+      touchPointLayerPrj.setSRID(srid);
+      if (srid != SmashPrj.EPSG4326_INT) {
+        SmashPrj.transformGeometry(
+            SmashPrj.EPSG4326, dataPrj, touchBufferLayerPrj);
+        SmashPrj.transformGeometry(
+            SmashPrj.EPSG4326, dataPrj, touchPointLayerPrj);
+      }
       var tableName = vLayer.getName();
       var sqlName = SqlName(tableName);
       var gc = await db.getGeometryColumnsForTable(sqlName);
@@ -334,8 +337,12 @@ class GeometryEditManager {
         checkEnv = touchBufferLayerPrj.getEnvelopeInternal();
         checkGeom = touchBufferLayerPrj;
       }
-      var geomsIntersected = await db.getGeometriesIn(sqlName,
-          envelope: checkEnv, userDataField: primaryKey);
+      var geomsIntersected = await db.getGeometriesIn(
+        sqlName,
+        intersectionGeometry: checkGeom,
+        // envelope: checkEnv,
+        userDataField: primaryKey,
+      );
 
       if (geomsIntersected.isNotEmpty) {
         // find touching
