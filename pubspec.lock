@@ -40,7 +40,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
+      ref: c737ab47cb038f0a79d19cd5865b8042965b0436
       resolved-ref: c737ab47cb038f0a79d19cd5865b8042965b0436
       url: "https://github.com/rekab-app/background_locator.git"
     source: git
