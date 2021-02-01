@@ -29,14 +29,12 @@ const DOCATCHER = false;
 
 void main() {
   if (DOCATCHER) {
-    CatcherOptions debugOptions =
-        CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
+    CatcherOptions debugOptions = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
     CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
       EmailManualHandler(["feedback@geopaparazzi.eu"])
     ]);
 
-    Catcher(getMainWidget(),
-        debugConfig: debugOptions, releaseConfig: releaseOptions);
+    Catcher(getMainWidget(), debugConfig: debugOptions, releaseConfig: releaseOptions);
   } else {
     runApp(getMainWidget());
   }
@@ -120,39 +118,18 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
         ),
         body: ListView(
           children: <Widget>[
-            ProgressTile(
-                MdiIcons.crosshairsGps,
-                "Checking location permission...",
-                "Location permission granted.",
-                orderNotifier,
-                0,
+            ProgressTile(MdiIcons.crosshairsGps, "Checking location permission...", "Location permission granted.", orderNotifier, 0,
                 handleLocationPermission),
             ProgressTile(
-                MdiIcons.database,
-                "Checking storage permission...",
-                "Storage permission granted.",
-                orderNotifier,
-                1,
-                handleStoragePermission),
-            ProgressTile(MdiIcons.cog, "Loading preferences...",
-                "Preferences loaded.", orderNotifier, 2, handlePreferences),
-            ProgressTile(MdiIcons.folderCog, "Loading workspace...",
-                "Workspace loaded.", orderNotifier, 3, handleWorkspace),
+                MdiIcons.database, "Checking storage permission...", "Storage permission granted.", orderNotifier, 1, handleStoragePermission),
+            ProgressTile(MdiIcons.cog, "Loading preferences...", "Preferences loaded.", orderNotifier, 2, handlePreferences),
+            ProgressTile(MdiIcons.folderCog, "Loading workspace...", "Workspace loaded.", orderNotifier, 3, handleWorkspace),
             // ProgressTile(MdiIcons.crosshairsGps, "Initializing GPS...",
             //     "GPS initialized.", orderNotifier, 4, handleGps),
-            ProgressTile(MdiIcons.notePlus, "Loading tags list...",
-                "Tags list loaded.", orderNotifier, 4, handleTags),
-            ProgressTile(
-                MdiIcons.earthBox,
-                "Loading known projections...",
-                "Known projections loaded.",
-                orderNotifier,
-                5,
-                handleProjections),
-            ProgressTile(MdiIcons.gate, "Loading fences...", "Fences loaded.",
-                orderNotifier, 6, handleFences),
-            ProgressTile(MdiIcons.layers, "Loading layers list...",
-                "Layers list loaded.", orderNotifier, 7, handleLayers),
+            ProgressTile(MdiIcons.notePlus, "Loading tags list...", "Tags list loaded.", orderNotifier, 4, handleTags),
+            ProgressTile(MdiIcons.earthBox, "Loading known projections...", "Known projections loaded.", orderNotifier, 5, handleProjections),
+            ProgressTile(MdiIcons.gate, "Loading fences...", "Fences loaded.", orderNotifier, 6, handleFences),
+            ProgressTile(MdiIcons.layers, "Loading layers list...", "Layers list loaded.", orderNotifier, 7, handleLayers),
           ],
         ),
       );
@@ -249,15 +226,14 @@ Future<String> handleWorkspace(BuildContext context) async {
 Future<String> handleLocationPermission(BuildContext context) async {
   try {
     if (!SmashPlatform.isDesktop()) {
-      var status = await Permission.locationAlways.status;
+      var status = await Permission.location.status;
       if (status != PermissionStatus.granted) {
         await SmashDialogs.showWarningDialog(context,
             """This app collects location data to your device to enable gps logs recording even when the app is placed in background. No data is shared, it is only saved locally to the device.
 
 If you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.
           """);
-        var locationPermission =
-            await PermissionManager().add(PERMISSIONS.LOCATION).check();
+        var locationPermission = await PermissionManager().add(PERMISSIONS.LOCATION).check();
         if (!locationPermission) {
           return "Location permission is mandatory to open SMASH.";
         }
@@ -272,8 +248,7 @@ If you do not give permission to the background location service in the next dia
 
 Future<String> handleStoragePermission(BuildContext context) async {
   if (!SmashPlatform.isDesktop()) {
-    var storagePermission =
-        await PermissionManager().add(PERMISSIONS.STORAGE).check();
+    var storagePermission = await PermissionManager().add(PERMISSIONS.STORAGE).check();
     if (!storagePermission) {
       return "Storage permission is mandatory to open SMASH.";
     }
@@ -300,8 +275,7 @@ class ProgressTile extends StatefulWidget {
   final initMsg;
   final Future<String> Function(BuildContext) processFunction;
 
-  ProgressTile(this.iconData, this.initMsg, this.doneMsg, this.orderNotifier,
-      this.order, this.processFunction);
+  ProgressTile(this.iconData, this.initMsg, this.doneMsg, this.orderNotifier, this.order, this.processFunction);
 
   @override
   _ProgressTileState createState() => _ProgressTileState();
@@ -364,8 +338,7 @@ class _ProgressTileState extends State<ProgressTile> {
           : FlatButton(
               child: Text(
                 "An error occurred. Tap to view.",
-                style:
-                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
               onPressed: () async {
                 await SmashDialogs.showErrorDialog(context, error);
