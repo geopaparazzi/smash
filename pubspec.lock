@@ -237,7 +237,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.5+1"
+    version: "2.1.6"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -270,7 +270,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3+3"
+    version: "0.4.4"
   flutter_image:
     dependency: transitive
     description:
@@ -449,14 +449,14 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7+21"
+    version: "0.6.7+22"
   image_picker_platform_interface:
     dependency: transitive
     description:
       name: image_picker_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.6"
   intl:
     dependency: transitive
     description:
@@ -519,9 +519,9 @@ packages:
     dependency: "direct main"
     description:
       path: mapsforge_flutter
-      ref: external_rendertheme_from_path
-      resolved-ref: b7bbbcc62968882deaa7b9bddc8bd69d8e98d52a
-      url: "https://github.com/moovida/mapsforge_flutter.git"
+      ref: HEAD
+      resolved-ref: d5005f210da9475a5aa1d38b1d21654870826a5e
+      url: "https://github.com/mikes222/mapsforge_flutter.git"
     source: git
     version: "1.1.0"
   matcher:
@@ -579,7 +579,7 @@ packages:
       name: package_info
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.3+2"
+    version: "0.4.3+4"
   path:
     dependency: transitive
     description:
@@ -859,7 +859,7 @@ packages:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.3+1"
   sqlite3:
     dependency: transitive
     description:
@@ -971,7 +971,7 @@ packages:
       name: url_launcher_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.5+1"
+    version: "0.1.5+3"
   url_launcher_windows:
     dependency: transitive
     description:
@@ -1013,7 +1013,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.4"
+    version: "1.7.4+1"
   wkt_parser:
     dependency: transitive
     description:
