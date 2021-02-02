@@ -116,32 +116,24 @@ class MainViewCoachMarks {
     ));
 
     title = "$i/$all Tools Button";
-    singleTap =
-        "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.";
+    singleTap = "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.";
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: toolsButtonKey,
-      contents: [
-        getContentTarget(title, singleTap, longTap, doubleTap,
-            alignContent: AlignContent.bottom)
-      ],
+      contents: [getContentTarget(title, singleTap, longTap, doubleTap, alignContent: AlignContent.bottom)],
       shape: ShapeLightFocus.Circle,
     ));
 
     title = "$i/$all Interactive coach marks button";
-    singleTap =
-        "Open the interactice coach marks that explain all the actions of the main map view.";
+    singleTap = "Open the interactice coach marks that explain all the actions of the main map view.";
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: coachMarkButtonKey,
-      contents: [
-        getContentTarget(title, singleTap, longTap, doubleTap,
-            alignContent: AlignContent.bottom)
-      ],
+      contents: [getContentTarget(title, singleTap, longTap, doubleTap, alignContent: AlignContent.bottom)],
       shape: ShapeLightFocus.Circle,
     ));
 
@@ -153,17 +145,12 @@ class MainViewCoachMarks {
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: drawerButtonKey,
-      contents: [
-        getContentTarget(title, singleTap, longTap, doubleTap,
-            alignContent: AlignContent.bottom)
-      ],
+      contents: [getContentTarget(title, singleTap, longTap, doubleTap, alignContent: AlignContent.bottom)],
       shape: ShapeLightFocus.Circle,
     ));
   }
 
-  ContentTarget getContentTarget(
-      String title, String singleTap, String longTap, String doubleTap,
-      {AlignContent alignContent = AlignContent.top}) {
+  ContentTarget getContentTarget(String title, String singleTap, String longTap, String doubleTap, {AlignContent alignContent = AlignContent.top}) {
     var size = SmashUI.MEDIUM_SIZE;
     var widgets = <Widget>[];
 
@@ -172,16 +159,11 @@ class MainViewCoachMarks {
     if (singleTap != null) {
       if (singleTap.contains(":")) {
         widgets.add(
-          Padding(
-              padding: const EdgeInsets.only(top: 10.0, left: 4),
-              child: getRichText(size, singleTap)),
+          Padding(padding: const EdgeInsets.only(top: 10.0, left: 4), child: getRichText(size, singleTap)),
         );
       } else {
         widgets.add(
-          Padding(
-              padding: const EdgeInsets.only(top: 10.0, left: 4),
-              child: SmashUI.normalText(singleTap,
-                  color: SmashColors.mainBackground)),
+          Padding(padding: const EdgeInsets.only(top: 10.0, left: 4), child: SmashUI.normalText(singleTap, color: SmashColors.mainBackground)),
         );
       }
     }
@@ -241,7 +223,7 @@ class MainViewCoachMarks {
         targets: targets,
         colorShadow: SmashColors.mainDecorations,
         alignSkip: Alignment.topCenter,
-        textSkip: "",
+        textSkip: "SKIP",
         paddingFocus: 10,
         opacityShadow: 0.7, onFinish: () {
       // print("finish");
