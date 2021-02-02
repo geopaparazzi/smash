@@ -183,7 +183,7 @@ dependencies:
   gpx: ^1.1.0
 
   # Apache 2.0
-  pdf: ^1.6.0
+  pdf: ^2.0.0
 
 dev_dependencies:
   # MIT
@@ -209,6 +209,10 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/OpenSans-Regular.ttf
+    - assets/OpenSans-Bold.ttf
+    - assets/OpenSans-Italic.ttf
+    - assets/OpenSans-BoldItalic.ttf
     - assets/tags.json
     - assets/emptytile256.png
     - assets/maptools_icon.png

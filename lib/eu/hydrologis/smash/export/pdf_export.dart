@@ -12,7 +12,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:image/image.dart' as IMG;
 import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
@@ -23,41 +23,35 @@ class PdfExporter {
   static final String novalue = "-nv-";
   static final int EXPORT_IMG_LONGSIZE = 280;
 
-  static Future<void> exportDb(
-      GeopaparazziProjectDb db, File outputFile) async {
+  static Future<void> exportDb(GeopaparazziProjectDb db, File outputFile) async {
     var dbName = HU.FileUtilities.nameFromFile(db.path, false);
-    final Document pdf = Document(
+
+    var myTheme = pw.ThemeData.withFont(
+      base: pw.Font.ttf(await rootBundle.load("assets/fonts/OpenSans-Regular.ttf")),
+      bold: pw.Font.ttf(await rootBundle.load("assets/fonts/OpenSans-Bold.ttf")),
+      italic: pw.Font.ttf(await rootBundle.load("assets/fonts/OpenSans-Italic.ttf")),
+      boldItalic: pw.Font.ttf(await rootBundle.load("assets/fonts/OpenSans-BoldItalic.ttf")),
+    );
+
+    final pw.Document pdf = pw.Document(
       author: "Smash User",
       keywords: "SMASH, export, notes, gps, log",
       creator: "SMASH - http://www.geopaparazzi.eu using flutter pdf package",
       title: "SMASH PDF Report of project: $dbName",
       subject: "SMASH PDF Export",
+      theme: myTheme,
     );
 
     ByteData smashLogoBytes = await rootBundle.load("assets/smash_logo_64.png");
-    IMG.Image image = IMG.decodeImage(smashLogoBytes.buffer.asUint8List());
-    final smashLogo = PdfImage(
-      pdf.document,
-      image: image.data.buffer.asUint8List(),
-      width: 99,
-      height: 64,
+    final smashLogo = pw.MemoryImage(
+      smashLogoBytes.buffer.asUint8List(),
     );
 
     List<Note> simpleNotesList = db.getNotes(doSimple: true);
 
     List<List<String>> simpleNotesTable = [];
     if (simpleNotesList.isNotEmpty) {
-      simpleNotesTable.add([
-        'id',
-        'lon',
-        'lat',
-        'altim',
-        'text',
-        'date',
-        'accur',
-        'head',
-        'speed'
-      ]);
+      simpleNotesTable.add(['id', 'lon', 'lat', 'altim', 'text', 'date', 'accur', 'head', 'speed']);
       simpleNotesList.forEach((note) {
         List<String> row = [];
         row.add(note.id.toString());
@@ -65,8 +59,7 @@ class PdfExporter {
         row.add(note.lat.toStringAsFixed(6));
         row.add("${note.altim.toInt()}m");
         row.add(note.text);
-        row.add(HU.TimeUtilities.ISO8601_TS_FORMATTER
-            .format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp)));
+        row.add(HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp)));
         var noteExt = note.noteExt;
 
         if (noteExt != null) {
@@ -95,14 +88,14 @@ class PdfExporter {
     }
 
     List<Note> formNotesList = db.getNotes(doSimple: false);
-    List<Widget> formWidgetList = [];
+    List<pw.Widget> formWidgetList = [];
     if (formNotesList.isNotEmpty) {
       formWidgetList.add(
-        Header(level: 1, text: 'Forms'),
+        pw.Header(level: 1, text: 'Forms'),
       );
       for (var i = 0; i < formNotesList.length; i++) {
         Note note = formNotesList[i];
-        formWidgetList.add(Header(level: 2, text: note.text));
+        formWidgetList.add(pw.Header(level: 2, text: note.text));
 
         String formJson = note.form;
         Map<String, dynamic> sectionMap = jsonDecode(formJson);
@@ -110,7 +103,7 @@ class PdfExporter {
         List<String> formNames = TagsManager.getFormNames4Section(sectionMap);
         for (var j = 0; j < formNames.length; j++) {
           var formName = formNames[j];
-          formWidgetList.add(Header(level: 3, text: formName));
+          formWidgetList.add(pw.Header(level: 3, text: formName));
 
           var form4name = TagsManager.getForm4Name(formName, sectionMap);
           List<dynamic> formItems = TagsManager.getFormItems(form4name);
@@ -138,39 +131,32 @@ class PdfExporter {
                 for (var i = 0; i < idSplit.length; i++) {
                   var imageId = int.parse(idSplit[i]);
                   DbImage image = db.getImageById(imageId);
-                  var p =
-                      Paragraph(text: image.text, textAlign: TextAlign.center);
+                  var p = pw.Paragraph(text: image.text, textAlign: pw.TextAlign.center);
                   formWidgetList.add(p);
 
-                  Uint8List imageDataBytes =
-                      db.getImageDataBytes(image.imageDataId);
-                  List<int> resizeImage = HU.ImageUtilities.resizeImage(
-                      imageDataBytes,
-                      longestSizeTo: EXPORT_IMG_LONGSIZE);
-                  IMG.Image img = IMG.decodeImage(resizeImage);
+                  Uint8List imageDataBytes = db.getImageDataBytes(image.imageDataId);
+                  List<int> resizeImage = HU.ImageUtilities.resizeImage(imageDataBytes, longestSizeTo: EXPORT_IMG_LONGSIZE);
 
-                  final pdfImage = PdfImage(
-                    pdf.document,
-                    image: img.data.buffer.asUint8List(),
-                    width: img.width,
-                    height: img.height,
-                  );
-                  var c = Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Center(child: Image(pdfImage, fit: BoxFit.none)),
-                      ]);
+                  final pdfImage = pw.MemoryImage(resizeImage);
+
+                  var c = pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: <pw.Widget>[
+                    pw.Center(
+                        child: pw.Image(
+                      pdfImage,
+                      fit: pw.BoxFit.none,
+                    )),
+                  ]);
                   formWidgetList.add(c);
                 }
               } on Exception catch (e, s) {
                 SMLogger().e("Error exporting image to pdf document", e, s);
               }
             } else if (type == TYPE_DYNAMICSTRING) {
-              var p = Paragraph(text: '$label: ');
+              var p = pw.Paragraph(text: '$label: ');
               formWidgetList.add(p);
               List<String> valueSplit = value.toString().split(";");
               valueSplit.forEach((v) {
-                var b = Bullet(text: v);
+                var b = pw.Bullet(text: v);
                 formWidgetList.add(b);
               });
             } else if (type == TYPE_LABEL || type == TYPE_LABELWITHLINE) {
@@ -185,108 +171,90 @@ class PdfExporter {
 //              textDecoration = TextDecoration.underline;
 //            }
 
-              var p =
-                  Paragraph(text: '$value', style: TextStyle(fontSize: size));
+              var p = pw.Paragraph(text: '$value', style: pw.TextStyle(fontSize: size));
               formWidgetList.add(p);
             } else {
-              var p = Paragraph(text: '$label: $value');
+              var p = pw.Paragraph(text: '$label: $value');
               formWidgetList.add(p);
             }
           }
         }
 
         formWidgetList.add(
-          Header(level: 1, text: 'Image notes'),
+          pw.Header(level: 1, text: 'Image notes'),
         );
 
         List<DbImage> images = db.getImages();
         for (var i = 0; i < images.length; i++) {
           DbImage image = images[i];
 
-          var p = Paragraph(text: image.text);
+          var p = pw.Paragraph(text: image.text);
           formWidgetList.add(p);
           formWidgetList.addAll([
-            Bullet(text: "latitude: ${image.lat}"),
-            Bullet(text: "longitude: ${image.lon}"),
-            Bullet(text: "altimetry: ${image.altim}m"),
-            Bullet(text: "azimuth: ${image.azim}"),
-            Bullet(
-                text:
-                    "timestamp: ${HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}"),
+            pw.Bullet(text: "latitude: ${image.lat}"),
+            pw.Bullet(text: "longitude: ${image.lon}"),
+            pw.Bullet(text: "altimetry: ${image.altim}m"),
+            pw.Bullet(text: "azimuth: ${image.azim}"),
+            pw.Bullet(text: "timestamp: ${HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}"),
           ]);
           Uint8List imageDataBytes = db.getImageDataBytes(image.imageDataId);
-          List<int> resizeImage = HU.ImageUtilities.resizeImage(imageDataBytes,
-              longestSizeTo: EXPORT_IMG_LONGSIZE);
-          IMG.Image img = IMG.decodeImage(resizeImage);
+          List<int> resizeImage = HU.ImageUtilities.resizeImage(imageDataBytes, longestSizeTo: EXPORT_IMG_LONGSIZE);
 
-          final pdfImage = PdfImage(
-            pdf.document,
-            image: img.data.buffer.asUint8List(),
-            width: img.width,
-            height: img.height,
-          );
-          var c = Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Center(child: Image(pdfImage, fit: BoxFit.none)),
-              ]);
+          final pdfImage = pw.MemoryImage(resizeImage);
+          var c = pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: <pw.Widget>[
+            pw.Center(
+                child: pw.Image(
+              pdfImage,
+              fit: pw.BoxFit.none,
+            )),
+          ]);
           formWidgetList.add(c);
         }
       }
     }
 
-    pdf.addPage(MultiPage(
-        pageFormat:
-            PdfPageFormat.a4.copyWith(marginBottom: 1.5 * PdfPageFormat.cm),
-        crossAxisAlignment: CrossAxisAlignment.start,
-        header: (Context context) {
+    pdf.addPage(pw.MultiPage(
+        pageFormat: PdfPageFormat.a4.copyWith(marginBottom: 1.5 * PdfPageFormat.cm),
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        header: (pw.Context context) {
           if (context.pageNumber == 1) {
             return null;
           }
-          return Container(
-              alignment: Alignment.centerRight,
-              margin: const EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
-              padding: const EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      style: BorderStyle.solid,
-                      width: 0.5,
-                      color: PdfColors.grey)),
-              child: Text('Report of project $dbName',
-                  style: Theme.of(context)
-                      .defaultTextStyle
-                      .copyWith(color: PdfColors.grey)));
+          return pw.Container(
+              alignment: pw.Alignment.centerRight,
+              margin: const pw.EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
+              padding: const pw.EdgeInsets.only(bottom: 3.0 * PdfPageFormat.mm),
+              decoration: pw.BoxDecoration(border: pw.Border.all(style: pw.BorderStyle.solid, width: 0.5, color: PdfColors.grey)),
+              child: pw.Text('Report of project $dbName', style: pw.Theme.of(context).defaultTextStyle.copyWith(color: PdfColors.grey)));
         },
-        footer: (Context context) {
-          return Container(
-              alignment: Alignment.centerRight,
-              margin: const EdgeInsets.only(top: 1.0 * PdfPageFormat.cm),
-              child: Text('Page ${context.pageNumber} of ${context.pagesCount}',
-                  style: Theme.of(context)
-                      .defaultTextStyle
-                      .copyWith(color: PdfColors.grey)));
+        footer: (pw.Context context) {
+          return pw.Container(
+              alignment: pw.Alignment.centerRight,
+              margin: const pw.EdgeInsets.only(top: 1.0 * PdfPageFormat.cm),
+              child: pw.Text('Page ${context.pageNumber} of ${context.pagesCount}',
+                  style: pw.Theme.of(context).defaultTextStyle.copyWith(color: PdfColors.grey)));
         },
-        build: (Context context) {
-          List<Widget> finalWidgets = []..add(
-              Header(
+        build: (pw.Context context) {
+          List<pw.Widget> finalWidgets = []..add(
+              pw.Header(
                   level: 0,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Image(smashLogo, fit: BoxFit.scaleDown),
-                        FittedBox(
-                          child: Text('Project: $dbName',
-                              textScaleFactor: 2, softWrap: true),
-                        )
-                      ])),
+                  child: pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: <pw.Widget>[
+                    pw.Image(smashLogo, height: 32.0, width: 50.0, fit: pw.BoxFit.scaleDown),
+                    pw.FittedBox(
+                      child: pw.Paragraph(text: 'Project: ${dbName.replaceAll("_", " ")}', padding: pw.EdgeInsets.all(5)
+                          // textScaleFactor: 2,
+                          // softWrap: true,
+                          ),
+                    )
+                  ])),
             );
 
           if (simpleNotesTable.isNotEmpty) {
             finalWidgets.add(
-              Header(level: 1, text: 'Simple Notes'),
+              pw.Header(level: 1, text: 'Simple Notes'),
             );
             finalWidgets.add(
-              Table.fromTextArray(
+              pw.Table.fromTextArray(
                 context: context,
                 data: simpleNotesTable,
               ),
@@ -299,6 +267,6 @@ class PdfExporter {
           return finalWidgets;
         }));
 
-    await outputFile.writeAsBytes(pdf.save());
+    await outputFile.writeAsBytes(await pdf.save());
   }
 }
