@@ -40,11 +40,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: c737ab47cb038f0a79d19cd5865b8042965b0436
+      ref: "67de74edbc94d18b1e881d534e9358af695f12b7"
+      resolved-ref: "67de74edbc94d18b1e881d534e9358af695f12b7"
       url: "https://github.com/rekab-app/background_locator.git"
     source: git
-    version: "1.4.0+1"
+    version: "1.3.0+1"
   badges:
     dependency: "direct main"
     description:
@@ -270,7 +270,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.4"
+    version: "0.4.4+1"
   flutter_image:
     dependency: transitive
     description:
@@ -401,20 +401,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
-  geolocator:
-    dependency: "direct main"
-    description:
-      name: geolocator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.1.14"
-  geolocator_platform_interface:
-    dependency: transitive
-    description:
-      name: geolocator_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.9"
   gpx:
     dependency: "direct main"
     description:
@@ -521,7 +507,7 @@ packages:
       name: mailer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.1"
+    version: "3.3.0"
   map_elevation:
     dependency: "direct main"
     description:

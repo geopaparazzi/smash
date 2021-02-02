@@ -17,7 +17,6 @@ import 'package:background_locator/settings/locator_settings.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Distance;
 import 'package:geodesy/geodesy.dart';
-import 'package:geolocator/geolocator.dart' as GL;
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
@@ -198,8 +197,6 @@ class GpsHandler {
   GpsState _gpsState;
   bool initialized = false;
 
-  bool _isGpsOn = false;
-
   /// Accuracy for the location subscription
   var locationAccuracy = SmashLocationAccuracy.NAVIGATION;
 
@@ -244,30 +241,23 @@ class GpsHandler {
       TestLogStream().stop();
     }
 
-    _isGpsOn = await GL.Geolocator.isLocationServiceEnabled();
-    print("IS GPS ON CHECK: $_isGpsOn");
-    if (!_isGpsOn) {
-      _gpsState.status = GpsStatus.OFF;
+    if (_gpsState.status == GpsStatus.OFF) {
+      _gpsState.status = GpsStatus.ON_NO_FIX;
+    }
+    if (port == null) {
+      SMLogger().i("Initialize geolocator");
       await closeGpsIsolate();
-    } else {
-      if (_gpsState.status == GpsStatus.OFF) {
-        _gpsState.status = GpsStatus.ON_NO_FIX;
-      }
-      if (port == null) {
-        SMLogger().i("Initialize geolocator");
-        await closeGpsIsolate();
 
-        await startGpsIsolate(!initialized);
-        initialized = true;
+      await startGpsIsolate(!initialized);
+      initialized = true;
+    }
+    _locationServiceEnabled = await GPS.BackgroundLocator.isRegisterLocationUpdate();
+    if (port == null || !_locationServiceEnabled) {
+      if (_gpsState.status != GpsStatus.OFF) {
+        _gpsState.status = GpsStatus.OFF;
       }
-      _locationServiceEnabled = await GPS.BackgroundLocator.isRegisterLocationUpdate();
-      if (port == null || !_locationServiceEnabled) {
-        if (_gpsState.status != GpsStatus.OFF) {
-          _gpsState.status = GpsStatus.OFF;
-        }
-      } else {
-        GpsFilterManager().checkFix();
-      }
+    } else {
+      GpsFilterManager().checkFix();
     }
   }
 
@@ -286,19 +276,21 @@ class GpsHandler {
   }
 
   // Checks if the gps is on or off.
-  bool isGpsOn() => TestLogStream().isActive || _isGpsOn;
+  bool isGpsOn() {
+    if (TestLogStream().isActive) return true;
+    if (port == null) return false;
+    return _locationServiceEnabled;
+  }
 
   void _onPositionUpdate(SmashPosition position) {
-    if (_isGpsOn) {
-      allPointsCount++;
-      var notBlocked = GpsFilterManager().onNewPositionEvent(position);
-      if (notBlocked) {
-        filteredPointsCount++;
-      }
+    allPointsCount++;
+    var notBlocked = GpsFilterManager().onNewPositionEvent(position);
+    if (notBlocked) {
+      filteredPointsCount++;
+    }
 
-      if (FenceMaster().hasFences) {
-        FenceMaster().onPositionUpdate(LatLng(position.latitude, position.longitude));
-      }
+    if (FenceMaster().hasFences) {
+      FenceMaster().onPositionUpdate(LatLng(position.latitude, position.longitude));
     }
   }
 

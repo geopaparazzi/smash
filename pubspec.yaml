@@ -22,7 +22,7 @@ dependencies:
 
   # apache 2
   flutter_geopackage:
-    ^0.4.3
+    ^0.4.4
     # path: ../flutter_geopackage/
     #  git:
     #    url: https://github.com/moovida/flutter_geopackage.git
@@ -145,10 +145,7 @@ dependencies:
   background_locator: #1.3.0+1
     git:
       url: https://github.com/rekab-app/background_locator.git
-
-  # MIT
-  geolocator: ^6.1.14
-
+      ref: 67de74edbc94d18b1e881d534e9358af695f12b7
 
   # MIT
   # geolocator: ^5.3.0

@@ -9,7 +9,6 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
@@ -48,11 +47,6 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
 
       Widget button = GestureDetector(
         onLongPress: () {
-          if (gpsState.status == GpsStatus.OFF) {
-            Geolocator.openLocationSettings();
-            return;
-          }
-
           var color = SmashColors.mainDecorations;
           if (!gpsState.hasFix()) {
             color = SmashColors.gpsOnNoFix;
