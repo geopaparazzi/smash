@@ -233,7 +233,7 @@ Future<String> handleLocationPermission(BuildContext context) async {
 
 If you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.
           """);
-        var locationPermission = await PermissionManager().add(PERMISSIONS.LOCATION).check();
+        var locationPermission = await PermissionManager().add(PERMISSIONS.LOCATION).check(context);
         if (!locationPermission) {
           return "Location permission is mandatory to open SMASH.";
         }
@@ -248,7 +248,7 @@ If you do not give permission to the background location service in the next dia
 
 Future<String> handleStoragePermission(BuildContext context) async {
   if (!SmashPlatform.isDesktop()) {
-    var storagePermission = await PermissionManager().add(PERMISSIONS.STORAGE).check();
+    var storagePermission = await PermissionManager().add(PERMISSIONS.STORAGE).check(context);
     if (!storagePermission) {
       return "Storage permission is mandatory to open SMASH.";
     }

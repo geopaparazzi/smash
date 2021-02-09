@@ -34,13 +34,13 @@ dependencies:
     #  url: https://github.com/moovida/dart_hydrologis_db.git
 
   smashlibs:
-    # path: ../smashlibs/
-    git:
-      url: https://github.com/moovida/smashlibs.git
+    path: ../smashlibs/
+    # git:
+    #   url: https://github.com/moovida/smashlibs.git
+    #   ref: 37c4e4b
 
   dart_shp:
     ^0.3.1
-    # path: ../dart_shp/
 
   dart_hydrologis_utils:
     ^0.5.3
@@ -64,15 +64,16 @@ dependencies:
 
   flutter_map_dragmarker:
     git:
-      url: https://github.com/ibrierley/flutter_map_dragmarker.git  
+      url: https://github.com/moovida/flutter_map_dragmarker.git  
+      # url: https://github.com/ibrierley/flutter_map_dragmarker.git  
   
   flutter_map_line_editor:
-    # path: ../flutter_map_line_editor/
     git:
-      url: https://github.com/ibrierley/flutter_map_line_editor.git  
+      url: https://github.com/moovida/flutter_map_line_editor.git  
+      # url: https://github.com/ibrierley/flutter_map_line_editor.git  
 
   # MIT
-  sqlite3_flutter_libs: ^0.2.0
+  sqlite3_flutter_libs: ^0.3.0
 
   # BSD
   flutter_map:
@@ -104,24 +105,27 @@ dependencies:
       url: https://github.com/mikes222/mapsforge_flutter.git
       # url: https://github.com/moovida/mapsforge_flutter.git
       path: mapsforge_flutter
-      # ref: external_rendertheme_from_path
+      ref: d5005f210da9475a5aa1d38b1d21654870826a5e
   
   #MIT
-  extended_image: #^1.3.0
-    git:
-      url: https://github.com/moovida/extended_image
+  extended_image: ^1.5.0
+    # git:
+    #   url: https://github.com/moovida/extended_image
 
 
   # MIT
-  permission_handler: ^5.0.1+1
+  permission_handler: ^5.1.0
+      # git: 
+      #   url: https://github.com/Baseflow/flutter-permission-handler.git
+      #   path: permission_handler
 
   # BSD License
   synchronized: ^2.2.0+1
 
   # Apache 2
-  badges: #^1.1.3
-    git:
-      url: https://github.com/yako-dev/flutter_badges.git
+  badges: ^1.1.6
+    # git:
+    #   url: https://github.com/moovida/flutter_badges.git
 
   # MIT
   tutorial_coach_mark: ^0.5.2
