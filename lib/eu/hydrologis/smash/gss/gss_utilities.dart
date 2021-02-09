@@ -41,10 +41,10 @@ class GssUtilities {
   static final String NO = "No";
 
   static Future<String> getAuthHeader(String password) async {
-    String deviceId = GpPreferences().getStringSync(DEVICE_ID_OVERRIDE);
+    String deviceId = GpPreferences().getStringSync(SmashPreferencesKeys.DEVICE_ID_OVERRIDE);
     if (deviceId == null) {
       deviceId = GpPreferences()
-          .getStringSync(DEVICE_ID, await Device().getDeviceId());
+          .getStringSync(SmashPreferencesKeys.DEVICE_ID, await Device().getDeviceId());
     }
     if (deviceId == null) {
       return null;

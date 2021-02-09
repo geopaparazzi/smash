@@ -32,8 +32,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
     _noteColor = ColorExt(_note.noteExt.color);
     _marker = _note.noteExt.marker;
 
-    chosenIconsList.addAll(GpPreferences()
-        .getStringListSync(KEY_ICONS_LIST, DEFAULT_NOTES_ICONDATA));
+    chosenIconsList.addAll(GpPreferences().getStringListSync(SmashPreferencesKeys.KEY_ICONS_LIST, DEFAULT_NOTES_ICONDATA));
     if (!chosenIconsList.contains(_marker)) {
       chosenIconsList.insert(0, _marker);
     }
@@ -72,8 +71,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
           _note.noteExt.marker = _marker;
           _note.noteExt.size = _sizeSliderValue;
 
-          ProjectState projectState =
-              Provider.of<ProjectState>(context, listen: false);
+          ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
           projectState.projectDb.updateNote(_note);
           projectState.reloadProject(context);
           return true;
@@ -145,11 +143,8 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                               Flexible(
                                   flex: 1,
                                   child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: SmashUI.DEFAULT_PADDING,
-                                        right: SmashUI.DEFAULT_PADDING),
-                                    child: ColorPickerButton(_noteColor,
-                                        (newColor) {
+                                    padding: EdgeInsets.only(left: SmashUI.DEFAULT_PADDING, right: SmashUI.DEFAULT_PADDING),
+                                    child: ColorPickerButton(_noteColor, (newColor) {
                                       _noteColor = ColorExt.fromColor(newColor);
                                       _somethingChanged = true;
                                     }),
@@ -169,8 +164,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                                     divisions: 99,
                                     onChanged: (newRating) {
                                       _somethingChanged = true;
-                                      setState(
-                                          () => _sizeSliderValue = newRating);
+                                      setState(() => _sizeSliderValue = newRating);
                                     },
                                     value: _sizeSliderValue,
                                   )),
@@ -200,8 +194,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                           return GridView.count(
                             shrinkWrap: true,
                             physics: BouncingScrollPhysics(),
-                            crossAxisCount:
-                                orientation == Orientation.portrait ? 5 : 10,
+                            crossAxisCount: orientation == Orientation.portrait ? 5 : 10,
                             childAspectRatio: 1,
                             padding: EdgeInsets.all(5),
                             mainAxisSpacing: 2,
@@ -224,29 +217,25 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
       TableRow(
         children: [
           TableUtilities.cellForString("Timestamp"),
-          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
-              .format(DateTime.fromMillisecondsSinceEpoch(_note.timeStamp))),
+          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(_note.timeStamp))),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("Altitude"),
-          TableUtilities.cellForString(
-              _note.altim.toStringAsFixed(KEY_ELEV_DECIMALS)),
+          TableUtilities.cellForString(_note.altim.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS)),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("Longitude"),
-          TableUtilities.cellForString(
-              _note.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)),
+          TableUtilities.cellForString(_note.lon.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("Latitude"),
-          TableUtilities.cellForString(
-              _note.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)),
+          TableUtilities.cellForString(_note.lat.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
         ],
       ),
     ];

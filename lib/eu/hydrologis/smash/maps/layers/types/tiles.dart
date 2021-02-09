@@ -167,8 +167,7 @@ class TileSource extends TiledRasterLayerSource {
 
   TileSource.Esri_Satellite({
     this.name: "Esri Satellite",
-    this.url:
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    this.url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     this.attribution: "Esri",
     this.minZoom: DEFAULT_MINZOOM,
     this.maxZoom: DEFAULT_MAXZOOM,
@@ -180,8 +179,7 @@ class TileSource extends TiledRasterLayerSource {
   TileSource.Mapsforge(String filePath) {
     this.name = FileUtilities.nameFromFile(filePath, false);
     this.absolutePath = Workspace.makeAbsolute(filePath);
-    this.attribution =
-        "Map tiles by Mapsforge, Data by OpenStreetMap, under ODbL";
+    this.attribution = "Map tiles by Mapsforge, Data by OpenStreetMap, under ODbL";
     this.minZoom = DEFAULT_MINZOOM;
     this.maxZoom = 22;
     this.isVisible = true;
@@ -310,15 +308,12 @@ class TileSource extends TiledRasterLayerSource {
           if (tileEntry != null) {
             var env = tileEntry.bounds;
             if (tileEntry.srid != Proj.EPSG4326_INT) {
-              env = Proj.transformEnvelopeToWgs84(
-                  PROJ.Projection("EPSG:${tileEntry.srid}"), env);
+              env = Proj.transformEnvelopeToWgs84(PROJ.Projection("EPSG:${tileEntry.srid}"), env);
             }
 
-            bounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
-                LatLng(env.getMaxY(), env.getMaxX()));
+            bounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()), LatLng(env.getMaxY(), env.getMaxX()));
           } else {
-            throw ArgumentError(
-                "No tile entry found for table $name in db: $absolutePath");
+            throw ArgumentError("No tile entry found for table $name in db: $absolutePath");
           }
           // var prov = GeopackageImageProvider(File(absolutePath), name);
           // prov.open();
@@ -333,13 +328,11 @@ class TileSource extends TiledRasterLayerSource {
   }
 
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
-    bool retinaModeOn =
-        GpPreferences().getBooleanSync(KEY_RETINA_MODE_ON, false);
+    bool retinaModeOn = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, false);
     if (FileManager.isMapsforge(getAbsolutePath())) {
       // mapsforge
       double tileSize = 256;
-      var mapsforgeTileProvider =
-          MapsforgeTileProvider(File(absolutePath), tileSize: tileSize);
+      var mapsforgeTileProvider = MapsforgeTileProvider(File(absolutePath), tileSize: tileSize);
       await mapsforgeTileProvider.open();
       return [
         TileLayerOptions(
@@ -380,13 +373,11 @@ class TileSource extends TiledRasterLayerSource {
         var to4326function;
         if (tileEntry.srid != Proj.EPSG4326_INT) {
           to4326function = (var envelope) {
-            return Proj.transformEnvelopeToWgs84(
-                PROJ.Projection("EPSG:${tileEntry.srid}"), envelope);
+            return Proj.transformEnvelopeToWgs84(PROJ.Projection("EPSG:${tileEntry.srid}"), envelope);
           };
         }
         TilesFetcher fetcher = TilesFetcher(tileEntry);
-        var lazyTiles =
-            fetcher.getAllLazyTiles(db, to4326BoundsConverter: to4326function);
+        var lazyTiles = fetcher.getAllLazyTiles(db, to4326BoundsConverter: to4326function);
         var overlayImages = lazyTiles.map((lt) {
           var minX = lt.tileBoundsLatLong.getMinX();
           var minY = lt.tileBoundsLatLong.getMinY();
@@ -418,8 +409,7 @@ class TileSource extends TiledRasterLayerSource {
         ];
       }
     } else if (isOnlineService()) {
-      TileProvider tileProvider =
-          ExceptionsToTrack.getDefaultForOnlineServices();
+      TileProvider tileProvider = ExceptionsToTrack.getDefaultForOnlineServices();
       if (isWms) {
         var tileLayerOptions = TileLayerOptions(
           wmsOptions: WMSTileLayerOptions(
@@ -452,8 +442,7 @@ class TileSource extends TiledRasterLayerSource {
         ];
       }
     } else {
-      throw Exception(
-          "Type not supported: ${absolutePath != null ? absolutePath : url}");
+      throw Exception("Type not supported: ${absolutePath != null ? absolutePath : url}");
     }
   }
 
@@ -463,8 +452,7 @@ class TileSource extends TiledRasterLayerSource {
       savePath = Workspace.makeRelative(absolutePath);
     }
 
-    var pathLine =
-        savePath != null ? "\"$LAYERSKEY_FILE\": \"$savePath\"," : "";
+    var pathLine = savePath != null ? "\"$LAYERSKEY_FILE\": \"$savePath\"," : "";
     var urlLine = url != null ? "\"$LAYERSKEY_URL\": \"$url\"," : "";
 
     var colorToHideLine = "";
@@ -538,8 +526,7 @@ class TileSourcePropertiesWidget extends StatefulWidget {
   }
 }
 
-class TileSourcePropertiesWidgetState
-    extends State<TileSourcePropertiesWidget> {
+class TileSourcePropertiesWidgetState extends State<TileSourcePropertiesWidget> {
   TileSource _source;
   double _opacitySliderValue = 100;
   Color _hideColor = Colors.white;
@@ -563,8 +550,7 @@ class TileSourcePropertiesWidgetState
     var rgbToHide = _source.rgbToHide;
     if (rgbToHide != null) {
       useHideColor = true;
-      _hideColor =
-          Color.fromARGB(255, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
+      _hideColor = Color.fromARGB(255, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
     }
 
     if (this._source.doGpkgAsOverlay != null) {
@@ -588,11 +574,7 @@ class TileSourcePropertiesWidgetState
           if (_somethingChanged) {
             _source.opacityPercentage = _opacitySliderValue;
             if (useHideColor) {
-              _source.rgbToHide = [
-                _hideColor.red,
-                _hideColor.green,
-                _hideColor.blue
-              ];
+              _source.rgbToHide = [_hideColor.red, _hideColor.green, _hideColor.blue];
             } else {
               _source.rgbToHide = null;
             }
@@ -631,8 +613,7 @@ class TileSourcePropertiesWidgetState
                                   divisions: 10,
                                   onChanged: (newRating) {
                                     _somethingChanged = true;
-                                    setState(
-                                        () => _opacitySliderValue = newRating);
+                                    setState(() => _opacitySliderValue = newRating);
                                   },
                                   value: _opacitySliderValue,
                                 )),
@@ -695,8 +676,7 @@ class TileSourcePropertiesWidgetState
                               Expanded(
                                 child: Padding(
                                   padding: SmashUI.defaultPadding(),
-                                  child:
-                                      ColorPickerButton(_hideColor, (newColor) {
+                                  child: ColorPickerButton(_hideColor, (newColor) {
                                     _hideColor = ColorExt.fromColor(newColor);
                                     _somethingChanged = true;
                                   }),

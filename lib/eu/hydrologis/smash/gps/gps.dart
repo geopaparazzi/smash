@@ -150,12 +150,12 @@ class SmashLocationAccuracy {
   }
 
   static SmashLocationAccuracy fromPreferences() {
-    int prefCode = GpPreferences().getIntSync(KEY_GPS_ACCURACY, NAVIGATION.code);
+    int prefCode = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_GPS_ACCURACY, NAVIGATION.code);
     return fromCode(prefCode);
   }
 
   static Future<void> toPreferences(SmashLocationAccuracy accuracy) async {
-    await GpPreferences().setInt(KEY_GPS_ACCURACY, accuracy.code);
+    await GpPreferences().setInt(SmashPreferencesKeys.KEY_GPS_ACCURACY, accuracy.code);
   }
 }
 
@@ -366,7 +366,7 @@ time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSince
       notificationIconColor: SmashColors.mainDecorations,
     );
 
-    bool useGpsGoogleServices = GpPreferences().getBooleanSync(KEY_GPS_USE_GOOGLE_SERVICES, false);
+    bool useGpsGoogleServices = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_GOOGLE_SERVICES, false);
     var clientType = LocationClient.android;
     if (useGpsGoogleServices) {
       clientType = LocationClient.google;

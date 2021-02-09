@@ -17,8 +17,7 @@ import 'package:smashlibs/smashlibs.dart';
 /// Plugin to show the current GPS log
 class CurrentGpsLogPlugin implements MapPlugin {
   @override
-  Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+  Widget createLayer(LayerOptions options, MapState mapState, Stream<Null> stream) {
     if (options is CurrentGpsLogPluginOption) {
       return CurrentGpsLogLayer(options, mapState, stream);
     }
@@ -58,21 +57,21 @@ class CurrentGpsLogLayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       if (gpsState.isLogging && gpsState.currentLogPoints.length > 1) {
-        if (gpsState.logMode == LOGVIEWMODES[0]) {
+        if (gpsState.logMode == SmashPreferencesKeys.LOGVIEWMODES[0]) {
           doOrig = false;
         } else {
           logPaint = Paint()
-            ..color = (gpsState.logMode == LOGVIEWMODES[1])
+            ..color = (gpsState.logMode == SmashPreferencesKeys.LOGVIEWMODES[1])
                 ? currentGpsLogLayerOpts.logColor
                 : currentGpsLogLayerOpts.logColor.withAlpha(100)
             ..style = PaintingStyle.stroke
             ..strokeWidth = currentGpsLogLayerOpts.logWidth;
         }
-        if (gpsState.filteredLogMode == LOGVIEWMODES[0]) {
+        if (gpsState.filteredLogMode == SmashPreferencesKeys.LOGVIEWMODES[0]) {
           doFiltered = false;
         } else {
           filteredLogPaint = Paint()
-            ..color = (gpsState.filteredLogMode == LOGVIEWMODES[1])
+            ..color = (gpsState.filteredLogMode == SmashPreferencesKeys.LOGVIEWMODES[1])
                 ? currentGpsLogLayerOpts.logColor
                 : currentGpsLogLayerOpts.logColor.withAlpha(100)
             ..style = PaintingStyle.stroke
@@ -86,25 +85,17 @@ class CurrentGpsLogLayer extends StatelessWidget {
 
         var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
         var distStr = StringUtilities.formatMeters(distanceMeter);
-        var distFilteredStr =
-            StringUtilities.formatMeters(distanceMeterFiltered);
+        var distFilteredStr = StringUtilities.formatMeters(distanceMeterFiltered);
 
         return Stack(
           children: [
             CustomPaint(
-              painter: CurrentLogPathPainter(
-                  logPaint,
-                  filteredLogPaint,
-                  gpsState.currentLogPoints,
-                  gpsState.currentFilteredLogPoints,
-                  map),
+              painter: CurrentLogPathPainter(logPaint, filteredLogPaint, gpsState.currentLogPoints, gpsState.currentFilteredLogPoints, map),
             ),
             Align(
               alignment: Alignment.topRight,
               child: Container(
-                decoration: BoxDecoration(
-                    color: SmashColors.mainBackground.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(color: SmashColors.mainBackground.withOpacity(0.7), borderRadius: BorderRadius.circular(8)),
                 child: Padding(
                   padding: SmashUI.defaultPadding(),
                   child: Column(
@@ -114,8 +105,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
                       SmashUI.normalText("Time: $timeStr"),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: SmashUI.normalText(
-                            "Dist: $distStr ($distFilteredStr)"),
+                        child: SmashUI.normalText("Dist: $distStr ($distFilteredStr)"),
                       ),
                     ],
                   ),
@@ -138,8 +128,7 @@ class CurrentLogPathPainter extends CustomPainter {
   List<LatLng> currentFilteredLogPoints;
   MapState map;
 
-  CurrentLogPathPainter(this.logPaint, this.filtereLogPaint,
-      this.currentLogPoints, this.currentFilteredLogPoints, this.map);
+  CurrentLogPathPainter(this.logPaint, this.filtereLogPaint, this.currentLogPoints, this.currentFilteredLogPoints, this.map);
 
   @override
   void paint(Canvas canvas, Size size) {

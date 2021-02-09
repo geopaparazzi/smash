@@ -49,16 +49,15 @@ class GpsState extends ChangeNotifierPlus {
   GpsStatus _lastGpsStatusBeforeLogging;
 
   void init() {
-    gpsMinDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, 1);
-    gpsTimeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, 1);
-    doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
+    gpsMinDistance = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE, 1);
+    gpsTimeInterval = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL, 1);
+    doTestLog = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_TESTLOG, false);
 
-    List<String> currentLogViewModes = GpPreferences().getStringListSync(
-        KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
+    List<String> currentLogViewModes = GpPreferences()
+        .getStringListSync(SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [SmashPreferencesKeys.LOGVIEWMODES[0], SmashPreferencesKeys.LOGVIEWMODES[1]]);
     logMode = currentLogViewModes[0];
     filteredLogMode = currentLogViewModes[1];
-    notesMode =
-        GpPreferences().getStringSync(KEY_NOTES_VIEW_MODE, NOTESVIEWMODES[0]);
+    notesMode = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_NOTES_VIEW_MODE, SmashPreferencesKeys.NOTESVIEWMODES[0]);
   }
 
   GpsStatus get status => _status;
@@ -90,8 +89,7 @@ class GpsState extends ChangeNotifierPlus {
 
   bool get useFilteredGps {
     if (_useFilteredGps == null) {
-      _useFilteredGps =
-          GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
+      _useFilteredGps = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
     }
     return _useFilteredGps;
   }
@@ -123,11 +121,8 @@ class GpsState extends ChangeNotifierPlus {
     _projectState = state;
   }
 
-  void addLogPoint(double longitude, double latitude, double altitude,
-      int timestamp, double accuracy,
-      {double longitudeFiltered,
-      double latitudeFiltered,
-      double accuracyFiltered}) {
+  void addLogPoint(double longitude, double latitude, double altitude, int timestamp, double accuracy,
+      {double longitudeFiltered, double latitudeFiltered, double accuracyFiltered}) {
     if (_projectState != null) {
       LogDataPoint ldp = LogDataPoint();
       ldp.logid = currentLogId;
@@ -149,8 +144,7 @@ class GpsState extends ChangeNotifierPlus {
     // original log
     var newPosLatLon = LatLng(latitude, longitude);
     if (_currentLogPoints.isNotEmpty) {
-      var distanceMeters =
-          CoordinateUtilities.getDistance(_currentLogPoints.last, newPosLatLon);
+      var distanceMeters = CoordinateUtilities.getDistance(_currentLogPoints.last, newPosLatLon);
       _currentLogProgressive += distanceMeters;
     }
     _currentLogPoints.add(newPosLatLon);
@@ -159,8 +153,7 @@ class GpsState extends ChangeNotifierPlus {
     if (latitudeFiltered != null) {
       var newFilteredPosLatLon = LatLng(latitudeFiltered, longitudeFiltered);
       if (_currentFilteredLogPoints.isNotEmpty) {
-        var distanceMeters = CoordinateUtilities.getDistance(
-            _currentFilteredLogPoints.last, newFilteredPosLatLon);
+        var distanceMeters = CoordinateUtilities.getDistance(_currentFilteredLogPoints.last, newFilteredPosLatLon);
         _currentFilteredLogProgressive += distanceMeters;
       }
       _currentFilteredLogPoints.add(newFilteredPosLatLon);
@@ -175,11 +168,7 @@ class GpsState extends ChangeNotifierPlus {
 
   /// Get the stats of the current log in the form: [progressiveM, filteredProgressiveM, timedelta]
   List<dynamic> getCurrentLogStats() {
-    return [
-      _currentLogProgressive,
-      _currentFilteredLogProgressive,
-      _currentLogTimeDeltaMillis
-    ];
+    return [_currentLogProgressive, _currentFilteredLogProgressive, _currentLogTimeDeltaMillis];
   }
 
   int addGpsLog(String logName) {
@@ -251,8 +240,7 @@ class GpsState extends ChangeNotifierPlus {
       _projectState.projectDb.updateGpsLogEndts(_currentLogId, endTs);
     }
 
-    if (_lastGpsStatusBeforeLogging == null)
-      _lastGpsStatusBeforeLogging = GpsStatus.ON_NO_FIX;
+    if (_lastGpsStatusBeforeLogging == null) _lastGpsStatusBeforeLogging = GpsStatus.ON_NO_FIX;
     _status = _lastGpsStatusBeforeLogging;
     _lastGpsStatusBeforeLogging = null;
     notifyListenersMsg("stopLogging");

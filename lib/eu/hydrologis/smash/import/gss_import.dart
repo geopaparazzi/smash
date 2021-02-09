@@ -23,8 +23,7 @@ class GssImportWidget extends StatefulWidget {
   _GssImportWidgetState createState() => new _GssImportWidgetState();
 }
 
-class _GssImportWidgetState extends State<GssImportWidget>
-    with AfterLayoutMixin {
+class _GssImportWidgetState extends State<GssImportWidget> with AfterLayoutMixin {
   /*
    * 0 = waiting
    * 1 = has data
@@ -58,7 +57,7 @@ class _GssImportWidgetState extends State<GssImportWidget>
     Directory formsFolder = await Workspace.getFormsFolder();
     _formsFolderPath = formsFolder.path;
 
-    _serverUrl = GpPreferences().getStringSync(KEY_GSS_SERVER_URL);
+    _serverUrl = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_GSS_SERVER_URL);
     if (_serverUrl == null) {
       setState(() {
         _status = 11;
@@ -68,7 +67,7 @@ class _GssImportWidgetState extends State<GssImportWidget>
     String downloadDataListUrl = _serverUrl + GssUtilities.DATA_DOWNLOAD_PATH;
     String downloadTagsListUrl = _serverUrl + GssUtilities.TAGS_DOWNLOAD_PATH;
 
-    String pwd = GpPreferences().getStringSync(KEY_GSS_SERVER_PWD);
+    String pwd = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_GSS_SERVER_PWD);
     if (pwd == null || pwd.trim().isEmpty) {
       setState(() {
         _status = 10;
@@ -80,22 +79,19 @@ class _GssImportWidgetState extends State<GssImportWidget>
     try {
       Dio dio = NetworkHelper.getNewDioInstance();
 
-      var dataResponse = await dio.get(downloadDataListUrl,
-          options: Options(headers: {"Authorization": _authHeader}));
+      var dataResponse = await dio.get(downloadDataListUrl, options: Options(headers: {"Authorization": _authHeader}));
       var dataResponseMap = jsonDecode(dataResponse.data);
 
       List<dynamic> baseMaps = dataResponseMap[GssUtilities.DATA_DOWNLOAD_MAPS];
       _baseMapsList.clear();
       baseMaps.forEach((bm) {
         var name = bm[GssUtilities.DATA_DOWNLOAD_NAME];
-        if (FileManager.isVectordataFile(name) ||
-            FileManager.isTiledataFile(name)) {
+        if (FileManager.isVectordataFile(name) || FileManager.isTiledataFile(name)) {
           _baseMapsList.add(name);
         }
       });
 
-      List<dynamic> _projects =
-          dataResponseMap[GssUtilities.DATA_DOWNLOAD_PROJECTS];
+      List<dynamic> _projects = dataResponseMap[GssUtilities.DATA_DOWNLOAD_PROJECTS];
       _projectsList.clear();
       _projects.forEach((proj) {
         var name = proj[GssUtilities.DATA_DOWNLOAD_NAME];
@@ -104,8 +100,7 @@ class _GssImportWidgetState extends State<GssImportWidget>
         }
       });
 
-      var tagsResponse = await dio.get(downloadTagsListUrl,
-          options: Options(headers: {"Authorization": _authHeader}));
+      var tagsResponse = await dio.get(downloadTagsListUrl, options: Options(headers: {"Authorization": _authHeader}));
       var tagsResponseMap = jsonDecode(tagsResponse.data);
       var tagsJsonList = tagsResponseMap[GssUtilities.TAGS_DOWNLOAD_TAGS];
       if (tagsJsonList != null) {
@@ -133,8 +128,7 @@ class _GssImportWidgetState extends State<GssImportWidget>
         setState(() {
           _status = 12;
         });
-        SMLogger()
-            .e("An error occurred while downloading GSS data list.", e, s);
+        SMLogger().e("An error occurred while downloading GSS data list.", e, s);
       }
     }
   }
@@ -159,32 +153,28 @@ class _GssImportWidgetState extends State<GssImportWidget>
                 ? Center(
                     child: Padding(
                       padding: SmashUI.defaultPadding(),
-                      child: SmashUI.errorWidget(
-                          "Unable to download data list due to an error. Check your settings and the log."),
+                      child: SmashUI.errorWidget("Unable to download data list due to an error. Check your settings and the log."),
                     ),
                   )
                 : _status == 11
                     ? Center(
                         child: Padding(
                           padding: SmashUI.defaultPadding(),
-                          child: SmashUI.titleText(
-                              "No GSS server url has been set. Check your settings."),
+                          child: SmashUI.titleText("No GSS server url has been set. Check your settings."),
                         ),
                       )
                     : _status == 10
                         ? Center(
                             child: Padding(
                               padding: SmashUI.defaultPadding(),
-                              child: SmashUI.titleText(
-                                  "No GSS server password has been set. Check your settings."),
+                              child: SmashUI.titleText("No GSS server password has been set. Check your settings."),
                             ),
                           )
                         : _status == 13
                             ? Center(
                                 child: Padding(
                                   padding: SmashUI.defaultPadding(),
-                                  child: SmashUI.errorWidget(
-                                      "No permission to access the server. Check your credentials."),
+                                  child: SmashUI.errorWidget("No permission to access the server. Check your credentials."),
                                 ),
                               )
                             : SingleChildScrollView(
@@ -200,15 +190,12 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                           children: <Widget>[
                                             Padding(
                                               padding: SmashUI.defaultPadding(),
-                                              child: SmashUI.normalText("Data",
-                                                  bold: true),
+                                              child: SmashUI.normalText("Data", bold: true),
                                             ),
                                             Padding(
                                               padding: SmashUI.defaultPadding(),
                                               child: SmashUI.smallText(
-                                                  _baseMapsList.length > 0
-                                                      ? "Datasets are downloaded into the maps folder."
-                                                      : "No data available.",
+                                                  _baseMapsList.length > 0 ? "Datasets are downloaded into the maps folder." : "No data available.",
                                                   color: Colors.grey),
                                             ),
                                             ListView.builder(
@@ -217,19 +204,12 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                               itemBuilder: (context, index) {
                                                 var name = _baseMapsList[index];
 
-                                                String downloadUrl = _serverUrl +
-                                                    GssUtilities
-                                                        .DATA_DOWNLOAD_PATH +
-                                                    "?" +
-                                                    GssUtilities
-                                                        .DATA_DOWNLOAD_NAME +
-                                                    "=" +
-                                                    name;
+                                                String downloadUrl =
+                                                    _serverUrl + GssUtilities.DATA_DOWNLOAD_PATH + "?" + GssUtilities.DATA_DOWNLOAD_NAME + "=" + name;
 
                                                 return FileDownloadListTileProgressWidget(
                                                   downloadUrl,
-                                                  FileUtilities.joinPaths(
-                                                      _mapsFolderPath, name),
+                                                  FileUtilities.joinPaths(_mapsFolderPath, name),
                                                   name,
                                                   authHeader: _authHeader,
                                                 );
@@ -249,9 +229,7 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                           children: <Widget>[
                                             Padding(
                                               padding: SmashUI.defaultPadding(),
-                                              child: SmashUI.normalText(
-                                                  "Projects",
-                                                  bold: true),
+                                              child: SmashUI.normalText("Projects", bold: true),
                                             ),
                                             Padding(
                                               padding: SmashUI.defaultPadding(),
@@ -267,20 +245,12 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                               itemBuilder: (context, index) {
                                                 var name = _projectsList[index];
 
-                                                String downloadUrl = _serverUrl +
-                                                    GssUtilities
-                                                        .DATA_DOWNLOAD_PATH +
-                                                    "?" +
-                                                    GssUtilities
-                                                        .DATA_DOWNLOAD_NAME +
-                                                    "=" +
-                                                    name;
+                                                String downloadUrl =
+                                                    _serverUrl + GssUtilities.DATA_DOWNLOAD_PATH + "?" + GssUtilities.DATA_DOWNLOAD_NAME + "=" + name;
 
                                                 return FileDownloadListTileProgressWidget(
                                                   downloadUrl,
-                                                  FileUtilities.joinPaths(
-                                                      _projectsFolderPath,
-                                                      name),
+                                                  FileUtilities.joinPaths(_projectsFolderPath, name),
                                                   name,
                                                   authHeader: _authHeader,
                                                 );
@@ -300,15 +270,12 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                           children: <Widget>[
                                             Padding(
                                               padding: SmashUI.defaultPadding(),
-                                              child: SmashUI.normalText("Forms",
-                                                  bold: true),
+                                              child: SmashUI.normalText("Forms", bold: true),
                                             ),
                                             Padding(
                                               padding: SmashUI.defaultPadding(),
                                               child: SmashUI.smallText(
-                                                  _tagsList.length > 0
-                                                      ? "Tags files are downloaded into the forms folder."
-                                                      : "No tags available.",
+                                                  _tagsList.length > 0 ? "Tags files are downloaded into the forms folder." : "No tags available.",
                                                   color: Colors.grey),
                                             ),
                                             ListView.builder(
@@ -317,21 +284,17 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                               itemBuilder: (context, index) {
                                                 var name = _tagsList[index];
 
-                                                String downloadUrl =
-                                                    _serverUrl +
-                                                        GssUtilities
-                                                            .TAGS_DOWNLOAD_PATH +
-                                                        // "/" +
-                                                        "?" +
-                                                        GssUtilities
-                                                            .TAGS_DOWNLOAD_NAME +
-                                                        "=" +
-                                                        name;
+                                                String downloadUrl = _serverUrl +
+                                                    GssUtilities.TAGS_DOWNLOAD_PATH +
+                                                    // "/" +
+                                                    "?" +
+                                                    GssUtilities.TAGS_DOWNLOAD_NAME +
+                                                    "=" +
+                                                    name;
 
                                                 return FileDownloadListTileProgressWidget(
                                                   downloadUrl,
-                                                  FileUtilities.joinPaths(
-                                                      _formsFolderPath, name),
+                                                  FileUtilities.joinPaths(_formsFolderPath, name),
                                                   name,
                                                   authHeader: _authHeader,
                                                 );

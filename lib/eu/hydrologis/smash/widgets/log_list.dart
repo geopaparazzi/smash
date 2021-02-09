@@ -91,8 +91,7 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) {
-    useGpsFilteredGenerally =
-        GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
+    useGpsFilteredGenerally = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
     loadLogs();
   }
 
@@ -114,8 +113,7 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
     var db = projectState.projectDb;
     return WillPopScope(
       onWillPop: () async {
-        Provider.of<ProjectState>(context, listen: false)
-            .reloadProject(context);
+        Provider.of<ProjectState>(context, listen: false).reloadProject(context);
         return true;
       },
       child: Scaffold(
@@ -184,9 +182,7 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                 itemCount: _logsList.length,
                 itemBuilder: (context, index) {
                   Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
-                  return LogInfo(
-                      logItem, gpsState, db, loadLogs, useGpsFilteredGenerally,
-                      key: Key("${logItem.id}"));
+                  return LogInfo(logItem, gpsState, db, loadLogs, useGpsFilteredGenerally, key: Key("${logItem.id}"));
                 }),
       ),
     );
@@ -200,10 +196,7 @@ class LogInfo extends StatefulWidget {
   final reloadLogFunction;
   final useGpsFilteredGenerally;
 
-  LogInfo(this.logItem, this.gpsState, this.db, this.reloadLogFunction,
-      this.useGpsFilteredGenerally,
-      {Key key})
-      : super(key: key);
+  LogInfo(this.logItem, this.gpsState, this.db, this.reloadLogFunction, this.useGpsFilteredGenerally, {Key key}) : super(key: key);
 
   @override
   _LogInfoState createState() => _LogInfoState();
@@ -221,8 +214,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   void afterFirstLayout(BuildContext context) {
     timeString = _getTime(widget.logItem, widget.gpsState, widget.db);
     // lengthString = _getLength(widget.logItem, widget.gpsState);
-    List<double> upDownLengthCount = _getElevMinMaxAndLengthDeltaCount(
-        widget.logItem, widget.gpsState, widget.db);
+    List<double> upDownLengthCount = _getElevMinMaxAndLengthDeltaCount(widget.logItem, widget.gpsState, widget.db);
     if (upDownLengthCount[0] == -1) {
       upString = "- nv -";
       downString = "- nv -";
@@ -282,8 +274,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         color: SmashColors.mainDecorations,
         icon: MdiIcons.magnifyScan,
         onTap: () async {
-          SmashMapState mapState =
-              Provider.of<SmashMapState>(context, listen: false);
+          SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
           var logDataPoints = db.getLogDataPoints(logItem.id);
           Envelope env = Envelope.empty();
           logDataPoints.forEach((point) {
@@ -299,10 +290,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       color: SmashColors.mainDecorations,
       icon: MdiIcons.palette,
       onTap: () async {
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => LogPropertiesWidget(logItem)));
+        await Navigator.push(context, MaterialPageRoute(builder: (context) => LogPropertiesWidget(logItem)));
         setState(() {});
       },
     ));
@@ -311,8 +299,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       color: SmashColors.mainDecorations,
       icon: MdiIcons.chartAreaspline,
       onTap: () async {
-        await Navigator.push(context,
-            MaterialPageRoute(builder: (context) => LogProfileView(logItem)));
+        await Navigator.push(context, MaterialPageRoute(builder: (context) => LogProfileView(logItem)));
         setState(() {});
       },
     ));
@@ -327,8 +314,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             SmashDialogs.showInfoDialog(context, "GPX saved in export folder.");
           } on Exception catch (e, s) {
             SMLogger().e("Error exporting log GPX", e, s);
-            SmashDialogs.showErrorDialog(
-                context, "An error occurred while exporting log to GPX.");
+            SmashDialogs.showErrorDialog(context, "An error occurred while exporting log to GPX.");
           }
         }));
     secondaryActions.add(IconSlideAction(
@@ -336,16 +322,14 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         color: SmashColors.mainDanger,
         icon: MdiIcons.delete,
         onTap: () async {
-          bool doDelete = await SmashDialogs.showConfirmDialog(
-              context, "DELETE", 'Are you sure you want to delete the log?');
+          bool doDelete = await SmashDialogs.showConfirmDialog(context, "DELETE", 'Are you sure you want to delete the log?');
           if (doDelete) {
             db.deleteGpslog(logItem.id);
             widget.reloadLogFunction();
           }
         }));
 
-    var logColorObject =
-        EnhancedColorUtility.splitEnhancedColorString(logItem.color);
+    var logColorObject = EnhancedColorUtility.splitEnhancedColorString(logItem.color);
     var icon;
     if (logColorObject[1] != ColorTables.none) {
       icon = Icon(
@@ -365,8 +349,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: ListTile(
-        title: SmashUI.normalText('${logItem.name}',
-            bold: true, textAlign: TextAlign.left),
+        title: SmashUI.normalText('${logItem.name}', bold: true, textAlign: TextAlign.left),
         subtitle: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,8 +397,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             onChanged: (isVisible) async {
               logItem.isVisible = isVisible ? 1 : 0;
               db.updateGpsLogVisibility(isVisible, logItem.id);
-              Provider.of<ProjectState>(context, listen: false)
-                  .reloadProject(context);
+              Provider.of<ProjectState>(context, listen: false).reloadProject(context);
               setState(() {});
             }),
       ),
@@ -424,14 +406,11 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     );
   }
 
-  String _getTime(
-      Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
+  String _getTime(Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
     var minutes = (item.endTime - item.startTime) / 1000 / 60;
     if (item.endTime == 0) {
       if (gpsState.isLogging && item.id == gpsState.currentLogId) {
-        minutes = (DateTime.now().millisecondsSinceEpoch - item.startTime) /
-            1000 /
-            60;
+        minutes = (DateTime.now().millisecondsSinceEpoch - item.startTime) / 1000 / 60;
       } else {
         // needs to be fixed using the points. Do it and refresh.
         var data = db.getLogDataPointsById(item.id);
@@ -459,8 +438,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     }
   }
 
-  List<double> _getElevMinMaxAndLengthDeltaCount(
-      Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
+  List<double> _getElevMinMaxAndLengthDeltaCount(Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
     double up = 0;
     double down = 0;
     var pointsList = db.getLogDataPoints(item.id);
@@ -473,12 +451,9 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       LogDataPoint ldp2 = pointsList[i + 1];
       double distance;
       if (widget.useGpsFilteredGenerally && ldp1.filtered_lat != null) {
-        distance = CoordinateUtilities.getDistance(
-            LatLng(ldp1.filtered_lat, ldp1.filtered_lon),
-            LatLng(ldp2.filtered_lat, ldp2.filtered_lon));
+        distance = CoordinateUtilities.getDistance(LatLng(ldp1.filtered_lat, ldp1.filtered_lon), LatLng(ldp2.filtered_lat, ldp2.filtered_lon));
       } else {
-        distance = CoordinateUtilities.getDistance(
-            LatLng(ldp1.lat, ldp1.lon), LatLng(ldp2.lat, ldp2.lon));
+        distance = CoordinateUtilities.getDistance(LatLng(ldp1.lat, ldp1.lon), LatLng(ldp2.lat, ldp2.lon));
       }
       length += distance;
 

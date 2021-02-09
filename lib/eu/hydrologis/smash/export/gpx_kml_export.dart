@@ -13,12 +13,10 @@ import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class GpxExporter {
-  static Future<void> exportDb(
-      GeopaparazziProjectDb db, File outputFile, bool doKml) async {
+  static Future<void> exportDb(GeopaparazziProjectDb db, File outputFile, bool doKml) async {
     var dbName = HU.FileUtilities.nameFromFile(db.path, false);
 
-    bool useFiltered =
-        GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
+    bool useFiltered = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
 
     var gpx = Gpx();
     gpx.creator = "SMASH - http://www.geopaparazzi.eu using dart-gpx library.";
@@ -87,18 +85,14 @@ class GpxExporter {
     }
   }
 
-  static Future<void> exportLog(
-      GeopaparazziProjectDb db, int logId, String outputFolderPath,
-      {bool doKml = false}) async {
-    bool useFiltered =
-        GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
+  static Future<void> exportLog(GeopaparazziProjectDb db, int logId, String outputFolderPath, {bool doKml = false}) async {
+    bool useFiltered = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
 
     Log log = db.getLogById(logId);
     if (log != null) {
       var logName = log.text;
       var gpx = Gpx();
-      gpx.creator =
-          "SMASH - http://www.geopaparazzi.eu using dart-gpx library.";
+      gpx.creator = "SMASH - http://www.geopaparazzi.eu using dart-gpx library.";
       gpx.metadata = Metadata();
       gpx.metadata.keywords = "SMASH, export, log";
       gpx.metadata.name = "$logName";
@@ -128,8 +122,7 @@ class GpxExporter {
 
       var ext = doKml ? "kml" : "gpx";
       logName = logName.replaceAll(" ", "_").replaceAll("\\s+", "_");
-      var outFilePath =
-          HU.FileUtilities.joinPaths(outputFolderPath, "$logName.$ext");
+      var outFilePath = HU.FileUtilities.joinPaths(outputFolderPath, "$logName.$ext");
       var outputFile = File(outFilePath);
       if (doKml) {
         var kmlString = KmlWriter().asString(gpx, pretty: true);

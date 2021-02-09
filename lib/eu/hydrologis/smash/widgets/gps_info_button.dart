@@ -42,8 +42,8 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         );
       }
       var mapState = Provider.of<SmashMapState>(context, listen: false);
-      bool showAllGpsPointCount = GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
-      bool showValidGpsPointCount = GpPreferences().getBooleanSync(KEY_GPS_SHOW_VALID_POINTS, false);
+      bool showAllGpsPointCount = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, false);
+      bool showValidGpsPointCount = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, false);
 
       Widget button = GestureDetector(
         onLongPress: () {
@@ -259,7 +259,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
     return TableRow(
       children: [
         TableUtilities.cellForString("Altitude", color: color),
-        TableUtilities.cellForString("${pos.altitude.toStringAsFixed(KEY_ELEV_DECIMALS)} m", color: color),
+        TableUtilities.cellForString("${pos.altitude.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS)} m", color: color),
       ],
     );
   }
@@ -275,9 +275,9 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                 message: "Copy latitude to clipboard.",
                 child: RaisedButton(
                   onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: pos.latitude.toStringAsFixed(KEY_LATLONG_DECIMALS)));
+                    await Clipboard.setData(ClipboardData(text: pos.latitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)));
                   },
-                  child: SmashUI.normalText("${pos.latitude.toStringAsFixed(KEY_LATLONG_DECIMALS)} deg", color: color),
+                  child: SmashUI.normalText("${pos.latitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)} deg", color: color),
                 ),
               )),
         ),
@@ -296,9 +296,9 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                 message: "Copy longitude to clipboard.",
                 child: RaisedButton(
                   onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: pos.longitude.toStringAsFixed(KEY_LATLONG_DECIMALS)));
+                    await Clipboard.setData(ClipboardData(text: pos.longitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)));
                   },
-                  child: SmashUI.normalText("${pos.longitude.toStringAsFixed(KEY_LATLONG_DECIMALS)} deg", color: color),
+                  child: SmashUI.normalText("${pos.longitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)} deg", color: color),
                 ),
               )),
         ),

@@ -46,7 +46,7 @@ class ProjectState extends ChangeNotifierPlus {
   Future<void> openDb([String projectPath]) async {
     _projectPath = projectPath;
     if (_projectPath == null) {
-      _projectPath = await GpPreferences().getString(KEY_LAST_GPAPPROJECT);
+      _projectPath = await GpPreferences().getString(SmashPreferencesKeys.KEY_LAST_GPAPPROJECT);
       SMLogger().i("Read db path from preferences: $_projectPath");
     }
     if (_projectPath == null) {
@@ -64,7 +64,7 @@ class ProjectState extends ChangeNotifierPlus {
     }
 
     _db.createNecessaryExtraTables();
-    await GpPreferences().setString(KEY_LAST_GPAPPROJECT, _projectPath);
+    await GpPreferences().setString(SmashPreferencesKeys.KEY_LAST_GPAPPROJECT, _projectPath);
     _projectName = FileUtilities.nameFromFile(_projectPath, false);
   }
 
@@ -98,22 +98,20 @@ class ProjectState extends ChangeNotifierPlus {
 
     List<Marker> tmpList = [];
     DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, mapBuilder);
-    var notesMode =
-        GpPreferences().getStringSync(KEY_NOTES_VIEW_MODE, NOTESVIEWMODES[0]);
-    DataLoaderUtilities.loadNotesMarkers(
-        projectDb, tmpList, mapBuilder, notesMode);
+    var notesMode = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_NOTES_VIEW_MODE, SmashPreferencesKeys.NOTESVIEWMODES[0]);
+    DataLoaderUtilities.loadNotesMarkers(projectDb, tmpList, mapBuilder, notesMode);
     tmp.geopapMarkers = tmpList;
 
-    List<String> currentLogViewModes = GpPreferences().getStringListSync(
-        KEY_GPS_LOG_VIEW_MODE, [LOGVIEWMODES[0], LOGVIEWMODES[1]]);
+    List<String> currentLogViewModes = GpPreferences()
+        .getStringListSync(SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [SmashPreferencesKeys.LOGVIEWMODES[0], SmashPreferencesKeys.LOGVIEWMODES[1]]);
     var logMode = currentLogViewModes[0];
     var filteredLogMode = currentLogViewModes[1];
     tmp.geopapLogs = DataLoaderUtilities.loadLogLinesLayer(
       projectDb,
-      logMode != LOGVIEWMODES[0],
-      filteredLogMode != LOGVIEWMODES[0],
-      logMode == LOGVIEWMODES[2],
-      filteredLogMode == LOGVIEWMODES[2],
+      logMode != SmashPreferencesKeys.LOGVIEWMODES[0],
+      filteredLogMode != SmashPreferencesKeys.LOGVIEWMODES[0],
+      logMode == SmashPreferencesKeys.LOGVIEWMODES[2],
+      filteredLogMode == SmashPreferencesKeys.LOGVIEWMODES[2],
     );
     _projectData = tmp;
   }

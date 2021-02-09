@@ -352,13 +352,13 @@ class DashboardUtils {
               if (pos != null) {
                 StringBuffer sb = StringBuffer();
                 sb.write("Latitude: ");
-                sb.write(pos.latitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
+                sb.write(pos.latitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS));
                 sb.write("\nLongitude: ");
-                sb.write(pos.longitude.toStringAsFixed(KEY_LATLONG_DECIMALS));
+                sb.write(pos.longitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS));
                 sb.write("\nAltitude: ");
-                sb.write(pos.altitude.toStringAsFixed(KEY_ELEV_DECIMALS));
+                sb.write(pos.altitude.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS));
                 sb.write("\nAccuracy: ");
-                sb.write(pos.accuracy.toStringAsFixed(KEY_ELEV_DECIMALS));
+                sb.write(pos.accuracy.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS));
                 sb.write("\nTimestamp: ");
                 sb.write(HU.TimeUtilities.ISO8601_TS_FORMATTER.format(
                     DateTime.fromMillisecondsSinceEpoch(pos.time.round())));

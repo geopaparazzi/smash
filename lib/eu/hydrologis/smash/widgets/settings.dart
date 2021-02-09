@@ -187,7 +187,7 @@ class CameraSettingState extends State<CameraSetting> {
 
   @override
   Widget build(BuildContext context) {
-    String value = GpPreferences().getStringSync(KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
+    String value = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
     return Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -258,7 +258,7 @@ class CameraSettingState extends State<CameraSetting> {
                       ),
                     ],
                     onChanged: (selected) async {
-                      await GpPreferences().setString(KEY_CAMERA_RESOLUTION, selected);
+                      await GpPreferences().setString(SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, selected);
                       setState(() {});
                     },
                   ),
@@ -287,9 +287,9 @@ class ScreenSettingState extends State<ScreenSetting> {
 
   @override
   Widget build(BuildContext context) {
-    bool keepScreenOn = GpPreferences().getBooleanSync(KEY_KEEP_SCREEN_ON, true);
-    bool retinaModeOn = GpPreferences().getBooleanSync(KEY_RETINA_MODE_ON, false);
-    double currentIconSize = GpPreferences().getDoubleSync(KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+    bool keepScreenOn = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_KEEP_SCREEN_ON, true);
+    bool retinaModeOn = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, false);
+    double currentIconSize = GpPreferences().getDoubleSync(SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
     //    String themeStr = GpPreferences().getStringSync(KEY_THEME, SmashThemes.LIGHT.toString());
     //    SmashThemes theme = SmashThemes.LIGHT;
     //    if (themeStr == SmashThemes.DARK.toString()) {
@@ -321,7 +321,7 @@ class ScreenSettingState extends State<ScreenSetting> {
               child: CheckboxListTile(
                 value: keepScreenOn,
                 onChanged: (selected) async {
-                  await GpPreferences().setBoolean(KEY_KEEP_SCREEN_ON, selected);
+                  await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_KEEP_SCREEN_ON, selected);
                   SettingsWidget.reloadMapSettings(context);
                   setState(() {});
                 },
@@ -336,7 +336,7 @@ class ScreenSettingState extends State<ScreenSetting> {
               child: CheckboxListTile(
                 value: retinaModeOn,
                 onChanged: (selected) async {
-                  await GpPreferences().setBoolean(KEY_RETINA_MODE_ON, selected);
+                  await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_RETINA_MODE_ON, selected);
                   SettingsWidget.reloadMapSettings(context);
                   setState(() {});
                 },
@@ -505,7 +505,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                               max: 100,
                               divisions: 45,
                               onChanged: (newSize) async {
-                                await GpPreferences().setDouble(KEY_MAPTOOLS_ICON_SIZE, newSize);
+                                await GpPreferences().setDouble(SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, newSize);
                                 SettingsWidget.reloadMapSettings(context);
                                 setState(() {});
                               },
@@ -837,15 +837,15 @@ class GpsSettingsState extends State<GpsSettings> {
   }
 
   SingleChildScrollView getSettingsPart(BuildContext context) {
-    int minDistance = GpPreferences().getIntSync(KEY_GPS_MIN_DISTANCE, MINDISTANCES[1]);
-    int timeInterval = GpPreferences().getIntSync(KEY_GPS_TIMEINTERVAL, TIMEINTERVALS[1]);
-    bool doTestLog = GpPreferences().getBooleanSync(KEY_GPS_TESTLOG, false);
+    int minDistance = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE, SmashPreferencesKeys.MINDISTANCES[1]);
+    int timeInterval = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL, SmashPreferencesKeys.TIMEINTERVALS[1]);
+    bool doTestLog = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_TESTLOG, false);
     var testlogDurationKey = "KEY_GPS_TESTLOG_DURATIONMILLIS";
     int testLogDuration = GpPreferences().getIntSync(testlogDurationKey, 500);
-    bool showAllGpsPointCount = GpPreferences().getBooleanSync(KEY_GPS_SHOW_ALL_POINTS, false);
-    bool showValidGpsPointCount = GpPreferences().getBooleanSync(KEY_GPS_SHOW_VALID_POINTS, false);
-    bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(KEY_GPS_USE_FILTER_GENERALLY, false);
-    bool useGpsGoogleServices = GpPreferences().getBooleanSync(KEY_GPS_USE_GOOGLE_SERVICES, false);
+    bool showAllGpsPointCount = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, false);
+    bool showValidGpsPointCount = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, false);
+    bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
+    bool useGpsGoogleServices = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_GOOGLE_SERVICES, false);
 
     // SmashLocationAccuracy locationAccuracy =
     //     SmashLocationAccuracy.fromPreferences();
@@ -871,7 +871,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       Checkbox(
                         value: showValidGpsPointCount,
                         onChanged: (selValid) async {
-                          await GpPreferences().setBoolean(KEY_GPS_SHOW_VALID_POINTS, selValid);
+                          await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, selValid);
                           Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
                           setState(() {});
                         },
@@ -887,7 +887,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       Checkbox(
                         value: showAllGpsPointCount,
                         onChanged: (selAll) async {
-                          await GpPreferences().setBoolean(KEY_GPS_SHOW_ALL_POINTS, selAll);
+                          await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, selAll);
 
                           Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
                           setState(() {});
@@ -963,7 +963,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       DropdownButton<int>(
                         value: minDistance,
                         isExpanded: false,
-                        items: MINDISTANCES.map((i) {
+                        items: SmashPreferencesKeys.MINDISTANCES.map((i) {
                           return DropdownMenuItem<int>(
                             child: Text(
                               "$i m",
@@ -973,7 +973,7 @@ class GpsSettingsState extends State<GpsSettings> {
                           );
                         }).toList(),
                         onChanged: (selected) async {
-                          await GpPreferences().setInt(KEY_GPS_MIN_DISTANCE, selected);
+                          await GpPreferences().setInt(SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE, selected);
                           var gpsState = Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsMinDistance = selected;
                           setState(() {});
@@ -990,7 +990,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       DropdownButton<int>(
                         value: timeInterval,
                         isExpanded: false,
-                        items: TIMEINTERVALS.map((i) {
+                        items: SmashPreferencesKeys.TIMEINTERVALS.map((i) {
                           return DropdownMenuItem<int>(
                             child: Text(
                               "$i sec",
@@ -1000,7 +1000,7 @@ class GpsSettingsState extends State<GpsSettings> {
                           );
                         }).toList(),
                         onChanged: (selected) async {
-                          await GpPreferences().setInt(KEY_GPS_TIMEINTERVAL, selected);
+                          await GpPreferences().setInt(SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL, selected);
                           var gpsState = Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsTimeInterval = selected;
                           setState(() {});
@@ -1039,7 +1039,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (newValue) async {
                           var gpsState = Provider.of<GpsState>(context, listen: false);
                           gpsState.useFilteredGpsQuiet = newValue;
-                          await GpPreferences().setBoolean(KEY_GPS_USE_FILTER_GENERALLY, newValue);
+                          await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, newValue);
                           setState(() {});
                         },
                       ),
@@ -1067,7 +1067,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       Checkbox(
                         value: doTestLog,
                         onChanged: (newValue) async {
-                          await GpPreferences().setBoolean(KEY_GPS_TESTLOG, newValue);
+                          await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_TESTLOG, newValue);
                           var gpsState = Provider.of<GpsState>(context, listen: false);
                           gpsState.doTestLog = newValue;
                           setState(() {});
@@ -1119,7 +1119,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         Checkbox(
                           value: useGpsGoogleServices,
                           onChanged: (newValue) async {
-                            await GpPreferences().setBoolean(KEY_GPS_USE_GOOGLE_SERVICES, newValue);
+                            await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_USE_GOOGLE_SERVICES, newValue);
                             setState(() {});
                           },
                         ),
@@ -1166,7 +1166,7 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
               DropdownButton<String>(
                 value: gpsState.logMode,
                 isExpanded: false,
-                items: LOGVIEWMODES.map((i) {
+                items: SmashPreferencesKeys.LOGVIEWMODES.map((i) {
                   return DropdownMenuItem<String>(
                     child: Text(
                       i,
@@ -1176,7 +1176,7 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
                   );
                 }).toList(),
                 onChanged: (selected) async {
-                  await GpPreferences().setStringList(KEY_GPS_LOG_VIEW_MODE, [selected, gpsState.filteredLogMode]);
+                  await GpPreferences().setStringList(SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [selected, gpsState.filteredLogMode]);
                   gpsState.logMode = selected;
                   setState(() {});
                 },
@@ -1196,7 +1196,7 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
               DropdownButton<String>(
                 value: gpsState.filteredLogMode,
                 isExpanded: false,
-                items: LOGVIEWMODES.map((i) {
+                items: SmashPreferencesKeys.LOGVIEWMODES.map((i) {
                   return DropdownMenuItem<String>(
                     child: Text(
                       i,
@@ -1206,7 +1206,7 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
                   );
                 }).toList(),
                 onChanged: (selected) async {
-                  await GpPreferences().setStringList(KEY_GPS_LOG_VIEW_MODE, [gpsState.logMode, selected]);
+                  await GpPreferences().setStringList(SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [gpsState.logMode, selected]);
                   gpsState.filteredLogMode = selected;
                   setState(() {});
                 },
@@ -1257,7 +1257,7 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
           subtitle: DropdownButton<String>(
             value: gpsState.notesMode,
             isExpanded: false,
-            items: NOTESVIEWMODES.map((i) {
+            items: SmashPreferencesKeys.NOTESVIEWMODES.map((i) {
               print(i);
               return DropdownMenuItem<String>(
                 child: Text(
@@ -1268,7 +1268,7 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
               );
             }).toList(),
             onChanged: (selected) async {
-              await GpPreferences().setString(KEY_NOTES_VIEW_MODE, selected);
+              await GpPreferences().setString(SmashPreferencesKeys.KEY_NOTES_VIEW_MODE, selected);
               gpsState.notesMode = selected;
               setState(() {});
             },
@@ -1335,9 +1335,9 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
 
   @override
   Widget build(BuildContext context) {
-    bool loadOnlyVisible = GpPreferences().getBooleanSync(KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
-    int maxFeaturesToLoad = GpPreferences().getIntSync(KEY_VECTOR_MAX_FEATURES, -1);
-    int tapAreaPixels = GpPreferences().getIntSync(KEY_VECTOR_TAPAREA_SIZE, 50);
+    bool loadOnlyVisible = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
+    int maxFeaturesToLoad = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1);
+    int tapAreaPixels = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50);
     int handleIconSize = GpPreferences().getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25);
     int intermediateHandleIconSize = GpPreferences().getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20);
 
@@ -1383,7 +1383,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                         DropdownButton<int>(
                           value: maxFeaturesToLoad,
                           isExpanded: false,
-                          items: MAXFEATURESTOLOAD.map((i) {
+                          items: SmashPreferencesKeys.MAXFEATURESTOLOAD.map((i) {
                             return DropdownMenuItem<int>(
                               child: Text(
                                 i > 0 ? "$i" : "all",
@@ -1393,7 +1393,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                             );
                           }).toList(),
                           onChanged: (selected) async {
-                            await GpPreferences().setInt(KEY_VECTOR_MAX_FEATURES, selected);
+                            await GpPreferences().setInt(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, selected);
                             setState(() {});
                           },
                         ),
@@ -1418,7 +1418,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                         Checkbox(
                           value: loadOnlyVisible,
                           onChanged: (newValue) async {
-                            await GpPreferences().setBoolean(KEY_VECTOR_LOAD_ONLY_VISIBLE, newValue);
+                            await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, newValue);
                             setState(() {});
                           },
                         ),
@@ -1445,7 +1445,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                         DropdownButton<int>(
                           value: tapAreaPixels,
                           isExpanded: true,
-                          items: TAPAREASIZES.map((i) {
+                          items: SmashPreferencesKeys.TAPAREASIZES.map((i) {
                             return DropdownMenuItem<int>(
                               child: Text(
                                 "$i px",
@@ -1455,7 +1455,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                             );
                           }).toList(),
                           onChanged: (selected) async {
-                            await GpPreferences().setInt(KEY_VECTOR_TAPAREA_SIZE, selected);
+                            await GpPreferences().setInt(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, selected);
                             setState(() {});
                           },
                         ),
@@ -1737,7 +1737,7 @@ class DeviceSettingsState extends State<DeviceSettings> {
 
   Future<void> getIds() async {
     String id = await Device().getDeviceId();
-    String overrideId = await GpPreferences().getString(DEVICE_ID_OVERRIDE, id);
+    String overrideId = await GpPreferences().getString(SmashPreferencesKeys.DEVICE_ID_OVERRIDE, id);
 
     setState(() {
       _deviceId = id;
@@ -1809,7 +1809,7 @@ class DeviceSettingsState extends State<DeviceSettings> {
                                   if (res == null || res.trim().length == 0) {
                                     res = _deviceId;
                                   }
-                                  await GpPreferences().setString(DEVICE_ID_OVERRIDE, res);
+                                  await GpPreferences().setString(SmashPreferencesKeys.DEVICE_ID_OVERRIDE, res);
                                   setState(() {
                                     _overrideId = res;
                                   });
@@ -1856,10 +1856,10 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
   }
 
   Future<void> getData() async {
-    String gssUrl = await GpPreferences().getString(KEY_GSS_SERVER_URL, "");
-    String gssUser = await GpPreferences().getString(KEY_GSS_SERVER_USER, "");
-    String gssPwd = await GpPreferences().getString(KEY_GSS_SERVER_PWD, "dummy");
-    bool allowSelfCert = await GpPreferences().getBoolean(KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE, true);
+    String gssUrl = await GpPreferences().getString(SmashPreferencesKeys.KEY_GSS_SERVER_URL, "");
+    String gssUser = await GpPreferences().getString(SmashPreferencesKeys.KEY_GSS_SERVER_USER, "");
+    String gssPwd = await GpPreferences().getString(SmashPreferencesKeys.KEY_GSS_SERVER_PWD, "dummy");
+    bool allowSelfCert = await GpPreferences().getBoolean(SmashPreferencesKeys.KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE, true);
 
     setState(() {
       _gssUrl = gssUrl;
@@ -1914,7 +1914,7 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                                   if (res == null || res.trim().length == 0) {
                                     res = _gssUrl;
                                   }
-                                  await GpPreferences().setString(KEY_GSS_SERVER_URL, res);
+                                  await GpPreferences().setString(SmashPreferencesKeys.KEY_GSS_SERVER_URL, res);
                                   setState(() {
                                     _gssUrl = res;
                                   });
@@ -1951,7 +1951,7 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                                   if (res == null || res.trim().length == 0) {
                                     res = _gssPwd;
                                   }
-                                  await GpPreferences().setString(KEY_GSS_SERVER_PWD, res);
+                                  await GpPreferences().setString(SmashPreferencesKeys.KEY_GSS_SERVER_PWD, res);
                                   setState(() {
                                     _gssPwd = res;
                                   });
@@ -1985,7 +1985,7 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                               child: Checkbox(
                                 value: _allowSelfCert,
                                 onChanged: (newValue) async {
-                                  await GpPreferences().setBoolean(KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE, newValue);
+                                  await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE, newValue);
                                   await getData();
                                 },
                               )),

@@ -64,9 +64,9 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
   Future<void> load(BuildContext context) async {
     if (!isLoaded) {
       int maxFeaturesToLoad =
-          GpPreferences().getIntSync(KEY_VECTOR_MAX_FEATURES, -1);
+          GpPreferences().getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1);
       bool loadOnlyVisible =
-          GpPreferences().getBooleanSync(KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
+          GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
 
       JTS.Envelope limitBounds;
       if (loadOnlyVisible) {

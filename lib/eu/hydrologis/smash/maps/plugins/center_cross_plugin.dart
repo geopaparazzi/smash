@@ -19,14 +19,14 @@ class CenterCrossStyle {
   double lineWidth = 3;
 
   CenterCrossStyle.fromPreferences() {
-    var json = GpPreferences().getStringSync(KEY_CENTERCROSS_STYLE, null);
+    var json = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_CENTERCROSS_STYLE, null);
     if (json != null) {
       Map<String, dynamic> data = JSON.jsonDecode(json);
       visible = data['visible'];
       color = data['color'];
       size = data['size'];
       lineWidth = data['lineWidth'];
-    }else{
+    } else {
       // first time
       saveToPreferences();
     }
@@ -34,7 +34,7 @@ class CenterCrossStyle {
 
   Future saveToPreferences() async {
     var json = toJson();
-    await GpPreferences().setString(KEY_CENTERCROSS_STYLE, json);
+    await GpPreferences().setString(SmashPreferencesKeys.KEY_CENTERCROSS_STYLE, json);
   }
 
   String toJson() {
@@ -53,8 +53,7 @@ class CenterCrossStyle {
 
 class CenterCrossPlugin implements MapPlugin {
   @override
-  Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+  Widget createLayer(LayerOptions options, MapState mapState, Stream<Null> stream) {
     if (options is CenterCrossPluginOption) {
       return CenterCrossLayer(options, mapState, stream);
     }
@@ -72,10 +71,7 @@ class CenterCrossPluginOption extends LayerOptions {
   double crossSize;
   double lineWidth;
 
-  CenterCrossPluginOption(
-      {this.crossColor = Colors.black,
-      this.crossSize = 10,
-      this.lineWidth = 2});
+  CenterCrossPluginOption({this.crossColor = Colors.black, this.crossSize = 10, this.lineWidth = 2});
 }
 
 class CenterCrossLayer extends StatelessWidget {
@@ -107,8 +103,7 @@ class CenterCrossLayer extends StatelessWidget {
 }
 
 class CenterCrossLayerPainter extends CustomPainter {
-  CenterCrossLayerPainter(this.centerPixel,
-      {this.crossColor, this.crossSize, this.lineWidth});
+  CenterCrossLayerPainter(this.centerPixel, {this.crossColor, this.crossSize, this.lineWidth});
 
   double lineWidth;
   double crossSize;

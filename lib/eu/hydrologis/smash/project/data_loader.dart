@@ -161,7 +161,7 @@ class DataLoaderUtilities {
 
   static void loadNotesMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
       SmashMapBuilder mapBuilder, String notesMode) {
-    if (notesMode == NOTESVIEWMODES[2]) {
+    if (notesMode == SmashPreferencesKeys.NOTESVIEWMODES[2]) {
       return;
     }
 
@@ -181,7 +181,7 @@ class DataLoaderUtilities {
       if (note.hasForm()) {
         text = FormUtilities.getFormItemLabel(note.form, note.text);
       }
-      if (notesMode == NOTESVIEWMODES[1]) {
+      if (notesMode == SmashPreferencesKeys.NOTESVIEWMODES[1]) {
         text = null; // so the text of the icon is not made in MarkerIcon
       }
 
@@ -228,21 +228,21 @@ class DataLoaderUtilities {
                                 children: [
                                   TableUtilities.cellForString("Longitude"),
                                   TableUtilities.cellForString(note.lon
-                                      .toStringAsFixed(KEY_LATLONG_DECIMALS)),
+                                      .toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
                                 ],
                               ),
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString("Latitude"),
                                   TableUtilities.cellForString(note.lat
-                                      .toStringAsFixed(KEY_LATLONG_DECIMALS)),
+                                      .toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
                                 ],
                               ),
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString("Altitude"),
                                   TableUtilities.cellForString(note.altim
-                                      .toStringAsFixed(KEY_ELEV_DECIMALS)),
+                                      .toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS)),
                                 ],
                               ),
                               TableRow(
@@ -418,21 +418,21 @@ class DataLoaderUtilities {
                           children: [
                             TableUtilities.cellForString("Longitude"),
                             TableUtilities.cellForString(image.lon
-                                .toStringAsFixed(KEY_LATLONG_DECIMALS)),
+                                .toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
                           ],
                         ),
                         TableRow(
                           children: [
                             TableUtilities.cellForString("Latitude"),
                             TableUtilities.cellForString(image.lat
-                                .toStringAsFixed(KEY_LATLONG_DECIMALS)),
+                                .toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
                           ],
                         ),
                         TableRow(
                           children: [
                             TableUtilities.cellForString("Altitude"),
                             TableUtilities.cellForString(
-                                image.altim.toStringAsFixed(KEY_ELEV_DECIMALS)),
+                                image.altim.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS)),
                           ],
                         ),
                         TableRow(
@@ -482,7 +482,7 @@ class DataLoaderUtilities {
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () async {
                             var label =
-                                "image: ${image.text}\nlat: ${image.lat.toStringAsFixed(KEY_LATLONG_DECIMALS)}\nlon: ${image.lon.toStringAsFixed(KEY_LATLONG_DECIMALS)}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
+                                "image: ${image.text}\nlat: ${image.lat.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)}\nlon: ${image.lon.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
                             var urlStr = UrlUtilities.osmUrlFromLatLong(
                                 image.lat, image.lon,
                                 withMarker: true);

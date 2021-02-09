@@ -60,7 +60,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
   }
 
   Future<void> init() async {
-    _serverUrl = GpPreferences().getStringSync(KEY_GSS_SERVER_URL);
+    _serverUrl = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_GSS_SERVER_URL);
     if (_serverUrl == null) {
       setState(() {
         _status = 11;
@@ -68,7 +68,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
       return;
     }
 
-    String pwd = GpPreferences().getStringSync(KEY_GSS_SERVER_PWD);
+    String pwd = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_GSS_SERVER_PWD);
     if (pwd == null || pwd.trim().isEmpty) {
       setState(() {
         _status = 10;
@@ -95,8 +95,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
     _formNotesCount = db.getFormNotesCount(true);
     _imagesCount = db.getImagesCount(true);
 
-    var allCount =
-        _gpsLogCount + _simpleNotesCount + _formNotesCount + _imagesCount;
+    var allCount = _gpsLogCount + _simpleNotesCount + _formNotesCount + _imagesCount;
     setState(() {
       _status = allCount > 0 ? 1 : -1;
     });
@@ -112,8 +111,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                 IconButton(
                   icon: Icon(MdiIcons.restore),
                   onPressed: () async {
-                    var doIt = await SmashDialogs.showConfirmDialog(context,
-                        "Set project to DIRTY?", "This can't be undone!");
+                    var doIt = await SmashDialogs.showConfirmDialog(context, "Set project to DIRTY?", "This can't be undone!");
                     if (doIt) {
                       widget.projectDb.updateDirty(true);
                       setState(() {
@@ -127,8 +125,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                 IconButton(
                   icon: Icon(MdiIcons.wiperWash),
                   onPressed: () async {
-                    var doIt = await SmashDialogs.showConfirmDialog(context,
-                        "Set project to CLEAN?", "This can't be undone!");
+                    var doIt = await SmashDialogs.showConfirmDialog(context, "Set project to CLEAN?", "This can't be undone!");
                     if (doIt) {
                       widget.projectDb.updateDirty(false);
                       setState(() {
@@ -146,51 +143,43 @@ class _GssExportWidgetState extends State<GssExportWidget> {
           ? Center(child: SmashUI.errorWidget("Nothing to sync.", bold: true))
           : _status == 0
               ? Center(
-                  child:
-                      SmashCircularProgress(label: "Collecting sync stats..."),
+                  child: SmashCircularProgress(label: "Collecting sync stats..."),
                 )
               : _status == 12
                   ? Center(
                       child: Padding(
                         padding: SmashUI.defaultPadding(),
-                        child: SmashUI.errorWidget(
-                            "Unable to sync due to an error, check diagnostics."),
+                        child: SmashUI.errorWidget("Unable to sync due to an error, check diagnostics."),
                       ),
                     )
                   : _status == 11
                       ? Center(
                           child: Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.titleText(
-                                "No GSS server url has been set. Check your settings."),
+                            child: SmashUI.titleText("No GSS server url has been set. Check your settings."),
                           ),
                         )
                       : _status == 10
                           ? Center(
                               child: Padding(
                                 padding: SmashUI.defaultPadding(),
-                                child: SmashUI.titleText(
-                                    "No GSS server password has been set. Check your settings."),
+                                child: SmashUI.titleText("No GSS server password has been set. Check your settings."),
                               ),
                             )
                           : _status == 1
                               ? // View stats
                               Center(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
                                       Padding(
                                         padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.titleText("Sync Stats",
-                                            bold: true),
+                                        child: SmashUI.titleText("Sync Stats", bold: true),
                                       ),
                                       Padding(
                                         padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.smallText(
-                                            "The following data will be uploaded upon sync.",
-                                            color: Colors.grey),
+                                        child: SmashUI.smallText("The following data will be uploaded upon sync.", color: Colors.grey),
                                       ),
                                       Expanded(
                                         child: ListView(
@@ -198,38 +187,30 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                                             ListTile(
                                               leading: Icon(
                                                 SmashIcons.logIcon,
-                                                color:
-                                                    SmashColors.mainDecorations,
+                                                color: SmashColors.mainDecorations,
                                               ),
-                                              title: SmashUI.normalText(
-                                                  "Gps Logs: $_gpsLogCount"),
+                                              title: SmashUI.normalText("Gps Logs: $_gpsLogCount"),
                                             ),
                                             ListTile(
                                               leading: Icon(
                                                 SmashIcons.simpleNotesIcon,
-                                                color:
-                                                    SmashColors.mainDecorations,
+                                                color: SmashColors.mainDecorations,
                                               ),
-                                              title: SmashUI.normalText(
-                                                  "Simple Notes: $_simpleNotesCount"),
+                                              title: SmashUI.normalText("Simple Notes: $_simpleNotesCount"),
                                             ),
                                             ListTile(
                                               leading: Icon(
                                                 SmashIcons.formNotesIcon,
-                                                color:
-                                                    SmashColors.mainDecorations,
+                                                color: SmashColors.mainDecorations,
                                               ),
-                                              title: SmashUI.normalText(
-                                                  "Form Notes: $_formNotesCount"),
+                                              title: SmashUI.normalText("Form Notes: $_formNotesCount"),
                                             ),
                                             ListTile(
                                               leading: Icon(
                                                 SmashIcons.imagesNotesIcon,
-                                                color:
-                                                    SmashColors.mainDecorations,
+                                                color: SmashColors.mainDecorations,
                                               ),
-                                              title: SmashUI.normalText(
-                                                  "Images: $_imagesCount"),
+                                              title: SmashUI.normalText("Images: $_imagesCount"),
                                             ),
                                           ],
                                         ),
