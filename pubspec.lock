@@ -823,7 +823,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: ce77020
+      ref: HEAD
       resolved-ref: ce7702082a345b70c65dd600d94a1c2bd8c44612
       url: "https://github.com/moovida/smashlibs.git"
     source: git
