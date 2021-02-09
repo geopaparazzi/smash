@@ -365,12 +365,18 @@ time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSince
       notificationIcon: "smash_notification",
       notificationIconColor: SmashColors.mainDecorations,
     );
+
+    bool useGpsGoogleServices = GpPreferences().getBooleanSync(KEY_GPS_USE_GOOGLE_SERVICES, false);
+    var clientType = LocationClient.android;
+    if (useGpsGoogleServices) {
+      clientType = LocationClient.google;
+    }
     GPS.BackgroundLocator.registerLocationUpdate(
       callback,
       //optional
       autoStop: false,
       androidSettings: AndroidSettings(
-          client: LocationClient.android,
+          client: clientType,
           accuracy: smashLocationAccuracy.accuracy,
           interval: 1,
           distanceFilter: 0,
