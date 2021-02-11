@@ -14,52 +14,42 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
-    sdk: flutter 
-  intl: ^0.16.1 
+    sdk: flutter
+  intl: ^0.16.1
 
   ##################################
   # OWN
   ##################################
-
   # apache 2
   geoimage: ^0.1.2
 
   # apache 2
-  flutter_geopackage:
-    ^0.4.4
-    # path: ../flutter_geopackage/
-    #  git:
-    #    url: https://github.com/moovida/flutter_geopackage.git
-
-  dart_hydrologis_db:
-    ^0.6.0
-    # path: ../dart_hydrologis_db/
-    # git:
-    #  url: https://github.com/moovida/dart_hydrologis_db.git
-
+  flutter_geopackage: ^0.4.4
+  # path: ../flutter_geopackage/
+  #  git:
+  #    url: https://github.com/moovida/flutter_geopackage.git
+  dart_hydrologis_db: ^0.6.0
+  # path: ../dart_hydrologis_db/
+  # git:
+  #  url: https://github.com/moovida/dart_hydrologis_db.git
   smashlibs:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
       ref: a7da128
 
-  dart_shp:
-    ^0.3.1
+  dart_shp: ^0.3.1
 
-  dart_hydrologis_utils:
-    ^0.5.3
-    # path: ../dart_hydrologis_utils/
-  
+  dart_hydrologis_utils: ^0.5.3
+  # path: ../dart_hydrologis_utils/
   dart_jts: ^0.0.6
 
   dart_postgis: ^0.1.0
-    # git:
-    #   url: https://github.com/moovida/dart_postgis
-
+  # git:
+  #   url: https://github.com/moovida/dart_postgis
   ##################################
   # OTHERS
   ##################################
-
   # Apache 2.0
   catcher: ^0.3.22
 
@@ -68,24 +58,22 @@ dependencies:
 
   flutter_map_dragmarker:
     git:
-      url: https://github.com/moovida/flutter_map_dragmarker.git  
+      url: https://github.com/moovida/flutter_map_dragmarker.git
       # url: https://github.com/ibrierley/flutter_map_dragmarker.git  
-  
+
   flutter_map_line_editor:
     git:
-      url: https://github.com/moovida/flutter_map_line_editor.git  
+      url: https://github.com/moovida/flutter_map_line_editor.git
       # url: https://github.com/ibrierley/flutter_map_line_editor.git  
 
   # MIT
   sqlite3_flutter_libs: ^0.3.0
 
   # BSD
-  flutter_map:
-    ^0.10.1
-    # git:
-    #   url: https://github.com/moovida/flutter_map.git
-    #   ref: version4smash
-
+  flutter_map: ^0.10.1
+  # git:
+  #   url: https://github.com/moovida/flutter_map.git
+  #   ref: version4smash
   flutter_map_marker_cluster: #^0.2.7
     git:
       url: https://github.com/moovida/flutter_map_marker_cluster.git
@@ -93,10 +81,9 @@ dependencies:
 
   # GPL 3.0
   map_elevation: ^1.1.0
-    # git:
-    #   url: https://github.com/moovida/map_elevation.git
-    #   ref: infopoints_test2
-
+  # git:
+  #   url: https://github.com/moovida/map_elevation.git
+  #   ref: infopoints_test2
   # MIT
   lat_lon_grid_plugin: #0.1.1
     git:
@@ -110,27 +97,23 @@ dependencies:
       # url: https://github.com/moovida/mapsforge_flutter.git
       path: mapsforge_flutter
       ref: d5005f210da9475a5aa1d38b1d21654870826a5e
-  
+
   #MIT
   extended_image: ^1.5.0
-    # git:
-    #   url: https://github.com/moovida/extended_image
-
-
+  # git:
+  #   url: https://github.com/moovida/extended_image
   # MIT
   permission_handler: ^5.1.0
-      # git: 
-      #   url: https://github.com/Baseflow/flutter-permission-handler.git
-      #   path: permission_handler
-
+  # git: 
+  #   url: https://github.com/Baseflow/flutter-permission-handler.git
+  #   path: permission_handler
   # BSD License
   synchronized: ^2.2.0+1
 
   # Apache 2
   badges: ^1.1.6
-    # git:
-    #   url: https://github.com/moovida/flutter_badges.git
-
+  # git:
+  #   url: https://github.com/moovida/flutter_badges.git
   # MIT
   tutorial_coach_mark: ^0.5.2
 
@@ -142,13 +125,11 @@ dependencies:
   # NOTES: As noted on issue 20761, package_info on iOS requires the Xcode build folder to be
   # rebuilt after changes to the version string in pubspec.yaml. Clean the Xcode build folder
   # with: XCode Menu -> Product -> (Holding Option Key) Clean build folder.
-
   # ON IOS TO EXPOSE STORAGE FOLLOWING KEYS ARE NEEDED
   #    <key>LSSupportsOpeningDocumentsInPlace</key>
   #    <true/>
   #    <key>UIFileSharingEnabled</key>
   #    <true/>
-
   # GPL 3.0
   background_locator: #1.3.0+1
     git:
@@ -165,7 +146,6 @@ dependencies:
   #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
   #  <key>NSLocationAlwaysUsageDescription</key>
   #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
-
   # apache
   latlong: 0.6.1
 
@@ -197,9 +177,10 @@ dev_dependencies:
   # MIT
   flutter_launcher_icons: ^0.8.1
 
+  pedantic: ^1.9.0
+
 #  flutter_test:
 #    sdk: flutter
-
 flutter_icons:
   ios: true
   android: false
@@ -409,3 +390,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+flutter_intl:
+  enabled: true

@@ -1,6 +1,3 @@
 {
-    "welcome": "Welcome to SMASH!",
-    "@welcome": {
-        "description": "Main page welcome."
-    }
+    "main_welcome": "Welcome to SMASH!"
 }
