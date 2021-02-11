@@ -130,7 +130,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
       widgetToLoad = Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context).welcome,
+            AppLocalizations.of(context).main_welcome,
             textAlign: TextAlign.center,
           ),
         ),
