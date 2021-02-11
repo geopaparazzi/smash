@@ -1,0 +1,23 @@
+{
+  "main_welcome": "Welcome to SMASH!",
+  "main_check_location_permission": "Checking location permission...",
+  "main_location_permission_granted": "Location permission granted.",
+  "main_checkingStoragePermission": "Checking storage permission...",
+  "main_storagePermissionGranted": "Storage permission granted.",
+  "main_loadingPreferences": "Loading preferences...",
+  "main_preferencesLoaded": "Preferences loaded.",
+  "main_loadingWorkspace": "Loading workspace...",
+  "main_workspaceLoaded": "Workspace loaded.",
+  "main_loadingTagsList": "Loading tags list...",
+  "main_tagsListLoaded": "Tags list loaded.",
+  "main_loadingKnownProjections": "Loading known projections...",
+  "main_knownProjectionsLoaded": "Known projections loaded.",
+  "main_loadingFences": "Loading fences...",
+  "main_fencesLoaded": "Fences loaded.",
+  "main_loadingLayersList": "Loading layers list...",
+  "main_layersListLoaded": "Layers list loaded.",
+  "main_locationBackgroundWarning": "This app collects location data to your device to enable gps logs recording even when the app is placed in background. No data is shared, it is only saved locally to the device.\n\nIf you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.\n",
+  "main_locationPermissionIsMandatoryToOpenSmash": "Location permission is mandatory to open SMASH.",
+  "main_storagePermissionIsMandatoryToOpenSmash": "Storage permission is mandatory to open SMASH.",
+  "main_anErrorOccurredTapToView": "An error occurred. Tap to view."
+}

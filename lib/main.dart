@@ -25,15 +25,10 @@ import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:stack_trace/stack_trace.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// import 'package:flutter_gen/gen_l10n/smash_localization.dart';
+import 'generated/l10n.dart';
 
 const DOCATCHER = false;
-
-const SUPPORTED_LOCALES = [
-  const Locale('en', ''),
-  const Locale('it', ''),
-  // const Locale.fromSubtags(languageCode: 'zh'),
-];
 
 void main() {
   if (DOCATCHER) {
@@ -69,15 +64,23 @@ class SmashApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: [
+        SL.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: SL.delegate.supportedLocales,
       // PRE GEN
       // localizationsDelegates: [
       //   AppLocalizations.delegate, // available after codegen
       //   GlobalWidgetsLocalizations.delegate,
       //   GlobalMaterialLocalizations.delegate,
       // ],
-      // supportedLocales: SUPPORTED_LOCALES,
+      // supportedLocales: [
+      //   const Locale('en', ''),
+      //   const Locale('it', ''),
+      //   const Locale.fromSubtags(languageCode: 'zh'),
+      // ],
       // END PRE GEN
       navigatorKey: Catcher.navigatorKey,
       title: APP_NAME,
@@ -130,24 +133,26 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
       widgetToLoad = Scaffold(
         appBar: AppBar(
           title: Text(
-            AppLocalizations.of(context).main_welcome,
+            SL.of(context).main_welcome,
             textAlign: TextAlign.center,
           ),
         ),
         body: ListView(
           children: <Widget>[
-            ProgressTile(MdiIcons.crosshairsGps, "Checking location permission...", "Location permission granted.", orderNotifier, 0,
-                handleLocationPermission),
+            ProgressTile(MdiIcons.crosshairsGps, SL.of(context).main_check_location_permission, SL.of(context).main_location_permission_granted,
+                orderNotifier, 0, handleLocationPermission),
+            ProgressTile(MdiIcons.database, SL.of(context).main_checkingStoragePermission, SL.of(context).main_storagePermissionGranted,
+                orderNotifier, 1, handleStoragePermission),
             ProgressTile(
-                MdiIcons.database, "Checking storage permission...", "Storage permission granted.", orderNotifier, 1, handleStoragePermission),
-            ProgressTile(MdiIcons.cog, "Loading preferences...", "Preferences loaded.", orderNotifier, 2, handlePreferences),
-            ProgressTile(MdiIcons.folderCog, "Loading workspace...", "Workspace loaded.", orderNotifier, 3, handleWorkspace),
-            // ProgressTile(MdiIcons.crosshairsGps, "Initializing GPS...",
-            //     "GPS initialized.", orderNotifier, 4, handleGps),
-            ProgressTile(MdiIcons.notePlus, "Loading tags list...", "Tags list loaded.", orderNotifier, 4, handleTags),
-            ProgressTile(MdiIcons.earthBox, "Loading known projections...", "Known projections loaded.", orderNotifier, 5, handleProjections),
-            ProgressTile(MdiIcons.gate, "Loading fences...", "Fences loaded.", orderNotifier, 6, handleFences),
-            ProgressTile(MdiIcons.layers, "Loading layers list...", "Layers list loaded.", orderNotifier, 7, handleLayers),
+                MdiIcons.cog, SL.of(context).main_loadingPreferences, SL.of(context).main_preferencesLoaded, orderNotifier, 2, handlePreferences),
+            ProgressTile(
+                MdiIcons.folderCog, SL.of(context).main_loadingWorkspace, SL.of(context).main_workspaceLoaded, orderNotifier, 3, handleWorkspace),
+            ProgressTile(MdiIcons.notePlus, SL.of(context).main_loadingTagsList, SL.of(context).main_tagsListLoaded, orderNotifier, 4, handleTags),
+            ProgressTile(MdiIcons.earthBox, SL.of(context).main_loadingKnownProjections, SL.of(context).main_knownProjectionsLoaded, orderNotifier, 5,
+                handleProjections),
+            ProgressTile(MdiIcons.gate, SL.of(context).main_loadingFences, SL.of(context).main_fencesLoaded, orderNotifier, 6, handleFences),
+            ProgressTile(
+                MdiIcons.layers, SL.of(context).main_loadingLayersList, SL.of(context).main_layersListLoaded, orderNotifier, 7, handleLayers),
           ],
         ),
       );
@@ -246,14 +251,10 @@ Future<String> handleLocationPermission(BuildContext context) async {
     if (!SmashPlatform.isDesktop()) {
       var status = await Permission.location.status;
       if (status != PermissionStatus.granted) {
-        await SmashDialogs.showWarningDialog(context,
-            """This app collects location data to your device to enable gps logs recording even when the app is placed in background. No data is shared, it is only saved locally to the device.
-
-If you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.
-          """);
+        await SmashDialogs.showWarningDialog(context, SL.of(context).main_locationBackgroundWarning);
         var locationPermission = await PermissionManager().add(PERMISSIONS.LOCATION).check(context);
         if (!locationPermission) {
-          return "Location permission is mandatory to open SMASH.";
+          return SL.of(context).main_locationPermissionIsMandatoryToOpenSmash;
         }
       }
     }
@@ -268,7 +269,7 @@ Future<String> handleStoragePermission(BuildContext context) async {
   if (!SmashPlatform.isDesktop()) {
     var storagePermission = await PermissionManager().add(PERMISSIONS.STORAGE).check(context);
     if (!storagePermission) {
-      return "Storage permission is mandatory to open SMASH.";
+      return SL.of(context).main_storagePermissionIsMandatoryToOpenSmash;
     }
   }
   return null;
@@ -355,7 +356,7 @@ class _ProgressTileState extends State<ProgressTile> {
             )
           : FlatButton(
               child: Text(
-                "An error occurred. Tap to view.",
+                SL.of(context).main_anErrorOccurredTapToView,
                 style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
               onPressed: () async {
