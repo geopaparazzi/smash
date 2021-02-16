@@ -41,6 +41,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "main_storagePermissionIsMandatoryToOpenSmash" : MessageLookupByLibrary.simpleMessage("Storage permission is mandatory to open SMASH."),
     "main_tagsListLoaded" : MessageLookupByLibrary.simpleMessage("Tags list loaded."),
     "main_welcome" : MessageLookupByLibrary.simpleMessage("Welcome to SMASH!"),
-    "main_workspaceLoaded" : MessageLookupByLibrary.simpleMessage("Workspace loaded.")
+    "main_workspaceLoaded" : MessageLookupByLibrary.simpleMessage("Workspace loaded."),
+    "mainview_activeOperationsWillBeStopped" : MessageLookupByLibrary.simpleMessage("Active operations will be stopped."),
+    "mainview_areYouSureYouWantToCloseTheProject" : MessageLookupByLibrary.simpleMessage("Are you sure you want to close the project?"),
+    "mainview_enterNoteInGPSPosition" : MessageLookupByLibrary.simpleMessage("Enter note in GPS position."),
+    "mainview_enterNoteInTheMapCenter" : MessageLookupByLibrary.simpleMessage("Enter note in the map center."),
+    "mainview_image" : MessageLookupByLibrary.simpleMessage("image"),
+    "mainview_keyDidShowMainViewCoachMarks" : MessageLookupByLibrary.simpleMessage("key_did_show_main_view_coach_marks"),
+    "mainview_loadingData" : MessageLookupByLibrary.simpleMessage("Loading data..."),
+    "mainview_note" : MessageLookupByLibrary.simpleMessage("note"),
+    "mainview_openToolsDrawer" : MessageLookupByLibrary.simpleMessage("Open tools drawer."),
+    "mainview_showInteractiveCoachMarks" : MessageLookupByLibrary.simpleMessage("Show interactive coach marks."),
+    "mainview_simpleForm" : MessageLookupByLibrary.simpleMessage("Simple Form"),
+    "mainview_simpleNotes" : MessageLookupByLibrary.simpleMessage("Simple Notes"),
+    "mainview_turnGPSoff" : MessageLookupByLibrary.simpleMessage("Turn GPS off"),
+    "mainview_turnGPSon" : MessageLookupByLibrary.simpleMessage("Turn GPS on"),
+    "mainview_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
+    "mainview_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out")
   };
 }

@@ -19,5 +19,22 @@
   "main_locationBackgroundWarning": "This app collects location data to your device to enable gps logs recording even when the app is placed in background. No data is shared, it is only saved locally to the device.\n\nIf you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.\n",
   "main_locationPermissionIsMandatoryToOpenSmash": "Location permission is mandatory to open SMASH.",
   "main_storagePermissionIsMandatoryToOpenSmash": "Storage permission is mandatory to open SMASH.",
-  "main_anErrorOccurredTapToView": "An error occurred. Tap to view."
+  "main_anErrorOccurredTapToView": "An error occurred. Tap to view.",
+
+  "mainview_keyDidShowMainViewCoachMarks": "key_did_show_main_view_coach_marks",
+  "mainview_loadingData": "Loading data...",
+  "mainview_areYouSureYouWantToCloseTheProject": "Are you sure you want to close the project?",
+  "mainview_activeOperationsWillBeStopped": "Active operations will be stopped.",
+  "mainview_showInteractiveCoachMarks": "Show interactive coach marks.",
+  "mainview_openToolsDrawer": "Open tools drawer.",
+  "mainview_zoomIn": "Zoom in",
+  "mainview_zoomOut": "Zoom out",
+  "mainview_simpleForm": "Simple Form",
+  "mainview_simpleNotes": "Simple Notes",
+  "mainview_note": "note",
+  "mainview_image": "image",
+  "mainview_turnGPSon": "Turn GPS on",
+  "mainview_turnGPSoff": "Turn GPS off",
+  "mainview_enterNoteInTheMapCenter": "Enter note in the map center.",
+  "mainview_enterNoteInGPSPosition": "Enter note in GPS position."
 }

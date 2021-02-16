@@ -11,6 +11,7 @@ import 'dart:io';
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
+// import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_dragmarker/dragmarker.dart';
@@ -51,6 +52,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/toolbar_tools.dart';
 import 'package:smashlibs/smashlibs.dart';
+import '../../../generated/l10n.dart';
 
 import 'mainview_utils.dart';
 
@@ -63,7 +65,8 @@ class MainViewWidget extends StatefulWidget {
 
 enum IconMode { NAVIGATION_MODE, TOOL_MODE }
 
-class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObserver, AfterLayoutMixin {
+class MainViewWidgetState extends State<MainViewWidget>
+    with WidgetsBindingObserver, AfterLayoutMixin {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   MainViewCoachMarks coachMarks = MainViewCoachMarks();
@@ -100,7 +103,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     _mapController = MapController();
     mapState.mapController = _mapController;
 
-    int noteInGpsMode = GpPreferences().getIntSync(KEY_DO_NOTE_IN_GPS, POINT_INSERTION_MODE_GPS);
+    int noteInGpsMode = GpPreferences()
+        .getIntSync(KEY_DO_NOTE_IN_GPS, POINT_INSERTION_MODE_GPS);
     gpsState.insertInGpsQuiet = noteInGpsMode;
 
     // check center on gps
@@ -123,9 +127,11 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
 
   @override
   void afterFirstLayout(BuildContext context) {
-    SmashMapBuilder mapBuilder = Provider.of<SmashMapBuilder>(context, listen: false);
+    SmashMapBuilder mapBuilder =
+        Provider.of<SmashMapBuilder>(context, listen: false);
 
-    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+    ProjectState projectState =
+        Provider.of<ProjectState>(context, listen: false);
     Future.delayed(Duration.zero, () async {
       mapBuilder.context = context;
       projectState.reloadProject(context);
@@ -137,7 +143,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
       });
     });
 
-    _centerOnGpsTimer = Timer.periodic(Duration(milliseconds: 3000), (timer) async {
+    _centerOnGpsTimer =
+        Timer.periodic(Duration(milliseconds: 3000), (timer) async {
       if (context != null && _mapController != null) {
         var mapState = Provider.of<SmashMapState>(context, listen: false);
         if (mapState.centerOnGps) {
@@ -145,9 +152,11 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
           if (gpsState.lastGpsPosition != null) {
             LatLng posLL;
             if (gpsState.useFilteredGps) {
-              posLL = LatLng(gpsState.lastGpsPosition.filteredLatitude, gpsState.lastGpsPosition.filteredLongitude);
+              posLL = LatLng(gpsState.lastGpsPosition.filteredLatitude,
+                  gpsState.lastGpsPosition.filteredLongitude);
             } else {
-              posLL = LatLng(gpsState.lastGpsPosition.latitude, gpsState.lastGpsPosition.longitude);
+              posLL = LatLng(gpsState.lastGpsPosition.latitude,
+                  gpsState.lastGpsPosition.longitude);
             }
             _mapController?.move(posLL, _mapController?.zoom);
           }
@@ -155,7 +164,7 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
       }
     });
 
-    var keyCoach = "key_did_show_main_view_coach_marks";
+    var keyCoach = SL.of(context).mainview_keyDidShowMainViewCoachMarks;
     var didShowCoachMarks = GpPreferences().getBooleanSync(keyCoach, false);
     if (!didShowCoachMarks) {
       coachMarks.showTutorial(context);
@@ -174,9 +183,12 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
 
   WillPopScope consumeBuild(SmashMapBuilder mapBuilder) {
     var layers = <LayerOptions>[];
-    _iconSize = GpPreferences().getDoubleSync(SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
-    var projectState = Provider.of<ProjectState>(mapBuilder.context, listen: false);
-    var mapState = Provider.of<SmashMapState>(mapBuilder.context, listen: false);
+    _iconSize = GpPreferences().getDoubleSync(
+        SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+    var projectState =
+        Provider.of<ProjectState>(mapBuilder.context, listen: false);
+    var mapState =
+        Provider.of<SmashMapState>(mapBuilder.context, listen: false);
 
     if (_mapController != null && _mapController.ready) {
       if (EXPERIMENTAL_ROTATION__ENABLED) {
@@ -206,7 +218,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     ProjectData projectData = addProjectMarkers(projectState, layers);
     addPluginsPostLayers(pluginsList, layers);
 
-    GeometryEditorState editorState = Provider.of<GeometryEditorState>(context, listen: false);
+    GeometryEditorState editorState =
+        Provider.of<GeometryEditorState>(context, listen: false);
     if (editorState.editableGeometry != null) {
       GeometryEditManager().startEditing(editorState.editableGeometry, () {
         setState(() {});
@@ -229,7 +242,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
                   onPressed: () {
                     Scaffold.of(context).openDrawer();
                   },
-                  tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                  tooltip:
+                      MaterialLocalizations.of(context).openAppDrawerTooltip,
                 );
               },
             ),
@@ -254,19 +268,27 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
                   maxZoom: SmashMapState.MAXZOOM,
                   plugins: pluginsList,
                   onPositionChanged: (newPosition, hasGesture) {
-                    mapState.setLastPositionQuiet(Coordinate(newPosition.center.longitude, newPosition.center.latitude), newPosition.zoom);
+                    mapState.setLastPositionQuiet(
+                        Coordinate(newPosition.center.longitude,
+                            newPosition.center.latitude),
+                        newPosition.zoom);
                   },
                   onTap: (point) {
                     GeometryEditManager().onMapTap(context, point);
                   },
                   onLongPress: (point) {
-                    GeometryEditManager().onMapLongTap(context, point, _mapController.zoom.round());
+                    GeometryEditManager().onMapLongTap(
+                        context, point, _mapController.zoom.round());
                   },
                 ),
                 layers: layers,
                 mapController: _mapController,
               ),
-              mapBuilder.inProgress ? Center(child: SmashCircularProgress(label: "Loading data...")) : Container(),
+              mapBuilder.inProgress
+                  ? Center(
+                      child: SmashCircularProgress(
+                          label: SL.of(context).mainview_loadingData))
+                  : Container(),
               Align(
                 alignment: Alignment.bottomRight,
                 child: _iconMode == IconMode.NAVIGATION_MODE
@@ -304,12 +326,14 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
             children: [
               new Container(
                 margin: EdgeInsets.only(bottom: 20),
-                child: new DrawerHeader(child: Image.asset("assets/smash_icon.png")),
+                child: new DrawerHeader(
+                    child: Image.asset("assets/smash_icon.png")),
                 color: SmashColors.mainBackground,
               ),
               new Container(
                 child: new Column(
-                    children: DashboardUtils.getDrawerTilesList(context, _mapController)
+                    children: DashboardUtils.getDrawerTilesList(
+                        context, _mapController)
                       ..add(
                         getExitTile(context, mapBuilder, mapState),
                       )),
@@ -318,7 +342,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
           )),
           endDrawer: Drawer(
               child: ListView(
-            children: DashboardUtils.getEndDrawerListTiles(context, _mapController),
+            children:
+                DashboardUtils.getEndDrawerListTiles(context, _mapController),
           )),
           // Theme(
           //   data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
@@ -332,23 +357,28 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
           //   )),
           // ),
 
-          bottomNavigationBar:
-              _iconMode == IconMode.NAVIGATION_MODE ? addBottomNavigationBar(mapBuilder, projectData, mapState) : BottomToolsBar(_iconSize),
+          bottomNavigationBar: _iconMode == IconMode.NAVIGATION_MODE
+              ? addBottomNavigationBar(mapBuilder, projectData, mapState)
+              : BottomToolsBar(_iconSize),
         ),
         onWillPop: () async {
           return Future.value(false);
         });
   }
 
-  Widget getExitTile(BuildContext context, SmashMapBuilder mapBuilder, SmashMapState mapState) {
+  Widget getExitTile(BuildContext context, SmashMapBuilder mapBuilder,
+      SmashMapState mapState) {
     if (Platform.isIOS) {
       return Consumer<GpsState>(builder: (context, gpsState, child) {
-        var gpsStatusIcon = DashboardUtils.getGpsStatusIcon(gpsState.status, SmashUI.MEDIUM_ICON_SIZE);
+        var gpsStatusIcon = DashboardUtils.getGpsStatusIcon(
+            gpsState.status, SmashUI.MEDIUM_ICON_SIZE);
         var gpsIsOff = gpsState.status == GpsStatus.OFF;
         return ListTile(
           leading: gpsStatusIcon,
           title: SmashUI.normalText(
-            gpsIsOff ? "Turn GPS on" : "Turn GPS off",
+            gpsIsOff
+                ? SL.of(context).mainview_turnGPSon
+                : SL.of(context).mainview_turnGPSoff,
             bold: true,
             color: SmashColors.mainDecorations,
           ),
@@ -379,7 +409,9 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
         ),
         onTap: () async {
           bool doExit = await SmashDialogs.showConfirmDialog(
-              mapBuilder.context, "Are you sure you want to close the project?", "Active operations will be stopped.");
+              mapBuilder.context,
+              SL.of(context).mainview_areYouSureYouWantToCloseTheProject,
+              SL.of(context).mainview_activeOperationsWillBeStopped);
           if (doExit != null && doExit) {
             await FenceMaster().writeFences();
             await mapState.persistLastPosition();
@@ -396,14 +428,14 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     return <Widget>[
       IconButton(
           key: coachMarks.coachMarkButtonKey,
-          tooltip: "Show interactive coach marks.",
+          tooltip: SL.of(context).mainview_showInteractiveCoachMarks,
           icon: Icon(MdiIcons.helpCircleOutline),
           onPressed: () {
             coachMarks.showTutorial(context);
           }),
       IconButton(
           key: coachMarks.toolsButtonKey,
-          tooltip: "Open tools drawer.",
+          tooltip: SL.of(context).mainview_openToolsDrawer,
           icon: Icon(MdiIcons.tools),
           onPressed: () {
             _scaffoldKey.currentState.openEndDrawer();
@@ -411,7 +443,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     ];
   }
 
-  BottomAppBar addBottomNavigationBar(SmashMapBuilder mapBuilder, ProjectData projectData, SmashMapState mapState) {
+  BottomAppBar addBottomNavigationBar(SmashMapBuilder mapBuilder,
+      ProjectData projectData, SmashMapState mapState) {
     return BottomAppBar(
       color: SmashColors.mainDecorations,
       child: Row(
@@ -435,7 +468,7 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
                 onPressed: () {
                   mapState.zoomIn();
                 },
-                tooltip: 'Zoom in',
+                tooltip: SL.of(context).mainview_zoomIn,
                 icon: Icon(
                   SmashIcons.zoomInIcon,
                   color: SmashColors.mainBackground,
@@ -451,7 +484,7 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
             onPressed: () {
               mapState.zoomOut();
             },
-            tooltip: 'Zoom out',
+            tooltip: SL.of(context).mainview_zoomOut,
             icon: Icon(
               SmashIcons.zoomOutIcon,
               color: SmashColors.mainBackground,
@@ -478,7 +511,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
         ),
       ),
       onTap: () async {
-        await Navigator.push(mapBuilder.context, MaterialPageRoute(builder: (context) => LayersPage()));
+        await Navigator.push(mapBuilder.context,
+            MaterialPageRoute(builder: (context) => LayersPage()));
 
         var layers = await LayerManager().loadLayers(context);
         _activeLayers.clear();
@@ -492,7 +526,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     );
   }
 
-  Widget makeFormNotesButton(SmashMapBuilder mapBuilder, ProjectData projectData) {
+  Widget makeFormNotesButton(
+      SmashMapBuilder mapBuilder, ProjectData projectData) {
     return DashboardUtils.makeToolbarBadge(
       GestureDetector(
         child: Padding(
@@ -507,11 +542,13 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
           ),
         ),
         onTap: () async {
-          var gpsState = Provider.of<GpsState>(mapBuilder.context, listen: false);
+          var gpsState =
+              Provider.of<GpsState>(mapBuilder.context, listen: false);
           var noteInGpsMode = gpsState.insertInGpsMode;
           var titleWithMode = Column(
             children: [
-              SmashUI.titleText("Form Notes", color: SmashColors.mainSelection, bold: true),
+              SmashUI.titleText(SL.of(context).mainview_simpleForm,
+                  color: SmashColors.mainSelection, bold: true),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: GpsInsertionModeSelector(),
@@ -527,18 +564,25 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
             iconNames.add(icon4section);
           });
 
-          var selectedSection = await SmashDialogs.showComboDialog(mapBuilder.context, titleWithMode, sectionNames, iconNames: iconNames);
+          var selectedSection = await SmashDialogs.showComboDialog(
+              mapBuilder.context, titleWithMode, sectionNames,
+              iconNames: iconNames);
           // refresh mode
           noteInGpsMode = gpsState.insertInGpsMode;
           if (selectedSection != null) {
-            Widget appbarWidget = getDialogTitleWithInsertionMode(selectedSection, noteInGpsMode, SmashColors.mainBackground);
+            Widget appbarWidget = getDialogTitleWithInsertionMode(
+                selectedSection, noteInGpsMode, SmashColors.mainBackground);
 
             var selectedIndex = sectionNames.indexOf(selectedSection);
             var iconName = iconNames[selectedIndex];
             var sectionMap = allSectionsMap[selectedSection];
             var jsonString = jsonEncode(sectionMap);
-            Note note = DataLoaderUtilities.addNote(mapBuilder, noteInGpsMode, _mapController,
-                text: selectedSection, form: jsonString, iconName: iconName, color: ColorExt.asHex(SmashColors.mainDecorationsDarker));
+            Note note = DataLoaderUtilities.addNote(
+                mapBuilder, noteInGpsMode, _mapController,
+                text: selectedSection,
+                form: jsonString,
+                iconName: iconName,
+                color: ColorExt.asHex(SmashColors.mainDecorationsDarker));
 
             Navigator.push(mapBuilder.context, MaterialPageRoute(
               builder: (context) {
@@ -546,7 +590,9 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
                   sectionMap,
                   appbarWidget,
                   selectedSection,
-                  noteInGpsMode == POINT_INSERTION_MODE_GPS ? gpsState.lastGpsPosition : _mapController.center,
+                  noteInGpsMode == POINT_INSERTION_MODE_GPS
+                      ? gpsState.lastGpsPosition
+                      : _mapController.center,
                   note.id,
                   SmashFormHelper(),
                 );
@@ -555,9 +601,14 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
           }
         },
         onLongPress: () {
-          ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+          ProjectState projectState =
+              Provider.of<ProjectState>(context, listen: false);
 
-          Navigator.push(mapBuilder.context, MaterialPageRoute(builder: (context) => NotesListWidget(false, projectState.projectDb)));
+          Navigator.push(
+              mapBuilder.context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      NotesListWidget(false, projectState.projectDb)));
         },
         onDoubleTap: () async {
           await openNotesViewSettings();
@@ -568,7 +619,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     );
   }
 
-  Widget makeSimpleNoteButton(SmashMapBuilder mapBuilder, ProjectData projectData) {
+  Widget makeSimpleNoteButton(
+      SmashMapBuilder mapBuilder, ProjectData projectData) {
     return DashboardUtils.makeToolbarBadge(
       GestureDetector(
         child: InkWell(
@@ -583,33 +635,53 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
           ),
         ),
         onTap: () async {
-          var gpsState = Provider.of<GpsState>(mapBuilder.context, listen: false);
+          var gpsState =
+              Provider.of<GpsState>(mapBuilder.context, listen: false);
 
           var titleWithMode = Column(
             children: [
-              SmashUI.titleText("Simple Notes", color: SmashColors.mainSelection, bold: true),
+              SmashUI.titleText(SL.of(context).mainview_simpleNotes,
+                  color: SmashColors.mainSelection, bold: true),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: GpsInsertionModeSelector(),
               ),
             ],
           );
-          List<String> types = ["note", "image"];
-          var selectedType = await SmashDialogs.showComboDialog(mapBuilder.context, titleWithMode, types);
+          List<String> types = [
+            SL.of(context).mainview_note,
+            SL.of(context).mainview_image
+          ];
+          var selectedType = await SmashDialogs.showComboDialog(
+              mapBuilder.context, titleWithMode, types);
           var noteInGpsMode = gpsState.insertInGpsMode;
           if (selectedType == types[0]) {
-            Note note = DataLoaderUtilities.addNote(mapBuilder, noteInGpsMode, _mapController);
-            await Navigator.push(mapBuilder.context, MaterialPageRoute(builder: (context) => NotePropertiesWidget(note)));
+            Note note = DataLoaderUtilities.addNote(
+                mapBuilder, noteInGpsMode, _mapController);
+            await Navigator.push(
+                mapBuilder.context,
+                MaterialPageRoute(
+                    builder: (context) => NotePropertiesWidget(note)));
           } else if (selectedType == types[1]) {
-            await DataLoaderUtilities.addImage(mapBuilder.context,
-                noteInGpsMode == POINT_INSERTION_MODE_GPS ? gpsState.lastGpsPosition : _mapController.center, gpsState.useFilteredGps);
-            ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+            await DataLoaderUtilities.addImage(
+                mapBuilder.context,
+                noteInGpsMode == POINT_INSERTION_MODE_GPS
+                    ? gpsState.lastGpsPosition
+                    : _mapController.center,
+                gpsState.useFilteredGps);
+            ProjectState projectState =
+                Provider.of<ProjectState>(context, listen: false);
             projectState.reloadProject(context);
           }
         },
         onLongPress: () {
-          ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
-          Navigator.push(mapBuilder.context, MaterialPageRoute(builder: (context) => NotesListWidget(true, projectState.projectDb)));
+          ProjectState projectState =
+              Provider.of<ProjectState>(context, listen: false);
+          Navigator.push(
+              mapBuilder.context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      NotesListWidget(true, projectState.projectDb)));
         },
         onDoubleTap: () async {
           await openNotesViewSettings();
@@ -628,7 +700,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
         child: NotesViewSetting(),
       ),
     );
-    await showDialog(context: context, builder: (BuildContext context) => settingsDialog);
+    await showDialog(
+        context: context, builder: (BuildContext context) => settingsDialog);
   }
 
   Future openPluginsViewSettings() async {
@@ -639,10 +712,12 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
         child: PluginsViewSetting(),
       ),
     );
-    await showDialog(context: context, builder: (BuildContext context) => settingsDialog);
+    await showDialog(
+        context: context, builder: (BuildContext context) => settingsDialog);
   }
 
-  void addPluginsPreLayers(List<MapPlugin> pluginsList, List<LayerOptions> layers) {
+  void addPluginsPreLayers(
+      List<MapPlugin> pluginsList, List<LayerOptions> layers) {
     if (PluginsHandler.FENCE.isOn()) {
       layers.add(FencesPluginOption());
       pluginsList.add(FencesPlugin());
@@ -667,7 +742,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     }
   }
 
-  void addPluginsPostLayers(List<MapPlugin> pluginsList, List<LayerOptions> layers) {
+  void addPluginsPostLayers(
+      List<MapPlugin> pluginsList, List<LayerOptions> layers) {
     if (PluginsHandler.HEATMAP_WORKING && PluginsHandler.LOG_HEATMAP.isOn()) {
       layers.add(HeatmapPluginOption());
       pluginsList.add(HeatmapPlugin());
@@ -681,7 +757,8 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     ));
     pluginsList.add(CurrentGpsLogPlugin());
 
-    int tapAreaPixels = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50);
+    int tapAreaPixels = GpPreferences()
+        .getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50);
     layers.add(FeatureInfoPluginOption(
       tapAreaPixelSize: tapAreaPixels.toDouble(),
     ));
@@ -721,11 +798,13 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     pluginsList.add(RulerPlugin());
   }
 
-  ProjectData addProjectMarkers(ProjectState projectState, List<LayerOptions> layers) {
+  ProjectData addProjectMarkers(
+      ProjectState projectState, List<LayerOptions> layers) {
     var projectData = projectState.projectData;
     if (projectData != null) {
       if (projectData.geopapLogs != null) layers.add(projectData.geopapLogs);
-      if (projectData.geopapMarkers != null && projectData.geopapMarkers.length > 0) {
+      if (projectData.geopapMarkers != null &&
+          projectData.geopapMarkers.length > 0) {
         var markerCluster = MarkerClusterLayerOptions(
           maxClusterRadius: 80,
           //        height: 40,
@@ -735,7 +814,9 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
           ),
           markers: projectData.geopapMarkers,
           polygonOptions: PolygonOptions(
-              borderColor: SmashColors.mainDecorationsDarker, color: SmashColors.mainDecorations.withOpacity(0.2), borderStrokeWidth: 3),
+              borderColor: SmashColors.mainDecorationsDarker,
+              color: SmashColors.mainDecorations.withOpacity(0.2),
+              borderStrokeWidth: 3),
           builder: (context, markers) {
             return FloatingActionButton(
               child: Text(markers.length.toString()),
@@ -756,14 +837,16 @@ class MainViewWidgetState extends State<MainViewWidget> with WidgetsBindingObser
     WidgetsBinding.instance.removeObserver(this);
     _centerOnGpsTimer.cancel();
 
-    ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+    ProjectState projectState =
+        Provider.of<ProjectState>(context, listen: false);
     projectState?.close();
 
     await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
   }
 }
 
-Widget getDialogTitleWithInsertionMode(String title, int noteInGpsMode, Color color) {
+Widget getDialogTitleWithInsertionMode(
+    String title, int noteInGpsMode, Color color) {
   return Row(
     children: [
       Expanded(
@@ -788,7 +871,8 @@ class GpsInsertionModeSelector extends StatefulWidget {
   GpsInsertionModeSelector({Key key}) : super(key: key);
 
   @override
-  _GpsInsertionModeSelectorState createState() => _GpsInsertionModeSelectorState();
+  _GpsInsertionModeSelectorState createState() =>
+      _GpsInsertionModeSelectorState();
 }
 
 class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
@@ -796,7 +880,8 @@ class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
 
   @override
   Widget build(BuildContext context) {
-    _mode = GpPreferences().getIntSync(KEY_DO_NOTE_IN_GPS, POINT_INSERTION_MODE_GPS);
+    _mode = GpPreferences()
+        .getIntSync(KEY_DO_NOTE_IN_GPS, POINT_INSERTION_MODE_GPS);
 
     var gpsState = Provider.of<GpsState>(context, listen: false);
 
@@ -811,13 +896,17 @@ class _GpsInsertionModeSelectorState extends State<GpsInsertionModeSelector> {
     if (gpsState.hasFix()) {
       buttons.add(Padding(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Tooltip(message: "Enter note in GPS position.", child: Icon(SmashIcons.locationIcon)),
+        child: Tooltip(
+            message: SL.of(context).mainview_enterNoteInGPSPosition,
+            child: Icon(SmashIcons.locationIcon)),
       ));
       sel.add(_mode == POINT_INSERTION_MODE_GPS);
     }
     buttons.add(Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: Tooltip(message: "Enter note in the map center.", child: Icon(MdiIcons.imageFilterCenterFocus)),
+      child: Tooltip(
+          message: SL.of(context).mainview_enterNoteInTheMapCenter,
+          child: Icon(MdiIcons.imageFilterCenterFocus)),
     ));
     sel.add(_mode == POINT_INSERTION_MODE_MAPCENTER);
 

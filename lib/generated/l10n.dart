@@ -244,6 +244,166 @@ class SL {
       args: [],
     );
   }
+
+  /// `key_did_show_main_view_coach_marks`
+  String get mainview_keyDidShowMainViewCoachMarks {
+    return Intl.message(
+      'key_did_show_main_view_coach_marks',
+      name: 'mainview_keyDidShowMainViewCoachMarks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading data...`
+  String get mainview_loadingData {
+    return Intl.message(
+      'Loading data...',
+      name: 'mainview_loadingData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to close the project?`
+  String get mainview_areYouSureYouWantToCloseTheProject {
+    return Intl.message(
+      'Are you sure you want to close the project?',
+      name: 'mainview_areYouSureYouWantToCloseTheProject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active operations will be stopped.`
+  String get mainview_activeOperationsWillBeStopped {
+    return Intl.message(
+      'Active operations will be stopped.',
+      name: 'mainview_activeOperationsWillBeStopped',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show interactive coach marks.`
+  String get mainview_showInteractiveCoachMarks {
+    return Intl.message(
+      'Show interactive coach marks.',
+      name: 'mainview_showInteractiveCoachMarks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open tools drawer.`
+  String get mainview_openToolsDrawer {
+    return Intl.message(
+      'Open tools drawer.',
+      name: 'mainview_openToolsDrawer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom in`
+  String get mainview_zoomIn {
+    return Intl.message(
+      'Zoom in',
+      name: 'mainview_zoomIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom out`
+  String get mainview_zoomOut {
+    return Intl.message(
+      'Zoom out',
+      name: 'mainview_zoomOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Simple Form`
+  String get mainview_simpleForm {
+    return Intl.message(
+      'Simple Form',
+      name: 'mainview_simpleForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Simple Notes`
+  String get mainview_simpleNotes {
+    return Intl.message(
+      'Simple Notes',
+      name: 'mainview_simpleNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `note`
+  String get mainview_note {
+    return Intl.message(
+      'note',
+      name: 'mainview_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `image`
+  String get mainview_image {
+    return Intl.message(
+      'image',
+      name: 'mainview_image',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn GPS on`
+  String get mainview_turnGPSon {
+    return Intl.message(
+      'Turn GPS on',
+      name: 'mainview_turnGPSon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn GPS off`
+  String get mainview_turnGPSoff {
+    return Intl.message(
+      'Turn GPS off',
+      name: 'mainview_turnGPSoff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter note in the map center.`
+  String get mainview_enterNoteInTheMapCenter {
+    return Intl.message(
+      'Enter note in the map center.',
+      name: 'mainview_enterNoteInTheMapCenter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter note in GPS position.`
+  String get mainview_enterNoteInGPSPosition {
+    return Intl.message(
+      'Enter note in GPS position.',
+      name: 'mainview_enterNoteInGPSPosition',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
