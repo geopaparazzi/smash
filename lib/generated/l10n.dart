@@ -884,6 +884,186 @@ class SL {
       args: [],
     );
   }
+
+  /// `Import`
+  String get import_widget_import {
+    return Intl.message(
+      'Import',
+      name: 'import_widget_import',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GSS`
+  String get import_widget_GSS {
+    return Intl.message(
+      'GSS',
+      name: 'import_widget_GSS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import from Geopaparazzi Survey Server`
+  String get import_widget_importFromGSS {
+    return Intl.message(
+      'Import from Geopaparazzi Survey Server',
+      name: 'import_widget_importFromGSS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GSS Import`
+  String get gss_import_gssImport {
+    return Intl.message(
+      'GSS Import',
+      name: 'gss_import_gssImport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Downloading data list...`
+  String get gss_import_downloadData {
+    return Intl.message(
+      'Downloading data list...',
+      name: 'gss_import_downloadData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to download data list due to an error. Check your settings and the log.`
+  String get gss_import_downloadDataError {
+    return Intl.message(
+      'Unable to download data list due to an error. Check your settings and the log.',
+      name: 'gss_import_downloadDataError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No GSS server url has been set. Check your settings.`
+  String get gss_import_noServerURL {
+    return Intl.message(
+      'No GSS server url has been set. Check your settings.',
+      name: 'gss_import_noServerURL',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No GSS server password has been set. Check your settings.`
+  String get gss_import_noServerPassword {
+    return Intl.message(
+      'No GSS server password has been set. Check your settings.',
+      name: 'gss_import_noServerPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No permission to access the server. Check your credentials.`
+  String get gss_import_credentialsError {
+    return Intl.message(
+      'No permission to access the server. Check your credentials.',
+      name: 'gss_import_credentialsError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data`
+  String get gss_import_data {
+    return Intl.message(
+      'Data',
+      name: 'gss_import_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Datasets are downloaded into the maps folder.`
+  String get gss_import_dataDownload {
+    return Intl.message(
+      'Datasets are downloaded into the maps folder.',
+      name: 'gss_import_dataDownload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No data available.`
+  String get gss_import_dataDownloadError {
+    return Intl.message(
+      'No data available.',
+      name: 'gss_import_dataDownloadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Projects`
+  String get gss_import_projects {
+    return Intl.message(
+      'Projects',
+      name: 'gss_import_projects',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Projects are downloaded into the projects folder.`
+  String get gss_import_projectsDownload {
+    return Intl.message(
+      'Projects are downloaded into the projects folder.',
+      name: 'gss_import_projectsDownload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No projects available.`
+  String get gss_import_projectsDownloadError {
+    return Intl.message(
+      'No projects available.',
+      name: 'gss_import_projectsDownloadError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forms`
+  String get gss_import_forms {
+    return Intl.message(
+      'Forms',
+      name: 'gss_import_forms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags files are downloaded into the forms folder.`
+  String get gss_import_formsDownload {
+    return Intl.message(
+      'Tags files are downloaded into the forms folder.',
+      name: 'gss_import_formsDownload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No tags available.`
+  String get gss_import_formsDownloadError {
+    return Intl.message(
+      'No tags available.',
+      name: 'gss_import_formsDownloadError',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

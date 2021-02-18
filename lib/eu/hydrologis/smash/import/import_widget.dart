@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/import/gss_import.dart';
+import '../../../../generated/l10n.dart';
 
 class ImportWidget extends StatefulWidget {
   ImportWidget({Key key}) : super(key: key);
@@ -21,7 +22,7 @@ class _ImportWidgetState extends State<ImportWidget> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Import"),
+        title: new Text(SL.of(context).import_widget_import),
       ),
       body: ListView(children: <Widget>[
         ListTile(
@@ -29,8 +30,8 @@ class _ImportWidgetState extends State<ImportWidget> {
               MdiIcons.cloudLock,
               color: SmashColors.mainDecorations,
             ),
-            title: Text("GSS"),
-            subtitle: Text("Import from Geopaparazzi Survey Server"),
+            title: Text(SL.of(context).import_widget_GSS),
+            subtitle: Text(SL.of(context).import_widget_importFromGSS),
             onTap: () {
               Navigator.push(
                   context,

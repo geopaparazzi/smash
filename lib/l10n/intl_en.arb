@@ -88,5 +88,25 @@
   "toolbar_tools_queryFeatures": "Query features from loaded vector layers.",
   "toolbar_tools_measureDistance": "Measure distances on the map with your finger.",
   "toolbar_tools_toggleFence": "Toggle fence in map center.",
-  "toolbar_tools_modifyGeometries": "Modify geometries in editable vector layers."
+  "toolbar_tools_modifyGeometries": "Modify geometries in editable vector layers.",
+
+  "import_widget_import": "Import",
+  "import_widget_GSS": "GSS",
+  "import_widget_importFromGSS": "Import from Geopaparazzi Survey Server",
+
+  "gss_import_gssImport": "GSS Import",
+  "gss_import_downloadData": "Downloading data list...",
+  "gss_import_downloadDataError": "Unable to download data list due to an error. Check your settings and the log.",
+  "gss_import_noServerURL": "No GSS server url has been set. Check your settings.",
+  "gss_import_noServerPassword": "No GSS server password has been set. Check your settings.",
+  "gss_import_credentialsError": "No permission to access the server. Check your credentials.",
+  "gss_import_data": "Data",
+  "gss_import_dataDownload": "Datasets are downloaded into the maps folder.",
+  "gss_import_dataDownloadError": "No data available.",
+  "gss_import_projects": "Projects",
+  "gss_import_projectsDownload": "Projects are downloaded into the projects folder.",
+  "gss_import_projectsDownloadError": "No projects available.",
+  "gss_import_forms": "Forms",
+  "gss_import_formsDownload": "Tags files are downloaded into the forms folder.",
+  "gss_import_formsDownloadError": "No tags available."
 }
