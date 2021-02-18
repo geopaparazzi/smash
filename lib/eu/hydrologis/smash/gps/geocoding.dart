@@ -19,6 +19,7 @@ import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
  */
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import '../../../../generated/l10n.dart';
 
 /// Geocoding widget that makes use of the [MainEventHandler] to move to the
 /// chosen location.
@@ -36,7 +37,8 @@ class GeocodingPageState extends State<GeocodingPage> {
   @override
   void initState() {
     var inputDecoration = InputDecoration(
-        labelText: "Enter search address", hintText: "Via Ipazia, 2");
+        labelText: SL.of(context).geocoding_enterAddress,
+        hintText: SL.of(context).geocoding_addressExample);
     textField = TextFormField(
       controller: textEditingController,
       decoration: inputDecoration,
@@ -49,11 +51,12 @@ class GeocodingPageState extends State<GeocodingPage> {
     try {
       addresses = await Geocoder.local.findAddressesFromQuery(query);
     } on Exception catch (e, s) {
-      SMLogger().e("Unable to geocode $query", e, s);
+      SMLogger().e(SL.of(context).geocoding_unableGeocode(query), e, s);
     }
     searching = false;
     if (addresses == null || addresses.isEmpty) {
-      SmashDialogs.showWarningDialog(context, "Could not find any address.");
+      SmashDialogs.showWarningDialog(
+          context, SL.of(context).geocoding_noAddressFound);
     } else {
       setState(() {
         _addresses.clear();
@@ -77,21 +80,21 @@ class GeocodingPageState extends State<GeocodingPage> {
           },
         ),
         title: Text("${address.addressLine}"),
-        subtitle: Text(
-            "Lat: ${address.coordinates.latitude} Lon: ${address.coordinates.longitude}"),
+        subtitle: Text(SL.of(context).geocoding_latLon(
+            address.coordinates.latitude, address.coordinates.longitude)),
       );
     }));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Geocoding"),
+        title: Text(SL.of(context).geocoding_title),
         actions: <Widget>[
           IconButton(
             onPressed: () {
               String query = textEditingController.text;
               if (query.trim().isEmpty) {
                 SmashDialogs.showWarningDialog(
-                    context, "Nothing to look for. Insert an address.");
+                    context, SL.of(context).geocoding_nothingToSearch);
                 return;
               }
               search(context, query);
@@ -100,7 +103,7 @@ class GeocodingPageState extends State<GeocodingPage> {
               });
             },
             icon: Icon(Icons.refresh),
-            tooltip: "Launch Geocoding",
+            tooltip: SL.of(context).geocoding_launchGeocoding,
           ),
         ],
       ),
@@ -118,7 +121,9 @@ class GeocodingPageState extends State<GeocodingPage> {
               ),
             ),
             searching
-                ? Center(child: SmashCircularProgress(label: "Searching..."))
+                ? Center(
+                    child: SmashCircularProgress(
+                        label: SL.of(context).geocoding_searching))
                 : Container(
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),

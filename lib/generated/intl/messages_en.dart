@@ -23,6 +23,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m1(appName) => "ABOUT ${appName}";
 
+  static m2(latitude, longitude) => "Lat: ${latitude} Lon: ${longitude}";
+
+  static m3(query) => "Unable to geocode ${query}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "about_copyright" : MessageLookupByLibrary.simpleMessage("Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit."),
@@ -41,6 +45,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "about_version" : MessageLookupByLibrary.simpleMessage("Application version"),
     "form_smash_utils_POI" : MessageLookupByLibrary.simpleMessage("POI"),
     "form_smash_utils_couldNotSaveImageInDatabase" : MessageLookupByLibrary.simpleMessage("Could not save image in database."),
+    "geocoding_addressExample" : MessageLookupByLibrary.simpleMessage("Via Ipazia, 2"),
+    "geocoding_enterAddress" : MessageLookupByLibrary.simpleMessage("Enter search address"),
+    "geocoding_latLon" : m2,
+    "geocoding_launchGeocoding" : MessageLookupByLibrary.simpleMessage("Launch Geocoding"),
+    "geocoding_noAddressFound" : MessageLookupByLibrary.simpleMessage("Could not find any address."),
+    "geocoding_nothingToSearch" : MessageLookupByLibrary.simpleMessage("Nothing to look for. Insert an address."),
+    "geocoding_searching" : MessageLookupByLibrary.simpleMessage("Searching..."),
+    "geocoding_title" : MessageLookupByLibrary.simpleMessage("Geocoding"),
+    "geocoding_unableGeocode" : m3,
     "gss_import_credentialsError" : MessageLookupByLibrary.simpleMessage("No permission to access the server. Check your credentials."),
     "gss_import_data" : MessageLookupByLibrary.simpleMessage("Data"),
     "gss_import_dataDownload" : MessageLookupByLibrary.simpleMessage("Datasets are downloaded into the maps folder."),

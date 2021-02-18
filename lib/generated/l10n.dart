@@ -1064,6 +1064,96 @@ class SL {
       args: [],
     );
   }
+
+  /// `Enter search address`
+  String get geocoding_enterAddress {
+    return Intl.message(
+      'Enter search address',
+      name: 'geocoding_enterAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Via Ipazia, 2`
+  String get geocoding_addressExample {
+    return Intl.message(
+      'Via Ipazia, 2',
+      name: 'geocoding_addressExample',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to geocode {query}`
+  String geocoding_unableGeocode(Object query) {
+    return Intl.message(
+      'Unable to geocode $query',
+      name: 'geocoding_unableGeocode',
+      desc: '',
+      args: [query],
+    );
+  }
+
+  /// `Could not find any address.`
+  String get geocoding_noAddressFound {
+    return Intl.message(
+      'Could not find any address.',
+      name: 'geocoding_noAddressFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lat: {latitude} Lon: {longitude}`
+  String geocoding_latLon(Object latitude, Object longitude) {
+    return Intl.message(
+      'Lat: $latitude Lon: $longitude',
+      name: 'geocoding_latLon',
+      desc: '',
+      args: [latitude, longitude],
+    );
+  }
+
+  /// `Geocoding`
+  String get geocoding_title {
+    return Intl.message(
+      'Geocoding',
+      name: 'geocoding_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing to look for. Insert an address.`
+  String get geocoding_nothingToSearch {
+    return Intl.message(
+      'Nothing to look for. Insert an address.',
+      name: 'geocoding_nothingToSearch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Launch Geocoding`
+  String get geocoding_launchGeocoding {
+    return Intl.message(
+      'Launch Geocoding',
+      name: 'geocoding_launchGeocoding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Searching...`
+  String get geocoding_searching {
+    return Intl.message(
+      'Searching...',
+      name: 'geocoding_searching',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
