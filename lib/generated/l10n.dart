@@ -675,10 +675,10 @@ class SL {
     );
   }
 
-  /// ``
+  /// `License`
   String get about_license {
     return Intl.message(
-      '',
+      'License',
       name: 'about_license',
       desc: '',
       args: [],

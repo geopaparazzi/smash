@@ -27,7 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "about_copyright" : MessageLookupByLibrary.simpleMessage("Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit."),
     "about_legalInformation" : MessageLookupByLibrary.simpleMessage("Legal Information"),
-    "about_license" : MessageLookupByLibrary.simpleMessage(""),
+    "about_license" : MessageLookupByLibrary.simpleMessage("License"),
     "about_licenseText" : m0,
     "about_loadingInformation" : MessageLookupByLibrary.simpleMessage("Loading information..."),
     "about_privacyPolicy" : MessageLookupByLibrary.simpleMessage("Privacy Policy"),

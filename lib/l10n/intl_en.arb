@@ -67,7 +67,7 @@
   "about_titleBar": "ABOUT {appName}",
   "about_subtitle": "Smart Mobile App for Surveyor's Happyness",
   "about_version": "Application version",
-  "about_license": "",
+  "about_license": "License",
   "about_licenseText": "{appName} is available under the General Public License, version 3.",
   "about_sourceCode": "Source Code",
   "about_tapHereVisitRepository": "Tap here to visit the source code repository",
