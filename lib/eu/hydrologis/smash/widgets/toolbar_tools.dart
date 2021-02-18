@@ -28,6 +28,7 @@ import 'package:smash/eu/hydrologis/smash/models/tools/ruler_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smashlibs/smashlibs.dart';
+import '../../../../generated/l10n.dart';
 
 class BottomToolsBar extends StatefulWidget {
   final _iconSize;
@@ -84,7 +85,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
         onPressed: () {
           mapState.zoomOut();
         },
-        tooltip: 'Zoom out',
+        tooltip: SL.of(context).toolbar_tools_zoomOut,
         icon: Icon(
           SmashIcons.zoomOutIcon,
           color: SmashColors.mainBackground,
@@ -101,7 +102,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           onPressed: () {
             mapState.zoomIn();
           },
-          tooltip: 'Zoom in',
+          tooltip: SL.of(context).toolbar_tools_zoomIn,
           icon: Icon(
             SmashIcons.zoomInIcon,
             color: SmashColors.mainBackground,
@@ -116,7 +117,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
 
   Widget getCancelEditButton(GeometryEditorState geomEditState) {
     return Tooltip(
-      message: "Cancel current edit.",
+      message: SL.of(context).toolbar_tools_cancelEdits,
       child: GestureDetector(
         child: Padding(
           padding: SmashUI.defaultPadding(),
@@ -145,7 +146,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
 
   Widget getSaveFeatureButton(GeometryEditorState geomEditState) {
     return Tooltip(
-      message: "Save current edit.",
+      message: SL.of(context).toolbar_tools_saveEdits,
       child: GestureDetector(
         child: Padding(
           padding: SmashUI.defaultPadding(),
@@ -204,7 +205,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
 
   Widget getRemoveFeatureButton(GeometryEditorState geomEditState) {
     return Tooltip(
-      message: "Remove selected feature.",
+      message: SL.of(context).toolbar_tools_removeFeature,
       child: GestureDetector(
         child: Padding(
           padding: SmashUI.defaultPadding(),
@@ -252,7 +253,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
   Widget getOpenFeatureAttributesButton(
       GeometryEditorState geometryEditorState) {
     return Tooltip(
-      message: "Show feature attributes.",
+      message: SL.of(context).toolbar_tools_showAttributes,
       child: GestureDetector(
         child: Padding(
           padding: SmashUI.defaultPadding(),
@@ -310,8 +311,8 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
               await reloadDbLayers(db, table);
             }
           } else {
-            SmashDialogs.showWarningDialog(context,
-                "The feature does not have a primary key. Editing is not allowed.");
+            SmashDialogs.showWarningDialog(
+                context, SL.of(context).toolbar_tools_noPrimaryKey);
           }
         },
       ),
@@ -333,7 +334,7 @@ class _FeatureQueryButtonState extends State<FeatureQueryButton> {
   Widget build(BuildContext context) {
     return Consumer<InfoToolState>(builder: (context, infoState, child) {
       return Tooltip(
-        message: "Query features from loaded vector layers.",
+        message: SL.of(context).toolbar_tools_queryFeatures,
         child: GestureDetector(
           child: Padding(
             padding: SmashUI.defaultPadding(),
@@ -392,7 +393,7 @@ class RulerButton extends StatelessWidget {
         );
       }
       return Tooltip(
-        message: "Measure distances on the map with your finger.",
+        message: SL.of(context).toolbar_tools_measureDistance,
         child: GestureDetector(
           child: Padding(
             padding: SmashUI.defaultPadding(),
@@ -424,7 +425,7 @@ class FenceButton extends StatelessWidget {
     );
 
     return Tooltip(
-      message: "Toggle fence in map center.",
+      message: SL.of(context).toolbar_tools_toggleFence,
       child: GestureDetector(
         child: Padding(
           padding: SmashUI.defaultPadding(),
@@ -479,7 +480,7 @@ class _GeomEditorButtonState extends State<GeomEditorButton> {
     return Consumer<GeometryEditorState>(
         builder: (context, editorState, child) {
       return Tooltip(
-        message: "Modify geometries in editable vector layers.",
+        message: SL.of(context).toolbar_tools_modifyGeometries,
         child: GestureDetector(
           child: Padding(
             padding: SmashUI.defaultPadding(),

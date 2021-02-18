@@ -774,6 +774,116 @@ class SL {
       args: [],
     );
   }
+
+  /// `Zoom out`
+  String get toolbar_tools_zoomOut {
+    return Intl.message(
+      'Zoom out',
+      name: 'toolbar_tools_zoomOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom in`
+  String get toolbar_tools_zoomIn {
+    return Intl.message(
+      'Zoom in',
+      name: 'toolbar_tools_zoomIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel current edit.`
+  String get toolbar_tools_cancelEdits {
+    return Intl.message(
+      'Cancel current edit.',
+      name: 'toolbar_tools_cancelEdits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save current edit.`
+  String get toolbar_tools_saveEdits {
+    return Intl.message(
+      'Save current edit.',
+      name: 'toolbar_tools_saveEdits',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove selected feature.`
+  String get toolbar_tools_removeFeature {
+    return Intl.message(
+      'Remove selected feature.',
+      name: 'toolbar_tools_removeFeature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show feature attributes.`
+  String get toolbar_tools_showAttributes {
+    return Intl.message(
+      'Show feature attributes.',
+      name: 'toolbar_tools_showAttributes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The feature does not have a primary key. Editing is not allowed.`
+  String get toolbar_tools_noPrimaryKey {
+    return Intl.message(
+      'The feature does not have a primary key. Editing is not allowed.',
+      name: 'toolbar_tools_noPrimaryKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Query features from loaded vector layers.`
+  String get toolbar_tools_queryFeatures {
+    return Intl.message(
+      'Query features from loaded vector layers.',
+      name: 'toolbar_tools_queryFeatures',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Measure distances on the map with your finger.`
+  String get toolbar_tools_measureDistance {
+    return Intl.message(
+      'Measure distances on the map with your finger.',
+      name: 'toolbar_tools_measureDistance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Toggle fence in map center.`
+  String get toolbar_tools_toggleFence {
+    return Intl.message(
+      'Toggle fence in map center.',
+      name: 'toolbar_tools_toggleFence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modify geometries in editable vector layers.`
+  String get toolbar_tools_modifyGeometries {
+    return Intl.message(
+      'Modify geometries in editable vector layers.',
+      name: 'toolbar_tools_modifyGeometries',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

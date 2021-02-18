@@ -98,6 +98,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "mainview_utils_sharePosition" : MessageLookupByLibrary.simpleMessage("Share position"),
     "mainview_utils_timestamp" : MessageLookupByLibrary.simpleMessage("Timestamp"),
     "mainview_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
-    "mainview_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out")
+    "mainview_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out"),
+    "toolbar_tools_cancelEdits" : MessageLookupByLibrary.simpleMessage("Cancel current edit."),
+    "toolbar_tools_measureDistance" : MessageLookupByLibrary.simpleMessage("Measure distances on the map with your finger."),
+    "toolbar_tools_modifyGeometries" : MessageLookupByLibrary.simpleMessage("Modify geometries in editable vector layers."),
+    "toolbar_tools_noPrimaryKey" : MessageLookupByLibrary.simpleMessage("The feature does not have a primary key. Editing is not allowed."),
+    "toolbar_tools_queryFeatures" : MessageLookupByLibrary.simpleMessage("Query features from loaded vector layers."),
+    "toolbar_tools_removeFeature" : MessageLookupByLibrary.simpleMessage("Remove selected feature."),
+    "toolbar_tools_saveEdits" : MessageLookupByLibrary.simpleMessage("Save current edit."),
+    "toolbar_tools_showAttributes" : MessageLookupByLibrary.simpleMessage("Show feature attributes."),
+    "toolbar_tools_toggleFence" : MessageLookupByLibrary.simpleMessage("Toggle fence in map center."),
+    "toolbar_tools_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
+    "toolbar_tools_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out")
   };
 }

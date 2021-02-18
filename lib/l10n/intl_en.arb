@@ -76,5 +76,17 @@
   "about_supportedBy": "Supported by",
   "about_supportedByText": "Partially supported by the project Steep Stream of the University of Trento.",
   "about_privacyPolicy": "Privacy Policy",
-  "about_privacyPolicyText": "Tap here to see the privacy policy that covers user and location data."
+  "about_privacyPolicyText": "Tap here to see the privacy policy that covers user and location data.",
+
+  "toolbar_tools_zoomOut": "Zoom out",
+  "toolbar_tools_zoomIn": "Zoom in",
+  "toolbar_tools_cancelEdits": "Cancel current edit.",
+  "toolbar_tools_saveEdits": "Save current edit.",
+  "toolbar_tools_removeFeature": "Remove selected feature.",
+  "toolbar_tools_showAttributes": "Show feature attributes.",
+  "toolbar_tools_noPrimaryKey": "The feature does not have a primary key. Editing is not allowed.",
+  "toolbar_tools_queryFeatures": "Query features from loaded vector layers.",
+  "toolbar_tools_measureDistance": "Measure distances on the map with your finger.",
+  "toolbar_tools_toggleFence": "Toggle fence in map center.",
+  "toolbar_tools_modifyGeometries": "Modify geometries in editable vector layers."
 }
