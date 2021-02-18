@@ -19,8 +19,26 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static m0(appName) => "${appName} is available under the General Public License, version 3.";
+
+  static m1(appName) => "ABOUT ${appName}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "about_copyright" : MessageLookupByLibrary.simpleMessage("Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit."),
+    "about_legalInformation" : MessageLookupByLibrary.simpleMessage("Legal Information"),
+    "about_license" : MessageLookupByLibrary.simpleMessage(""),
+    "about_licenseText" : m0,
+    "about_loadingInformation" : MessageLookupByLibrary.simpleMessage("Loading information..."),
+    "about_privacyPolicy" : MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+    "about_privacyPolicyText" : MessageLookupByLibrary.simpleMessage("Tap here to see the privacy policy that covers user and location data."),
+    "about_sourceCode" : MessageLookupByLibrary.simpleMessage("Source Code"),
+    "about_subtitle" : MessageLookupByLibrary.simpleMessage("Smart Mobile App for Surveyor\'s Happyness"),
+    "about_supportedBy" : MessageLookupByLibrary.simpleMessage("Supported by"),
+    "about_supportedByText" : MessageLookupByLibrary.simpleMessage("Partially supported by the project Steep Stream of the University of Trento."),
+    "about_tapHereVisitRepository" : MessageLookupByLibrary.simpleMessage("Tap here to visit the source code repository"),
+    "about_titleBar" : m1,
+    "about_version" : MessageLookupByLibrary.simpleMessage("Application version"),
     "form_smash_utils_POI" : MessageLookupByLibrary.simpleMessage("POI"),
     "form_smash_utils_couldNotSaveImageInDatabase" : MessageLookupByLibrary.simpleMessage("Could not save image in database."),
     "main_anErrorOccurredTapToView" : MessageLookupByLibrary.simpleMessage("An error occurred. Tap to view."),

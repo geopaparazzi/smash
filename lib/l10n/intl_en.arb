@@ -61,5 +61,20 @@
   "mainview_utils_database": "Database",
 
   "form_smash_utils_couldNotSaveImageInDatabase": "Could not save image in database.",
-  "form_smash_utils_POI": "POI"
+  "form_smash_utils_POI": "POI",
+
+  "about_loadingInformation": "Loading information...",
+  "about_titleBar": "ABOUT {appName}",
+  "about_subtitle": "Smart Mobile App for Surveyor's Happyness",
+  "about_version": "Application version",
+  "about_license": "",
+  "about_licenseText": "{appName} is available under the General Public License, version 3.",
+  "about_sourceCode": "Source Code",
+  "about_tapHereVisitRepository": "Tap here to visit the source code repository",
+  "about_legalInformation": "Legal Information",
+  "about_copyright": "Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit.",
+  "about_supportedBy": "Supported by",
+  "about_supportedByText": "Partially supported by the project Steep Stream of the University of Trento.",
+  "about_privacyPolicy": "Privacy Policy",
+  "about_privacyPolicyText": "Tap here to see the privacy policy that covers user and location data."
 }

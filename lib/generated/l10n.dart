@@ -634,6 +634,146 @@ class SL {
       args: [],
     );
   }
+
+  /// `Loading information...`
+  String get about_loadingInformation {
+    return Intl.message(
+      'Loading information...',
+      name: 'about_loadingInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ABOUT {appName}`
+  String about_titleBar(Object appName) {
+    return Intl.message(
+      'ABOUT $appName',
+      name: 'about_titleBar',
+      desc: '',
+      args: [appName],
+    );
+  }
+
+  /// `Smart Mobile App for Surveyor's Happyness`
+  String get about_subtitle {
+    return Intl.message(
+      'Smart Mobile App for Surveyor\'s Happyness',
+      name: 'about_subtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Application version`
+  String get about_version {
+    return Intl.message(
+      'Application version',
+      name: 'about_version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ``
+  String get about_license {
+    return Intl.message(
+      '',
+      name: 'about_license',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{appName} is available under the General Public License, version 3.`
+  String about_licenseText(Object appName) {
+    return Intl.message(
+      '$appName is available under the General Public License, version 3.',
+      name: 'about_licenseText',
+      desc: '',
+      args: [appName],
+    );
+  }
+
+  /// `Source Code`
+  String get about_sourceCode {
+    return Intl.message(
+      'Source Code',
+      name: 'about_sourceCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap here to visit the source code repository`
+  String get about_tapHereVisitRepository {
+    return Intl.message(
+      'Tap here to visit the source code repository',
+      name: 'about_tapHereVisitRepository',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Legal Information`
+  String get about_legalInformation {
+    return Intl.message(
+      'Legal Information',
+      name: 'about_legalInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit.`
+  String get about_copyright {
+    return Intl.message(
+      'Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit.',
+      name: 'about_copyright',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supported by`
+  String get about_supportedBy {
+    return Intl.message(
+      'Supported by',
+      name: 'about_supportedBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Partially supported by the project Steep Stream of the University of Trento.`
+  String get about_supportedByText {
+    return Intl.message(
+      'Partially supported by the project Steep Stream of the University of Trento.',
+      name: 'about_supportedByText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get about_privacyPolicy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'about_privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap here to see the privacy policy that covers user and location data.`
+  String get about_privacyPolicyText {
+    return Intl.message(
+      'Tap here to see the privacy policy that covers user and location data.',
+      name: 'about_privacyPolicyText',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
