@@ -36,5 +36,30 @@
   "mainview_turnGPSon": "Turn GPS on",
   "mainview_turnGPSoff": "Turn GPS off",
   "mainview_enterNoteInTheMapCenter": "Enter note in the map center.",
-  "mainview_enterNoteInGPSPosition": "Enter note in GPS position."
+  "mainview_enterNoteInGPSPosition": "Enter note in GPS position.",
+
+  "mainview_utils_projects": "Projects",
+  "mainview_utils_import": "Import",
+  "mainview_utils_export": "Export",
+  "mainview_utils_settings": "Settings",
+  "mainview_utils_onlineHelp": "Online Help",
+  "mainview_utils_about": "About",
+  "mainview_utils_projectInfo": "Project Info",
+  "mainview_utils_extras": "Extras",
+  "mainview_utils_availableIcons": "Available icons",
+  "mainview_utils_offlineMaps": "Offline maps",
+  "mainview_utils_positionTools": "Position Tools",
+  "mainview_utils_goTo": "Go to",
+  "mainview_utils_sharePosition": "Share position",
+  "mainview_utils_latitude": "Latitude",
+  "mainview_utils_longitude": "Longitude",
+  "mainview_utils_altitude": "Altitude",
+  "mainview_utils_accuracy": "Accuracy",
+  "mainview_utils_timestamp": "Timestamp",
+  "mainview_utils_rotateMapWithGPS": "Rotate map with GPS",
+  "mainview_utils_project": "Project",
+  "mainview_utils_database": "Database",
+
+  "form_smash_utils_couldNotSaveImageInDatabase": "Could not save image in database.",
+  "form_smash_utils_POI": "POI"
 }

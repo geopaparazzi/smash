@@ -21,6 +21,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "form_smash_utils_POI" : MessageLookupByLibrary.simpleMessage("POI"),
+    "form_smash_utils_couldNotSaveImageInDatabase" : MessageLookupByLibrary.simpleMessage("Could not save image in database."),
     "main_anErrorOccurredTapToView" : MessageLookupByLibrary.simpleMessage("An error occurred. Tap to view."),
     "main_check_location_permission" : MessageLookupByLibrary.simpleMessage("Checking location permission..."),
     "main_checkingStoragePermission" : MessageLookupByLibrary.simpleMessage("Checking storage permission..."),
@@ -56,6 +58,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "mainview_simpleNotes" : MessageLookupByLibrary.simpleMessage("Simple Notes"),
     "mainview_turnGPSoff" : MessageLookupByLibrary.simpleMessage("Turn GPS off"),
     "mainview_turnGPSon" : MessageLookupByLibrary.simpleMessage("Turn GPS on"),
+    "mainview_utils_about" : MessageLookupByLibrary.simpleMessage("About"),
+    "mainview_utils_accuracy" : MessageLookupByLibrary.simpleMessage("Accuracy"),
+    "mainview_utils_altitude" : MessageLookupByLibrary.simpleMessage("Altitude"),
+    "mainview_utils_availableIcons" : MessageLookupByLibrary.simpleMessage("Available icons"),
+    "mainview_utils_database" : MessageLookupByLibrary.simpleMessage("Database"),
+    "mainview_utils_export" : MessageLookupByLibrary.simpleMessage("Export"),
+    "mainview_utils_extras" : MessageLookupByLibrary.simpleMessage("Extras"),
+    "mainview_utils_goTo" : MessageLookupByLibrary.simpleMessage("Go to"),
+    "mainview_utils_import" : MessageLookupByLibrary.simpleMessage("Import"),
+    "mainview_utils_latitude" : MessageLookupByLibrary.simpleMessage("Latitude"),
+    "mainview_utils_longitude" : MessageLookupByLibrary.simpleMessage("Longitude"),
+    "mainview_utils_offlineMaps" : MessageLookupByLibrary.simpleMessage("Offline maps"),
+    "mainview_utils_onlineHelp" : MessageLookupByLibrary.simpleMessage("Online Help"),
+    "mainview_utils_positionTools" : MessageLookupByLibrary.simpleMessage("Position Tools"),
+    "mainview_utils_project" : MessageLookupByLibrary.simpleMessage("Project"),
+    "mainview_utils_projectInfo" : MessageLookupByLibrary.simpleMessage("Project Info"),
+    "mainview_utils_projects" : MessageLookupByLibrary.simpleMessage("Projects"),
+    "mainview_utils_rotateMapWithGPS" : MessageLookupByLibrary.simpleMessage("Rotate map with GPS"),
+    "mainview_utils_settings" : MessageLookupByLibrary.simpleMessage("Settings"),
+    "mainview_utils_sharePosition" : MessageLookupByLibrary.simpleMessage("Share position"),
+    "mainview_utils_timestamp" : MessageLookupByLibrary.simpleMessage("Timestamp"),
     "mainview_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
     "mainview_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out")
   };

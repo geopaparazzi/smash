@@ -404,6 +404,236 @@ class SL {
       args: [],
     );
   }
+
+  /// `Projects`
+  String get mainview_utils_projects {
+    return Intl.message(
+      'Projects',
+      name: 'mainview_utils_projects',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import`
+  String get mainview_utils_import {
+    return Intl.message(
+      'Import',
+      name: 'mainview_utils_import',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export`
+  String get mainview_utils_export {
+    return Intl.message(
+      'Export',
+      name: 'mainview_utils_export',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get mainview_utils_settings {
+    return Intl.message(
+      'Settings',
+      name: 'mainview_utils_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online Help`
+  String get mainview_utils_onlineHelp {
+    return Intl.message(
+      'Online Help',
+      name: 'mainview_utils_onlineHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About`
+  String get mainview_utils_about {
+    return Intl.message(
+      'About',
+      name: 'mainview_utils_about',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Project Info`
+  String get mainview_utils_projectInfo {
+    return Intl.message(
+      'Project Info',
+      name: 'mainview_utils_projectInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Extras`
+  String get mainview_utils_extras {
+    return Intl.message(
+      'Extras',
+      name: 'mainview_utils_extras',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available icons`
+  String get mainview_utils_availableIcons {
+    return Intl.message(
+      'Available icons',
+      name: 'mainview_utils_availableIcons',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offline maps`
+  String get mainview_utils_offlineMaps {
+    return Intl.message(
+      'Offline maps',
+      name: 'mainview_utils_offlineMaps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Position Tools`
+  String get mainview_utils_positionTools {
+    return Intl.message(
+      'Position Tools',
+      name: 'mainview_utils_positionTools',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go to`
+  String get mainview_utils_goTo {
+    return Intl.message(
+      'Go to',
+      name: 'mainview_utils_goTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share position`
+  String get mainview_utils_sharePosition {
+    return Intl.message(
+      'Share position',
+      name: 'mainview_utils_sharePosition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Latitude`
+  String get mainview_utils_latitude {
+    return Intl.message(
+      'Latitude',
+      name: 'mainview_utils_latitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Longitude`
+  String get mainview_utils_longitude {
+    return Intl.message(
+      'Longitude',
+      name: 'mainview_utils_longitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Altitude`
+  String get mainview_utils_altitude {
+    return Intl.message(
+      'Altitude',
+      name: 'mainview_utils_altitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accuracy`
+  String get mainview_utils_accuracy {
+    return Intl.message(
+      'Accuracy',
+      name: 'mainview_utils_accuracy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timestamp`
+  String get mainview_utils_timestamp {
+    return Intl.message(
+      'Timestamp',
+      name: 'mainview_utils_timestamp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rotate map with GPS`
+  String get mainview_utils_rotateMapWithGPS {
+    return Intl.message(
+      'Rotate map with GPS',
+      name: 'mainview_utils_rotateMapWithGPS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Project`
+  String get mainview_utils_project {
+    return Intl.message(
+      'Project',
+      name: 'mainview_utils_project',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database`
+  String get mainview_utils_database {
+    return Intl.message(
+      'Database',
+      name: 'mainview_utils_database',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not save image in database.`
+  String get form_smash_utils_couldNotSaveImageInDatabase {
+    return Intl.message(
+      'Could not save image in database.',
+      name: 'form_smash_utils_couldNotSaveImageInDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `POI`
+  String get form_smash_utils_POI {
+    return Intl.message(
+      'POI',
+      name: 'form_smash_utils_POI',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

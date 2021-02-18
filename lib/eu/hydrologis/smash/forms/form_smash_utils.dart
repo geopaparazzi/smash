@@ -11,6 +11,7 @@ import 'package:smash/eu/hydrologis/smash/project/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smashlibs/smashlibs.dart';
+import '../../../../generated/l10n.dart';
 
 /// Form utilities for smash (not web)
 
@@ -57,8 +58,8 @@ class SmashFormHelper implements AFormhelper {
         }
         return value;
       } else {
-        SmashDialogs.showWarningDialog(
-            context, "Could not save image in database.");
+        SmashDialogs.showWarningDialog(context,
+            SL.of(context).form_smash_utils_couldNotSaveImageInDatabase);
         return null;
       }
     }
@@ -124,7 +125,7 @@ class SmashFormHelper implements AFormhelper {
       }
       Note note = Note()
         ..text = sectionName
-        ..description = "POI"
+        ..description = SL.of(context).form_smash_utils_POI
         ..form = jsonForm
         ..timeStamp = ts
         ..lon = pos != null ? pos.longitude : lon

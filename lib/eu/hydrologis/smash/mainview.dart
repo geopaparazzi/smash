@@ -11,7 +11,6 @@ import 'dart:io';
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
-// import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_dragmarker/dragmarker.dart';
