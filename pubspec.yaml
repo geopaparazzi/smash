@@ -15,7 +15,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.16.1
+  intl: '>=0.16.1 <=0.17.0'
 
   ##################################
   # OWN
@@ -24,11 +24,11 @@ dependencies:
   geoimage: ^0.1.2
 
   # apache 2
-  flutter_geopackage: ^0.4.4
+  flutter_geopackage: ^0.4.6
   # path: ../flutter_geopackage/
   #  git:
   #    url: https://github.com/moovida/flutter_geopackage.git
-  dart_hydrologis_db: ^0.6.0
+  dart_hydrologis_db: ^0.6.2
   # path: ../dart_hydrologis_db/
   # git:
   #  url: https://github.com/moovida/dart_hydrologis_db.git
@@ -36,13 +36,14 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: a7da128
+      ref: c4bd45f
 
   dart_shp: ^0.3.1
 
-  dart_hydrologis_utils: ^0.5.3
-  # path: ../dart_hydrologis_utils/
-  dart_jts: ^0.0.6
+  dart_hydrologis_utils: ^0.5.4
+    # path: ../dart_hydrologis_utils/
+  dart_jts: ^0.0.7
+    # path: ../dart_jts/
 
   dart_postgis: ^0.1.0
   # git:
@@ -93,15 +94,16 @@ dependencies:
   mapsforge_flutter:
     # path: /Users/hydrologis/development/mapsforge_flutter/mapsforge_flutter
     git:
-      url: https://github.com/mikes222/mapsforge_flutter.git
-      # url: https://github.com/moovida/mapsforge_flutter.git
+      # url: https://github.com/mikes222/mapsforge_flutter.git
+      url: https://github.com/moovida/mapsforge_flutter.git
       path: mapsforge_flutter
-      ref: d5005f210da9475a5aa1d38b1d21654870826a5e
+      # ref: d5005f210da9475a5aa1d38b1d21654870826a5e
 
   #MIT
-  extended_image: ^1.5.0
-  # git:
-  #   url: https://github.com/moovida/extended_image
+  extended_image: #^1.5.0
+  #   git:
+  #     url: https://github.com/moovida/extended_image
+
   # MIT
   permission_handler: ^5.1.0
   # git: 
@@ -167,15 +169,25 @@ dependencies:
   # BSD
   url_launcher: ^5.7.10
 
-  # Apache 2.0
-  gpx: ^1.1.0
+  xml: '>=4.5.1 <=5.0.2'
 
   # Apache 2.0
-  pdf: ^2.0.0
+  gpx: #^1.1.1
+    git:
+      url: https://github.com/moovida/dart-gpx.git
+      ref: "540e167"
+
+  # Apache 2.0
+  pdf: '>=2.1.0 <=3.0.0-nullsafety.1'
+
+  # image: 3.0.0-nullsafety.0
+  # image: '>=2.1.14 <3.0.0-nullsafety.0'
 
 dev_dependencies:
   # MIT
-  flutter_launcher_icons: ^0.8.1
+  flutter_launcher_icons: #^0.8.1
+    git:
+      url: https://github.com/moovida/flutter_launcher_icons.git
 
   pedantic: ^1.9.0
 
