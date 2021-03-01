@@ -142,21 +142,21 @@ packages:
       name: dart_hydrologis_db
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.1"
+    version: "0.6.2+1"
   dart_hydrologis_utils:
     dependency: "direct main"
     description:
       name: dart_hydrologis_utils
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.3+1"
+    version: "0.5.4+2"
   dart_jts:
     dependency: "direct main"
     description:
       name: dart_jts
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.6+1"
+    version: "0.0.7+2"
   dart_postgis:
     dependency: "direct main"
     description:
@@ -205,7 +205,7 @@ packages:
       name: extended_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0"
+    version: "1.6.0"
   extended_image_library:
     dependency: transitive
     description:
@@ -266,7 +266,7 @@ packages:
       name: flutter_geopackage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.4+1"
+    version: "0.4.6+1"
   flutter_image:
     dependency: transitive
     description:
@@ -277,9 +277,11 @@ packages:
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
-      name: flutter_launcher_icons
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "542cada81f47fdfb81b1f2d73e293374d752c738"
+      url: "https://github.com/moovida/flutter_launcher_icons.git"
+    source: git
     version: "0.8.1"
   flutter_localizations:
     dependency: "direct main"
@@ -330,9 +332,11 @@ packages:
   flutter_material_pickers:
     dependency: transitive
     description:
-      name: flutter_material_pickers
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "74bf310"
+      resolved-ref: "74bf31035d58a04f42ff3cff79bdf9edea2c6adc"
+      url: "https://github.com/moovida/flutter_material_pickers.git"
+    source: git
     version: "1.9.2"
   flutter_plugin_android_lifecycle:
     dependency: transitive
@@ -380,7 +384,7 @@ packages:
       name: fluttertoast
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.1.6"
+    version: "7.1.8"
   geocoder:
     dependency: "direct main"
     description:
@@ -401,21 +405,16 @@ packages:
       name: geoimage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2"
+    version: "0.1.2+2"
   gpx:
     dependency: "direct main"
     description:
-      name: gpx
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "540e167"
+      resolved-ref: "540e1670d3b7633419b78bb3f0818b2f5365b5af"
+      url: "https://github.com/moovida/dart-gpx.git"
+    source: git
     version: "1.1.1"
-  hex:
-    dependency: transitive
-    description:
-      name: hex
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2"
   http:
     dependency: transitive
     description:
@@ -513,9 +512,9 @@ packages:
     dependency: "direct main"
     description:
       path: mapsforge_flutter
-      ref: d5005f210da9475a5aa1d38b1d21654870826a5e
-      resolved-ref: d5005f210da9475a5aa1d38b1d21654870826a5e
-      url: "https://github.com/mikes222/mapsforge_flutter.git"
+      ref: HEAD
+      resolved-ref: bbe346875eae301acdc6f0a5f43f508fee4f5b55
+      url: "https://github.com/moovida/mapsforge_flutter.git"
     source: git
     version: "1.1.0"
   matcher:
@@ -643,7 +642,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   pedantic:
     dependency: "direct dev"
     description:
@@ -828,8 +827,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: a7da128
-      resolved-ref: a7da12876cc61130b1b220256e3b91aab1a248ae
+      ref: c4bd45f
+      resolved-ref: c4bd45f94641693bbeb64860b2d90e06b9101587
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
@@ -1023,7 +1022,7 @@ packages:
     source: hosted
     version: "0.1.2"
   xml:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: xml
       url: "https://pub.dartlang.org"
