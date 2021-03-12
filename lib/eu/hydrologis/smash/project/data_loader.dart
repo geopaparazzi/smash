@@ -228,21 +228,24 @@ class DataLoaderUtilities {
                                 children: [
                                   TableUtilities.cellForString("Longitude"),
                                   TableUtilities.cellForString(note.lon
-                                      .toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
+                                      .toStringAsFixed(SmashPreferencesKeys
+                                          .KEY_LATLONG_DECIMALS)),
                                 ],
                               ),
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString("Latitude"),
                                   TableUtilities.cellForString(note.lat
-                                      .toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
+                                      .toStringAsFixed(SmashPreferencesKeys
+                                          .KEY_LATLONG_DECIMALS)),
                                 ],
                               ),
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString("Altitude"),
                                   TableUtilities.cellForString(note.altim
-                                      .toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS)),
+                                      .toStringAsFixed(SmashPreferencesKeys
+                                          .KEY_ELEV_DECIMALS)),
                                 ],
                               ),
                               TableRow(
@@ -418,21 +421,24 @@ class DataLoaderUtilities {
                           children: [
                             TableUtilities.cellForString("Longitude"),
                             TableUtilities.cellForString(image.lon
-                                .toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
+                                .toStringAsFixed(
+                                    SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
                           ],
                         ),
                         TableRow(
                           children: [
                             TableUtilities.cellForString("Latitude"),
                             TableUtilities.cellForString(image.lat
-                                .toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
+                                .toStringAsFixed(
+                                    SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
                           ],
                         ),
                         TableRow(
                           children: [
                             TableUtilities.cellForString("Altitude"),
-                            TableUtilities.cellForString(
-                                image.altim.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS)),
+                            TableUtilities.cellForString(image.altim
+                                .toStringAsFixed(
+                                    SmashPreferencesKeys.KEY_ELEV_DECIMALS)),
                           ],
                         ),
                         TableRow(
