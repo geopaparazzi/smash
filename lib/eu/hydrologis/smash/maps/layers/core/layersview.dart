@@ -374,40 +374,54 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
 
       // do features
       List<FeatureEntry> features = db.features();
-      List<String> selectedTables = [];
-      if (features.length == 1) {
-        selectedTables.add(features[0].tableName.name);
-      } else if (features.length > 1) {
-        var tableNames = features.map((f) => f.tableName.name).toList();
-        selectedTables = await SmashDialogs.showMultiSelectionComboDialog(
-            context, "Select table to load.", tableNames);
-      }
-
-      if (selectedTables != null && selectedTables.isNotEmpty) {
-        for (var selectedTable in selectedTables) {
-          GeopackageSource gps = GeopackageSource(filePath, selectedTable);
-          await gps.load(context);
-          gps.calculateSrid();
-          LayerManager().addLayerSource(gps);
-        }
-      }
-
-      // do tiles
       List<TileEntry> tiles = db.tiles();
-      selectedTables = [];
-      if (tiles.length == 1) {
-        selectedTables.add(tiles[0].tableName.name);
-      } else if (tiles.length > 1) {
-        var tableNames = tiles.map((t) => t.tableName.name).toList();
+
+      List<String> selectedTables = [];
+      List<String> allTables = [];
+      List<String> featureTables = [];
+      List<String> tilesTables = [];
+      List<IconData> iconDataList = [];
+
+      var featuresList = features.map((f) => f.tableName.name).toList();
+      featuresList.forEach((elem) {
+        featureTables.add(elem);
+        iconDataList.add(SmashIcons.iconTypeShp);
+      });
+      allTables.addAll(featuresList);
+      var tilesList = tiles.map((t) => t.tableName.name).toList();
+      tilesList.forEach((elem) {
+        tilesTables.add(elem);
+        iconDataList.add(SmashIcons.iconTypeRaster);
+      });
+      allTables.addAll(tilesList);
+
+      if (allTables.length == 1) {
+        selectedTables.add(allTables.first);
+      } else if (allTables.length > 1) {
         selectedTables = await SmashDialogs.showMultiSelectionComboDialog(
-            context, "Select table to load.", tableNames);
+            context, "Select table to load.", allTables,
+            iconDataList: iconDataList);
       }
+
+      bool oneLoaded = false;
       if (selectedTables != null && selectedTables.isNotEmpty) {
         for (var selectedTable in selectedTables) {
-          var ts = TileSource.Geopackage(filePath, selectedTable);
-          LayerManager().addLayerSource(ts);
-          return true;
+          // check if features
+          if (featureTables.contains(selectedTable)) {
+            GeopackageSource gps = GeopackageSource(filePath, selectedTable);
+            await gps.load(context);
+            gps.calculateSrid();
+            LayerManager().addLayerSource(gps);
+            oneLoaded = true;
+          } else if (tilesTables.contains(selectedTable)) {
+            var ts = TileSource.Geopackage(filePath, selectedTable);
+            LayerManager().addLayerSource(ts);
+            oneLoaded = true;
+          }
         }
+      }
+      if (oneLoaded) {
+        return true;
       }
     } finally {
       ch?.close(filePath);

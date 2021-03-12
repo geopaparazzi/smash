@@ -836,8 +836,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: c4bd45f
-      resolved-ref: c4bd45f94641693bbeb64860b2d90e06b9101587
+      ref: "8111b80"
+      resolved-ref: "8111b805fb7cb8e538efaa17a89607fe1bf8e7ce"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
@@ -861,7 +861,7 @@ packages:
       name: sqflite_common
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3+1"
+    version: "1.0.3+3"
   sqlite3:
     dependency: transitive
     description:
@@ -1015,7 +1015,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.2"
   wkt_parser:
     dependency: transitive
     description:
