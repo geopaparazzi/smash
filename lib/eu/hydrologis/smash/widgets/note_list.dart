@@ -126,8 +126,10 @@ class _NoteInfoState extends State<NoteInfo> {
       ts = dynNote.timeStamp;
       lon = dynNote.lon;
       lat = dynNote.lat;
-      if (dynNote.form != null) {
+      if (dynNote.hasForm()) {
         isForm = true;
+        // text should get the label, if there is one
+        text = FormUtilities.getFormItemLabel(dynNote.form, text);
       }
     } else {
       id = dynNote.id;

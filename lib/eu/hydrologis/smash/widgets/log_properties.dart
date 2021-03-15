@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
@@ -52,7 +53,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       _widthSliderValue = maxWidth;
     }
 
-    var logColor = EnhancedColorUtility.splitEnhancedColorString(_logItem.color);
+    var logColor =
+        EnhancedColorUtility.splitEnhancedColorString(_logItem.color);
     _logColor = ColorExt(logColor[0]);
     _ct = logColor[1];
 
@@ -68,12 +70,15 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
             _logItem.width = _widthSliderValue;
 
             var c = ColorExt.asHex(_logColor);
-            var newColorString = EnhancedColorUtility.buildEnhancedColor(c, ct: _ct);
+            var newColorString =
+                EnhancedColorUtility.buildEnhancedColor(c, ct: _ct);
 
             _logItem.color = newColorString;
 
-            ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
-            projectState.projectDb.updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
+            ProjectState projectState =
+                Provider.of<ProjectState>(context, listen: false);
+            projectState.projectDb
+                .updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
             projectState.reloadProject(context);
           }
           Navigator.pop(context, _somethingChanged);
@@ -110,8 +115,11 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                                 if (res == null || res.trim().length == 0) {
                                   res = _logItem.name;
                                 }
-                                ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
-                                projectState.projectDb.updateGpsLogName(_logItem.id, res);
+                                ProjectState projectState =
+                                    Provider.of<ProjectState>(context,
+                                        listen: false);
+                                projectState.projectDb
+                                    .updateGpsLogName(_logItem.id, res);
                                 setState(() {
                                   _logItem.name = res;
                                 });
@@ -143,19 +151,24 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       TableRow(
         children: [
           TableUtilities.cellForString("Start"),
-          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER.format(new DateTime.fromMillisecondsSinceEpoch(_logItem.startTime))),
+          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
+              .format(
+                  new DateTime.fromMillisecondsSinceEpoch(_logItem.startTime))),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("End"),
-          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER.format(new DateTime.fromMillisecondsSinceEpoch(_logItem.endTime))),
+          TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
+              .format(
+                  new DateTime.fromMillisecondsSinceEpoch(_logItem.endTime))),
         ],
       ),
       TableRow(
         children: [
           TableUtilities.cellForString("Duration"),
-          TableUtilities.cellForString(StringUtilities.formatDurationMillis(_logItem.endTime - _logItem.startTime)),
+          TableUtilities.cellForString(StringUtilities.formatDurationMillis(
+              _logItem.endTime - _logItem.startTime)),
         ],
       ),
       TableRow(
@@ -248,7 +261,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
             if (res == null || res.trim().length == 0) {
               res = item.name;
             }
-            ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
+            ProjectState projectState =
+                Provider.of<ProjectState>(context, listen: false);
             projectState.projectDb.updateGpsLogName(item.id, res);
             setState(() {
               item.name = res;
@@ -267,7 +281,9 @@ class LatLngExt extends ElevationPoint {
   double accuracy;
   int ts;
 
-  LatLngExt(double latitude, double longitude, double altim, this.prog, this.speed, this.ts, this.accuracy) : super(latitude, longitude, altim);
+  LatLngExt(double latitude, double longitude, double altim, this.prog,
+      this.speed, this.ts, this.accuracy)
+      : super(latitude, longitude, altim);
 }
 
 class LogProfileView extends StatefulWidget {
@@ -283,9 +299,13 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
   LatLngExt hoverPoint;
   List<LatLngExt> points = [];
   LatLng center;
+  LatLngBounds bounds;
   double totalLengthMeters;
   double minLineElev = double.infinity;
   double maxLineElev = double.negativeInfinity;
+  MapController mapController = new MapController();
+  List<Marker> staticMarkers = [];
+  bool _showStats = true;
 
   Function errorTileCallback = (tile, exception) {
     // ignore tiles that can't load to avoid
@@ -293,12 +313,23 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
   };
   bool overrideTilesOnUrlChange = true;
 
-  void afterFirstLayout(BuildContext context) {
+  @override
+  void initState() {
+    super.initState();
+    mapController.onReady.then((v) {
+      loadData(context);
+    });
+  }
+
+  void loadData(BuildContext context) {
     ProjectState project = Provider.of<ProjectState>(context, listen: false);
     var logDataPoints = project.projectDb.getLogDataPoints(widget.logItem.id);
-    bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
+    bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(
+        SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
     LatLngExt prevll;
     double progressiveMeters = 0;
+    var maxSpeedLL;
+    var maxSpeed = double.negativeInfinity;
     logDataPoints.forEach((p) {
       LatLng llTmp;
       if (useGpsFilteredGenerally && p.filtered_accuracy != null) {
@@ -308,14 +339,20 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       }
       LatLngExt llExt;
       if (prevll == null) {
-        llExt = LatLngExt(llTmp.latitude, llTmp.longitude, p.altim, 0, 0, p.ts, p.accuracy);
+        llExt = LatLngExt(
+            llTmp.latitude, llTmp.longitude, p.altim, 0, 0, p.ts, p.accuracy);
       } else {
         var distanceMeters = CoordinateUtilities.getDistance(prevll, llTmp);
         progressiveMeters += distanceMeters;
         var deltaTs = (p.ts - prevll.ts) / 1000;
         var speedMS = distanceMeters / deltaTs;
+        if (speedMS > maxSpeed) {
+          maxSpeed = speedMS;
+          maxSpeedLL = LatLng(p.lat, p.lon);
+        }
 
-        llExt = LatLngExt(p.lat, p.lon, p.altim, progressiveMeters, speedMS, p.ts, p.accuracy);
+        llExt = LatLngExt(p.lat, p.lon, p.altim, progressiveMeters, speedMS,
+            p.ts, p.accuracy);
       }
 
       points.add(llExt);
@@ -324,17 +361,89 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       prevll = llExt;
     });
     totalLengthMeters = progressiveMeters;
+    var halfLength = totalLengthMeters / 2;
+    var halfLengthLL;
+    var halfTime = logDataPoints.first.ts +
+        (logDataPoints.last.ts - logDataPoints.first.ts) / 2;
+    var halfTimeLL;
+    var minElevLL;
+    var maxElevLL;
+    var minElev = double.infinity;
+    var maxElev = double.negativeInfinity;
+
     Envelope env = Envelope.empty();
+    LatLng prevll2 = null;
+    progressiveMeters = 0;
     logDataPoints.forEach((point) {
       var lat = point.lat;
       var lon = point.lon;
       env.expandToInclude(lon, lat);
+      if (halfTimeLL == null && point.ts > halfTime) {
+        halfTimeLL = LatLng(lat, lon);
+      }
+      var llTmp = LatLng(lat, lon);
+      if (prevll2 != null) {
+        var distanceMeters = CoordinateUtilities.getDistance(prevll2, llTmp);
+        progressiveMeters += distanceMeters;
+        if (halfLengthLL == null && progressiveMeters >= halfLength) {
+          halfLengthLL = llTmp;
+        }
+      }
+      prevll2 = llTmp;
+
+      if (point.altim < minElev) {
+        minElevLL = LatLng(point.lat, point.lon);
+        minElev = point.altim;
+      }
+      if (point.altim > maxElev) {
+        maxElevLL = LatLng(point.lat, point.lon);
+        maxElev = point.altim;
+      }
     });
+
+    bounds = LatLngBounds.fromPoints([
+      LatLng(env.getMinY(), env.getMinX()),
+      LatLng(env.getMaxY(), env.getMaxX())
+    ]);
+    mapController.fitBounds(bounds);
 
     center = LatLng(env.centre().y, env.centre().x);
 
+    // create static markers
+    // start
+    var size = 30.0;
+    addStaticMarker(size, "start",
+        LatLng(logDataPoints.first.lat, logDataPoints.first.lon));
+    addStaticMarker(
+        size, "end", LatLng(logDataPoints.last.lat, logDataPoints.last.lon));
+    addStaticMarker(size, "1/2t", halfTimeLL);
+    addStaticMarker(size, "1/2l", halfLengthLL);
+    addStaticMarker(size, "min", minElevLL);
+    addStaticMarker(size, "max", maxElevLL);
+    addStaticMarker(size, maxSpeed.toStringAsFixed(0) + "m/s", maxSpeedLL);
+
     setState(() {});
   }
+
+  void addStaticMarker(double size, String labelText, LatLng ll) {
+    MarkerIcon mi = MarkerIcon(
+        MdiIcons.circle,
+        SmashColors.mainSelection,
+        size * 3 / 4,
+        labelText,
+        SmashColors.mainTextColorNeutral,
+        SmashColors.mainBackground.withAlpha(100));
+    staticMarkers.add(Marker(
+        anchorPos: AnchorPos.exactly(Anchor(size / 2, size * 3 / 2)),
+        point: ll,
+        width: size * 3 / 2,
+        height: size + MARKER_ICON_TEXT_EXTRA_HEIGHT,
+        builder: (ctx) {
+          return mi;
+        }));
+  }
+
+  void afterFirstLayout(BuildContext context) {}
 
   @override
   Widget build(BuildContext context) {
@@ -347,7 +456,9 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
           width: 15,
           height: 15,
           builder: (BuildContext context) => Container(
-                decoration: BoxDecoration(color: SmashColors.mainDecorations, borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(
+                    color: SmashColors.mainDecorations,
+                    borderRadius: BorderRadius.circular(8)),
               )));
 
     var height = ScreenUtilities.getHeight(context);
@@ -375,16 +486,19 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     String currentTouchStr;
     if (hoverPoint != null) {
       int currentTouchMillis = hoverPoint.ts - widget.logItem.startTime;
-      currentTouchStr = StringUtilities.formatDurationMillis(currentTouchMillis);
+      currentTouchStr =
+          StringUtilities.formatDurationMillis(currentTouchMillis);
     }
 
     PolylineLayerOptions polylines;
-    if (center != null) {
-      var clrSplit = EnhancedColorUtility.splitEnhancedColorString(widget.logItem.color);
+    if (bounds != null) {
+      var clrSplit =
+          EnhancedColorUtility.splitEnhancedColorString(widget.logItem.color);
       ColorTables colorTable = clrSplit[1];
       if (colorTable.isValid()) {
         List<Polyline> lines = [];
-        EnhancedColorUtility.buildPolylines(lines, points, colorTable, widget.logItem.width, minLineElev, maxLineElev);
+        EnhancedColorUtility.buildPolylines(lines, points, colorTable,
+            widget.logItem.width, minLineElev, maxLineElev);
 
         polylines = PolylineLayerOptions(
           polylineCulling: true,
@@ -396,7 +510,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
           polylines: [
             Polyline(
               points: points,
-              color: ColorExt(EnhancedColorUtility.splitEnhancedColorString(widget.logItem.color)[0]),
+              color: ColorExt(EnhancedColorUtility.splitEnhancedColorString(
+                  widget.logItem.color)[0]),
               strokeWidth: widget.logItem.width,
             ),
           ],
@@ -404,87 +519,118 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       }
     }
 
+    var mapLayers = <LayerOptions>[];
+
+    if (center != null) {
+      mapLayers = [
+        TileLayerOptions(
+          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          subdomains: ['a', 'b', 'c'],
+          overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+          errorTileCallback: errorTileCallback,
+        ),
+      ];
+      if (polylines != null) {
+        mapLayers.add(polylines);
+      }
+      if (staticMarkers != null && staticMarkers.isNotEmpty && _showStats) {
+        mapLayers.add(MarkerLayerOptions(markers: staticMarkers));
+      }
+      mapLayers.add(MarkerLayerOptions(markers: markers));
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text("GPS Log Profile View"),
+        title: Text("GPS Log View"),
         actions: [
           IconButton(
             icon: Icon(MdiIcons.palette),
             onPressed: () async {
-              await Navigator.push(context, MaterialPageRoute(builder: (context) => LogPropertiesWidget(widget.logItem)));
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LogPropertiesWidget(widget.logItem)));
               setState(() {});
+            },
+          ),
+          IconButton(
+            icon: Icon(MdiIcons.informationOutline),
+            tooltip: _showStats ? "Disable stats" : "Enable stats",
+            onPressed: () async {
+              setState(() {
+                _showStats = !_showStats;
+              });
             },
           )
         ],
       ),
-      body: center == null
-          ? SmashCircularProgress(label: "Loading data...")
-          : Stack(children: [
-              FlutterMap(
-                options: new MapOptions(
-                  center: center,
-                  zoom: 11.0,
-                ),
-                layers: [
-                  TileLayerOptions(
-                    urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    subdomains: ['a', 'b', 'c'],
-                    overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
-                    errorTileCallback: errorTileCallback,
-                  ),
-                  polylines,
-                  MarkerLayerOptions(markers: markers),
-                ],
-              ),
-              hoverPoint != null
-                  ? Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      // height: height / 3,
-                      child: Container(
-                        decoration: BoxDecoration(color: SmashColors.mainBackground.withOpacity(0.5), borderRadius: BorderRadius.circular(8)),
-                        child: Padding(
-                          padding: SmashUI.defaultPadding(),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: SmashUI.normalText(widget.logItem.name, bold: true, underline: true),
-                              ),
-                              SmashUI.normalText("Total duration: $durationStr"),
-                              SmashUI.normalText(
-                                  "Timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(hoverPoint.ts))}"),
-                              SmashUI.normalText("Duration at position: $currentTouchStr"),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: SmashUI.normalText(totalString),
-                              ),
-                              SmashUI.normalText(progString),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: SmashUI.normalText(
-                                    "Speed: ${hoverPoint.speed.toStringAsFixed(0)} m/s (${(hoverPoint.speed * 3.6).toStringAsFixed(0)} km/h)"),
-                              ),
-                              SmashUI.normalText("Elevation: ${hoverPoint.altitude.toInt()}m"),
-                            ],
-                          ),
+      body: Stack(children: [
+        FlutterMap(
+          mapController: mapController,
+          options: new MapOptions(
+            // center: center,
+            zoom: 11.0,
+          ),
+          layers: mapLayers,
+        ),
+        hoverPoint != null
+            ? Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                // height: height / 3,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: SmashColors.mainBackground.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(8)),
+                  child: Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: SmashUI.normalText(widget.logItem.name,
+                              bold: true, underline: true),
                         ),
-                      ),
-                    )
-                  : Container(),
-              Positioned(
+                        SmashUI.normalText("Total duration: $durationStr"),
+                        SmashUI.normalText(
+                            "Timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(hoverPoint.ts))}"),
+                        SmashUI.normalText(
+                            "Duration at position: $currentTouchStr"),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: SmashUI.normalText(totalString),
+                        ),
+                        SmashUI.normalText(progString),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: SmashUI.normalText(
+                              "Speed: ${hoverPoint.speed.toStringAsFixed(0)} m/s (${(hoverPoint.speed * 3.6).toStringAsFixed(0)} km/h)"),
+                        ),
+                        SmashUI.normalText(
+                            "Elevation: ${hoverPoint.altitude.toInt()}m"),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : Container(),
+        center != null
+            ? Positioned(
                 bottom: 0,
                 left: 0,
                 right: 0,
                 height: height / 4,
                 child: Container(
-                  decoration: BoxDecoration(color: SmashColors.mainBackground.withOpacity(0.5), borderRadius: BorderRadius.circular(8)),
+                  decoration: BoxDecoration(
+                      color: SmashColors.mainBackground.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(8)),
                   // color: Colors.white.withOpacity(0.5),
                   child: NotificationListener<ElevationHoverNotification>(
-                      onNotification: (ElevationHoverNotification notification) {
+                      onNotification:
+                          (ElevationHoverNotification notification) {
                         setState(() {
                           hoverPoint = notification.position;
                         });
@@ -492,10 +638,12 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                         return true;
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 6.0, bottom: 6, right: 6),
+                        padding: const EdgeInsets.only(
+                            top: 6.0, bottom: 6, right: 6),
                         child: Elevation(
                           points,
-                          color: SmashColors.mainDecorations.withOpacity(opacity),
+                          color:
+                              SmashColors.mainDecorations.withOpacity(opacity),
                           // elevationGradientColors: ElevationGradientColors(
                           //     gt10: Colors.green.withOpacity(opacity),
                           //     gt20: Colors.orangeAccent.withOpacity(opacity),
@@ -503,8 +651,9 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                         ),
                       )),
                 ),
-              ),
-            ]),
+              )
+            : Container(),
+      ]),
     );
   }
 }

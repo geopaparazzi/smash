@@ -36,7 +36,7 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: c4bd45f
+      ref: 8111b80
 
   dart_shp: ^0.3.1
 
@@ -100,9 +100,9 @@ dependencies:
       # ref: d5005f210da9475a5aa1d38b1d21654870826a5e
 
   #MIT
-  extended_image: #^1.5.0
-  #   git:
-  #     url: https://github.com/moovida/extended_image
+  extended_image: #^2.0.0
+    git:
+      url: https://github.com/moovida/extended_image
 
   # MIT
   permission_handler: ^5.1.0
