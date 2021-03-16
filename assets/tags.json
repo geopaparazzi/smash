@@ -224,6 +224,32 @@
             "value": "",
             "type": "stringcombo"
           },{
+            "key": "combos with item labels",
+            "values": {
+              "items": [
+                {
+                  "item": {"label": "", "value": "0"}
+                },
+                {
+                  "item": {"label": "choice 1", "value": "1"}
+                },
+                {
+                  "item": {"label": "choice 2", "value": "2"}
+                },
+                {
+                  "item": {"label": "choice 3", "value": "3"}
+                },
+                {
+                  "item": {"label": "choice 4", "value": "4"}
+                },
+                {
+                  "item": {"label": "choice 5", "value": "5"}
+                }
+              ]
+            },
+            "value": "",
+            "type": "stringcombo"
+          },{
             "key": "two connected combos",
             "values": {
                 "items 1": [
