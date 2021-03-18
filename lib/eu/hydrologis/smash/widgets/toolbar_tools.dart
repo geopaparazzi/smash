@@ -13,6 +13,7 @@ import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/maps/feature_attributes_viewer.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
@@ -20,6 +21,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
@@ -66,6 +68,9 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
             children: <Widget>[
               getRemoveFeatureButton(geomEditState),
               getOpenFeatureAttributesButton(geomEditState),
+              if (Provider.of<GpsState>(context, listen: false).hasFix())
+                getInsertPointInGpsButton(geomEditState),
+              getInsertPointInCenterButton(geomEditState),
               getSaveFeatureButton(geomEditState),
               getCancelEditButton(geomEditState),
               Spacer(),
@@ -169,6 +174,57 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
 
           // reload layer geoms
           await reloadDbLayers(editableGeometry.db, editableGeometry.table);
+        },
+      ),
+    );
+  }
+
+  Widget getInsertPointInCenterButton(GeometryEditorState geomEditState) {
+    return Tooltip(
+      message: "Insert point in map center.",
+      child: GestureDetector(
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: InkWell(
+            child: Icon(
+              SmashIcons.iconInMapCenter,
+              color: SmashColors.mainBackground,
+              size: widget._iconSize,
+            ),
+          ),
+        ),
+        onTap: () async {
+          SmashMapState mapState =
+              Provider.of<SmashMapState>(context, listen: false);
+          var center = mapState.center;
+
+          GeometryEditManager().addPoint(LatLng(center.y, center.x));
+        },
+      ),
+    );
+  }
+
+  Widget getInsertPointInGpsButton(GeometryEditorState geomEditState) {
+    return Tooltip(
+      message: "Insert point in GPS position.",
+      child: GestureDetector(
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: InkWell(
+            child: Icon(
+              SmashIcons.iconInGps,
+              color: SmashColors.mainBackground,
+              size: widget._iconSize,
+            ),
+          ),
+        ),
+        onTap: () async {
+          GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+          var gpsPosition = gpsState.lastGpsPosition;
+          if (gpsPosition != null) {
+            GeometryEditManager()
+                .addPoint(LatLng(gpsPosition.latitude, gpsPosition.longitude));
+          }
         },
       ),
     );
