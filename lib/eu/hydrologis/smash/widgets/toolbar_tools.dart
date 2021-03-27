@@ -13,6 +13,7 @@ import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/maps/feature_attributes_viewer.dart';
@@ -334,6 +335,7 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
             tableColumns.forEach((column) {
               typesMap[column[0]] = column[1];
             });
+
             var tableData = await db.getTableData(tableName, where: "$key=$id");
             if (tableData.data.isNotEmpty) {
               EditableQueryResult totalQueryResult = EditableQueryResult();
@@ -357,11 +359,21 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
               tableData.data.forEach((d) {
                 totalQueryResult.data.add(d);
               });
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          FeatureAttributesViewer(totalQueryResult)));
+
+              var formHelper = SmashDatabaseFormHelper(totalQueryResult);
+              await formHelper.init();
+              if (formHelper.hasForm()) {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MasterDetailPage(formHelper)));
+              } else {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            FeatureAttributesViewer(totalQueryResult)));
+              }
               // reload layer geoms
               await reloadDbLayers(db, table);
             }

@@ -225,7 +225,7 @@ class LayersPageState extends State<LayersPage> {
             scrollDirection: Axis.horizontal,
           ),
           subtitle: prjSupported == null
-              ? FlatButton(
+              ? TextButton(
                   child: Text(
                     "The proj could not be recognised. Tap to enter epsg manually.",
                     style: TextStyle(color: SmashColors.mainDanger),
@@ -235,7 +235,7 @@ class LayersPageState extends State<LayersPage> {
                   },
                 )
               : !prjSupported
-                  ? FlatButton(
+                  ? TextButton(
                       child: Text(
                         "The proj is not supported. Tap to solve.",
                         style: TextStyle(color: SmashColors.mainDanger),
@@ -255,22 +255,26 @@ class LayersPageState extends State<LayersPage> {
             color: SmashColors.mainDecorations,
             size: SmashUI.MEDIUM_ICON_SIZE,
           ),
-          trailing: Checkbox(
-              value: layerSourceItem.isActive(),
-              onChanged: (isVisible) async {
-                layerSourceItem.setActive(isVisible);
-                _somethingChanged = true;
-                if (isVisible &&
-                    layerSourceItem is LoadableLayerSource &&
-                    !layerSourceItem.isLoaded) {
-                  setState(() {
-                    isLoadingData = true;
-                    loadLayerWithProgressEnd(layerSourceItem, context);
-                  });
-                } else {
-                  setState(() {});
-                }
-              }),
+          trailing: Padding(
+            padding:
+                EdgeInsets.only(right: SmashPlatform.isDesktop() ? 10.0 : 0.0),
+            child: Checkbox(
+                value: layerSourceItem.isActive(),
+                onChanged: (isVisible) async {
+                  layerSourceItem.setActive(isVisible);
+                  _somethingChanged = true;
+                  if (isVisible &&
+                      layerSourceItem is LoadableLayerSource &&
+                      !layerSourceItem.isLoaded) {
+                    setState(() {
+                      isLoadingData = true;
+                      loadLayerWithProgressEnd(layerSourceItem, context);
+                    });
+                  } else {
+                    setState(() {});
+                  }
+                }),
+          ),
         ),
         actions: actions,
         secondaryActions: secondaryActions,

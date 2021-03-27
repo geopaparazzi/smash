@@ -308,20 +308,17 @@ class DataLoaderUtilities {
                                         .millisecondsSinceEpoch
                                         .toDouble());
 
+                                var titleWidget = SmashUI.titleText(sectionName,
+                                    color: SmashColors.mainBackground,
+                                    bold: true);
+                                var formHelper = SmashFormHelper(note.id,
+                                    sectionName, sectionMap, titleWidget, sp);
+
                                 Navigator.push(
                                     ctx,
                                     MaterialPageRoute(
-                                        builder: (context) => MasterDetailPage(
-                                              sectionMap,
-                                              SmashUI.titleText(sectionName,
-                                                  color: SmashColors
-                                                      .mainBackground,
-                                                  bold: true),
-                                              sectionName,
-                                              sp,
-                                              note.id,
-                                              SmashFormHelper(),
-                                            )));
+                                        builder: (context) =>
+                                            MasterDetailPage(formHelper)));
                               } else {
                                 Navigator.push(
                                     ctx,

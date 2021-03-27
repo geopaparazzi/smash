@@ -7,7 +7,7 @@ packages:
       name: after_layout
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.7+2"
+    version: "1.1.0"
   ansicolor:
     dependency: transitive
     description:
@@ -609,7 +609,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.27"
+    version: "1.6.28"
   path_provider_ex:
     dependency: transitive
     description:
@@ -714,7 +714,7 @@ packages:
       name: process
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.1"
   proj4dart:
     dependency: transitive
     description:
@@ -836,8 +836,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: b5328c7
-      resolved-ref: b5328c78dcdde33c4c11f67520fb4040f762434e
+      ref: "032f9dd"
+      resolved-ref: "032f9dd04666fb904fae320ae51a7564fd089fdd"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
@@ -1015,7 +1015,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.4"
   wkt_parser:
     dependency: transitive
     description:

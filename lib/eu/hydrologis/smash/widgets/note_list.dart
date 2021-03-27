@@ -161,17 +161,13 @@ class _NoteInfoState extends State<NoteInfo> {
           SmashPosition sp = SmashPosition.fromCoords(dynNote.lon, dynNote.lat,
               DateTime.now().millisecondsSinceEpoch.toDouble());
 
+          var titleWidget = SmashUI.titleText(sectionName,
+              color: SmashColors.mainBackground, bold: true);
+          var formHelper = SmashFormHelper(
+              dynNote.id, sectionName, sectionMap, titleWidget, sp);
+
           await Navigator.push(context, MaterialPageRoute(builder: (context) {
-            var masterDetailPage = MasterDetailPage(
-              sectionMap,
-              SmashUI.titleText(sectionName,
-                  color: SmashColors.mainBackground, bold: true),
-              sectionName,
-              sp,
-              dynNote.id,
-              SmashFormHelper(),
-            );
-            return masterDetailPage;
+            return MasterDetailPage(formHelper);
           }));
           setState(() {});
         },
