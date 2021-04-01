@@ -836,8 +836,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "032f9dd"
-      resolved-ref: "032f9dd04666fb904fae320ae51a7564fd089fdd"
+      ref: "14a32d7"
+      resolved-ref: "14a32d73a64ce81f1ff815730ef5612eabd45f46"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
@@ -1015,7 +1015,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   wkt_parser:
     dependency: transitive
     description:
