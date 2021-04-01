@@ -117,14 +117,14 @@ class SmashFormHelper implements AFormhelper {
   }
 
   /// Get thumbnails from the database
-  Future<List<Widget>> getThumbnailsFromDb(
-      BuildContext context, List<String> imageSplit) async {
+  Future<List<Widget>> getThumbnailsFromDb(BuildContext context,
+      Map<String, dynamic> itemsMap, List<String> imageSplit) async {
     ProjectState projectState =
         Provider.of<ProjectState>(context, listen: false);
 
     String value = ""; //$NON-NLS-1$
-    if (_sectionMap.containsKey(TAG_VALUE)) {
-      value = _sectionMap[TAG_VALUE].trim();
+    if (itemsMap.containsKey(TAG_VALUE)) {
+      value = itemsMap[TAG_VALUE].trim();
     }
     if (value.isNotEmpty) {
       var split = value.split(IMAGE_ID_SEPARATOR);
@@ -368,8 +368,8 @@ class SmashDatabaseFormHelper implements AFormhelper {
   }
 
   /// Get thumbnails from the database
-  Future<List<Widget>> getThumbnailsFromDb(
-      BuildContext context, List<String> imageSplit) async {
+  Future<List<Widget>> getThumbnailsFromDb(BuildContext context,
+      Map<String, dynamic> itemsMap, List<String> imageSplit) async {
     // ProjectState projectState =
     //     Provider.of<ProjectState>(context, listen: false);
 
