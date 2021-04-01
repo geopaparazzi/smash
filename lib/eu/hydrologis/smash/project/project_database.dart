@@ -599,6 +599,12 @@ class GeopaparazziProjectDb extends SqliteDb {
             "delete from $TABLE_GPSLOG_PROPERTIES where $LOGSPROP_COLUMN_LOGID = $mergeLogId";
         _db.execute(sql);
       }
+
+      // update log stats
+      _db.updateLogLength(logId);
+      var newEndTs = _db.getLogDataPoints(logId).last.ts;
+      _db.updateGpsLogEndts(logId, newEndTs);
+
       return true;
     });
   }
