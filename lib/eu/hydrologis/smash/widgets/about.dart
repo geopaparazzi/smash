@@ -6,6 +6,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -44,11 +45,13 @@ class AboutPageState extends State<AboutPage> {
 
     return _appName == null
         ? SmashCircularProgress(
-            label: "Loading information...",
+            label: SL
+                .of(context)
+                .about_loadingInformation, //"Loading information..."
           )
         : Scaffold(
             appBar: new AppBar(
-              title: Text("ABOUT " + _appName),
+              title: Text(SL.of(context).about_ABOUT + _appName), //"ABOUT "
             ),
             body: Container(
               padding: SmashUI.defaultPadding(),
@@ -56,21 +59,29 @@ class AboutPageState extends State<AboutPage> {
                 children: <Widget>[
                   ListTile(
                     title: Text(_appName),
-                    subtitle: Text("Smart Mobile App for Surveyor's Happyness"),
+                    subtitle: Text(SL
+                        .of(context)
+                        .about_smartMobileAppForSurveyor), //"Smart Mobile App for Surveyor's Happiness"
                   ),
                   ListTile(
-                    title: Text("Application version"),
+                    title: Text(SL
+                        .of(context)
+                        .about_applicationVersion), //"Application version"
                     subtitle: Text(version),
                   ),
                   ListTile(
-                    title: Text("License"),
+                    title: Text(SL.of(context).about_license), //"License"
                     subtitle: Text(_appName +
-                        " is available under the General Public License, version 3."),
+                        SL
+                            .of(context)
+                            .about_isAvailableUnderGPL3), //" is available under the General Public License, version 3."
                   ),
                   ListTile(
-                    title: Text("Source Code"),
-                    subtitle:
-                        Text("Tap here to visit the source code repository"),
+                    title:
+                        Text(SL.of(context).about_sourceCode), //"Source Code"
+                    subtitle: Text(SL
+                        .of(context)
+                        .about_tapHereToVisitRepo), //"Tap here to visit the source code repository"
                     onTap: () async {
                       if (await canLaunch("https://github.com/moovida/smash")) {
                         await launch("https://github.com/moovida/smash");
@@ -78,9 +89,12 @@ class AboutPageState extends State<AboutPage> {
                     },
                   ),
                   ListTile(
-                    title: Text("Legal Information"),
-                    subtitle: Text(
-                        "Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit."),
+                    title: Text(SL
+                        .of(context)
+                        .about_legalInformation), //"Legal Information"
+                    subtitle: Text(SL
+                        .of(context)
+                        .about_copyright2020HydroloGIS), //"Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit."
                     onTap: () async {
                       if (await canLaunch("http://www.hydrologis.com")) {
                         await launch("http://www.hydrologis.com");
@@ -88,14 +102,18 @@ class AboutPageState extends State<AboutPage> {
                     },
                   ),
                   ListTile(
-                    title: Text("Supported by"),
-                    subtitle: Text(
-                        "Partially supported by the project Steep Stream of the University of Trento."),
+                    title:
+                        Text(SL.of(context).about_supportedBy), //"Supported by"
+                    subtitle: Text(SL
+                        .of(context)
+                        .about_partiallySupportedByUniversityTrento), //"Partially supported by the project Steep Stream of the University of Trento."
                   ),
                   ListTile(
-                    title: Text("Privacy Policy"),
-                    subtitle: Text(
-                        "Tap here to see the privacy policy that covers user and location data."),
+                    title: Text(
+                        SL.of(context).about_privacyPolicy), //"Privacy Policy"
+                    subtitle: Text(SL
+                        .of(context)
+                        .about_tapHereToSeePrivacyPolicy), //"Tap here to see the privacy policy that covers user and location data."
                     onTap: () async {
                       if (await canLaunch(
                           "https://www.hydrologis.com/geo_privacy_policy")) {
