@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a ja locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -17,36 +17,10 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'ja';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
-    "dataLoader_Note" : MessageLookupByLibrary.simpleMessage("Note"),
-    "dataLoader_POI" : MessageLookupByLibrary.simpleMessage("POI"),
-    "dataLoader_altitude" : MessageLookupByLibrary.simpleMessage("Altitude"),
-    "dataLoader_areYouSureRemoveImage" : MessageLookupByLibrary.simpleMessage("Are you sure you want to remove image"),
-    "dataLoader_areYouSureRemoveNote" : MessageLookupByLibrary.simpleMessage("Are you sure you want to remove note"),
-    "dataLoader_hasForm" : MessageLookupByLibrary.simpleMessage("Has Form"),
-    "dataLoader_image" : MessageLookupByLibrary.simpleMessage("Image"),
-    "dataLoader_latitude" : MessageLookupByLibrary.simpleMessage("Latitude"),
-    "dataLoader_longitude" : MessageLookupByLibrary.simpleMessage("Longitude"),
-    "dataLoader_note" : MessageLookupByLibrary.simpleMessage("note"),
-    "dataLoader_removeImage" : MessageLookupByLibrary.simpleMessage("Remove Image"),
-    "dataLoader_removeNote" : MessageLookupByLibrary.simpleMessage("Remove Note"),
-    "dataLoader_savingImageToDB" : MessageLookupByLibrary.simpleMessage("Saving image to db..."),
-    "dataLoader_timestamp" : MessageLookupByLibrary.simpleMessage("Timestamp"),
-    "mainView_activeOperationsWillBeStopped" : MessageLookupByLibrary.simpleMessage("Active operations will be stopped."),
-    "mainView_areYouSureCloseTheProject" : MessageLookupByLibrary.simpleMessage("Are you sure you want to close the project?"),
-    "mainView_exit" : MessageLookupByLibrary.simpleMessage("Exit"),
-    "mainView_formNotes" : MessageLookupByLibrary.simpleMessage("Form Notes"),
-    "mainView_loadingData" : MessageLookupByLibrary.simpleMessage("Loading data..."),
-    "mainView_openToolsDrawer" : MessageLookupByLibrary.simpleMessage("Open tools drawer."),
-    "mainView_showInteractiveCoachMarks" : MessageLookupByLibrary.simpleMessage("Show interactive coach marks."),
-    "mainView_simpleNotes" : MessageLookupByLibrary.simpleMessage("Simple Notes"),
-    "mainView_turnGpsOff" : MessageLookupByLibrary.simpleMessage("Turn GPS off"),
-    "mainView_turnGpsOn" : MessageLookupByLibrary.simpleMessage("Turn GPS on"),
-    "mainView_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
-    "mainView_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out"),
     "main_anErrorOccurredTapToView" : MessageLookupByLibrary.simpleMessage("An error occurred. Tap to view."),
     "main_check_location_permission" : MessageLookupByLibrary.simpleMessage("Checking location permission..."),
     "main_checkingStoragePermission" : MessageLookupByLibrary.simpleMessage("Checking storage permission..."),
@@ -66,13 +40,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "main_storagePermissionGranted" : MessageLookupByLibrary.simpleMessage("Storage permission granted."),
     "main_storagePermissionIsMandatoryToOpenSmash" : MessageLookupByLibrary.simpleMessage("Storage permission is mandatory to open SMASH."),
     "main_tagsListLoaded" : MessageLookupByLibrary.simpleMessage("Tags list loaded."),
-    "main_welcome" : MessageLookupByLibrary.simpleMessage("Welcome to SMASH!"),
-    "main_workspaceLoaded" : MessageLookupByLibrary.simpleMessage("Workspace loaded."),
-    "projectsView_createNewProject" : MessageLookupByLibrary.simpleMessage("Create a new project"),
-    "projectsView_enterNameForNewProject" : MessageLookupByLibrary.simpleMessage("Enter a name for the new project or accept the proposed."),
-    "projectsView_newProject" : MessageLookupByLibrary.simpleMessage("New Project"),
-    "projectsView_openExistingProject" : MessageLookupByLibrary.simpleMessage("Open an existing project"),
-    "projectsView_projectsView" : MessageLookupByLibrary.simpleMessage("Projects View"),
-    "projectsView_recentProjects" : MessageLookupByLibrary.simpleMessage("Recent projects")
+    "main_welcome" : MessageLookupByLibrary.simpleMessage("SMASHようこそ!"),
+    "main_workspaceLoaded" : MessageLookupByLibrary.simpleMessage("Workspace loaded.")
   };
 }

@@ -244,6 +244,326 @@ class SL {
       args: [],
     );
   }
+
+  /// `Loading data...`
+  String get mainView_loadingData {
+    return Intl.message(
+      'Loading data...',
+      name: 'mainView_loadingData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn GPS on`
+  String get mainView_turnGpsOn {
+    return Intl.message(
+      'Turn GPS on',
+      name: 'mainView_turnGpsOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turn GPS off`
+  String get mainView_turnGpsOff {
+    return Intl.message(
+      'Turn GPS off',
+      name: 'mainView_turnGpsOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit`
+  String get mainView_exit {
+    return Intl.message(
+      'Exit',
+      name: 'mainView_exit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to close the project?`
+  String get mainView_areYouSureCloseTheProject {
+    return Intl.message(
+      'Are you sure you want to close the project?',
+      name: 'mainView_areYouSureCloseTheProject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Active operations will be stopped.`
+  String get mainView_activeOperationsWillBeStopped {
+    return Intl.message(
+      'Active operations will be stopped.',
+      name: 'mainView_activeOperationsWillBeStopped',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show interactive coach marks.`
+  String get mainView_showInteractiveCoachMarks {
+    return Intl.message(
+      'Show interactive coach marks.',
+      name: 'mainView_showInteractiveCoachMarks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open tools drawer.`
+  String get mainView_openToolsDrawer {
+    return Intl.message(
+      'Open tools drawer.',
+      name: 'mainView_openToolsDrawer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom in`
+  String get mainView_zoomIn {
+    return Intl.message(
+      'Zoom in',
+      name: 'mainView_zoomIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom out`
+  String get mainView_zoomOut {
+    return Intl.message(
+      'Zoom out',
+      name: 'mainView_zoomOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Form Notes`
+  String get mainView_formNotes {
+    return Intl.message(
+      'Form Notes',
+      name: 'mainView_formNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Simple Notes`
+  String get mainView_simpleNotes {
+    return Intl.message(
+      'Simple Notes',
+      name: 'mainView_simpleNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Projects View`
+  String get projectsView_projectsView {
+    return Intl.message(
+      'Projects View',
+      name: 'projectsView_projectsView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open an existing project`
+  String get projectsView_openExistingProject {
+    return Intl.message(
+      'Open an existing project',
+      name: 'projectsView_openExistingProject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Create a new project`
+  String get projectsView_createNewProject {
+    return Intl.message(
+      'Create a new project',
+      name: 'projectsView_createNewProject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recent projects`
+  String get projectsView_recentProjects {
+    return Intl.message(
+      'Recent projects',
+      name: 'projectsView_recentProjects',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Project`
+  String get projectsView_newProject {
+    return Intl.message(
+      'New Project',
+      name: 'projectsView_newProject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a name for the new project or accept the proposed.`
+  String get projectsView_enterNameForNewProject {
+    return Intl.message(
+      'Enter a name for the new project or accept the proposed.',
+      name: 'projectsView_enterNameForNewProject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `note`
+  String get dataLoader_note {
+    return Intl.message(
+      'note',
+      name: 'dataLoader_note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Note`
+  String get dataLoader_Note {
+    return Intl.message(
+      'Note',
+      name: 'dataLoader_Note',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Has Form`
+  String get dataLoader_hasForm {
+    return Intl.message(
+      'Has Form',
+      name: 'dataLoader_hasForm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `POI`
+  String get dataLoader_POI {
+    return Intl.message(
+      'POI',
+      name: 'dataLoader_POI',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saving image to db...`
+  String get dataLoader_savingImageToDB {
+    return Intl.message(
+      'Saving image to db...',
+      name: 'dataLoader_savingImageToDB',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Note`
+  String get dataLoader_removeNote {
+    return Intl.message(
+      'Remove Note',
+      name: 'dataLoader_removeNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to remove note`
+  String get dataLoader_areYouSureRemoveNote {
+    return Intl.message(
+      'Are you sure you want to remove note',
+      name: 'dataLoader_areYouSureRemoveNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Image`
+  String get dataLoader_image {
+    return Intl.message(
+      'Image',
+      name: 'dataLoader_image',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Longitude`
+  String get dataLoader_longitude {
+    return Intl.message(
+      'Longitude',
+      name: 'dataLoader_longitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Latitude`
+  String get dataLoader_latitude {
+    return Intl.message(
+      'Latitude',
+      name: 'dataLoader_latitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Altitude`
+  String get dataLoader_altitude {
+    return Intl.message(
+      'Altitude',
+      name: 'dataLoader_altitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timestamp`
+  String get dataLoader_timestamp {
+    return Intl.message(
+      'Timestamp',
+      name: 'dataLoader_timestamp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove Image`
+  String get dataLoader_removeImage {
+    return Intl.message(
+      'Remove Image',
+      name: 'dataLoader_removeImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to remove image`
+  String get dataLoader_areYouSureRemoveImage {
+    return Intl.message(
+      'Are you sure you want to remove image',
+      name: 'dataLoader_areYouSureRemoveImage',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
@@ -253,6 +573,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'it'),
+      Locale.fromSubtags(languageCode: 'ja'),
     ];
   }
 

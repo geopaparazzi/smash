@@ -1,4 +1,7 @@
 {
+  "@main": {
+    "context": "main.dart"
+  },
   "main_welcome": "Welcome to SMASH!",
   "main_check_location_permission": "Checking location permission...",
   "main_location_permission_granted": "Location permission granted.",
@@ -19,5 +22,49 @@
   "main_locationBackgroundWarning": "This app collects location data to your device to enable gps logs recording even when the app is placed in background. No data is shared, it is only saved locally to the device.\n\nIf you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.\n",
   "main_locationPermissionIsMandatoryToOpenSmash": "Location permission is mandatory to open SMASH.",
   "main_storagePermissionIsMandatoryToOpenSmash": "Storage permission is mandatory to open SMASH.",
-  "main_anErrorOccurredTapToView": "An error occurred. Tap to view."
+  "main_anErrorOccurredTapToView": "An error occurred. Tap to view.",
+
+  "@mainview" : {
+    "context": "mainview.dart"
+  },
+  "mainView_loadingData": "Loading data...",
+  "mainView_turnGpsOn": "Turn GPS on",
+  "mainView_turnGpsOff": "Turn GPS off",
+  "mainView_exit": "Exit",
+  "mainView_areYouSureCloseTheProject": "Are you sure you want to close the project?",
+  "mainView_activeOperationsWillBeStopped": "Active operations will be stopped.",
+  "mainView_showInteractiveCoachMarks": "Show interactive coach marks.",
+  "mainView_openToolsDrawer": "Open tools drawer.",
+  "mainView_zoomIn": "Zoom in",
+  "mainView_zoomOut": "Zoom out",
+  "mainView_formNotes": "Form Notes",
+  "mainView_simpleNotes": "Simple Notes",
+
+  "@projects_view": {
+    "context": "smash/project/projects_view.dart"
+  },
+  "projectsView_projectsView": "Projects View",
+  "projectsView_openExistingProject": "Open an existing project",
+  "projectsView_createNewProject": "Create a new project",
+  "projectsView_recentProjects": "Recent projects",
+  "projectsView_newProject": "New Project",
+  "projectsView_enterNameForNewProject": "Enter a name for the new project or accept the proposed.",
+
+  "@data_loader": {
+    "context": "smash/project/data_loader.dart"
+  },
+  "dataLoader_note": "note",
+  "dataLoader_Note": "Note",
+  "dataLoader_hasForm": "Has Form",
+  "dataLoader_POI": "POI",
+  "dataLoader_savingImageToDB": "Saving image to db...",
+  "dataLoader_removeNote": "Remove Note",
+  "dataLoader_areYouSureRemoveNote": "Are you sure you want to remove note",
+  "dataLoader_image": "Image",
+  "dataLoader_longitude": "Longitude",
+  "dataLoader_latitude": "Latitude",
+  "dataLoader_altitude": "Altitude",
+  "dataLoader_timestamp": "Timestamp",
+  "dataLoader_removeImage": "Remove Image",
+  "dataLoader_areYouSureRemoveImage": "Are you sure you want to remove image"
 }

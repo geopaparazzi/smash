@@ -13,8 +13,6 @@ import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_dragmarker/dragmarker.dart';
-import 'package:flutter_map_line_editor/polyeditor.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
 import 'package:latlong/latlong.dart';
@@ -50,6 +48,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/toolbar_tools.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 import 'mainview_utils.dart';
@@ -284,7 +283,12 @@ class MainViewWidgetState extends State<MainViewWidget>
               ),
               mapBuilder.inProgress
                   ? Center(
-                      child: SmashCircularProgress(label: "Loading data..."))
+                      child: SmashCircularProgress(
+                        label: SL
+                            .of(context)
+                            .mainView_loadingData, //"Loading data...",
+                      ),
+                    )
                   : Container(),
               Align(
                 alignment: Alignment.bottomRight,
@@ -373,7 +377,9 @@ class MainViewWidgetState extends State<MainViewWidget>
         return ListTile(
           leading: gpsStatusIcon,
           title: SmashUI.normalText(
-            gpsIsOff ? "Turn GPS on" : "Turn GPS off",
+            gpsIsOff
+                ? SL.of(context).mainView_turnGpsOn //"Turn GPS on"
+                : SL.of(context).mainView_turnGpsOff, //"Turn GPS off",
             bold: true,
             color: SmashColors.mainDecorations,
           ),
@@ -398,15 +404,19 @@ class MainViewWidgetState extends State<MainViewWidget>
           size: SmashUI.MEDIUM_ICON_SIZE,
         ),
         title: SmashUI.normalText(
-          "Exit",
+          SL.of(context).mainView_exit, //"Exit",
           bold: true,
           color: SmashColors.mainDecorations,
         ),
         onTap: () async {
           bool doExit = await SmashDialogs.showConfirmDialog(
               mapBuilder.context,
-              "Are you sure you want to close the project?",
-              "Active operations will be stopped.");
+              SL
+                  .of(context)
+                  .mainView_areYouSureCloseTheProject, //"Are you sure you want to close the project?",
+              SL
+                  .of(context)
+                  .mainView_activeOperationsWillBeStopped); //"Active operations will be stopped.",);
           if (doExit != null && doExit) {
             await FenceMaster().writeFences();
             await mapState.persistLastPosition();
@@ -423,14 +433,17 @@ class MainViewWidgetState extends State<MainViewWidget>
     return <Widget>[
       IconButton(
           key: coachMarks.coachMarkButtonKey,
-          tooltip: "Show interactive coach marks.",
+          tooltip: SL
+              .of(context)
+              .mainView_showInteractiveCoachMarks, //"Show interactive coach marks.",
           icon: Icon(MdiIcons.helpCircleOutline),
           onPressed: () {
             coachMarks.showTutorial(context);
           }),
       IconButton(
           key: coachMarks.toolsButtonKey,
-          tooltip: "Open tools drawer.",
+          tooltip:
+              SL.of(context).mainView_openToolsDrawer, //"Open tools drawer.",
           icon: Icon(MdiIcons.tools),
           onPressed: () {
             _scaffoldKey.currentState.openEndDrawer();
@@ -463,7 +476,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                 onPressed: () {
                   mapState.zoomIn();
                 },
-                tooltip: 'Zoom in',
+                tooltip: SL.of(context).mainView_zoomIn, //'Zoom in',
                 icon: Icon(
                   SmashIcons.zoomInIcon,
                   color: SmashColors.mainBackground,
@@ -479,7 +492,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             onPressed: () {
               mapState.zoomOut();
             },
-            tooltip: 'Zoom out',
+            tooltip: SL.of(context).mainView_zoomOut, //'Zoom out',
             icon: Icon(
               SmashIcons.zoomOutIcon,
               color: SmashColors.mainBackground,
@@ -542,8 +555,10 @@ class MainViewWidgetState extends State<MainViewWidget>
           var noteInGpsMode = gpsState.insertInGpsMode;
           var titleWithMode = Column(
             children: [
-              SmashUI.titleText("Form Notes",
-                  color: SmashColors.mainSelection, bold: true),
+              SmashUI.titleText(
+                  SL.of(context).mainView_formNotes, //"Form Notes",
+                  color: SmashColors.mainSelection,
+                  bold: true),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: GpsInsertionModeSelector(),
@@ -632,8 +647,10 @@ class MainViewWidgetState extends State<MainViewWidget>
 
           var titleWithMode = Column(
             children: [
-              SmashUI.titleText("Simple Notes",
-                  color: SmashColors.mainSelection, bold: true),
+              SmashUI.titleText(
+                  SL.of(context).mainView_simpleNotes, //"Simple Notes",
+                  color: SmashColors.mainSelection,
+                  bold: true),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: GpsInsertionModeSelector(),
