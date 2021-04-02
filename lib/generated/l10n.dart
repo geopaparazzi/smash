@@ -714,6 +714,106 @@ class SL {
       args: [],
     );
   }
+
+  /// `No GPS info available...`
+  String get gpsInfoButton_noGpsInfoAvailable {
+    return Intl.message(
+      'No GPS info available...',
+      name: 'gpsInfoButton_noGpsInfoAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timestamp`
+  String get gpsInfoButton_timestamp {
+    return Intl.message(
+      'Timestamp',
+      name: 'gpsInfoButton_timestamp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Speed`
+  String get gpsInfoButton_speed {
+    return Intl.message(
+      'Speed',
+      name: 'gpsInfoButton_speed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Heading`
+  String get gpsInfoButton_heading {
+    return Intl.message(
+      'Heading',
+      name: 'gpsInfoButton_heading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Accuracy`
+  String get gpsInfoButton_accuracy {
+    return Intl.message(
+      'Accuracy',
+      name: 'gpsInfoButton_accuracy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Altitude`
+  String get gpsInfoButton_altitude {
+    return Intl.message(
+      'Altitude',
+      name: 'gpsInfoButton_altitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Latitude`
+  String get gpsInfoButton_latitude {
+    return Intl.message(
+      'Latitude',
+      name: 'gpsInfoButton_latitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy latitude to clipboard.`
+  String get gpsInfoButton_copyLatitudeToClipboard {
+    return Intl.message(
+      'Copy latitude to clipboard.',
+      name: 'gpsInfoButton_copyLatitudeToClipboard',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Longitude`
+  String get gpsInfoButton_longitude {
+    return Intl.message(
+      'Longitude',
+      name: 'gpsInfoButton_longitude',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy longitude to clipboard.`
+  String get gpsInfoButton_copyLongitudeToClipboard {
+    return Intl.message(
+      'Copy longitude to clipboard.',
+      name: 'gpsInfoButton_copyLongitudeToClipboard',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

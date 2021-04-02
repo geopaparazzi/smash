@@ -89,6 +89,20 @@
   "about_supportedBy": "Supported by",
   "about_partiallySupportedByUniversityTrento": "Partially supported by the project Steep Stream of the University of Trento.",
   "about_privacyPolicy": "Privacy Policy",
-  "about_tapHereToSeePrivacyPolicy": "Tap here to see the privacy policy that covers user and location data."
+  "about_tapHereToSeePrivacyPolicy": "Tap here to see the privacy policy that covers user and location data.",
+
+  "@gpsInfoButton": {
+    "context": "smash/widgets/gps_info_button.dart"
+  },
+  "gpsInfoButton_noGpsInfoAvailable": "No GPS info available...",
+  "gpsInfoButton_timestamp": "Timestamp",
+  "gpsInfoButton_speed": "Speed",
+  "gpsInfoButton_heading": "Heading",
+  "gpsInfoButton_accuracy": "Accuracy",
+  "gpsInfoButton_altitude": "Altitude",
+  "gpsInfoButton_latitude": "Latitude",
+  "gpsInfoButton_copyLatitudeToClipboard": "Copy latitude to clipboard.",
+  "gpsInfoButton_longitude": "Longitude",
+  "gpsInfoButton_copyLongitudeToClipboard": "Copy longitude to clipboard."
 
 }
