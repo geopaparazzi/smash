@@ -66,5 +66,29 @@
   "dataLoader_altitude": "Altitude",
   "dataLoader_timestamp": "Timestamp",
   "dataLoader_removeImage": "Remove Image",
-  "dataLoader_areYouSureRemoveImage": "Are you sure you want to remove image"
+  "dataLoader_areYouSureRemoveImage": "Are you sure you want to remove image",
+
+  "@images": {
+    "context": "smash/project/images.dart"
+  },
+  "images_loadingImage": "Loading image...",
+
+  "@about": {
+    "context": "smash/widgets/about.dart"
+  },
+  "about_loadingInformation": "Loading information...",
+  "about_ABOUT": "ABOUT ",
+  "about_smartMobileAppForSurveyor": "Smart Mobile App for Surveyor's Happiness",
+  "about_applicationVersion": "Application version",
+  "about_license": "License",
+  "about_isAvailableUnderGPL3": " is available under the General Public License, version 3.",
+  "about_sourceCode": "Source Code",
+  "about_tapHereToVisitRepo": "Tap here to visit the source code repository",
+  "about_legalInformation": "Legal Information",
+  "about_copyright2020HydroloGIS": "Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit.",
+  "about_supportedBy": "Supported by",
+  "about_partiallySupportedByUniversityTrento": "Partially supported by the project Steep Stream of the University of Trento.",
+  "about_privacyPolicy": "Privacy Policy",
+  "about_tapHereToSeePrivacyPolicy": "Tap here to see the privacy policy that covers user and location data."
+
 }

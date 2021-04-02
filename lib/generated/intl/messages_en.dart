@@ -21,6 +21,20 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
+    "about_ABOUT" : MessageLookupByLibrary.simpleMessage("ABOUT "),
+    "about_applicationVersion" : MessageLookupByLibrary.simpleMessage("Application version"),
+    "about_copyright2020HydroloGIS" : MessageLookupByLibrary.simpleMessage("Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit."),
+    "about_isAvailableUnderGPL3" : MessageLookupByLibrary.simpleMessage(" is available under the General Public License, version 3."),
+    "about_legalInformation" : MessageLookupByLibrary.simpleMessage("Legal Information"),
+    "about_license" : MessageLookupByLibrary.simpleMessage("License"),
+    "about_loadingInformation" : MessageLookupByLibrary.simpleMessage("Loading information..."),
+    "about_partiallySupportedByUniversityTrento" : MessageLookupByLibrary.simpleMessage("Partially supported by the project Steep Stream of the University of Trento."),
+    "about_privacyPolicy" : MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+    "about_smartMobileAppForSurveyor" : MessageLookupByLibrary.simpleMessage("Smart Mobile App for Surveyor\'s Happiness"),
+    "about_sourceCode" : MessageLookupByLibrary.simpleMessage("Source Code"),
+    "about_supportedBy" : MessageLookupByLibrary.simpleMessage("Supported by"),
+    "about_tapHereToSeePrivacyPolicy" : MessageLookupByLibrary.simpleMessage("Tap here to see the privacy policy that covers user and location data."),
+    "about_tapHereToVisitRepo" : MessageLookupByLibrary.simpleMessage("Tap here to visit the source code repository"),
     "dataLoader_Note" : MessageLookupByLibrary.simpleMessage("Note"),
     "dataLoader_POI" : MessageLookupByLibrary.simpleMessage("POI"),
     "dataLoader_altitude" : MessageLookupByLibrary.simpleMessage("Altitude"),
@@ -35,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "dataLoader_removeNote" : MessageLookupByLibrary.simpleMessage("Remove Note"),
     "dataLoader_savingImageToDB" : MessageLookupByLibrary.simpleMessage("Saving image to db..."),
     "dataLoader_timestamp" : MessageLookupByLibrary.simpleMessage("Timestamp"),
+    "images_loadingImage" : MessageLookupByLibrary.simpleMessage("Loading image..."),
     "mainView_activeOperationsWillBeStopped" : MessageLookupByLibrary.simpleMessage("Active operations will be stopped."),
     "mainView_areYouSureCloseTheProject" : MessageLookupByLibrary.simpleMessage("Are you sure you want to close the project?"),
     "mainView_exit" : MessageLookupByLibrary.simpleMessage("Exit"),

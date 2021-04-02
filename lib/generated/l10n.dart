@@ -564,6 +564,156 @@ class SL {
       args: [],
     );
   }
+
+  /// `Loading image...`
+  String get images_loadingImage {
+    return Intl.message(
+      'Loading image...',
+      name: 'images_loadingImage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading information...`
+  String get about_loadingInformation {
+    return Intl.message(
+      'Loading information...',
+      name: 'about_loadingInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ABOUT `
+  String get about_ABOUT {
+    return Intl.message(
+      'ABOUT ',
+      name: 'about_ABOUT',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Smart Mobile App for Surveyor's Happiness`
+  String get about_smartMobileAppForSurveyor {
+    return Intl.message(
+      'Smart Mobile App for Surveyor\'s Happiness',
+      name: 'about_smartMobileAppForSurveyor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Application version`
+  String get about_applicationVersion {
+    return Intl.message(
+      'Application version',
+      name: 'about_applicationVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `License`
+  String get about_license {
+    return Intl.message(
+      'License',
+      name: 'about_license',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` is available under the General Public License, version 3.`
+  String get about_isAvailableUnderGPL3 {
+    return Intl.message(
+      ' is available under the General Public License, version 3.',
+      name: 'about_isAvailableUnderGPL3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Source Code`
+  String get about_sourceCode {
+    return Intl.message(
+      'Source Code',
+      name: 'about_sourceCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap here to visit the source code repository`
+  String get about_tapHereToVisitRepo {
+    return Intl.message(
+      'Tap here to visit the source code repository',
+      name: 'about_tapHereToVisitRepo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Legal Information`
+  String get about_legalInformation {
+    return Intl.message(
+      'Legal Information',
+      name: 'about_legalInformation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit.`
+  String get about_copyright2020HydroloGIS {
+    return Intl.message(
+      'Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit.',
+      name: 'about_copyright2020HydroloGIS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Supported by`
+  String get about_supportedBy {
+    return Intl.message(
+      'Supported by',
+      name: 'about_supportedBy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Partially supported by the project Steep Stream of the University of Trento.`
+  String get about_partiallySupportedByUniversityTrento {
+    return Intl.message(
+      'Partially supported by the project Steep Stream of the University of Trento.',
+      name: 'about_partiallySupportedByUniversityTrento',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get about_privacyPolicy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'about_privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap here to see the privacy policy that covers user and location data.`
+  String get about_tapHereToSeePrivacyPolicy {
+    return Intl.message(
+      'Tap here to see the privacy policy that covers user and location data.',
+      name: 'about_tapHereToSeePrivacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
