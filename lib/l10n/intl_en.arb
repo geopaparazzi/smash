@@ -103,6 +103,16 @@
   "gpsInfoButton_latitude": "Latitude",
   "gpsInfoButton_copyLatitudeToClipboard": "Copy latitude to clipboard.",
   "gpsInfoButton_longitude": "Longitude",
-  "gpsInfoButton_copyLongitudeToClipboard": "Copy longitude to clipboard."
+  "gpsInfoButton_copyLongitudeToClipboard": "Copy longitude to clipboard.",
+
+  "@gpsLogButton": {
+    "context": "smash/widgets/gps_log_button.dart"
+  },
+  "gpsLogButton_stopLogging": "Stop Logging?",
+  "gpsLogButton_stopLoggingAndCloseLog": "Stop logging and close the current GPS log?",
+  "gpsLogButton_newLog": "New Log",
+  "gpsLogButton_enterNameForNewLog": "Enter a name for the new log",
+  "gpsLogButton_couldNotStartLogging": "Could not start logging: "
+
 
 }

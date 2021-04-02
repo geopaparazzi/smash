@@ -4,17 +4,18 @@
  * found in the LICENSE file.
  */
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
-import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
@@ -74,8 +75,12 @@ class _LoggingButtonState extends State<LoggingButton> {
 
   _toggleLoggingFunction(BuildContext context, GpsState gpsLoggingState) async {
     if (gpsLoggingState.isLogging) {
-      var stopLogging = await SmashDialogs.showConfirmDialog(context,
-          "Stop Logging?", "Stop logging and close the current GPS log?");
+      var stopLogging = await SmashDialogs.showConfirmDialog(
+          context,
+          SL.of(context).gpsLogButton_stopLogging, //"Stop Logging?"
+          SL
+              .of(context)
+              .gpsLogButton_stopLoggingAndCloseLog); //"Stop logging and close the current GPS log?"
       if (stopLogging != null && stopLogging) {
         gpsLoggingState.stopLogging();
         ProjectState projectState =
@@ -89,8 +94,10 @@ class _LoggingButtonState extends State<LoggingButton> {
 
         String userString = await SmashDialogs.showInputDialog(
           context,
-          "New Log",
-          "Enter a name for the new log",
+          SL.of(context).gpsLogButton_newLog, //"New Log"
+          SL
+              .of(context)
+              .gpsLogButton_enterNameForNewLog, //"Enter a name for the new log"
           hintText: '',
           defaultText: logName,
           validationFunction: noEmptyValidator,
@@ -100,7 +107,10 @@ class _LoggingButtonState extends State<LoggingButton> {
           if (userString.trim().length == 0) userString = logName;
           int logId = gpsLoggingState.startLogging(userString);
           if (logId == null) {
-            SMLogger().e("Could not start logging: $userString", null, null);
+            SMLogger().e(
+                "${SL.of(context).gpsLogButton_couldNotStartLogging} $userString",
+                null,
+                null); //Could not start logging:
           }
         }
       } else {

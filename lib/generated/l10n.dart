@@ -814,6 +814,56 @@ class SL {
       args: [],
     );
   }
+
+  /// `Stop Logging?`
+  String get gpsLogButton_stopLogging {
+    return Intl.message(
+      'Stop Logging?',
+      name: 'gpsLogButton_stopLogging',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stop logging and close the current GPS log?`
+  String get gpsLogButton_stopLoggingAndCloseLog {
+    return Intl.message(
+      'Stop logging and close the current GPS log?',
+      name: 'gpsLogButton_stopLoggingAndCloseLog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New Log`
+  String get gpsLogButton_newLog {
+    return Intl.message(
+      'New Log',
+      name: 'gpsLogButton_newLog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a name for the new log`
+  String get gpsLogButton_enterNameForNewLog {
+    return Intl.message(
+      'Enter a name for the new log',
+      name: 'gpsLogButton_enterNameForNewLog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not start logging: `
+  String get gpsLogButton_couldNotStartLogging {
+    return Intl.message(
+      'Could not start logging: ',
+      name: 'gpsLogButton_couldNotStartLogging',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
