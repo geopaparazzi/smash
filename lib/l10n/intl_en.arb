@@ -117,5 +117,29 @@
   "@imageWidgets": {
     "context": "smash/widgets/image_widgets.dart"
   },
-  "imageWidgets_loadingImage": "Loading image..."
+  "imageWidgets_loadingImage": "Loading image...",
+
+  "@logList": {
+    "context": "smash/widgets/log_list.dart"
+  },
+  "logList_gpsLogsList": "GPS Logs list",
+  "logList_selectAll": "Select all",
+  "logList_unSelectAll": "Unselect all",
+  "logList_invertSelection": "Invert selection",
+  "logList_mergeSelected": "Merge selected",
+  "logList_loadingLogs": "Loading logs...",
+  "logList_zoomTo": "Zoom to",
+  "logList_properties": "Properties",
+  "logList_profileView": "Profile View",
+  "logList_toGPX": "To GPX",
+  "logList_gpsSavedInExportFolder": "GPX saved in export folder.",
+  "logList_errorOccurredExportingLogGPX": "An error occurred while exporting log to GPX.",
+  "logList_delete": "Delete",
+  "logList_DELETE": "DELETE",
+  "logList_areYouSureDeleteTheLog": "Are you sure you want to delete the log?",
+  "logList_hours": "hours",
+  "logList_hour": "hour",
+  "logList_minutes": "min"
+
+
 }

@@ -874,6 +874,186 @@ class SL {
       args: [],
     );
   }
+
+  /// `GPS Logs list`
+  String get logList_gpsLogsList {
+    return Intl.message(
+      'GPS Logs list',
+      name: 'logList_gpsLogsList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select all`
+  String get logList_selectAll {
+    return Intl.message(
+      'Select all',
+      name: 'logList_selectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unselect all`
+  String get logList_unSelectAll {
+    return Intl.message(
+      'Unselect all',
+      name: 'logList_unSelectAll',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Invert selection`
+  String get logList_invertSelection {
+    return Intl.message(
+      'Invert selection',
+      name: 'logList_invertSelection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Merge selected`
+  String get logList_mergeSelected {
+    return Intl.message(
+      'Merge selected',
+      name: 'logList_mergeSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading logs...`
+  String get logList_loadingLogs {
+    return Intl.message(
+      'Loading logs...',
+      name: 'logList_loadingLogs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom to`
+  String get logList_zoomTo {
+    return Intl.message(
+      'Zoom to',
+      name: 'logList_zoomTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Properties`
+  String get logList_properties {
+    return Intl.message(
+      'Properties',
+      name: 'logList_properties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Profile View`
+  String get logList_profileView {
+    return Intl.message(
+      'Profile View',
+      name: 'logList_profileView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To GPX`
+  String get logList_toGPX {
+    return Intl.message(
+      'To GPX',
+      name: 'logList_toGPX',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPX saved in export folder.`
+  String get logList_gpsSavedInExportFolder {
+    return Intl.message(
+      'GPX saved in export folder.',
+      name: 'logList_gpsSavedInExportFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An error occurred while exporting log to GPX.`
+  String get logList_errorOccurredExportingLogGPX {
+    return Intl.message(
+      'An error occurred while exporting log to GPX.',
+      name: 'logList_errorOccurredExportingLogGPX',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get logList_delete {
+    return Intl.message(
+      'Delete',
+      name: 'logList_delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DELETE`
+  String get logList_DELETE {
+    return Intl.message(
+      'DELETE',
+      name: 'logList_DELETE',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete the log?`
+  String get logList_areYouSureDeleteTheLog {
+    return Intl.message(
+      'Are you sure you want to delete the log?',
+      name: 'logList_areYouSureDeleteTheLog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hours`
+  String get logList_hours {
+    return Intl.message(
+      'hours',
+      name: 'logList_hours',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hour`
+  String get logList_hour {
+    return Intl.message(
+      'hour',
+      name: 'logList_hour',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `min`
+  String get logList_minutes {
+    return Intl.message(
+      'min',
+      name: 'logList_minutes',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
