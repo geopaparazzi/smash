@@ -1054,6 +1054,186 @@ class SL {
       args: [],
     );
   }
+
+  /// `GPS Log Properties`
+  String get logProperties_gpsLogProperties {
+    return Intl.message(
+      'GPS Log Properties',
+      name: 'logProperties_gpsLogProperties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log Name`
+  String get logProperties_logName {
+    return Intl.message(
+      'Log Name',
+      name: 'logProperties_logName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start`
+  String get logProperties_start {
+    return Intl.message(
+      'Start',
+      name: 'logProperties_start',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `End`
+  String get logProperties_end {
+    return Intl.message(
+      'End',
+      name: 'logProperties_end',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duration`
+  String get logProperties_duration {
+    return Intl.message(
+      'Duration',
+      name: 'logProperties_duration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color`
+  String get logProperties_color {
+    return Intl.message(
+      'Color',
+      name: 'logProperties_color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Palette`
+  String get logProperties_palette {
+    return Intl.message(
+      'Palette',
+      name: 'logProperties_palette',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Width`
+  String get logProperties_width {
+    return Intl.message(
+      'Width',
+      name: 'logProperties_width',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Distance at position:`
+  String get logProperties_distanceAtPosition {
+    return Intl.message(
+      'Distance at position:',
+      name: 'logProperties_distanceAtPosition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total distance:`
+  String get logProperties_totalDistance {
+    return Intl.message(
+      'Total distance:',
+      name: 'logProperties_totalDistance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPS Log View`
+  String get logProperties_gpsLogView {
+    return Intl.message(
+      'GPS Log View',
+      name: 'logProperties_gpsLogView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disable stats`
+  String get logProperties_disableStats {
+    return Intl.message(
+      'Disable stats',
+      name: 'logProperties_disableStats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable stats`
+  String get logProperties_enableStats {
+    return Intl.message(
+      'Enable stats',
+      name: 'logProperties_enableStats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total duration:`
+  String get logProperties_totalDuration {
+    return Intl.message(
+      'Total duration:',
+      name: 'logProperties_totalDuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Timestamp:`
+  String get logProperties_timestamp {
+    return Intl.message(
+      'Timestamp:',
+      name: 'logProperties_timestamp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Duration at position:`
+  String get logProperties_durationAtPosition {
+    return Intl.message(
+      'Duration at position:',
+      name: 'logProperties_durationAtPosition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Speed:`
+  String get logProperties_speed {
+    return Intl.message(
+      'Speed:',
+      name: 'logProperties_speed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Elevation:`
+  String get logProperties_elevation {
+    return Intl.message(
+      'Elevation:',
+      name: 'logProperties_elevation',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

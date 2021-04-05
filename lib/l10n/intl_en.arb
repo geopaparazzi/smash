@@ -139,7 +139,28 @@
   "logList_areYouSureDeleteTheLog": "Are you sure you want to delete the log?",
   "logList_hours": "hours",
   "logList_hour": "hour",
-  "logList_minutes": "min"
+  "logList_minutes": "min",
 
+  "@logProperties": {
+    "context": "smash/widgets/log_properties.dart"
+  },
+  "logProperties_gpsLogProperties": "GPS Log Properties",
+  "logProperties_logName": "Log Name",
+  "logProperties_start": "Start",
+  "logProperties_end": "End",
+  "logProperties_duration": "Duration",
+  "logProperties_color": "Color",
+  "logProperties_palette": "Palette",
+  "logProperties_width": "Width",
+  "logProperties_distanceAtPosition": "Distance at position:",
+  "logProperties_totalDistance": "Total distance:",
+  "logProperties_gpsLogView": "GPS Log View",
+  "logProperties_disableStats": "Disable stats",
+  "logProperties_enableStats": "Enable stats",
+  "logProperties_totalDuration": "Total duration:" ,
+  "logProperties_timestamp": "Timestamp:",
+  "logProperties_durationAtPosition": "Duration at position:",
+  "logProperties_speed": "Speed:",
+  "logProperties_elevation": "Elevation:"
 
 }

@@ -13,16 +13,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:map_elevation/map_elevation.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:rainbow_color/rainbow_color.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 /// The log properties page.
 class LogPropertiesWidget extends StatefulWidget {
@@ -86,7 +85,9 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text("GPS Log Properties"),
+            title: Text(SL
+                .of(context)
+                .logProperties_gpsLogProperties), //"GPS Log Properties"
           ),
           body: Center(
             child: Column(
@@ -109,7 +110,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                           Padding(
                             padding: const EdgeInsets.all(4.0),
                             child: EditableTextField(
-                              "Log Name",
+                              SL.of(context).logProperties_logName, //"Log Name"
                               _logItem.name,
                               (res) {
                                 if (res == null || res.trim().length == 0) {
@@ -150,7 +151,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
     return [
       TableRow(
         children: [
-          TableUtilities.cellForString("Start"),
+          TableUtilities.cellForString(
+              SL.of(context).logProperties_start), //"Start"
           TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
               .format(
                   new DateTime.fromMillisecondsSinceEpoch(_logItem.startTime))),
@@ -158,7 +160,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       ),
       TableRow(
         children: [
-          TableUtilities.cellForString("End"),
+          TableUtilities.cellForString(
+              SL.of(context).logProperties_end), //"End"
           TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
               .format(
                   new DateTime.fromMillisecondsSinceEpoch(_logItem.endTime))),
@@ -166,14 +169,16 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       ),
       TableRow(
         children: [
-          TableUtilities.cellForString("Duration"),
+          TableUtilities.cellForString(
+              SL.of(context).logProperties_duration), //"Duration"
           TableUtilities.cellForString(StringUtilities.formatDurationMillis(
               _logItem.endTime - _logItem.startTime)),
         ],
       ),
       TableRow(
         children: [
-          TableUtilities.cellForString("Color"),
+          TableUtilities.cellForString(
+              SL.of(context).logProperties_color), //"Color"
           TableCell(
             child: Padding(
               padding: SmashUI.defaultPadding(),
@@ -187,7 +192,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       ),
       TableRow(
         children: [
-          TableUtilities.cellForString("Palette"),
+          TableUtilities.cellForString(
+              SL.of(context).logProperties_palette), //"Palette"
           TableCell(
             child: Padding(
               padding: SmashUI.defaultPadding(),
@@ -219,7 +225,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       ),
       TableRow(
         children: [
-          TableUtilities.cellForString("Width"),
+          TableUtilities.cellForString(
+              SL.of(context).logProperties_width), //"Width"
           Row(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
@@ -255,7 +262,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
       child: Padding(
         padding: const EdgeInsets.only(left: 4.0),
         child: EditableTextField(
-          "Log Name",
+          SL.of(context).logProperties_logName, //"Log Name"
           item.name,
           (res) {
             if (res == null || res.trim().length == 0) {
@@ -412,10 +419,12 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     // create static markers
     // start
     var size = 30.0;
-    addStaticMarker(size, "start",
-        LatLng(logDataPoints.first.lat, logDataPoints.first.lon));
     addStaticMarker(
-        size, "end", LatLng(logDataPoints.last.lat, logDataPoints.last.lon));
+        size,
+        SL.of(context).logProperties_start, //"start"
+        LatLng(logDataPoints.first.lat, logDataPoints.first.lon));
+    addStaticMarker(size, SL.of(context).logProperties_end /*"end"*/,
+        LatLng(logDataPoints.last.lat, logDataPoints.last.lon));
     addStaticMarker(size, "1/2t", halfTimeLL);
     addStaticMarker(size, "1/2l", halfLengthLL);
     addStaticMarker(size, "min", minElevLL);
@@ -467,7 +476,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     if (hoverPoint != null) {
       var prog = hoverPoint.prog;
       var progFormatted = StringUtilities.formatMeters(prog);
-      progString = "Distance at position: $progFormatted";
+      progString =
+          "${SL.of(context).logProperties_distanceAtPosition} $progFormatted"; //Distance at position:
     }
     var totalNew;
     String totalString;
@@ -478,7 +488,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       } else {
         totalNew = "${totalLengthMeters.toInt()} m";
       }
-      totalString = "Total distance: $totalNew";
+      totalString =
+          "${SL.of(context).logProperties_totalDistance} $totalNew"; //Total distance:
     }
 
     int durationMillis = widget.logItem.endTime - widget.logItem.startTime;
@@ -540,7 +551,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text("GPS Log View"),
+        title: Text(SL.of(context).logProperties_gpsLogView), //"GPS Log View"
         actions: [
           IconButton(
             icon: Icon(MdiIcons.palette),
@@ -555,7 +566,9 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
           ),
           IconButton(
             icon: Icon(MdiIcons.informationOutline),
-            tooltip: _showStats ? "Disable stats" : "Enable stats",
+            tooltip: _showStats
+                ? SL.of(context).logProperties_disableStats //"Disable stats"
+                : SL.of(context).logProperties_enableStats, //"Enable stats"
             onPressed: () async {
               setState(() {
                 _showStats = !_showStats;
@@ -594,11 +607,12 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                           child: SmashUI.normalText(widget.logItem.name,
                               bold: true, underline: true),
                         ),
-                        SmashUI.normalText("Total duration: $durationStr"),
                         SmashUI.normalText(
-                            "Timestamp: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(hoverPoint.ts))}"),
+                            "${SL.of(context).logProperties_totalDuration} $durationStr"), //Total duration:
                         SmashUI.normalText(
-                            "Duration at position: $currentTouchStr"),
+                            "${SL.of(context).logProperties_timestamp} ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(hoverPoint.ts))}"), //Timestamp:
+                        SmashUI.normalText(
+                            "${SL.of(context).logProperties_durationAtPosition} $currentTouchStr"), //Duration at position:
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: SmashUI.normalText(totalString),
@@ -607,10 +621,10 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: SmashUI.normalText(
-                              "Speed: ${hoverPoint.speed.toStringAsFixed(0)} m/s (${(hoverPoint.speed * 3.6).toStringAsFixed(0)} km/h)"),
+                              "${SL.of(context).logProperties_speed} ${hoverPoint.speed.toStringAsFixed(0)} m/s (${(hoverPoint.speed * 3.6).toStringAsFixed(0)} km/h)"), //Speed:
                         ),
                         SmashUI.normalText(
-                            "Elevation: ${hoverPoint.altitude.toInt()}m"),
+                            "${SL.of(context).logProperties_elevation} ${hoverPoint.altitude.toInt()}m"), //Elevation:
                       ],
                     ),
                   ),
