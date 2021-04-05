@@ -21,6 +21,7 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// The notes list widget.
@@ -77,11 +78,15 @@ class NotesListWidgetState extends State<NotesListWidget>
       child: Scaffold(
           appBar: AppBar(
             title: Text(widget._doSimpleNotes
-                ? "Simple Notes List"
-                : "Form Notes List"),
+                ? SL.of(context).noteList_simpleNotesList //"Simple Notes List"
+                : SL.of(context).noteList_formNotesList), //"Form Notes List"
           ),
           body: _isLoading
-              ? Center(child: SmashCircularProgress(label: "Loading Notes..."))
+              ? Center(
+                  child: SmashCircularProgress(
+                      label: SL
+                          .of(context)
+                          .noteList_loadingNotes)) //"Loading Notes..."
               : ListView.builder(
                   itemCount: _notesList.length,
                   itemBuilder: (context, index) {
@@ -141,7 +146,7 @@ class _NoteInfoState extends State<NoteInfo> {
       lat = dynNote.lat;
     }
     actions.add(IconSlideAction(
-        caption: 'Zoom to',
+        caption: SL.of(context).noteList_zoomTo, //'Zoom to'
         color: SmashColors.mainDecorations,
         icon: MdiIcons.magnifyScan,
         onTap: () async {
@@ -152,7 +157,7 @@ class _NoteInfoState extends State<NoteInfo> {
         }));
     if (isForm) {
       actions.add(IconSlideAction(
-        caption: 'Edit',
+        caption: SL.of(context).noteList_edit, //'Edit'
         color: SmashColors.mainDecorations,
         icon: MdiIcons.pencil,
         onTap: () async {
@@ -174,7 +179,7 @@ class _NoteInfoState extends State<NoteInfo> {
       ));
     } else if (dynNote is Note) {
       actions.add(IconSlideAction(
-        caption: 'Properties',
+        caption: SL.of(context).noteList_properties, //'Properties'
         color: SmashColors.mainDecorations,
         icon: MdiIcons.palette,
         onTap: () async {
@@ -187,12 +192,16 @@ class _NoteInfoState extends State<NoteInfo> {
       ));
     }
     secondaryActions.add(IconSlideAction(
-        caption: 'Delete',
+        caption: SL.of(context).noteList_delete, //'Delete'
         color: SmashColors.mainDanger,
         icon: MdiIcons.delete,
         onTap: () async {
           bool doDelete = await SmashDialogs.showConfirmDialog(
-              context, "DELETE", 'Are you sure you want to delete the note?');
+              context,
+              SL.of(context).noteList_DELETE, //"DELETE"
+              SL
+                  .of(context)
+                  .noteList_areYouSureDeleteNote); //'Are you sure you want to delete the note?'
           if (doDelete) {
             if (dynNote is Note) {
               widget.db.deleteNote(id);

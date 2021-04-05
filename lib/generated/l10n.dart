@@ -1234,6 +1234,96 @@ class SL {
       args: [],
     );
   }
+
+  /// `Simple Notes List`
+  String get noteList_simpleNotesList {
+    return Intl.message(
+      'Simple Notes List',
+      name: 'noteList_simpleNotesList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Form Notes List`
+  String get noteList_formNotesList {
+    return Intl.message(
+      'Form Notes List',
+      name: 'noteList_formNotesList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading Notes...`
+  String get noteList_loadingNotes {
+    return Intl.message(
+      'Loading Notes...',
+      name: 'noteList_loadingNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom to`
+  String get noteList_zoomTo {
+    return Intl.message(
+      'Zoom to',
+      name: 'noteList_zoomTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `'Edit'`
+  String get noteList_edit {
+    return Intl.message(
+      '\'Edit\'',
+      name: 'noteList_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Properties`
+  String get noteList_properties {
+    return Intl.message(
+      'Properties',
+      name: 'noteList_properties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get noteList_delete {
+    return Intl.message(
+      'Delete',
+      name: 'noteList_delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DELETE`
+  String get noteList_DELETE {
+    return Intl.message(
+      'DELETE',
+      name: 'noteList_DELETE',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete the note?`
+  String get noteList_areYouSureDeleteNote {
+    return Intl.message(
+      'Are you sure you want to delete the note?',
+      name: 'noteList_areYouSureDeleteNote',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

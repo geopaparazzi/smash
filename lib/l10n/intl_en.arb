@@ -161,6 +161,19 @@
   "logProperties_timestamp": "Timestamp:",
   "logProperties_durationAtPosition": "Duration at position:",
   "logProperties_speed": "Speed:",
-  "logProperties_elevation": "Elevation:"
+  "logProperties_elevation": "Elevation:",
+
+  "@noteList": {
+    "context": "smash/widgets/note_list.dart"
+  },
+  "noteList_simpleNotesList" : "Simple Notes List",
+  "noteList_formNotesList" : "Form Notes List",
+  "noteList_loadingNotes" : "Loading Notes...",
+  "noteList_zoomTo" : "Zoom to",
+  "noteList_edit" : "'Edit'" ,
+  "noteList_properties" : "Properties",
+  "noteList_delete" : "Delete",
+  "noteList_DELETE" : "DELETE",
+  "noteList_areYouSureDeleteNote": "Are you sure you want to delete the note?"
 
 }
