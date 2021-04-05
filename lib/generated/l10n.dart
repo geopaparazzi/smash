@@ -864,6 +864,16 @@ class SL {
       args: [],
     );
   }
+
+  /// `Loading image...`
+  String get imageWidgets_loadingImage {
+    return Intl.message(
+      'Loading image...',
+      name: 'imageWidgets_loadingImage',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

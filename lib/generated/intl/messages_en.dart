@@ -64,6 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "gpsLogButton_newLog" : MessageLookupByLibrary.simpleMessage("New Log"),
     "gpsLogButton_stopLogging" : MessageLookupByLibrary.simpleMessage("Stop Logging?"),
     "gpsLogButton_stopLoggingAndCloseLog" : MessageLookupByLibrary.simpleMessage("Stop logging and close the current GPS log?"),
+    "imageWidgets_loadingImage" : MessageLookupByLibrary.simpleMessage("Loading image..."),
     "images_loadingImage" : MessageLookupByLibrary.simpleMessage("Loading image..."),
     "mainView_activeOperationsWillBeStopped" : MessageLookupByLibrary.simpleMessage("Active operations will be stopped."),
     "mainView_areYouSureCloseTheProject" : MessageLookupByLibrary.simpleMessage("Are you sure you want to close the project?"),

@@ -112,7 +112,10 @@
   "gpsLogButton_stopLoggingAndCloseLog": "Stop logging and close the current GPS log?",
   "gpsLogButton_newLog": "New Log",
   "gpsLogButton_enterNameForNewLog": "Enter a name for the new log",
-  "gpsLogButton_couldNotStartLogging": "Could not start logging: "
+  "gpsLogButton_couldNotStartLogging": "Could not start logging: ",
 
-
+  "@imageWidgets": {
+    "context": "smash/widgets/image_widgets.dart"
+  },
+  "imageWidgets_loadingImage": "Loading image..."
 }
