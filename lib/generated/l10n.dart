@@ -2034,6 +2034,86 @@ class SL {
       args: [],
     );
   }
+
+  /// `Vector Layers`
+  String get settings_vectorLayers {
+    return Intl.message(
+      'Vector Layers',
+      name: 'settings_vectorLayers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading Options and Info Tool`
+  String get settings_loadingOptionsInfoTool {
+    return Intl.message(
+      'Loading Options and Info Tool',
+      name: 'settings_loadingOptionsInfoTool',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data loading`
+  String get settings_dataLoading {
+    return Intl.message(
+      'Data loading',
+      name: 'settings_dataLoading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Max number of features.`
+  String get settings_maxNumberFeatures {
+    return Intl.message(
+      'Max number of features.',
+      name: 'settings_maxNumberFeatures',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Max number of features to load per layer. To apply remove and add layer back.`
+  String get settings_maxNumFeaturesPerLayer {
+    return Intl.message(
+      'Max number of features to load per layer. To apply remove and add layer back.',
+      name: 'settings_maxNumFeaturesPerLayer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `all`
+  String get settings_all {
+    return Intl.message(
+      'all',
+      name: 'settings_all',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load map area.`
+  String get settings_loadMapArea {
+    return Intl.message(
+      'Load map area.',
+      name: 'settings_loadMapArea',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load only on the last visible map area. To apply remove and add layer back.`
+  String get settings_loadOnlyLastVisibleArea {
+    return Intl.message(
+      'Load only on the last visible map area. To apply remove and add layer back.',
+      name: 'settings_loadOnlyLastVisibleArea',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

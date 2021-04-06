@@ -249,7 +249,13 @@
   "settings_ok": "OK",
   "settings_notesViewModes": "Notes view modes",
   "settings_selectNotesViewMode": "Select a notes view mode.",
-  "settings_mapPlugins": "Map Plugins"
-
-
+  "settings_mapPlugins": "Map Plugins",
+  "settings_vectorLayers": "Vector Layers",
+  "settings_loadingOptionsInfoTool": "Loading Options and Info Tool",
+  "settings_dataLoading": "Data loading",
+  "settings_maxNumberFeatures": "Max number of features.",
+  "settings_maxNumFeaturesPerLayer": "Max number of features to load per layer. To apply remove and add layer back.",
+  "settings_all": "all",
+  "settings_loadMapArea": "Load map area.",
+  "settings_loadOnlyLastVisibleArea": "Load only on the last visible map area. To apply remove and add layer back."
 }

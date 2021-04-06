@@ -106,8 +106,11 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           VectorLayerSettingsState.iconData,
           color: SmashColors.mainDecorations,
         ),
-        title: SmashUI.normalText(VectorLayerSettingsState.title),
-        subtitle: Text(VectorLayerSettingsState.subtitle),
+        title: SmashUI.normalText(
+            SL.of(context).settings_vectorLayers), //"Vector Layers"
+        subtitle: Text(SL
+            .of(context)
+            .settings_loadingOptionsInfoTool), //"Loading Options and Info Tool"
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = VectorLayerSettings();
@@ -1540,8 +1543,8 @@ class VectorLayerSettings extends StatefulWidget {
 }
 
 class VectorLayerSettingsState extends State<VectorLayerSettings> {
-  static final title = "Vector Layers";
-  static final subtitle = "Loading Options and Info Tool";
+  //static final title = "Vector Layers";
+  //static final subtitle = "Loading Options and Info Tool";
   static final iconData = MdiIcons.vectorPolyline;
 
   @override
@@ -1568,7 +1571,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                 color: SmashColors.mainBackground,
               ),
             ),
-            Text(title),
+            Text(SL.of(context).settings_vectorLayers),
           ],
         ),
       ),
@@ -1582,17 +1585,23 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                 children: <Widget>[
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Data loading", bold: true),
+                    child: SmashUI.normalText(
+                        SL.of(context).settings_dataLoading,
+                        bold: true), //"Data loading"
                   ),
                   ListTile(
                     leading: Icon(MdiIcons.counter),
-                    title: Text("Max number of features."),
+                    title: Text(SL
+                        .of(context)
+                        .settings_maxNumberFeatures), //"Max number of features."
                     subtitle: Wrap(
                       children: <Widget>[
                         Padding(
                           padding: SmashUI.defaultTBPadding(),
                           child: Text(
-                            "Max number of features to load per layer. To apply remove and add layer back.",
+                            SL
+                                .of(context)
+                                .settings_maxNumFeaturesPerLayer, //"Max number of features to load per layer. To apply remove and add layer back."
                             textAlign: TextAlign.justify,
                           ),
                         ),
@@ -1603,7 +1612,9 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                               SmashPreferencesKeys.MAXFEATURESTOLOAD.map((i) {
                             return DropdownMenuItem<int>(
                               child: Text(
-                                i > 0 ? "$i" : "all",
+                                i > 0
+                                    ? "$i"
+                                    : SL.of(context).settings_all, //"all"
                                 textAlign: TextAlign.center,
                               ),
                               value: i,
@@ -1623,14 +1634,18 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                     leading: Icon(MdiIcons.selectMarker),
                     title: Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: Text("Load map area."),
+                      child: Text(SL
+                          .of(context)
+                          .settings_loadMapArea), //"Load map area."
                     ),
                     subtitle: Wrap(
                       children: <Widget>[
                         Padding(
                           padding: SmashUI.defaultTBPadding(),
                           child: Text(
-                            "Load only on the last visible map area. To apply remove and add layer back.",
+                            SL
+                                .of(context)
+                                .settings_loadOnlyLastVisibleArea, //"Load only on the last visible map area. To apply remove and add layer back."
                             textAlign: TextAlign.justify,
                           ),
                         ),
