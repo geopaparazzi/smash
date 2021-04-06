@@ -21,12 +21,26 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 const SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE = 'SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE';
-const SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE = 'SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE';
-const SETTINGS_EDIT_HANLDE_ICON_SIZES = [10, 15, 20, 25, 30, 35, 40, 50, 60, 80, 100];
+const SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE =
+    'SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE';
+const SETTINGS_EDIT_HANLDE_ICON_SIZES = [
+  10,
+  15,
+  20,
+  25,
+  30,
+  35,
+  40,
+  50,
+  60,
+  80,
+  100
+];
 
 class SettingsWidget extends StatefulWidget {
   SettingsWidget({Key key}) : super(key: key);
@@ -51,8 +65,9 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           CameraSettingState.iconData,
           color: SmashColors.mainDecorations,
         ),
-        title: SmashUI.normalText(CameraSettingState.title),
-        subtitle: Text(CameraSettingState.subtitle),
+        title: SmashUI.normalText(SL.of(context).settings_camera), //"Camera"
+        subtitle: Text(
+            SL.of(context).settings_cameraResolution), //"Camera Resolution"
         trailing: Icon(Icons.arrow_right),
         onTap: () async {
           _selectedSetting = CameraSetting();
@@ -63,8 +78,10 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           ScreenSettingState.iconData,
           color: SmashColors.mainDecorations,
         ),
-        title: SmashUI.normalText(ScreenSettingState.title),
-        subtitle: Text(ScreenSettingState.subtitle),
+        title: SmashUI.normalText(SL.of(context).settings_screen), //"Screen"
+        subtitle: Text(SL
+            .of(context)
+            .settings_screenScaleBarIconSize), //"Screen, Scalebar and Icon Size"
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = ScreenSetting();
@@ -76,8 +93,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           GpsSettingsState.iconData,
           color: SmashColors.mainDecorations,
         ),
-        title: SmashUI.normalText(GpsSettingsState.title),
-        subtitle: Text(GpsSettingsState.subtitle),
+        title: SmashUI.normalText(SL.of(context).settings_gps),
+        subtitle: Text(SL.of(context).settings_gpsFiltersAndMockLoc),
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = GpsSettings();
@@ -153,7 +170,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
 
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Settings"),
+        title: new Text(SL.of(context).settings_settings), //"Settings"
       ),
       body: ListView(children: <Widget>[
         if (gpsState.status != GpsStatus.NOGPS) gpsSettingTile,
@@ -169,7 +186,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
   }
 
   Future showSettingsSheet(BuildContext context) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => _selectedSetting));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => _selectedSetting));
   }
 }
 
@@ -181,13 +199,14 @@ class CameraSetting extends StatefulWidget {
 }
 
 class CameraSettingState extends State<CameraSetting> {
-  static final title = "Camera";
-  static final subtitle = "Camera Resolution";
+  //static final title = "Camera";
+  //static final subtitle = "Camera Resolution";
   static final iconData = Icons.camera;
 
   @override
   Widget build(BuildContext context) {
-    String value = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
+    String value = GpPreferences().getStringSync(
+        SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
     return Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -199,7 +218,7 @@ class CameraSettingState extends State<CameraSetting> {
                 color: SmashColors.mainBackground,
               ),
             ),
-            Text(title),
+            Text(SL.of(context).settings_camera), //"Camera"
           ],
         ),
       ),
@@ -211,14 +230,16 @@ class CameraSettingState extends State<CameraSetting> {
             color: SmashColors.mainBackground,
             child: ListTile(
               leading: Icon(MdiIcons.camera),
-              title: Text("Resolution"),
+              title: Text(SL.of(context).settings_resolution), //"Resolution"
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
                     padding: SmashUI.defaultTBPadding(),
                     child: Text(
-                      "The camera resolution",
+                      SL
+                          .of(context)
+                          .settings_theCameraResolution, //"The camera resolution"
                       textAlign: TextAlign.justify,
                     ),
                   ),
@@ -258,7 +279,8 @@ class CameraSettingState extends State<CameraSetting> {
                       ),
                     ],
                     onChanged: (selected) async {
-                      await GpPreferences().setString(SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, selected);
+                      await GpPreferences().setString(
+                          SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, selected);
                       setState(() {});
                     },
                   ),
@@ -280,16 +302,19 @@ class ScreenSetting extends StatefulWidget {
 }
 
 class ScreenSettingState extends State<ScreenSetting> {
-  static final title = "Screen";
-  static final subtitle = "Screen, Scalebar and Icon Size";
+  //static final title = "Screen";
+  //static final subtitle = "Screen, Scalebar and Icon Size";
   static final int index = 1;
   static final iconData = Icons.fullscreen;
 
   @override
   Widget build(BuildContext context) {
-    bool keepScreenOn = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_KEEP_SCREEN_ON, true);
-    bool retinaModeOn = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, false);
-    double currentIconSize = GpPreferences().getDoubleSync(SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+    bool keepScreenOn = GpPreferences()
+        .getBooleanSync(SmashPreferencesKeys.KEY_KEEP_SCREEN_ON, true);
+    bool retinaModeOn = GpPreferences()
+        .getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, false);
+    double currentIconSize = GpPreferences().getDoubleSync(
+        SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
     //    String themeStr = GpPreferences().getStringSync(KEY_THEME, SmashThemes.LIGHT.toString());
     //    SmashThemes theme = SmashThemes.LIGHT;
     //    if (themeStr == SmashThemes.DARK.toString()) {
@@ -308,7 +333,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                 color: SmashColors.mainBackground,
               ),
             ),
-            Text(title),
+            Text(SL.of(context).settings_screen), //"Screen"
           ],
         ),
       ),
@@ -321,12 +346,13 @@ class ScreenSettingState extends State<ScreenSetting> {
               child: CheckboxListTile(
                 value: keepScreenOn,
                 onChanged: (selected) async {
-                  await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_KEEP_SCREEN_ON, selected);
+                  await GpPreferences().setBoolean(
+                      SmashPreferencesKeys.KEY_KEEP_SCREEN_ON, selected);
                   SettingsWidget.reloadMapSettings(context);
                   setState(() {});
                 },
                 title: SmashUI.normalText(
-                  "Keep Screen On",
+                  SL.of(context).settings_keepScreenOn, //"Keep Screen On"
                 ),
               ),
             ),
@@ -336,15 +362,20 @@ class ScreenSettingState extends State<ScreenSetting> {
               child: CheckboxListTile(
                 value: retinaModeOn,
                 onChanged: (selected) async {
-                  await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_RETINA_MODE_ON, selected);
+                  await GpPreferences().setBoolean(
+                      SmashPreferencesKeys.KEY_RETINA_MODE_ON, selected);
                   SettingsWidget.reloadMapSettings(context);
                   setState(() {});
                 },
                 title: SmashUI.normalText(
-                  "Retina screen mode",
+                  SL
+                      .of(context)
+                      .settings_retinaScreenMode, //"Retina screen mode"
                 ),
                 subtitle: SmashUI.smallText(
-                  "To apply this setting you need to enter and exit the layer view.",
+                  SL
+                      .of(context)
+                      .settings_toApplySettingEnterExitLayerView, //"To apply this setting you need to enter and exit the layer view."
                 ),
               ),
             ),
@@ -355,12 +386,15 @@ class ScreenSettingState extends State<ScreenSetting> {
                 children: <Widget>[
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Color Picker to use"),
+                    child: SmashUI.normalText(SL
+                        .of(context)
+                        .settings_colorPickerToUse), //"Color Picker to use"
                   ),
                   Padding(
                     padding: SmashUI.defaultPadding(),
                     child: DropdownButton<String>(
-                      value: GpPreferences().getStringSync(KEY_COLORPICKER_TYPE, ColorPickers.SWATCH_PICKER),
+                      value: GpPreferences().getStringSync(
+                          KEY_COLORPICKER_TYPE, ColorPickers.SWATCH_PICKER),
                       isExpanded: true,
                       items: [
                         DropdownMenuItem(
@@ -377,7 +411,8 @@ class ScreenSettingState extends State<ScreenSetting> {
                         ),
                       ],
                       onChanged: (selected) async {
-                        await GpPreferences().setString(KEY_COLORPICKER_TYPE, selected);
+                        await GpPreferences()
+                            .setString(KEY_COLORPICKER_TYPE, selected);
                         setState(() {});
                       },
                     ),
@@ -393,7 +428,9 @@ class ScreenSettingState extends State<ScreenSetting> {
                   Padding(
                     padding: SmashUI.defaultPadding(),
                     child: SmashUI.normalText(
-                      "Map Center Cross",
+                      SL
+                          .of(context)
+                          .settings_mapCenterCross, //"Map Center Cross"
                     ),
                   ),
                   Padding(
@@ -401,14 +438,17 @@ class ScreenSettingState extends State<ScreenSetting> {
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        SmashUI.normalText("Color"),
+                        SmashUI.normalText(
+                            SL.of(context).settings_color), //"Color"
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.only(
                             left: SmashUI.DEFAULT_PADDING,
                             right: SmashUI.DEFAULT_PADDING,
                           ),
-                          child: ColorPickerButton(Color(ColorExt(centerCrossStyle.color).value), (newColor) async {
+                          child: ColorPickerButton(
+                              Color(ColorExt(centerCrossStyle.color).value),
+                              (newColor) async {
                             centerCrossStyle.color = ColorExt.asHex(newColor);
                             await centerCrossStyle.saveToPreferences();
                             SettingsWidget.reloadMapSettings(context);
@@ -423,7 +463,8 @@ class ScreenSettingState extends State<ScreenSetting> {
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        SmashUI.normalText("Size"),
+                        SmashUI.normalText(
+                            SL.of(context).settings_size), //"Size"
                         Flexible(
                             flex: 1,
                             child: Slider(
@@ -454,7 +495,8 @@ class ScreenSettingState extends State<ScreenSetting> {
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        SmashUI.normalText("Width"),
+                        SmashUI.normalText(
+                            SL.of(context).settings_width), //"Width"
                         Flexible(
                             flex: 1,
                             child: Slider(
@@ -490,7 +532,9 @@ class ScreenSettingState extends State<ScreenSetting> {
                 children: <Widget>[
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Map Tools Icon Size"),
+                    child: SmashUI.normalText(SL
+                        .of(context)
+                        .settings_mapToolsIconSize), //"Map Tools Icon Size"
                   ),
                   Padding(
                     padding: SmashUI.defaultPadding(),
@@ -505,7 +549,9 @@ class ScreenSettingState extends State<ScreenSetting> {
                               max: 100,
                               divisions: 45,
                               onChanged: (newSize) async {
-                                await GpPreferences().setDouble(SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, newSize);
+                                await GpPreferences().setDouble(
+                                    SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE,
+                                    newSize);
                                 SettingsWidget.reloadMapSettings(context);
                                 setState(() {});
                               },
@@ -575,8 +621,8 @@ class GpsSettings extends StatefulWidget {
 }
 
 class GpsSettingsState extends State<GpsSettings> {
-  static final title = "GPS";
-  static final subtitle = "GPS filters and mock locations";
+  //static final title = "GPS";
+  //static final subtitle = "GPS filters and mock locations";
   static final iconData = MdiIcons.crosshairsGps;
   List<GpsFilterManagerMessage> gpsInfoList = [];
   List<int> gpsInfoListCounter = [];
@@ -605,12 +651,12 @@ class GpsSettingsState extends State<GpsSettings> {
                   color: SmashColors.mainBackground,
                 ),
               ),
-              Text(title),
+              Text(SL.of(context).settings_gps), //"GPS"
             ],
           ),
           bottom: TabBar(tabs: [
-            Tab(text: "Settings"),
-            Tab(text: "Live Preview"),
+            Tab(text: SL.of(context).settings_settings), //"Settings"
+            Tab(text: SL.of(context).settings_livePreview), //"Live Preview"
           ]),
         ),
         body: TabBarView(children: [
@@ -625,7 +671,9 @@ class GpsSettingsState extends State<GpsSettings> {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       if (!isPaused) {
         var msg = GpsFilterManager().currentMessage;
-        if (!gpsInfoList.contains(msg) && msg != null && msg.newPosLatLon != null) {
+        if (!gpsInfoList.contains(msg) &&
+            msg != null &&
+            msg.newPosLatLon != null) {
           gpsInfoList.insert(0, msg);
           gpsInfoListCounter.insert(0, _count);
           _count++;
@@ -636,7 +684,10 @@ class GpsSettingsState extends State<GpsSettings> {
       }
 
       if (gpsInfoList.isEmpty) {
-        return SmashCircularProgress(label: "No point available yet.");
+        return SmashCircularProgress(
+            label: SL
+                .of(context)
+                .settings_noPointAvailableYet); //"No point available yet."
       }
 
       var layer = new MarkerLayerOptions(
@@ -686,38 +737,76 @@ class GpsSettingsState extends State<GpsSettings> {
                     GpsFilterManagerMessage msg = gpsInfoList[index];
                     int i = gpsInfoListCounter[index];
                     var infoMap = {
-                      "longitude [deg]": msg.newPosLatLon.longitude.toStringAsFixed(6),
-                      "latitude [deg]": msg.newPosLatLon.latitude.toStringAsFixed(6),
-                      "accuracy [m]": msg.accuracy.toStringAsFixed(0),
-                      "altitude [m]": msg.altitude.toStringAsFixed(0),
-                      "heading [deg]": msg.heading.toStringAsFixed(0),
-                      "speed [m/s]": msg.speed.toStringAsFixed(0),
-                      "is logging?": msg.isLogging,
-                      "mock locations?": msg.mocked,
+                      SL.of(context).settings_longitudeDeg: //"longitude [deg]"
+                          msg.newPosLatLon.longitude.toStringAsFixed(6),
+                      SL.of(context).settings_latitudeDeg: //"latitude [deg]"
+                          msg.newPosLatLon.latitude.toStringAsFixed(6),
+                      SL.of(context).settings_accuracyM: //"accuracy [m]"
+                          msg.accuracy.toStringAsFixed(0),
+                      SL.of(context).settings_altitudeM: //"altitude [m]"
+                          msg.altitude.toStringAsFixed(0),
+                      SL.of(context).settings_headingDeg: //"heading [deg]"
+                          msg.heading.toStringAsFixed(0),
+                      SL.of(context).settings_speedMS: //"speed [m/s]"
+                          msg.speed.toStringAsFixed(0),
+                      SL.of(context).settings_isLogging: //"is logging?"
+                          msg.isLogging,
+                      SL.of(context).settings_mockLocations: //"mock locations?"
+                          msg.mocked,
                     };
 
                     var infoTable = TableUtilities.fromMap(infoMap,
-                        doSmallText: true, borderColor: SmashColors.mainDecorations, backgroundColor: Colors.white.withAlpha(0), withBorder: true);
+                        doSmallText: true,
+                        borderColor: SmashColors.mainDecorations,
+                        backgroundColor: Colors.white.withAlpha(0),
+                        withBorder: true);
 
                     double distanceLastEvent = msg.distanceLastEvent;
-                    int minAllowedDistanceLastEvent = msg.minAllowedDistanceLastEvent;
+                    int minAllowedDistanceLastEvent =
+                        msg.minAllowedDistanceLastEvent;
 
                     int timeLastEvent = msg.timeDeltaLastEvent;
-                    int minAllowedTimeLastEvent = msg.minAllowedTimeDeltaLastEvent;
+                    int minAllowedTimeLastEvent =
+                        msg.minAllowedTimeDeltaLastEvent;
 
-                    bool minDistFilterBlocks = distanceLastEvent <= minAllowedDistanceLastEvent;
-                    bool minTimeFilterBlocks = timeLastEvent <= minAllowedTimeLastEvent;
+                    bool minDistFilterBlocks =
+                        distanceLastEvent <= minAllowedDistanceLastEvent;
+                    bool minTimeFilterBlocks =
+                        timeLastEvent <= minAllowedTimeLastEvent;
 
-                    var minDistString = minDistFilterBlocks ? "MIN DIST FILTER BLOCKS" : "Min dist filter passes";
-                    var minTimeString = minTimeFilterBlocks ? "MIN TIME FILTER BLOCKS" : "Min time filter passes";
+                    var minDistString = minDistFilterBlocks
+                        ? SL
+                            .of(context)
+                            .settings_minDistFilterBlocks //"MIN DIST FILTER BLOCKS"
+                        : SL
+                            .of(context)
+                            .settings_minDistFilterPasses; //"Min dist filter passes"
+                    var minTimeString = minTimeFilterBlocks
+                        ? SL
+                            .of(context)
+                            .settings_minTimeFilterBlocks //"MIN TIME FILTER BLOCKS"
+                        : SL
+                            .of(context)
+                            .settings_minTimeFilterPasses; //"Min time filter passes"
 
                     bool hasBeenBlocked = msg.blockedByFilter;
                     var filterMap = {
-                      "HAS BEEN BLOCKED": "$hasBeenBlocked",
-                      "Distance from prev [m]": distanceLastEvent,
-                      "Time from prev [s]": timeLastEvent,
-                      minDistString: "$distanceLastEvent <= $minAllowedDistanceLastEvent",
-                      minTimeString: "$timeLastEvent <= $minAllowedTimeLastEvent",
+                      SL
+                              .of(context)
+                              .settings_hasBeenBlocked: //"HAS BEEN BLOCKED"
+                          "$hasBeenBlocked",
+                      SL
+                              .of(context)
+                              .settings_distanceFromPrevM: //"Distance from prev [m]"
+                          distanceLastEvent,
+                      SL
+                              .of(context)
+                              .settings_timeFromPrevS: //"Time from prev [s]"
+                          timeLastEvent,
+                      minDistString:
+                          "$distanceLastEvent <= $minAllowedDistanceLastEvent",
+                      minTimeString:
+                          "$timeLastEvent <= $minAllowedTimeLastEvent",
                     };
                     var filtersTable = TableUtilities.fromMap(
                       filterMap,
@@ -733,32 +822,51 @@ class GpsSettingsState extends State<GpsSettings> {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8.0, top: 8.0),
                       child: ListTile(
-                        title: Text("$i        " + DateTime.fromMillisecondsSinceEpoch((msg.timestamp).toInt()).toString(),
-                            style: TextStyle(fontWeight: FontWeight.bold, color: SmashColors.mainDecorations)),
+                        title: Text(
+                            "$i        " +
+                                DateTime.fromMillisecondsSinceEpoch(
+                                        (msg.timestamp).toInt())
+                                    .toString(),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: SmashColors.mainDecorations)),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Padding(
-                                padding: const EdgeInsets.only(left: 8.0, top: 8.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    RotatedBox(
-                                      quarterTurns: 3,
-                                      child: Text("Location Info", style: TextStyle(fontWeight: FontWeight.bold, color: SmashColors.mainDecorations)),
-                                    ),
-                                    Expanded(child: infoTable),
-                                  ],
-                                )),
-                            Padding(
-                                padding: const EdgeInsets.only(left: 8.0, top: 8.0),
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, top: 8.0),
                                 child: Row(
                                   children: <Widget>[
                                     RotatedBox(
                                       quarterTurns: 3,
                                       child: Text(
-                                        "Filters",
-                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),
+                                          SL
+                                              .of(context)
+                                              .settings_locationInfo, //"Location Info"
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  SmashColors.mainDecorations)),
+                                    ),
+                                    Expanded(child: infoTable),
+                                  ],
+                                )),
+                            Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, top: 8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    RotatedBox(
+                                      quarterTurns: 3,
+                                      child: Text(
+                                        SL
+                                            .of(context)
+                                            .settings_filters, //"Filters"
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.orange),
                                       ),
                                     ),
                                     Expanded(child: filtersTable),
@@ -776,14 +884,23 @@ class GpsSettingsState extends State<GpsSettings> {
                 child: Row(
                   children: <Widget>[
                     IconButton(
-                      tooltip: GpsFilterManager().filtersEnabled ? "Disable Filters." : "Enable Filters.",
+                      tooltip: GpsFilterManager().filtersEnabled
+                          ? SL
+                              .of(context)
+                              .settings_disableFilters //"Disable Filters."
+                          : SL
+                              .of(context)
+                              .settings_enableFilters, //"Enable Filters."
                       icon: Icon(
-                        GpsFilterManager().filtersEnabled ? MdiIcons.filterRemove : MdiIcons.filter,
+                        GpsFilterManager().filtersEnabled
+                            ? MdiIcons.filterRemove
+                            : MdiIcons.filter,
                         color: SmashColors.mainBackground,
                       ),
                       onPressed: () {
                         setState(() {
-                          GpsFilterManager().filtersEnabled = !GpsFilterManager().filtersEnabled;
+                          GpsFilterManager().filtersEnabled =
+                              !GpsFilterManager().filtersEnabled;
                         });
                       },
                     ),
@@ -791,7 +908,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       flex: 2,
                     ),
                     IconButton(
-                      tooltip: "Zoom in",
+                      tooltip: SL.of(context).settings_zoomIn, //"Zoom in"
                       icon: Icon(
                         SmashIcons.zoomInIcon,
                         color: SmashColors.mainBackground,
@@ -803,7 +920,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       },
                     ),
                     IconButton(
-                      tooltip: "Zoom out",
+                      tooltip: SL.of(context).settings_zoomOut, //"Zoom out"
                       icon: Icon(
                         SmashIcons.zoomOutIcon,
                         color: SmashColors.mainBackground,
@@ -818,8 +935,15 @@ class GpsSettingsState extends State<GpsSettings> {
                       flex: 2,
                     ),
                     IconButton(
-                      tooltip: isPaused ? "Activate point flow." : "Pause points flow.",
-                      icon: Icon(isPaused ? MdiIcons.play : MdiIcons.pause, color: SmashColors.mainBackground),
+                      tooltip: isPaused
+                          ? SL
+                              .of(context)
+                              .settings_activatePointFlow //"Activate point flow."
+                          : SL
+                              .of(context)
+                              .settings_pausePointsFlow, //"Pause points flow."
+                      icon: Icon(isPaused ? MdiIcons.play : MdiIcons.pause,
+                          color: SmashColors.mainBackground),
                       onPressed: () {
                         setState(() {
                           isPaused = !isPaused;
@@ -837,15 +961,24 @@ class GpsSettingsState extends State<GpsSettings> {
   }
 
   SingleChildScrollView getSettingsPart(BuildContext context) {
-    int minDistance = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE, SmashPreferencesKeys.MINDISTANCES[1]);
-    int timeInterval = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL, SmashPreferencesKeys.TIMEINTERVALS[1]);
-    bool doTestLog = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_TESTLOG, false);
+    int minDistance = GpPreferences().getIntSync(
+        SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE,
+        SmashPreferencesKeys.MINDISTANCES[1]);
+    int timeInterval = GpPreferences().getIntSync(
+        SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL,
+        SmashPreferencesKeys.TIMEINTERVALS[1]);
+    bool doTestLog = GpPreferences()
+        .getBooleanSync(SmashPreferencesKeys.KEY_GPS_TESTLOG, false);
     var testlogDurationKey = "KEY_GPS_TESTLOG_DURATIONMILLIS";
     int testLogDuration = GpPreferences().getIntSync(testlogDurationKey, 500);
-    bool showAllGpsPointCount = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, false);
-    bool showValidGpsPointCount = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, false);
-    bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
-    bool useGpsGoogleServices = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_GOOGLE_SERVICES, false);
+    bool showAllGpsPointCount = GpPreferences()
+        .getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, false);
+    bool showValidGpsPointCount = GpPreferences()
+        .getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, false);
+    bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(
+        SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
+    bool useGpsGoogleServices = GpPreferences().getBooleanSync(
+        SmashPreferencesKeys.KEY_GPS_USE_GOOGLE_SERVICES, false);
 
     // SmashLocationAccuracy locationAccuracy =
     //     SmashLocationAccuracy.fromPreferences();
@@ -861,18 +994,28 @@ class GpsSettingsState extends State<GpsSettings> {
               children: <Widget>[
                 Padding(
                   padding: SmashUI.defaultPadding(),
-                  child: SmashUI.normalText("Visualize point count", bold: true, textAlign: TextAlign.start),
+                  child: SmashUI.normalText(
+                      SL
+                          .of(context)
+                          .settings_visualizePointCount, //"Visualize point count"
+                      bold: true,
+                      textAlign: TextAlign.start),
                 ),
                 ListTile(
                   leading: Icon(MdiIcons.formatListNumbered),
-                  title: Text("Show the GPS points count for VALID points."),
+                  title: Text(SL
+                      .of(context)
+                      .settings_showGpsPointsValidPoints), //"Show the GPS points count for VALID points."
                   subtitle: Wrap(
                     children: <Widget>[
                       Checkbox(
                         value: showValidGpsPointCount,
                         onChanged: (selValid) async {
-                          await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, selValid);
-                          Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
+                          await GpPreferences().setBoolean(
+                              SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS,
+                              selValid);
+                          Provider.of<SmashMapBuilder>(context, listen: false)
+                              .reBuild();
                           setState(() {});
                         },
                       ),
@@ -881,15 +1024,20 @@ class GpsSettingsState extends State<GpsSettings> {
                 ),
                 ListTile(
                   leading: Icon(MdiIcons.formatListNumbered),
-                  title: Text("Show the GPS points count for ALL points."),
+                  title: Text(SL
+                      .of(context)
+                      .settings_showGpsPointsAllPoints), //"Show the GPS points count for ALL points."
                   subtitle: Wrap(
                     children: <Widget>[
                       Checkbox(
                         value: showAllGpsPointCount,
                         onChanged: (selAll) async {
-                          await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, selAll);
+                          await GpPreferences().setBoolean(
+                              SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS,
+                              selAll);
 
-                          Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
+                          Provider.of<SmashMapBuilder>(context, listen: false)
+                              .reBuild();
                           setState(() {});
                         },
                       ),
@@ -953,11 +1101,16 @@ class GpsSettingsState extends State<GpsSettings> {
               children: <Widget>[
                 Padding(
                   padding: SmashUI.defaultPadding(),
-                  child: SmashUI.normalText("Log filters", bold: true, textAlign: TextAlign.start),
+                  child: SmashUI.normalText(
+                      SL.of(context).settings_logFilters, //"Log filters"
+                      bold: true,
+                      textAlign: TextAlign.start),
                 ),
                 ListTile(
                   leading: Icon(MdiIcons.ruler),
-                  title: Text("Min distance between 2 points."),
+                  title: Text(SL
+                      .of(context)
+                      .settings_minDistanceBetween2Points), //"Min distance between 2 points."
                   subtitle: Wrap(
                     children: <Widget>[
                       DropdownButton<int>(
@@ -973,8 +1126,11 @@ class GpsSettingsState extends State<GpsSettings> {
                           );
                         }).toList(),
                         onChanged: (selected) async {
-                          await GpPreferences().setInt(SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE, selected);
-                          var gpsState = Provider.of<GpsState>(context, listen: false);
+                          await GpPreferences().setInt(
+                              SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE,
+                              selected);
+                          var gpsState =
+                              Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsMinDistance = selected;
                           setState(() {});
                         },
@@ -984,7 +1140,9 @@ class GpsSettingsState extends State<GpsSettings> {
                 ),
                 ListTile(
                   leading: Icon(MdiIcons.timelapse),
-                  title: Text("Min timespan between 2 points."),
+                  title: Text(SL
+                      .of(context)
+                      .settings_minTimespanBetween2Points), //"Min timespan between 2 points."
                   subtitle: Wrap(
                     children: <Widget>[
                       DropdownButton<int>(
@@ -1000,8 +1158,11 @@ class GpsSettingsState extends State<GpsSettings> {
                           );
                         }).toList(),
                         onChanged: (selected) async {
-                          await GpPreferences().setInt(SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL, selected);
-                          var gpsState = Provider.of<GpsState>(context, listen: false);
+                          await GpPreferences().setInt(
+                              SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL,
+                              selected);
+                          var gpsState =
+                              Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsTimeInterval = selected;
                           setState(() {});
                         },
@@ -1019,27 +1180,34 @@ class GpsSettingsState extends State<GpsSettings> {
               children: <Widget>[
                 Padding(
                   padding: SmashUI.defaultPadding(),
-                  child: SmashUI.normalText("GPS Filter", bold: true),
+                  child: SmashUI.normalText(SL.of(context).settings_gpsFilter,
+                      bold: true), //"GPS Filter"
                 ),
                 ListTile(
                   leading: Icon(MdiIcons.filter),
-                  title: Text("${useGpsFilteredGenerally ? "Disable" : "Enable"} the use of filtered GPS."),
+                  title: Text(
+                      "${useGpsFilteredGenerally ? SL.of(context).settings_disable : SL.of(context).settings_enable} ${SL.of(context).settings_theUseOfTheGps}"),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
                         padding: SmashUI.defaultTBPadding(),
                         child: Text(
-                          "WARNING: This will affect GPS position, notes insertion, log statistics and charting.",
+                          SL
+                              .of(context)
+                              .settings_warningThisWillAffectGpsPosition, //"WARNING: This will affect GPS position, notes insertion, log statistics and charting."
                           textAlign: TextAlign.justify,
                         ),
                       ),
                       Checkbox(
                         value: useGpsFilteredGenerally,
                         onChanged: (newValue) async {
-                          var gpsState = Provider.of<GpsState>(context, listen: false);
+                          var gpsState =
+                              Provider.of<GpsState>(context, listen: false);
                           gpsState.useFilteredGpsQuiet = newValue;
-                          await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, newValue);
+                          await GpPreferences().setBoolean(
+                              SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY,
+                              newValue);
                           setState(() {});
                         },
                       ),
@@ -1056,19 +1224,24 @@ class GpsSettingsState extends State<GpsSettings> {
               children: <Widget>[
                 Padding(
                   padding: SmashUI.defaultPadding(),
-                  child: SmashUI.normalText("Mock locations", bold: true),
+                  child: SmashUI.normalText(
+                      SL.of(context).settings_MockLocations,
+                      bold: true), //"Mock locations"
                 ),
                 ListTile(
                   leading: Icon(MdiIcons.crosshairsGps),
-                  title: Text("${doTestLog ? "Disable" : "Enable"} test gps log for demo use."),
+                  title: Text(
+                      "${doTestLog ? SL.of(context).settings_disable : SL.of(context).settings_enable} ${SL.of(context).settings_testGpsLogDemoUse}"),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Checkbox(
                         value: doTestLog,
                         onChanged: (newValue) async {
-                          await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_TESTLOG, newValue);
-                          var gpsState = Provider.of<GpsState>(context, listen: false);
+                          await GpPreferences().setBoolean(
+                              SmashPreferencesKeys.KEY_GPS_TESTLOG, newValue);
+                          var gpsState =
+                              Provider.of<GpsState>(context, listen: false);
                           gpsState.doTestLog = newValue;
                           setState(() {});
                         },
@@ -1078,24 +1251,36 @@ class GpsSettingsState extends State<GpsSettings> {
                 ),
                 ListTile(
                   leading: Icon(MdiIcons.timer),
-                  title: Text("Set duration for GPS points in milliseconds."),
+                  title: Text(SL
+                      .of(context)
+                      .settings_setDurationGpsPointsInMilli), //"Set duration for GPS points in milliseconds."
                   subtitle: FlatButton(
                       onPressed: () async {
-                        var newValue = await SmashDialogs.showInputDialog(context, "SETTING", "Set Mocked GPS duration",
-                            defaultText: "$testLogDuration", validationFunction: (value) {
+                        var newValue = await SmashDialogs.showInputDialog(
+                            context,
+                            SL.of(context).settings_SETTING, //"SETTING"
+                            SL
+                                .of(context)
+                                .settings_setMockedGpsDuration, //"Set Mocked GPS duration"
+                            defaultText: "$testLogDuration",
+                            validationFunction: (value) {
                           if (int.tryParse(value) == null) {
-                            return "The value has to be an integer.";
+                            return SL
+                                .of(context)
+                                .settings_theValueHasToBeInt; //"The value has to be an integer."
                           }
                           return null;
                         });
                         if (newValue != null) {
                           var newMillis = int.parse(newValue);
                           TestLogStream().setNewDuration(newMillis);
-                          await GpPreferences().setInt(testlogDurationKey, newMillis);
+                          await GpPreferences()
+                              .setInt(testlogDurationKey, newMillis);
                           setState(() {});
                         }
                       },
-                      child: Text("$testLogDuration milliseconds")),
+                      child: Text(
+                          "$testLogDuration ${SL.of(context).settings_milliseconds}")), //milliseconds
                 ),
               ],
             ),
@@ -1108,18 +1293,26 @@ class GpsSettingsState extends State<GpsSettings> {
                 children: <Widget>[
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Use Google Services to improve location", bold: true),
+                    child: SmashUI.normalText(
+                        SL
+                            .of(context)
+                            .settings_useGoogleToImproveLoc, //"Use Google Services to improve location"
+                        bold: true),
                   ),
                   ListTile(
                     leading: Icon(MdiIcons.crosshairsGps),
-                    title: Text("${useGpsGoogleServices ? "Disable" : "Enable"} use of google services (needs an app restart)."),
+                    title: Text(
+                        "${useGpsGoogleServices ? SL.of(context).settings_disable : SL.of(context).settings_enable} ${SL.of(context).settings_useOfGoogleServicesRestart}"),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Checkbox(
                           value: useGpsGoogleServices,
                           onChanged: (newValue) async {
-                            await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GPS_USE_GOOGLE_SERVICES, newValue);
+                            await GpPreferences().setBoolean(
+                                SmashPreferencesKeys
+                                    .KEY_GPS_USE_GOOGLE_SERVICES,
+                                newValue);
                             setState(() {});
                           },
                         ),
@@ -1152,14 +1345,17 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
       children: <Widget>[
         Padding(
           padding: SmashUI.defaultPadding() * 2,
-          child: SmashUI.normalText("GPS Logs view mode", bold: true),
+          child: SmashUI.normalText(SL.of(context).settings_gpsLogsViewMode,
+              bold: true), //"GPS Logs view mode"
         ),
         ListTile(
           leading: Icon(
             MdiIcons.eye,
             color: SmashColors.mainDecorations,
           ),
-          title: Text("Log view mode for original data."),
+          title: Text(SL
+              .of(context)
+              .settings_logViewModeForOrigData), //"Log view mode for original data."
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -1176,7 +1372,9 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
                   );
                 }).toList(),
                 onChanged: (selected) async {
-                  await GpPreferences().setStringList(SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [selected, gpsState.filteredLogMode]);
+                  await GpPreferences().setStringList(
+                      SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE,
+                      [selected, gpsState.filteredLogMode]);
                   gpsState.logMode = selected;
                   setState(() {});
                 },
@@ -1189,7 +1387,9 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
             MdiIcons.eyeSettings,
             color: SmashColors.mainDecorations,
           ),
-          title: Text("Log view mode for filtered data."),
+          title: Text(SL
+              .of(context)
+              .settings_logViewModeFilteredData), //"Log view mode for filtered data."
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -1206,7 +1406,9 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
                   );
                 }).toList(),
                 onChanged: (selected) async {
-                  await GpPreferences().setStringList(SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [gpsState.logMode, selected]);
+                  await GpPreferences().setStringList(
+                      SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE,
+                      [gpsState.logMode, selected]);
                   gpsState.filteredLogMode = selected;
                   setState(() {});
                 },
@@ -1215,12 +1417,13 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
           ),
         ),
         SmashUI.defaultButtonBar(
-          cancelLabel: 'CANCEL',
+          cancelLabel: SL.of(context).settings_cancel, //"CANCEL"
           cancelFunction: () => Navigator.pop(context),
-          okLabel: 'OK',
+          okLabel: SL.of(context).settings_ok, //"OK"
           okFunction: () {
             Navigator.pop(context);
-            var projectState = Provider.of<ProjectState>(context, listen: false);
+            var projectState =
+                Provider.of<ProjectState>(context, listen: false);
             projectState.reloadProject(context);
           },
         ),
@@ -1246,14 +1449,17 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
       children: <Widget>[
         Padding(
           padding: SmashUI.defaultPadding() * 2,
-          child: SmashUI.normalText("Notes view modes", bold: true),
+          child: SmashUI.normalText(SL.of(context).settings_notesViewModes,
+              bold: true), //"Notes view modes"
         ),
         ListTile(
           leading: Icon(
             MdiIcons.eye,
             color: SmashColors.mainDecorations,
           ),
-          title: Text("Select a notes view mode."),
+          title: Text(SL
+              .of(context)
+              .settings_selectNotesViewMode), //"Select a notes view mode."
           subtitle: DropdownButton<String>(
             value: gpsState.notesMode,
             isExpanded: false,
@@ -1268,19 +1474,21 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
               );
             }).toList(),
             onChanged: (selected) async {
-              await GpPreferences().setString(SmashPreferencesKeys.KEY_NOTES_VIEW_MODE, selected);
+              await GpPreferences().setString(
+                  SmashPreferencesKeys.KEY_NOTES_VIEW_MODE, selected);
               gpsState.notesMode = selected;
               setState(() {});
             },
           ),
         ),
         SmashUI.defaultButtonBar(
-          cancelLabel: 'CANCEL',
+          cancelLabel: SL.of(context).settings_cancel, //'CANCEL'
           cancelFunction: () => Navigator.pop(context),
-          okLabel: 'OK',
+          okLabel: SL.of(context).settings_ok, //'OK'
           okFunction: () async {
             Navigator.pop(context);
-            var projectState = Provider.of<ProjectState>(context, listen: false);
+            var projectState =
+                Provider.of<ProjectState>(context, listen: false);
             await projectState.reloadProject(context);
           },
         ),
@@ -1304,16 +1512,19 @@ class _PluginsViewSettingState extends State<PluginsViewSetting> {
       children: <Widget>[
         Padding(
           padding: SmashUI.defaultPadding() * 2,
-          child: SmashUI.normalText("Map Plugins", bold: true),
+          child: SmashUI.normalText(SL.of(context).settings_mapPlugins,
+              bold: true), //"Map Plugins"
         ),
         PluginCheckboxWidget(PluginsHandler.SCALE.key),
         PluginCheckboxWidget(PluginsHandler.GRID.key),
         PluginCheckboxWidget(PluginsHandler.CROSS.key),
         PluginCheckboxWidget(PluginsHandler.GPS.key),
         PluginCheckboxWidget(PluginsHandler.FENCE.key),
-        PluginsHandler.HEATMAP_WORKING ? PluginCheckboxWidget(PluginsHandler.LOG_HEATMAP.key) : Container(),
+        PluginsHandler.HEATMAP_WORKING
+            ? PluginCheckboxWidget(PluginsHandler.LOG_HEATMAP.key)
+            : Container(),
         SmashUI.defaultButtonBar(
-          cancelLabel: 'CANCEL',
+          cancelLabel: SL.of(context).settings_cancel, //'CANCEL'
           cancelFunction: () => Navigator.pop(context),
         ),
       ],
@@ -1335,11 +1546,16 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
 
   @override
   Widget build(BuildContext context) {
-    bool loadOnlyVisible = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
-    int maxFeaturesToLoad = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1);
-    int tapAreaPixels = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50);
-    int handleIconSize = GpPreferences().getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25);
-    int intermediateHandleIconSize = GpPreferences().getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20);
+    bool loadOnlyVisible = GpPreferences().getBooleanSync(
+        SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
+    int maxFeaturesToLoad = GpPreferences()
+        .getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1);
+    int tapAreaPixels = GpPreferences()
+        .getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50);
+    int handleIconSize =
+        GpPreferences().getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25);
+    int intermediateHandleIconSize = GpPreferences()
+        .getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20);
 
     return Scaffold(
       appBar: new AppBar(
@@ -1383,7 +1599,8 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                         DropdownButton<int>(
                           value: maxFeaturesToLoad,
                           isExpanded: false,
-                          items: SmashPreferencesKeys.MAXFEATURESTOLOAD.map((i) {
+                          items:
+                              SmashPreferencesKeys.MAXFEATURESTOLOAD.map((i) {
                             return DropdownMenuItem<int>(
                               child: Text(
                                 i > 0 ? "$i" : "all",
@@ -1393,7 +1610,9 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                             );
                           }).toList(),
                           onChanged: (selected) async {
-                            await GpPreferences().setInt(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, selected);
+                            await GpPreferences().setInt(
+                                SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES,
+                                selected);
                             setState(() {});
                           },
                         ),
@@ -1418,7 +1637,10 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                         Checkbox(
                           value: loadOnlyVisible,
                           onChanged: (newValue) async {
-                            await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, newValue);
+                            await GpPreferences().setBoolean(
+                                SmashPreferencesKeys
+                                    .KEY_VECTOR_LOAD_ONLY_VISIBLE,
+                                newValue);
                             setState(() {});
                           },
                         ),
@@ -1455,7 +1677,9 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                             );
                           }).toList(),
                           onChanged: (selected) async {
-                            await GpPreferences().setInt(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, selected);
+                            await GpPreferences().setInt(
+                                SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE,
+                                selected);
                             setState(() {});
                           },
                         ),
@@ -1492,7 +1716,8 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                             );
                           }).toList(),
                           onChanged: (selected) async {
-                            await GpPreferences().setInt(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, selected);
+                            await GpPreferences().setInt(
+                                SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, selected);
                             setState(() {});
                           },
                         ),
@@ -1517,7 +1742,9 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                             );
                           }).toList(),
                           onChanged: (selected) async {
-                            await GpPreferences().setInt(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, selected);
+                            await GpPreferences().setInt(
+                                SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE,
+                                selected);
                             setState(() {});
                           },
                         ),
@@ -1576,8 +1803,13 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
                     color: SmashColors.mainBackground,
                     child: Text("Open full debug log"),
                     onPressed: () {
-                      ProjectState projectState = Provider.of<ProjectState>(context, listen: false);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => DebugLogViewer(projectState)));
+                      ProjectState projectState =
+                          Provider.of<ProjectState>(context, listen: false);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  DebugLogViewer(projectState)));
                     }),
               ),
             ),
@@ -1648,7 +1880,8 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
       }
 
       if (element.message.endsWith("[0m")) {
-        element.message = element.message.substring(0, element.message.length - 4);
+        element.message =
+            element.message.substring(0, element.message.length - 4);
       }
       return true;
     }).toList();
@@ -1664,14 +1897,19 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
         title: Text("Debug Log View"),
         actions: [
           IconButton(
-              icon: Icon(isViewingErrors ? MdiIcons.androidDebugBridge : MdiIcons.flashAlert),
-              tooltip: isViewingErrors ? "View all messages" : "View only errors and warnings",
+              icon: Icon(isViewingErrors
+                  ? MdiIcons.androidDebugBridge
+                  : MdiIcons.flashAlert),
+              tooltip: isViewingErrors
+                  ? "View all messages"
+                  : "View only errors and warnings",
               onPressed: () {
                 if (isViewingErrors) {
                   logItems = allLogItems;
                 } else {
                   logItems = allLogItems.where((element) {
-                    return element.level == "Level.warning" || element.level == "Level.error";
+                    return element.level == "Level.warning" ||
+                        element.level == "Level.error";
                   }).toList();
                 }
                 setState(() {
@@ -1697,7 +1935,8 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
                 GpLogItem logItem = logItems[index];
                 Color c = levelToColor[logItem.level];
                 String msg = logItem.message;
-                String ts = HU.TimeUtilities.ISO8601_TS_FORMATTER_MILLIS.format(DateTime.fromMillisecondsSinceEpoch(logItem.ts));
+                String ts = HU.TimeUtilities.ISO8601_TS_FORMATTER_MILLIS
+                    .format(DateTime.fromMillisecondsSinceEpoch(logItem.ts));
                 var iconData = levelToIcon[logItem.level];
 
                 return Container(
@@ -1737,7 +1976,8 @@ class DeviceSettingsState extends State<DeviceSettings> {
 
   Future<void> getIds() async {
     String id = await Device().getDeviceId();
-    String overrideId = await GpPreferences().getString(SmashPreferencesKeys.DEVICE_ID_OVERRIDE, id);
+    String overrideId = await GpPreferences()
+        .getString(SmashPreferencesKeys.DEVICE_ID_OVERRIDE, id);
 
     setState(() {
       _deviceId = id;
@@ -1798,10 +2038,12 @@ class DeviceSettingsState extends State<DeviceSettings> {
                         children: <Widget>[
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText("Override Device Id", bold: true),
+                            child: SmashUI.normalText("Override Device Id",
+                                bold: true),
                           ),
                           Padding(
-                              padding: EdgeInsets.only(top: p, bottom: p, right: p, left: 2 * p),
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
                               child: EditableTextField(
                                 "Override Id",
                                 _overrideId,
@@ -1809,7 +2051,9 @@ class DeviceSettingsState extends State<DeviceSettings> {
                                   if (res == null || res.trim().length == 0) {
                                     res = _deviceId;
                                   }
-                                  await GpPreferences().setString(SmashPreferencesKeys.DEVICE_ID_OVERRIDE, res);
+                                  await GpPreferences().setString(
+                                      SmashPreferencesKeys.DEVICE_ID_OVERRIDE,
+                                      res);
                                   setState(() {
                                     _overrideId = res;
                                   });
@@ -1856,10 +2100,14 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
   }
 
   Future<void> getData() async {
-    String gssUrl = await GpPreferences().getString(SmashPreferencesKeys.KEY_GSS_SERVER_URL, "");
-    String gssUser = await GpPreferences().getString(SmashPreferencesKeys.KEY_GSS_SERVER_USER, "");
-    String gssPwd = await GpPreferences().getString(SmashPreferencesKeys.KEY_GSS_SERVER_PWD, "dummy");
-    bool allowSelfCert = await GpPreferences().getBoolean(SmashPreferencesKeys.KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE, true);
+    String gssUrl = await GpPreferences()
+        .getString(SmashPreferencesKeys.KEY_GSS_SERVER_URL, "");
+    String gssUser = await GpPreferences()
+        .getString(SmashPreferencesKeys.KEY_GSS_SERVER_USER, "");
+    String gssPwd = await GpPreferences()
+        .getString(SmashPreferencesKeys.KEY_GSS_SERVER_PWD, "dummy");
+    bool allowSelfCert = await GpPreferences().getBoolean(
+        SmashPreferencesKeys.KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE, true);
 
     setState(() {
       _gssUrl = gssUrl;
@@ -1906,7 +2154,8 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                             child: SmashUI.normalText("Server URL", bold: true),
                           ),
                           Padding(
-                              padding: EdgeInsets.only(top: p, bottom: p, right: p, left: 2 * p),
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
                               child: EditableTextField(
                                 "server url",
                                 _gssUrl,
@@ -1914,13 +2163,16 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                                   if (res == null || res.trim().length == 0) {
                                     res = _gssUrl;
                                   }
-                                  await GpPreferences().setString(SmashPreferencesKeys.KEY_GSS_SERVER_URL, res);
+                                  await GpPreferences().setString(
+                                      SmashPreferencesKeys.KEY_GSS_SERVER_URL,
+                                      res);
                                   setState(() {
                                     _gssUrl = res;
                                   });
                                 },
                                 validationFunction: (text) {
-                                  if (text.startsWith("http://") || text.startsWith("https://")) {
+                                  if (text.startsWith("http://") ||
+                                      text.startsWith("https://")) {
                                     return null;
                                   } else {
                                     return "Server url needs to start with http or https.";
@@ -1940,10 +2192,12 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                         children: <Widget>[
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText("Server Password", bold: true),
+                            child: SmashUI.normalText("Server Password",
+                                bold: true),
                           ),
                           Padding(
-                              padding: EdgeInsets.only(top: p, bottom: p, right: p, left: 2 * p),
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
                               child: EditableTextField(
                                 "server password",
                                 _gssPwd,
@@ -1951,7 +2205,9 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                                   if (res == null || res.trim().length == 0) {
                                     res = _gssPwd;
                                   }
-                                  await GpPreferences().setString(SmashPreferencesKeys.KEY_GSS_SERVER_PWD, res);
+                                  await GpPreferences().setString(
+                                      SmashPreferencesKeys.KEY_GSS_SERVER_PWD,
+                                      res);
                                   setState(() {
                                     _gssPwd = res;
                                   });
@@ -1978,14 +2234,20 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                         children: <Widget>[
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText("Allow self signed certificates", bold: true),
+                            child: SmashUI.normalText(
+                                "Allow self signed certificates",
+                                bold: true),
                           ),
                           Padding(
-                              padding: EdgeInsets.only(top: p, bottom: p, right: p, left: 2 * p),
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
                               child: Checkbox(
                                 value: _allowSelfCert,
                                 onChanged: (newValue) async {
-                                  await GpPreferences().setBoolean(SmashPreferencesKeys.KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE, newValue);
+                                  await GpPreferences().setBoolean(
+                                      SmashPreferencesKeys
+                                          .KEY_GSS_SERVER_ALLOW_SELFCERTIFICATE,
+                                      newValue);
                                   await getData();
                                 },
                               )),

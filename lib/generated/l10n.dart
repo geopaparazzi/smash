@@ -1324,6 +1324,716 @@ class SL {
       args: [],
     );
   }
+
+  /// `Settings`
+  String get settings_settings {
+    return Intl.message(
+      'Settings',
+      name: 'settings_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera`
+  String get settings_camera {
+    return Intl.message(
+      'Camera',
+      name: 'settings_camera',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Camera Resolution`
+  String get settings_cameraResolution {
+    return Intl.message(
+      'Camera Resolution',
+      name: 'settings_cameraResolution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Resolution`
+  String get settings_resolution {
+    return Intl.message(
+      'Resolution',
+      name: 'settings_resolution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The camera resolution`
+  String get settings_theCameraResolution {
+    return Intl.message(
+      'The camera resolution',
+      name: 'settings_theCameraResolution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Screen`
+  String get settings_screen {
+    return Intl.message(
+      'Screen',
+      name: 'settings_screen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Screen, Scalebar and Icon Size`
+  String get settings_screenScaleBarIconSize {
+    return Intl.message(
+      'Screen, Scalebar and Icon Size',
+      name: 'settings_screenScaleBarIconSize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep Screen On`
+  String get settings_keepScreenOn {
+    return Intl.message(
+      'Keep Screen On',
+      name: 'settings_keepScreenOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retina screen mode`
+  String get settings_retinaScreenMode {
+    return Intl.message(
+      'Retina screen mode',
+      name: 'settings_retinaScreenMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To apply this setting you need to enter and exit the layer view.`
+  String get settings_toApplySettingEnterExitLayerView {
+    return Intl.message(
+      'To apply this setting you need to enter and exit the layer view.',
+      name: 'settings_toApplySettingEnterExitLayerView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color Picker to use`
+  String get settings_colorPickerToUse {
+    return Intl.message(
+      'Color Picker to use',
+      name: 'settings_colorPickerToUse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Map Center Cross`
+  String get settings_mapCenterCross {
+    return Intl.message(
+      'Map Center Cross',
+      name: 'settings_mapCenterCross',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color`
+  String get settings_color {
+    return Intl.message(
+      'Color',
+      name: 'settings_color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Size`
+  String get settings_size {
+    return Intl.message(
+      'Size',
+      name: 'settings_size',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Width`
+  String get settings_width {
+    return Intl.message(
+      'Width',
+      name: 'settings_width',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Map Tools Icon Size`
+  String get settings_mapToolsIconSize {
+    return Intl.message(
+      'Map Tools Icon Size',
+      name: 'settings_mapToolsIconSize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPS`
+  String get settings_gps {
+    return Intl.message(
+      'GPS',
+      name: 'settings_gps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPS filters and mock locations`
+  String get settings_gpsFiltersAndMockLoc {
+    return Intl.message(
+      'GPS filters and mock locations',
+      name: 'settings_gpsFiltersAndMockLoc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Live Preview`
+  String get settings_livePreview {
+    return Intl.message(
+      'Live Preview',
+      name: 'settings_livePreview',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No point available yet.`
+  String get settings_noPointAvailableYet {
+    return Intl.message(
+      'No point available yet.',
+      name: 'settings_noPointAvailableYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `longitude [deg]`
+  String get settings_longitudeDeg {
+    return Intl.message(
+      'longitude [deg]',
+      name: 'settings_longitudeDeg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `latitude [deg]`
+  String get settings_latitudeDeg {
+    return Intl.message(
+      'latitude [deg]',
+      name: 'settings_latitudeDeg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `accuracy [m]`
+  String get settings_accuracyM {
+    return Intl.message(
+      'accuracy [m]',
+      name: 'settings_accuracyM',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `altitude [m]`
+  String get settings_altitudeM {
+    return Intl.message(
+      'altitude [m]',
+      name: 'settings_altitudeM',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `heading [deg]`
+  String get settings_headingDeg {
+    return Intl.message(
+      'heading [deg]',
+      name: 'settings_headingDeg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `speed [m/s]`
+  String get settings_speedMS {
+    return Intl.message(
+      'speed [m/s]',
+      name: 'settings_speedMS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `is logging?`
+  String get settings_isLogging {
+    return Intl.message(
+      'is logging?',
+      name: 'settings_isLogging',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `mock locations?`
+  String get settings_mockLocations {
+    return Intl.message(
+      'mock locations?',
+      name: 'settings_mockLocations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MIN DIST FILTER BLOCKS`
+  String get settings_minDistFilterBlocks {
+    return Intl.message(
+      'MIN DIST FILTER BLOCKS',
+      name: 'settings_minDistFilterBlocks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Min dist filter passes`
+  String get settings_minDistFilterPasses {
+    return Intl.message(
+      'Min dist filter passes',
+      name: 'settings_minDistFilterPasses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MIN TIME FILTER BLOCKS`
+  String get settings_minTimeFilterBlocks {
+    return Intl.message(
+      'MIN TIME FILTER BLOCKS',
+      name: 'settings_minTimeFilterBlocks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Min time filter passes`
+  String get settings_minTimeFilterPasses {
+    return Intl.message(
+      'Min time filter passes',
+      name: 'settings_minTimeFilterPasses',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `HAS BEEN BLOCKED`
+  String get settings_hasBeenBlocked {
+    return Intl.message(
+      'HAS BEEN BLOCKED',
+      name: 'settings_hasBeenBlocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Distance from prev [m]`
+  String get settings_distanceFromPrevM {
+    return Intl.message(
+      'Distance from prev [m]',
+      name: 'settings_distanceFromPrevM',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time from prev [s]`
+  String get settings_timeFromPrevS {
+    return Intl.message(
+      'Time from prev [s]',
+      name: 'settings_timeFromPrevS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location Info`
+  String get settings_locationInfo {
+    return Intl.message(
+      'Location Info',
+      name: 'settings_locationInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Filters`
+  String get settings_filters {
+    return Intl.message(
+      'Filters',
+      name: 'settings_filters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disable Filters.`
+  String get settings_disableFilters {
+    return Intl.message(
+      'Disable Filters.',
+      name: 'settings_disableFilters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Filters.`
+  String get settings_enableFilters {
+    return Intl.message(
+      'Enable Filters.',
+      name: 'settings_enableFilters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom in`
+  String get settings_zoomIn {
+    return Intl.message(
+      'Zoom in',
+      name: 'settings_zoomIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom out`
+  String get settings_zoomOut {
+    return Intl.message(
+      'Zoom out',
+      name: 'settings_zoomOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Activate point flow.`
+  String get settings_activatePointFlow {
+    return Intl.message(
+      'Activate point flow.',
+      name: 'settings_activatePointFlow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pause points flow.`
+  String get settings_pausePointsFlow {
+    return Intl.message(
+      'Pause points flow.',
+      name: 'settings_pausePointsFlow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Visualize point count`
+  String get settings_visualizePointCount {
+    return Intl.message(
+      'Visualize point count',
+      name: 'settings_visualizePointCount',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show the GPS points count for VALID points.`
+  String get settings_showGpsPointsValidPoints {
+    return Intl.message(
+      'Show the GPS points count for VALID points.',
+      name: 'settings_showGpsPointsValidPoints',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show the GPS points count for ALL points.`
+  String get settings_showGpsPointsAllPoints {
+    return Intl.message(
+      'Show the GPS points count for ALL points.',
+      name: 'settings_showGpsPointsAllPoints',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log filters`
+  String get settings_logFilters {
+    return Intl.message(
+      'Log filters',
+      name: 'settings_logFilters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Min distance between 2 points.`
+  String get settings_minDistanceBetween2Points {
+    return Intl.message(
+      'Min distance between 2 points.',
+      name: 'settings_minDistanceBetween2Points',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Min timespan between 2 points.`
+  String get settings_minTimespanBetween2Points {
+    return Intl.message(
+      'Min timespan between 2 points.',
+      name: 'settings_minTimespanBetween2Points',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPS Filter`
+  String get settings_gpsFilter {
+    return Intl.message(
+      'GPS Filter',
+      name: 'settings_gpsFilter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disable`
+  String get settings_disable {
+    return Intl.message(
+      'Disable',
+      name: 'settings_disable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable`
+  String get settings_enable {
+    return Intl.message(
+      'Enable',
+      name: 'settings_enable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `the use of filtered GPS.`
+  String get settings_theUseOfTheGps {
+    return Intl.message(
+      'the use of filtered GPS.',
+      name: 'settings_theUseOfTheGps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WARNING: This will affect GPS position, notes insertion, log statistics and charting.`
+  String get settings_warningThisWillAffectGpsPosition {
+    return Intl.message(
+      'WARNING: This will affect GPS position, notes insertion, log statistics and charting.',
+      name: 'settings_warningThisWillAffectGpsPosition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mock locations`
+  String get settings_MockLocations {
+    return Intl.message(
+      'Mock locations',
+      name: 'settings_MockLocations',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `test gps log for demo use.`
+  String get settings_testGpsLogDemoUse {
+    return Intl.message(
+      'test gps log for demo use.',
+      name: 'settings_testGpsLogDemoUse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set duration for GPS points in milliseconds.`
+  String get settings_setDurationGpsPointsInMilli {
+    return Intl.message(
+      'Set duration for GPS points in milliseconds.',
+      name: 'settings_setDurationGpsPointsInMilli',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SETTING`
+  String get settings_SETTING {
+    return Intl.message(
+      'SETTING',
+      name: 'settings_SETTING',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set Mocked GPS duration`
+  String get settings_setMockedGpsDuration {
+    return Intl.message(
+      'Set Mocked GPS duration',
+      name: 'settings_setMockedGpsDuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The value has to be an integer.`
+  String get settings_theValueHasToBeInt {
+    return Intl.message(
+      'The value has to be an integer.',
+      name: 'settings_theValueHasToBeInt',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `milliseconds`
+  String get settings_milliseconds {
+    return Intl.message(
+      'milliseconds',
+      name: 'settings_milliseconds',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use Google Services to improve location`
+  String get settings_useGoogleToImproveLoc {
+    return Intl.message(
+      'Use Google Services to improve location',
+      name: 'settings_useGoogleToImproveLoc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `use of google services (needs an app restart).`
+  String get settings_useOfGoogleServicesRestart {
+    return Intl.message(
+      'use of google services (needs an app restart).',
+      name: 'settings_useOfGoogleServicesRestart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPS Logs view mode`
+  String get settings_gpsLogsViewMode {
+    return Intl.message(
+      'GPS Logs view mode',
+      name: 'settings_gpsLogsViewMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log view mode for original data.`
+  String get settings_logViewModeForOrigData {
+    return Intl.message(
+      'Log view mode for original data.',
+      name: 'settings_logViewModeForOrigData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log view mode for filtered data.`
+  String get settings_logViewModeFilteredData {
+    return Intl.message(
+      'Log view mode for filtered data.',
+      name: 'settings_logViewModeFilteredData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CANCEL`
+  String get settings_cancel {
+    return Intl.message(
+      'CANCEL',
+      name: 'settings_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get settings_ok {
+    return Intl.message(
+      'OK',
+      name: 'settings_ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Notes view modes`
+  String get settings_notesViewModes {
+    return Intl.message(
+      'Notes view modes',
+      name: 'settings_notesViewModes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select a notes view mode.`
+  String get settings_selectNotesViewMode {
+    return Intl.message(
+      'Select a notes view mode.',
+      name: 'settings_selectNotesViewMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Map Plugins`
+  String get settings_mapPlugins {
+    return Intl.message(
+      'Map Plugins',
+      name: 'settings_mapPlugins',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
