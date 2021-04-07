@@ -135,8 +135,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           DeviceSettingsState.iconData,
           color: SmashColors.mainDecorations,
         ),
-        title: SmashUI.normalText(DeviceSettingsState.title),
-        subtitle: Text(DeviceSettingsState.subtitle),
+        title: SmashUI.normalText(SL.of(context).settings_device),
+        subtitle: Text(SL.of(context).settings_deviceIdentifier),
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = DeviceSettings();
@@ -148,8 +148,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           DiagnosticsSettingState.iconData,
           color: SmashColors.mainDecorations,
         ),
-        title: SmashUI.normalText(DiagnosticsSettingState.title),
-        subtitle: Text(DiagnosticsSettingState.subtitle),
+        title: SmashUI.normalText(SL.of(context).settings_diagnostics),
+        subtitle: Text(SL.of(context).settings_diagnosticsDebugLog),
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = DiagnosticsSetting();
@@ -161,8 +161,8 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           GssSettingsState.iconData,
           color: SmashColors.mainDecorations,
         ),
-        title: SmashUI.normalText(GssSettingsState.title),
-        subtitle: Text(GssSettingsState.subtitle),
+        title: SmashUI.normalText(SL.of(context).settings_gss),
+        subtitle: Text(SL.of(context).settings_geopaparazziSurveyServer),
         trailing: Icon(Icons.arrow_right),
         onTap: () {
           _selectedSetting = GssSettings();
@@ -1672,11 +1672,14 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                 children: <Widget>[
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Info Tool", bold: true),
+                    child: SmashUI.normalText(SL.of(context).settings_infoTool,
+                        bold: true), //"Info Tool"
                   ),
                   ListTile(
                     leading: Icon(MdiIcons.mapMarkerRadius),
-                    title: Text("Tap size of the info tool in pixels."),
+                    title: Text(SL
+                        .of(context)
+                        .settings_tapSizeInfoToolPixels), //"Tap size of the info tool in pixels."
                     subtitle: Wrap(
                       children: <Widget>[
                         DropdownButton<int>(
@@ -1711,11 +1714,15 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                 children: <Widget>[
                   Padding(
                     padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText("Editing tool", bold: true),
+                    child: SmashUI.normalText(
+                        SL.of(context).settings_editingTool,
+                        bold: true), //"Editing tool"
                   ),
                   ListTile(
                     leading: Icon(MdiIcons.gestureTap),
-                    title: Text("Editing drag handler icon size."),
+                    title: Text(SL
+                        .of(context)
+                        .settings_editingDragIconSize), //"Editing drag handler icon size."
                     subtitle: Wrap(
                       children: <Widget>[
                         DropdownButton<int>(
@@ -1741,7 +1748,9 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                   ),
                   ListTile(
                     leading: Icon(MdiIcons.gestureTap),
-                    title: Text("Editing intermediate drag handler icon size."),
+                    title: Text(SL
+                        .of(context)
+                        .settings_editingIntermediateDragIconSize), //"Editing intermediate drag handler icon size."
                     subtitle: Wrap(
                       children: <Widget>[
                         DropdownButton<int>(
@@ -1784,8 +1793,8 @@ class DiagnosticsSetting extends StatefulWidget {
 }
 
 class DiagnosticsSettingState extends State<DiagnosticsSetting> {
-  static final title = "Diagnostics";
-  static final subtitle = "Diagnostics & Debug Log";
+  //static final title = "Diagnostics";
+  //static final subtitle = "Diagnostics & Debug Log";
   static final iconData = Icons.bug_report;
 
   @override
@@ -1801,7 +1810,7 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
                 color: SmashColors.mainBackground,
               ),
             ),
-            Text(title),
+            Text(SL.of(context).settings_diagnostics),
           ],
         ),
       ),
@@ -1816,7 +1825,9 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
                 padding: const EdgeInsets.all(15.0),
                 child: RaisedButton(
                     color: SmashColors.mainBackground,
-                    child: Text("Open full debug log"),
+                    child: Text(SL
+                        .of(context)
+                        .settings_openFullDebugLog), //"Open full debug log"
                     onPressed: () {
                       ProjectState projectState =
                           Provider.of<ProjectState>(context, listen: false);
@@ -1909,15 +1920,19 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Debug Log View"),
+        title: Text(SL.of(context).settings_debugLogView), //"Debug Log View"
         actions: [
           IconButton(
               icon: Icon(isViewingErrors
                   ? MdiIcons.androidDebugBridge
                   : MdiIcons.flashAlert),
               tooltip: isViewingErrors
-                  ? "View all messages"
-                  : "View only errors and warnings",
+                  ? SL
+                      .of(context)
+                      .settings_viewAllMessages //"View all messages"
+                  : SL
+                      .of(context)
+                      .settings_viewOnlyErrorsWarnings, //"View only errors and warnings"
               onPressed: () {
                 if (isViewingErrors) {
                   logItems = allLogItems;
@@ -1933,7 +1948,8 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
               }),
           IconButton(
               icon: Icon(MdiIcons.delete),
-              tooltip: "Clear debug log",
+              tooltip:
+                  SL.of(context).settings_clearDebugLog, //"Clear debug log"
               onPressed: () {
                 SMLogger().clearLog();
                 loadDebug();
@@ -1942,7 +1958,7 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
       ),
       body: logItems == null
           ? SmashCircularProgress(
-              label: "Loading data...",
+              label: SL.of(context).settings_loadingData, //"Loading data..."
             )
           : ListView.builder(
               itemCount: logItems.length,
@@ -1976,8 +1992,8 @@ class DeviceSettings extends StatefulWidget {
 }
 
 class DeviceSettingsState extends State<DeviceSettings> {
-  static final title = "Device";
-  static final subtitle = "Device identifier";
+  //static final title = "Device";
+  //static final subtitle = "Device identifier";
   static final iconData = MdiIcons.tabletCellphone;
 
   String _deviceId;
@@ -2014,7 +2030,7 @@ class DeviceSettingsState extends State<DeviceSettings> {
                 color: SmashColors.mainBackground,
               ),
             ),
-            Text(title),
+            Text(SL.of(context).settings_device), //Device
           ],
         ),
       ),
@@ -2034,7 +2050,9 @@ class DeviceSettingsState extends State<DeviceSettings> {
                         children: <Widget>[
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText("Device Id", bold: true),
+                            child: SmashUI.normalText(
+                                SL.of(context).settings_deviceId,
+                                bold: true), //"Device Id"
                           ),
                           Padding(
                             padding: SmashUI.defaultPadding(),
@@ -2053,14 +2071,19 @@ class DeviceSettingsState extends State<DeviceSettings> {
                         children: <Widget>[
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText("Override Device Id",
+                            child: SmashUI.normalText(
+                                SL
+                                    .of(context)
+                                    .settings_overrideDeviceId, //"Override Device Id"
                                 bold: true),
                           ),
                           Padding(
                               padding: EdgeInsets.only(
                                   top: p, bottom: p, right: p, left: 2 * p),
                               child: EditableTextField(
-                                "Override Id",
+                                SL
+                                    .of(context)
+                                    .settings_overrideId, //"Override Id"
                                 _overrideId,
                                 (res) async {
                                   if (res == null || res.trim().length == 0) {
@@ -2077,7 +2100,9 @@ class DeviceSettingsState extends State<DeviceSettings> {
                                   if (text.toString().trim().isNotEmpty) {
                                     return null;
                                   } else {
-                                    return "Please enter a valid server password.";
+                                    return SL
+                                        .of(context)
+                                        .settings_pleaseEnterValidPassword; //"Please enter a valid server password."
                                   }
                                 },
                               )),
@@ -2100,8 +2125,8 @@ class GssSettings extends StatefulWidget {
 }
 
 class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
-  static final title = "GSS";
-  static final subtitle = "Geopaparazzi Survey Server";
+  //static final title = "GSS";
+  //static final subtitle = "Geopaparazzi Survey Server";
   static final iconData = MdiIcons.cloudLock;
 
   String _gssUrl;
@@ -2146,7 +2171,7 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                 color: SmashColors.mainBackground,
               ),
             ),
-            Text(title),
+            Text(SL.of(context).settings_gss),
           ],
         ),
       ),
@@ -2166,13 +2191,17 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                         children: <Widget>[
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText("Server URL", bold: true),
+                            child: SmashUI.normalText(
+                                SL.of(context).settings_serverUrl,
+                                bold: true), //"Server URL"
                           ),
                           Padding(
                               padding: EdgeInsets.only(
                                   top: p, bottom: p, right: p, left: 2 * p),
                               child: EditableTextField(
-                                "server url",
+                                SL
+                                    .of(context)
+                                    .settings_serverUrl, //"server url"
                                 _gssUrl,
                                 (res) async {
                                   if (res == null || res.trim().length == 0) {
@@ -2190,7 +2219,9 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                                       text.startsWith("https://")) {
                                     return null;
                                   } else {
-                                    return "Server url needs to start with http or https.";
+                                    return SL
+                                        .of(context)
+                                        .settings_serverUrlStartWithHttp; //"Server url needs to start with http or https."
                                   }
                                 },
                               )),
@@ -2207,14 +2238,19 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                         children: <Widget>[
                           Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.normalText("Server Password",
+                            child: SmashUI.normalText(
+                                SL
+                                    .of(context)
+                                    .settings_serverPassword, //"Server Password"
                                 bold: true),
                           ),
                           Padding(
                               padding: EdgeInsets.only(
                                   top: p, bottom: p, right: p, left: 2 * p),
                               child: EditableTextField(
-                                "server password",
+                                SL
+                                    .of(context)
+                                    .settings_serverPassword, //"server password",
                                 _gssPwd,
                                 (res) async {
                                   if (res == null || res.trim().length == 0) {
@@ -2231,7 +2267,9 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                                   if (text.toString().trim().isNotEmpty) {
                                     return null;
                                   } else {
-                                    return "Please enter a valid server password.";
+                                    return SL
+                                        .of(context)
+                                        .settings_pleaseEnterValidPassword; //"Please enter a valid server password."
                                   }
                                 },
                                 isPassword: true,
@@ -2250,7 +2288,9 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                           Padding(
                             padding: SmashUI.defaultPadding(),
                             child: SmashUI.normalText(
-                                "Allow self signed certificates",
+                                SL
+                                    .of(context)
+                                    .settings_allowSelfSignedCert, //"Allow self signed certificates"
                                 bold: true),
                           ),
                           Padding(

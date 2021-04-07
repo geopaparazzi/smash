@@ -2114,6 +2114,256 @@ class SL {
       args: [],
     );
   }
+
+  /// `Info Tool`
+  String get settings_infoTool {
+    return Intl.message(
+      'Info Tool',
+      name: 'settings_infoTool',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap size of the info tool in pixels.`
+  String get settings_tapSizeInfoToolPixels {
+    return Intl.message(
+      'Tap size of the info tool in pixels.',
+      name: 'settings_tapSizeInfoToolPixels',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing tool`
+  String get settings_editingTool {
+    return Intl.message(
+      'Editing tool',
+      name: 'settings_editingTool',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing drag handler icon size.`
+  String get settings_editingDragIconSize {
+    return Intl.message(
+      'Editing drag handler icon size.',
+      name: 'settings_editingDragIconSize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Editing intermediate drag handler icon size.`
+  String get settings_editingIntermediateDragIconSize {
+    return Intl.message(
+      'Editing intermediate drag handler icon size.',
+      name: 'settings_editingIntermediateDragIconSize',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Diagnostics`
+  String get settings_diagnostics {
+    return Intl.message(
+      'Diagnostics',
+      name: 'settings_diagnostics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Diagnostics & Debug Log`
+  String get settings_diagnosticsDebugLog {
+    return Intl.message(
+      'Diagnostics & Debug Log',
+      name: 'settings_diagnosticsDebugLog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open full debug log`
+  String get settings_openFullDebugLog {
+    return Intl.message(
+      'Open full debug log',
+      name: 'settings_openFullDebugLog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Debug Log View`
+  String get settings_debugLogView {
+    return Intl.message(
+      'Debug Log View',
+      name: 'settings_debugLogView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View all messages`
+  String get settings_viewAllMessages {
+    return Intl.message(
+      'View all messages',
+      name: 'settings_viewAllMessages',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View only errors and warnings`
+  String get settings_viewOnlyErrorsWarnings {
+    return Intl.message(
+      'View only errors and warnings',
+      name: 'settings_viewOnlyErrorsWarnings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear debug log`
+  String get settings_clearDebugLog {
+    return Intl.message(
+      'Clear debug log',
+      name: 'settings_clearDebugLog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading data...`
+  String get settings_loadingData {
+    return Intl.message(
+      'Loading data...',
+      name: 'settings_loadingData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device`
+  String get settings_device {
+    return Intl.message(
+      'Device',
+      name: 'settings_device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device identifier`
+  String get settings_deviceIdentifier {
+    return Intl.message(
+      'Device identifier',
+      name: 'settings_deviceIdentifier',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Id`
+  String get settings_deviceId {
+    return Intl.message(
+      'Device Id',
+      name: 'settings_deviceId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Override Device Id`
+  String get settings_overrideDeviceId {
+    return Intl.message(
+      'Override Device Id',
+      name: 'settings_overrideDeviceId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Override Id`
+  String get settings_overrideId {
+    return Intl.message(
+      'Override Id',
+      name: 'settings_overrideId',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid server password.`
+  String get settings_pleaseEnterValidPassword {
+    return Intl.message(
+      'Please enter a valid server password.',
+      name: 'settings_pleaseEnterValidPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GSS`
+  String get settings_gss {
+    return Intl.message(
+      'GSS',
+      name: 'settings_gss',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Geopaparazzi Survey Server`
+  String get settings_geopaparazziSurveyServer {
+    return Intl.message(
+      'Geopaparazzi Survey Server',
+      name: 'settings_geopaparazziSurveyServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server URL`
+  String get settings_serverUrl {
+    return Intl.message(
+      'Server URL',
+      name: 'settings_serverUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server url needs to start with http or https.`
+  String get settings_serverUrlStartWithHttp {
+    return Intl.message(
+      'Server url needs to start with http or https.',
+      name: 'settings_serverUrlStartWithHttp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server Password`
+  String get settings_serverPassword {
+    return Intl.message(
+      'Server Password',
+      name: 'settings_serverPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow self signed certificates`
+  String get settings_allowSelfSignedCert {
+    return Intl.message(
+      'Allow self signed certificates',
+      name: 'settings_allowSelfSignedCert',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
