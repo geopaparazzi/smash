@@ -282,6 +282,23 @@
   "settings_serverUrl": "Server URL",
   "settings_serverUrlStartWithHttp": "Server url needs to start with http or https.",
   "settings_serverPassword": "Server Password",
-  "settings_allowSelfSignedCert": "Allow self signed certificates"
+  "settings_allowSelfSignedCert": "Allow self signed certificates",
+
+  "@toolbarTools": {
+    "context": "smash/widgets/toolbar_tools.dart"
+  },
+  "toolbarTools_zoomOut": "Zoom out",
+  "toolbarTools_zoomIn": "Zoom in",
+  "toolbarTools_cancelCurrentEdit": "Cancel current edit.",
+  "toolbarTools_saveCurrentEdit": "Save current edit.",
+  "toolbarTools_insertPointMapCenter": "Insert point in map center.",
+  "toolbarTools_insertPointGpsPos": "Insert point in GPS position.",
+  "toolbarTools_removeSelectedFeature": "Remove selected feature.",
+  "toolbarTools_showFeatureAttributes": "Show feature attributes.",
+  "toolbarTools_featureDoesNotHavePrimaryKey": "The feature does not have a primary key. Editing is not allowed.",
+  "toolbarTools_queryFeaturesVectorLayers": "Query features from loaded vector layers.",
+  "toolbarTools_measureDistanceWithFinger": "Measure distances on the map with your finger.",
+  "toolbarTools_toggleFenceMapCenter": "Toggle fence in map center.",
+  "toolbarTools_modifyGeomVectorLayers": "Modify geometries in editable vector layers."
 
 }

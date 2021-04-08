@@ -2364,6 +2364,136 @@ class SL {
       args: [],
     );
   }
+
+  /// `Zoom out`
+  String get toolbarTools_zoomOut {
+    return Intl.message(
+      'Zoom out',
+      name: 'toolbarTools_zoomOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom in`
+  String get toolbarTools_zoomIn {
+    return Intl.message(
+      'Zoom in',
+      name: 'toolbarTools_zoomIn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel current edit.`
+  String get toolbarTools_cancelCurrentEdit {
+    return Intl.message(
+      'Cancel current edit.',
+      name: 'toolbarTools_cancelCurrentEdit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save current edit.`
+  String get toolbarTools_saveCurrentEdit {
+    return Intl.message(
+      'Save current edit.',
+      name: 'toolbarTools_saveCurrentEdit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insert point in map center.`
+  String get toolbarTools_insertPointMapCenter {
+    return Intl.message(
+      'Insert point in map center.',
+      name: 'toolbarTools_insertPointMapCenter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insert point in GPS position.`
+  String get toolbarTools_insertPointGpsPos {
+    return Intl.message(
+      'Insert point in GPS position.',
+      name: 'toolbarTools_insertPointGpsPos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove selected feature.`
+  String get toolbarTools_removeSelectedFeature {
+    return Intl.message(
+      'Remove selected feature.',
+      name: 'toolbarTools_removeSelectedFeature',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show feature attributes.`
+  String get toolbarTools_showFeatureAttributes {
+    return Intl.message(
+      'Show feature attributes.',
+      name: 'toolbarTools_showFeatureAttributes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The feature does not have a primary key. Editing is not allowed.`
+  String get toolbarTools_featureDoesNotHavePrimaryKey {
+    return Intl.message(
+      'The feature does not have a primary key. Editing is not allowed.',
+      name: 'toolbarTools_featureDoesNotHavePrimaryKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Query features from loaded vector layers.`
+  String get toolbarTools_queryFeaturesVectorLayers {
+    return Intl.message(
+      'Query features from loaded vector layers.',
+      name: 'toolbarTools_queryFeaturesVectorLayers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Measure distances on the map with your finger.`
+  String get toolbarTools_measureDistanceWithFinger {
+    return Intl.message(
+      'Measure distances on the map with your finger.',
+      name: 'toolbarTools_measureDistanceWithFinger',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Toggle fence in map center.`
+  String get toolbarTools_toggleFenceMapCenter {
+    return Intl.message(
+      'Toggle fence in map center.',
+      name: 'toolbarTools_toggleFenceMapCenter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modify geometries in editable vector layers.`
+  String get toolbarTools_modifyGeomVectorLayers {
+    return Intl.message(
+      'Modify geometries in editable vector layers.',
+      name: 'toolbarTools_modifyGeomVectorLayers',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

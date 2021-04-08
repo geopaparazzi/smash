@@ -253,6 +253,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings_warningThisWillAffectGpsPosition" : MessageLookupByLibrary.simpleMessage("WARNING: This will affect GPS position, notes insertion, log statistics and charting."),
     "settings_width" : MessageLookupByLibrary.simpleMessage("Width"),
     "settings_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
-    "settings_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out")
+    "settings_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out"),
+    "toolbarTools_cancelCurrentEdit" : MessageLookupByLibrary.simpleMessage("Cancel current edit."),
+    "toolbarTools_featureDoesNotHavePrimaryKey" : MessageLookupByLibrary.simpleMessage("The feature does not have a primary key. Editing is not allowed."),
+    "toolbarTools_insertPointGpsPos" : MessageLookupByLibrary.simpleMessage("Insert point in GPS position."),
+    "toolbarTools_insertPointMapCenter" : MessageLookupByLibrary.simpleMessage("Insert point in map center."),
+    "toolbarTools_measureDistanceWithFinger" : MessageLookupByLibrary.simpleMessage("Measure distances on the map with your finger."),
+    "toolbarTools_modifyGeomVectorLayers" : MessageLookupByLibrary.simpleMessage("Modify geometries in editable vector layers."),
+    "toolbarTools_queryFeaturesVectorLayers" : MessageLookupByLibrary.simpleMessage("Query features from loaded vector layers."),
+    "toolbarTools_removeSelectedFeature" : MessageLookupByLibrary.simpleMessage("Remove selected feature."),
+    "toolbarTools_saveCurrentEdit" : MessageLookupByLibrary.simpleMessage("Save current edit."),
+    "toolbarTools_showFeatureAttributes" : MessageLookupByLibrary.simpleMessage("Show feature attributes."),
+    "toolbarTools_toggleFenceMapCenter" : MessageLookupByLibrary.simpleMessage("Toggle fence in map center."),
+    "toolbarTools_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
+    "toolbarTools_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out")
   };
 }
