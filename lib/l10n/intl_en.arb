@@ -299,6 +299,26 @@
   "toolbarTools_queryFeaturesVectorLayers": "Query features from loaded vector layers.",
   "toolbarTools_measureDistanceWithFinger": "Measure distances on the map with your finger.",
   "toolbarTools_toggleFenceMapCenter": "Toggle fence in map center.",
-  "toolbarTools_modifyGeomVectorLayers": "Modify geometries in editable vector layers."
+  "toolbarTools_modifyGeomVectorLayers": "Modify geometries in editable vector layers.",
 
+  "@coachMarks": {
+    "context": "smash/widgets/coachmarks.dart"
+  },
+  "coachMarks_singleTap": "Single tap: ",
+  "coachMarks_longTap": "Long tap: ",
+  "coachMarks_doubleTap": "Double tap: ",
+  "coachMarks_simpleNoteButton": "Simple Notes Button",
+  "coachMarks_addNewNote": "add a new note",
+  "coachMarks_viewNotesList": "view notes list",
+  "coachMarks_viewNotesSettings": "view notes settings",
+  "coachMarks_formNotesButton": "Form Notes Button",
+  "coachMarks_addNewFormNote": "add new form note",
+  "coachMarks_viewFormNoteList": "view form notes list",
+  "coachMarks_gpsLogButton": "GPS Log Button",
+  "coachMarks_startStopLogging": "start logging/stop logging",
+  "coachMarks_viewLogsList": "view logs list",
+  "coachMarks_viewLogsSettings": "view logs settings",
+  "coachMarks_gpsInfoButton": "GPS Info Button (if applicable)",
+  "coachMarks_centerMapOnGpsPos": "center map on GPS position",
+  "coachMarks_showGpsInfo": "show GPS info"
 }

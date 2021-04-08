@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:tutorial_coach_mark/animated_focus_light.dart';
 import 'package:tutorial_coach_mark/content_target.dart';
@@ -23,14 +24,18 @@ class MainViewCoachMarks {
   void initCoachMarks() {
     var all = 11;
     var i = 1;
-    const s = "Single tap: ";
-    const l = "Long tap: ";
-    const d = "Double tap: ";
+    var s = SL.current.coachMarks_singleTap; //"Single tap: "
+    var l = SL.current.coachMarks_longTap; //"Long tap: "
+    var d = SL.current.coachMarks_doubleTap; //"Double tap: "
 
-    var title = "$i/$all Simple Notes Button";
-    var singleTap = "${s}add a new note";
-    var longTap = "${l}view notes list";
-    var doubleTap = "${d}view notes settings";
+    var title =
+        "$i/$all ${SL.current.coachMarks_simpleNoteButton}"; //Simple Notes Button
+    var singleTap =
+        "${s}${SL.current.coachMarks_addNewNote}"; //"add a new note"
+    var longTap =
+        "${l}${SL.current.coachMarks_viewNotesList}"; //"view notes list"
+    var doubleTap =
+        "${d}${SL.current.coachMarks_viewNotesSettings}"; //"view notes settings"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: simpleNotesButtonKey,
@@ -38,10 +43,14 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Form Notes Button";
-    singleTap = "${s}add new form note";
-    longTap = "${l}view form notes list";
-    doubleTap = "${d}view notes settings";
+    title =
+        "$i/$all ${SL.current.coachMarks_formNotesButton}"; //"Form Notes Button"
+    singleTap =
+        "${s}${SL.current.coachMarks_addNewFormNote}"; //"add new form note"
+    longTap =
+        "${l}${SL.current.coachMarks_viewFormNoteList}"; //"view form notes list"
+    doubleTap =
+        "${d}${SL.current.coachMarks_viewNotesSettings}"; //"view notes settings"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: formsButtonKey,
@@ -49,10 +58,12 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all GPS Log Button";
-    singleTap = "${s}start logging/stop logging";
-    longTap = "${l}view logs list";
-    doubleTap = "${d}view logs settings";
+    title = "$i/$all ${SL.current.coachMarks_gpsLogButton}"; //"GPS Log Button"
+    singleTap =
+        "${s}${SL.current.coachMarks_startStopLogging}"; //"start logging/stop logging"
+    longTap = "${l}${SL.current.coachMarks_viewLogsList}"; //"view logs list"
+    doubleTap =
+        "${d}${SL.current.coachMarks_viewLogsSettings}"; //"view logs settings"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: logsButtonKey,
@@ -60,9 +71,11 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all GPS Info Button (if applicable)";
-    singleTap = "${s}center map on GPS position";
-    longTap = "${l}show GPS info";
+    title =
+        "$i/$all ${SL.current.coachMarks_gpsInfoButton}"; //"GPS Info Button (if applicable)"
+    singleTap =
+        "${s}${SL.current.coachMarks_centerMapOnGpsPos}"; //"center map on GPS position"
+    longTap = "${l}${SL.current.coachMarks_showGpsInfo}"; //"show GPS info"
     doubleTap = "${d}toggle automatic center on GPS";
     targets.add(TargetFocus(
       identify: "Target ${i++}",
@@ -116,24 +129,32 @@ class MainViewCoachMarks {
     ));
 
     title = "$i/$all Tools Button";
-    singleTap = "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.";
+    singleTap =
+        "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.";
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: toolsButtonKey,
-      contents: [getContentTarget(title, singleTap, longTap, doubleTap, alignContent: AlignContent.bottom)],
+      contents: [
+        getContentTarget(title, singleTap, longTap, doubleTap,
+            alignContent: AlignContent.bottom)
+      ],
       shape: ShapeLightFocus.Circle,
     ));
 
     title = "$i/$all Interactive coach marks button";
-    singleTap = "Open the interactice coach marks that explain all the actions of the main map view.";
+    singleTap =
+        "Open the interactice coach marks that explain all the actions of the main map view.";
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: coachMarkButtonKey,
-      contents: [getContentTarget(title, singleTap, longTap, doubleTap, alignContent: AlignContent.bottom)],
+      contents: [
+        getContentTarget(title, singleTap, longTap, doubleTap,
+            alignContent: AlignContent.bottom)
+      ],
       shape: ShapeLightFocus.Circle,
     ));
 
@@ -145,12 +166,17 @@ class MainViewCoachMarks {
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: drawerButtonKey,
-      contents: [getContentTarget(title, singleTap, longTap, doubleTap, alignContent: AlignContent.bottom)],
+      contents: [
+        getContentTarget(title, singleTap, longTap, doubleTap,
+            alignContent: AlignContent.bottom)
+      ],
       shape: ShapeLightFocus.Circle,
     ));
   }
 
-  ContentTarget getContentTarget(String title, String singleTap, String longTap, String doubleTap, {AlignContent alignContent = AlignContent.top}) {
+  ContentTarget getContentTarget(
+      String title, String singleTap, String longTap, String doubleTap,
+      {AlignContent alignContent = AlignContent.top}) {
     var size = SmashUI.MEDIUM_SIZE;
     var widgets = <Widget>[];
 
@@ -159,11 +185,16 @@ class MainViewCoachMarks {
     if (singleTap != null) {
       if (singleTap.contains(":")) {
         widgets.add(
-          Padding(padding: const EdgeInsets.only(top: 10.0, left: 4), child: getRichText(size, singleTap)),
+          Padding(
+              padding: const EdgeInsets.only(top: 10.0, left: 4),
+              child: getRichText(size, singleTap)),
         );
       } else {
         widgets.add(
-          Padding(padding: const EdgeInsets.only(top: 10.0, left: 4), child: SmashUI.normalText(singleTap, color: SmashColors.mainBackground)),
+          Padding(
+              padding: const EdgeInsets.only(top: 10.0, left: 4),
+              child: SmashUI.normalText(singleTap,
+                  color: SmashColors.mainBackground)),
         );
       }
     }

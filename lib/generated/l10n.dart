@@ -2494,6 +2494,176 @@ class SL {
       args: [],
     );
   }
+
+  /// `Single tap: `
+  String get coachMarks_singleTap {
+    return Intl.message(
+      'Single tap: ',
+      name: 'coachMarks_singleTap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Long tap: `
+  String get coachMarks_longTap {
+    return Intl.message(
+      'Long tap: ',
+      name: 'coachMarks_longTap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Double tap: `
+  String get coachMarks_doubleTap {
+    return Intl.message(
+      'Double tap: ',
+      name: 'coachMarks_doubleTap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Simple Notes Button`
+  String get coachMarks_simpleNoteButton {
+    return Intl.message(
+      'Simple Notes Button',
+      name: 'coachMarks_simpleNoteButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `add a new note`
+  String get coachMarks_addNewNote {
+    return Intl.message(
+      'add a new note',
+      name: 'coachMarks_addNewNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `view notes list`
+  String get coachMarks_viewNotesList {
+    return Intl.message(
+      'view notes list',
+      name: 'coachMarks_viewNotesList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `view notes settings`
+  String get coachMarks_viewNotesSettings {
+    return Intl.message(
+      'view notes settings',
+      name: 'coachMarks_viewNotesSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Form Notes Button`
+  String get coachMarks_formNotesButton {
+    return Intl.message(
+      'Form Notes Button',
+      name: 'coachMarks_formNotesButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `add new form note`
+  String get coachMarks_addNewFormNote {
+    return Intl.message(
+      'add new form note',
+      name: 'coachMarks_addNewFormNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `view form notes list`
+  String get coachMarks_viewFormNoteList {
+    return Intl.message(
+      'view form notes list',
+      name: 'coachMarks_viewFormNoteList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPS Log Button`
+  String get coachMarks_gpsLogButton {
+    return Intl.message(
+      'GPS Log Button',
+      name: 'coachMarks_gpsLogButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `start logging/stop logging`
+  String get coachMarks_startStopLogging {
+    return Intl.message(
+      'start logging/stop logging',
+      name: 'coachMarks_startStopLogging',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `view logs list`
+  String get coachMarks_viewLogsList {
+    return Intl.message(
+      'view logs list',
+      name: 'coachMarks_viewLogsList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `view logs settings`
+  String get coachMarks_viewLogsSettings {
+    return Intl.message(
+      'view logs settings',
+      name: 'coachMarks_viewLogsSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPS Info Button (if applicable)`
+  String get coachMarks_gpsInfoButton {
+    return Intl.message(
+      'GPS Info Button (if applicable)',
+      name: 'coachMarks_gpsInfoButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `center map on GPS position`
+  String get coachMarks_centerMapOnGpsPos {
+    return Intl.message(
+      'center map on GPS position',
+      name: 'coachMarks_centerMapOnGpsPos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `show GPS info`
+  String get coachMarks_showGpsInfo {
+    return Intl.message(
+      'show GPS info',
+      name: 'coachMarks_showGpsInfo',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
