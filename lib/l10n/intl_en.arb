@@ -302,7 +302,7 @@
   "toolbarTools_modifyGeomVectorLayers": "Modify geometries in editable vector layers.",
 
   "@coachMarks": {
-    "context": "smash/widgets/coachmarks.dart"
+    "context": "smash/util/coachmarks.dart"
   },
   "coachMarks_singleTap": "Single tap: ",
   "coachMarks_longTap": "Long tap: ",
@@ -337,5 +337,25 @@
   "coachMarks_openInteractiveCoachMarks": "Open the interactice coach marks that explain all the actions of the main map view.",
   "coachMarks_mainMenuButton": "Main Menu Button",
   "coachMarks_openDrawerToLoadProject": "Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.",
-  "coachMarks_skip": "SKIP"
+  "coachMarks_skip": "SKIP",
+
+  "@coachMarks": {
+    "context": "smash/util/fence.dart"
+  },
+  "fence_fenceProperties" : "Fence Properties",
+  "fence_delete" : "DELETE",
+  "fence_removeFence" : "Remove fence",
+  "fence_areYouSureRemoveFence" : "Are you sure you want to remove fence:",
+  "fence_cancel" : "CANCEL",
+  "fence_ok" : "OK",
+  "fence_aNewFence" : "a new fence",
+  "fence_label" : "Label",
+  "fence_aNameForFence" : "A name for the fence.",
+  "fence_theNameNeedsToBeDefined" : "The name needs to be defined.",
+  "fence_radius" : "Radius",
+  "fence_theFenceRadiusMeters" : "The fence radius in meters.",
+  "fence_radiusNeedsToBePositive" : "The radius needs to be a positive number in meters.",
+  "fence_onEnter" : "On enter",
+  "fence_onExit" : "On exit"
+
 }

@@ -2834,6 +2834,156 @@ class SL {
       args: [],
     );
   }
+
+  /// `Fence Properties`
+  String get fence_fenceProperties {
+    return Intl.message(
+      'Fence Properties',
+      name: 'fence_fenceProperties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DELETE`
+  String get fence_delete {
+    return Intl.message(
+      'DELETE',
+      name: 'fence_delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove fence`
+  String get fence_removeFence {
+    return Intl.message(
+      'Remove fence',
+      name: 'fence_removeFence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to remove fence:`
+  String get fence_areYouSureRemoveFence {
+    return Intl.message(
+      'Are you sure you want to remove fence:',
+      name: 'fence_areYouSureRemoveFence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CANCEL`
+  String get fence_cancel {
+    return Intl.message(
+      'CANCEL',
+      name: 'fence_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get fence_ok {
+    return Intl.message(
+      'OK',
+      name: 'fence_ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `a new fence`
+  String get fence_aNewFence {
+    return Intl.message(
+      'a new fence',
+      name: 'fence_aNewFence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Label`
+  String get fence_label {
+    return Intl.message(
+      'Label',
+      name: 'fence_label',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A name for the fence.`
+  String get fence_aNameForFence {
+    return Intl.message(
+      'A name for the fence.',
+      name: 'fence_aNameForFence',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The name needs to be defined.`
+  String get fence_theNameNeedsToBeDefined {
+    return Intl.message(
+      'The name needs to be defined.',
+      name: 'fence_theNameNeedsToBeDefined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Radius`
+  String get fence_radius {
+    return Intl.message(
+      'Radius',
+      name: 'fence_radius',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The fence radius in meters.`
+  String get fence_theFenceRadiusMeters {
+    return Intl.message(
+      'The fence radius in meters.',
+      name: 'fence_theFenceRadiusMeters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The radius needs to be a positive number in meters.`
+  String get fence_radiusNeedsToBePositive {
+    return Intl.message(
+      'The radius needs to be a positive number in meters.',
+      name: 'fence_radiusNeedsToBePositive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On enter`
+  String get fence_onEnter {
+    return Intl.message(
+      'On enter',
+      name: 'fence_onEnter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On exit`
+  String get fence_onExit {
+    return Intl.message(
+      'On exit',
+      name: 'fence_onExit',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
