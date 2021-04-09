@@ -87,9 +87,11 @@ class MainViewCoachMarks {
 
     title =
         "$i/$all ${SL.current.coachMarks_layersViewButton}"; //"Layers View Button"
-    singleTap = "${s}Open the layers view";
+    singleTap =
+        "${s}${SL.current.coachMarks_openLayersView}"; //"Open the layers view"
     longTap = null;
-    doubleTap = "${d}Open the layer plugins dialog";
+    doubleTap =
+        "${d}${SL.current.coachMarks_openLayersPluginDialog}"; //"Open the layer plugins dialog"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: layersButtonKey,
@@ -97,8 +99,9 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Zoom In Button";
-    singleTap = "Zoom in the map by one level";
+    title = "$i/$all ${SL.current.coachMarks_zoomInButton}"; //"Zoom In Button"
+    singleTap = SL
+        .current.coachMarks_zoomImMapOneLevel; //"Zoom in the map by one level"
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -108,8 +111,10 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Zoom Out Button";
-    singleTap = "Zoom out the map by one level";
+    title =
+        "$i/$all ${SL.current.coachMarks_zoomOutButton}"; //"Zoom Out Button"
+    singleTap = SL.current
+        .coachMarks_zoomOutMapOneLevel; //"Zoom out the map by one level"
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -119,8 +124,10 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Bottom Tools Button";
-    singleTap = "Toggle bottom tools bar. ";
+    title =
+        "$i/$all ${SL.current.coachMarks_bottomToolsButton}"; //"Bottom Tools Button"
+    singleTap = SL
+        .current.coachMarks_toggleBottomToolsBar; //"Toggle bottom tools bar. "
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -130,9 +137,9 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Tools Button";
-    singleTap =
-        "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.";
+    title = "$i/$all ${SL.current.coachMarks_toolsButton}"; //"Tools Button"
+    singleTap = SL.current
+        .coachMarks_openEndDrawerToAccessProject; //"Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras."
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -145,9 +152,10 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Interactive coach marks button";
-    singleTap =
-        "Open the interactice coach marks that explain all the actions of the main map view.";
+    title =
+        "$i/$all ${SL.current.coachMarks_interactiveCoackMarksButton}"; //"Interactive coach marks button"
+    singleTap = SL.current
+        .coachMarks_openInteractiveCoachMarks; //"Open the interactice coach marks that explain all the actions of the main map view."
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -160,9 +168,10 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Main Menu Button";
-    singleTap =
-        "Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.";
+    title =
+        "$i/$all ${SL.current.coachMarks_mainMenuButton}"; //"Main Menu Button"
+    singleTap = SL.current
+        .coachMarks_openDrawerToLoadProject; //"Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS."
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -256,7 +265,7 @@ class MainViewCoachMarks {
         targets: targets,
         colorShadow: SmashColors.mainDecorations,
         alignSkip: Alignment.topCenter,
-        textSkip: "SKIP",
+        textSkip: SL.of(context).coachMarks_skip, //"SKIP"
         paddingFocus: 10,
         opacityShadow: 0.7, onFinish: () {
       // print("finish");

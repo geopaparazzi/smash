@@ -322,5 +322,20 @@
   "coachMarks_centerMapOnGpsPos": "center map on GPS position",
   "coachMarks_showGpsInfo": "show GPS info",
   "coachMarks_toggleAutoCenterGps": "toggle automatic center on GPS",
-  "coachMarks_layersViewButton": "Layers View Button"
+  "coachMarks_layersViewButton": "Layers View Button",
+  "coachMarks_openLayersView": "Open the layers view",
+  "coachMarks_openLayersPluginDialog": "Open the layer plugins dialog",
+  "coachMarks_zoomInButton": "Zoom In Button",
+  "coachMarks_zoomImMapOneLevel": "Zoom in the map by one level",
+  "coachMarks_zoomOutButton": "Zoom Out Button",
+  "coachMarks_zoomOutMapOneLevel": "Zoom out the map by one level",
+  "coachMarks_bottomToolsButton": "Bottom Tools Button",
+  "coachMarks_toggleBottomToolsBar": "Toggle bottom tools bar. ",
+  "coachMarks_toolsButton": "Tools Button",
+  "coachMarks_openEndDrawerToAccessProject": "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.",
+  "coachMarks_interactiveCoackMarksButton": "Interactive coach marks button",
+  "coachMarks_openInteractiveCoachMarks": "Open the interactice coach marks that explain all the actions of the main map view.",
+  "coachMarks_mainMenuButton": "Main Menu Button",
+  "coachMarks_openDrawerToLoadProject": "Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.",
+  "coachMarks_skip": "SKIP"
 }

@@ -2684,6 +2684,156 @@ class SL {
       args: [],
     );
   }
+
+  /// `Open the layers view`
+  String get coachMarks_openLayersView {
+    return Intl.message(
+      'Open the layers view',
+      name: 'coachMarks_openLayersView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open the layer plugins dialog`
+  String get coachMarks_openLayersPluginDialog {
+    return Intl.message(
+      'Open the layer plugins dialog',
+      name: 'coachMarks_openLayersPluginDialog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom In Button`
+  String get coachMarks_zoomInButton {
+    return Intl.message(
+      'Zoom In Button',
+      name: 'coachMarks_zoomInButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom in the map by one level`
+  String get coachMarks_zoomImMapOneLevel {
+    return Intl.message(
+      'Zoom in the map by one level',
+      name: 'coachMarks_zoomImMapOneLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom Out Button`
+  String get coachMarks_zoomOutButton {
+    return Intl.message(
+      'Zoom Out Button',
+      name: 'coachMarks_zoomOutButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom out the map by one level`
+  String get coachMarks_zoomOutMapOneLevel {
+    return Intl.message(
+      'Zoom out the map by one level',
+      name: 'coachMarks_zoomOutMapOneLevel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bottom Tools Button`
+  String get coachMarks_bottomToolsButton {
+    return Intl.message(
+      'Bottom Tools Button',
+      name: 'coachMarks_bottomToolsButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Toggle bottom tools bar. `
+  String get coachMarks_toggleBottomToolsBar {
+    return Intl.message(
+      'Toggle bottom tools bar. ',
+      name: 'coachMarks_toggleBottomToolsBar',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tools Button`
+  String get coachMarks_toolsButton {
+    return Intl.message(
+      'Tools Button',
+      name: 'coachMarks_toolsButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.`
+  String get coachMarks_openEndDrawerToAccessProject {
+    return Intl.message(
+      'Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.',
+      name: 'coachMarks_openEndDrawerToAccessProject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Interactive coach marks button`
+  String get coachMarks_interactiveCoackMarksButton {
+    return Intl.message(
+      'Interactive coach marks button',
+      name: 'coachMarks_interactiveCoackMarksButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open the interactice coach marks that explain all the actions of the main map view.`
+  String get coachMarks_openInteractiveCoachMarks {
+    return Intl.message(
+      'Open the interactice coach marks that explain all the actions of the main map view.',
+      name: 'coachMarks_openInteractiveCoachMarks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Main Menu Button`
+  String get coachMarks_mainMenuButton {
+    return Intl.message(
+      'Main Menu Button',
+      name: 'coachMarks_mainMenuButton',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.`
+  String get coachMarks_openDrawerToLoadProject {
+    return Intl.message(
+      'Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.',
+      name: 'coachMarks_openDrawerToLoadProject',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SKIP`
+  String get coachMarks_skip {
+    return Intl.message(
+      'SKIP',
+      name: 'coachMarks_skip',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
