@@ -2664,6 +2664,26 @@ class SL {
       args: [],
     );
   }
+
+  /// `toggle automatic center on GPS`
+  String get coachMarks_toggleAutoCenterGps {
+    return Intl.message(
+      'toggle automatic center on GPS',
+      name: 'coachMarks_toggleAutoCenterGps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Layers View Button`
+  String get coachMarks_layersViewButton {
+    return Intl.message(
+      'Layers View Button',
+      name: 'coachMarks_layersViewButton',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

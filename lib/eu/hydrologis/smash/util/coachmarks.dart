@@ -76,7 +76,8 @@ class MainViewCoachMarks {
     singleTap =
         "${s}${SL.current.coachMarks_centerMapOnGpsPos}"; //"center map on GPS position"
     longTap = "${l}${SL.current.coachMarks_showGpsInfo}"; //"show GPS info"
-    doubleTap = "${d}toggle automatic center on GPS";
+    doubleTap =
+        "${d}${SL.current.coachMarks_toggleAutoCenterGps}"; //"toggle automatic center on GPS"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: gpsButtonKey,
@@ -84,7 +85,8 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Layers View Button";
+    title =
+        "$i/$all ${SL.current.coachMarks_layersViewButton}"; //"Layers View Button"
     singleTap = "${s}Open the layers view";
     longTap = null;
     doubleTap = "${d}Open the layer plugins dialog";

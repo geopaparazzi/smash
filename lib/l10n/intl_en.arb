@@ -320,5 +320,7 @@
   "coachMarks_viewLogsSettings": "view logs settings",
   "coachMarks_gpsInfoButton": "GPS Info Button (if applicable)",
   "coachMarks_centerMapOnGpsPos": "center map on GPS position",
-  "coachMarks_showGpsInfo": "show GPS info"
+  "coachMarks_showGpsInfo": "show GPS info",
+  "coachMarks_toggleAutoCenterGps": "toggle automatic center on GPS",
+  "coachMarks_layersViewButton": "Layers View Button"
 }
