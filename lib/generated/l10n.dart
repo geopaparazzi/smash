@@ -2984,6 +2984,136 @@ class SL {
       args: [],
     );
   }
+
+  /// `Cancelled by user.`
+  String get network_cancelledByUser {
+    return Intl.message(
+      'Cancelled by user.',
+      name: 'network_cancelledByUser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Completed.`
+  String get network_completed {
+    return Intl.message(
+      'Completed.',
+      name: 'network_completed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Building base cache for performance increase (might take some time...`
+  String get network_buildingBaseCachePerformance {
+    return Intl.message(
+      'Building base cache for performance increase (might take some time...',
+      name: 'network_buildingBaseCachePerformance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This file is already in the process of being downloaded.`
+  String get network_thisFIleAlreadyBeingDownloaded {
+    return Intl.message(
+      'This file is already in the process of being downloaded.',
+      name: 'network_thisFIleAlreadyBeingDownloaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download`
+  String get network_download {
+    return Intl.message(
+      'Download',
+      name: 'network_download',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Download file`
+  String get network_downloadFile {
+    return Intl.message(
+      'Download file',
+      name: 'network_downloadFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `to the device? This can take some time.`
+  String get network_toTheDeviceTakeTime {
+    return Intl.message(
+      'to the device? This can take some time.',
+      name: 'network_toTheDeviceTakeTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available maps`
+  String get network_availableMaps {
+    return Intl.message(
+      'Available maps',
+      name: 'network_availableMaps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Search map by name`
+  String get network_searchMapByName {
+    return Intl.message(
+      'Search map by name',
+      name: 'network_searchMapByName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Uploading`
+  String get network_uploading {
+    return Intl.message(
+      'Uploading',
+      name: 'network_uploading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `please wait...`
+  String get network_pleaseWait {
+    return Intl.message(
+      'please wait...',
+      name: 'network_pleaseWait',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Permission on server denied.`
+  String get network_permissionOnServerDenied {
+    return Intl.message(
+      'Permission on server denied.',
+      name: 'network_permissionOnServerDenied',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not connect to the server. Is it online? Check your address.`
+  String get network_couldNotConnectToServer {
+    return Intl.message(
+      'Could not connect to the server. Is it online? Check your address.',
+      name: 'network_couldNotConnectToServer',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

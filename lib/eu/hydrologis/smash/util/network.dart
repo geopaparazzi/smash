@@ -18,6 +18,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/othertables.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -82,15 +83,17 @@ class DownloadMapFromListTileProgressWidgetState
     setState(() {
       _downloading = false;
       _downloadFinished = true;
-      _progressString =
-          cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
+      _progressString = cancelToken.isCancelled
+          ? SL.of(context).network_cancelledByUser //"Cancelled by user."
+          : SL.of(context).network_completed; //"Completed."
     });
   }
 
   Future<void> buildCache(String mapsforgePath) async {
     setState(() {
-      _progressString =
-          "Building base cache for performance increase (might take some time...";
+      _progressString = SL
+          .of(context)
+          .network_buildingBaseCachePerformance; //"Building base cache for performance increase (might take some time..."
     });
     await fillBaseCache(File(mapsforgePath));
   }
@@ -135,14 +138,18 @@ class DownloadMapFromListTileProgressWidgetState
       },
       onTap: () async {
         if (_downloading) {
-          SmashDialogs.showWarningDialog(context,
-              "This file is already in the process of being downloaded.");
+          SmashDialogs.showWarningDialog(
+              context,
+              SL
+                  .of(context)
+                  .network_thisFIleAlreadyBeingDownloaded); //"This file is already in the process of being downloaded."
           return;
         }
         bool doDownload = await SmashDialogs.showConfirmDialog(
             context,
-            "Download",
-            "Download file $name to the device? This can take some time.");
+            SL.of(context).network_download, //"Download"
+            "${SL.of(context).network_downloadFile} $name " //"Download file"
+            "${SL.of(context).network_toTheDeviceTakeTime}"); //"to the device? This can take some time."
         if (doDownload) {
           await downloadFile();
         }
@@ -178,7 +185,8 @@ class MapsDownloadWidgetState extends State<MapsDownloadWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Available maps (${_visualizeList.length})"),
+        title: Text(
+            "${SL.of(context).network_availableMaps} (${_visualizeList.length})"), //Available maps
       ),
       body: Container(
           child: Column(children: <Widget>[
@@ -190,8 +198,12 @@ class MapsDownloadWidgetState extends State<MapsDownloadWidget> {
             },
             controller: editingController,
             decoration: InputDecoration(
-                labelText: "Search map by name",
-                hintText: "Search map by name",
+                labelText: SL
+                    .of(context)
+                    .network_searchMapByName, //"Search map by name"
+                hintText: SL
+                    .of(context)
+                    .network_searchMapByName, //"Search map by name"
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(25.0)))),
@@ -310,13 +322,15 @@ class ProjectDataUploadListTileProgressWidgetState
     if (widget.orderNotifier == null) {
       setState(() {
         _uploading = false;
-        _progressString =
-            cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
+        _progressString = cancelToken.isCancelled
+            ? SL.of(context).network_cancelledByUser //"Cancelled by user."
+            : SL.of(context).network_completed; //"Completed."
       });
     } else {
       _uploading = false;
-      _progressString =
-          cancelToken.isCancelled ? "Cancelled by user." : "Completed.";
+      _progressString = cancelToken.isCancelled
+          ? SL.of(context).network_cancelledByUser //"Cancelled by user."
+          : SL.of(context).network_completed; //"Completed."
       if (!hasError) {
         widget.orderNotifier.value = widget.orderNotifier.value + 1;
       } else {
@@ -412,7 +426,7 @@ class ProjectDataUploadListTileProgressWidgetState
         var msg;
         if (total <= 0) {
           msg =
-              "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
+              "${SL.of(context).network_uploading} ${(received / 1024.0 / 1024.0).round()}MB, ${SL.of(context).network_pleaseWait}"; //Uploading //please wait...
         } else {
           msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
         }
@@ -471,7 +485,7 @@ class ProjectDataUploadListTileProgressWidgetState
         var msg;
         if (total <= 0) {
           msg =
-              "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
+              "${SL.of(context).network_uploading} ${(received / 1024.0 / 1024.0).round()}MB, ${SL.of(context).network_pleaseWait}"; //Uploading //please wait...
         } else {
           msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
         }
@@ -556,7 +570,7 @@ class ProjectDataUploadListTileProgressWidgetState
         var msg;
         if (total <= 0) {
           msg =
-              "Uploading ${(received / 1024.0 / 1024.0).round()}MB, please wait...";
+              "${SL.of(context).network_uploading} ${(received / 1024.0 / 1024.0).round()}MB, ${SL.of(context).network_pleaseWait}"; //Uploading //please wait...
         } else {
           msg = ((received / total) * 100.0).toStringAsFixed(0) + "%";
         }
@@ -579,10 +593,13 @@ class ProjectDataUploadListTileProgressWidgetState
   void handleError(err) {
     if (err is DioError) {
       if (err.message.contains("403")) {
-        _errorString = "Permission on server denied.";
+        _errorString = SL
+            .of(context)
+            .network_permissionOnServerDenied; //"Permission on server denied."
       } else if (err.message.contains("Connection refused")) {
-        _errorString =
-            "Could not connect to the server. Is it online? Check your address.";
+        _errorString = SL
+            .of(context)
+            .network_couldNotConnectToServer; //"Could not connect to the server. Is it online? Check your address."
       } else {
         _errorString = err.message;
       }

@@ -339,7 +339,7 @@
   "coachMarks_openDrawerToLoadProject": "Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.",
   "coachMarks_skip": "SKIP",
 
-  "@coachMarks": {
+  "@fence": {
     "context": "smash/util/fence.dart"
   },
   "fence_fenceProperties" : "Fence Properties",
@@ -356,6 +356,23 @@
   "fence_theFenceRadiusMeters" : "The fence radius in meters.",
   "fence_radiusNeedsToBePositive" : "The radius needs to be a positive number in meters.",
   "fence_onEnter" : "On enter",
-  "fence_onExit" : "On exit"
+  "fence_onExit" : "On exit",
+
+  "@network": {
+    "context": "smash/util/network.dart"
+  },
+  "network_cancelledByUser": "Cancelled by user.",
+  "network_completed": "Completed.",
+  "network_buildingBaseCachePerformance": "Building base cache for performance increase (might take some time...",
+  "network_thisFIleAlreadyBeingDownloaded": "This file is already in the process of being downloaded.",
+  "network_download": "Download",
+  "network_downloadFile": "Download file",
+  "network_toTheDeviceTakeTime": "to the device? This can take some time.",
+  "network_availableMaps": "Available maps",
+  "network_searchMapByName": "Search map by name",
+  "network_uploading": "Uploading",
+  "network_pleaseWait": "please wait...",
+  "network_permissionOnServerDenied": "Permission on server denied.",
+  "network_couldNotConnectToServer": "Could not connect to the server. Is it online? Check your address."
 
 }
