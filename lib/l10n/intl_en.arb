@@ -373,6 +373,20 @@
   "network_uploading": "Uploading",
   "network_pleaseWait": "please wait...",
   "network_permissionOnServerDenied": "Permission on server denied.",
-  "network_couldNotConnectToServer": "Could not connect to the server. Is it online? Check your address."
+  "network_couldNotConnectToServer": "Could not connect to the server. Is it online? Check your address.",
+
+  "@export_widget": {
+    "context": "smash/export/export_widget.dart"
+  },
+  "exportWidget_export": "Export",
+  "exportWidget_pdfExported": "PDF exported",
+  "exportWidget_exportToPortableDocumentFormat": "Export project to Portable Document Format",
+  "exportWidget_gpxExported": "GPX exported",
+  "exportWidget_exportToGpx": "Export project to GPX",
+  "exportWidget_kmlExported": "KML exported",
+  "exportWidget_exportToKml": "Export project to KML",
+  "exportWidget_geopackageExported": "Geopackage exported",
+  "exportWidget_exportToGeopackage": "Export project to Geopackage",
+  "exportWidget_exportToGSS": "Export to Geopaparazzi Survey Server"
 
 }

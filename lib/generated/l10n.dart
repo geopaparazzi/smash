@@ -3114,6 +3114,106 @@ class SL {
       args: [],
     );
   }
+
+  /// `Export`
+  String get exportWidget_export {
+    return Intl.message(
+      'Export',
+      name: 'exportWidget_export',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PDF exported`
+  String get exportWidget_pdfExported {
+    return Intl.message(
+      'PDF exported',
+      name: 'exportWidget_pdfExported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export project to Portable Document Format`
+  String get exportWidget_exportToPortableDocumentFormat {
+    return Intl.message(
+      'Export project to Portable Document Format',
+      name: 'exportWidget_exportToPortableDocumentFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPX exported`
+  String get exportWidget_gpxExported {
+    return Intl.message(
+      'GPX exported',
+      name: 'exportWidget_gpxExported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export project to GPX`
+  String get exportWidget_exportToGpx {
+    return Intl.message(
+      'Export project to GPX',
+      name: 'exportWidget_exportToGpx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `KML exported`
+  String get exportWidget_kmlExported {
+    return Intl.message(
+      'KML exported',
+      name: 'exportWidget_kmlExported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export project to KML`
+  String get exportWidget_exportToKml {
+    return Intl.message(
+      'Export project to KML',
+      name: 'exportWidget_exportToKml',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Geopackage exported`
+  String get exportWidget_geopackageExported {
+    return Intl.message(
+      'Geopackage exported',
+      name: 'exportWidget_geopackageExported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export project to Geopackage`
+  String get exportWidget_exportToGeopackage {
+    return Intl.message(
+      'Export project to Geopackage',
+      name: 'exportWidget_exportToGeopackage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export to Geopaparazzi Survey Server`
+  String get exportWidget_exportToGSS {
+    return Intl.message(
+      'Export to Geopaparazzi Survey Server',
+      name: 'exportWidget_exportToGSS',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
