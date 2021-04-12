@@ -3214,6 +3214,196 @@ class SL {
       args: [],
     );
   }
+
+  /// `GSS Export`
+  String get gssExport_gssExport {
+    return Intl.message(
+      'GSS Export',
+      name: 'gssExport_gssExport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set project to DIRTY?`
+  String get gssExport_setProjectDirty {
+    return Intl.message(
+      'Set project to DIRTY?',
+      name: 'gssExport_setProjectDirty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This can't be undone!`
+  String get gssExport_thisCantBeUndone {
+    return Intl.message(
+      'This can\'t be undone!',
+      name: 'gssExport_thisCantBeUndone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore project as all dirty.`
+  String get gssExport_restoreProjectAsDirty {
+    return Intl.message(
+      'Restore project as all dirty.',
+      name: 'gssExport_restoreProjectAsDirty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set project to CLEAN?`
+  String get gssExport_setProjectClean {
+    return Intl.message(
+      'Set project to CLEAN?',
+      name: 'gssExport_setProjectClean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore project as all clean.`
+  String get gssExport_restoreProjectAsClean {
+    return Intl.message(
+      'Restore project as all clean.',
+      name: 'gssExport_restoreProjectAsClean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing to sync.`
+  String get gssExport_nothingToSync {
+    return Intl.message(
+      'Nothing to sync.',
+      name: 'gssExport_nothingToSync',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collecting sync stats...`
+  String get gssExport_collectingSyncStats {
+    return Intl.message(
+      'Collecting sync stats...',
+      name: 'gssExport_collectingSyncStats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to sync due to an error, check diagnostics.`
+  String get gssExport_unableToSyncDueToError {
+    return Intl.message(
+      'Unable to sync due to an error, check diagnostics.',
+      name: 'gssExport_unableToSyncDueToError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No GSS server url has been set. Check your settings.`
+  String get gssExport_noGssUrlSet {
+    return Intl.message(
+      'No GSS server url has been set. Check your settings.',
+      name: 'gssExport_noGssUrlSet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No GSS server password has been set. Check your settings.`
+  String get gssExport_noGssPasswordSet {
+    return Intl.message(
+      'No GSS server password has been set. Check your settings.',
+      name: 'gssExport_noGssPasswordSet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sync Stats`
+  String get gssExport_synStats {
+    return Intl.message(
+      'Sync Stats',
+      name: 'gssExport_synStats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The following data will be uploaded upon sync.`
+  String get gssExport_followingDataWillBeUploaded {
+    return Intl.message(
+      'The following data will be uploaded upon sync.',
+      name: 'gssExport_followingDataWillBeUploaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gps Logs:`
+  String get gssExport_gpsLogs {
+    return Intl.message(
+      'Gps Logs:',
+      name: 'gssExport_gpsLogs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Simple Notes:`
+  String get gssExport_simpleNotes {
+    return Intl.message(
+      'Simple Notes:',
+      name: 'gssExport_simpleNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Form Notes:`
+  String get gssExport_formNotes {
+    return Intl.message(
+      'Form Notes:',
+      name: 'gssExport_formNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Images:`
+  String get gssExport_images {
+    return Intl.message(
+      'Images:',
+      name: 'gssExport_images',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Should not happen`
+  String get gssExport_shouldNotHappen {
+    return Intl.message(
+      'Should not happen',
+      name: 'gssExport_shouldNotHappen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload`
+  String get gssExport_upload {
+    return Intl.message(
+      'Upload',
+      name: 'gssExport_upload',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

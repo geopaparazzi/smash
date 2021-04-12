@@ -387,6 +387,29 @@
   "exportWidget_exportToKml": "Export project to KML",
   "exportWidget_geopackageExported": "Geopackage exported",
   "exportWidget_exportToGeopackage": "Export project to Geopackage",
-  "exportWidget_exportToGSS": "Export to Geopaparazzi Survey Server"
+  "exportWidget_exportToGSS": "Export to Geopaparazzi Survey Server",
+
+  "@gss_export": {
+    "context": "smash/export/gss_export.dart"
+  },
+  "gssExport_gssExport": "GSS Export",
+  "gssExport_setProjectDirty":"Set project to DIRTY?",
+  "gssExport_thisCantBeUndone": "This can't be undone!",
+  "gssExport_restoreProjectAsDirty": "Restore project as all dirty.",
+  "gssExport_setProjectClean": "Set project to CLEAN?",
+  "gssExport_restoreProjectAsClean": "Restore project as all clean.",
+  "gssExport_nothingToSync": "Nothing to sync.",
+  "gssExport_collectingSyncStats": "Collecting sync stats...",
+  "gssExport_unableToSyncDueToError": "Unable to sync due to an error, check diagnostics.",
+  "gssExport_noGssUrlSet": "No GSS server url has been set. Check your settings.",
+  "gssExport_noGssPasswordSet": "No GSS server password has been set. Check your settings.",
+  "gssExport_synStats": "Sync Stats",
+  "gssExport_followingDataWillBeUploaded": "The following data will be uploaded upon sync.",
+  "gssExport_gpsLogs": "Gps Logs:",
+  "gssExport_simpleNotes": "Simple Notes:",
+  "gssExport_formNotes": "Form Notes:",
+  "gssExport_images": "Images:",
+  "gssExport_shouldNotHappen": "Should not happen",
+  "gssExport_upload": "Upload"
 
 }
