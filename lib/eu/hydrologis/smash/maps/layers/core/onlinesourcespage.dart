@@ -10,6 +10,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class OnlineSourcesPage extends StatefulWidget {
@@ -40,7 +41,9 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-            title: Text("Online Sources Catalog"),
+            title: Text(SL
+                .of(context)
+                .onlineSourcesPage_onlineSourcesCatalog), //"Online Sources Catalog"
             bottom: TabBar(tabs: [
               Tab(text: "TMS"),
               Tab(text: "WMS"),
@@ -57,7 +60,10 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
         body: TabBarView(children: [
           _tmsCardsList == null
               ? Center(
-                  child: SmashCircularProgress(label: "Loading TMS layers..."),
+                  child: SmashCircularProgress(
+                      label: SL
+                          .of(context)
+                          .onlineSourcesPage_loadingTmsLayers), //"Loading TMS layers..."
                 )
               : Stack(
                   children: <Widget>[
@@ -90,7 +96,10 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                 ),
           _wmsCardsList == null
               ? Center(
-                  child: SmashCircularProgress(label: "Loading WMS layers..."),
+                  child: SmashCircularProgress(
+                      label: SL
+                          .of(context)
+                          .onlineSourcesPage_loadingWmsLayers), //"Loading WMS layers..."
                 )
               : Stack(
                   children: <Widget>[
@@ -152,7 +161,9 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                 size: iconSize,
               ),
               title: SmashUI.normalText(
-                "Import from file",
+                SL
+                    .of(context)
+                    .onlineSourcesPage_importFromFile, //"Import from file"
                 bold: true,
                 color: c,
               ),
@@ -163,8 +174,8 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
 
                 var rel = Workspace.makeRelative(importFilePath);
                 if (!File(importFilePath).existsSync()) {
-                  SmashDialogs.showWarningDialog(
-                      context, "The file $rel doesn't exist");
+                  SmashDialogs.showWarningDialog(context,
+                      "${SL.of(context).onlineSourcesPage_theFile} $rel ${SL.of(context).onlineSourcesPage_doesntExist}"); //The file //doesn't exist
                 } else {
                   var json = FileUtilities.readFile(importFilePath);
                   var mapList = jsonDecode(json);
@@ -182,7 +193,9 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                     }
                     await getList();
                     Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("Online sources imported."),
+                      content: Text(SL
+                          .of(context)
+                          .onlineSourcesPage_onlineSourcesImported), //"Online sources imported."
                     ));
                   }
                 }
@@ -195,7 +208,9 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                 size: iconSize,
               ),
               title: SmashUI.normalText(
-                "Export to file",
+                SL
+                    .of(context)
+                    .onlineSourcesPage_exportToFile, //"Export to file"
                 bold: true,
                 color: c,
               ),
@@ -221,7 +236,8 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
 
                 var rel = Workspace.makeRelative(exportFilePath);
                 Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text("Exported to: $rel"),
+                  content: Text(
+                      "${SL.of(context).onlineSourcesPage_exportedTo} $rel"), //Exported to:
                 ));
               },
             ),
@@ -344,7 +360,7 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
               ),
             ),
             SmashUI.defaultButtonBar(
-              dangerLabel: 'DELETE',
+              dangerLabel: SL.of(context).onlineSourcesPage_delete, //'DELETE'
               dangerFunction: () async {
                 widget.sourcesList.removeAt(widget.index);
                 if (widget.type == LAYERSTYPE_TMS) {
@@ -354,7 +370,9 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                 }
                 widget.reloadNotifier.value = widget.reloadNotifier.value + 1;
               },
-              okLabel: 'ADD TO LAYERS',
+              okLabel: SL
+                  .of(context)
+                  .onlineSourcesPage_addToLayers, //'ADD TO LAYERS'
               okFunction: () => Navigator.pop(context, widget.layerSource),
             ),
           ],
@@ -385,14 +403,15 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
   static TmsData tmsData = TmsData();
   List<Step> steps = [
     Step(
-      title: const Text("Set a name for the TMS service"),
+      title: Text(SL.current
+          .onlineSourcesPage_setNameTmsService), //"Set a name for the TMS service"
       isActive: true,
       state: StepState.indexed,
       content: Column(
         children: <Widget>[
           TextFormField(
             decoration: InputDecoration(
-              labelText: "enter name",
+              labelText: SL.current.onlineSourcesPage_enterName, //"enter name"
               icon: const Icon(MdiIcons.text),
             ),
             keyboardType: TextInputType.text,
@@ -402,7 +421,8 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
             },
             validator: (value) {
               if (value.isEmpty || value.length < 1) {
-                return 'Please enter a valid name';
+                return SL.current
+                    .onlineSourcesPage_pleaseEnterValidName; //"Please enter a valid name"
               }
               return null;
             },
@@ -411,8 +431,10 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
       ),
     ),
     Step(
-      title: const Text("Insert the url of the service."),
-      subtitle: Text("Place the x, y, z between curly brackets."),
+      title: Text(SL.current
+          .onlineSourcesPage_insertUrlOfService), //"Insert the url of the service."
+      subtitle: Text(SL.current
+          .onlineSourcesPage_placeXyzBetBrackets), //"Place the x, y, z between curly brackets."
       isActive: true,
       state: StepState.indexed,
       content: Column(
@@ -431,12 +453,13 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
                   !value.contains("{x}") ||
                   !value.contains("{y}") ||
                   !value.contains("{z}")) {
-                return 'Please enter a valid TMS URL';
+                return SL.current
+                    .onlineSourcesPage_pleaseEnterValidTmsUrl; //'Please enter a valid TMS URL'
               }
               return null;
             },
             decoration: InputDecoration(
-              labelText: "enter URL",
+              labelText: SL.current.onlineSourcesPage_enterUrl, //"enter URL"
               icon: const Icon(MdiIcons.link),
             ),
           ),
@@ -447,14 +470,17 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
               tmsData.subdomains = value;
             },
             decoration: InputDecoration(
-                icon: const Icon(MdiIcons.fileTree),
-                labelText: "enter subdomains"),
+              icon: const Icon(MdiIcons.fileTree),
+              labelText: SL.current
+                  .onlineSourcesPage_enterSubDomains, //"enter subdomains"
+            ),
           ),
         ],
       ),
     ),
     Step(
-      title: const Text("Add an attribution."),
+      title: Text(
+          SL.current.onlineSourcesPage_addAttribution), //"Add an attribution."
       isActive: true,
       state: StepState.indexed,
       content: Column(
@@ -466,7 +492,8 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
               tmsData.attribution = value;
             },
             decoration: InputDecoration(
-              labelText: "enter attribution",
+              labelText: SL.current
+                  .onlineSourcesPage_enterAttribution, //"enter attribution"
               icon: const Icon(MdiIcons.license),
             ),
           ),
@@ -474,7 +501,8 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
       ),
     ),
     Step(
-      title: const Text("Set min and max zoom."),
+      title: Text(
+          SL.current.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
       isActive: true,
       state: StepState.indexed,
       content: Column(
@@ -485,7 +513,8 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
               tmsData.minZoom = value;
             },
             initialValue: "0",
-            decoration: InputDecoration(labelText: "min zoom"),
+            decoration: InputDecoration(
+                labelText: SL.current.onlineSourcesPage_minZoom), //"min zoom"
           ),
           TextFormField(
             keyboardType: TextInputType.number,
@@ -493,7 +522,8 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
               tmsData.maxZoom = value;
             },
             initialValue: "19",
-            decoration: InputDecoration(labelText: "max zoom"),
+            decoration: InputDecoration(
+                labelText: SL.current.onlineSourcesPage_maxZoom), //"max zoom"
           ),
         ],
       ),
@@ -521,7 +551,11 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
   void _submitDetails() async {
     final FormState formState = _formKey.currentState;
     if (!formState.validate()) {
-      SmashDialogs.showWarningDialog(context, 'Please check your data');
+      SmashDialogs.showWarningDialog(
+          context,
+          SL
+              .of(context)
+              .onlineSourcesPage_pleaseCheckYourData); //'Please check your data'
     } else {
       formState.save();
       bool okToGo = await showDialog(

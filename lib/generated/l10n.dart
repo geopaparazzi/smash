@@ -365,6 +365,946 @@ class SL {
     );
   }
 
+  /// `Export`
+  String get exportWidget_export {
+    return Intl.message(
+      'Export',
+      name: 'exportWidget_export',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `PDF exported`
+  String get exportWidget_pdfExported {
+    return Intl.message(
+      'PDF exported',
+      name: 'exportWidget_pdfExported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export project to Portable Document Format`
+  String get exportWidget_exportToPortableDocumentFormat {
+    return Intl.message(
+      'Export project to Portable Document Format',
+      name: 'exportWidget_exportToPortableDocumentFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GPX exported`
+  String get exportWidget_gpxExported {
+    return Intl.message(
+      'GPX exported',
+      name: 'exportWidget_gpxExported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export project to GPX`
+  String get exportWidget_exportToGpx {
+    return Intl.message(
+      'Export project to GPX',
+      name: 'exportWidget_exportToGpx',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `KML exported`
+  String get exportWidget_kmlExported {
+    return Intl.message(
+      'KML exported',
+      name: 'exportWidget_kmlExported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export project to KML`
+  String get exportWidget_exportToKml {
+    return Intl.message(
+      'Export project to KML',
+      name: 'exportWidget_exportToKml',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Geopackage exported`
+  String get exportWidget_geopackageExported {
+    return Intl.message(
+      'Geopackage exported',
+      name: 'exportWidget_geopackageExported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export project to Geopackage`
+  String get exportWidget_exportToGeopackage {
+    return Intl.message(
+      'Export project to Geopackage',
+      name: 'exportWidget_exportToGeopackage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export to Geopaparazzi Survey Server`
+  String get exportWidget_exportToGSS {
+    return Intl.message(
+      'Export to Geopaparazzi Survey Server',
+      name: 'exportWidget_exportToGSS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GSS Export`
+  String get gssExport_gssExport {
+    return Intl.message(
+      'GSS Export',
+      name: 'gssExport_gssExport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set project to DIRTY?`
+  String get gssExport_setProjectDirty {
+    return Intl.message(
+      'Set project to DIRTY?',
+      name: 'gssExport_setProjectDirty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This can't be undone!`
+  String get gssExport_thisCantBeUndone {
+    return Intl.message(
+      'This can\'t be undone!',
+      name: 'gssExport_thisCantBeUndone',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore project as all dirty.`
+  String get gssExport_restoreProjectAsDirty {
+    return Intl.message(
+      'Restore project as all dirty.',
+      name: 'gssExport_restoreProjectAsDirty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set project to CLEAN?`
+  String get gssExport_setProjectClean {
+    return Intl.message(
+      'Set project to CLEAN?',
+      name: 'gssExport_setProjectClean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Restore project as all clean.`
+  String get gssExport_restoreProjectAsClean {
+    return Intl.message(
+      'Restore project as all clean.',
+      name: 'gssExport_restoreProjectAsClean',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing to sync.`
+  String get gssExport_nothingToSync {
+    return Intl.message(
+      'Nothing to sync.',
+      name: 'gssExport_nothingToSync',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Collecting sync stats...`
+  String get gssExport_collectingSyncStats {
+    return Intl.message(
+      'Collecting sync stats...',
+      name: 'gssExport_collectingSyncStats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to sync due to an error, check diagnostics.`
+  String get gssExport_unableToSyncDueToError {
+    return Intl.message(
+      'Unable to sync due to an error, check diagnostics.',
+      name: 'gssExport_unableToSyncDueToError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No GSS server url has been set. Check your settings.`
+  String get gssExport_noGssUrlSet {
+    return Intl.message(
+      'No GSS server url has been set. Check your settings.',
+      name: 'gssExport_noGssUrlSet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No GSS server password has been set. Check your settings.`
+  String get gssExport_noGssPasswordSet {
+    return Intl.message(
+      'No GSS server password has been set. Check your settings.',
+      name: 'gssExport_noGssPasswordSet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sync Stats`
+  String get gssExport_synStats {
+    return Intl.message(
+      'Sync Stats',
+      name: 'gssExport_synStats',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The following data will be uploaded upon sync.`
+  String get gssExport_followingDataWillBeUploaded {
+    return Intl.message(
+      'The following data will be uploaded upon sync.',
+      name: 'gssExport_followingDataWillBeUploaded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gps Logs:`
+  String get gssExport_gpsLogs {
+    return Intl.message(
+      'Gps Logs:',
+      name: 'gssExport_gpsLogs',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Simple Notes:`
+  String get gssExport_simpleNotes {
+    return Intl.message(
+      'Simple Notes:',
+      name: 'gssExport_simpleNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Form Notes:`
+  String get gssExport_formNotes {
+    return Intl.message(
+      'Form Notes:',
+      name: 'gssExport_formNotes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Images:`
+  String get gssExport_images {
+    return Intl.message(
+      'Images:',
+      name: 'gssExport_images',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Should not happen`
+  String get gssExport_shouldNotHappen {
+    return Intl.message(
+      'Should not happen',
+      name: 'gssExport_shouldNotHappen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Upload`
+  String get gssExport_upload {
+    return Intl.message(
+      'Upload',
+      name: 'gssExport_upload',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Geocoding`
+  String get geocoding_geocoding {
+    return Intl.message(
+      'Geocoding',
+      name: 'geocoding_geocoding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing to look for. Insert an address.`
+  String get geocoding_nothingToLookFor {
+    return Intl.message(
+      'Nothing to look for. Insert an address.',
+      name: 'geocoding_nothingToLookFor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Launch Geocoding`
+  String get geocoding_launchGeocoding {
+    return Intl.message(
+      'Launch Geocoding',
+      name: 'geocoding_launchGeocoding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Searching...`
+  String get geocoding_searching {
+    return Intl.message(
+      'Searching...',
+      name: 'geocoding_searching',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SMASH is active`
+  String get gps_smashIsActive {
+    return Intl.message(
+      'SMASH is active',
+      name: 'gps_smashIsActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SMASH is logging`
+  String get gps_smashIsLogging {
+    return Intl.message(
+      'SMASH is logging',
+      name: 'gps_smashIsLogging',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Location tracking`
+  String get gps_locationTracking {
+    return Intl.message(
+      'Location tracking',
+      name: 'gps_locationTracking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `SMASH location service is active.`
+  String get gps_smashLocServiceIsActive {
+    return Intl.message(
+      'SMASH location service is active.',
+      name: 'gps_smashLocServiceIsActive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Background location is on to keep the app registering the location even when the app is in background.`
+  String get gps_backgroundLocIsOnToKeepRegistering {
+    return Intl.message(
+      'Background location is on to keep the app registering the location even when the app is in background.',
+      name: 'gps_backgroundLocIsOnToKeepRegistering',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GSS Import`
+  String get gssImport_gssImport {
+    return Intl.message(
+      'GSS Import',
+      name: 'gssImport_gssImport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Downloading data list...`
+  String get gssImport_downloadingDataList {
+    return Intl.message(
+      'Downloading data list...',
+      name: 'gssImport_downloadingDataList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to download data list due to an error. Check your settings and the log.`
+  String get gssImport_unableDownloadDataList {
+    return Intl.message(
+      'Unable to download data list due to an error. Check your settings and the log.',
+      name: 'gssImport_unableDownloadDataList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No GSS server url has been set. Check your settings.`
+  String get gssImport_noGssUrlSet {
+    return Intl.message(
+      'No GSS server url has been set. Check your settings.',
+      name: 'gssImport_noGssUrlSet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No GSS server password has been set. Check your settings.`
+  String get gssImport_noGssPasswordSet {
+    return Intl.message(
+      'No GSS server password has been set. Check your settings.',
+      name: 'gssImport_noGssPasswordSet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No permission to access the server. Check your credentials.`
+  String get gssImport_noPermToAccessServer {
+    return Intl.message(
+      'No permission to access the server. Check your credentials.',
+      name: 'gssImport_noPermToAccessServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Data`
+  String get gssImport_data {
+    return Intl.message(
+      'Data',
+      name: 'gssImport_data',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Datasets are downloaded into the maps folder.`
+  String get gssImport_dataSetsDownloadedMapsFolder {
+    return Intl.message(
+      'Datasets are downloaded into the maps folder.',
+      name: 'gssImport_dataSetsDownloadedMapsFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No data available.`
+  String get gssImport_noDataAvailable {
+    return Intl.message(
+      'No data available.',
+      name: 'gssImport_noDataAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Projects`
+  String get gssImport_projects {
+    return Intl.message(
+      'Projects',
+      name: 'gssImport_projects',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Projects are downloaded into the projects folder.`
+  String get gssImport_projectsDownloadedProjectFolder {
+    return Intl.message(
+      'Projects are downloaded into the projects folder.',
+      name: 'gssImport_projectsDownloadedProjectFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No projects available.`
+  String get gssImport_noProjectsAvailable {
+    return Intl.message(
+      'No projects available.',
+      name: 'gssImport_noProjectsAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forms`
+  String get gssImport_forms {
+    return Intl.message(
+      'Forms',
+      name: 'gssImport_forms',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags files are downloaded into the forms folder.`
+  String get gssImport_tagsDownloadedFormsFolder {
+    return Intl.message(
+      'Tags files are downloaded into the forms folder.',
+      name: 'gssImport_tagsDownloadedFormsFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No tags available.`
+  String get gssImport_noTagsAvailable {
+    return Intl.message(
+      'No tags available.',
+      name: 'gssImport_noTagsAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import`
+  String get importWidget_import {
+    return Intl.message(
+      'Import',
+      name: 'importWidget_import',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import from Geopaparazzi Survey Server`
+  String get importWidget_importFromGeopaparazzi {
+    return Intl.message(
+      'Import from Geopaparazzi Survey Server',
+      name: 'importWidget_importFromGeopaparazzi',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Layer List`
+  String get layersView_layerList {
+    return Intl.message(
+      'Layer List',
+      name: 'layersView_layerList',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load remote database`
+  String get layersView_loadRemoteDatabase {
+    return Intl.message(
+      'Load remote database',
+      name: 'layersView_loadRemoteDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load online sources`
+  String get layersView_loadOnlineSources {
+    return Intl.message(
+      'Load online sources',
+      name: 'layersView_loadOnlineSources',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load local datasets`
+  String get layersView_loadLocalDatasets {
+    return Intl.message(
+      'Load local datasets',
+      name: 'layersView_loadLocalDatasets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading...`
+  String get layersView_loading {
+    return Intl.message(
+      'Loading...',
+      name: 'layersView_loading',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Zoom to`
+  String get layersView_zoomTo {
+    return Intl.message(
+      'Zoom to',
+      name: 'layersView_zoomTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Properties`
+  String get layersView_properties {
+    return Intl.message(
+      'Properties',
+      name: 'layersView_properties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get layersView_delete {
+    return Intl.message(
+      'Delete',
+      name: 'layersView_delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The proj could not be recognised. Tap to enter epsg manually.`
+  String get layersView_projCouldNotBeRecognized {
+    return Intl.message(
+      'The proj could not be recognised. Tap to enter epsg manually.',
+      name: 'layersView_projCouldNotBeRecognized',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The proj is not supported. Tap to solve.`
+  String get layersView_projNotSupported {
+    return Intl.message(
+      'The proj is not supported. Tap to solve.',
+      name: 'layersView_projNotSupported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only image files with world file definition are supported.`
+  String get layersView_onlyImageFilesWithWorldDef {
+    return Intl.message(
+      'Only image files with world file definition are supported.',
+      name: 'layersView_onlyImageFilesWithWorldDef',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only image files with prj file definition are supported.`
+  String get layersView_onlyImageFileWithPrjDef {
+    return Intl.message(
+      'Only image files with prj file definition are supported.',
+      name: 'layersView_onlyImageFileWithPrjDef',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select table to load.`
+  String get layersView_selectTableToLoad {
+    return Intl.message(
+      'Select table to load.',
+      name: 'layersView_selectTableToLoad',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File format not supported.`
+  String get layersView_fileFormatNotSUpported {
+    return Intl.message(
+      'File format not supported.',
+      name: 'layersView_fileFormatNotSUpported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online Sources Catalog`
+  String get onlineSourcesPage_onlineSourcesCatalog {
+    return Intl.message(
+      'Online Sources Catalog',
+      name: 'onlineSourcesPage_onlineSourcesCatalog',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading TMS layers...`
+  String get onlineSourcesPage_loadingTmsLayers {
+    return Intl.message(
+      'Loading TMS layers...',
+      name: 'onlineSourcesPage_loadingTmsLayers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Loading WMS layers...`
+  String get onlineSourcesPage_loadingWmsLayers {
+    return Intl.message(
+      'Loading WMS layers...',
+      name: 'onlineSourcesPage_loadingWmsLayers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import from file`
+  String get onlineSourcesPage_importFromFile {
+    return Intl.message(
+      'Import from file',
+      name: 'onlineSourcesPage_importFromFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The file`
+  String get onlineSourcesPage_theFile {
+    return Intl.message(
+      'The file',
+      name: 'onlineSourcesPage_theFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `doesn't exist`
+  String get onlineSourcesPage_doesntExist {
+    return Intl.message(
+      'doesn\'t exist',
+      name: 'onlineSourcesPage_doesntExist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online sources imported.`
+  String get onlineSourcesPage_onlineSourcesImported {
+    return Intl.message(
+      'Online sources imported.',
+      name: 'onlineSourcesPage_onlineSourcesImported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export to file`
+  String get onlineSourcesPage_exportToFile {
+    return Intl.message(
+      'Export to file',
+      name: 'onlineSourcesPage_exportToFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exported to:`
+  String get onlineSourcesPage_exportedTo {
+    return Intl.message(
+      'Exported to:',
+      name: 'onlineSourcesPage_exportedTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DELETE`
+  String get onlineSourcesPage_delete {
+    return Intl.message(
+      'DELETE',
+      name: 'onlineSourcesPage_delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ADD TO LAYERS`
+  String get onlineSourcesPage_addToLayers {
+    return Intl.message(
+      'ADD TO LAYERS',
+      name: 'onlineSourcesPage_addToLayers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set a name for the TMS service`
+  String get onlineSourcesPage_setNameTmsService {
+    return Intl.message(
+      'Set a name for the TMS service',
+      name: 'onlineSourcesPage_setNameTmsService',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter name`
+  String get onlineSourcesPage_enterName {
+    return Intl.message(
+      'enter name',
+      name: 'onlineSourcesPage_enterName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid name`
+  String get onlineSourcesPage_pleaseEnterValidName {
+    return Intl.message(
+      'Please enter a valid name',
+      name: 'onlineSourcesPage_pleaseEnterValidName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Insert the url of the service.`
+  String get onlineSourcesPage_insertUrlOfService {
+    return Intl.message(
+      'Insert the url of the service.',
+      name: 'onlineSourcesPage_insertUrlOfService',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Place the x, y, z between curly brackets.`
+  String get onlineSourcesPage_placeXyzBetBrackets {
+    return Intl.message(
+      'Place the x, y, z between curly brackets.',
+      name: 'onlineSourcesPage_placeXyzBetBrackets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid TMS URL`
+  String get onlineSourcesPage_pleaseEnterValidTmsUrl {
+    return Intl.message(
+      'Please enter a valid TMS URL',
+      name: 'onlineSourcesPage_pleaseEnterValidTmsUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter URL`
+  String get onlineSourcesPage_enterUrl {
+    return Intl.message(
+      'enter URL',
+      name: 'onlineSourcesPage_enterUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter subdomains`
+  String get onlineSourcesPage_enterSubDomains {
+    return Intl.message(
+      'enter subdomains',
+      name: 'onlineSourcesPage_enterSubDomains',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add an attribution.`
+  String get onlineSourcesPage_addAttribution {
+    return Intl.message(
+      'Add an attribution.',
+      name: 'onlineSourcesPage_addAttribution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter attribution`
+  String get onlineSourcesPage_enterAttribution {
+    return Intl.message(
+      'enter attribution',
+      name: 'onlineSourcesPage_enterAttribution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set min and max zoom.`
+  String get onlineSourcesPage_setMinMaxZoom {
+    return Intl.message(
+      'Set min and max zoom.',
+      name: 'onlineSourcesPage_setMinMaxZoom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `min zoom`
+  String get onlineSourcesPage_minZoom {
+    return Intl.message(
+      'min zoom',
+      name: 'onlineSourcesPage_minZoom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `max zoom`
+  String get onlineSourcesPage_maxZoom {
+    return Intl.message(
+      'max zoom',
+      name: 'onlineSourcesPage_maxZoom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please check your data`
+  String get onlineSourcesPage_pleaseCheckYourData {
+    return Intl.message(
+      'Please check your data',
+      name: 'onlineSourcesPage_pleaseCheckYourData',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Projects View`
   String get projectsView_projectsView {
     return Intl.message(
@@ -3110,296 +4050,6 @@ class SL {
     return Intl.message(
       'Could not connect to the server. Is it online? Check your address.',
       name: 'network_couldNotConnectToServer',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export`
-  String get exportWidget_export {
-    return Intl.message(
-      'Export',
-      name: 'exportWidget_export',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `PDF exported`
-  String get exportWidget_pdfExported {
-    return Intl.message(
-      'PDF exported',
-      name: 'exportWidget_pdfExported',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export project to Portable Document Format`
-  String get exportWidget_exportToPortableDocumentFormat {
-    return Intl.message(
-      'Export project to Portable Document Format',
-      name: 'exportWidget_exportToPortableDocumentFormat',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPX exported`
-  String get exportWidget_gpxExported {
-    return Intl.message(
-      'GPX exported',
-      name: 'exportWidget_gpxExported',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export project to GPX`
-  String get exportWidget_exportToGpx {
-    return Intl.message(
-      'Export project to GPX',
-      name: 'exportWidget_exportToGpx',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `KML exported`
-  String get exportWidget_kmlExported {
-    return Intl.message(
-      'KML exported',
-      name: 'exportWidget_kmlExported',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export project to KML`
-  String get exportWidget_exportToKml {
-    return Intl.message(
-      'Export project to KML',
-      name: 'exportWidget_exportToKml',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Geopackage exported`
-  String get exportWidget_geopackageExported {
-    return Intl.message(
-      'Geopackage exported',
-      name: 'exportWidget_geopackageExported',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export project to Geopackage`
-  String get exportWidget_exportToGeopackage {
-    return Intl.message(
-      'Export project to Geopackage',
-      name: 'exportWidget_exportToGeopackage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export to Geopaparazzi Survey Server`
-  String get exportWidget_exportToGSS {
-    return Intl.message(
-      'Export to Geopaparazzi Survey Server',
-      name: 'exportWidget_exportToGSS',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GSS Export`
-  String get gssExport_gssExport {
-    return Intl.message(
-      'GSS Export',
-      name: 'gssExport_gssExport',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set project to DIRTY?`
-  String get gssExport_setProjectDirty {
-    return Intl.message(
-      'Set project to DIRTY?',
-      name: 'gssExport_setProjectDirty',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `This can't be undone!`
-  String get gssExport_thisCantBeUndone {
-    return Intl.message(
-      'This can\'t be undone!',
-      name: 'gssExport_thisCantBeUndone',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restore project as all dirty.`
-  String get gssExport_restoreProjectAsDirty {
-    return Intl.message(
-      'Restore project as all dirty.',
-      name: 'gssExport_restoreProjectAsDirty',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set project to CLEAN?`
-  String get gssExport_setProjectClean {
-    return Intl.message(
-      'Set project to CLEAN?',
-      name: 'gssExport_setProjectClean',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Restore project as all clean.`
-  String get gssExport_restoreProjectAsClean {
-    return Intl.message(
-      'Restore project as all clean.',
-      name: 'gssExport_restoreProjectAsClean',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nothing to sync.`
-  String get gssExport_nothingToSync {
-    return Intl.message(
-      'Nothing to sync.',
-      name: 'gssExport_nothingToSync',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Collecting sync stats...`
-  String get gssExport_collectingSyncStats {
-    return Intl.message(
-      'Collecting sync stats...',
-      name: 'gssExport_collectingSyncStats',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Unable to sync due to an error, check diagnostics.`
-  String get gssExport_unableToSyncDueToError {
-    return Intl.message(
-      'Unable to sync due to an error, check diagnostics.',
-      name: 'gssExport_unableToSyncDueToError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No GSS server url has been set. Check your settings.`
-  String get gssExport_noGssUrlSet {
-    return Intl.message(
-      'No GSS server url has been set. Check your settings.',
-      name: 'gssExport_noGssUrlSet',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No GSS server password has been set. Check your settings.`
-  String get gssExport_noGssPasswordSet {
-    return Intl.message(
-      'No GSS server password has been set. Check your settings.',
-      name: 'gssExport_noGssPasswordSet',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sync Stats`
-  String get gssExport_synStats {
-    return Intl.message(
-      'Sync Stats',
-      name: 'gssExport_synStats',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The following data will be uploaded upon sync.`
-  String get gssExport_followingDataWillBeUploaded {
-    return Intl.message(
-      'The following data will be uploaded upon sync.',
-      name: 'gssExport_followingDataWillBeUploaded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Gps Logs:`
-  String get gssExport_gpsLogs {
-    return Intl.message(
-      'Gps Logs:',
-      name: 'gssExport_gpsLogs',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Simple Notes:`
-  String get gssExport_simpleNotes {
-    return Intl.message(
-      'Simple Notes:',
-      name: 'gssExport_simpleNotes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Form Notes:`
-  String get gssExport_formNotes {
-    return Intl.message(
-      'Form Notes:',
-      name: 'gssExport_formNotes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Images:`
-  String get gssExport_images {
-    return Intl.message(
-      'Images:',
-      name: 'gssExport_images',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Should not happen`
-  String get gssExport_shouldNotHappen {
-    return Intl.message(
-      'Should not happen',
-      name: 'gssExport_shouldNotHappen',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Upload`
-  String get gssExport_upload {
-    return Intl.message(
-      'Upload',
-      name: 'gssExport_upload',
       desc: '',
       args: [],
     );

@@ -1,4 +1,6 @@
 {
+  "@@locale": "it",
+
   "main_welcome": "Benvenuto in SMASH!",
   "main_check_location_permission": "Controllo permessi geolocalizzazione",
   "main_location_permission_granted": "Permesso geolocalizzazione accettato.",

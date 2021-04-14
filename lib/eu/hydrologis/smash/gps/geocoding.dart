@@ -6,11 +6,12 @@
 
 import 'dart:async';
 
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position, Distance;
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 /*
  * Copyright (c) 2019-2020. Antonello Andrea (www.hydrologis.com). All rights reserved.
@@ -18,7 +19,6 @@ import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
  * found in the LICENSE file.
  */
 import 'package:smashlibs/smashlibs.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 
 /// Geocoding widget that makes use of the [MainEventHandler] to move to the
 /// chosen location.
@@ -84,14 +84,17 @@ class GeocodingPageState extends State<GeocodingPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Geocoding"),
+        title: Text(SL.of(context).geocoding_geocoding), //"Geocoding"
         actions: <Widget>[
           IconButton(
             onPressed: () {
               String query = textEditingController.text;
               if (query.trim().isEmpty) {
                 SmashDialogs.showWarningDialog(
-                    context, "Nothing to look for. Insert an address.");
+                    context,
+                    SL
+                        .of(context)
+                        .geocoding_nothingToLookFor); //"Nothing to look for. Insert an address."
                 return;
               }
               search(context, query);
@@ -100,7 +103,8 @@ class GeocodingPageState extends State<GeocodingPage> {
               });
             },
             icon: Icon(Icons.refresh),
-            tooltip: "Launch Geocoding",
+            tooltip:
+                SL.of(context).geocoding_launchGeocoding, //"Launch Geocoding"
           ),
         ],
       ),
@@ -118,7 +122,11 @@ class GeocodingPageState extends State<GeocodingPage> {
               ),
             ),
             searching
-                ? Center(child: SmashCircularProgress(label: "Searching..."))
+                ? Center(
+                    child: SmashCircularProgress(
+                        label: SL
+                            .of(context)
+                            .geocoding_searching)) //"Searching..."
                 : Container(
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),

@@ -1,4 +1,6 @@
 {
+  "@@locale": "en",
+
   "@main": {
     "context": "main.dart"
   },
@@ -39,6 +41,136 @@
   "mainView_zoomOut": "Zoom out",
   "mainView_formNotes": "Form Notes",
   "mainView_simpleNotes": "Simple Notes",
+
+  "@export_widget": {
+    "context": "smash/export/export_widget.dart"
+  },
+  "exportWidget_export": "Export",
+  "exportWidget_pdfExported": "PDF exported",
+  "exportWidget_exportToPortableDocumentFormat": "Export project to Portable Document Format",
+  "exportWidget_gpxExported": "GPX exported",
+  "exportWidget_exportToGpx": "Export project to GPX",
+  "exportWidget_kmlExported": "KML exported",
+  "exportWidget_exportToKml": "Export project to KML",
+  "exportWidget_geopackageExported": "Geopackage exported",
+  "exportWidget_exportToGeopackage": "Export project to Geopackage",
+  "exportWidget_exportToGSS": "Export to Geopaparazzi Survey Server",
+
+  "@gss_export": {
+    "context": "smash/export/gss_export.dart"
+  },
+  "gssExport_gssExport": "GSS Export",
+  "gssExport_setProjectDirty":"Set project to DIRTY?",
+  "gssExport_thisCantBeUndone": "This can't be undone!",
+  "gssExport_restoreProjectAsDirty": "Restore project as all dirty.",
+  "gssExport_setProjectClean": "Set project to CLEAN?",
+  "gssExport_restoreProjectAsClean": "Restore project as all clean.",
+  "gssExport_nothingToSync": "Nothing to sync.",
+  "gssExport_collectingSyncStats": "Collecting sync stats...",
+  "gssExport_unableToSyncDueToError": "Unable to sync due to an error, check diagnostics.",
+  "gssExport_noGssUrlSet": "No GSS server url has been set. Check your settings.",
+  "gssExport_noGssPasswordSet": "No GSS server password has been set. Check your settings.",
+  "gssExport_synStats": "Sync Stats",
+  "gssExport_followingDataWillBeUploaded": "The following data will be uploaded upon sync.",
+  "gssExport_gpsLogs": "Gps Logs:",
+  "gssExport_simpleNotes": "Simple Notes:",
+  "gssExport_formNotes": "Form Notes:",
+  "gssExport_images": "Images:",
+  "gssExport_shouldNotHappen": "Should not happen",
+  "gssExport_upload": "Upload",
+
+  "@geocoding": {
+    "context": "smash/gps/geocoding.dart"
+  },
+  "geocoding_geocoding": "Geocoding",
+  "geocoding_nothingToLookFor": "Nothing to look for. Insert an address.",
+  "geocoding_launchGeocoding": "Launch Geocoding",
+  "geocoding_searching": "Searching...",
+
+
+  "@gps": {
+    "context": "smash/gps/gps.dart"
+  },
+  "gps_smashIsActive": "SMASH is active",
+  "gps_smashIsLogging": "SMASH is logging",
+  "gps_locationTracking": "Location tracking",
+  "gps_smashLocServiceIsActive": "SMASH location service is active.",
+  "gps_backgroundLocIsOnToKeepRegistering": "Background location is on to keep the app registering the location even when the app is in background.",
+
+  "@gssImport": {
+    "context": "smash/import/gss_import.dart"
+  },
+  "gssImport_gssImport": "GSS Import",
+  "gssImport_downloadingDataList": "Downloading data list...",
+  "gssImport_unableDownloadDataList": "Unable to download data list due to an error. Check your settings and the log.",
+  "gssImport_noGssUrlSet": "No GSS server url has been set. Check your settings." ,
+  "gssImport_noGssPasswordSet":  "No GSS server password has been set. Check your settings.",
+  "gssImport_noPermToAccessServer": "No permission to access the server. Check your credentials." ,
+  "gssImport_data":  "Data",
+  "gssImport_dataSetsDownloadedMapsFolder":  "Datasets are downloaded into the maps folder.",
+  "gssImport_noDataAvailable":  "No data available.",
+  "gssImport_projects":  "Projects",
+  "gssImport_projectsDownloadedProjectFolder":  "Projects are downloaded into the projects folder.",
+  "gssImport_noProjectsAvailable":  "No projects available.",
+  "gssImport_forms": "Forms" ,
+  "gssImport_tagsDownloadedFormsFolder":  "Tags files are downloaded into the forms folder.",
+  "gssImport_noTagsAvailable":  "No tags available.",
+
+  "@importWidget": {
+    "context": "smash/import/import_widget.dart"
+  },
+  "importWidget_import": "Import",
+  "importWidget_importFromGeopaparazzi": "Import from Geopaparazzi Survey Server",
+
+
+  "@layersView": {
+    "context": "smash/maps/layers/core/layersview.dart"
+  },
+  "layersView_layerList": "Layer List",
+  "layersView_loadRemoteDatabase": "Load remote database",
+  "layersView_loadOnlineSources": "Load online sources",
+  "layersView_loadLocalDatasets": "Load local datasets",
+  "layersView_loading": "Loading...",
+  "layersView_zoomTo": "Zoom to",
+  "layersView_properties": "Properties",
+  "layersView_delete": "Delete",
+  "layersView_projCouldNotBeRecognized": "The proj could not be recognised. Tap to enter epsg manually.",
+  "layersView_projNotSupported": "The proj is not supported. Tap to solve.",
+  "layersView_onlyImageFilesWithWorldDef": "Only image files with world file definition are supported.",
+  "layersView_onlyImageFileWithPrjDef": "Only image files with prj file definition are supported.",
+  "layersView_selectTableToLoad": "Select table to load.",
+  "layersView_fileFormatNotSUpported": "File format not supported.",
+
+
+  "@onlineSourcesPage": {
+    "context": "smash/maps/layers/core/onlinesourcespage.dart"
+  },
+  "onlineSourcesPage_onlineSourcesCatalog": "Online Sources Catalog",
+  "onlineSourcesPage_loadingTmsLayers": "Loading TMS layers...",
+  "onlineSourcesPage_loadingWmsLayers": "Loading WMS layers...",
+  "onlineSourcesPage_importFromFile": "Import from file",
+  "onlineSourcesPage_theFile": "The file",
+  "onlineSourcesPage_doesntExist": "doesn't exist",
+  "onlineSourcesPage_onlineSourcesImported": "Online sources imported.",
+  "onlineSourcesPage_exportToFile": "Export to file",
+  "onlineSourcesPage_exportedTo": "Exported to:",
+  "onlineSourcesPage_delete": "DELETE",
+  "onlineSourcesPage_addToLayers": "ADD TO LAYERS",
+  "onlineSourcesPage_setNameTmsService": "Set a name for the TMS service",
+  "onlineSourcesPage_enterName": "enter name",
+  "onlineSourcesPage_pleaseEnterValidName": "Please enter a valid name",
+  "onlineSourcesPage_insertUrlOfService": "Insert the url of the service.",
+  "onlineSourcesPage_placeXyzBetBrackets": "Place the x, y, z between curly brackets.",
+  "onlineSourcesPage_pleaseEnterValidTmsUrl": "Please enter a valid TMS URL",
+  "onlineSourcesPage_enterUrl": "enter URL",
+  "onlineSourcesPage_enterSubDomains": "enter subdomains",
+  "onlineSourcesPage_addAttribution": "Add an attribution.",
+  "onlineSourcesPage_enterAttribution": "enter attribution",
+  "onlineSourcesPage_setMinMaxZoom": "Set min and max zoom.",
+  "onlineSourcesPage_minZoom": "min zoom",
+  "onlineSourcesPage_maxZoom": "max zoom",
+  "onlineSourcesPage_pleaseCheckYourData": "Please check your data",
+
 
   "@projects_view": {
     "context": "smash/project/projects_view.dart"
@@ -373,43 +505,7 @@
   "network_uploading": "Uploading",
   "network_pleaseWait": "please wait...",
   "network_permissionOnServerDenied": "Permission on server denied.",
-  "network_couldNotConnectToServer": "Could not connect to the server. Is it online? Check your address.",
+  "network_couldNotConnectToServer": "Could not connect to the server. Is it online? Check your address."
 
-  "@export_widget": {
-    "context": "smash/export/export_widget.dart"
-  },
-  "exportWidget_export": "Export",
-  "exportWidget_pdfExported": "PDF exported",
-  "exportWidget_exportToPortableDocumentFormat": "Export project to Portable Document Format",
-  "exportWidget_gpxExported": "GPX exported",
-  "exportWidget_exportToGpx": "Export project to GPX",
-  "exportWidget_kmlExported": "KML exported",
-  "exportWidget_exportToKml": "Export project to KML",
-  "exportWidget_geopackageExported": "Geopackage exported",
-  "exportWidget_exportToGeopackage": "Export project to Geopackage",
-  "exportWidget_exportToGSS": "Export to Geopaparazzi Survey Server",
-
-  "@gss_export": {
-    "context": "smash/export/gss_export.dart"
-  },
-  "gssExport_gssExport": "GSS Export",
-  "gssExport_setProjectDirty":"Set project to DIRTY?",
-  "gssExport_thisCantBeUndone": "This can't be undone!",
-  "gssExport_restoreProjectAsDirty": "Restore project as all dirty.",
-  "gssExport_setProjectClean": "Set project to CLEAN?",
-  "gssExport_restoreProjectAsClean": "Restore project as all clean.",
-  "gssExport_nothingToSync": "Nothing to sync.",
-  "gssExport_collectingSyncStats": "Collecting sync stats...",
-  "gssExport_unableToSyncDueToError": "Unable to sync due to an error, check diagnostics.",
-  "gssExport_noGssUrlSet": "No GSS server url has been set. Check your settings.",
-  "gssExport_noGssPasswordSet": "No GSS server password has been set. Check your settings.",
-  "gssExport_synStats": "Sync Stats",
-  "gssExport_followingDataWillBeUploaded": "The following data will be uploaded upon sync.",
-  "gssExport_gpsLogs": "Gps Logs:",
-  "gssExport_simpleNotes": "Simple Notes:",
-  "gssExport_formNotes": "Form Notes:",
-  "gssExport_images": "Images:",
-  "gssExport_shouldNotHappen": "Should not happen",
-  "gssExport_upload": "Upload"
 
 }

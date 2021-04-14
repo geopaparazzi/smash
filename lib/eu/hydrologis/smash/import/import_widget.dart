@@ -6,8 +6,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/import/gss_import.dart';
+import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class ImportWidget extends StatefulWidget {
   ImportWidget({Key key}) : super(key: key);
@@ -21,7 +22,7 @@ class _ImportWidgetState extends State<ImportWidget> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Import"),
+        title: new Text(SL.of(context).importWidget_import), //"Import"
       ),
       body: ListView(children: <Widget>[
         ListTile(
@@ -30,7 +31,9 @@ class _ImportWidgetState extends State<ImportWidget> {
               color: SmashColors.mainDecorations,
             ),
             title: Text("GSS"),
-            subtitle: Text("Import from Geopaparazzi Survey Server"),
+            subtitle: Text(SL
+                .of(context)
+                .importWidget_importFromGeopaparazzi), //"Import from Geopaparazzi Survey Server"
             onTap: () {
               Navigator.push(
                   context,
