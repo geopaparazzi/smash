@@ -1275,20 +1275,20 @@ class SL {
     );
   }
 
-  /// `min zoom`
+  /// `Min zoom`
   String get onlineSourcesPage_minZoom {
     return Intl.message(
-      'min zoom',
+      'Min zoom',
       name: 'onlineSourcesPage_minZoom',
       desc: '',
       args: [],
     );
   }
 
-  /// `max zoom`
+  /// `Max zoom`
   String get onlineSourcesPage_maxZoom {
     return Intl.message(
-      'max zoom',
+      'Max zoom',
       name: 'onlineSourcesPage_maxZoom',
       desc: '',
       args: [],
@@ -1300,6 +1300,196 @@ class SL {
     return Intl.message(
       'Please check your data',
       name: 'onlineSourcesPage_pleaseCheckYourData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Details`
+  String get onlineSourcesPage_details {
+    return Intl.message(
+      'Details',
+      name: 'onlineSourcesPage_details',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Name: `
+  String get onlineSourcesPage_name {
+    return Intl.message(
+      'Name: ',
+      name: 'onlineSourcesPage_name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subdomains: `
+  String get onlineSourcesPage_subDomains {
+    return Intl.message(
+      'Subdomains: ',
+      name: 'onlineSourcesPage_subDomains',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Attribution: `
+  String get onlineSourcesPage_attribution {
+    return Intl.message(
+      'Attribution: ',
+      name: 'onlineSourcesPage_attribution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CANCEL`
+  String get onlineSourcesPage_cancel {
+    return Intl.message(
+      'CANCEL',
+      name: 'onlineSourcesPage_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get onlineSourcesPage_ok {
+    return Intl.message(
+      'OK',
+      name: 'onlineSourcesPage_ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New TMS Online Service`
+  String get onlineSourcesPage_newTmsOnlineService {
+    return Intl.message(
+      'New TMS Online Service',
+      name: 'onlineSourcesPage_newTmsOnlineService',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get onlineSourcesPage_save {
+    return Intl.message(
+      'Save',
+      name: 'onlineSourcesPage_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The base url ending with question mark.`
+  String get onlineSourcesPage_theBaseUrlWithQuestionMark {
+    return Intl.message(
+      'The base url ending with question mark.',
+      name: 'onlineSourcesPage_theBaseUrlWithQuestionMark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid WMS URL`
+  String get onlineSourcesPage_pleaseEnterValidWmsUrl {
+    return Intl.message(
+      'Please enter a valid WMS URL',
+      name: 'onlineSourcesPage_pleaseEnterValidWmsUrl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set WMS layer name`
+  String get onlineSourcesPage_setWmsLayerName {
+    return Intl.message(
+      'Set WMS layer name',
+      name: 'onlineSourcesPage_setWmsLayerName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter layer to load`
+  String get onlineSourcesPage_enterLayerToLoad {
+    return Intl.message(
+      'enter layer to load',
+      name: 'onlineSourcesPage_enterLayerToLoad',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a valid layer`
+  String get onlineSourcesPage_pleaseEnterValidLayer {
+    return Intl.message(
+      'Please enter a valid layer',
+      name: 'onlineSourcesPage_pleaseEnterValidLayer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set WMS image format`
+  String get onlineSourcesPage_setWmsImageFormat {
+    return Intl.message(
+      'Set WMS image format',
+      name: 'onlineSourcesPage_setWmsImageFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add an attribution.`
+  String get onlineSourcesPage_addAnAttribution {
+    return Intl.message(
+      'Add an attribution.',
+      name: 'onlineSourcesPage_addAnAttribution',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Layer: `
+  String get onlineSourcesPage_layer {
+    return Intl.message(
+      'Layer: ',
+      name: 'onlineSourcesPage_layer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `URL: `
+  String get onlineSourcesPage_url {
+    return Intl.message(
+      'URL: ',
+      name: 'onlineSourcesPage_url',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Format`
+  String get onlineSourcesPage_format {
+    return Intl.message(
+      'Format',
+      name: 'onlineSourcesPage_format',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New WMS Online Service`
+  String get onlineSourcesPage_newWmsOnlineService {
+    return Intl.message(
+      'New WMS Online Service',
+      name: 'onlineSourcesPage_newWmsOnlineService',
       desc: '',
       args: [],
     );
