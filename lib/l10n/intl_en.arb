@@ -191,6 +191,28 @@
   "onlineSourcesPage_newWmsOnlineService": "New WMS Online Service",
 
 
+  "@remoteDbPage": {
+    "context": "smash/maps/layers/core/remotedbpage.dart"
+  },
+  "remoteDbPage_remoteDatabases": "Remote Databases",
+  "remoteDbPage_delete": "Delete",
+  "remoteDbPage_areYouSureDeleteDatabase": "Are you sure you want to delete the database configuration?",
+  "remoteDbPage_edit": "Edit",
+  "remoteDbPage_table": "table",
+  "remoteDbPage_user": "user",
+  "remoteDbPage_loadInMap": "Load in map.",
+  "remoteDbPage_databaseParameters": "Database Parameters",
+  "remoteDbPage_cancel": "CANCEL",
+  "remoteDbPage_ok": "OK",
+  "remoteDbPage_theUrlNeedsToBeDefined": "The url needs to be defined (postgis:host:port/dbname)",
+  "remoteDbPage_theUserNeedsToBeDefined": "The user needs to be defined.",
+  "remoteDbPage_password": "password",
+  "remoteDbPage_thePasswordNeedsToBeDefined": "The password needs to be defined.",
+  "remoteDbPage_loadingTables": "loading tables...",
+  "remoteDbPage_theTableNeedsToBeDefined": "The table name needs to be defined.",
+  "remoteDbPage_unableToConnectToDatabase": "Unable to connect to the database. Check parameters and network.",
+  "remoteDbPage_optionalWhereCondition": "optional where condition",
+
   "@projects_view": {
     "context": "smash/project/projects_view.dart"
   },

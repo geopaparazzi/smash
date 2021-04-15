@@ -1,20 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:after_layout/after_layout.dart';
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
-    hide TextStyle;
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class RemoteDbsWidget extends StatefulWidget {
   RemoteDbsWidget({Key key}) : super(key: key);
@@ -52,7 +44,8 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Remote Databases"),
+        title: Text(
+            SL.of(context).remoteDbPage_remoteDatabases), //"Remote Databases"
       ),
       body: ListView.builder(
         itemCount: sources.length,
@@ -70,14 +63,16 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
 
           List<Widget> secondaryActions = [];
           secondaryActions.add(IconSlideAction(
-              caption: 'Delete',
+              caption: SL.of(context).remoteDbPage_delete, //'Delete'
               color: SmashColors.mainDanger,
               icon: SmashIcons.deleteIcon,
               onTap: () async {
                 bool doDelete = await SmashDialogs.showConfirmDialog(
                     context,
-                    "DELETE",
-                    'Are you sure you want to delete the database configuration?');
+                    SL.of(context).remoteDbPage_delete, //"DELETE"
+                    SL
+                        .of(context)
+                        .remoteDbPage_areYouSureDeleteDatabase); //'Are you sure you want to delete the database configuration?'
                 if (doDelete) {
                   sources.removeAt(index);
                   var list =
@@ -90,7 +85,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
               }));
           List<Widget> actions = [];
           actions.add(IconSlideAction(
-              caption: 'Edit',
+              caption: SL.of(context).remoteDbPage_edit, //"Edit"
               icon: SmashIcons.editIcon,
               color: SmashColors.mainDecorations,
               onTap: () async {
@@ -118,7 +113,8 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
               title: Text(url),
               subtitle: Padding(
                 padding: const EdgeInsets.only(left: 8.0),
-                child: Text("table: $table  user: $user$where"),
+                child: Text(
+                    "${SL.of(context).remoteDbPage_table}: $table  ${SL.of(context).remoteDbPage_user}: $user$where"), //table //user
               ),
               leading: FittedBox(
                 fit: BoxFit.cover,
@@ -131,7 +127,8 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    tooltip: "Load in map.",
+                    tooltip:
+                        SL.of(context).remoteDbPage_loadInMap, //"Load in map."
                     icon: Icon(
                       MdiIcons.openInApp,
                       color: SmashColors.mainDecorations,
@@ -175,7 +172,9 @@ Future<Map<String, dynamic>> showRemoteDbPropertiesDialog(
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Database Parameters"),
+        title: Text(SL
+            .of(context)
+            .remoteDbPage_databaseParameters), //"Database Parameters"
         content: Builder(builder: (context) {
           var width = MediaQuery.of(context).size.width;
           return Padding(
@@ -190,13 +189,13 @@ Future<Map<String, dynamic>> showRemoteDbPropertiesDialog(
         }),
         actions: <Widget>[
           FlatButton(
-            child: Text("CANCEL"),
+            child: Text(SL.of(context).remoteDbPage_cancel), //"CANCEL"
             onPressed: () {
               Navigator.of(context).pop(null);
             },
           ),
           FlatButton(
-            child: Text("OK"),
+            child: Text(SL.of(context).remoteDbPage_ok), //"OK"
             onPressed: () {
               Navigator.of(context).pop(dbConfigMap);
             },
@@ -244,13 +243,16 @@ class _RemoteDbPropertiesContainerState
       validator: (txt) {
         sourceMap[LAYERSKEY_URL] = txt;
         var errorText = txt.isEmpty
-            ? "The url needs to be defined (postgis:host:port/dbname)"
+            ? SL
+                .of(context)
+                .remoteDbPage_theUrlNeedsToBeDefined //"The url needs to be defined (postgis:host:port/dbname)"
             : null;
         return errorText;
       },
     );
     var userEC = new TextEditingController(text: user);
-    var userID = new InputDecoration(labelText: "user");
+    var userID = new InputDecoration(
+        labelText: SL.of(context).remoteDbPage_user); //"user"
     var userWidget = new TextFormField(
       controller: userEC,
       autovalidateMode: AutovalidateMode.always,
@@ -258,12 +260,16 @@ class _RemoteDbPropertiesContainerState
       decoration: userID,
       validator: (txt) {
         sourceMap[LAYERSKEY_USER] = txt;
-        var errorText = txt.isEmpty ? "The user needs to be defined." : null;
+        var errorText = txt.isEmpty
+            ? SL.of(context).remoteDbPage_theUserNeedsToBeDefined
+            : //"The user needs to be defined."
+            null;
         return errorText;
       },
     );
     var passwordEC = new TextEditingController(text: pwd);
-    var passwordID = new InputDecoration(labelText: "password");
+    var passwordID = new InputDecoration(
+        labelText: SL.of(context).remoteDbPage_password); //"password"
     var passwordWidget = new TextFormField(
       obscureText: true,
       controller: passwordEC,
@@ -272,15 +278,19 @@ class _RemoteDbPropertiesContainerState
       decoration: passwordID,
       validator: (txt) {
         sourceMap[LAYERSKEY_PWD] = txt;
-        var errorText =
-            txt.isEmpty ? "The password needs to be defined." : null;
+        var errorText = txt.isEmpty
+            ? SL.of(context).remoteDbPage_thePasswordNeedsToBeDefined
+            : //"The password needs to be defined."
+            null;
         return errorText;
       },
     );
 
     Widget tableWidget;
     if (_isLoadingGeomTables) {
-      tableWidget = SmashCircularProgress(label: "loading tables...");
+      tableWidget = SmashCircularProgress(
+          label:
+              SL.of(context).remoteDbPage_loadingTables); //"loading tables..."
     } else if (_geomTables != null) {
       if (!_geomTables.contains(tableName)) {
         tableName = _geomTables[0];
@@ -303,7 +313,8 @@ class _RemoteDbPropertiesContainerState
       );
     } else {
       var tableEC = new TextEditingController(text: tableName);
-      var tableID = new InputDecoration(labelText: "table");
+      var tableID = new InputDecoration(
+          labelText: SL.of(context).remoteDbPage_table); //"table"
       var tableTextWidget = new TextFormField(
         controller: tableEC,
         autovalidateMode: AutovalidateMode.always,
@@ -311,8 +322,10 @@ class _RemoteDbPropertiesContainerState
         decoration: tableID,
         validator: (txt) {
           sourceMap[LAYERSKEY_LABEL] = txt;
-          var errorText =
-              txt.isEmpty ? "The table name needs to be defined." : null;
+          var errorText = txt.isEmpty
+              ? SL.of(context).remoteDbPage_theTableNeedsToBeDefined
+              : //"The table name needs to be defined."
+              null;
           return errorText;
         },
       );
@@ -345,8 +358,11 @@ class _RemoteDbPropertiesContainerState
                 setState(() {
                   _isLoadingGeomTables = false;
                 });
-                SmashDialogs.showWarningDialog(context,
-                    "Unable to connect to the database. Check parameters and network.");
+                SmashDialogs.showWarningDialog(
+                    context,
+                    SL
+                        .of(context)
+                        .remoteDbPage_unableToConnectToDatabase); //"Unable to connect to the database. Check parameters and network."
               }
             },
           )
@@ -354,7 +370,10 @@ class _RemoteDbPropertiesContainerState
       );
     }
     var whereEC = new TextEditingController(text: where);
-    var whereID = new InputDecoration(labelText: "optional where condition");
+    var whereID = new InputDecoration(
+        labelText: SL
+            .of(context)
+            .remoteDbPage_optionalWhereCondition); //"optional where condition"
     var whereWidget = new TextFormField(
       controller: whereEC,
       autovalidateMode: AutovalidateMode.always,

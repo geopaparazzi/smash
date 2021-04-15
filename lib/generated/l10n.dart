@@ -1495,6 +1495,186 @@ class SL {
     );
   }
 
+  /// `Remote Databases`
+  String get remoteDbPage_remoteDatabases {
+    return Intl.message(
+      'Remote Databases',
+      name: 'remoteDbPage_remoteDatabases',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete`
+  String get remoteDbPage_delete {
+    return Intl.message(
+      'Delete',
+      name: 'remoteDbPage_delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete the database configuration?`
+  String get remoteDbPage_areYouSureDeleteDatabase {
+    return Intl.message(
+      'Are you sure you want to delete the database configuration?',
+      name: 'remoteDbPage_areYouSureDeleteDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit`
+  String get remoteDbPage_edit {
+    return Intl.message(
+      'Edit',
+      name: 'remoteDbPage_edit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `table`
+  String get remoteDbPage_table {
+    return Intl.message(
+      'table',
+      name: 'remoteDbPage_table',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `user`
+  String get remoteDbPage_user {
+    return Intl.message(
+      'user',
+      name: 'remoteDbPage_user',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load in map.`
+  String get remoteDbPage_loadInMap {
+    return Intl.message(
+      'Load in map.',
+      name: 'remoteDbPage_loadInMap',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database Parameters`
+  String get remoteDbPage_databaseParameters {
+    return Intl.message(
+      'Database Parameters',
+      name: 'remoteDbPage_databaseParameters',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `CANCEL`
+  String get remoteDbPage_cancel {
+    return Intl.message(
+      'CANCEL',
+      name: 'remoteDbPage_cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `OK`
+  String get remoteDbPage_ok {
+    return Intl.message(
+      'OK',
+      name: 'remoteDbPage_ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The url needs to be defined (postgis:host:port/dbname)`
+  String get remoteDbPage_theUrlNeedsToBeDefined {
+    return Intl.message(
+      'The url needs to be defined (postgis:host:port/dbname)',
+      name: 'remoteDbPage_theUrlNeedsToBeDefined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The user needs to be defined.`
+  String get remoteDbPage_theUserNeedsToBeDefined {
+    return Intl.message(
+      'The user needs to be defined.',
+      name: 'remoteDbPage_theUserNeedsToBeDefined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `password`
+  String get remoteDbPage_password {
+    return Intl.message(
+      'password',
+      name: 'remoteDbPage_password',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The password needs to be defined.`
+  String get remoteDbPage_thePasswordNeedsToBeDefined {
+    return Intl.message(
+      'The password needs to be defined.',
+      name: 'remoteDbPage_thePasswordNeedsToBeDefined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `loading tables...`
+  String get remoteDbPage_loadingTables {
+    return Intl.message(
+      'loading tables...',
+      name: 'remoteDbPage_loadingTables',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The table name needs to be defined.`
+  String get remoteDbPage_theTableNeedsToBeDefined {
+    return Intl.message(
+      'The table name needs to be defined.',
+      name: 'remoteDbPage_theTableNeedsToBeDefined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unable to connect to the database. Check parameters and network.`
+  String get remoteDbPage_unableToConnectToDatabase {
+    return Intl.message(
+      'Unable to connect to the database. Check parameters and network.',
+      name: 'remoteDbPage_unableToConnectToDatabase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `optional where condition`
+  String get remoteDbPage_optionalWhereCondition {
+    return Intl.message(
+      'optional where condition',
+      name: 'remoteDbPage_optionalWhereCondition',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Projects View`
   String get projectsView_projectsView {
     return Intl.message(
