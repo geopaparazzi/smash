@@ -135,6 +135,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "gps_smashIsActive" : MessageLookupByLibrary.simpleMessage("SMASH is active"),
     "gps_smashIsLogging" : MessageLookupByLibrary.simpleMessage("SMASH is logging"),
     "gps_smashLocServiceIsActive" : MessageLookupByLibrary.simpleMessage("SMASH location service is active."),
+    "gpx_color" : MessageLookupByLibrary.simpleMessage("Color"),
+    "gpx_gpxProperties" : MessageLookupByLibrary.simpleMessage("Gpx Properties"),
+    "gpx_palette" : MessageLookupByLibrary.simpleMessage("Palette"),
+    "gpx_size" : MessageLookupByLibrary.simpleMessage("Size"),
+    "gpx_tracksRoutes" : MessageLookupByLibrary.simpleMessage("TRACKS/ROUTES"),
+    "gpx_viewLabelsIfAvailable" : MessageLookupByLibrary.simpleMessage("View labels if available?"),
+    "gpx_wayPoints" : MessageLookupByLibrary.simpleMessage("WAYPOINTS"),
+    "gpx_width" : MessageLookupByLibrary.simpleMessage("Width"),
     "gssExport_collectingSyncStats" : MessageLookupByLibrary.simpleMessage("Collecting sync stats..."),
     "gssExport_followingDataWillBeUploaded" : MessageLookupByLibrary.simpleMessage("The following data will be uploaded upon sync."),
     "gssExport_formNotes" : MessageLookupByLibrary.simpleMessage("Form Notes:"),
@@ -450,6 +458,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings_width" : MessageLookupByLibrary.simpleMessage("Width"),
     "settings_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
     "settings_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out"),
+    "tiles_colorToHide" : MessageLookupByLibrary.simpleMessage("Color to hide"),
+    "tiles_loadGeoPackageAsOverlay" : MessageLookupByLibrary.simpleMessage("Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections)."),
+    "tiles_opacity" : MessageLookupByLibrary.simpleMessage("Opacity"),
+    "tiles_tileProperties" : MessageLookupByLibrary.simpleMessage("Tile Properties"),
     "toolbarTools_cancelCurrentEdit" : MessageLookupByLibrary.simpleMessage("Cancel current edit."),
     "toolbarTools_featureDoesNotHavePrimaryKey" : MessageLookupByLibrary.simpleMessage("The feature does not have a primary key. Editing is not allowed."),
     "toolbarTools_insertPointGpsPos" : MessageLookupByLibrary.simpleMessage("Insert point in GPS position."),
@@ -462,6 +474,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "toolbarTools_showFeatureAttributes" : MessageLookupByLibrary.simpleMessage("Show feature attributes."),
     "toolbarTools_toggleFenceMapCenter" : MessageLookupByLibrary.simpleMessage("Toggle fence in map center."),
     "toolbarTools_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
-    "toolbarTools_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out")
+    "toolbarTools_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out"),
+    "wms_opacity" : MessageLookupByLibrary.simpleMessage("Opacity"),
+    "wms_wmsProperties" : MessageLookupByLibrary.simpleMessage("WMS Properties")
   };
 }

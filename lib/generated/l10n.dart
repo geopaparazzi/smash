@@ -1705,6 +1705,146 @@ class SL {
     );
   }
 
+  /// `Gpx Properties`
+  String get gpx_gpxProperties {
+    return Intl.message(
+      'Gpx Properties',
+      name: 'gpx_gpxProperties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WAYPOINTS`
+  String get gpx_wayPoints {
+    return Intl.message(
+      'WAYPOINTS',
+      name: 'gpx_wayPoints',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color`
+  String get gpx_color {
+    return Intl.message(
+      'Color',
+      name: 'gpx_color',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Size`
+  String get gpx_size {
+    return Intl.message(
+      'Size',
+      name: 'gpx_size',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View labels if available?`
+  String get gpx_viewLabelsIfAvailable {
+    return Intl.message(
+      'View labels if available?',
+      name: 'gpx_viewLabelsIfAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `TRACKS/ROUTES`
+  String get gpx_tracksRoutes {
+    return Intl.message(
+      'TRACKS/ROUTES',
+      name: 'gpx_tracksRoutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Width`
+  String get gpx_width {
+    return Intl.message(
+      'Width',
+      name: 'gpx_width',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Palette`
+  String get gpx_palette {
+    return Intl.message(
+      'Palette',
+      name: 'gpx_palette',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tile Properties`
+  String get tiles_tileProperties {
+    return Intl.message(
+      'Tile Properties',
+      name: 'tiles_tileProperties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opacity`
+  String get tiles_opacity {
+    return Intl.message(
+      'Opacity',
+      name: 'tiles_opacity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).`
+  String get tiles_loadGeoPackageAsOverlay {
+    return Intl.message(
+      'Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).',
+      name: 'tiles_loadGeoPackageAsOverlay',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color to hide`
+  String get tiles_colorToHide {
+    return Intl.message(
+      'Color to hide',
+      name: 'tiles_colorToHide',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `WMS Properties`
+  String get wms_wmsProperties {
+    return Intl.message(
+      'WMS Properties',
+      name: 'wms_wmsProperties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opacity`
+  String get wms_opacity {
+    return Intl.message(
+      'Opacity',
+      name: 'wms_opacity',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Projects View`
   String get projectsView_projectsView {
     return Intl.message(

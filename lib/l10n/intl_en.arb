@@ -221,6 +221,35 @@
   "geoImage_colorToHide": "Color to hide",
 
 
+  "@gpx": {
+    "context": "smash/maps/layers/types/gpx.dart"
+  },
+  "gpx_gpxProperties": "Gpx Properties",
+  "gpx_wayPoints": "WAYPOINTS",
+  "gpx_color": "Color",
+  "gpx_size": "Size",
+  "gpx_viewLabelsIfAvailable": "View labels if available?",
+  "gpx_tracksRoutes": "TRACKS/ROUTES",
+  "gpx_width": "Width",
+  "gpx_palette": "Palette",
+
+
+  "@tiles": {
+    "context": "smash/maps/layers/types/tiles.dart"
+  },
+  "tiles_tileProperties": "Tile Properties",
+  "tiles_opacity": "Opacity",
+  "tiles_loadGeoPackageAsOverlay": "Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).",
+  "tiles_colorToHide": "Color to hide",
+
+
+  "@wms": {
+    "context": "smash/maps/layers/types/wms.dart"
+  },
+  "wms_wmsProperties": "WMS Properties",
+  "wms_opacity": "Opacity",
+
+
   "@projects_view": {
     "context": "smash/project/projects_view.dart"
   },

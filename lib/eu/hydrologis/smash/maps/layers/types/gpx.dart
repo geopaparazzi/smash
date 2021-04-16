@@ -9,6 +9,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
@@ -16,12 +17,11 @@ import 'package:gpx/gpx.dart';
 import 'package:latlong/latlong.dart';
 import 'package:map_elevation/map_elevation.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:rainbow_color/rainbow_color.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
+import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
+import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class GpxSource extends VectorLayerSource implements SldLayerSource {
   String _absolutePath;
@@ -460,7 +460,7 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Gpx Properties"),
+            title: Text(SL.of(context).gpx_gpxProperties), //"Gpx Properties"
           ),
           body: Center(
             child: ListView(
@@ -479,7 +479,7 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                 Padding(
                                   padding: SmashUI.defaultPadding(),
                                   child: SmashUI.normalText(
-                                    "WAYPOINTS",
+                                    SL.of(context).gpx_wayPoints, //"WAYPOINTS"
                                     bold: true,
                                   ),
                                 ),
@@ -489,7 +489,8 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                     Padding(
                                       padding:
                                           const EdgeInsets.only(right: 8.0),
-                                      child: SmashUI.normalText("Color"),
+                                      child: SmashUI.normalText(
+                                          SL.of(context).gpx_color), //"Color"
                                     ),
                                     Flexible(
                                         flex: 1,
@@ -511,7 +512,8 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                     Padding(
                                       padding:
                                           const EdgeInsets.only(right: 8.0),
-                                      child: SmashUI.normalText("Size"),
+                                      child: SmashUI.normalText(
+                                          SL.of(context).gpx_size), //"Size"
                                     ),
                                     Flexible(
                                         flex: 1,
@@ -538,8 +540,9 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                   ],
                                 ),
                                 CheckboxListTile(
-                                    title: SmashUI.normalText(
-                                        "View labels if available?"),
+                                    title: SmashUI.normalText(SL
+                                        .of(context)
+                                        .gpx_viewLabelsIfAvailable), //"View labels if available?"
                                     value: textStyle.size > 0,
                                     onChanged: (newValue) {
                                       setState(() => textStyle.size = newValue
@@ -565,7 +568,9 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                 Padding(
                                   padding: SmashUI.defaultPadding(),
                                   child: SmashUI.normalText(
-                                    "TRACKS/ROUTES",
+                                    SL
+                                        .of(context)
+                                        .gpx_tracksRoutes, //"TRACKS/ROUTES"
                                     bold: true,
                                   ),
                                 ),
@@ -575,7 +580,8 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                     Padding(
                                       padding:
                                           const EdgeInsets.only(right: 8.0),
-                                      child: SmashUI.normalText("Color"),
+                                      child: SmashUI.normalText(
+                                          SL.of(context).gpx_color), //"Color"
                                     ),
                                     Flexible(
                                         flex: 1,
@@ -597,7 +603,8 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                     Padding(
                                       padding:
                                           const EdgeInsets.only(right: 8.0),
-                                      child: SmashUI.normalText("Width"),
+                                      child: SmashUI.normalText(
+                                          SL.of(context).gpx_width), //"Width"
                                     ),
                                     Flexible(
                                         flex: 1,
@@ -629,7 +636,9 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                     Padding(
                                       padding:
                                           const EdgeInsets.only(right: 8.0),
-                                      child: SmashUI.normalText("Palette"),
+                                      child: SmashUI.normalText(SL
+                                          .of(context)
+                                          .gpx_palette), //"Palette"
                                     ),
                                     Flexible(
                                       flex: 1,

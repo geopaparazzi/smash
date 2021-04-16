@@ -8,21 +8,22 @@ import 'dart:core';
 import 'dart:io';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
-import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
-import 'package:smashlibs/smashlibs.dart';
+import 'package:proj4dart/proj4dart.dart' as PROJ;
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/mapsforge.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/mbtiles.dart';
-import 'package:proj4dart/proj4dart.dart' as PROJ;
+import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
+import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class TileSource extends TiledRasterLayerSource {
   String name;
@@ -167,7 +168,8 @@ class TileSource extends TiledRasterLayerSource {
 
   TileSource.Esri_Satellite({
     this.name: "Esri Satellite",
-    this.url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    this.url:
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     this.attribution: "Esri",
     this.minZoom: DEFAULT_MINZOOM,
     this.maxZoom: DEFAULT_MAXZOOM,
@@ -179,7 +181,8 @@ class TileSource extends TiledRasterLayerSource {
   TileSource.Mapsforge(String filePath) {
     this.name = FileUtilities.nameFromFile(filePath, false);
     this.absolutePath = Workspace.makeAbsolute(filePath);
-    this.attribution = "Map tiles by Mapsforge, Data by OpenStreetMap, under ODbL";
+    this.attribution =
+        "Map tiles by Mapsforge, Data by OpenStreetMap, under ODbL";
     this.minZoom = DEFAULT_MINZOOM;
     this.maxZoom = 22;
     this.isVisible = true;
@@ -308,12 +311,15 @@ class TileSource extends TiledRasterLayerSource {
           if (tileEntry != null) {
             var env = tileEntry.bounds;
             if (tileEntry.srid != Proj.EPSG4326_INT) {
-              env = Proj.transformEnvelopeToWgs84(PROJ.Projection("EPSG:${tileEntry.srid}"), env);
+              env = Proj.transformEnvelopeToWgs84(
+                  PROJ.Projection("EPSG:${tileEntry.srid}"), env);
             }
 
-            bounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()), LatLng(env.getMaxY(), env.getMaxX()));
+            bounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
+                LatLng(env.getMaxY(), env.getMaxX()));
           } else {
-            throw ArgumentError("No tile entry found for table $name in db: $absolutePath");
+            throw ArgumentError(
+                "No tile entry found for table $name in db: $absolutePath");
           }
           // var prov = GeopackageImageProvider(File(absolutePath), name);
           // prov.open();
@@ -328,11 +334,13 @@ class TileSource extends TiledRasterLayerSource {
   }
 
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
-    bool retinaModeOn = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, false);
+    bool retinaModeOn = GpPreferences()
+        .getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, false);
     if (FileManager.isMapsforge(getAbsolutePath())) {
       // mapsforge
       double tileSize = 256;
-      var mapsforgeTileProvider = MapsforgeTileProvider(File(absolutePath), tileSize: tileSize);
+      var mapsforgeTileProvider =
+          MapsforgeTileProvider(File(absolutePath), tileSize: tileSize);
       await mapsforgeTileProvider.open();
       return [
         TileLayerOptions(
@@ -373,11 +381,13 @@ class TileSource extends TiledRasterLayerSource {
         var to4326function;
         if (tileEntry.srid != Proj.EPSG4326_INT) {
           to4326function = (var envelope) {
-            return Proj.transformEnvelopeToWgs84(PROJ.Projection("EPSG:${tileEntry.srid}"), envelope);
+            return Proj.transformEnvelopeToWgs84(
+                PROJ.Projection("EPSG:${tileEntry.srid}"), envelope);
           };
         }
         TilesFetcher fetcher = TilesFetcher(tileEntry);
-        var lazyTiles = fetcher.getAllLazyTiles(db, to4326BoundsConverter: to4326function);
+        var lazyTiles =
+            fetcher.getAllLazyTiles(db, to4326BoundsConverter: to4326function);
         var overlayImages = lazyTiles.map((lt) {
           var minX = lt.tileBoundsLatLong.getMinX();
           var minY = lt.tileBoundsLatLong.getMinY();
@@ -409,7 +419,8 @@ class TileSource extends TiledRasterLayerSource {
         ];
       }
     } else if (isOnlineService()) {
-      TileProvider tileProvider = ExceptionsToTrack.getDefaultForOnlineServices();
+      TileProvider tileProvider =
+          ExceptionsToTrack.getDefaultForOnlineServices();
       if (isWms) {
         var tileLayerOptions = TileLayerOptions(
           wmsOptions: WMSTileLayerOptions(
@@ -442,7 +453,8 @@ class TileSource extends TiledRasterLayerSource {
         ];
       }
     } else {
-      throw Exception("Type not supported: ${absolutePath != null ? absolutePath : url}");
+      throw Exception(
+          "Type not supported: ${absolutePath != null ? absolutePath : url}");
     }
   }
 
@@ -452,7 +464,8 @@ class TileSource extends TiledRasterLayerSource {
       savePath = Workspace.makeRelative(absolutePath);
     }
 
-    var pathLine = savePath != null ? "\"$LAYERSKEY_FILE\": \"$savePath\"," : "";
+    var pathLine =
+        savePath != null ? "\"$LAYERSKEY_FILE\": \"$savePath\"," : "";
     var urlLine = url != null ? "\"$LAYERSKEY_URL\": \"$url\"," : "";
 
     var colorToHideLine = "";
@@ -526,7 +539,8 @@ class TileSourcePropertiesWidget extends StatefulWidget {
   }
 }
 
-class TileSourcePropertiesWidgetState extends State<TileSourcePropertiesWidget> {
+class TileSourcePropertiesWidgetState
+    extends State<TileSourcePropertiesWidget> {
   TileSource _source;
   double _opacitySliderValue = 100;
   Color _hideColor = Colors.white;
@@ -550,7 +564,8 @@ class TileSourcePropertiesWidgetState extends State<TileSourcePropertiesWidget> 
     var rgbToHide = _source.rgbToHide;
     if (rgbToHide != null) {
       useHideColor = true;
-      _hideColor = Color.fromARGB(255, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
+      _hideColor =
+          Color.fromARGB(255, rgbToHide[0], rgbToHide[1], rgbToHide[2]);
     }
 
     if (this._source.doGpkgAsOverlay != null) {
@@ -574,7 +589,11 @@ class TileSourcePropertiesWidgetState extends State<TileSourcePropertiesWidget> 
           if (_somethingChanged) {
             _source.opacityPercentage = _opacitySliderValue;
             if (useHideColor) {
-              _source.rgbToHide = [_hideColor.red, _hideColor.green, _hideColor.blue];
+              _source.rgbToHide = [
+                _hideColor.red,
+                _hideColor.green,
+                _hideColor.blue
+              ];
             } else {
               _source.rgbToHide = null;
             }
@@ -584,7 +603,8 @@ class TileSourcePropertiesWidgetState extends State<TileSourcePropertiesWidget> 
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Tile Properties"),
+            title:
+                Text(SL.of(context).tiles_tileProperties), //"Tile Properties"
           ),
           body: ListView(
             children: <Widget>[
@@ -599,7 +619,7 @@ class TileSourcePropertiesWidgetState extends State<TileSourcePropertiesWidget> 
                         leading: Icon(MdiIcons.opacity),
                         title: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
-                          child: Text("Opacity"),
+                          child: Text(SL.of(context).tiles_opacity), //"Opacity"
                         ),
                         subtitle: Row(
                           mainAxisSize: MainAxisSize.max,
@@ -613,7 +633,8 @@ class TileSourcePropertiesWidgetState extends State<TileSourcePropertiesWidget> 
                                   divisions: 10,
                                   onChanged: (newRating) {
                                     _somethingChanged = true;
-                                    setState(() => _opacitySliderValue = newRating);
+                                    setState(
+                                        () => _opacitySliderValue = newRating);
                                   },
                                   value: _opacitySliderValue,
                                 )),
@@ -643,8 +664,9 @@ class TileSourcePropertiesWidgetState extends State<TileSourcePropertiesWidget> 
                           value: doGpkgAsOverlay,
                           title: Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: Text(
-                                "Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections)."),
+                            child: Text(SL
+                                .of(context)
+                                .tiles_loadGeoPackageAsOverlay), //"Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections)."
                           ),
                           onChanged: (newValue) {
                             setState(() {
@@ -669,14 +691,17 @@ class TileSourcePropertiesWidgetState extends State<TileSourcePropertiesWidget> 
                           leading: Icon(MdiIcons.eyedropperVariant),
                           title: Padding(
                             padding: const EdgeInsets.only(top: 8.0),
-                            child: Text("Color to hide"),
+                            child: Text(SL
+                                .of(context)
+                                .tiles_colorToHide), //"Color to hide"
                           ),
                           subtitle: Row(
                             children: [
                               Expanded(
                                 child: Padding(
                                   padding: SmashUI.defaultPadding(),
-                                  child: ColorPickerButton(_hideColor, (newColor) {
+                                  child:
+                                      ColorPickerButton(_hideColor, (newColor) {
                                     _hideColor = ColorExt.fromColor(newColor);
                                     _somethingChanged = true;
                                   }),
