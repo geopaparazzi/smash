@@ -1675,6 +1675,36 @@ class SL {
     );
   }
 
+  /// `Tiff Properties`
+  String get geoImage_tiffProperties {
+    return Intl.message(
+      'Tiff Properties',
+      name: 'geoImage_tiffProperties',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opacity`
+  String get geoImage_opacity {
+    return Intl.message(
+      'Opacity',
+      name: 'geoImage_opacity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Color to hide`
+  String get geoImage_colorToHide {
+    return Intl.message(
+      'Color to hide',
+      name: 'geoImage_colorToHide',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Projects View`
   String get projectsView_projectsView {
     return Intl.message(

@@ -213,6 +213,14 @@
   "remoteDbPage_unableToConnectToDatabase": "Unable to connect to the database. Check parameters and network.",
   "remoteDbPage_optionalWhereCondition": "optional where condition",
 
+  "@geoImage": {
+    "context": "smash/maps/layers/types/geoimage.dart"
+  },
+  "geoImage_tiffProperties": "Tiff Properties",
+  "geoImage_opacity": "Opacity",
+  "geoImage_colorToHide": "Color to hide",
+
+
   "@projects_view": {
     "context": "smash/project/projects_view.dart"
   },

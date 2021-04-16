@@ -6,9 +6,10 @@
 
 import 'dart:core';
 import 'dart:io';
-import 'dart:ui' as ui;
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart' hide Projection;
@@ -17,10 +18,10 @@ import 'package:image/image.dart' as IMG;
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4dart;
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
+import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
+import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class GeoImageSource extends RasterLayerSource {
   String _absolutePath;
@@ -338,7 +339,8 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Tiff Properties"),
+            title: Text(
+                SL.of(context).geoImage_tiffProperties), //"Tiff Properties"
           ),
           body: ListView(
             children: <Widget>[
@@ -353,7 +355,8 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
                         leading: Icon(MdiIcons.opacity),
                         title: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
-                          child: Text("Opacity"),
+                          child:
+                              Text(SL.of(context).geoImage_opacity), //"Opacity"
                         ),
                         subtitle: Row(
                           mainAxisSize: MainAxisSize.max,
@@ -398,7 +401,9 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
                           leading: Icon(MdiIcons.eyedropperVariant),
                           title: Padding(
                             padding: const EdgeInsets.only(top: 8.0),
-                            child: Text("Color to hide"),
+                            child: Text(SL
+                                .of(context)
+                                .geoImage_colorToHide), //"Color to hide"
                           ),
                           subtitle: Row(
                             children: [
