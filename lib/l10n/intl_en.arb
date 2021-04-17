@@ -250,6 +250,14 @@
   "wms_opacity": "Opacity",
 
 
+  "@featureAttributesViewer": {
+    "context": "smash/maps/layers/feature_attributes_viewer.dart"
+  },
+  "featureAttributesViewer_loadingData": "Loading data...",
+  "featureAttributesViewer_setNewValue": "Set new value",
+  "featureAttributesViewer_field": "FIELD",
+  "featureAttributesViewer_value": "VALUE",
+
   "@projects_view": {
     "context": "smash/project/projects_view.dart"
   },

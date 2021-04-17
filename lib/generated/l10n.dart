@@ -1845,6 +1845,46 @@ class SL {
     );
   }
 
+  /// `Loading data...`
+  String get featureAttributesViewer_loadingData {
+    return Intl.message(
+      'Loading data...',
+      name: 'featureAttributesViewer_loadingData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set new value`
+  String get featureAttributesViewer_setNewValue {
+    return Intl.message(
+      'Set new value',
+      name: 'featureAttributesViewer_setNewValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `FIELD`
+  String get featureAttributesViewer_field {
+    return Intl.message(
+      'FIELD',
+      name: 'featureAttributesViewer_field',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VALUE`
+  String get featureAttributesViewer_value {
+    return Intl.message(
+      'VALUE',
+      name: 'featureAttributesViewer_value',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Projects View`
   String get projectsView_projectsView {
     return Intl.message(
