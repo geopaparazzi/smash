@@ -365,6 +365,166 @@ class SL {
     );
   }
 
+  /// `Projects`
+  String get mainviewUtils_projects {
+    return Intl.message(
+      'Projects',
+      name: 'mainviewUtils_projects',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Import`
+  String get mainviewUtils_import {
+    return Intl.message(
+      'Import',
+      name: 'mainviewUtils_import',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export`
+  String get mainviewUtils_export {
+    return Intl.message(
+      'Export',
+      name: 'mainviewUtils_export',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Settings`
+  String get mainviewUtils_settings {
+    return Intl.message(
+      'Settings',
+      name: 'mainviewUtils_settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online Help`
+  String get mainviewUtils_onlineHelp {
+    return Intl.message(
+      'Online Help',
+      name: 'mainviewUtils_onlineHelp',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About`
+  String get mainviewUtils_about {
+    return Intl.message(
+      'About',
+      name: 'mainviewUtils_about',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Project Info`
+  String get mainviewUtils_projectInfo {
+    return Intl.message(
+      'Project Info',
+      name: 'mainviewUtils_projectInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Project`
+  String get mainviewUtils_project {
+    return Intl.message(
+      'Project',
+      name: 'mainviewUtils_project',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Database`
+  String get mainviewUtils_database {
+    return Intl.message(
+      'Database',
+      name: 'mainviewUtils_database',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Extras`
+  String get mainviewUtils_extras {
+    return Intl.message(
+      'Extras',
+      name: 'mainviewUtils_extras',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Available icons`
+  String get mainviewUtils_availableIcons {
+    return Intl.message(
+      'Available icons',
+      name: 'mainviewUtils_availableIcons',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Offline maps`
+  String get mainviewUtils_offlineMaps {
+    return Intl.message(
+      'Offline maps',
+      name: 'mainviewUtils_offlineMaps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Position Tools`
+  String get mainviewUtils_positionTools {
+    return Intl.message(
+      'Position Tools',
+      name: 'mainviewUtils_positionTools',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Go to`
+  String get mainviewUtils_goTo {
+    return Intl.message(
+      'Go to',
+      name: 'mainviewUtils_goTo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share position`
+  String get mainviewUtils_sharePosition {
+    return Intl.message(
+      'Share position',
+      name: 'mainviewUtils_sharePosition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Rotate map with GPS`
+  String get mainviewUtils_rotateMapWithGps {
+    return Intl.message(
+      'Rotate map with GPS',
+      name: 'mainviewUtils_rotateMapWithGps',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Export`
   String get exportWidget_export {
     return Intl.message(

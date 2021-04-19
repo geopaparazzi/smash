@@ -42,6 +42,27 @@
   "mainView_formNotes": "Form Notes",
   "mainView_simpleNotes": "Simple Notes",
 
+  "@mainviewUtils" : {
+    "context": "mainview_utils.dart"
+  },
+  "mainviewUtils_projects": "Projects",
+  "mainviewUtils_import": "Import",
+  "mainviewUtils_export": "Export",
+  "mainviewUtils_settings": "Settings",
+  "mainviewUtils_onlineHelp": "Online Help",
+  "mainviewUtils_about": "About",
+  "mainviewUtils_projectInfo": "Project Info",
+  "mainviewUtils_project": "Project",
+  "mainviewUtils_database": "Database",
+  "mainviewUtils_extras": "Extras",
+  "mainviewUtils_availableIcons": "Available icons",
+  "mainviewUtils_offlineMaps": "Offline maps",
+  "mainviewUtils_positionTools": "Position Tools",
+  "mainviewUtils_goTo": "Go to",
+  "mainviewUtils_sharePosition": "Share position",
+  "mainviewUtils_rotateMapWithGps": "Rotate map with GPS",
+
+
   "@export_widget": {
     "context": "smash/export/export_widget.dart"
   },

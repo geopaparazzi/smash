@@ -32,7 +32,7 @@
   "mainView_loadingData": "データを読み込んでいます...",
   "mainView_turnGpsOn": "GPSをオンにする",
   "mainView_turnGpsOff": "GPSをオフにする",
-  "mainView_exit": "Exit",
+  "mainView_exit": "終了",
   "mainView_areYouSureCloseTheProject": "プロジェクトを閉じてもよろしいですか？",
   "mainView_activeOperationsWillBeStopped": "アクティブな操作は停止されます。",
   "mainView_showInteractiveCoachMarks": "インタラクティブなコーチマークを表示します。",
@@ -41,6 +41,27 @@
   "mainView_zoomOut": "ズームアウト",
   "mainView_formNotes": "フォームノート",
   "mainView_simpleNotes": "簡単なメモ",
+
+  "@mainviewUtils" : {
+    "context": "mainview_utils.dart"
+  },
+  "mainviewUtils_projects": "プロジェクト",
+  "mainviewUtils_import": "インポート",
+  "mainviewUtils_export": "エクスポート",
+  "mainviewUtils_settings": "設定",
+  "mainviewUtils_onlineHelp": "オンラインヘルプ",
+  "mainviewUtils_about": "SMASHについて",
+  "mainviewUtils_projectInfo": "プロジェクト情報",
+  "mainviewUtils_project": "プロジェクト",
+  "mainviewUtils_database": "データベース",
+  "mainviewUtils_extras": "Extras",
+  "mainviewUtils_availableIcons": "利用可能なアイコン",
+  "mainviewUtils_offlineMaps": "オフラインマップ",
+  "mainviewUtils_positionTools": "位置ツール",
+  "mainviewUtils_goTo": "移動",
+  "mainviewUtils_sharePosition": "位置を共有",
+  "mainviewUtils_rotateMapWithGps": "GPSで地図を回転",
+
 
   "@export_widget": {
     "context": "smash/export/export_widget.dart"
