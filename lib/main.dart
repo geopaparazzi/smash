@@ -67,7 +67,7 @@ class SmashApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: Locale('ja', 'JP'),
+      //  locale: Locale('ja', 'JP'),
       localizationsDelegates: [
         SL.delegate,
         GlobalMaterialLocalizations.delegate,
