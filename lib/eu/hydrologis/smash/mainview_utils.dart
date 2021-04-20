@@ -28,6 +28,7 @@ import 'package:smash/eu/hydrologis/smash/util/network.dart';
 import 'package:smash/eu/hydrologis/smash/util/urls.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -97,7 +98,7 @@ class DashboardUtils {
           size: iconSize,
         ),
         title: SmashUI.normalText(
-          "Projects",
+          SL.of(context).mainviewUtils_projects, //"Projects"
           bold: true,
           color: c,
         ),
@@ -114,7 +115,7 @@ class DashboardUtils {
           size: iconSize,
         ),
         title: SmashUI.normalText(
-          "Import",
+          SL.of(context).mainviewUtils_import, //"Import"
           bold: true,
           color: c,
         ),
@@ -131,7 +132,7 @@ class DashboardUtils {
           size: iconSize,
         ),
         title: SmashUI.normalText(
-          "Export",
+          SL.of(context).mainviewUtils_export, //"Export"
           bold: true,
           color: c,
         ),
@@ -148,7 +149,7 @@ class DashboardUtils {
           size: iconSize,
         ),
         title: SmashUI.normalText(
-          "Settings",
+          SL.of(context).mainviewUtils_settings, //"Settings"
           bold: true,
           color: c,
         ),
@@ -165,7 +166,7 @@ class DashboardUtils {
           size: iconSize,
         ),
         title: SmashUI.normalText(
-          "Online Help",
+          SL.of(context).mainviewUtils_onlineHelp, //"Online Help"
           bold: true,
           color: c,
         ),
@@ -187,7 +188,7 @@ class DashboardUtils {
           size: iconSize,
         ),
         title: SmashUI.normalText(
-          "About",
+          SL.of(context).mainviewUtils_about, //"About"
           bold: true,
           color: c,
         ),
@@ -208,7 +209,7 @@ class DashboardUtils {
         color: backColor,
         child: ListTile(
           title: SmashUI.normalText(
-            "Project Info",
+            SL.of(context).mainviewUtils_projectInfo, //"Project Info"
             bold: true,
             color: c,
           ),
@@ -230,8 +231,8 @@ class DashboardUtils {
             var isLandscape = ScreenUtilities.isLandscape(context);
             SmashDialogs.showInfoDialog(
                 mapBuilder.context,
-                "Project: ${projectState.projectName}\nDatabase: $projectPath"
-                    .trim(),
+                "${SL.of(context).mainviewUtils_project}: ${projectState.projectName}\n${SL.of(context).mainviewUtils_database}: $projectPath"
+                    .trim(), //Project //Database
                 doLandscape: isLandscape,
                 widgets: [
                   IconButton(
@@ -260,7 +261,7 @@ class DashboardUtils {
       child: ExpansionTile(
           initiallyExpanded: true,
           title: SmashUI.normalText(
-            "Extras",
+            SL.of(context).mainviewUtils_extras, //"Extras"
             bold: true,
             color: c,
           ),
@@ -272,7 +273,7 @@ class DashboardUtils {
                 size: iconSize,
               ),
               title: SmashUI.normalText(
-                "Available icons",
+                SL.of(context).mainviewUtils_availableIcons, //"Available icons"
                 bold: true,
                 color: c,
               ),
@@ -289,7 +290,7 @@ class DashboardUtils {
                 size: iconSize,
               ),
               title: SmashUI.normalText(
-                "Offline maps",
+                SL.of(context).mainviewUtils_offlineMaps, //"Offline maps"
                 bold: true,
                 color: c,
               ),
@@ -313,7 +314,7 @@ class DashboardUtils {
       child: ExpansionTile(
         initiallyExpanded: true,
         title: SmashUI.normalText(
-          "Position Tools",
+          SL.of(context).mainviewUtils_positionTools, //"Position Tools"
           bold: true,
           color: c,
         ),
@@ -325,7 +326,7 @@ class DashboardUtils {
               size: iconSize,
             ),
             title: SmashUI.normalText(
-              "Go to",
+              SL.of(context).mainviewUtils_goTo, //"Go to"
               bold: true,
               color: c,
             ),
@@ -342,7 +343,7 @@ class DashboardUtils {
               size: iconSize,
             ),
             title: SmashUI.normalText(
-              "Share position",
+              SL.of(context).mainviewUtils_sharePosition, //"Share position"
               bold: true,
               color: c,
             ),
@@ -352,13 +353,17 @@ class DashboardUtils {
               if (pos != null) {
                 StringBuffer sb = StringBuffer();
                 sb.write("Latitude: ");
-                sb.write(pos.latitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS));
+                sb.write(pos.latitude.toStringAsFixed(
+                    SmashPreferencesKeys.KEY_LATLONG_DECIMALS));
                 sb.write("\nLongitude: ");
-                sb.write(pos.longitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS));
+                sb.write(pos.longitude.toStringAsFixed(
+                    SmashPreferencesKeys.KEY_LATLONG_DECIMALS));
                 sb.write("\nAltitude: ");
-                sb.write(pos.altitude.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS));
+                sb.write(pos.altitude
+                    .toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS));
                 sb.write("\nAccuracy: ");
-                sb.write(pos.accuracy.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS));
+                sb.write(pos.accuracy
+                    .toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS));
                 sb.write("\nTimestamp: ");
                 sb.write(HU.TimeUtilities.ISO8601_TS_FORMATTER.format(
                     DateTime.fromMillisecondsSinceEpoch(pos.time.round())));
@@ -374,8 +379,12 @@ class DashboardUtils {
           Platform.isAndroid && EXPERIMENTAL_ROTATION__ENABLED
               ? Consumer<SmashMapState>(builder: (context, mapState, child) {
                   return ListTile(
-                    title: SmashUI.normalText("Rotate map with GPS",
-                        bold: true, color: c),
+                    title: SmashUI.normalText(
+                        SL
+                            .of(context)
+                            .mainviewUtils_rotateMapWithGps, //"Rotate map with GPS"
+                        bold: true,
+                        color: c),
                     leading: Checkbox(
                         value: mapState.rotateOnHeading,
                         onChanged: (value) {

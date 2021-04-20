@@ -13,6 +13,7 @@ import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/mainview.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class ProjectView extends StatelessWidget {
@@ -29,7 +30,7 @@ class ProjectView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Project View",
+          SL.of(context).projectsView_projectsView, //"Project View",
         ),
       ),
       body: SingleChildScrollView(
@@ -73,8 +74,12 @@ class ProjectView extends StatelessWidget {
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SmashUI.normalText("Open an existing project",
-                        bold: false, color: SmashColors.mainDecorations),
+                    child: SmashUI.normalText(
+                        SL
+                            .of(context)
+                            .projectsView_openExistingProject, //"Open an existing project",
+                        bold: false,
+                        color: SmashColors.mainDecorations),
                   ),
                 ),
               ),
@@ -101,8 +106,12 @@ class ProjectView extends StatelessWidget {
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SmashUI.normalText("Create a new project",
-                        bold: false, color: SmashColors.mainDecorations),
+                    child: SmashUI.normalText(
+                        SL
+                            .of(context)
+                            .projectsView_createNewProject, //"Create a new project",
+                        bold: false,
+                        color: SmashColors.mainDecorations),
                   ),
                 ),
               ),
@@ -168,7 +177,10 @@ class ProjectView extends StatelessWidget {
                             child: Padding(
                               padding:
                                   const EdgeInsets.only(left: 8.0, right: 8.0),
-                              child: SmashUI.normalText("Recent projects",
+                              child: SmashUI.normalText(
+                                  SL
+                                      .of(context)
+                                      .projectsView_recentProjects, //"Recent projects",
                                   color: SmashColors.mainDecorations),
                             ),
                           ))
@@ -185,8 +197,10 @@ class ProjectView extends StatelessWidget {
         "smash_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
     var userString = await SmashDialogs.showInputDialog(
       context,
-      "New Project",
-      "Enter a name for the new project or accept the proposed.",
+      SL.of(context).projectsView_newProject, //"New Project",
+      SL
+          .of(context)
+          .projectsView_enterNameForNewProject, //"Enter a name for the new project or accept the proposed.",
       hintText: '',
       defaultText: projectName,
       validationFunction: fileNameValidator,

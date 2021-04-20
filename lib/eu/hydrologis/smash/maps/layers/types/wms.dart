@@ -9,9 +9,10 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 
 class WmsSource extends RasterLayerSource {
   String _getCapabilitiesUrl;
@@ -220,7 +221,7 @@ class WmsPropertiesWidgetState extends State<WmsPropertiesWidget> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text("WMS Properties"),
+            title: Text(SL.of(context).wms_wmsProperties), //"WMS Properties"
           ),
           body: ListView(
             children: <Widget>[
@@ -235,7 +236,7 @@ class WmsPropertiesWidgetState extends State<WmsPropertiesWidget> {
                         leading: Icon(MdiIcons.opacity),
                         title: Padding(
                           padding: const EdgeInsets.only(top: 8.0),
-                          child: Text("Opacity"),
+                          child: Text(SL.of(context).wms_opacity), //"Opacity"
                         ),
                         subtitle: Row(
                           mainAxisSize: MainAxisSize.max,

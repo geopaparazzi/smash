@@ -16,19 +16,18 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:geoimage/geoimage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/remotedbpage.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/remotedbpage.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class LayersPage extends StatefulWidget {
   LayersPage();
@@ -58,7 +57,7 @@ class LayersPageState extends State<LayersPage> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text("Layer List"),
+            title: Text(SL.of(context).layersView_layerList), //"Layer List"
             actions: <Widget>[
               IconButton(
                 icon: Icon(MdiIcons.database),
@@ -82,7 +81,9 @@ class LayersPageState extends State<LayersPage> {
                     isLoadingData = false;
                   });
                 },
-                tooltip: "Load remote database",
+                tooltip: SL
+                    .of(context)
+                    .layersView_loadRemoteDatabase, //"Load remote database"
               ),
               IconButton(
                 icon: Icon(MdiIcons.earth),
@@ -98,7 +99,9 @@ class LayersPageState extends State<LayersPage> {
                     setState(() {});
                   }
                 },
-                tooltip: "Load online sources",
+                tooltip: SL
+                    .of(context)
+                    .layersView_loadOnlineSources, //"Load online sources"
               ),
               IconButton(
                 icon: Icon(MdiIcons.map),
@@ -119,13 +122,15 @@ class LayersPageState extends State<LayersPage> {
 
                   loadSelectedFile(selectedPath, context);
                 },
-                tooltip: "Load local datasets",
+                tooltip: SL
+                    .of(context)
+                    .layersView_loadLocalDatasets, //"Load local datasets"
               ),
             ],
           ),
           body: isLoadingData
               ? SmashCircularProgress(
-                  label: "Loading...",
+                  label: SL.of(context).layersView_loading, //"Loading..."
                 )
               : ReorderableListView(
                   children: listItems,
@@ -167,7 +172,7 @@ class LayersPageState extends State<LayersPage> {
 
       if (layerSourceItem.isZoomable()) {
         actions.add(IconSlideAction(
-            caption: 'Zoom to',
+            caption: SL.of(context).layersView_zoomTo, //'Zoom to'
             color: SmashColors.mainDecorations,
             icon: MdiIcons.magnifyScan,
             onTap: () async {
@@ -185,7 +190,7 @@ class LayersPageState extends State<LayersPage> {
       }
       if (layerSourceItem.hasProperties()) {
         actions.add(IconSlideAction(
-            caption: 'Properties',
+            caption: SL.of(context).layersView_properties, //'Properties'
             color: SmashColors.mainDecorations,
             icon: MdiIcons.palette,
             onTap: () async {
@@ -202,7 +207,7 @@ class LayersPageState extends State<LayersPage> {
             }));
       }
       secondaryActions.add(IconSlideAction(
-          caption: 'Delete',
+          caption: SL.of(context).layersView_delete, //'Delete'
           color: SmashColors.mainDanger,
           icon: MdiIcons.delete,
           onTap: () {
@@ -227,7 +232,9 @@ class LayersPageState extends State<LayersPage> {
           subtitle: prjSupported == null
               ? TextButton(
                   child: Text(
-                    "The proj could not be recognised. Tap to enter epsg manually.",
+                    SL
+                        .of(context)
+                        .layersView_projCouldNotBeRecognized, //"The proj could not be recognised. Tap to enter epsg manually."
                     style: TextStyle(color: SmashColors.mainDanger),
                   ),
                   onPressed: () async {
@@ -237,7 +244,9 @@ class LayersPageState extends State<LayersPage> {
               : !prjSupported
                   ? TextButton(
                       child: Text(
-                        "The proj is not supported. Tap to solve.",
+                        SL
+                            .of(context)
+                            .layersView_projNotSupported, //"The proj is not supported. Tap to solve."
                         style: TextStyle(color: SmashColors.mainDanger),
                       ),
                       onPressed: () async {
@@ -354,12 +363,18 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       var prjFile = GeoimageUtils.getPrjFile(filePath);
       if (worldFile == null) {
         canLoad = false;
-        SmashDialogs.showWarningDialog(context,
-            "Only image files with world file definition are supported.");
+        SmashDialogs.showWarningDialog(
+            context,
+            SL
+                .of(context)
+                .layersView_onlyImageFilesWithWorldDef); //"Only image files with world file definition are supported."
       } else if (prjFile == null) {
         canLoad = false;
-        SmashDialogs.showWarningDialog(context,
-            "Only image files with prj file definition are supported.");
+        SmashDialogs.showWarningDialog(
+            context,
+            SL
+                .of(context)
+                .layersView_onlyImageFileWithPrjDef); //"Only image files with prj file definition are supported."
       }
     }
     if (canLoad) {
@@ -403,7 +418,11 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
         selectedTables.add(allTables.first);
       } else if (allTables.length > 1) {
         selectedTables = await SmashDialogs.showMultiSelectionComboDialog(
-            context, "Select table to load.", allTables,
+            context,
+            SL
+                .of(context)
+                .layersView_selectTableToLoad, //"Select table to load."
+            allTables,
             iconDataList: iconDataList);
       }
 
@@ -431,7 +450,11 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       ch?.close(filePath);
     }
   } else {
-    SmashDialogs.showWarningDialog(context, "File format not supported.");
+    SmashDialogs.showWarningDialog(
+        context,
+        SL
+            .of(context)
+            .layersView_fileFormatNotSUpported); //"File format not supported."
   }
   return false;
 }

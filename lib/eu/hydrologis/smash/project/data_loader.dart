@@ -8,7 +8,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:background_locator/location_dto.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:map_elevation/map_elevation.dart';
 import 'package:provider/provider.dart';
-import 'package:rainbow_color/rainbow_color.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
@@ -32,6 +30,7 @@ import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smash/eu/hydrologis/smash/util/urls.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class DataLoaderUtilities {
@@ -63,8 +62,8 @@ class DataLoaderUtilities {
       altim = -1;
     }
     Note note = Note()
-      ..text = text ??= "note"
-      ..description = "POI"
+      ..text = text ??= SL.of(mapBuilder.context).dataLoader_note //"note"
+      ..description = SL.of(mapBuilder.context).dataLoader_POI //"POI"
       ..timeStamp = ts
       ..lon = lon
       ..lat = lat
@@ -132,8 +131,11 @@ class DataLoaderUtilities {
     await Navigator.push(
         parentContext,
         MaterialPageRoute(
-            builder: (context) =>
-                TakePictureWidget("Saving image to db...", (String imagePath) {
+            builder: (context) => TakePictureWidget(
+                    SL
+                        .of(context)
+                        .dataLoader_savingImageToDB, //"Saving image to db...",
+                    (String imagePath) {
                   if (imagePath != null) {
                     String imageName =
                         FileUtilities.nameFromFile(imagePath, true);
@@ -220,13 +222,17 @@ class DataLoaderUtilities {
                             children: [
                               TableRow(
                                 children: [
-                                  TableUtilities.cellForString("Note"),
+                                  TableUtilities.cellForString(SL
+                                      .of(mapBuilder.context)
+                                      .dataLoader_Note), //"Note"
                                   TableUtilities.cellForString(note.text),
                                 ],
                               ),
                               TableRow(
                                 children: [
-                                  TableUtilities.cellForString("Longitude"),
+                                  TableUtilities.cellForString(SL
+                                      .of(mapBuilder.context)
+                                      .dataLoader_longitude), //"Longitude"
                                   TableUtilities.cellForString(note.lon
                                       .toStringAsFixed(SmashPreferencesKeys
                                           .KEY_LATLONG_DECIMALS)),
@@ -234,7 +240,9 @@ class DataLoaderUtilities {
                               ),
                               TableRow(
                                 children: [
-                                  TableUtilities.cellForString("Latitude"),
+                                  TableUtilities.cellForString(SL
+                                      .of(mapBuilder.context)
+                                      .dataLoader_latitude), //"Latitude"
                                   TableUtilities.cellForString(note.lat
                                       .toStringAsFixed(SmashPreferencesKeys
                                           .KEY_LATLONG_DECIMALS)),
@@ -242,7 +250,9 @@ class DataLoaderUtilities {
                               ),
                               TableRow(
                                 children: [
-                                  TableUtilities.cellForString("Altitude"),
+                                  TableUtilities.cellForString(SL
+                                      .of(mapBuilder.context)
+                                      .dataLoader_altitude), //"Altitude"
                                   TableUtilities.cellForString(note.altim
                                       .toStringAsFixed(SmashPreferencesKeys
                                           .KEY_ELEV_DECIMALS)),
@@ -250,7 +260,9 @@ class DataLoaderUtilities {
                               ),
                               TableRow(
                                 children: [
-                                  TableUtilities.cellForString("Timestamp"),
+                                  TableUtilities.cellForString(SL
+                                      .of(mapBuilder.context)
+                                      .dataLoader_timestamp), //"Timestamp"
                                   TableUtilities.cellForString(
                                       TimeUtilities.ISO8601_TS_FORMATTER.format(
                                           DateTime.fromMillisecondsSinceEpoch(
@@ -259,7 +271,9 @@ class DataLoaderUtilities {
                               ),
                               TableRow(
                                 children: [
-                                  TableUtilities.cellForString("Has Form"),
+                                  TableUtilities.cellForString(SL
+                                      .of(mapBuilder.context)
+                                      .dataLoader_hasForm), //"Has Form"
                                   TableUtilities.cellForString(
                                       "${note.hasForm()}"),
                                 ],
@@ -336,10 +350,14 @@ class DataLoaderUtilities {
                             ),
                             iconSize: SmashUI.MEDIUM_ICON_SIZE,
                             onPressed: () async {
-                              var doRemove = await SmashDialogs.showConfirmDialog(
-                                  ctx,
-                                  "Remove Note",
-                                  "Are you sure you want to remove note ${note.id}?");
+                              var doRemove =
+                                  await SmashDialogs.showConfirmDialog(
+                                      ctx,
+                                      SL
+                                          .of(mapBuilder.context)
+                                          .dataLoader_removeNote, //"Remove Note",
+                                      "${SL.of(mapBuilder.context).dataLoader_areYouSureRemoveNote} " //Are you sure you want to remove note
+                                      "${note.id}?");
                               if (doRemove) {
                                 db.deleteNote(note.id);
                                 var projectState = Provider.of<ProjectState>(
@@ -406,13 +424,15 @@ class DataLoaderUtilities {
                       children: [
                         TableRow(
                           children: [
-                            TableUtilities.cellForString("Image"),
+                            TableUtilities.cellForString(
+                                SL.of(ctx).dataLoader_image), //"Image"
                             TableUtilities.cellForString(image.text),
                           ],
                         ),
                         TableRow(
                           children: [
-                            TableUtilities.cellForString("Longitude"),
+                            TableUtilities.cellForString(
+                                SL.of(ctx).dataLoader_longitude), //"Longitude"
                             TableUtilities.cellForString(image.lon
                                 .toStringAsFixed(
                                     SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
@@ -420,7 +440,8 @@ class DataLoaderUtilities {
                         ),
                         TableRow(
                           children: [
-                            TableUtilities.cellForString("Latitude"),
+                            TableUtilities.cellForString(
+                                SL.of(ctx).dataLoader_latitude), //"Latitude"
                             TableUtilities.cellForString(image.lat
                                 .toStringAsFixed(
                                     SmashPreferencesKeys.KEY_LATLONG_DECIMALS)),
@@ -428,7 +449,8 @@ class DataLoaderUtilities {
                         ),
                         TableRow(
                           children: [
-                            TableUtilities.cellForString("Altitude"),
+                            TableUtilities.cellForString(
+                                SL.of(ctx).dataLoader_altitude), //"Altitude"
                             TableUtilities.cellForString(image.altim
                                 .toStringAsFixed(
                                     SmashPreferencesKeys.KEY_ELEV_DECIMALS)),
@@ -436,7 +458,8 @@ class DataLoaderUtilities {
                         ),
                         TableRow(
                           children: [
-                            TableUtilities.cellForString("Timestamp"),
+                            TableUtilities.cellForString(
+                                SL.of(ctx).dataLoader_timestamp), //"Timestamp"
                             TableUtilities.cellForString(TimeUtilities
                                 .ISO8601_TS_FORMATTER
                                 .format(DateTime.fromMillisecondsSinceEpoch(
@@ -500,8 +523,11 @@ class DataLoaderUtilities {
                           onPressed: () async {
                             var doRemove = await SmashDialogs.showConfirmDialog(
                                 ctx,
-                                "Remove Image",
-                                "Are you sure you want to remove image ${image.id}?");
+                                SL
+                                    .of(ctx)
+                                    .dataLoader_removeImage, //"Remove Image",
+                                "${SL.of(ctx).dataLoader_areYouSureRemoveImage} " //Are you sure you want to remove image
+                                "${image.id}?");
                             if (doRemove) {
                               db.deleteImage(image.id);
                               var projectState = Provider.of<ProjectState>(

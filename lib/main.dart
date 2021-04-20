@@ -25,19 +25,22 @@ import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:stack_trace/stack_trace.dart';
-// import 'package:flutter_gen/gen_l10n/smash_localization.dart';
+
+//import 'package:flutter_gen/gen_l10n/smash_localization.dart';
 import 'generated/l10n.dart';
 
 const DOCATCHER = false;
 
 void main() {
   if (DOCATCHER) {
-    CatcherOptions debugOptions = CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
+    CatcherOptions debugOptions =
+        CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
     CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
       EmailManualHandler(["feedback@geopaparazzi.eu"])
     ]);
 
-    Catcher(getMainWidget(), debugConfig: debugOptions, releaseConfig: releaseOptions);
+    Catcher(getMainWidget(),
+        debugConfig: debugOptions, releaseConfig: releaseOptions);
   } else {
     runApp(getMainWidget());
   }
@@ -64,6 +67,7 @@ class SmashApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //  locale: Locale('ja', 'JP'),
       localizationsDelegates: [
         SL.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -139,20 +143,62 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
         ),
         body: ListView(
           children: <Widget>[
-            ProgressTile(MdiIcons.crosshairsGps, SL.of(context).main_check_location_permission, SL.of(context).main_location_permission_granted,
-                orderNotifier, 0, handleLocationPermission),
-            ProgressTile(MdiIcons.database, SL.of(context).main_checkingStoragePermission, SL.of(context).main_storagePermissionGranted,
-                orderNotifier, 1, handleStoragePermission),
             ProgressTile(
-                MdiIcons.cog, SL.of(context).main_loadingPreferences, SL.of(context).main_preferencesLoaded, orderNotifier, 2, handlePreferences),
+                MdiIcons.crosshairsGps,
+                SL.of(context).main_check_location_permission,
+                SL.of(context).main_location_permission_granted,
+                orderNotifier,
+                0,
+                handleLocationPermission),
             ProgressTile(
-                MdiIcons.folderCog, SL.of(context).main_loadingWorkspace, SL.of(context).main_workspaceLoaded, orderNotifier, 3, handleWorkspace),
-            ProgressTile(MdiIcons.notePlus, SL.of(context).main_loadingTagsList, SL.of(context).main_tagsListLoaded, orderNotifier, 4, handleTags),
-            ProgressTile(MdiIcons.earthBox, SL.of(context).main_loadingKnownProjections, SL.of(context).main_knownProjectionsLoaded, orderNotifier, 5,
+                MdiIcons.database,
+                SL.of(context).main_checkingStoragePermission,
+                SL.of(context).main_storagePermissionGranted,
+                orderNotifier,
+                1,
+                handleStoragePermission),
+            ProgressTile(
+                MdiIcons.cog,
+                SL.of(context).main_loadingPreferences,
+                SL.of(context).main_preferencesLoaded,
+                orderNotifier,
+                2,
+                handlePreferences),
+            ProgressTile(
+                MdiIcons.folderCog,
+                SL.of(context).main_loadingWorkspace,
+                SL.of(context).main_workspaceLoaded,
+                orderNotifier,
+                3,
+                handleWorkspace),
+            ProgressTile(
+                MdiIcons.notePlus,
+                SL.of(context).main_loadingTagsList,
+                SL.of(context).main_tagsListLoaded,
+                orderNotifier,
+                4,
+                handleTags),
+            ProgressTile(
+                MdiIcons.earthBox,
+                SL.of(context).main_loadingKnownProjections,
+                SL.of(context).main_knownProjectionsLoaded,
+                orderNotifier,
+                5,
                 handleProjections),
-            ProgressTile(MdiIcons.gate, SL.of(context).main_loadingFences, SL.of(context).main_fencesLoaded, orderNotifier, 6, handleFences),
             ProgressTile(
-                MdiIcons.layers, SL.of(context).main_loadingLayersList, SL.of(context).main_layersListLoaded, orderNotifier, 7, handleLayers),
+                MdiIcons.gate,
+                SL.of(context).main_loadingFences,
+                SL.of(context).main_fencesLoaded,
+                orderNotifier,
+                6,
+                handleFences),
+            ProgressTile(
+                MdiIcons.layers,
+                SL.of(context).main_loadingLayersList,
+                SL.of(context).main_layersListLoaded,
+                orderNotifier,
+                7,
+                handleLayers),
           ],
         ),
       );
@@ -251,8 +297,10 @@ Future<String> handleLocationPermission(BuildContext context) async {
     if (!SmashPlatform.isDesktop()) {
       var status = await Permission.location.status;
       if (status != PermissionStatus.granted) {
-        await SmashDialogs.showWarningDialog(context, SL.of(context).main_locationBackgroundWarning);
-        var locationPermission = await PermissionManager().add(PERMISSIONS.LOCATION).check(context);
+        await SmashDialogs.showWarningDialog(
+            context, SL.of(context).main_locationBackgroundWarning);
+        var locationPermission =
+            await PermissionManager().add(PERMISSIONS.LOCATION).check(context);
         if (!locationPermission) {
           return SL.of(context).main_locationPermissionIsMandatoryToOpenSmash;
         }
@@ -267,7 +315,8 @@ Future<String> handleLocationPermission(BuildContext context) async {
 
 Future<String> handleStoragePermission(BuildContext context) async {
   if (!SmashPlatform.isDesktop()) {
-    var storagePermission = await PermissionManager().add(PERMISSIONS.STORAGE).check(context);
+    var storagePermission =
+        await PermissionManager().add(PERMISSIONS.STORAGE).check(context);
     if (!storagePermission) {
       return SL.of(context).main_storagePermissionIsMandatoryToOpenSmash;
     }
@@ -294,7 +343,8 @@ class ProgressTile extends StatefulWidget {
   final initMsg;
   final Future<String> Function(BuildContext) processFunction;
 
-  ProgressTile(this.iconData, this.initMsg, this.doneMsg, this.orderNotifier, this.order, this.processFunction);
+  ProgressTile(this.iconData, this.initMsg, this.doneMsg, this.orderNotifier,
+      this.order, this.processFunction);
 
   @override
   _ProgressTileState createState() => _ProgressTileState();
@@ -357,7 +407,8 @@ class _ProgressTileState extends State<ProgressTile> {
           : FlatButton(
               child: Text(
                 SL.of(context).main_anErrorOccurredTapToView,
-                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
               onPressed: () async {
                 await SmashDialogs.showErrorDialog(context, error);

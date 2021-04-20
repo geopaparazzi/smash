@@ -11,15 +11,15 @@ import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:flutter/material.dart';
-import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart' as FM;
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
+import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class FeatureAttributesViewer extends StatefulWidget {
   final EditableQueryResult features;
@@ -223,7 +223,10 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
             : [],
       ),
       body: _loading
-          ? SmashCircularProgress(label: "Loading data...")
+          ? SmashCircularProgress(
+              label: SL
+                  .of(context)
+                  .featureAttributesViewer_loadingData) //"Loading data..."
           : isLandscape
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -316,7 +319,9 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
               var pkValue = data[primaryKey];
               var result = await SmashDialogs.showInputDialog(
                 context,
-                "Set new value",
+                SL
+                    .of(context)
+                    .featureAttributesViewer_setNewValue, //"Set new value"
                 key,
                 defaultText: value.toString(),
               );
@@ -360,8 +365,14 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
 
     return DataTable(
       columns: [
-        DataColumn(label: SmashUI.normalText("FIELD", bold: true)),
-        DataColumn(label: SmashUI.normalText("VALUE", bold: true)),
+        DataColumn(
+            label: SmashUI.normalText(
+                SL.of(context).featureAttributesViewer_field,
+                bold: true)), //"FIELD"
+        DataColumn(
+            label: SmashUI.normalText(
+                SL.of(context).featureAttributesViewer_value,
+                bold: true)), //"VALUE"
       ],
       rows: rows,
     );

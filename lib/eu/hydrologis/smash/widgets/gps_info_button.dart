@@ -9,13 +9,14 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
@@ -42,8 +43,10 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         );
       }
       var mapState = Provider.of<SmashMapState>(context, listen: false);
-      bool showAllGpsPointCount = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, false);
-      bool showValidGpsPointCount = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, false);
+      bool showAllGpsPointCount = GpPreferences()
+          .getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, false);
+      bool showValidGpsPointCount = GpPreferences().getBooleanSync(
+          SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, false);
 
       Widget button = GestureDetector(
         onLongPress: () {
@@ -79,11 +82,14 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                   key: widget._key,
                   elevation: 1,
                   backgroundColor: SmashColors.mainDecorations,
-                  child: DashboardUtils.getGpsStatusIcon(gpsState.status, widget._iconSize),
+                  child: DashboardUtils.getGpsStatusIcon(
+                      gpsState.status, widget._iconSize),
                   onPressed: () {
-                    if (gpsState.hasFix() || gpsState.status == GpsStatus.ON_NO_FIX) {
+                    if (gpsState.hasFix() ||
+                        gpsState.status == GpsStatus.ON_NO_FIX) {
                       var pos = gpsState.lastGpsPosition;
-                      SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
+                      SmashMapState mapState =
+                          Provider.of<SmashMapState>(context, listen: false);
                       if (pos != null) {
                         var newCenter = Coordinate(pos.longitude, pos.latitude);
                         mapState.center = newCenter;
@@ -107,11 +113,16 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
       );
 
       if (showValidGpsPointCount) {
-        button = DashboardUtils.makeToolbarBadge(button, GpsHandler().filteredPointsCount, badgeColor: SmashColors.mainSelection);
+        button = DashboardUtils.makeToolbarBadge(
+            button, GpsHandler().filteredPointsCount,
+            badgeColor: SmashColors.mainSelection);
       }
       if (showAllGpsPointCount) {
-        button = DashboardUtils.makeToolbarBadge(button, GpsHandler().allPointsCount,
-            textColor: SmashColors.mainBackground, badgeColor: SmashColors.mainDecorations, badgePosition: BadgePosition.bottomStart());
+        button = DashboardUtils.makeToolbarBadge(
+            button, GpsHandler().allPointsCount,
+            textColor: SmashColors.mainBackground,
+            badgeColor: SmashColors.mainDecorations,
+            badgePosition: BadgePosition.bottomStart());
       }
 
       return button;
@@ -207,7 +218,9 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         );
       } else {
         gpsInfo = SmashUI.titleText(
-          "No GPS info available...",
+          SL
+              .of(context)
+              .gpsInfoButton_noGpsInfoAvailable, //"No GPS info available..."
           color: color,
         );
       }
@@ -221,8 +234,10 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   TableRow getTimestampTableRow(ColorExt color, SmashPosition pos) {
     return TableRow(
       children: [
-        TableUtilities.cellForString("Timestamp", color: color),
-        TableUtilities.cellForString("${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(pos.time.round()))}",
+        TableUtilities.cellForString(SL.of(context).gpsInfoButton_timestamp,
+            color: color), //"Timestamp"
+        TableUtilities.cellForString(
+            "${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(pos.time.round()))}",
             color: color),
       ],
     );
@@ -231,7 +246,8 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   TableRow getSpeedTableRow(ColorExt color, SmashPosition pos) {
     return TableRow(
       children: [
-        TableUtilities.cellForString("Speed", color: color),
+        TableUtilities.cellForString(SL.of(context).gpsInfoButton_speed,
+            color: color), //"Speed"
         TableUtilities.cellForString("${pos.speed.toInt()} m/s", color: color),
       ],
     );
@@ -240,8 +256,10 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   TableRow getHeadingTableRow(ColorExt color, SmashPosition pos) {
     return TableRow(
       children: [
-        TableUtilities.cellForString("Heading", color: color),
-        TableUtilities.cellForString("${pos.heading.round()} deg", color: color),
+        TableUtilities.cellForString(SL.of(context).gpsInfoButton_heading,
+            color: color), //"Heading"
+        TableUtilities.cellForString("${pos.heading.round()} deg",
+            color: color),
       ],
     );
   }
@@ -249,7 +267,8 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   TableRow getAccuracyTableRow(ColorExt color, SmashPosition pos) {
     return TableRow(
       children: [
-        TableUtilities.cellForString("Accuracy", color: color),
+        TableUtilities.cellForString(SL.of(context).gpsInfoButton_accuracy,
+            color: color), //"Accuracy"
         TableUtilities.cellForString("${pos.accuracy.round()} m", color: color),
       ],
     );
@@ -258,8 +277,11 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   TableRow getAltitudeTableRow(ColorExt color, SmashPosition pos) {
     return TableRow(
       children: [
-        TableUtilities.cellForString("Altitude", color: color),
-        TableUtilities.cellForString("${pos.altitude.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS)} m", color: color),
+        TableUtilities.cellForString(SL.of(context).gpsInfoButton_altitude,
+            color: color), //"Altitude"
+        TableUtilities.cellForString(
+            "${pos.altitude.toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS)} m",
+            color: color),
       ],
     );
   }
@@ -267,17 +289,24 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   TableRow getLatTableRow(ColorExt color, SmashPosition pos) {
     return TableRow(
       children: [
-        TableUtilities.cellForString("Latitude", color: color),
+        TableUtilities.cellForString(SL.of(context).gpsInfoButton_latitude,
+            color: color), //"Latitude"
         TableCell(
           child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: Tooltip(
-                message: "Copy latitude to clipboard.",
+                message: SL
+                    .of(context)
+                    .gpsInfoButton_copyLatitudeToClipboard, //"Copy latitude to clipboard."
                 child: RaisedButton(
                   onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: pos.latitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)));
+                    await Clipboard.setData(ClipboardData(
+                        text: pos.latitude.toStringAsFixed(
+                            SmashPreferencesKeys.KEY_LATLONG_DECIMALS)));
                   },
-                  child: SmashUI.normalText("${pos.latitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)} deg", color: color),
+                  child: SmashUI.normalText(
+                      "${pos.latitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)} deg",
+                      color: color),
                 ),
               )),
         ),
@@ -288,17 +317,24 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   TableRow getLonTableRow(ColorExt color, SmashPosition pos) {
     return TableRow(
       children: [
-        TableUtilities.cellForString("Longitude", color: color),
+        TableUtilities.cellForString(SL.of(context).gpsInfoButton_longitude,
+            color: color), //"Longitude"
         TableCell(
           child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: Tooltip(
-                message: "Copy longitude to clipboard.",
+                message: SL
+                    .of(context)
+                    .gpsInfoButton_copyLongitudeToClipboard, //"Copy longitude to clipboard."
                 child: RaisedButton(
                   onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: pos.longitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)));
+                    await Clipboard.setData(ClipboardData(
+                        text: pos.longitude.toStringAsFixed(
+                            SmashPreferencesKeys.KEY_LATLONG_DECIMALS)));
                   },
-                  child: SmashUI.normalText("${pos.longitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)} deg", color: color),
+                  child: SmashUI.normalText(
+                      "${pos.longitude.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)} deg",
+                      color: color),
                 ),
               )),
         ),

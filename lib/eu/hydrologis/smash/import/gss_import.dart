@@ -13,6 +13,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:smash/eu/hydrologis/smash/gss/gss_utilities.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -166,42 +167,49 @@ class _GssImportWidgetState extends State<GssImportWidget>
       },
       child: new Scaffold(
         appBar: new AppBar(
-          title: new Text("GSS Import"),
+          title: new Text(SL.of(context).gssImport_gssImport), //"GSS Import"
         ),
         body: _status == 0
             ? Center(
-                child: SmashCircularProgress(label: "Downloading data list..."),
+                child: SmashCircularProgress(
+                    label: SL
+                        .of(context)
+                        .gssImport_downloadingDataList), //"Downloading data list..."
               )
             : _status == 12
                 ? Center(
                     child: Padding(
                       padding: SmashUI.defaultPadding(),
-                      child: SmashUI.errorWidget(
-                          "Unable to download data list due to an error. Check your settings and the log."),
+                      child: SmashUI.errorWidget(SL
+                          .of(context)
+                          .gssImport_unableDownloadDataList), //"Unable to download data list due to an error. Check your settings and the log."
                     ),
                   )
                 : _status == 11
                     ? Center(
                         child: Padding(
                           padding: SmashUI.defaultPadding(),
-                          child: SmashUI.titleText(
-                              "No GSS server url has been set. Check your settings."),
+                          child: SmashUI.titleText(SL
+                              .of(context)
+                              .gssImport_noGssUrlSet), //"No GSS server url has been set. Check your settings."
                         ),
                       )
                     : _status == 10
                         ? Center(
                             child: Padding(
                               padding: SmashUI.defaultPadding(),
-                              child: SmashUI.titleText(
-                                  "No GSS server password has been set. Check your settings."),
+                              child: SmashUI.titleText(SL
+                                  .of(context)
+                                  .gssImport_noGssPasswordSet), //"No GSS server password has been set. Check your settings."
                             ),
                           )
                         : _status == 13
                             ? Center(
                                 child: Padding(
                                   padding: SmashUI.defaultPadding(),
-                                  child: SmashUI.errorWidget(
-                                      "No permission to access the server. Check your credentials."),
+                                  child: SmashUI.errorWidget(SL
+                                      .of(context)
+                                      .gssImport_noPermToAccessServer), //"No permission to access the server. Check your credentials."
                                 ),
                               )
                             : _status == 14
@@ -209,7 +217,7 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                     child: Padding(
                                       padding: SmashUI.defaultPadding(),
                                       child: SmashUI.errorWidget(
-                                          "Insecure http is not allowed by the platform. checkl your server URL."),
+                                          "Insecure http is not allowed by the platform. check your server URL."),
                                     ),
                                   )
                                 : _status == 100
@@ -237,7 +245,9 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                                       padding: SmashUI
                                                           .defaultPadding(),
                                                       child: SmashUI.normalText(
-                                                          "Data",
+                                                          SL
+                                                              .of(context)
+                                                              .gssImport_data, //"Data"
                                                           bold: true),
                                                     ),
                                                     Padding(
@@ -246,8 +256,12 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                                       child: SmashUI.smallText(
                                                           _baseMapsList.length >
                                                                   0
-                                                              ? "Datasets are downloaded into the maps folder."
-                                                              : "No data available.",
+                                                              ? SL
+                                                                  .of(context)
+                                                                  .gssImport_dataSetsDownloadedMapsFolder //"Datasets are downloaded into the maps folder."
+                                                              : SL
+                                                                  .of(context)
+                                                                  .gssImport_noDataAvailable, //"No data available."
                                                           color: Colors.grey),
                                                     ),
                                                     ListView.builder(
@@ -299,7 +313,9 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                                       padding: SmashUI
                                                           .defaultPadding(),
                                                       child: SmashUI.normalText(
-                                                          "Projects",
+                                                          SL
+                                                              .of(context)
+                                                              .gssImport_projects, //"Projects"
                                                           bold: true),
                                                     ),
                                                     Padding(
@@ -308,8 +324,12 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                                       child: SmashUI.smallText(
                                                           _projectsList.length >
                                                                   0
-                                                              ? "Projects are downloaded into the projects folder."
-                                                              : "No projects available.",
+                                                              ? SL
+                                                                  .of(context)
+                                                                  .gssImport_projectsDownloadedProjectFolder //"Projects are downloaded into the projects folder."
+                                                              : SL
+                                                                  .of(context)
+                                                                  .gssImport_noProjectsAvailable, //"No projects available."
                                                           color: Colors.grey),
                                                     ),
                                                     ListView.builder(
@@ -361,7 +381,9 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                                       padding: SmashUI
                                                           .defaultPadding(),
                                                       child: SmashUI.normalText(
-                                                          "Forms",
+                                                          SL
+                                                              .of(context)
+                                                              .gssImport_forms, //"Forms"
                                                           bold: true),
                                                     ),
                                                     Padding(
@@ -369,8 +391,12 @@ class _GssImportWidgetState extends State<GssImportWidget>
                                                           .defaultPadding(),
                                                       child: SmashUI.smallText(
                                                           _tagsList.length > 0
-                                                              ? "Tags files are downloaded into the forms folder."
-                                                              : "No tags available.",
+                                                              ? SL
+                                                                  .of(context)
+                                                                  .gssImport_tagsDownloadedFormsFolder //"Tags files are downloaded into the forms folder."
+                                                              : SL
+                                                                  .of(context)
+                                                                  .gssImport_noTagsAvailable, //"No tags available."
                                                           color: Colors.grey),
                                                     ),
                                                     ListView.builder(

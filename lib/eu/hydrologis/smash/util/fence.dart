@@ -3,11 +3,11 @@ import 'dart:convert';
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
-import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifications.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -145,7 +145,8 @@ class FenceMaster {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Fence Properties"),
+          title:
+              Text(SL.of(context).fence_fenceProperties), //"Fence Properties"
           content: Builder(builder: (context) {
             var width = MediaQuery.of(context).size.width;
             return Padding(
@@ -162,14 +163,14 @@ class FenceMaster {
             if (allowDelete)
               FlatButton(
                 child: Text(
-                  "DELETE",
+                  SL.of(context).fence_delete, //"DELETE"
                   style: TextStyle(color: SmashColors.mainDanger),
                 ),
                 onPressed: () async {
                   var res = await SmashDialogs.showConfirmDialog(
                       context,
-                      "Remove fence",
-                      "Are you sure you want to remove fence: ${fence.name}");
+                      SL.of(context).fence_removeFence, //"Remove fence"
+                      "${SL.of(context).fence_areYouSureRemoveFence} ${fence.name}"); //"Are you sure you want to remove fence:"
                   if (res) {
                     FenceMaster().remove(fence);
                   }
@@ -177,13 +178,13 @@ class FenceMaster {
                 },
               ),
             FlatButton(
-              child: Text("CANCEL"),
+              child: Text(SL.of(context).fence_cancel), //"CANCEL"
               onPressed: () {
                 Navigator.of(context).pop(null);
               },
             ),
             FlatButton(
-              child: Text("OK"),
+              child: Text(SL.of(context).fence_ok), //"OK"
               onPressed: () {
                 Navigator.of(context).pop(fence);
               },
@@ -197,7 +198,7 @@ class FenceMaster {
 
 class Fence {
   int creationTs;
-  String name = "a new fence";
+  String name = SL.current.fence_aNewFence; //"a new fence"
   double radius = FenceMaster.DEFAULT_FENCE_RADIUS;
   double lat;
   double lon;
@@ -242,7 +243,8 @@ class _FencePropertiesContainerState extends State<FencePropertiesContainer> {
   Widget build(BuildContext context) {
     var nameEC = new TextEditingController(text: fence.name);
     var nameID = new InputDecoration(
-        labelText: "Label", hintText: "A name for the fence.");
+        labelText: SL.of(context).fence_label, //"Label"
+        hintText: SL.of(context).fence_aNameForFence); //"A name for the fence."
     var nameWidget = new TextFormField(
       controller: nameEC,
       autovalidateMode: AutovalidateMode.always,
@@ -250,14 +252,20 @@ class _FencePropertiesContainerState extends State<FencePropertiesContainer> {
       decoration: nameID,
       validator: (txt) {
         fence.name = txt;
-        var nameErrorText =
-            txt.isEmpty ? "The name needs to be defined." : null;
+        var nameErrorText = txt.isEmpty
+            ? SL
+                .of(context)
+                .fence_theNameNeedsToBeDefined //"The name needs to be defined."
+            : null;
         return nameErrorText;
       },
     );
     var radiusEC = new TextEditingController(text: fence.radius.toString());
     var radiusID = new InputDecoration(
-        labelText: "Radius", hintText: "The fence radius in meters.");
+        labelText: SL.of(context).fence_radius, //"Radius"
+        hintText: SL
+            .of(context)
+            .fence_theFenceRadiusMeters); //"The fence radius in meters."
     var radiusWidget = new TextFormField(
       controller: radiusEC,
       autofocus: false,
@@ -269,7 +277,9 @@ class _FencePropertiesContainerState extends State<FencePropertiesContainer> {
           fence.radius = rad;
         }
         var radiusErrorText = txt.isEmpty || rad == null
-            ? "The radius needs to be a positive number in meters."
+            ? SL
+                .of(context)
+                .fence_radiusNeedsToBePositive //"The radius needs to be a positive number in meters."
             : null;
         return radiusErrorText;
       },
@@ -293,7 +303,8 @@ class _FencePropertiesContainerState extends State<FencePropertiesContainer> {
               children: [
                 Padding(
                   padding: SmashUI.defaultRigthPadding() * 2,
-                  child: SmashUI.smallText("On enter"),
+                  child: SmashUI.smallText(
+                      SL.of(context).fence_onEnter), //"On enter"
                 ),
                 DropdownButton<ENotificationSounds>(
                   items: ENotificationSounds.values
@@ -321,7 +332,8 @@ class _FencePropertiesContainerState extends State<FencePropertiesContainer> {
               children: [
                 Padding(
                   padding: SmashUI.defaultRigthPadding() * 2,
-                  child: SmashUI.smallText("On exit"),
+                  child: SmashUI.smallText(
+                      SL.of(context).fence_onExit), //"On exit"
                 ),
                 DropdownButton<ENotificationSounds>(
                   items: ENotificationSounds.values

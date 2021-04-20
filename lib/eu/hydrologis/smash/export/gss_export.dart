@@ -5,20 +5,19 @@
  */
 
 import 'dart:async';
-import 'dart:io';
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/src/adapters/io_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gss/gss_utilities.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/util/network.dart';
+import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 class GssExportWidget extends StatefulWidget {
   GeopaparazziProjectDb projectDb;
@@ -60,7 +59,8 @@ class _GssExportWidgetState extends State<GssExportWidget> {
   }
 
   Future<void> init() async {
-    _serverUrl = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_GSS_SERVER_URL);
+    _serverUrl =
+        GpPreferences().getStringSync(SmashPreferencesKeys.KEY_GSS_SERVER_URL);
     if (_serverUrl == null) {
       setState(() {
         _status = 11;
@@ -68,7 +68,8 @@ class _GssExportWidgetState extends State<GssExportWidget> {
       return;
     }
 
-    String pwd = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_GSS_SERVER_PWD);
+    String pwd =
+        GpPreferences().getStringSync(SmashPreferencesKeys.KEY_GSS_SERVER_PWD);
     if (pwd == null || pwd.trim().isEmpty) {
       setState(() {
         _status = 10;
@@ -95,7 +96,8 @@ class _GssExportWidgetState extends State<GssExportWidget> {
     _formNotesCount = db.getFormNotesCount(true);
     _imagesCount = db.getImagesCount(true);
 
-    var allCount = _gpsLogCount + _simpleNotesCount + _formNotesCount + _imagesCount;
+    var allCount =
+        _gpsLogCount + _simpleNotesCount + _formNotesCount + _imagesCount;
     setState(() {
       _status = allCount > 0 ? 1 : -1;
     });
@@ -105,13 +107,18 @@ class _GssExportWidgetState extends State<GssExportWidget> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("GSS Export"),
+        title: new Text(SL.of(context).gssExport_gssExport), //"GSS Export"
         actions: _status < 2
             ? <Widget>[
                 IconButton(
                   icon: Icon(MdiIcons.restore),
                   onPressed: () async {
-                    var doIt = await SmashDialogs.showConfirmDialog(context, "Set project to DIRTY?", "This can't be undone!");
+                    var doIt = await SmashDialogs.showConfirmDialog(
+                        context,
+                        SL.of(context).gssExport_setProjectDirty,
+                        SL
+                            .of(context)
+                            .gssExport_thisCantBeUndone); //"Set project to DIRTY?" //"This can't be undone!"
                     if (doIt) {
                       widget.projectDb.updateDirty(true);
                       setState(() {
@@ -120,12 +127,19 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                       gatherStats();
                     }
                   },
-                  tooltip: "Restore project as all dirty.",
+                  tooltip: SL
+                      .of(context)
+                      .gssExport_restoreProjectAsDirty, //"Restore project as all dirty."
                 ),
                 IconButton(
                   icon: Icon(MdiIcons.wiperWash),
                   onPressed: () async {
-                    var doIt = await SmashDialogs.showConfirmDialog(context, "Set project to CLEAN?", "This can't be undone!");
+                    var doIt = await SmashDialogs.showConfirmDialog(
+                        context,
+                        SL.of(context).gssExport_setProjectClean,
+                        SL
+                            .of(context)
+                            .gssExport_thisCantBeUndone); //"Set project to CLEAN?" //"This can't be undone!"
                     if (doIt) {
                       widget.projectDb.updateDirty(false);
                       setState(() {
@@ -134,52 +148,75 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                       gatherStats();
                     }
                   },
-                  tooltip: "Restore project as all clean.",
+                  tooltip: SL
+                      .of(context)
+                      .gssExport_restoreProjectAsClean, //"Restore project as all clean."
                 ),
               ]
             : <Widget>[],
       ),
       body: _status == -1
-          ? Center(child: SmashUI.errorWidget("Nothing to sync.", bold: true))
+          ? Center(
+              child: SmashUI.errorWidget(SL.of(context).gssExport_nothingToSync,
+                  bold: true)) //"Nothing to sync."
           : _status == 0
               ? Center(
-                  child: SmashCircularProgress(label: "Collecting sync stats..."),
+                  child: SmashCircularProgress(
+                      label: SL
+                          .of(context)
+                          .gssExport_collectingSyncStats), //"Collecting sync stats..."
                 )
               : _status == 12
                   ? Center(
                       child: Padding(
                         padding: SmashUI.defaultPadding(),
-                        child: SmashUI.errorWidget("Unable to sync due to an error, check diagnostics."),
+                        child: SmashUI.errorWidget(SL
+                            .of(context)
+                            .gssExport_unableToSyncDueToError), //"Unable to sync due to an error, check diagnostics."
                       ),
                     )
                   : _status == 11
                       ? Center(
                           child: Padding(
                             padding: SmashUI.defaultPadding(),
-                            child: SmashUI.titleText("No GSS server url has been set. Check your settings."),
+                            child: SmashUI.titleText(SL
+                                .of(context)
+                                .gssExport_noGssUrlSet), //"No GSS server url has been set. Check your settings."
                           ),
                         )
                       : _status == 10
                           ? Center(
                               child: Padding(
                                 padding: SmashUI.defaultPadding(),
-                                child: SmashUI.titleText("No GSS server password has been set. Check your settings."),
+                                child: SmashUI.titleText(SL
+                                    .of(context)
+                                    .gssExport_noGssPasswordSet), //"No GSS server password has been set. Check your settings."
                               ),
                             )
                           : _status == 1
                               ? // View stats
                               Center(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
                                       Padding(
                                         padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.titleText("Sync Stats", bold: true),
+                                        child: SmashUI.titleText(
+                                            SL
+                                                .of(context)
+                                                .gssExport_synStats, //"Sync Stats"
+                                            bold: true),
                                       ),
                                       Padding(
                                         padding: SmashUI.defaultPadding(),
-                                        child: SmashUI.smallText("The following data will be uploaded upon sync.", color: Colors.grey),
+                                        child: SmashUI.smallText(
+                                            SL
+                                                .of(context)
+                                                .gssExport_followingDataWillBeUploaded,
+                                            color: Colors
+                                                .grey), //"The following data will be uploaded upon sync."
                                       ),
                                       Expanded(
                                         child: ListView(
@@ -187,30 +224,38 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                                             ListTile(
                                               leading: Icon(
                                                 SmashIcons.logIcon,
-                                                color: SmashColors.mainDecorations,
+                                                color:
+                                                    SmashColors.mainDecorations,
                                               ),
-                                              title: SmashUI.normalText("Gps Logs: $_gpsLogCount"),
+                                              title: SmashUI.normalText(
+                                                  "${SL.of(context).gssExport_gpsLogs} $_gpsLogCount"), //"Gps Logs:"
                                             ),
                                             ListTile(
                                               leading: Icon(
                                                 SmashIcons.simpleNotesIcon,
-                                                color: SmashColors.mainDecorations,
+                                                color:
+                                                    SmashColors.mainDecorations,
                                               ),
-                                              title: SmashUI.normalText("Simple Notes: $_simpleNotesCount"),
+                                              title: SmashUI.normalText(
+                                                  "${SL.of(context).gssExport_simpleNotes} $_simpleNotesCount"), //"Simple Notes:"
                                             ),
                                             ListTile(
                                               leading: Icon(
                                                 SmashIcons.formNotesIcon,
-                                                color: SmashColors.mainDecorations,
+                                                color:
+                                                    SmashColors.mainDecorations,
                                               ),
-                                              title: SmashUI.normalText("Form Notes: $_formNotesCount"),
+                                              title: SmashUI.normalText(
+                                                  "${SL.of(context).gssExport_formNotes} $_formNotesCount"), //"Form Notes:"
                                             ),
                                             ListTile(
                                               leading: Icon(
                                                 SmashIcons.imagesNotesIcon,
-                                                color: SmashColors.mainDecorations,
+                                                color:
+                                                    SmashColors.mainDecorations,
                                               ),
-                                              title: SmashUI.normalText("Images: $_imagesCount"),
+                                              title: SmashUI.normalText(
+                                                  "${SL.of(context).gssExport_images} $_imagesCount"), //"Images:"
                                             ),
                                           ],
                                         ),
@@ -225,7 +270,9 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                                       ),
                                     )
                                   : Container(
-                                      child: Text("Should not happen"),
+                                      child: Text(SL
+                                          .of(context)
+                                          .gssExport_shouldNotHappen), //"Should not happen"
                                     ),
       floatingActionButton: _status < 2 && _status != -1
           ? FloatingActionButton.extended(
@@ -237,7 +284,7 @@ class _GssExportWidgetState extends State<GssExportWidget> {
                   await uploadProjectData();
                 }
               },
-              label: Text("Upload"))
+              label: Text(SL.of(context).gssExport_upload)) //"Upload"
           : null,
     );
   }

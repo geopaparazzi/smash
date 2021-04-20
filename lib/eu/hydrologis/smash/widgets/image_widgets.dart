@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -148,7 +149,10 @@ class SmashImageZoomWidget extends StatelessWidget {
           } else {
             // Otherwise, display a loading indicator.
             return Center(
-                child: SmashCircularProgress(label: "Loading image..."));
+                child: SmashCircularProgress(
+                    label: SL
+                        .of(context)
+                        .imageWidgets_loadingImage)); //"Loading image..."
           }
         },
       ),

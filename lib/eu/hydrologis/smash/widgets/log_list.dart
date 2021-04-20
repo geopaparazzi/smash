@@ -22,6 +22,7 @@ import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -120,7 +121,7 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text("GPS Logs list"),
+          title: Text(SL.of(context).logList_gpsLogsList), //"GPS Logs list"
           actions: <Widget>[
             PopupMenuButton<int>(
               onSelected: (value) async {
@@ -156,10 +157,12 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                 }
               },
               itemBuilder: (BuildContext context) {
-                var txt1 = "Select all";
-                var txt2 = "Unselect all";
-                var txt3 = "Invert selection";
-                var txt4 = "Merge selected";
+                var txt1 = SL.of(context).logList_selectAll; //"Select all"
+                var txt2 = SL.of(context).logList_unSelectAll; //"Unselect all"
+                var txt3 =
+                    SL.of(context).logList_invertSelection; //"Invert selection"
+                var txt4 =
+                    SL.of(context).logList_mergeSelected; //"Merge selected"
                 return [
                   PopupMenuItem<int>(
                     value: 1,
@@ -183,7 +186,10 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
           ],
         ),
         body: _isLoading
-            ? Center(child: SmashCircularProgress(label: "Loading logs..."))
+            ? Center(
+                child: SmashCircularProgress(
+                    label:
+                        SL.of(context).logList_loadingLogs)) //"Loading logs..."
             : ListView.builder(
                 itemCount: _logsList.length,
                 itemBuilder: (context, index) {
@@ -282,7 +288,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     List<Widget> secondaryActions = [];
 
     actions.add(IconSlideAction(
-        caption: 'Zoom to',
+        caption: SL.of(context).logList_zoomTo, //'Zoom to'
         color: SmashColors.mainDecorations,
         icon: MdiIcons.magnifyScan,
         onTap: () async {
@@ -299,7 +305,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
           Navigator.of(context).pop();
         }));
     actions.add(IconSlideAction(
-      caption: 'Properties',
+      caption: SL.of(context).logList_properties, //'Properties'
       color: SmashColors.mainDecorations,
       icon: MdiIcons.palette,
       onTap: () async {
@@ -311,7 +317,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       },
     ));
     actions.add(IconSlideAction(
-      caption: 'Profile View',
+      caption: SL.of(context).logList_profileView, //'Profile View'
       color: SmashColors.mainDecorations,
       icon: MdiIcons.chartAreaspline,
       onTap: () async {
@@ -321,27 +327,38 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       },
     ));
     secondaryActions.add(IconSlideAction(
-        caption: 'To GPX',
+        caption: SL.of(context).logList_toGPX, //'To GPX'
         color: SmashColors.mainDecorations,
         icon: MdiIcons.mapMarker,
         onTap: () async {
           var exportsFolder = await Workspace.getExportsFolder();
           try {
             await GpxExporter.exportLog(db, logItem.id, exportsFolder.path);
-            SmashDialogs.showInfoDialog(context, "GPX saved in export folder.");
+            SmashDialogs.showInfoDialog(
+                context,
+                SL
+                    .of(context)
+                    .logList_gpsSavedInExportFolder); //"GPX saved in export folder."
           } on Exception catch (e, s) {
             SMLogger().e("Error exporting log GPX", e, s);
             SmashDialogs.showErrorDialog(
-                context, "An error occurred while exporting log to GPX.");
+                context,
+                SL
+                    .of(context)
+                    .logList_errorOccurredExportingLogGPX); //"An error occurred while exporting log to GPX."
           }
         }));
     secondaryActions.add(IconSlideAction(
-        caption: 'Delete',
+        caption: SL.of(context).logList_delete, //'Delete'
         color: SmashColors.mainDanger,
         icon: MdiIcons.delete,
         onTap: () async {
           bool doDelete = await SmashDialogs.showConfirmDialog(
-              context, "DELETE", 'Are you sure you want to delete the log?');
+              context,
+              SL.of(context).logList_DELETE, //"DELETE"
+              SL
+                  .of(context)
+                  .logList_areYouSureDeleteTheLog); //'Are you sure you want to delete the log?'
           if (doDelete) {
             db.deleteGpslog(logItem.id);
             widget.reloadLogFunction();
@@ -455,11 +472,13 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     if (minutes > 60) {
       var h = minutes ~/ 60;
       var m = (minutes % 60).round();
-      var hStr = h > 1 ? "hours" : "hour";
-      return "$h $hStr $m min";
+      var hStr = h > 1
+          ? SL.of(context).logList_hours //"hours"
+          : SL.of(context).logList_hour; //"hour"
+      return "$h $hStr $m ${SL.of(context).logList_minutes}"; // "$h $hStr $m min";
     } else {
       var m = minutes.toInt();
-      return "$m min";
+      return "$m ${SL.of(context).logList_minutes}"; //"$m min"
     }
   }
 

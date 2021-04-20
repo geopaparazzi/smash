@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:tutorial_coach_mark/animated_focus_light.dart';
 import 'package:tutorial_coach_mark/content_target.dart';
@@ -23,14 +24,18 @@ class MainViewCoachMarks {
   void initCoachMarks() {
     var all = 11;
     var i = 1;
-    const s = "Single tap: ";
-    const l = "Long tap: ";
-    const d = "Double tap: ";
+    var s = SL.current.coachMarks_singleTap; //"Single tap: "
+    var l = SL.current.coachMarks_longTap; //"Long tap: "
+    var d = SL.current.coachMarks_doubleTap; //"Double tap: "
 
-    var title = "$i/$all Simple Notes Button";
-    var singleTap = "${s}add a new note";
-    var longTap = "${l}view notes list";
-    var doubleTap = "${d}view notes settings";
+    var title =
+        "$i/$all ${SL.current.coachMarks_simpleNoteButton}"; //Simple Notes Button
+    var singleTap =
+        "${s}${SL.current.coachMarks_addNewNote}"; //"add a new note"
+    var longTap =
+        "${l}${SL.current.coachMarks_viewNotesList}"; //"view notes list"
+    var doubleTap =
+        "${d}${SL.current.coachMarks_viewNotesSettings}"; //"view notes settings"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: simpleNotesButtonKey,
@@ -38,10 +43,14 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Form Notes Button";
-    singleTap = "${s}add new form note";
-    longTap = "${l}view form notes list";
-    doubleTap = "${d}view notes settings";
+    title =
+        "$i/$all ${SL.current.coachMarks_formNotesButton}"; //"Form Notes Button"
+    singleTap =
+        "${s}${SL.current.coachMarks_addNewFormNote}"; //"add new form note"
+    longTap =
+        "${l}${SL.current.coachMarks_viewFormNoteList}"; //"view form notes list"
+    doubleTap =
+        "${d}${SL.current.coachMarks_viewNotesSettings}"; //"view notes settings"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: formsButtonKey,
@@ -49,10 +58,12 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all GPS Log Button";
-    singleTap = "${s}start logging/stop logging";
-    longTap = "${l}view logs list";
-    doubleTap = "${d}view logs settings";
+    title = "$i/$all ${SL.current.coachMarks_gpsLogButton}"; //"GPS Log Button"
+    singleTap =
+        "${s}${SL.current.coachMarks_startStopLogging}"; //"start logging/stop logging"
+    longTap = "${l}${SL.current.coachMarks_viewLogsList}"; //"view logs list"
+    doubleTap =
+        "${d}${SL.current.coachMarks_viewLogsSettings}"; //"view logs settings"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: logsButtonKey,
@@ -60,10 +71,13 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all GPS Info Button (if applicable)";
-    singleTap = "${s}center map on GPS position";
-    longTap = "${l}show GPS info";
-    doubleTap = "${d}toggle automatic center on GPS";
+    title =
+        "$i/$all ${SL.current.coachMarks_gpsInfoButton}"; //"GPS Info Button (if applicable)"
+    singleTap =
+        "${s}${SL.current.coachMarks_centerMapOnGpsPos}"; //"center map on GPS position"
+    longTap = "${l}${SL.current.coachMarks_showGpsInfo}"; //"show GPS info"
+    doubleTap =
+        "${d}${SL.current.coachMarks_toggleAutoCenterGps}"; //"toggle automatic center on GPS"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: gpsButtonKey,
@@ -71,10 +85,13 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Layers View Button";
-    singleTap = "${s}Open the layers view";
+    title =
+        "$i/$all ${SL.current.coachMarks_layersViewButton}"; //"Layers View Button"
+    singleTap =
+        "${s}${SL.current.coachMarks_openLayersView}"; //"Open the layers view"
     longTap = null;
-    doubleTap = "${d}Open the layer plugins dialog";
+    doubleTap =
+        "${d}${SL.current.coachMarks_openLayersPluginDialog}"; //"Open the layer plugins dialog"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: layersButtonKey,
@@ -82,8 +99,9 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Zoom In Button";
-    singleTap = "Zoom in the map by one level";
+    title = "$i/$all ${SL.current.coachMarks_zoomInButton}"; //"Zoom In Button"
+    singleTap = SL
+        .current.coachMarks_zoomImMapOneLevel; //"Zoom in the map by one level"
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -93,8 +111,10 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Zoom Out Button";
-    singleTap = "Zoom out the map by one level";
+    title =
+        "$i/$all ${SL.current.coachMarks_zoomOutButton}"; //"Zoom Out Button"
+    singleTap = SL.current
+        .coachMarks_zoomOutMapOneLevel; //"Zoom out the map by one level"
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -104,8 +124,10 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Bottom Tools Button";
-    singleTap = "Toggle bottom tools bar. ";
+    title =
+        "$i/$all ${SL.current.coachMarks_bottomToolsButton}"; //"Bottom Tools Button"
+    singleTap = SL
+        .current.coachMarks_toggleBottomToolsBar; //"Toggle bottom tools bar. "
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -115,42 +137,57 @@ class MainViewCoachMarks {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Tools Button";
-    singleTap = "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.";
+    title = "$i/$all ${SL.current.coachMarks_toolsButton}"; //"Tools Button"
+    singleTap = SL.current
+        .coachMarks_openEndDrawerToAccessProject; //"Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras."
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: toolsButtonKey,
-      contents: [getContentTarget(title, singleTap, longTap, doubleTap, alignContent: AlignContent.bottom)],
+      contents: [
+        getContentTarget(title, singleTap, longTap, doubleTap,
+            alignContent: AlignContent.bottom)
+      ],
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Interactive coach marks button";
-    singleTap = "Open the interactice coach marks that explain all the actions of the main map view.";
+    title =
+        "$i/$all ${SL.current.coachMarks_interactiveCoackMarksButton}"; //"Interactive coach marks button"
+    singleTap = SL.current
+        .coachMarks_openInteractiveCoachMarks; //"Open the interactice coach marks that explain all the actions of the main map view."
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: coachMarkButtonKey,
-      contents: [getContentTarget(title, singleTap, longTap, doubleTap, alignContent: AlignContent.bottom)],
+      contents: [
+        getContentTarget(title, singleTap, longTap, doubleTap,
+            alignContent: AlignContent.bottom)
+      ],
       shape: ShapeLightFocus.Circle,
     ));
 
-    title = "$i/$all Main Menu Button";
-    singleTap =
-        "Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.";
+    title =
+        "$i/$all ${SL.current.coachMarks_mainMenuButton}"; //"Main Menu Button"
+    singleTap = SL.current
+        .coachMarks_openDrawerToLoadProject; //"Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS."
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: drawerButtonKey,
-      contents: [getContentTarget(title, singleTap, longTap, doubleTap, alignContent: AlignContent.bottom)],
+      contents: [
+        getContentTarget(title, singleTap, longTap, doubleTap,
+            alignContent: AlignContent.bottom)
+      ],
       shape: ShapeLightFocus.Circle,
     ));
   }
 
-  ContentTarget getContentTarget(String title, String singleTap, String longTap, String doubleTap, {AlignContent alignContent = AlignContent.top}) {
+  ContentTarget getContentTarget(
+      String title, String singleTap, String longTap, String doubleTap,
+      {AlignContent alignContent = AlignContent.top}) {
     var size = SmashUI.MEDIUM_SIZE;
     var widgets = <Widget>[];
 
@@ -159,11 +196,16 @@ class MainViewCoachMarks {
     if (singleTap != null) {
       if (singleTap.contains(":")) {
         widgets.add(
-          Padding(padding: const EdgeInsets.only(top: 10.0, left: 4), child: getRichText(size, singleTap)),
+          Padding(
+              padding: const EdgeInsets.only(top: 10.0, left: 4),
+              child: getRichText(size, singleTap)),
         );
       } else {
         widgets.add(
-          Padding(padding: const EdgeInsets.only(top: 10.0, left: 4), child: SmashUI.normalText(singleTap, color: SmashColors.mainBackground)),
+          Padding(
+              padding: const EdgeInsets.only(top: 10.0, left: 4),
+              child: SmashUI.normalText(singleTap,
+                  color: SmashColors.mainBackground)),
         );
       }
     }
@@ -223,7 +265,7 @@ class MainViewCoachMarks {
         targets: targets,
         colorShadow: SmashColors.mainDecorations,
         alignSkip: Alignment.topCenter,
-        textSkip: "SKIP",
+        textSkip: SL.of(context).coachMarks_skip, //"SKIP"
         paddingFocus: 10,
         opacityShadow: 0.7, onFinish: () {
       // print("finish");
