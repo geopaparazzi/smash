@@ -36,7 +36,7 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: 152cd2a
+      ref: ec70032
 
   dart_shp: ^0.3.1
 

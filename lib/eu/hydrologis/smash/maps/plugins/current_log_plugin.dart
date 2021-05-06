@@ -17,7 +17,8 @@ import 'package:smashlibs/smashlibs.dart';
 /// Plugin to show the current GPS log
 class CurrentGpsLogPlugin implements MapPlugin {
   @override
-  Widget createLayer(LayerOptions options, MapState mapState, Stream<Null> stream) {
+  Widget createLayer(
+      LayerOptions options, MapState mapState, Stream<Null> stream) {
     if (options is CurrentGpsLogPluginOption) {
       return CurrentGpsLogLayer(options, mapState, stream);
     }
@@ -71,7 +72,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
           doFiltered = false;
         } else {
           filteredLogPaint = Paint()
-            ..color = (gpsState.filteredLogMode == SmashPreferencesKeys.LOGVIEWMODES[1])
+            ..color = (gpsState.filteredLogMode ==
+                    SmashPreferencesKeys.LOGVIEWMODES[1])
                 ? currentGpsLogLayerOpts.logColor
                 : currentGpsLogLayerOpts.logColor.withAlpha(100)
             ..style = PaintingStyle.stroke
@@ -82,30 +84,117 @@ class CurrentGpsLogLayer extends StatelessWidget {
         double distanceMeter = currentLogStats[0] as double;
         double distanceMeterFiltered = currentLogStats[1] as double;
         int timestampDelta = currentLogStats[2] as int;
+        double speedMs = currentLogStats[3];
+        double speedKmH = speedMs * 3600 / 1000;
+        double elevDelta = currentLogStats[4];
+        if (elevDelta.abs() < 0.05) {
+          elevDelta = 0.0;
+        }
+        var goingString = "going ";
+        if (elevDelta > 0) {
+          goingString += "up";
+        } else if (elevDelta < 0) {
+          goingString += "down";
+        } else {
+          goingString += "flat";
+        }
 
         var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
         var distStr = StringUtilities.formatMeters(distanceMeter);
-        var distFilteredStr = StringUtilities.formatMeters(distanceMeterFiltered);
+        var distFilteredStr =
+            StringUtilities.formatMeters(distanceMeterFiltered);
 
         return Stack(
           children: [
             CustomPaint(
-              painter: CurrentLogPathPainter(logPaint, filteredLogPaint, gpsState.currentLogPoints, gpsState.currentFilteredLogPoints, map),
+              painter: CurrentLogPathPainter(
+                  logPaint,
+                  filteredLogPaint,
+                  gpsState.currentLogPoints,
+                  gpsState.currentFilteredLogPoints,
+                  map),
             ),
             Align(
               alignment: Alignment.topRight,
               child: Container(
-                decoration: BoxDecoration(color: SmashColors.mainBackground.withOpacity(0.7), borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(
+                    color: SmashColors.mainBackground.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(8)),
                 child: Padding(
                   padding: SmashUI.defaultPadding(),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SmashUI.normalText("Time: $timeStr"),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5.0),
+                            child: Icon(SmashIcons.iconTime),
+                          ),
+                          SmashUI.normalText("$timeStr"),
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
-                        child: SmashUI.normalText("Dist: $distStr ($distFilteredStr)"),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                right: 5.0,
+                              ),
+                              child: Icon(SmashIcons.iconDistance),
+                            ),
+                            SmashUI.normalText("$distStr"),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 3.0, left: 5.0),
+                              child: Icon(SmashIcons.iconFilter),
+                            ),
+                            SmashUI.normalText("$distFilteredStr"),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                right: 5.0,
+                              ),
+                              child: Icon(SmashIcons.iconSpeed),
+                            ),
+                            SmashUI.normalText(
+                                speedKmH.toStringAsFixed(0) + " Km/h"),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                right: 5.0,
+                              ),
+                              child: Icon(elevDelta > 0
+                                  ? SmashIcons.iconUphill
+                                  : elevDelta < 0
+                                      ? SmashIcons.iconDownhill
+                                      : SmashIcons.iconFlat),
+                            ),
+                            SmashUI.normalText(goingString),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -128,7 +217,8 @@ class CurrentLogPathPainter extends CustomPainter {
   List<LatLng> currentFilteredLogPoints;
   MapState map;
 
-  CurrentLogPathPainter(this.logPaint, this.filtereLogPaint, this.currentLogPoints, this.currentFilteredLogPoints, this.map);
+  CurrentLogPathPainter(this.logPaint, this.filtereLogPaint,
+      this.currentLogPoints, this.currentFilteredLogPoints, this.map);
 
   @override
   void paint(Canvas canvas, Size size) {

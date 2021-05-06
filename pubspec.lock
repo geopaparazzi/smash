@@ -836,8 +836,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "152cd2a"
-      resolved-ref: "152cd2a5c9bdf9259cf9ef83fdd121e044bddecb"
+      ref: ec70032
+      resolved-ref: ec7003283388ca5a3ba5c3bad3e46c0605a398f5
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

@@ -96,11 +96,17 @@ class GpsFilterManager {
   bool onNewPositionEvent(SmashPosition position) {
     if (position != null && position.mocked) {
       if (_gpsState.isLogging && _gpsState.currentLogId != null) {
-        _gpsState.addLogPoint(position.longitude, position.latitude,
-            position.altitude, position.time.round(), position.accuracy,
-            accuracyFiltered: position.filteredAccuracy,
-            latitudeFiltered: position.filteredLatitude,
-            longitudeFiltered: position.filteredLongitude);
+        _gpsState.addLogPoint(
+          position.longitude,
+          position.latitude,
+          position.altitude,
+          position.time.round(),
+          position.accuracy,
+          position.speed,
+          accuracyFiltered: position.filteredAccuracy,
+          latitudeFiltered: position.filteredLatitude,
+          longitudeFiltered: position.filteredLongitude,
+        );
       }
       _previousLogPosition = position;
       _gpsState.statusQuiet =
@@ -153,11 +159,17 @@ class GpsFilterManager {
             // if logging add to visible log and into db
             if (_gpsState.isLogging && _gpsState.currentLogId != null) {
               msg.isLogging = true;
-              _gpsState.addLogPoint(position.longitude, position.latitude,
-                  position.altitude, ts, position.accuracy,
-                  accuracyFiltered: position.filteredAccuracy,
-                  latitudeFiltered: position.filteredLatitude,
-                  longitudeFiltered: position.filteredLongitude);
+              _gpsState.addLogPoint(
+                position.longitude,
+                position.latitude,
+                position.altitude,
+                ts,
+                position.accuracy,
+                position.speed,
+                accuracyFiltered: position.filteredAccuracy,
+                latitudeFiltered: position.filteredLatitude,
+                longitudeFiltered: position.filteredLongitude,
+              );
             }
             _previousLogPosition = position;
             setGpsState = true;
