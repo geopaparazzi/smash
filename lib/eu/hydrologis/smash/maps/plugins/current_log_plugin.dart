@@ -5,7 +5,8 @@
  */
 import 'dart:async';
 
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
+    hide TextStyle;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -13,6 +14,8 @@ import 'package:latlong/latlong.dart' hide Path;
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 /// Plugin to show the current GPS log
 class CurrentGpsLogPlugin implements MapPlugin {
@@ -86,18 +89,20 @@ class CurrentGpsLogLayer extends StatelessWidget {
         int timestampDelta = currentLogStats[2] as int;
         double speedMs = currentLogStats[3];
         double speedKmH = speedMs * 3600 / 1000;
-        double elevDelta = currentLogStats[4];
-        if (elevDelta.abs() < 0.05) {
-          elevDelta = 0.0;
-        }
-        var goingString = "going ";
-        if (elevDelta > 0) {
-          goingString += "up";
-        } else if (elevDelta < 0) {
-          goingString += "down";
-        } else {
-          goingString += "flat";
-        }
+        List<dynamic> elevData = currentLogStats[4];
+        double minElev = double.infinity;
+        double maxElev = double.negativeInfinity;
+        elevData.forEach((xy) {
+          var tmp = xy[1];
+          if (tmp < minElev) {
+            minElev = tmp;
+          }
+          if (tmp > maxElev) {
+            maxElev = tmp;
+          }
+        });
+        int minElevInt = minElev.round();
+        int maxElevInt = maxElev.round();
 
         var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
         var distStr = StringUtilities.formatMeters(distanceMeter);
@@ -186,16 +191,34 @@ class CurrentGpsLogLayer extends StatelessWidget {
                               padding: const EdgeInsets.only(
                                 right: 5.0,
                               ),
-                              child: Icon(elevDelta > 0
-                                  ? SmashIcons.iconUphill
-                                  : elevDelta < 0
-                                      ? SmashIcons.iconDownhill
-                                      : SmashIcons.iconFlat),
+                              child: Icon(MdiIcons.elevationRise),
                             ),
-                            SmashUI.normalText(goingString),
+                            SmashUI.normalText(
+                                "${(elevData.last[1] as double).toStringAsFixed(0)} m"),
                           ],
                         ),
                       ),
+                      if (maxElevInt != minElevInt)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text("${maxElevInt + 1}",
+                              style: TextStyle(
+                                  fontSize: 10, fontWeight: FontWeight.bold)),
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+                        child: SizedBox(
+                          height: 100,
+                          width: 180,
+                          child: LineChart(
+                            getProfileData(elevData, minElevInt, maxElevInt),
+                          ),
+                        ),
+                      ),
+                      if (maxElevInt != minElevInt)
+                        Text("${minElevInt - 1}",
+                            style: TextStyle(
+                                fontSize: 10, fontWeight: FontWeight.bold)),
                     ],
                   ),
                 ),
@@ -207,6 +230,56 @@ class CurrentGpsLogLayer extends StatelessWidget {
         return Container();
       }
     });
+  }
+
+  LineChartData getProfileData(List<dynamic> xyList, int minElev, int maxElev) {
+    // don't smooth if rounding, might be removed
+    // var length = xyList.length;
+    // if (length > 30) {
+    //   var avg = FeatureSlidingAverage(xyList);
+    //   xyList = avg.smooth(21, 0.8);
+    // } else if (length > 10) {
+    //   var avg = FeatureSlidingAverage(xyList);
+    //   xyList = avg.smooth(7, 0.9);
+    // }
+
+    return LineChartData(
+      minY: minElev.toDouble() - 1.0,
+      maxY: maxElev.toDouble() + 1.0,
+      lineTouchData: LineTouchData(
+        enabled: true,
+      ),
+      gridData: FlGridData(
+        // show: true,
+        drawVerticalLine: true,
+        drawHorizontalLine: true,
+      ),
+      titlesData: FlTitlesData(
+        bottomTitles: SideTitles(
+          showTitles: false,
+        ),
+        leftTitles: SideTitles(
+          showTitles: false,
+        ),
+      ),
+      lineBarsData: [
+        LineChartBarData(
+          spots: xyList.map((e) => FlSpot(e[0], e[1].roundToDouble())).toList(),
+          isCurved: false,
+          colors: [
+            Colors.black.withAlpha(160),
+          ],
+          barWidth: 2,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(show: true, colors: [
+            Colors.black.withAlpha(20),
+          ]),
+        )
+      ],
+    );
   }
 }
 

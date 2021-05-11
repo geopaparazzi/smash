@@ -4,6 +4,9 @@
  * found in the LICENSE file.
  */
 
+import 'dart:collection';
+import 'dart:math';
+
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:latlong/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
@@ -41,8 +44,7 @@ class GpsState extends ChangeNotifierPlus {
   int _currentLogTimeDeltaMillis;
   int _currentLogTimeInitMillis;
   double _currentSpeedInMs;
-  double _previousAltitude;
-  double _currentElevDelta;
+  List<dynamic> _lastProgAndAltitudes = [];
   List<LatLng> _currentFilteredLogPoints = [];
 
   String logMode;
@@ -185,22 +187,20 @@ class GpsState extends ChangeNotifierPlus {
 
     _currentSpeedInMs = speed;
 
-    if (_previousAltitude != null) {
-      _currentElevDelta = altitude - _previousAltitude;
-    } else {
-      _currentElevDelta = 0.0;
+    _lastProgAndAltitudes.add([_currentLogProgressive, altitude]);
+    if (_lastProgAndAltitudes.length > 100) {
+      _lastProgAndAltitudes.removeAt(0);
     }
-    _previousAltitude = altitude;
   }
 
-  /// Get the stats of the current log in the form: [progressiveM, filteredProgressiveM, timedelta]
+  /// Get the stats of the current log.
   List<dynamic> getCurrentLogStats() {
     return [
       _currentLogProgressive,
       _currentFilteredLogProgressive,
       _currentLogTimeDeltaMillis,
       _currentSpeedInMs,
-      _currentElevDelta,
+      _lastProgAndAltitudes,
     ];
   }
 
