@@ -67,6 +67,9 @@ class _GssExportWidgetState extends State<GssExportWidget> {
       });
       return;
     }
+    if (_serverUrl.endsWith("/")) {
+      _serverUrl = _serverUrl.substring(0, _serverUrl.length - 1);
+    }
 
     String pwd =
         GpPreferences().getStringSync(SmashPreferencesKeys.KEY_GSS_SERVER_PWD);

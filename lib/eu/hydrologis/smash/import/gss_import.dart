@@ -70,6 +70,9 @@ class _GssImportWidgetState extends State<GssImportWidget>
       });
       return;
     }
+    if (_serverUrl.endsWith("/")) {
+      _serverUrl = _serverUrl.substring(0, _serverUrl.length - 1);
+    }
     String downloadDataListUrl = _serverUrl + GssUtilities.DATA_DOWNLOAD_PATH;
     String downloadTagsListUrl = _serverUrl + GssUtilities.TAGS_DOWNLOAD_PATH;
 
