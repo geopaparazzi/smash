@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 import 'dart:async';
+import 'dart:math';
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
@@ -52,6 +53,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
   Paint filteredLogPaint;
   bool doOrig = true;
   bool doFiltered = true;
+  // defines if to flatten the chart to have more realistic ratio
+  bool _doFlatChart = true;
 
   CurrentGpsLogLayer(this.currentGpsLogLayerOpts, this.map, this.stream) {
     /// The log view modes [originalData, filteredData].
@@ -89,10 +92,13 @@ class CurrentGpsLogLayer extends StatelessWidget {
         int timestampDelta = currentLogStats[2] as int;
         double speedMs = currentLogStats[3];
         double speedKmH = speedMs * 3600 / 1000;
-        List<dynamic> elevData = currentLogStats[4];
+        List<dynamic> elevDataTmp = currentLogStats[4];
         double minElev = double.infinity;
         double maxElev = double.negativeInfinity;
-        elevData.forEach((xy) {
+
+        bool take = true;
+        List<dynamic> elevData = [];
+        elevDataTmp.forEach((xy) {
           var tmp = xy[1];
           if (tmp < minElev) {
             minElev = tmp;
@@ -100,7 +106,18 @@ class CurrentGpsLogLayer extends StatelessWidget {
           if (tmp > maxElev) {
             maxElev = tmp;
           }
+          if (take) {
+            elevData.add(xy);
+          }
+          take = !take;
         });
+
+        if (_doFlatChart) {
+          var minProg = elevData.first[0];
+          var maxProg = elevData.last[0];
+
+          maxElev = max(maxElev, minElev + (maxProg - minProg).round());
+        }
         int minElevInt = minElev.round();
         int maxElevInt = maxElev.round();
 
@@ -205,13 +222,24 @@ class CurrentGpsLogLayer extends StatelessWidget {
                               style: TextStyle(
                                   fontSize: 10, fontWeight: FontWeight.bold)),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 2.0, left: 2.0),
-                        child: SizedBox(
-                          height: 100,
-                          width: 180,
-                          child: LineChart(
-                            getProfileData(elevData, minElevInt, maxElevInt),
+                      GestureDetector(
+                        onDoubleTap: () {
+                          _doFlatChart = !_doFlatChart;
+                          String msg = "Show exagerated elev chart.";
+                          if (_doFlatChart) {
+                            msg = "Show proper ratio chart.";
+                          }
+                          final snackBar = SnackBar(content: Text(msg));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+                          child: SizedBox(
+                            height: 100,
+                            width: 180,
+                            child: LineChart(
+                              getProfileData(elevData, minElevInt, maxElevInt),
+                            ),
                           ),
                         ),
                       ),
@@ -234,18 +262,22 @@ class CurrentGpsLogLayer extends StatelessWidget {
 
   LineChartData getProfileData(List<dynamic> xyList, int minElev, int maxElev) {
     // don't smooth if rounding, might be removed
-    // var length = xyList.length;
+    var length = xyList.length;
     // if (length > 30) {
     //   var avg = FeatureSlidingAverage(xyList);
     //   xyList = avg.smooth(21, 0.8);
-    // } else if (length > 10) {
+    // } else
+    // if (length > 10) {
     //   var avg = FeatureSlidingAverage(xyList);
     //   xyList = avg.smooth(7, 0.9);
     // }
 
+    // do elev * 10 and round to have dm resolution (works because the chart has no labels)
+    var factor = 10.0;
+
     return LineChartData(
-      minY: minElev.toDouble() - 1.0,
-      maxY: maxElev.toDouble() + 1.0,
+      minY: (minElev.toDouble() - 1.0) * factor,
+      maxY: (maxElev.toDouble() + 1.0) * factor,
       lineTouchData: LineTouchData(
         enabled: true,
       ),
@@ -264,8 +296,10 @@ class CurrentGpsLogLayer extends StatelessWidget {
       ),
       lineBarsData: [
         LineChartBarData(
-          spots: xyList.map((e) => FlSpot(e[0], e[1].roundToDouble())).toList(),
-          isCurved: false,
+          spots: xyList
+              .map((e) => FlSpot(e[0], (e[1] * factor).roundToDouble()))
+              .toList(),
+          isCurved: true,
           colors: [
             Colors.black.withAlpha(160),
           ],
