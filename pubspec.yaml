@@ -68,7 +68,7 @@ dependencies:
       # url: https://github.com/ibrierley/flutter_map_line_editor.git  
 
   # MIT
-  sqlite3_flutter_libs: ^0.3.0
+  sqlite3_flutter_libs: ^0.4.0
 
   # BSD
   flutter_map: ^0.10.1
