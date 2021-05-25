@@ -96,7 +96,6 @@ class CurrentGpsLogLayer extends StatelessWidget {
         double minElev = double.infinity;
         double maxElev = double.negativeInfinity;
 
-        bool take = true;
         List<dynamic> elevData = [];
         elevDataTmp.forEach((xy) {
           var tmp = xy[1];
@@ -106,17 +105,11 @@ class CurrentGpsLogLayer extends StatelessWidget {
           if (tmp > maxElev) {
             maxElev = tmp;
           }
-          if (take) {
-            elevData.add(xy);
-          }
-          take = !take;
+          elevData.add(xy);
         });
 
-        if (_doFlatChart) {
-          var minProg = elevData.first[0];
-          var maxProg = elevData.last[0];
-
-          maxElev = max(maxElev, minElev + (maxProg - minProg).round());
+        if (_doFlatChart && (maxElev - minElev) < 25) {
+          maxElev = minElev + 25;
         }
         int minElevInt = minElev.round();
         int maxElevInt = maxElev.round();
@@ -262,7 +255,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
 
   LineChartData getProfileData(List<dynamic> xyList, int minElev, int maxElev) {
     // don't smooth if rounding, might be removed
-    var length = xyList.length;
+    // var length = xyList.length;
     // if (length > 30) {
     //   var avg = FeatureSlidingAverage(xyList);
     //   xyList = avg.smooth(21, 0.8);
