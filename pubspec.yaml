@@ -413,11 +413,10 @@ flutter_intl:
   output_dir: lib/generated # Optional. Sets the directory of generated localization files. Provided value should be a valid path on your system. Default: lib/generated
   use_deferred_loading: false # Optional. Must be set to true to generate localization code that is loaded with deferred loading. Default: false
 
-  # localizely: # Optional settings if you use Localizely platform. Read more: https://localizely.com/flutter-localization-workflow
-  #   project_id: # Configured manually or through 'Connect to Localizely' command. Get it from the https://app.localizely.com/projects page.
+  localizely: # Optional settings if you use Localizely platform. Read more: https://localizely.com/flutter-localization-workflow
+    project_id: d752dcb2-c3d8-450b-8f6d-127e222c5046 # Configured manually or through 'Connect to Localizely' command. Get it from the https://app.localizely.com/projects page.
   #   branch: # Configured manually. Get it from the “Branches” page on the Localizely platform, in case branching is enabled and you want to use a non-main branch.
-  #   upload_overwrite: # Set to true if you want to overwrite translations with upload. Default: false
-  #   upload_as_reviewed: # Set to true if you want to mark uploaded translations as reviewed. Default: false
-  #   download_empty_as: # Set to empty|main|skip, to configure how empty translations should be exported from the Localizely platform. Default: empty
-  #   ota_enabled: # Set to true if you want to use Localizely Over-the-air functionality. Default: false
-
+    upload_overwrite: false # Set to true if you want to overwrite translations with upload. Default: false
+    upload_as_reviewed: false # Set to true if you want to mark uploaded translations as reviewed. Default: false
+    download_empty_as: skip # Set to empty|main|skip, to configure how empty translations should be exported from the Localizely platform. Default: empty
+    ota_enabled: false # Set to true if you want to use Localizely Over-the-air functionality. Default: false
