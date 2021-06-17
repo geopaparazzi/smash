@@ -16,11 +16,11 @@ upload:
       - updated
 download:
   files: # List of files for download from Localizely.
-    - file: l10n/intl_en.arb
+    - file: lib/l10n/intl_en.arb
       locale_code: en
-    - file: l10n/intl_it.arb
+    - file: lib/l10n/intl_it.arb
       locale_code: it
-    - file: l10n/intl_ja.arb
+    - file: lib/l10n/intl_ja.arb
       locale_code: ja
   params:
     export_empty_as: empty # Optional, default: empty. How you would like empty translations to be exported. Allowed values are `empty` to keep empty, `main` to replace with the main language value, or `skip` to omit.
