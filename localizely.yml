@@ -23,7 +23,7 @@ download:
     - file: lib/l10n/intl_ja.arb
       locale_code: ja
   params:
-    export_empty_as: empty # Optional, default: empty. How you would like empty translations to be exported. Allowed values are `empty` to keep empty, `main` to replace with the main language value, or `skip` to omit.
+    export_empty_as: skip # Optional, default: empty. How you would like empty translations to be exported. Allowed values are `empty` to keep empty, `main` to replace with the main language value, or `skip` to omit.
     exclude_tags: # Optional. List of tags to be excluded from the download. If not set, all string keys will be considered for download.
       - removed
 #    include_tags: # Optional. List of tags to be downloaded. If not set, all string keys will be considered for download.
