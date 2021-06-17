@@ -1,0 +1,98 @@
+{
+  "@main": {
+    "context": "main.dart"
+  },
+  "@mainView" : {
+    "context": "mainview.dart"
+  },
+  "@mainviewUtils" : {
+    "context": "mainview_utils.dart"
+  },
+  "@export_widget": {
+    "context": "smash/export/export_widget.dart"
+  },
+  "@gss_export": {
+    "context": "smash/export/gss_export.dart"
+  },
+  "@geocoding": {
+    "context": "smash/gps/geocoding.dart"
+  },
+  "@gps": {
+    "context": "smash/gps/gps.dart"
+  },
+  "@gssImport": {
+    "context": "smash/import/gss_import.dart"
+  },
+  "@importWidget": {
+    "context": "smash/import/import_widget.dart"
+  },
+  "@layersView": {
+    "context": "smash/maps/layers/core/layersview.dart"
+  },
+  "@onlineSourcesPage": {
+    "context": "smash/maps/layers/core/onlinesourcespage.dart"
+  },
+  "@remoteDbPage": {
+    "context": "smash/maps/layers/core/remotedbpage.dart"
+  },
+  "@geoImage": {
+    "context": "smash/maps/layers/types/geoimage.dart"
+  },
+  "@gpx": {
+    "context": "smash/maps/layers/types/gpx.dart"
+  },
+  "@tiles": {
+    "context": "smash/maps/layers/types/tiles.dart"
+  },
+  "@wms": {
+    "context": "smash/maps/layers/types/wms.dart"
+  },
+  "@featureAttributesViewer": {
+    "context": "smash/maps/layers/feature_attributes_viewer.dart"
+  },
+  "@projects_view": {
+    "context": "smash/project/projects_view.dart"
+  },
+  "@data_loader": {
+    "context": "smash/project/data_loader.dart"
+  },
+  "@images": {
+    "context": "smash/project/images.dart"
+  },
+  "@about": {
+    "context": "smash/widgets/about.dart"
+  },
+  "@gpsInfoButton": {
+    "context": "smash/widgets/gps_info_button.dart"
+  },
+  "@gpsLogButton": {
+    "context": "smash/widgets/gps_log_button.dart"
+  },
+  "@imageWidgets": {
+    "context": "smash/widgets/image_widgets.dart"
+  },
+  "@logList": {
+    "context": "smash/widgets/log_list.dart"
+  },
+  "@logProperties": {
+    "context": "smash/widgets/log_properties.dart"
+  },
+  "@noteList": {
+    "context": "smash/widgets/note_list.dart"
+  },
+  "@settings": {
+    "context": "smash/widgets/settings.dart"
+  },
+  "@toolbarTools": {
+    "context": "smash/widgets/toolbar_tools.dart"
+  },
+  "@coachMarks": {
+    "context": "smash/util/coachmarks.dart"
+  },
+  "@fence": {
+    "context": "smash/util/fence.dart"
+  },
+  "@network": {
+    "context": "smash/util/network.dart"
+  }
+}

@@ -1,9 +1,6 @@
 {
   "@@locale": "en",
 
-  "@main": {
-    "context": "main.dart"
-  },
   "main_welcome": "Welcome to SMASH!",
   "main_check_location_permission": "Checking location permission...",
   "main_location_permission_granted": "Location permission granted.",
@@ -26,9 +23,6 @@
   "main_storagePermissionIsMandatoryToOpenSmash": "Storage permission is mandatory to open SMASH.",
   "main_anErrorOccurredTapToView": "An error occurred. Tap to view.",
 
-  "@mainview" : {
-    "context": "mainview.dart"
-  },
   "mainView_loadingData": "Loading data...",
   "mainView_turnGpsOn": "Turn GPS on",
   "mainView_turnGpsOff": "Turn GPS off",
@@ -42,9 +36,6 @@
   "mainView_formNotes": "Form Notes",
   "mainView_simpleNotes": "Simple Notes",
 
-  "@mainviewUtils" : {
-    "context": "mainview_utils.dart"
-  },
   "mainviewUtils_projects": "Projects",
   "mainviewUtils_import": "Import",
   "mainviewUtils_export": "Export",
@@ -62,10 +53,6 @@
   "mainviewUtils_sharePosition": "Share position",
   "mainviewUtils_rotateMapWithGps": "Rotate map with GPS",
 
-
-  "@export_widget": {
-    "context": "smash/export/export_widget.dart"
-  },
   "exportWidget_export": "Export",
   "exportWidget_pdfExported": "PDF exported",
   "exportWidget_exportToPortableDocumentFormat": "Export project to Portable Document Format",
@@ -77,9 +64,6 @@
   "exportWidget_exportToGeopackage": "Export project to Geopackage",
   "exportWidget_exportToGSS": "Export to Geopaparazzi Survey Server",
 
-  "@gss_export": {
-    "context": "smash/export/gss_export.dart"
-  },
   "gssExport_gssExport": "GSS Export",
   "gssExport_setProjectDirty":"Set project to DIRTY?",
   "gssExport_thisCantBeUndone": "This can't be undone!",
@@ -100,27 +84,17 @@
   "gssExport_shouldNotHappen": "Should not happen",
   "gssExport_upload": "Upload",
 
-  "@geocoding": {
-    "context": "smash/gps/geocoding.dart"
-  },
   "geocoding_geocoding": "Geocoding",
   "geocoding_nothingToLookFor": "Nothing to look for. Insert an address.",
   "geocoding_launchGeocoding": "Launch Geocoding",
   "geocoding_searching": "Searching...",
 
-
-  "@gps": {
-    "context": "smash/gps/gps.dart"
-  },
   "gps_smashIsActive": "SMASH is active",
   "gps_smashIsLogging": "SMASH is logging",
   "gps_locationTracking": "Location tracking",
   "gps_smashLocServiceIsActive": "SMASH location service is active.",
   "gps_backgroundLocIsOnToKeepRegistering": "Background location is on to keep the app registering the location even when the app is in background.",
 
-  "@gssImport": {
-    "context": "smash/import/gss_import.dart"
-  },
   "gssImport_gssImport": "GSS Import",
   "gssImport_downloadingDataList": "Downloading data list...",
   "gssImport_unableDownloadDataList": "Unable to download data list due to an error. Check your settings and the log.",
@@ -137,16 +111,9 @@
   "gssImport_tagsDownloadedFormsFolder":  "Tags files are downloaded into the forms folder.",
   "gssImport_noTagsAvailable":  "No tags available.",
 
-  "@importWidget": {
-    "context": "smash/import/import_widget.dart"
-  },
   "importWidget_import": "Import",
   "importWidget_importFromGeopaparazzi": "Import from Geopaparazzi Survey Server",
 
-
-  "@layersView": {
-    "context": "smash/maps/layers/core/layersview.dart"
-  },
   "layersView_layerList": "Layer List",
   "layersView_loadRemoteDatabase": "Load remote database",
   "layersView_loadOnlineSources": "Load online sources",
@@ -162,10 +129,6 @@
   "layersView_selectTableToLoad": "Select table to load.",
   "layersView_fileFormatNotSupported": "File format not supported.",
 
-
-  "@onlineSourcesPage": {
-    "context": "smash/maps/layers/core/onlinesourcespage.dart"
-  },
   "onlineSourcesPage_onlineSourcesCatalog": "Online Sources Catalog",
   "onlineSourcesPage_loadingTmsLayers": "Loading TMS layers...",
   "onlineSourcesPage_loadingWmsLayers": "Loading WMS layers...",
@@ -211,10 +174,6 @@
   "onlineSourcesPage_format": "Format",
   "onlineSourcesPage_newWmsOnlineService": "New WMS Online Service",
 
-
-  "@remoteDbPage": {
-    "context": "smash/maps/layers/core/remotedbpage.dart"
-  },
   "remoteDbPage_remoteDatabases": "Remote Databases",
   "remoteDbPage_delete": "Delete",
   "remoteDbPage_areYouSureDeleteDatabase": "Are you sure you want to delete the database configuration?",
@@ -234,17 +193,10 @@
   "remoteDbPage_unableToConnectToDatabase": "Unable to connect to the database. Check parameters and network.",
   "remoteDbPage_optionalWhereCondition": "optional where condition",
 
-  "@geoImage": {
-    "context": "smash/maps/layers/types/geoimage.dart"
-  },
   "geoImage_tiffProperties": "Tiff Properties",
   "geoImage_opacity": "Opacity",
   "geoImage_colorToHide": "Color to hide",
 
-
-  "@gpx": {
-    "context": "smash/maps/layers/types/gpx.dart"
-  },
   "gpx_gpxProperties": "Gpx Properties",
   "gpx_wayPoints": "WAYPOINTS",
   "gpx_color": "Color",
@@ -254,34 +206,19 @@
   "gpx_width": "Width",
   "gpx_palette": "Palette",
 
-
-  "@tiles": {
-    "context": "smash/maps/layers/types/tiles.dart"
-  },
   "tiles_tileProperties": "Tile Properties",
   "tiles_opacity": "Opacity",
   "tiles_loadGeoPackageAsOverlay": "Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).",
   "tiles_colorToHide": "Color to hide",
 
-
-  "@wms": {
-    "context": "smash/maps/layers/types/wms.dart"
-  },
   "wms_wmsProperties": "WMS Properties",
   "wms_opacity": "Opacity",
 
-
-  "@featureAttributesViewer": {
-    "context": "smash/maps/layers/feature_attributes_viewer.dart"
-  },
   "featureAttributesViewer_loadingData": "Loading data...",
   "featureAttributesViewer_setNewValue": "Set new value",
   "featureAttributesViewer_field": "FIELD",
   "featureAttributesViewer_value": "VALUE",
 
-  "@projects_view": {
-    "context": "smash/project/projects_view.dart"
-  },
   "projectsView_projectsView": "Projects View",
   "projectsView_openExistingProject": "Open an existing project",
   "projectsView_createNewProject": "Create a new project",
@@ -289,9 +226,6 @@
   "projectsView_newProject": "New Project",
   "projectsView_enterNameForNewProject": "Enter a name for the new project or accept the proposed.",
 
-  "@data_loader": {
-    "context": "smash/project/data_loader.dart"
-  },
   "dataLoader_note": "note",
   "dataLoader_Note": "Note",
   "dataLoader_hasForm": "Has Form",
@@ -307,14 +241,8 @@
   "dataLoader_removeImage": "Remove Image",
   "dataLoader_areYouSureRemoveImage": "Are you sure you want to remove image",
 
-  "@images": {
-    "context": "smash/project/images.dart"
-  },
   "images_loadingImage": "Loading image...",
 
-  "@about": {
-    "context": "smash/widgets/about.dart"
-  },
   "about_loadingInformation": "Loading information...",
   "about_ABOUT": "ABOUT ",
   "about_smartMobileAppForSurveyor": "Smart Mobile App for Surveyor's Happiness",
@@ -330,9 +258,6 @@
   "about_privacyPolicy": "Privacy Policy",
   "about_tapHereToSeePrivacyPolicy": "Tap here to see the privacy policy that covers user and location data.",
 
-  "@gpsInfoButton": {
-    "context": "smash/widgets/gps_info_button.dart"
-  },
   "gpsInfoButton_noGpsInfoAvailable": "No GPS info available...",
   "gpsInfoButton_timestamp": "Timestamp",
   "gpsInfoButton_speed": "Speed",
@@ -344,23 +269,14 @@
   "gpsInfoButton_longitude": "Longitude",
   "gpsInfoButton_copyLongitudeToClipboard": "Copy longitude to clipboard.",
 
-  "@gpsLogButton": {
-    "context": "smash/widgets/gps_log_button.dart"
-  },
   "gpsLogButton_stopLogging": "Stop Logging?",
   "gpsLogButton_stopLoggingAndCloseLog": "Stop logging and close the current GPS log?",
   "gpsLogButton_newLog": "New Log",
   "gpsLogButton_enterNameForNewLog": "Enter a name for the new log",
   "gpsLogButton_couldNotStartLogging": "Could not start logging: ",
 
-  "@imageWidgets": {
-    "context": "smash/widgets/image_widgets.dart"
-  },
   "imageWidgets_loadingImage": "Loading image...",
 
-  "@logList": {
-    "context": "smash/widgets/log_list.dart"
-  },
   "logList_gpsLogsList": "GPS Logs list",
   "logList_selectAll": "Select all",
   "logList_unSelectAll": "Unselect all",
@@ -380,9 +296,6 @@
   "logList_hour": "hour",
   "logList_minutes": "min",
 
-  "@logProperties": {
-    "context": "smash/widgets/log_properties.dart"
-  },
   "logProperties_gpsLogProperties": "GPS Log Properties",
   "logProperties_logName": "Log Name",
   "logProperties_start": "Start",
@@ -402,9 +315,6 @@
   "logProperties_speed": "Speed:",
   "logProperties_elevation": "Elevation:",
 
-  "@noteList": {
-    "context": "smash/widgets/note_list.dart"
-  },
   "noteList_simpleNotesList" : "Simple Notes List",
   "noteList_formNotesList" : "Form Notes List",
   "noteList_loadingNotes" : "Loading Notes...",
@@ -415,9 +325,6 @@
   "noteList_DELETE" : "DELETE",
   "noteList_areYouSureDeleteNote": "Are you sure you want to delete the note?",
 
-  "@settings": {
-    "context": "smash/widgets/settings.dart"
-  },
   "settings_settings": "Settings",
   "settings_camera": "Camera",
   "settings_cameraResolution": "Camera Resolution",
@@ -523,9 +430,6 @@
   "settings_serverPassword": "Server Password",
   "settings_allowSelfSignedCert": "Allow self signed certificates",
 
-  "@toolbarTools": {
-    "context": "smash/widgets/toolbar_tools.dart"
-  },
   "toolbarTools_zoomOut": "Zoom out",
   "toolbarTools_zoomIn": "Zoom in",
   "toolbarTools_cancelCurrentEdit": "Cancel current edit.",
@@ -540,9 +444,6 @@
   "toolbarTools_toggleFenceMapCenter": "Toggle fence in map center.",
   "toolbarTools_modifyGeomVectorLayers": "Modify geometries in editable vector layers.",
 
-  "@coachMarks": {
-    "context": "smash/util/coachmarks.dart"
-  },
   "coachMarks_singleTap": "Single tap: ",
   "coachMarks_longTap": "Long tap: ",
   "coachMarks_doubleTap": "Double tap: ",
@@ -578,9 +479,6 @@
   "coachMarks_openDrawerToLoadProject": "Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.",
   "coachMarks_skip": "SKIP",
 
-  "@fence": {
-    "context": "smash/util/fence.dart"
-  },
   "fence_fenceProperties" : "Fence Properties",
   "fence_delete" : "DELETE",
   "fence_removeFence" : "Remove fence",
@@ -597,9 +495,6 @@
   "fence_onEnter" : "On enter",
   "fence_onExit" : "On exit",
 
-  "@network": {
-    "context": "smash/util/network.dart"
-  },
   "network_cancelledByUser": "Cancelled by user.",
   "network_completed": "Completed.",
   "network_buildingBaseCachePerformance": "Building base cache for performance increase (might take some time...",
@@ -613,6 +508,4 @@
   "network_pleaseWait": "please wait...",
   "network_permissionOnServerDenied": "Permission on server denied.",
   "network_couldNotConnectToServer": "Could not connect to the server. Is it online? Check your address."
-
-
 }
