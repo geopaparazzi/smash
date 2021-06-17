@@ -1206,10 +1206,10 @@ class SL {
   }
 
   /// `File format not supported.`
-  String get layersView_fileFormatNotSUpported {
+  String get layersView_fileFormatNotSupported {
     return Intl.message(
       'File format not supported.',
-      name: 'layersView_fileFormatNotSUpported',
+      name: 'layersView_fileFormatNotSupported',
       desc: '',
       args: [],
     );
@@ -4466,10 +4466,10 @@ class SL {
   }
 
   /// `Interactive coach marks button`
-  String get coachMarks_interactiveCoackMarksButton {
+  String get coachMarks_interactiveCoachMarksButton {
     return Intl.message(
       'Interactive coach marks button',
-      name: 'coachMarks_interactiveCoackMarksButton',
+      name: 'coachMarks_interactiveCoachMarksButton',
       desc: '',
       args: [],
     );

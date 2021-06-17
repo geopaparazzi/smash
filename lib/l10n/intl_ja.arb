@@ -161,7 +161,7 @@
   "layersView_onlyImageFilesWithWorldDef": "ワールドファイル定義の画像ファイルのみがサポートされています。",
   "layersView_onlyImageFileWithPrjDef": "prjファイル定義のある画像ファイルのみがサポートされています。",
   "layersView_selectTableToLoad": "ロードするテーブルを選択してください。",
-  "layersView_fileFormatNotSUpported": "ファイル形式はサポートされていません。",
+  "layersView_fileFormatNotSupported": "ファイル形式はサポートされていません。",
 
 
   "@onlineSourcesPage": {
@@ -576,7 +576,7 @@
   "coachMarks_toggleBottomToolsBar": "下部のツールバーを切り替えます。",
   "coachMarks_toolsButton": "ツールボタン",
   "coachMarks_openEndDrawerToAccessProject": "エンドドロワーを開いて,プロジェクト情報と共有オプション,およびMAPプラグイン,機能ツール,その他にアクセスします。",
-  "coachMarks_interactiveCoackMarksButton": "インタラクティブコーチマークボタン",
+  "coachMarks_interactiveCoachMarksButton": "インタラクティブコーチマークボタン",
   "coachMarks_openInteractiveCoachMarks": "メインマップビューのすべてのアクションを説明するインタラクションコーチマークを開きます。",
   "coachMarks_mainMenuButton": "メインメニューボタン",
   "coachMarks_openDrawerToLoadProject": "ドロワーを開いてプロジェクトをロードし,新しいプロジェクトを作成し,データをインポートおよびエクスポートし,サーバーと同期し,設定にアクセスしてアプリケーションを終了し,GPSを無効にします。",

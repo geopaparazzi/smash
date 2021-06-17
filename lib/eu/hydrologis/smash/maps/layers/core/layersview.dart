@@ -454,7 +454,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
         context,
         SL
             .of(context)
-            .layersView_fileFormatNotSUpported); //"File format not supported."
+            .layersView_fileFormatNotSupported); //"File format not supported."
   }
   return false;
 }

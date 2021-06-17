@@ -160,7 +160,7 @@
   "layersView_onlyImageFilesWithWorldDef": "Only image files with world file definition are supported.",
   "layersView_onlyImageFileWithPrjDef": "Only image files with prj file definition are supported.",
   "layersView_selectTableToLoad": "Select table to load.",
-  "layersView_fileFormatNotSUpported": "File format not supported.",
+  "layersView_fileFormatNotSupported": "File format not supported.",
 
 
   "@onlineSourcesPage": {
@@ -572,7 +572,7 @@
   "coachMarks_toggleBottomToolsBar": "Toggle bottom tools bar. ",
   "coachMarks_toolsButton": "Tools Button",
   "coachMarks_openEndDrawerToAccessProject": "Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.",
-  "coachMarks_interactiveCoackMarksButton": "Interactive coach marks button",
+  "coachMarks_interactiveCoachMarksButton": "Interactive coach marks button",
   "coachMarks_openInteractiveCoachMarks": "Open the interactice coach marks that explain all the actions of the main map view.",
   "coachMarks_mainMenuButton": "Main Menu Button",
   "coachMarks_openDrawerToLoadProject": "Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.",

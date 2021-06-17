@@ -153,7 +153,7 @@ class MainViewCoachMarks {
     ));
 
     title =
-        "$i/$all ${SL.current.coachMarks_interactiveCoackMarksButton}"; //"Interactive coach marks button"
+        "$i/$all ${SL.current.coachMarks_interactiveCoachMarksButton}"; //"Interactive coach marks button"
     singleTap = SL.current
         .coachMarks_openInteractiveCoachMarks; //"Open the interactice coach marks that explain all the actions of the main map view."
     longTap = null;
