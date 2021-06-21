@@ -8,6 +8,8 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
+import 'package:latlong/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/generated/l10n.dart';
@@ -23,6 +25,7 @@ class WmsSource extends RasterLayerSource {
   LatLngBounds _serviceBounds = LatLngBounds();
   bool _hasBounds = false;
   String attribution = "";
+  String version = "1.1.1";
   int _srid = SmashPrj.EPSG3857_INT;
 
   Function errorTileCallback = (tile, exception) {
@@ -38,6 +41,7 @@ class WmsSource extends RasterLayerSource {
     opacityPercentage = (map[LAYERSKEY_OPACITY] ?? 100).toDouble();
     imageFormat = map[LAYERSKEY_FORMAT] ?? LAYERSTYPE_FORMAT_PNG;
     attribution = map[LAYERSKEY_ATTRIBUTION] ?? "";
+    version = map[LAYERSKEY_WMSVERSION] ?? "1.1.1";
 
     _srid = map[LAYERSKEY_SRID] ?? SmashPrj.EPSG3857_INT;
 
@@ -77,6 +81,8 @@ class WmsSource extends RasterLayerSource {
     return isVisible;
   }
 
+  String getVersion() => version;
+
   IconData getIcon() => SmashIcons.iconTypeRaster;
 
   void setActive(bool active) {
@@ -93,6 +99,7 @@ class WmsSource extends RasterLayerSource {
         "$LAYERSKEY_FORMAT": "$imageFormat",
         "$LAYERSKEY_ATTRIBUTION": "$attribution",
         "$LAYERSKEY_SRID": $_srid,
+        "$LAYERSKEY_WMSVERSION": "$version",
         "$LAYERSKEY_TYPE": "$LAYERSTYPE_WMS"
     }
     ''';
@@ -103,41 +110,18 @@ class WmsSource extends RasterLayerSource {
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
     await load(context);
 
-    // final resolutions = <double>[
-    //   134217728, // 20
-    //   67108864,
-    //   33554432,
-    //   16777216,
-    //   8388608,
-    //   4194304, //15
-    //   2097152,
-    //   1048576,
-    //   524288,
-    //   262144,
-    //   131072, // 10
-    //   65536,
-    //   32768,
-    //   16384,
-    //   8192,
-    //   4096, // 5
-    //   2048,
-    //   1024,
-    //   512,
-    //   256,
-    //   128, // 0
-    // ];
-    // var crs = Proj4Crs.fromFactory(
-    //     code: 'EPSG:3857',
-    //     proj4Projection: SmashPrj.EPSG3857,
-    //     resolutions: resolutions);
+    Crs crs = Epsg3857();
+    if (_srid == 4326) {
+      crs = Epsg4326Flip();
+    }
 
     List<LayerOptions> layers = [
       TileLayerOptions(
         opacity: opacityPercentage / 100.0,
         backgroundColor: Colors.transparent,
         wmsOptions: WMSTileLayerOptions(
-          // Set the WMS layer's CRS
-          //crs: crs,
+          crs: crs,
+          version: version,
           transparent: true,
           format: imageFormat,
           baseUrl: _getCapabilitiesUrl,
@@ -272,5 +256,41 @@ class WmsPropertiesWidgetState extends State<WmsPropertiesWidget> {
             ],
           ),
         ));
+  }
+}
+
+class Epsg4326Flip extends Earth {
+  @override
+  final String code = 'CRS:84';
+
+  @override
+  final Projection projection;
+
+  @override
+  final Transformation transformation;
+
+  const Epsg4326Flip()
+      : projection = const _LonLat(),
+        transformation = const Transformation(1 / 180, 0.5, -1 / 180, 0.5),
+        super();
+}
+
+class _LonLat extends Projection {
+  static final Bounds<double> _bounds = Bounds<double>(
+      CustomPoint<double>(-180.0, -90.0), CustomPoint<double>(180.0, 90.0));
+
+  const _LonLat() : super();
+
+  @override
+  Bounds<double> get bounds => _bounds;
+
+  @override
+  CustomPoint project(LatLng latlng) {
+    return CustomPoint(latlng.longitude, latlng.latitude);
+  }
+
+  @override
+  LatLng unproject(CustomPoint point) {
+    return LatLng(inclusiveLat(point.y), inclusiveLng(point.x));
   }
 }

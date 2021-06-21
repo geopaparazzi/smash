@@ -47,6 +47,7 @@ const DEFAULT_MAXZOOM = 19;
 
 const LAYERSTYPE_WMS = 'wms';
 const LAYERSTYPE_TMS = 'tms';
+const LAYERSKEY_WMSVERSION = 'wmsversion';
 const LAYERSTYPE_FORMAT_JPG = "image/jpeg";
 const LAYERSTYPE_FORMAT_PNG = "image/png";
 const LAYERSTYPE_FORMAT_TIFF = "image/tiff";

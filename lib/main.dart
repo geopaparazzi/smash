@@ -87,7 +87,7 @@ class SmashApp extends StatelessWidget {
       // ],
       // END PRE GEN
       navigatorKey: Catcher.navigatorKey,
-      title: APP_NAME,
+      title: Workspace.APP_NAME,
       //theme: Provider.of<ThemeState>(context).currentThemeData,
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,

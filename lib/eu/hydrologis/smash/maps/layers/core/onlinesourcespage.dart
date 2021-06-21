@@ -584,14 +584,14 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
               ),
             ),
             actions: <Widget>[
-              new FlatButton(
+              new TextButton(
                 child: new Text(
                     SL.of(context).onlineSourcesPage_cancel), //"CANCEL"
                 onPressed: () {
                   Navigator.pop(context, false);
                 },
               ),
-              new FlatButton(
+              new TextButton(
                 child: new Text(SL.of(context).onlineSourcesPage_ok), //"OK"
                 onPressed: () {
                   Navigator.pop(context, true);
@@ -646,16 +646,17 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
             ),
             Padding(
               padding: SmashUI.defaultPadding(),
-              child: new RaisedButton(
-                child: Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: SmashUI.titleText(
-                      SL.of(context).onlineSourcesPage_save, //"Save"
-                      color: SmashColors.mainBackground),
-                ),
-                onPressed: _submitDetails,
-                color: SmashColors.mainDecorations,
-              ),
+              child: new ElevatedButton(
+                  child: Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.titleText(
+                        SL.of(context).onlineSourcesPage_save, //"Save"
+                        color: SmashColors.mainBackground),
+                  ),
+                  onPressed: _submitDetails,
+                  style: ElevatedButton.styleFrom(
+                    primary: SmashColors.mainDecorations,
+                  )),
             ),
           ],
         ),
@@ -671,6 +672,8 @@ class WmsData {
   String minZoom;
   String maxZoom;
   String format = LAYERSTYPE_FORMAT_JPG;
+  String version = "1.1.1";
+  int srid = SmashPrj.EPSG3857_INT;
 }
 
 class AddWmsStepper extends StatefulWidget {
@@ -765,6 +768,33 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
       ]),
     ),
     Step(
+      title: Text("Select CRS"),
+      isActive: true,
+      state: StepState.indexed,
+      content: Column(children: <Widget>[
+        StringCombo([
+          "EPSG:3857",
+          "EPSG:4326",
+        ], "EPSG:3857", (String newSelection) {
+          var code = newSelection.replaceFirst("EPSG:", "");
+          wmsData.srid = int.parse(code);
+        }),
+      ]),
+    ),
+    Step(
+      title: Text("Select Version"),
+      isActive: true,
+      state: StepState.indexed,
+      content: Column(children: <Widget>[
+        StringCombo([
+          "1.1.1",
+          "1.3.0",
+        ], "1.1.1", (String newSelection) {
+          wmsData.version = newSelection;
+        }),
+      ]),
+    ),
+    Step(
       title: Text(SL
           .current.onlineSourcesPage_addAnAttribution), //"Add an attribution."
       isActive: true,
@@ -855,6 +885,8 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
                         wmsData.layer), //"Layer: "
                     new Text(SL.current.onlineSourcesPage_url +
                         wmsData.url), //"URL: "
+                    new Text("EPSG:${wmsData.srid}"),
+                    new Text("Version: " + wmsData.version),
                     new Text(SL.current.onlineSourcesPage_attribution +
                             wmsData.attribution ??
                         "- nv -"), //"Attribution: "
@@ -868,14 +900,14 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
                 ),
               ),
               actions: <Widget>[
-                new FlatButton(
+                new TextButton(
                   child:
                       new Text(SL.current.onlineSourcesPage_cancel), //'CANCEL'
                   onPressed: () {
                     Navigator.pop(context, false);
                   },
                 ),
-                new FlatButton(
+                new TextButton(
                   child: new Text(SL.current.onlineSourcesPage_ok), //'OK'
                   onPressed: () {
                     Navigator.pop(context, true);
@@ -896,6 +928,8 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
             "$LAYERSKEY_ATTRIBUTION": "${wmsData.attribution ?? ""}",
             "$LAYERSKEY_TYPE": "$LAYERSTYPE_WMS",
             "$LAYERSKEY_FORMAT": "${wmsData.format}",
+            "$LAYERSKEY_SRID": ${wmsData.srid},
+            "$LAYERSKEY_WMSVERSION": "${wmsData.version}",
             "$LAYERSKEY_ISVISIBLE": true
         }
         ''';
