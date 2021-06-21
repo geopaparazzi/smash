@@ -36,13 +36,13 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: fa586c2
+      ref: 23cc0e9852a2feec16b9c3155e42f8219ae31ad6
 
   dart_shp: ^0.3.1
 
   dart_hydrologis_utils: ^0.5.5
     # path: ../dart_hydrologis_utils/
-  dart_jts: ^0.0.7
+  dart_jts: ^0.1.0
     # path: ../dart_jts/
 
   dart_postgis: ^0.1.0
@@ -75,10 +75,10 @@ dependencies:
   # git:
   #   url: https://github.com/moovida/flutter_map.git
   #   ref: version4smash
-  flutter_map_marker_cluster: #^0.2.7
-    git:
-      url: https://github.com/moovida/flutter_map_marker_cluster.git
-      ref: version4smash
+  flutter_map_marker_cluster: ^0.2.7
+    # git:
+    #   url: https://github.com/moovida/flutter_map_marker_cluster.git
+    #   ref: version4smash
 
   # GPL 3.0
   map_elevation: ^1.1.0
