@@ -8,7 +8,7 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';

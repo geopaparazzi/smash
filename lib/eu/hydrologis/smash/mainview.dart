@@ -15,7 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
@@ -49,6 +49,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/toolbar_tools.dart';
 import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 import 'mainview_utils.dart';
@@ -187,18 +188,23 @@ class MainViewWidgetState extends State<MainViewWidget>
     var mapState =
         Provider.of<SmashMapState>(mapBuilder.context, listen: false);
 
-    if (_mapController != null && _mapController.ready) {
+    if (_mapController != null) {
+      //&& _mapController.ready) {
       if (EXPERIMENTAL_ROTATION__ENABLED) {
         // check map centering and rotation
-        if (mapState.rotateOnHeading) {
-          GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-          var heading = gpsState.lastGpsPosition.heading;
-          if (heading < 0) {
-            heading = 360 + heading;
+        try {
+          if (mapState.rotateOnHeading) {
+            GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+            var heading = gpsState.lastGpsPosition.heading;
+            if (heading < 0) {
+              heading = 360 + heading;
+            }
+            _mapController.rotate(-heading);
+          } else {
+            _mapController.rotate(0);
           }
-          _mapController.rotate(-heading);
-        } else {
-          _mapController.rotate(0);
+        } on Exception catch (e, s) {
+          SMLogger().e("Error in experimental", e, s);
         }
       }
     }

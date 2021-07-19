@@ -8,10 +8,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:latlong/latlong.dart' hide Path;
+import 'package:latlong2/latlong.dart' hide Path;
 import 'package:smashlibs/smashlibs.dart';
-
-
 
 class ScaleLayerPluginOption extends LayerOptions {
   TextStyle textStyle;
@@ -21,9 +19,9 @@ class ScaleLayerPluginOption extends LayerOptions {
 
   ScaleLayerPluginOption(
       {this.textStyle,
-        this.lineColor = Colors.white,
-        this.lineWidth = 2,
-        this.padding});
+      this.lineColor = Colors.white,
+      this.lineWidth = 2,
+      this.padding});
 }
 
 class ScaleLayerPlugin implements MapPlugin {
@@ -135,7 +133,7 @@ class ScalePainter extends CustomPainter {
 
     var textSpan = TextSpan(style: textStyle, text: text);
     var textPainter =
-    TextPainter(text: textSpan, textDirection: TextDirection.ltr)..layout();
+        TextPainter(text: textSpan, textDirection: TextDirection.ltr)..layout();
     textPainter.paint(canvas,
         Offset(width / 2 - textPainter.width / 2 + paddingLeft, paddingTop));
     paddingTop += textPainter.height;

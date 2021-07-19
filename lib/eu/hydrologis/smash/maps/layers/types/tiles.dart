@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:proj4dart/proj4dart.dart' as PROJ;
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
@@ -312,7 +312,7 @@ class TileSource extends TiledRasterLayerSource {
             var env = tileEntry.bounds;
             if (tileEntry.srid != Proj.EPSG4326_INT) {
               env = Proj.transformEnvelopeToWgs84(
-                  PROJ.Projection("EPSG:${tileEntry.srid}"), env);
+                  PROJ.Projection.get("EPSG:${tileEntry.srid}"), env);
             }
 
             bounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
@@ -382,7 +382,7 @@ class TileSource extends TiledRasterLayerSource {
         if (tileEntry.srid != Proj.EPSG4326_INT) {
           to4326function = (var envelope) {
             return Proj.transformEnvelopeToWgs84(
-                PROJ.Projection("EPSG:${tileEntry.srid}"), envelope);
+                PROJ.Projection.get("EPSG:${tileEntry.srid}"), envelope);
           };
         }
         TilesFetcher fetcher = TilesFetcher(tileEntry);

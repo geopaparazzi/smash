@@ -10,7 +10,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:latlong/latlong.dart' hide Path;
+import 'package:latlong2/latlong.dart' hide Path;
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smashlibs/smashlibs.dart';

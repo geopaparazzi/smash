@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:map_elevation/map_elevation.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';

@@ -29,7 +29,7 @@ import 'package:stack_trace/stack_trace.dart';
 //import 'package:flutter_gen/gen_l10n/smash_localization.dart';
 import 'generated/l10n.dart';
 
-const DOCATCHER = false;
+const DOCATCHER = true;
 
 void main() {
   if (DOCATCHER) {
@@ -39,8 +39,10 @@ void main() {
       EmailManualHandler(["feedback@geopaparazzi.eu"])
     ]);
 
-    Catcher(getMainWidget(),
-        debugConfig: debugOptions, releaseConfig: releaseOptions);
+    Catcher(
+        rootWidget: getMainWidget(),
+        debugConfig: debugOptions,
+        releaseConfig: releaseOptions);
   } else {
     runApp(getMainWidget());
   }
@@ -281,7 +283,7 @@ Future<String> handlePreferences(BuildContext context) async {
 
 Future<String> handleWorkspace(BuildContext context) async {
   try {
-    await Workspace.init();
+    await Workspace.init(doSafeMode: false);
     var directory = await Workspace.getConfigFolder();
     bool init = SLogger().init(directory.path); // init logger
     if (init) SMLogger().setSubLogger(SLogger());

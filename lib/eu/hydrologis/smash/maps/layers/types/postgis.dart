@@ -14,7 +14,7 @@ import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter/widgets.dart' hide TextStyle;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -58,8 +58,11 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
     var bounds = map[LAYERSKEY_BOUNDS];
     if (bounds != null && bounds.isNotEmpty) {
       var boundsSplit = bounds.split(";"); // wesn
-      _limitBounds =
-          JTS.Envelope(double.parse(boundsSplit[0]), double.parse(boundsSplit[1]), double.parse(boundsSplit[2]), double.parse(boundsSplit[3]));
+      _limitBounds = JTS.Envelope(
+          double.parse(boundsSplit[0]),
+          double.parse(boundsSplit[1]),
+          double.parse(boundsSplit[2]),
+          double.parse(boundsSplit[3]));
     }
 
     isVisible = map[LAYERSKEY_ISVISIBLE] ?? true;
@@ -67,12 +70,15 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
     _srid = map[LAYERSKEY_SRID];
   }
 
-  PostgisSource(this._dbUrl, this._tableName, this._user, this._pwd, this._limitBounds, this._where);
+  PostgisSource(this._dbUrl, this._tableName, this._user, this._pwd,
+      this._limitBounds, this._where);
 
   Future<void> load(BuildContext context) async {
     if (!isLoaded) {
-      int maxFeaturesToLoad = GpPreferences().getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1);
-      bool loadOnlyVisible = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
+      int maxFeaturesToLoad = GpPreferences()
+          .getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1);
+      bool loadOnlyVisible = GpPreferences().getBooleanSync(
+          SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
 
       if (loadOnlyVisible) {
         if (_limitBounds == null) {
@@ -83,7 +89,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
             var s = bounds.south;
             var e = bounds.east;
             var w = bounds.west;
-            _limitBounds = JTS.Envelope.fromCoordinates(JTS.Coordinate(w, s), JTS.Coordinate(e, n));
+            _limitBounds = JTS.Envelope.fromCoordinates(
+                JTS.Coordinate(w, s), JTS.Coordinate(e, n));
           }
         }
       }
@@ -100,7 +107,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
       var alphaFieldsTmp = await _pgDb.getTableColumns(sqlName);
 
       alphaFields = alphaFieldsTmp.map((e) => e[0] as String).toList();
-      alphaFields.removeWhere((name) => name == _geometryColumn.geometryColumnName);
+      alphaFields
+          .removeWhere((name) => name == _geometryColumn.geometryColumnName);
 
       sldString = await _pgDb.getSld(sqlName);
       if (sldString == null) {
@@ -119,8 +127,10 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
         _style = SldObjectParser.fromString(sldString);
         _style.parse();
 
-        if (_style.featureTypeStyles.first.rules.first.textSymbolizers.length > 0) {
-          _textStyle = _style.featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+        if (_style.featureTypeStyles.first.rules.first.textSymbolizers.length >
+            0) {
+          _textStyle = _style
+              .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
         }
       }
       if (maxFeaturesToLoad == -1) {
@@ -131,7 +141,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
       var limitBoundsData = _limitBounds;
       if (dataPrj != null) {
         if (_srid != SmashPrj.EPSG4326_INT && _limitBounds != null) {
-          var boundsPolygon = PostgisUtils.createPolygonFromEnvelope(_limitBounds);
+          var boundsPolygon =
+              PostgisUtils.createPolygonFromEnvelope(_limitBounds);
           SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, boundsPolygon);
           limitBoundsData = boundsPolygon.getEnvelopeInternal();
         }
@@ -149,7 +160,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
           _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
         });
 
-        _attribution = "${_geometryColumn.geometryType.getTypeName()} (${_tableData.geoms.length}) ";
+        _attribution =
+            "${_geometryColumn.geometryType.getTypeName()} (${_tableData.geoms.length}) ";
         if (_where != null) {
           _attribution += " (where $_where)";
         }
@@ -250,7 +262,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
         if (geometryType.isPoint()) {
           List<Marker> points = makeMarkersForRule(rule);
           if (rule.pointSymbolizers.isNotEmpty && pointFillColor == null) {
-            pointFillColor = ColorExt(rule.pointSymbolizers[0].style.fillColorHex);
+            pointFillColor =
+                ColorExt(rule.pointSymbolizers[0].style.fillColorHex);
           }
           allPoints.add(points);
         } else if (geometryType.isLine()) {
@@ -299,7 +312,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
     var lineOpacity = polygonStyle.strokeOpacity * 255;
     lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
 
-    Color fillColor = ColorExt(polygonStyle.fillColorHex).withAlpha((polygonStyle.fillOpacity * 255).toInt());
+    Color fillColor = ColorExt(polygonStyle.fillColorHex)
+        .withAlpha((polygonStyle.fillOpacity * 255).toInt());
 
     var featureCount = _tableData.geoms.length;
     for (var i = 0; i < featureCount; i++) {
@@ -310,13 +324,21 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
         for (var i = 0; i < count; i++) {
           JTS.Polygon p = geom.getGeometryN(i);
           // ext ring
-          var extCoords = p.getExteriorRing().getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
+          var extCoords = p
+              .getExteriorRing()
+              .getCoordinates()
+              .map((c) => LatLng(c.y, c.x))
+              .toList();
 
           // inter rings
           var numInteriorRing = p.getNumInteriorRing();
           List<List<LatLng>> intRingCoords = [];
           for (var i = 0; i < numInteriorRing; i++) {
-            var intCoords = p.getInteriorRingN(i).getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
+            var intCoords = p
+                .getInteriorRingN(i)
+                .getCoordinates()
+                .map((c) => LatLng(c.y, c.x))
+                .toList();
             intRingCoords.add(intCoords);
           }
 
@@ -359,8 +381,12 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
         var count = geom.getNumGeometries();
         for (var i = 0; i < count; i++) {
           JTS.LineString l = geom.getGeometryN(i);
-          var linePoints = l.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
-          lines.add(Polyline(points: linePoints, strokeWidth: lineWidth, color: lineStrokeColor));
+          var linePoints =
+              l.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
+          lines.add(Polyline(
+              points: linePoints,
+              strokeWidth: lineWidth,
+              color: lineStrokeColor));
         }
       }
     }
@@ -430,7 +456,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
     return points;
   }
 
-  void addMarkerLayer(List<List<Marker>> allPoints, List<LayerOptions> layers, Color pointFillColor) {
+  void addMarkerLayer(List<List<Marker>> allPoints, List<LayerOptions> layers,
+      Color pointFillColor) {
     if (allPoints.length == 1) {
       var waypointsCluster = MarkerClusterLayerOptions(
         maxClusterRadius: 20,
@@ -439,7 +466,10 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
           padding: EdgeInsets.all(50),
         ),
         markers: allPoints[0],
-        polygonOptions: PolygonOptions(borderColor: pointFillColor, color: pointFillColor.withOpacity(0.2), borderStrokeWidth: 3),
+        polygonOptions: PolygonOptions(
+            borderColor: pointFillColor,
+            color: pointFillColor.withOpacity(0.2),
+            borderStrokeWidth: 3),
         builder: (context, markers) {
           return FloatingActionButton(
             child: Text(markers.length.toString()),
@@ -511,7 +541,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
   }
 
   Widget getPropertiesWidget() {
-    return SldPropertiesEditor(sldString, geometryType, alphaFields: alphaFields);
+    return SldPropertiesEditor(sldString, geometryType,
+        alphaFields: alphaFields);
   }
 
   @override
@@ -521,8 +552,10 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
     _styleTmp.parse();
 
     // check is label has changed, in that case a reload will be necessary
-    if (_styleTmp.featureTypeStyles.first.rules.first.textSymbolizers.length > 0) {
-      var textStyleTmp = _styleTmp.featureTypeStyles.first.rules.first.textSymbolizers.first.style;
+    if (_styleTmp.featureTypeStyles.first.rules.first.textSymbolizers.length >
+        0) {
+      var textStyleTmp = _styleTmp
+          .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
 
       if (_textStyle?.labelName != textStyleTmp.labelName) {
         isLoaded = false;
@@ -535,7 +568,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
 }
 
 class PostgisConnectionsHandler {
-  static final PostgisConnectionsHandler _singleton = PostgisConnectionsHandler._internal();
+  static final PostgisConnectionsHandler _singleton =
+      PostgisConnectionsHandler._internal();
 
   factory PostgisConnectionsHandler() {
     return _singleton;
@@ -555,7 +589,8 @@ class PostgisConnectionsHandler {
   ///
   /// The [tableName] can be added to keep track of the tables that
   /// still need an open connection boudn to a given [_dbUrl].
-  Future<PostgisDb> open(String _dbUrl, String tableName, String user, String pwd) async {
+  Future<PostgisDb> open(
+      String _dbUrl, String tableName, String user, String pwd) async {
     PostgisDb db = _connectionsMap[_dbUrl];
     if (db == null) {
       // _dbUrl = postgis:host:port/dbname

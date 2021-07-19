@@ -9,7 +9,7 @@ import 'dart:ui';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';

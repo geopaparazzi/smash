@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart' hide Projection;
 import 'package:geoimage/geoimage.dart';
 import 'package:image/image.dart' as IMG;
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4dart;
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';

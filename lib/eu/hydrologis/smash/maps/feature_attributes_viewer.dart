@@ -13,7 +13,7 @@ import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart' as FM;
 import 'package:flutter_map/plugin_api.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';

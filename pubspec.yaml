@@ -24,7 +24,7 @@ dependencies:
   geoimage: ^0.1.2
 
   # apache 2
-  flutter_geopackage: ^0.4.6
+  flutter_geopackage: ^0.4.7
   # path: ../flutter_geopackage/
   #  git:
   #    url: https://github.com/moovida/flutter_geopackage.git
@@ -36,7 +36,7 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: 23cc0e9852a2feec16b9c3155e42f8219ae31ad6
+      ref: 71d59ce
 
   dart_shp: ^0.3.1
 
@@ -52,7 +52,7 @@ dependencies:
   # OTHERS
   ##################################
   # Apache 2.0
-  catcher: ^0.3.22
+  catcher: ^0.6.6
 
   # MIT
   flutter_ringtone_player: 2.0.0
@@ -60,60 +60,64 @@ dependencies:
   flutter_map_dragmarker:
     git:
       url: https://github.com/moovida/flutter_map_dragmarker.git
+      ref: upgrade_to_latlong2
       # url: https://github.com/ibrierley/flutter_map_dragmarker.git  
 
   flutter_map_line_editor:
     git:
       url: https://github.com/moovida/flutter_map_line_editor.git
+      ref: upgrade_to_latlong2
       # url: https://github.com/ibrierley/flutter_map_line_editor.git  
 
   # MIT
-  sqlite3_flutter_libs: ^0.4.0
+  sqlite3_flutter_libs: ^0.5.0
 
   # BSD
-  flutter_map: ^0.10.1
+  flutter_map: ^0.13.1
   # git:
   #   url: https://github.com/moovida/flutter_map.git
   #   ref: version4smash
-  flutter_map_marker_cluster: ^0.2.7
+  flutter_map_marker_cluster: ^0.4.0
     # git:
     #   url: https://github.com/moovida/flutter_map_marker_cluster.git
     #   ref: version4smash
 
   # GPL 3.0
-  map_elevation: ^1.1.0
-  # git:
-  #   url: https://github.com/moovida/map_elevation.git
-  #   ref: infopoints_test2
-  # MIT
-  lat_lon_grid_plugin: #0.1.1
+  map_elevation: #^1.1.0
     git:
-      url: https://github.com/moovida/lat_lon_grid_plugin.git
-      ref: version4smash
+      url: https://github.com/moovida/map_elevation.git
+      ref: fix_latlng_lib
+
+  # MIT
+  lat_lon_grid_plugin: 0.2.1
+    # git:
+    #   url: https://github.com/moovida/lat_lon_grid_plugin.git
+    #   ref: version4smash
 
   mapsforge_flutter:
     # path: /Users/hydrologis/development/mapsforge_flutter/mapsforge_flutter
     git:
-      # url: https://github.com/mikes222/mapsforge_flutter.git
-      url: https://github.com/moovida/mapsforge_flutter.git
+      url: https://github.com/mikes222/mapsforge_flutter.git
+      # url: https://github.com/moovida/mapsforge_flutter.git
       path: mapsforge_flutter
-      # ref: d5005f210da9475a5aa1d38b1d21654870826a5e
+      # ref: 33b2dda0512f9f6de250451e7d3854127eebc3d5
+      ref: 4a44d52deb389934f357af922788a5b5db226bce
 
   #MIT
-  extended_image: #^2.0.0
-    git:
-      url: https://github.com/moovida/extended_image
+  extended_image: ^4.1.0
+    # git:
+    #   url: https://github.com/moovida/extended_image
 
   # BSD
   fl_chart: ^0.36.0
 
   # MIT
-  permission_handler: ^5.1.0
+  permission_handler: ^8.1.0
   # git: 
   #   url: https://github.com/Baseflow/flutter-permission-handler.git
   #   path: permission_handler
   # BSD License
-  synchronized: ^2.2.0+1
+  synchronized: ^3.0.0
 
   # Apache 2
   badges: ^1.1.6
@@ -151,11 +155,12 @@ dependencies:
   #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
   #  <key>NSLocationAlwaysUsageDescription</key>
   #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
+  
   # apache
-  latlong: 0.6.1
+  latlong2: ^0.8.0
 
   # MIT
-  geodesy: ^0.3.2
+  geodesy: ^0.4.0-nullsafety.0
 
   # UNKNOWN!!!
   geocoder: 0.2.1
@@ -167,18 +172,18 @@ dependencies:
   rainbow_color: 0.1.1
 
   # BSD
-  stack_trace: 1.9.3
+  stack_trace: ^1.10.0
 
   # BSD
-  url_launcher: ^5.7.10
+  url_launcher: ^6.0.6
 
-  xml: '>=4.5.1 <=5.0.2'
+  xml: '>=4.5.1 <=5.1.2'
 
   # Apache 2.0
-  gpx: #^1.1.1
-    git:
-      url: https://github.com/moovida/dart-gpx.git
-      ref: "540e167"
+  gpx: ^2.1.0
+    # git:
+    #   url: https://github.com/moovida/dart-gpx.git
+    #   ref: "540e167"
 
   # Apache 2.0
   pdf: '>=2.1.0 <=3.0.0-nullsafety.1'
@@ -382,6 +387,8 @@ flutter:
     - packages/mapsforge_flutter/assets/symbols/water/weir.svg
     - packages/mapsforge_flutter/assets/symbols/windsock.svg
     - packages/mapsforge_flutter/assets/symbols/viewpoint.svg
+
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

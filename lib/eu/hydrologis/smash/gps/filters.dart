@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
