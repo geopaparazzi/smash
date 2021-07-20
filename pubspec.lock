@@ -327,9 +327,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: upgrade_to_latlong2
-      resolved-ref: "2dc2951cc843a8e7c384cb5c1c5ca05ff3d72ac0"
-      url: "https://github.com/moovida/flutter_map_dragmarker.git"
+      ref: nullsafety
+      resolved-ref: "659f73a1f4699ea1c50c47ccf68ce3946ffcd222"
+      url: "https://github.com/ibrierley/flutter_map_dragmarker.git"
     source: git
     version: "1.0.0+1"
   flutter_map_line_editor:
@@ -337,7 +337,7 @@ packages:
     description:
       path: "."
       ref: upgrade_to_latlong2
-      resolved-ref: ed50028f10df79c80238df39a03ea920bb095495
+      resolved-ref: f5e49ea43da6132386d40542f067d3e4ccc2a67d
       url: "https://github.com/moovida/flutter_map_line_editor.git"
     source: git
     version: "1.0.0+1"
@@ -538,12 +538,10 @@ packages:
   map_elevation:
     dependency: "direct main"
     description:
-      path: "."
-      ref: fix_latlng_lib
-      resolved-ref: d1b44e6f7010e1289ab2cd2d267fd08b431254a8
-      url: "https://github.com/moovida/map_elevation.git"
-    source: git
-    version: "1.1.0"
+      name: map_elevation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0"
   mapsforge_flutter:
     dependency: "direct main"
     description:
@@ -883,11 +881,9 @@ packages:
   smashlibs:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "71d59ce"
-      resolved-ref: "71d59cead4a03db1ce74b49c92e7cbc966adcd0a"
-      url: "https://github.com/moovida/smashlibs.git"
-    source: git
+      path: "../smashlibs"
+      relative: true
+    source: path
     version: "1.0.0"
   source_span:
     dependency: transitive

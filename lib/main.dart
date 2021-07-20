@@ -29,7 +29,7 @@ import 'package:stack_trace/stack_trace.dart';
 //import 'package:flutter_gen/gen_l10n/smash_localization.dart';
 import 'generated/l10n.dart';
 
-const DOCATCHER = true;
+const DOCATCHER = false;
 
 void main() {
   if (DOCATCHER) {

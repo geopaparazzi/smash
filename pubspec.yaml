@@ -33,10 +33,10 @@ dependencies:
   # git:
   #  url: https://github.com/moovida/dart_hydrologis_db.git
   smashlibs:
-    # path: ../smashlibs/
-    git:
-      url: https://github.com/moovida/smashlibs.git
-      ref: 71d59ce
+    path: ../smashlibs/
+    # git:
+    #   url: https://github.com/moovida/smashlibs.git
+    #   ref: 71d59ce
 
   dart_shp: ^0.3.1
 
@@ -59,9 +59,10 @@ dependencies:
 
   flutter_map_dragmarker:
     git:
-      url: https://github.com/moovida/flutter_map_dragmarker.git
-      ref: upgrade_to_latlong2
-      # url: https://github.com/ibrierley/flutter_map_dragmarker.git  
+      # url: https://github.com/moovida/flutter_map_dragmarker.git
+      # ref: upgrade_to_latlong2
+      url: https://github.com/ibrierley/flutter_map_dragmarker.git  
+      ref: nullsafety
 
   flutter_map_line_editor:
     git:
@@ -83,10 +84,10 @@ dependencies:
     #   ref: version4smash
 
   # GPL 3.0
-  map_elevation: #^1.1.0
-    git:
-      url: https://github.com/moovida/map_elevation.git
-      ref: fix_latlng_lib
+  map_elevation: ^1.2.0
+    # git:
+    #   url: https://github.com/moovida/map_elevation.git
+    #   ref: fix_latlng_lib
 
   # MIT
   lat_lon_grid_plugin: 0.2.1

@@ -31,8 +31,6 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 29
-
     // buildFeatures.aidl = false
     // buildFeatures {
     //     // buildConfig = true
@@ -44,6 +42,8 @@ android {
     //     // shaders = true
     // }
 
+    compileSdkVersion 29
+
     lintOptions {
         disable 'InvalidPackage'
         checkReleaseBuilds false
@@ -53,6 +53,7 @@ android {
         applicationId "eu.hydrologis.smash"
         minSdkVersion 21
         targetSdkVersion 29
+        
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
