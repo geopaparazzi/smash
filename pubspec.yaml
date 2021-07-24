@@ -21,14 +21,14 @@ dependencies:
   # OWN
   ##################################
   # apache 2
-  geoimage: ^0.1.2
+  geoimage: ^0.2.0
 
   # apache 2
-  flutter_geopackage: ^0.4.7
+  flutter_geopackage: ^0.5.0
   # path: ../flutter_geopackage/
   #  git:
   #    url: https://github.com/moovida/flutter_geopackage.git
-  dart_hydrologis_db: ^0.6.2
+  dart_hydrologis_db: ^0.7.0
   # path: ../dart_hydrologis_db/
   # git:
   #  url: https://github.com/moovida/dart_hydrologis_db.git
@@ -38,14 +38,14 @@ dependencies:
     #   url: https://github.com/moovida/smashlibs.git
     #   ref: 71d59ce
 
-  dart_shp: ^0.3.1
+  dart_shp: ^0.4.0
 
-  dart_hydrologis_utils: ^0.5.5
+  dart_hydrologis_utils: ^0.6.0
     # path: ../dart_hydrologis_utils/
-  dart_jts: ^0.1.0
+  dart_jts: ^0.2.0
     # path: ../dart_jts/
 
-  dart_postgis: ^0.1.0
+  dart_postgis: ^0.2.0
   # git:
   #   url: https://github.com/moovida/dart_postgis
   ##################################
@@ -55,7 +55,7 @@ dependencies:
   catcher: ^0.6.6
 
   # MIT
-  flutter_ringtone_player: 2.0.0
+  flutter_ringtone_player: ^3.0.0
 
   flutter_map_dragmarker:
     git:
@@ -121,17 +121,17 @@ dependencies:
   synchronized: ^3.0.0
 
   # Apache 2
-  badges: ^1.1.6
+  badges: ^2.0.1
   # git:
   #   url: https://github.com/moovida/flutter_badges.git
   # MIT
-  tutorial_coach_mark: ^0.5.2
+  tutorial_coach_mark: ^1.0.3
 
   # MIT
   after_layout: ^1.0.7+2
 
   # BSD
-  package_info: ^0.4.0+16
+  package_info: ^2.0.2
   # NOTES: As noted on issue 20761, package_info on iOS requires the Xcode build folder to be
   # rebuilt after changes to the version string in pubspec.yaml. Clean the Xcode build folder
   # with: XCode Menu -> Product -> (Holding Option Key) Clean build folder.
@@ -167,10 +167,10 @@ dependencies:
   geocoder: 0.2.1
 
   # MIT
-  flutter_slidable: ^0.5.4
+  flutter_slidable: ^0.6.0
 
   # BSD  rainbow_vis: 1.0.3
-  rainbow_color: 0.1.1
+  rainbow_color: 2.0.1
 
   # BSD
   stack_trace: ^1.10.0
@@ -194,9 +194,9 @@ dependencies:
 
 dev_dependencies:
   # MIT
-  flutter_launcher_icons: #^0.8.1
-    git:
-      url: https://github.com/moovida/flutter_launcher_icons.git
+  flutter_launcher_icons: ^0.9.0
+    # git:
+    #   url: https://github.com/moovida/flutter_launcher_icons.git
 
   pedantic: ^1.9.0
 

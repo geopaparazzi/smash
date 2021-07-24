@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:tutorial_coach_mark/animated_focus_light.dart';
-import 'package:tutorial_coach_mark/content_target.dart';
-import 'package:tutorial_coach_mark/target_focus.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class MainViewCoachMarks {
@@ -147,7 +144,7 @@ class MainViewCoachMarks {
       keyTarget: toolsButtonKey,
       contents: [
         getContentTarget(title, singleTap, longTap, doubleTap,
-            alignContent: AlignContent.bottom)
+            alignContent: ContentAlign.bottom)
       ],
       shape: ShapeLightFocus.Circle,
     ));
@@ -163,7 +160,7 @@ class MainViewCoachMarks {
       keyTarget: coachMarkButtonKey,
       contents: [
         getContentTarget(title, singleTap, longTap, doubleTap,
-            alignContent: AlignContent.bottom)
+            alignContent: ContentAlign.bottom)
       ],
       shape: ShapeLightFocus.Circle,
     ));
@@ -179,15 +176,15 @@ class MainViewCoachMarks {
       keyTarget: drawerButtonKey,
       contents: [
         getContentTarget(title, singleTap, longTap, doubleTap,
-            alignContent: AlignContent.bottom)
+            alignContent: ContentAlign.bottom)
       ],
       shape: ShapeLightFocus.Circle,
     ));
   }
 
-  ContentTarget getContentTarget(
+  TargetContent getContentTarget(
       String title, String singleTap, String longTap, String doubleTap,
-      {AlignContent alignContent = AlignContent.top}) {
+      {ContentAlign alignContent = ContentAlign.top}) {
     var size = SmashUI.MEDIUM_SIZE;
     var widgets = <Widget>[];
 
@@ -226,7 +223,7 @@ class MainViewCoachMarks {
       );
     }
 
-    return ContentTarget(
+    return TargetContent(
         align: alignContent,
         child: Center(
           child: Column(
@@ -271,7 +268,7 @@ class MainViewCoachMarks {
       // print("finish");
     }, onClickTarget: (target) {
       // print(target);
-    }, onClickSkip: () {
+    }, onSkip: () {
       // print("skip");
     })
       ..show();
