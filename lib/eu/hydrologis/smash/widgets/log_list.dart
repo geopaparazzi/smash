@@ -359,7 +359,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
               SL
                   .of(context)
                   .logList_areYouSureDeleteTheLog); //'Are you sure you want to delete the log?'
-          if (doDelete) {
+          if (doDelete != null && doDelete) {
             db.deleteGpslog(logItem.id);
             widget.reloadLogFunction();
           }

@@ -358,19 +358,23 @@ time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSince
           double distanceMeterFiltered = currentLogStats[1] as double;
           int timestampDelta = currentLogStats[2] as int;
 
-          var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
-          var distStr = StringUtilities.formatMeters(distanceMeter);
-          var distFilteredStr =
-              StringUtilities.formatMeters(distanceMeterFiltered);
+          if (distanceMeter != null &&
+              timestampDelta != null &&
+              distanceMeterFiltered != null) {
+            var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
+            var distStr = StringUtilities.formatMeters(distanceMeter);
+            var distFilteredStr =
+                StringUtilities.formatMeters(distanceMeterFiltered);
 
-          if (timeStr != null) {
-            msg = "$timeStr, $distStr ($distFilteredStr)";
-            bigMsg = msg + "\n" + bigMsg;
+            if (timeStr != null) {
+              msg = "$timeStr, $distStr ($distFilteredStr)";
+              bigMsg = msg + "\n" + bigMsg;
+            }
           }
-        }
 
-        GPS.BackgroundLocator.updateNotificationText(
-            title: title, msg: msg, bigMsg: bigMsg);
+          GPS.BackgroundLocator.updateNotificationText(
+              title: title, msg: msg, bigMsg: bigMsg);
+        }
       }
     });
     // init platform state

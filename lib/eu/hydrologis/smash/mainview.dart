@@ -283,6 +283,10 @@ class MainViewWidgetState extends State<MainViewWidget>
                     GeometryEditManager().onMapLongTap(
                         context, point, _mapController.zoom.round());
                   },
+                  interactiveFlags: InteractiveFlag.all &
+                      ~InteractiveFlag.flingAnimation &
+                      ~InteractiveFlag.pinchMove &
+                      ~InteractiveFlag.rotate,
                 ),
                 layers: layers,
                 mapController: _mapController,
