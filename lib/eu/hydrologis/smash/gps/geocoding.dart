@@ -8,7 +8,7 @@ import 'dart:async';
 
 import 'package:dart_jts/dart_jts.dart' hide Position, Distance;
 import 'package:flutter/material.dart';
-import 'package:geocoder/geocoder.dart';
+import 'package:flutter_geocoder/geocoder.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/generated/l10n.dart';
@@ -28,7 +28,7 @@ class GeocodingPage extends StatefulWidget {
 }
 
 class GeocodingPageState extends State<GeocodingPage> {
-  List<Address> _addresses = List();
+  List<Address> _addresses = [];
   var textEditingController = TextEditingController();
   TextFormField textField;
   bool searching = false;

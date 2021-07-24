@@ -163,8 +163,8 @@ dependencies:
   # MIT
   geodesy: ^0.4.0-nullsafety.0
 
-  # UNKNOWN!!!
-  geocoder: 0.2.1
+  # BSD
+  flutter_geocoder: ^0.2.2-nullsafety
 
   # MIT
   flutter_slidable: ^0.6.0
