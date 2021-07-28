@@ -4794,6 +4794,126 @@ class SL {
       args: [],
     );
   }
+
+  /// `New Sketch`
+  String get form_sketch_newSketch {
+    return Intl.message(
+      'New Sketch',
+      name: 'form_sketch_newSketch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Undo`
+  String get form_sketch_undo {
+    return Intl.message(
+      'Undo',
+      name: 'form_sketch_undo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing to undo`
+  String get form_sketch_noUndo {
+    return Intl.message(
+      'Nothing to undo',
+      name: 'form_sketch_noUndo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Clear`
+  String get form_sketch_clear {
+    return Intl.message(
+      'Clear',
+      name: 'form_sketch_clear',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get form_sketch_save {
+    return Intl.message(
+      'Save',
+      name: 'form_sketch_save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sketcher`
+  String get form_sketch_sketcher {
+    return Intl.message(
+      'Sketcher',
+      name: 'form_sketch_sketcher',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable drawing`
+  String get form_sketch_enableDrawing {
+    return Intl.message(
+      'Enable drawing',
+      name: 'form_sketch_enableDrawing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable eraser`
+  String get form_sketch_enableEraser {
+    return Intl.message(
+      'Enable eraser',
+      name: 'form_sketch_enableEraser',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Background color`
+  String get form_sketch_backColor {
+    return Intl.message(
+      'Background color',
+      name: 'form_sketch_backColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Stroke color`
+  String get form_sketch_strokeColor {
+    return Intl.message(
+      'Stroke color',
+      name: 'form_sketch_strokeColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pick color`
+  String get form_sketch_pickColor {
+    return Intl.message(
+      'Pick color',
+      name: 'form_sketch_pickColor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not save image in database.`
+  String get form_smash_cantSaveImageDb {
+    return Intl.message(
+      'Could not save image in database.',
+      name: 'form_smash_cantSaveImageDb',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<SL> {

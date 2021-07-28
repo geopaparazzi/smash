@@ -5,6 +5,7 @@ import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:smash/eu/hydrologis/smash/forms/form_sketch.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
+import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// Form utilities for smash (not web)
@@ -109,10 +111,57 @@ class SmashFormHelper implements AFormhelper {
         return value;
       } else {
         SmashDialogs.showWarningDialog(
-            context, "Could not save image in database.");
+            context, SL().form_smash_cantSaveImageDb);
         return null;
       }
     }
+    return null;
+  }
+
+  @override
+  Future<String> takeSketchForForms(
+      BuildContext context, List<String> imageSplit) async {
+    DbImage dbImage = DbImage()
+      ..timeStamp = DateTime.now().millisecondsSinceEpoch
+      ..isDirty = 1;
+
+    dbImage.lon = _position.longitude;
+    dbImage.lat = _position.latitude;
+    try {
+      dbImage.altim = _position.altitude;
+      dbImage.azim = _position.heading;
+    } catch (e) {
+      dbImage.altim = -1;
+      dbImage.azim = -1;
+    }
+    if (_id != null) {
+      dbImage.noteId = _id;
+    }
+
+    int imageId;
+
+    var imageBytes = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => SketchPage(),
+          fullscreenDialog: true,
+        ));
+    if (imageBytes != null) {
+      dbImage.text =
+          "SKETCH_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.png";
+      imageId = ImageWidgetUtilities.saveImageBytesToSmashDb(
+          imageBytes, context, dbImage, dbImage.text);
+      if (imageId != null) {
+        imageSplit.add(imageId.toString());
+        var value = imageSplit.join(IMAGE_ID_SEPARATOR);
+        return value;
+      } else {
+        SmashDialogs.showWarningDialog(
+            context, SL().form_smash_cantSaveImageDb);
+        return null;
+      }
+    }
+
     return null;
   }
 
@@ -397,6 +446,14 @@ class SmashDatabaseFormHelper implements AFormhelper {
     //   thumbList.add(withBorder);
     // }
     // return thumbList;
+    return null;
+  }
+
+  @override
+  Future<String> takeSketchForForms(
+      BuildContext context, List<String> imageSplit) {
+    // // TODO: implement takeSketchForForms
+    // throw UnimplementedError();
     return null;
   }
 }

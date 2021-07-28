@@ -32,6 +32,12 @@ class ImageWidgetUtilities {
   static int saveImageToSmashDb(
       BuildContext context, String path, DbImage dbImageToCompleteAndSave) {
     var imageBytes = ImageUtilities.bytesFromImageFile(path);
+    return saveImageBytesToSmashDb(
+        imageBytes, context, dbImageToCompleteAndSave, path);
+  }
+
+  static int saveImageBytesToSmashDb(List<int> imageBytes, BuildContext context,
+      DbImage dbImageToCompleteAndSave, String imageIdentifier4Error) {
     var thumbBytes = ImageUtilities.resizeImage(imageBytes, newWidth: 200);
 
     ProjectState projectState =
@@ -50,7 +56,8 @@ class ImageWidgetUtilities {
         int imgId = _db.insertMap(
             SqlName(TABLE_IMAGES), dbImageToCompleteAndSave.toMap());
         if (imgId == null) {
-          SMLogger().e("Could not save image to db: $path", null, null);
+          SMLogger().e(
+              "Could not save image to db: $imageIdentifier4Error", null, null);
         }
         return imgId;
       } on Exception catch (e) {

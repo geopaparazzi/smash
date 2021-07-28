@@ -33,10 +33,10 @@ dependencies:
   # git:
   #  url: https://github.com/moovida/dart_hydrologis_db.git
   smashlibs:
-    # path: ../smashlibs/
-    git:
-      url: https://github.com/moovida/smashlibs.git
-      ref: bfe5352
+    path: ../smashlibs/
+    # git:
+    #   url: https://github.com/moovida/smashlibs.git
+    #   ref: bfe5352
 
   dart_shp: ^0.4.0
 
@@ -191,6 +191,9 @@ dependencies:
 
   # image: 3.0.0-nullsafety.0
   # image: '>=2.1.14 <3.0.0-nullsafety.0'
+
+  #BSD
+  painter: ^2.0.0
 
 dev_dependencies:
   # MIT

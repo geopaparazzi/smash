@@ -21,7 +21,8 @@
             "type": "pictures"
           }
         ]
-      }, {
+      },
+      {
         "formname": "image from library",
         "formitems": [
           {
@@ -223,109 +224,216 @@
             },
             "value": "",
             "type": "stringcombo"
-          },{
+          },
+          {
             "key": "combos with item labels",
             "values": {
               "items": [
                 {
-                  "item": {"label": "", "value": "0"}
+                  "item": {
+                    "label": "",
+                    "value": "0"
+                  }
                 },
                 {
-                  "item": {"label": "choice 1", "value": "1"}
+                  "item": {
+                    "label": "choice 1",
+                    "value": "1"
+                  }
                 },
                 {
-                  "item": {"label": "choice 2", "value": "2"}
+                  "item": {
+                    "label": "choice 2",
+                    "value": "2"
+                  }
                 },
                 {
-                  "item": {"label": "choice 3", "value": "3"}
+                  "item": {
+                    "label": "choice 3",
+                    "value": "3"
+                  }
                 },
                 {
-                  "item": {"label": "choice 4", "value": "4"}
+                  "item": {
+                    "label": "choice 4",
+                    "value": "4"
+                  }
                 },
                 {
-                  "item": {"label": "choice 5", "value": "5"}
+                  "item": {
+                    "label": "choice 5",
+                    "value": "5"
+                  }
                 }
               ]
             },
             "value": "",
             "type": "stringcombo"
-          },{
+          },
+          {
             "key": "two connected combos",
             "values": {
-                "items 1": [
-                    {"item": ""},
-                    {"item": "choice 1 of 1"},
-                    {"item": "choice 2 of 1"},
-                    {"item": "choice 3 of 1"},
-                    {"item": "choice 4 of 1"},
-                    {"item": "choice 5 of 1"}
-                ],
-                "items 2": [
-                    {"item": ""},
-                    {"item": "choice 1 of 2"},
-                    {"item": "choice 2 of 2"},
-                    {"item": "choice 3 of 2"},
-                    {"item": "choice 4 of 2"},
-                    {"item": "choice 5 of 2"}
-                ]
+              "items 1": [
+                {
+                  "item": ""
+                },
+                {
+                  "item": "choice 1 of 1"
+                },
+                {
+                  "item": "choice 2 of 1"
+                },
+                {
+                  "item": "choice 3 of 1"
+                },
+                {
+                  "item": "choice 4 of 1"
+                },
+                {
+                  "item": "choice 5 of 1"
+                }
+              ],
+              "items 2": [
+                {
+                  "item": ""
+                },
+                {
+                  "item": "choice 1 of 2"
+                },
+                {
+                  "item": "choice 2 of 2"
+                },
+                {
+                  "item": "choice 3 of 2"
+                },
+                {
+                  "item": "choice 4 of 2"
+                },
+                {
+                  "item": "choice 5 of 2"
+                }
+              ]
             },
             "value": "",
             "type": "connectedstringcombo"
-          },{
-              "key": "two connected combos, default selected",
-              "values": {
-                  "items 1": [
-                      {"item": ""},
-                      {"item": "choice 1 of 1"},
-                      {"item": "choice 2 of 1"},
-                      {"item": "choice 3 of 1"},
-                      {"item": "choice 4 of 1"},
-                      {"item": "choice 5 of 1"}
-                  ],
-                  "items 2": [
-                      {"item": ""},
-                      {"item": "choice 1 of 2"},
-                      {"item": "choice 2 of 2"},
-                      {"item": "choice 3 of 2"},
-                      {"item": "choice 4 of 2"},
-                      {"item": "choice 5 of 2"}
-                  ]
-              },
-              "value": "items 2#choice 4 of 2",
-              "type": "connectedstringcombo"
-          },{
+          },
+          {
+            "key": "two connected combos, default selected",
+            "values": {
+              "items 1": [
+                {
+                  "item": ""
+                },
+                {
+                  "item": "choice 1 of 1"
+                },
+                {
+                  "item": "choice 2 of 1"
+                },
+                {
+                  "item": "choice 3 of 1"
+                },
+                {
+                  "item": "choice 4 of 1"
+                },
+                {
+                  "item": "choice 5 of 1"
+                }
+              ],
+              "items 2": [
+                {
+                  "item": ""
+                },
+                {
+                  "item": "choice 1 of 2"
+                },
+                {
+                  "item": "choice 2 of 2"
+                },
+                {
+                  "item": "choice 3 of 2"
+                },
+                {
+                  "item": "choice 4 of 2"
+                },
+                {
+                  "item": "choice 5 of 2"
+                }
+              ]
+            },
+            "value": "items 2#choice 4 of 2",
+            "type": "connectedstringcombo"
+          },
+          {
             "key": "an autocomplete string combo",
             "values": {
-                "items": [
-                    {"item": ""},
-                    {"item": "choice 1"},
-                    {"item": "choice 2"},
-                    {"item": "choice 3"},
-                    {"item": "choice 4"},
-                    {"item": "choice 5"}
-                ]
+              "items": [
+                {
+                  "item": ""
+                },
+                {
+                  "item": "choice 1"
+                },
+                {
+                  "item": "choice 2"
+                },
+                {
+                  "item": "choice 3"
+                },
+                {
+                  "item": "choice 4"
+                },
+                {
+                  "item": "choice 5"
+                }
+              ]
             },
             "value": "",
             "type": "autocompletestringcombo"
-          },{
+          },
+          {
             "key": "two connected autocomplete combos",
             "values": {
-                "items 1": [
-                    {"item": ""},
-                    {"item": "choice 1 of 1"},
-                    {"item": "choice 2 of 1"},
-                    {"item": "choice 3 of 1"},
-                    {"item": "choice 4 of 1"},
-                    {"item": "choice 5 of 1"}
-                ],
-                "items 2": [
-                    {"item": ""},
-                    {"item": "choice 1 of 2"},
-                    {"item": "choice 2 of 2"},
-                    {"item": "choice 3 of 2"},
-                    {"item": "choice 4 of 2"},
-                    {"item": "choice 5 of 2"}
-                ]
+              "items 1": [
+                {
+                  "item": ""
+                },
+                {
+                  "item": "choice 1 of 1"
+                },
+                {
+                  "item": "choice 2 of 1"
+                },
+                {
+                  "item": "choice 3 of 1"
+                },
+                {
+                  "item": "choice 4 of 1"
+                },
+                {
+                  "item": "choice 5 of 1"
+                }
+              ],
+              "items 2": [
+                {
+                  "item": ""
+                },
+                {
+                  "item": "choice 1 of 2"
+                },
+                {
+                  "item": "choice 2 of 2"
+                },
+                {
+                  "item": "choice 3 of 2"
+                },
+                {
+                  "item": "choice 4 of 2"
+                },
+                {
+                  "item": "choice 5 of 2"
+                }
+              ]
             },
             "value": "",
             "type": "autocompleteconnectedstringcombo"
@@ -339,6 +447,16 @@
             "key": "a picture archive",
             "value": "",
             "type": "pictures"
+          }
+        ]
+      },
+      {
+        "formname": "sketch note",
+        "formitems": [
+          {
+            "key": "a sketches archive",
+            "value": "",
+            "type": "sketch"
           }
         ]
       }

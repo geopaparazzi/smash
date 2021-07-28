@@ -612,7 +612,27 @@
   "network_uploading": "Uploading",
   "network_pleaseWait": "please wait...",
   "network_permissionOnServerDenied": "Permission on server denied.",
-  "network_couldNotConnectToServer": "Could not connect to the server. Is it online? Check your address."
+  "network_couldNotConnectToServer": "Could not connect to the server. Is it online? Check your address.",
 
+
+  "@form_sketch" : {
+    "context": "form_sketch.dart"
+  },
+  "form_sketch_newSketch": "New Sketch",
+  "form_sketch_undo": "Undo",
+  "form_sketch_noUndo": "Nothing to undo",
+  "form_sketch_clear": "Clear",
+  "form_sketch_save": "Save",
+  "form_sketch_sketcher": "Sketcher",
+  "form_sketch_enableDrawing": "Enable drawing",
+  "form_sketch_enableEraser": "Enable eraser",
+  "form_sketch_backColor": "Background color",
+  "form_sketch_strokeColor": "Stroke color",
+  "form_sketch_pickColor": "Pick color",
+  
+  "@form_smash_utils" : {
+    "context": "form_sketch.dart"
+  },
+  "form_smash_cantSaveImageDb": "Could not save image in database."
 
 }
