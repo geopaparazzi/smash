@@ -73,6 +73,20 @@ class SmashFormHelper implements AFormhelper {
   /// Take a picture for forms
   Future<String> takePictureForForms(
       BuildContext context, bool fromGallery, List<String> imageSplit) async {
+    var cameraResolution = GpPreferences().getStringSync(
+        SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
+    int imageQuality = CameraResolutions.MEDIUM_VAL;
+    switch (cameraResolution) {
+      case CameraResolutions.HIGH:
+        imageQuality = CameraResolutions.HIGH_VAL;
+        break;
+      case CameraResolutions.LOW:
+        imageQuality = CameraResolutions.LOW_VAL;
+        break;
+      case CameraResolutions.MEDIUM:
+      default:
+    }
+
     DbImage dbImage = DbImage()
       ..timeStamp = DateTime.now().millisecondsSinceEpoch
       ..isDirty = 1;
@@ -93,7 +107,7 @@ class SmashFormHelper implements AFormhelper {
     int imageId;
     var imagePath = fromGallery
         ? await Camera.loadImageFromGallery()
-        : await Camera.takePicture();
+        : await Camera.takePicture(imageQuality: imageQuality);
     if (imagePath != null) {
       var imageName = FileUtilities.nameFromFile(imagePath, true);
       dbImage.text =
