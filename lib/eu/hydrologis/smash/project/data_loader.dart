@@ -202,7 +202,19 @@ class DataLoaderUtilities {
               iconColor.withAlpha(80),
             ),
             onTap: () {
+              bool sizeSnackBar =
+                  ScreenUtilities.isLargeScreen(mapBuilder.context) &&
+                      ScreenUtilities.isLandscape(mapBuilder.context);
+              var halfWidth = ScreenUtilities.getWidth(mapBuilder.context);
+              if (sizeSnackBar) {
+                halfWidth /= 2;
+                if (halfWidth < 100) {
+                  halfWidth = 100;
+                }
+              }
               ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+                behavior: SnackBarBehavior.floating,
+                width: halfWidth,
                 backgroundColor: SmashColors.snackBarColor,
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -396,6 +408,16 @@ class DataLoaderUtilities {
   static void loadImageMarkers(
       GeopaparazziProjectDb db, List<Marker> tmp, SmashMapBuilder mapBuilder) {
     // IMAGES
+    bool sizeSnackBar = ScreenUtilities.isLargeScreen(mapBuilder.context) &&
+        ScreenUtilities.isLandscape(mapBuilder.context);
+    var halfWidth = ScreenUtilities.getWidth(mapBuilder.context);
+    if (sizeSnackBar) {
+      halfWidth /= 2;
+      if (halfWidth < 100) {
+        halfWidth = 100;
+      }
+    }
+
     var imagesList = db.getImages();
     imagesList.forEach((image) {
       var size = 48.0;
@@ -410,6 +432,8 @@ class DataLoaderUtilities {
           onTap: () {
             var thumb = db.getThumbnail(image.imageDataId);
             ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+              width: sizeSnackBar ? halfWidth : null,
+              behavior: SnackBarBehavior.floating,
               backgroundColor: SmashColors.snackBarColor,
               content: Column(
                 mainAxisSize: MainAxisSize.min,

@@ -192,7 +192,8 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                       }
                     }
                     await getList();
-                    Scaffold.of(context).showSnackBar(SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      behavior: SnackBarBehavior.floating,
                       content: Text(SL
                           .of(context)
                           .onlineSourcesPage_onlineSourcesImported), //"Online sources imported."
@@ -235,7 +236,8 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                 Navigator.pop(context);
 
                 var rel = Workspace.makeRelative(exportFilePath);
-                Scaffold.of(context).showSnackBar(SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  behavior: SnackBarBehavior.floating,
                   content: Text(
                       "${SL.of(context).onlineSourcesPage_exportedTo} $rel"), //Exported to:
                 ));

@@ -56,7 +56,8 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
           }
 
           var isLandscape = ScreenUtilities.isLandscape(context);
-          Scaffold.of(context).showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating,
             backgroundColor: color,
             content: Padding(
               padding: EdgeInsets.only(bottom: 10),

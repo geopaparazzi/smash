@@ -222,7 +222,10 @@ class CurrentGpsLogLayer extends StatelessWidget {
                           if (_doFlatChart) {
                             msg = "Show proper ratio chart.";
                           }
-                          final snackBar = SnackBar(content: Text(msg));
+                          final snackBar = SnackBar(
+                            content: Text(msg),
+                            behavior: SnackBarBehavior.floating,
+                          );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         },
                         child: Padding(
