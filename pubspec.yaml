@@ -6,6 +6,7 @@ description: The Smart Mobile Application for Surveyor's Happyness.
 publish_to: none
 
 version: 1.7.0+58 # we keep the build number growing to have it properly handled in android
+# agvtool new-version -all 58
 
 environment:
   sdk: ">=2.2.2 <3.0.0"

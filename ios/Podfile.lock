@@ -3,7 +3,7 @@ PODS:
     - Flutter
   - catcher (0.0.1):
     - Flutter
-  - device_info (0.0.1):
+  - device_info_plus (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.2):
     - DKImagePickerController/ImageDataManager
@@ -44,25 +44,22 @@ PODS:
     - Flutter
   - flutter_ringtone_player (0.0.1):
     - Flutter
+  - flutter_screen_wake (0.0.1):
+    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
-  - geocoder (0.0.1):
-    - Flutter
   - image_picker (0.0.1):
     - Flutter
   - package_info (0.0.1):
+    - Flutter
+  - package_info_plus (0.4.5):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
   - path_provider_ex (0.0.1):
     - Flutter
   - "permission_handler (5.1.0+2)":
-    - Flutter
-  - screen (0.0.1):
     - Flutter
   - SDWebImage (5.8.4):
     - SDWebImage/Core (= 5.8.4)
@@ -71,23 +68,20 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
-  - sqflite (0.0.2):
-    - Flutter
-    - FMDB (>= 2.7.5)
-  - sqlite3 (3.32.3):
-    - sqlite3/common (= 3.32.3)
-  - sqlite3/common (3.32.3)
-  - sqlite3/fts5 (3.32.3):
+  - sqlite3 (3.35.5):
+    - sqlite3/common (= 3.35.5)
+  - sqlite3/common (3.35.5)
+  - sqlite3/fts5 (3.35.5):
     - sqlite3/common
-  - sqlite3/json1 (3.32.3):
+  - sqlite3/json1 (3.35.5):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.32.3):
+  - sqlite3/perf-threadsafe (3.35.5):
     - sqlite3/common
-  - sqlite3/rtree (3.32.3):
+  - sqlite3/rtree (3.35.5):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.32.3)
+    - sqlite3 (~> 3.35.4)
     - sqlite3/fts5
     - sqlite3/json1
     - sqlite3/perf-threadsafe
@@ -100,22 +94,21 @@ PODS:
 DEPENDENCIES:
   - background_locator (from `.symlinks/plugins/background_locator/ios`)
   - catcher (from `.symlinks/plugins/catcher/ios`)
-  - device_info (from `.symlinks/plugins/device_info/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
   - flutter_ringtone_player (from `.symlinks/plugins/flutter_ringtone_player/ios`)
+  - flutter_screen_wake (from `.symlinks/plugins/flutter_screen_wake/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - geocoder (from `.symlinks/plugins/geocoder/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_ex (from `.symlinks/plugins/path_provider_ex/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
-  - screen (from `.symlinks/plugins/screen/ios`)
   - share_extend (from `.symlinks/plugins/share_extend/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
-  - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
@@ -123,7 +116,6 @@ SPEC REPOS:
   trunk:
     - DKImagePickerController
     - DKPhotoGallery
-    - FMDB
     - SDWebImage
     - sqlite3
     - SwiftyGif
@@ -134,8 +126,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/background_locator/ios"
   catcher:
     :path: ".symlinks/plugins/catcher/ios"
-  device_info:
-    :path: ".symlinks/plugins/device_info/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
@@ -144,28 +136,26 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_mailer/ios"
   flutter_ringtone_player:
     :path: ".symlinks/plugins/flutter_ringtone_player/ios"
+  flutter_screen_wake:
+    :path: ".symlinks/plugins/flutter_screen_wake/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
-  geocoder:
-    :path: ".symlinks/plugins/geocoder/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   path_provider_ex:
     :path: ".symlinks/plugins/path_provider_ex/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
-  screen:
-    :path: ".symlinks/plugins/screen/ios"
   share_extend:
     :path: ".symlinks/plugins/share_extend/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
-  sqflite:
-    :path: ".symlinks/plugins/sqflite/ios"
   sqlite3_flutter_libs:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   url_launcher:
@@ -173,33 +163,31 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   background_locator: d8daad218f2282920654de8a649b430d75c218d9
-  catcher: e5585ed31458c849f4fd9c3719b2fcb0188b8918
-  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
+  catcher: 67a006a3c121c4bbf1202d1e5ea186afb7ef4a18
+  device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   flutter_ringtone_player: 15eba85187230b87b2512f0e1b92225618bc03e7
+  flutter_screen_wake: 4d3c2b43943ea81bd5e591fd4e639ea537f4ca5e
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
-  image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
+  image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
+  package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   path_provider_ex: 95397ca0c3f5f99c8538aec3736674fa9cefc1b6
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
-  screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
-  sqlite3: 8f7d2078ae27778699a622a94b853285793422a2
-  sqlite3_flutter_libs: 5651f8ff48e3b44d910863c4ea5916085b1b245f
+  sqlite3: 75da32fd4e3574f6c38566a9f0114cfe792c8db5
+  sqlite3_flutter_libs: aedb7b6ba191f9a052dcef77691cf5d37437431c
   SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: 599473c26102d48af3a6b988879e2204b803739c
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
 COCOAPODS: 1.10.1
