@@ -180,11 +180,10 @@ class DataLoaderUtilities {
       }
 
       String text = note.text;
-      if (note.hasForm()) {
-        text = FormUtilities.getFormItemLabel(note.form, note.text);
-      }
       if (notesMode == SmashPreferencesKeys.NOTESVIEWMODES[1]) {
         text = null; // so the text of the icon is not made in MarkerIcon
+      } else if (note.hasForm()) {
+        text = FormUtilities.getFormItemLabel(note.form, note.text);
       }
 
       tmp.add(Marker(
