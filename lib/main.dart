@@ -226,8 +226,21 @@ Future<String> handleLayers(BuildContext context) async {
     var layerManager = LayerManager();
     await layerManager.initialize(context);
   } on Exception catch (e, s) {
-    var msg = "Error while loading layers.";
-    return logMsg(msg, e, s);
+    try {
+      var msg = "Error while loading layers.";
+      return logMsg(msg, e, s);
+    } on Exception catch (e, s) {
+      var eMsg = e.toString();
+      if (eMsg != null &&
+          eMsg.toLowerCase().contains("attempt to write a readonly database")) {
+        return "Unable to access the filesystem in write mode. This seems like a permission problem. Check your configurations.";
+      }
+      if (e != null) {
+        return e.toString();
+      } else if (s != null) {
+        return s.toString();
+      }
+    }
   }
   return null;
 }
@@ -287,6 +300,20 @@ Future<String> handleWorkspace(BuildContext context) async {
     var directory = await Workspace.getConfigFolder();
     bool init = SLogger().init(directory.path); // init logger
     if (init) SMLogger().setSubLogger(SLogger());
+
+    // handle issues with Android 11 not taking the
+    if (directory.path
+        .toLowerCase()
+        .contains("android/data/eu.hydrologis.smash")) {
+      // warn user the first time that the location of the files is in the android path
+      var shownAlready =
+          GpPreferences().getBooleanSync("SHOWN_FS_MOVED_WARNING", false);
+      if (!shownAlready) {
+        await SmashDialogs.showWarningDialog(
+            context, SL().main_StorageIsInternalWarning);
+        await GpPreferences().setBoolean("SHOWN_FS_MOVED_WARNING", true);
+      }
+    }
     return null;
   } on Exception catch (e, s) {
     var msg = "Error during workspace initialization.";

@@ -259,6 +259,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "mainView_turnGpsOn" : MessageLookupByLibrary.simpleMessage("Turn GPS on"),
     "mainView_zoomIn" : MessageLookupByLibrary.simpleMessage("Zoom in"),
     "mainView_zoomOut" : MessageLookupByLibrary.simpleMessage("Zoom out"),
+    "main_StorageIsInternalWarning" : MessageLookupByLibrary.simpleMessage("Please read carefully!\nDue to Android > 11 restrictions, the SMASH project folder needs to be placed inside the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage in order to be properly used. The only thing you have to pay attention to is that when the app is uninstalled, the system removes that folder.\n\nIn that case make sure you save your data first!\n\nWe will be working on a solution in the meanwhile."),
     "main_anErrorOccurredTapToView" : MessageLookupByLibrary.simpleMessage("An error occurred. Tap to view."),
     "main_check_location_permission" : MessageLookupByLibrary.simpleMessage("Checking location permission..."),
     "main_checkingStoragePermission" : MessageLookupByLibrary.simpleMessage("Checking storage permission..."),

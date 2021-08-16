@@ -22,6 +22,7 @@
   "main_loadingLayersList": "Loading layers list...",
   "main_layersListLoaded": "Layers list loaded.",
   "main_locationBackgroundWarning": "This app collects location data to your device to enable gps logs recording even when the app is placed in background. No data is shared, it is only saved locally to the device.\n\nIf you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.\n",
+  "main_StorageIsInternalWarning": "Please read carefully!\nDue to Android > 11 restrictions, the SMASH project folder needs to be placed inside the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage in order to be properly used. The only thing you have to pay attention to is that when the app is uninstalled, the system removes that folder.\n\nIn that case make sure you save your data first!\n\nWe will be working on a solution in the meanwhile.",
   "main_locationPermissionIsMandatoryToOpenSmash": "Location permission is mandatory to open SMASH.",
   "main_storagePermissionIsMandatoryToOpenSmash": "Storage permission is mandatory to open SMASH.",
   "main_anErrorOccurredTapToView": "An error occurred. Tap to view.",
