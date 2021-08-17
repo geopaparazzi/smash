@@ -74,7 +74,8 @@ android {
             // useProguard true
             minifyEnabled false
             shrinkResources false
-            signingConfig signingConfigs.release
+            //signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
     }
 }
