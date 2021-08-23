@@ -211,6 +211,7 @@ class DataLoaderUtilities {
                   halfWidth = 100;
                 }
               }
+              ScaffoldMessenger.of(ctx).clearSnackBars();
               ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
                 behavior: SnackBarBehavior.floating,
                 width: halfWidth,
@@ -430,6 +431,7 @@ class DataLoaderUtilities {
             child: GestureDetector(
           onTap: () {
             var thumb = db.getThumbnail(image.imageDataId);
+            ScaffoldMessenger.of(ctx).clearSnackBars();
             ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
               width: sizeSnackBar ? halfWidth : null,
               behavior: SnackBarBehavior.floating,
