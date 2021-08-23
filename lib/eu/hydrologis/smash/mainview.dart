@@ -828,11 +828,14 @@ class MainViewWidgetState extends State<MainViewWidget>
       if (projectData.geopapMarkers != null &&
           projectData.geopapMarkers.length > 0) {
         var markerCluster = MarkerClusterLayerOptions(
+          zoomToBoundsOnClick: true,
+          // spiderfyCircleRadius: 150,
+          disableClusteringAtZoom: 16,
           maxClusterRadius: 80,
           //        height: 40,
           //        width: 40,
           fitBoundsOptions: FitBoundsOptions(
-            padding: EdgeInsets.all(50),
+            padding: EdgeInsets.all(180),
           ),
           markers: projectData.geopapMarkers,
           polygonOptions: PolygonOptions(
