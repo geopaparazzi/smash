@@ -12,6 +12,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
+import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -287,6 +288,8 @@ Future<String> handlePreferences(BuildContext context) async {
     if (pos != null) {
       mapState.init(Coordinate(pos[0], pos[1]), pos[2]);
     }
+
+    await GpPreferences().setBoolean(GpsHandler.GPS_FORCED_OFF_KEY, false);
     return null;
   } on Exception catch (e, s) {
     var msg = "Error while reading preferences.";

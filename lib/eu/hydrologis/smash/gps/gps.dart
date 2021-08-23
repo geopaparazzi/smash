@@ -195,6 +195,7 @@ abstract class GpsLoggingHandler {
 /// * handle the GPS logging
 ///
 class GpsHandler {
+  static const GPS_FORCED_OFF_KEY = "GPS_FORCED_OFF";
   static const String _isolateName = "LocatorIsolate";
   ReceivePort port;
   int allPointsCount = 0;
@@ -255,21 +256,27 @@ class GpsHandler {
     if (_gpsState.status == GpsStatus.OFF) {
       _gpsState.status = GpsStatus.ON_NO_FIX;
     }
-    if (port == null) {
-      SMLogger().i("Initialize geolocator");
-      await closeGpsIsolate();
 
-      await startGpsIsolate(!initialized);
-      initialized = true;
-    }
-    _locationServiceEnabled =
-        await GPS.BackgroundLocator.isRegisterLocationUpdate();
-    if (port == null || !_locationServiceEnabled) {
-      if (_gpsState.status != GpsStatus.OFF) {
-        _gpsState.status = GpsStatus.OFF;
+    var gpsForcedOff =
+        await GpPreferences().getBoolean(GPS_FORCED_OFF_KEY, false);
+
+    if (!gpsForcedOff) {
+      if (port == null) {
+        SMLogger().i("Initialize geolocator");
+        await closeGpsIsolate();
+
+        await startGpsIsolate(!initialized);
+        initialized = true;
       }
-    } else {
-      GpsFilterManager().checkFix();
+      _locationServiceEnabled =
+          await GPS.BackgroundLocator.isRegisterLocationUpdate();
+      if (port == null || !_locationServiceEnabled) {
+        if (_gpsState.status != GpsStatus.OFF) {
+          _gpsState.status = GpsStatus.OFF;
+        }
+      } else {
+        GpsFilterManager().checkFix();
+      }
     }
   }
 

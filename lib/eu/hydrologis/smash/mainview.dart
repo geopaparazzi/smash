@@ -398,9 +398,15 @@ class MainViewWidgetState extends State<MainViewWidget>
             if (gpsIsOff) {
               gpsState.status = GpsStatus.ON_NO_FIX;
               await GpsHandler().init(gpsState);
+
+              await GpPreferences()
+                  .setBoolean(GpsHandler.GPS_FORCED_OFF_KEY, false);
             } else {
               gpsState.status = GpsStatus.OFF;
               await mapState.persistLastPosition();
+
+              await GpPreferences()
+                  .setBoolean(GpsHandler.GPS_FORCED_OFF_KEY, true);
               await GpsHandler().close();
             }
           },
