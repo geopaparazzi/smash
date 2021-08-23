@@ -14,7 +14,7 @@ import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 ///
 /// This provides tracking of map view and general status.
 class SmashMapState extends ChangeNotifierPlus {
-  static final MAXZOOM = 22.0;
+  static final MAXZOOM = 25.0;
   static final MINZOOM = 1.0;
   Coordinate _center = Coordinate(11.33140, 46.47781);
   double _zoom = 16;
