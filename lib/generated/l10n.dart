@@ -605,6 +605,36 @@ class SL {
     );
   }
 
+  /// `Images exported`
+  String get exportWidget_imagesToFolderExported {
+    return Intl.message(
+      'Images exported',
+      name: 'exportWidget_imagesToFolderExported',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Export project images to folder`
+  String get exportWidget_exportImagesToFolder {
+    return Intl.message(
+      'Export project images to folder',
+      name: 'exportWidget_exportImagesToFolder',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Images`
+  String get exportWidget_exportImagesToFolderTitle {
+    return Intl.message(
+      'Images',
+      name: 'exportWidget_exportImagesToFolderTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Geopackage exported`
   String get exportWidget_geopackageExported {
     return Intl.message(

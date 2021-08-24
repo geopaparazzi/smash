@@ -38,6 +38,8 @@ class _ExportWidgetState extends State<ExportWidget> {
   String _gpxOutPath = "";
   int _kmlBuildStatus = 0;
   String _kmlOutPath = "";
+  int _imagesBuildStatus = 0;
+  String _imagesOutPath = "";
   int _gpkgBuildStatus = 0;
   String _gpkgOutPath = "";
 
@@ -53,6 +55,32 @@ class _ExportWidgetState extends State<ExportWidget> {
     setState(() {
       _pdfOutPath = outFilePath;
       _pdfBuildStatus = 2;
+    });
+  }
+
+  Future<void> exportImages(BuildContext context) async {
+    var exportsFolder = await Workspace.getExportsFolder();
+    var ts = TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now());
+    var outFilePath =
+        FileUtilities.joinPaths(exportsFolder.path, "images_export_$ts");
+    var outFolder = Directory(outFilePath);
+    await outFolder.create();
+    var projectState = Provider.of<ProjectState>(context, listen: false);
+    var db = projectState.projectDb;
+
+    var images = db.getImages();
+    images.forEach((image) {
+      var dataId = image.imageDataId;
+      var name = image.text;
+      var imageDataBytes = db.getImageDataBytes(dataId);
+      var imagePath = FileUtilities.joinPaths(outFilePath, name);
+      var imageFile = File(imagePath);
+      imageFile.writeAsBytes(imageDataBytes);
+    });
+
+    setState(() {
+      _imagesOutPath = outFilePath;
+      _imagesBuildStatus = 2;
     });
   }
 
@@ -180,6 +208,30 @@ class _ExportWidgetState extends State<ExportWidget> {
                 _kmlBuildStatus = 1;
               });
               buildGpx(context, true);
+//              Navigator.pop(context);
+            }),
+        ListTile(
+            leading: _imagesBuildStatus == 0
+                ? Icon(
+                    SmashIcons.imagesNotesIcon,
+                    color: SmashColors.mainDecorations,
+                  )
+                : _imagesBuildStatus == 1
+                    ? CircularProgressIndicator()
+                    : Icon(
+                        Icons.check,
+                        color: SmashColors.mainDecorations,
+                      ),
+            title: Text(
+                "${_imagesBuildStatus == 2 ? SL.of(context).exportWidget_imagesToFolderExported : SL.of(context).exportWidget_exportImagesToFolderTitle}"),
+            subtitle: Text(
+                "${_imagesBuildStatus == 2 ? _kmlOutPath : SL.of(context).exportWidget_exportImagesToFolder}"),
+            onTap: () {
+              setState(() {
+                _kmlOutPath = "";
+                _imagesBuildStatus = 1;
+              });
+              exportImages(context);
 //              Navigator.pop(context);
             }),
         ListTile(
