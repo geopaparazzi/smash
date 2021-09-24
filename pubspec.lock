@@ -259,7 +259,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.4"
+    version: "4.1.1"
   fl_chart:
     dependency: "direct main"
     description:
@@ -278,7 +278,7 @@ packages:
       name: flutter_colorpicker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0"
+    version: "0.6.0"
   flutter_geocoder:
     dependency: "direct main"
     description:
@@ -354,9 +354,11 @@ packages:
   flutter_material_pickers:
     dependency: transitive
     description:
-      name: flutter_material_pickers
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "4238fcd6a377328f743e38dd1ee33ac4d2a52c6b"
+      resolved-ref: "4238fcd6a377328f743e38dd1ee33ac4d2a52c6b"
+      url: "https://github.com/codegrue/flutter_material_pickers.git"
+    source: git
     version: "3.1.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
@@ -908,8 +910,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "43add8a"
-      resolved-ref: "43add8a9221723f4adcde8f8211af5cdf5082bc0"
+      ref: e549808
+      resolved-ref: e54980813a5680d4623dcced8386518e106f0b1c
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
