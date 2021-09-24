@@ -247,14 +247,34 @@ class GeometryEditManager {
     if (_isEditing) {
       if (polyEditor != null) {
         if (editPolyline != null) {
+          List<Polyline> checkedLines =
+              []; // TODO remove this when it is handled in  flutter_map (see issues https://github.com/fleaflet/flutter_map/issues/1037)
+          polyLines.forEach((element) {
+            var tmp = new Polyline(
+                color: element.color,
+                strokeWidth: element.strokeWidth,
+                points: element.points);
+            checkedLines.add(tmp);
+          });
           layers.add(PolylineLayerOptions(
             polylineCulling: true,
-            polylines: polyLines,
+            polylines: checkedLines,
           ));
         } else if (editPolygon != null) {
+          List<Polygon> checkedPolys =
+              []; // TODO remove this when it is handled in  flutter_map (see issues https://github.com/fleaflet/flutter_map/issues/1037)
+          polygons.forEach((element) {
+            var tmp = new Polygon(
+              color: element.color,
+              borderColor: element.borderColor,
+              borderStrokeWidth: element.borderStrokeWidth,
+              points: element.points,
+            );
+            checkedPolys.add(tmp);
+          });
           layers.add(PolygonLayerOptions(
             polygonCulling: true,
-            polygons: polygons,
+            polygons: checkedPolys,
           ));
         }
         layers.add(DragMarkerPluginOptions(markers: polyEditor.edit()));

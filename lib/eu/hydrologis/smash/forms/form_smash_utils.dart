@@ -288,34 +288,36 @@ class SmashDatabaseFormHelper implements AFormhelper {
 
     _tableName = _queryResult.ids.first;
 
-    QueryResult result = await _db.select(
-        "select $FORMS_FIELD from $HM_FORMS_TABLE where $FORMS_TABLENAME_FIELD='$_tableName'");
-    if (result.length == 1) {
-      String formJsonString = result.first.get(FORMS_FIELD);
-      List<dynamic> tmpList = jsonDecode(formJsonString);
-      tmpList.forEach((element) {
-        if (element is Map<String, dynamic>) {
-          sectionMapList.add(element);
-        }
-      });
-      _sectionName = sectionMapList.first[ATTR_SECTIONNAME];
+    if (await _db.hasTable(SqlName(HM_FORMS_TABLE))) {
+      QueryResult result = await _db.select(
+          "select $FORMS_FIELD from $HM_FORMS_TABLE where $FORMS_TABLENAME_FIELD='$_tableName'");
+      if (result.length == 1) {
+        String formJsonString = result.first.get(FORMS_FIELD);
+        List<dynamic> tmpList = jsonDecode(formJsonString);
+        tmpList.forEach((element) {
+          if (element is Map<String, dynamic>) {
+            sectionMapList.add(element);
+          }
+        });
+        _sectionName = sectionMapList.first[ATTR_SECTIONNAME];
 
-      List<Map<String, dynamic>> formsList = [];
-      formsList = (sectionMapList.first[ATTR_FORMS] as List<dynamic>)
-          .map((e) => e as Map<String, dynamic>)
-          .toList();
+        List<Map<String, dynamic>> formsList = [];
+        formsList = (sectionMapList.first[ATTR_FORMS] as List<dynamic>)
+            .map((e) => e as Map<String, dynamic>)
+            .toList();
 
-      var data = _queryResult.data.first;
-      data.forEach((key, value) {
-        if (value != null) {
-          formsList.forEach((form) {
-            var formItems = TagsManager.getFormItems(form);
-            FormUtilities.update(formItems, key, value);
-          });
-        }
-      });
+        var data = _queryResult.data.first;
+        data.forEach((key, value) {
+          if (value != null) {
+            formsList.forEach((form) {
+              var formItems = TagsManager.getFormItems(form);
+              FormUtilities.update(formItems, key, value);
+            });
+          }
+        });
 
-      return true;
+        return true;
+      }
     }
     return false;
   }
