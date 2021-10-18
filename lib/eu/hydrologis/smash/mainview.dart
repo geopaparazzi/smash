@@ -17,6 +17,7 @@ import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
@@ -276,13 +277,8 @@ class MainViewWidgetState extends State<MainViewWidget>
                             newPosition.center.latitude),
                         newPosition.zoom);
                   },
-                  onTap: (point) {
-                    GeometryEditManager().onMapTap(context, point);
-                  },
-                  onLongPress: (point) {
-                    GeometryEditManager().onMapLongTap(
-                        context, point, _mapController.zoom.round());
-                  },
+                  onTap: _handleTap,
+                  onLongPress: _handleLongTap,
                   interactiveFlags: InteractiveFlag.all &
                       ~InteractiveFlag.flingAnimation &
                       ~InteractiveFlag.pinchMove &
@@ -375,6 +371,15 @@ class MainViewWidgetState extends State<MainViewWidget>
         onWillPop: () async {
           return Future.value(false);
         });
+  }
+
+  void _handleTap(TapPosition tapPosition, LatLng latlng) {
+    GeometryEditManager().onMapTap(context, latlng);
+  }
+
+  void _handleLongTap(TapPosition tapPosition, LatLng latlng) {
+    GeometryEditManager()
+        .onMapLongTap(context, latlng, _mapController.zoom.round());
   }
 
   Widget getExitTile(BuildContext context, SmashMapBuilder mapBuilder,

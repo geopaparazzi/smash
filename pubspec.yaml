@@ -75,10 +75,13 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.0
 
   # BSD
-  flutter_map: ^0.13.1
+  flutter_map: ^0.14.0
   # git:
   #   url: https://github.com/moovida/flutter_map.git
   #   ref: version4smash
+
+  positioned_tap_detector_2: ^1.0.4
+  
   flutter_map_marker_cluster: ^0.4.0
     # git:
     #   url: https://github.com/moovida/flutter_map_marker_cluster.git
@@ -91,7 +94,7 @@ dependencies:
     #   ref: fix_latlng_lib
 
   # MIT
-  lat_lon_grid_plugin: 0.2.1
+  lat_lon_grid_plugin: ^0.2.2
     # git:
     #   url: https://github.com/moovida/lat_lon_grid_plugin.git
     #   ref: version4smash
@@ -106,12 +109,12 @@ dependencies:
       ref: 4a44d52deb389934f357af922788a5b5db226bce
 
   #MIT
-  extended_image: ^4.1.0
+  extended_image: ^5.1.2
     # git:
     #   url: https://github.com/moovida/extended_image
 
   # BSD
-  fl_chart: ^0.36.0
+  fl_chart: ^0.40.2
 
   # MIT
   permission_handler: ^8.1.4+2
@@ -179,7 +182,7 @@ dependencies:
   # BSD
   url_launcher: ^6.0.6
 
-  xml: '>=4.5.1 <=5.1.2'
+  xml: '>=4.5.1 <=5.3.1'
 
   # Apache 2.0
   gpx: ^2.1.0
@@ -188,7 +191,7 @@ dependencies:
     #   ref: "540e167"
 
   # Apache 2.0
-  pdf: '>=2.1.0 <=3.0.0-nullsafety.1'
+  pdf: '>=2.1.0 <=3.6.0'
 
   # image: 3.0.0-nullsafety.0
   # image: '>=2.1.14 <3.0.0-nullsafety.0'

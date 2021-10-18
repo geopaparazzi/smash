@@ -141,7 +141,7 @@ class _ExportWidgetState extends State<ExportWidget> {
         ListTile(
             leading: _pdfBuildStatus == 0
                 ? Icon(
-                    MdiIcons.filePdf,
+                    MdiIcons.filePdfBox,
                     color: SmashColors.mainDecorations,
                   )
                 : _pdfBuildStatus == 1
