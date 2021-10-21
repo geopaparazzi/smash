@@ -17,11 +17,14 @@ class ScaleLayerPluginOption extends LayerOptions {
   double lineWidth;
   final EdgeInsets padding;
 
-  ScaleLayerPluginOption(
-      {this.textStyle,
-      this.lineColor = Colors.white,
-      this.lineWidth = 2,
-      this.padding});
+  ScaleLayerPluginOption({
+    Key key,
+    this.textStyle,
+    this.lineColor = Colors.white,
+    this.lineWidth = 2,
+    this.padding,
+    Stream<Null> rebuild,
+  }) : super(key: key, rebuild: rebuild);
 }
 
 class ScaleLayerPlugin implements MapPlugin {
@@ -29,7 +32,7 @@ class ScaleLayerPlugin implements MapPlugin {
   Widget createLayer(
       LayerOptions options, MapState mapState, Stream<Null> stream) {
     if (options is ScaleLayerPluginOption) {
-      return ScaleLayer(options, mapState, stream);
+      return ScaleLayerWidget(options, mapState);
     }
     throw Exception('Unknown options type for ScaleLayerPlugin: $options');
   }
@@ -40,10 +43,25 @@ class ScaleLayerPlugin implements MapPlugin {
   }
 }
 
+class ScaleLayerWidget extends StatelessWidget {
+  final ScaleLayerPluginOption scaleLayerOpts;
+  final MapState map;
+  ScaleLayerWidget(this.scaleLayerOpts, this.map)
+      : super(key: scaleLayerOpts.key);
+  @override
+  Widget build(BuildContext context) {
+    final mapState = MapState.maybeOf(context);
+    return StreamBuilder<void>(
+        stream: mapState?.onMoved,
+        builder: (BuildContext context, _) {
+          return ScaleLayer(scaleLayerOpts, map);
+        });
+  }
+}
+
 class ScaleLayer extends StatelessWidget {
   final ScaleLayerPluginOption scaleLayerOpts;
   final MapState map;
-  final Stream<Null> stream;
   final scale = [
     25000000,
     15000000,
@@ -70,7 +88,7 @@ class ScaleLayer extends StatelessWidget {
     5
   ];
 
-  ScaleLayer(this.scaleLayerOpts, this.map, this.stream);
+  ScaleLayer(this.scaleLayerOpts, this.map) : super(key: scaleLayerOpts.key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,27 +101,28 @@ class ScaleLayer extends StatelessWidget {
     var displayDistance = distance > 999
         ? '${(distance / 1000).toStringAsFixed(0)} km'
         : '${distance.toStringAsFixed(0)} m';
-    double width = (end.x - start.x);
+    var width = (end.x - (start.x as double));
 
-    return CustomPaint(
-      painter: ScalePainter(
-        map,
-        width,
-        displayDistance,
-        lineColor: scaleLayerOpts.lineColor,
-        lineWidth: scaleLayerOpts.lineWidth,
-        padding: scaleLayerOpts.padding,
-        textStyle: scaleLayerOpts.textStyle,
-      ),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints bc) {
+        return CustomPaint(
+          painter: ScalePainter(
+            width,
+            displayDistance,
+            lineColor: scaleLayerOpts.lineColor,
+            lineWidth: scaleLayerOpts.lineWidth,
+            padding: scaleLayerOpts.padding,
+            textStyle: scaleLayerOpts.textStyle,
+          ),
+        );
+      },
     );
   }
 }
 
 class ScalePainter extends CustomPainter {
-  ScalePainter(this.map, this.width, this.text,
+  ScalePainter(this.width, this.text,
       {this.padding, this.textStyle, this.lineWidth, this.lineColor});
-
-  final MapState map;
   final double width;
   final EdgeInsets padding;
   final String text;
@@ -113,15 +132,6 @@ class ScalePainter extends CustomPainter {
 
   @override
   void paint(ui.Canvas canvas, ui.Size size) {
-    // TODO fix when time
-//    var heading = map.rotation;
-//    if (heading < 0) {
-//      heading = 360 + heading;
-//    }
-//    double rad = toRadians(-heading);
-//    canvas.rotate(rad);
-//    print("${map.rotation} -> ${rad}");
-
     final paint = Paint()
       ..color = lineColor
       ..strokeCap = StrokeCap.square
@@ -134,10 +144,12 @@ class ScalePainter extends CustomPainter {
     var textSpan = TextSpan(style: textStyle, text: text);
     var textPainter =
         TextPainter(text: textSpan, textDirection: TextDirection.ltr)..layout();
-    textPainter.paint(canvas,
-        Offset(width / 2 - textPainter.width / 2 + paddingLeft, paddingTop));
+    textPainter.paint(
+        canvas,
+        Offset(width / 2 - textPainter.width / 2 + paddingLeft,
+            paddingTop as double));
     paddingTop += textPainter.height;
-    var p1 = Offset(paddingLeft, sizeForStartEnd + paddingTop);
+    var p1 = Offset(paddingLeft as double, sizeForStartEnd + paddingTop);
     var p2 = Offset(paddingLeft + width, sizeForStartEnd + paddingTop);
     // draw start line
     canvas.drawLine(Offset(paddingLeft, paddingTop),
@@ -159,6 +171,15 @@ class ScalePainter extends CustomPainter {
   }
 }
 
+const double piOver180 = pi / 180.0;
+double toDegrees(double radians) {
+  return radians / piOver180;
+}
+
+double toRadians(double degrees) {
+  return degrees * piOver180;
+}
+
 LatLng calculateEndingGlobalCoordinates(
     LatLng start, double startBearing, double distance) {
   var mSemiMajorAxis = 6378137.0; //WGS84 major axis
@@ -171,8 +192,8 @@ LatLng calculateEndingGlobalCoordinates(
   var aSquared = a * a;
   var bSquared = b * b;
   var f = mFlattening;
-  var phi1 = MercatorUtils.degToRadian(start.latitude);
-  var alpha1 = MercatorUtils.degToRadian(startBearing);
+  var phi1 = toRadians(start.latitude);
+  var alpha1 = toRadians(startBearing);
   var cosAlpha1 = cos(alpha1);
   var sinAlpha1 = sin(alpha1);
   var s = distance;
@@ -282,8 +303,8 @@ LatLng calculateEndingGlobalCoordinates(
   // cosSigma * cosAlpha1);
 
   // build result
-  var latitude = MercatorUtils.radianToDeg(phi2);
-  var longitude = start.longitude + MercatorUtils.radianToDeg(L);
+  var latitude = toDegrees(phi2);
+  var longitude = start.longitude + toDegrees(L);
 
   // if ((endBearing != null) && (endBearing.length > 0)) {
   // endBearing[0] = toDegrees(alpha2);
