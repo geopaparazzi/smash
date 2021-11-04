@@ -76,12 +76,18 @@ class GpxExporter {
           ele: logPoint.altim,
           name: logPoint.id.toString(),
           time: DateTime.fromMillisecondsSinceEpoch(logPoint.ts),
+          cmt: "acc: ${logPoint.accuracy}m",
         );
         segmentPts.add(wpt);
       });
       Trkseg logSegment = Trkseg(trkpts: segmentPts);
       List<Trkseg> segments = [logSegment];
-      var t = Trk(name: log.text, number: log.id, trksegs: segments);
+      var t = Trk(
+          name: log.text,
+          number: log.id,
+          trksegs: segments,
+          cmt:
+              "${HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(log.startTime))} - ${HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(log.endTime))}");
       trks.add(t);
     });
 
