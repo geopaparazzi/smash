@@ -68,7 +68,7 @@ class _ExportWidgetState extends State<ExportWidget> {
     var projectState = Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
 
-    var images = db.getImages();
+    var images = db.getImages(onlySimple: false);
     images.forEach((image) {
       var dataId = image.imageDataId;
       var name = image.text;

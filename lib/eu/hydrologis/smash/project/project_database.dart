@@ -242,17 +242,16 @@ class GeopaparazziProjectDb extends SqliteDb {
     return count;
   }
 
-  List<DbImage> getImages({bool onlyDirty = false}) {
-    String where = "";
+  List<DbImage> getImages({bool onlyDirty = false, bool onlySimple = true}) {
+    List<String> wheres = [];
+
     if (onlyDirty) {
-      where = " where $IMAGES_COLUMN_ISDIRTY=1";
+      wheres.add("$IMAGES_COLUMN_ISDIRTY=1");
     }
-    if (where.isEmpty) {
-      where = " where ";
-    } else {
-      where = "$where and ";
+    if (onlySimple) {
+      wheres.add("$IMAGES_COLUMN_NOTE_ID is null");
     }
-    where = "$where ($IMAGES_COLUMN_NOTE_ID is null)";
+    var where = wheres.join(" and ");
     var images = getQueryObjectsList(ImageQueryBuilder(), whereString: where);
     return images;
   }
