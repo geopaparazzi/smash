@@ -16,11 +16,13 @@ import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class GeopackageExporter {
-  static Future<String> exportDb(GeopaparazziProjectDb db, File outputFile) async {
+  static Future<String> exportDb(
+      GeopaparazziProjectDb db, File outputFile) async {
     if (await outputFile.exists()) {
       return "Not writing over existing file.";
     }
-    bool useFiltered = GpPreferences().getBooleanSync(SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
+    bool useFiltered = GpPreferences().getBooleanSync(
+        SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
 
     GeopackageDb newDb = GeopackageDb(outputFile.path);
     newDb.openOrCreate();
@@ -78,7 +80,8 @@ class GeopackageExporter {
         geomBytes,
         note.id,
         note.altim,
-        HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp)),
+        HU.TimeUtilities.ISO8601_TS_FORMATTER
+            .format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp)),
         note.description,
         note.text,
         note.form,
@@ -96,7 +99,8 @@ class GeopackageExporter {
     });
   }
 
-  static void exportImagesTable(GeopackageDb newDb, GeopaparazziProjectDb gpDb) {
+  static void exportImagesTable(
+      GeopackageDb newDb, GeopaparazziProjectDb gpDb) {
     newDb.createSpatialTable(
       SqlName(TABLE_IMAGES),
       4326,
@@ -137,7 +141,8 @@ class GeopackageExporter {
         img.id,
         img.altim,
         img.azim,
-        HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(img.timeStamp)),
+        HU.TimeUtilities.ISO8601_TS_FORMATTER
+            .format(DateTime.fromMillisecondsSinceEpoch(img.timeStamp)),
         img.text,
         img.isDirty,
         imageDataBytes,
@@ -146,7 +151,8 @@ class GeopackageExporter {
     });
   }
 
-  static void exportLogsTable(GeopackageDb newDb, GeopaparazziProjectDb db, bool useFiltered) {
+  static void exportLogsTable(
+      GeopackageDb newDb, GeopaparazziProjectDb db, bool useFiltered) {
     newDb.createSpatialTable(
       SqlName(TABLE_GPSLOGS),
       4326,
@@ -193,9 +199,9 @@ class GeopackageExporter {
                 VALUES (?,?,?,?,?);
                 """;
     var gf = GeometryFactory.defaultPrecision();
-    List<Coordinate> coordinates = [];
     var logs = db.getLogs();
     logs.forEach((log) {
+      List<Coordinate> coordinates = [];
       List<LogDataPoint> logDataPoints = db.getLogDataPoints(log.id);
       logDataPoints.forEach((logPoint) {
         Coordinate coordinate;
@@ -212,7 +218,8 @@ class GeopackageExporter {
           geomBytes,
           logPoint.id,
           logPoint.altim,
-          HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(logPoint.ts)),
+          HU.TimeUtilities.ISO8601_TS_FORMATTER
+              .format(DateTime.fromMillisecondsSinceEpoch(logPoint.ts)),
           logPoint.logid,
         ]);
       });
@@ -224,8 +231,10 @@ class GeopackageExporter {
       newDb.execute(sqlLogs, arguments: [
         geomBytes,
         log.id,
-        HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(log.startTime)),
-        HU.TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(log.endTime)),
+        HU.TimeUtilities.ISO8601_TS_FORMATTER
+            .format(DateTime.fromMillisecondsSinceEpoch(log.startTime)),
+        HU.TimeUtilities.ISO8601_TS_FORMATTER
+            .format(DateTime.fromMillisecondsSinceEpoch(log.endTime)),
         log.lengthm,
         log.isDirty,
         log.text,
