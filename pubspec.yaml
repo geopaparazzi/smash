@@ -100,7 +100,7 @@ dependencies:
     #   ref: version4smash
 
   mapsforge_flutter:
-    # path: /Users/hydrologis/development/mapsforge_flutter/mapsforge_flutter
+    # path: /home/hydrologis/development/mapsforge_flutter/mapsforge_flutter
     git:
       url: https://github.com/mikes222/mapsforge_flutter.git
       # url: https://github.com/moovida/mapsforge_flutter.git

@@ -2674,8 +2674,8 @@ import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import java.text.DecimalFormat
 
-def path = "/Users/hydrologis/TMP/smash_20200810_110334_gargnano.gpap"
-def out = "/Users/hydrologis/TMP/log.txt" as File
+def path = "/home/hydrologis/TMP/smash_20200810_110334_gargnano.gpap"
+def out = "/home/hydrologis/TMP/log.txt" as File
 out.delete()
 
 def df = new DecimalFormat("0.0");
