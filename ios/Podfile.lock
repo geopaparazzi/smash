@@ -68,20 +68,20 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
-  - sqlite3 (3.35.5):
-    - sqlite3/common (= 3.35.5)
-  - sqlite3/common (3.35.5)
-  - sqlite3/fts5 (3.35.5):
+  - sqlite3 (3.36.0):
+    - sqlite3/common (= 3.36.0)
+  - sqlite3/common (3.36.0)
+  - sqlite3/fts5 (3.36.0):
     - sqlite3/common
-  - sqlite3/json1 (3.35.5):
+  - sqlite3/json1 (3.36.0):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.35.5):
+  - sqlite3/perf-threadsafe (3.36.0):
     - sqlite3/common
-  - sqlite3/rtree (3.35.5):
+  - sqlite3/rtree (3.36.0):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.35.4)
+    - sqlite3 (~> 3.36.0)
     - sqlite3/fts5
     - sqlite3/json1
     - sqlite3/perf-threadsafe
@@ -173,20 +173,20 @@ SPEC CHECKSUMS:
   flutter_ringtone_player: 15eba85187230b87b2512f0e1b92225618bc03e7
   flutter_screen_wake: 4d3c2b43943ea81bd5e591fd4e639ea537f4ca5e
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
-  image_picker: e06f7a68f000bd36f552c1847e33cda96ed31f1f
+  image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
   path_provider_ex: 95397ca0c3f5f99c8538aec3736674fa9cefc1b6
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
   SDWebImage: 4dc3e42d9ec0c1028b960a33ac6b637bb432207b
   share_extend: b6748dc53695587891126a89533b862b92548c7b
-  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  sqlite3: 75da32fd4e3574f6c38566a9f0114cfe792c8db5
-  sqlite3_flutter_libs: aedb7b6ba191f9a052dcef77691cf5d37437431c
+  shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
+  sqlite3: 797b1b1f92baf74716a3179f69d9652ce4a5df3f
+  sqlite3_flutter_libs: a1d040d0c9b60435b50e9626a9e818ddff842487
   SwiftyGif: 5d4af95df24caf1c570dbbcb32a3b8a0763bc6d7
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
+  url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
 
 PODFILE CHECKSUM: a347fd0ae05b3d8478a3efc87a129c3eb6e544ea
 
