@@ -41,6 +41,7 @@ android {
     //     // resValues = true
     //     // shaders = true
     // }
+    ndkVersion "22.1.7171670"
 
 
     lintOptions {
