@@ -45,7 +45,7 @@ android {
 
     // this seems to be necessary on codemagic due to a gradle bug.
     // check when it is fixed, since we do not need NDK
-    ndkVersion "23.1.7779620"
+    //ndkVersion "23.1.7779620"
 
 
     lintOptions {
