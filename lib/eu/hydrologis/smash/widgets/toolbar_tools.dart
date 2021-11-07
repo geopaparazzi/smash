@@ -456,7 +456,7 @@ class RulerButton extends StatelessWidget {
           size: _iconSize,
         ),
       );
-      if (rulerState.lengthMeters != null) {
+      if (rulerState.lengthMeters != null && rulerState.lengthMeters != 0) {
         w = Badge(
           badgeColor: SmashColors.mainSelection,
           shape: BadgeShape.square,

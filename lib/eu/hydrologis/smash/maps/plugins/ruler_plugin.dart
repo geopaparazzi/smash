@@ -52,6 +52,8 @@ class RulerPluginLayer extends StatefulWidget {
 
 class _RulerPluginLayerState extends State<RulerPluginLayer> {
   LatLng runningPointLL;
+  double _x;
+  double _y;
   double lengthMeters;
 
   List<Offset> pointsList;
@@ -75,38 +77,27 @@ class _RulerPluginLayerState extends State<RulerPluginLayer> {
       }
       stackWidgets.add(
         GestureDetector(
-          onPanDown: (details) {
-            pointsList = [];
-            var p = details.localPosition;
-            pointsList.add(p);
-            lengthMeters = 0.0;
-            CustomPoint pixelOrigin = widget.map.getPixelOrigin();
-            runningPointLL = widget.map.unproject(
-                CustomPoint(pixelOrigin.x + p.dx, pixelOrigin.y + (p.dy)));
-            rulerState.lengthMeters = lengthMeters;
-            setState(() {});
+          onTapDown: (detail) {
+            _x = detail.localPosition.dx;
+            _y = detail.localPosition.dy;
+            dragStart(rulerState, detail.localPosition);
           },
-          onPanUpdate: (details) {
-            var p = details.localPosition;
-            if (pointsList != null) {
-              pointsList.add(p);
-              CustomPoint pixelOrigin = widget.map.getPixelOrigin();
-              var tmpPointLL = widget.map.unproject(
-                  CustomPoint(pixelOrigin.x + p.dx, pixelOrigin.y + (p.dy)));
-              lengthMeters +=
-                  CoordinateUtilities.getDistance(runningPointLL, tmpPointLL);
-              rulerState.lengthMeters = lengthMeters;
-              runningPointLL = tmpPointLL;
-              setState(() {});
-            }
+          onPanDown: (detail) {
+            _x = detail.localPosition.dx;
+            _y = detail.localPosition.dy;
+            dragStart(rulerState, detail.localPosition);
           },
-          onPanEnd: (e) async {
-            // finish line
-            rulerState.lengthMeters = null;
-            setState(() {
-              pointsList = null;
-              lengthMeters = null;
-            });
+          onHorizontalDragUpdate: (detail) {
+            dragUpdate(rulerState, detail.localPosition);
+          },
+          onVerticalDragUpdate: (detail) {
+            dragUpdate(rulerState, detail.localPosition);
+          },
+          onHorizontalDragEnd: (detail) {
+            dragEnd(rulerState);
+          },
+          onVerticalDragEnd: (detail) {
+            dragEnd(rulerState);
           },
         ),
       );
@@ -115,6 +106,46 @@ class _RulerPluginLayerState extends State<RulerPluginLayer> {
         children: stackWidgets,
       );
     });
+  }
+
+  void dragStart(RulerState rulerState, Offset p) {
+    if (_x != null && _y != null) {
+      pointsList = [];
+      // print(p);
+      pointsList.add(p);
+      lengthMeters = 0.0;
+      CustomPoint pixelOrigin = widget.map.getPixelOrigin();
+      runningPointLL = widget.map
+          .unproject(CustomPoint(pixelOrigin.x + p.dx, pixelOrigin.y + (p.dy)));
+      rulerState.lengthMeters = lengthMeters;
+      setState(() {});
+    }
+  }
+
+  void dragUpdate(RulerState rulerState, Offset p) {
+    if (_x != null && _y != null) {
+      if (pointsList != null) {
+        pointsList.add(p);
+        CustomPoint pixelOrigin = widget.map.getPixelOrigin();
+        var tmpPointLL = widget.map.unproject(
+            CustomPoint(pixelOrigin.x + p.dx, pixelOrigin.y + (p.dy)));
+        lengthMeters +=
+            CoordinateUtilities.getDistance(runningPointLL, tmpPointLL);
+        rulerState.lengthMeters = lengthMeters;
+        runningPointLL = tmpPointLL;
+        setState(() {});
+      }
+    }
+  }
+
+  void dragEnd(RulerState rulerState) {
+    if (rulerState.lengthMeters != null) {
+      rulerState.lengthMeters = null;
+      setState(() {
+        pointsList = null;
+        lengthMeters = null;
+      });
+    }
   }
 }
 
