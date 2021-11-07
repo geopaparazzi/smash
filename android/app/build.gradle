@@ -43,11 +43,6 @@ android {
     // }
 
 
-    // this seems to be necessary on codemagic due to a gradle bug.
-    // check when it is fixed, since we do not need NDK
-    //ndkVersion "23.1.7779620"
-
-
     lintOptions {
         disable 'InvalidPackage'
         checkReleaseBuilds false
@@ -56,7 +51,7 @@ android {
     defaultConfig {
         applicationId "eu.hydrologis.smash"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 30
         compileSdkVersion 30
         buildToolsVersion = "30.0.3"
         
@@ -103,4 +98,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    // required to avoid crash on Android 12 API 31
+    // implementation 'androidx.work:work-runtime-ktx:2.7.0'
 }
