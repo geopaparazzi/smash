@@ -71,5 +71,9 @@
   "mainviewUtils_sharePosition": "Condividi la posizione",
   "@mainviewUtils_sharePosition": {},
   "mainviewUtils_projectInfo": "Informazioni sul progetto",
-  "@mainviewUtils_projectInfo": {}
+  "@mainviewUtils_projectInfo": {},
+  "mainView_openToolsDrawer": "Apri menu laterale strumenti.",
+  "@mainView_openToolsDrawer": {},
+  "mainView_zoomIn": "Ingrandisci",
+  "@mainView_zoomIn": {}
 }
