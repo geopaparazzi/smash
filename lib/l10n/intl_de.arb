@@ -24,5 +24,17 @@
   "main_workspaceLoaded": "Arbeitsbereich geladen.",
   "@main_workspaceLoaded": {},
   "main_checkingStoragePermission": "Speicherberechtigung prüfen…",
-  "@main_checkingStoragePermission": {}
+  "@main_checkingStoragePermission": {},
+  "main_loadingFences": "Lade Begrenzung…",
+  "@main_loadingFences": {},
+  "main_fencesLoaded": "Begrenzungen geladen.",
+  "@main_fencesLoaded": {},
+  "main_loadingLayersList": "Laden der Layerliste…",
+  "@main_loadingLayersList": {},
+  "main_layersListLoaded": "Layerliste geladen.",
+  "@main_layersListLoaded": {},
+  "main_locationBackgroundWarning": "Erteilen Sie im nächsten Schritt die Standortfreigabe, um die GPS-Aufzeichnung im Hintergrund zu ermöglichen. ( Andernfalls funktioniert das System nur im Vordergrund.)\nEs werden keine Daten weitergegeben, sondern nur lokal auf dem Gerät gespeichert.",
+  "@main_locationBackgroundWarning": {},
+  "main_StorageIsInternalWarning": "Bitte aufmerksam lesen!\nUnter Android 11 und höher muss sich der SMASH-Projektordner im Verzeichnis\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nbefinden.\nBei Deinstallation der App wird er vom System entfernt, daher sollten Sie Ihre Daten sichern.\n\nEine bessere Lösung ist in Arbeit.",
+  "@main_StorageIsInternalWarning": {}
 }
