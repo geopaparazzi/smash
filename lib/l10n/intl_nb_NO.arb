@@ -953,7 +953,7 @@
   "@fence_delete": {},
   "form_sketch_enableDrawing": "Skru på tegning",
   "@form_sketch_enableDrawing": {},
-  "coachMarks_openDrawerToLoadProject": "Åpne skuffen for å laste inn et prosjekt, opprette et nytt, importere og ekspoertere data, synkronisere data med tjenere, endre innstillinger, og avslutte programmet/skru av GPS.",
+  "coachMarks_openDrawerToLoadProject": "Åpne skuffen for å laste inn eller opprette et prosjekt, importere og ekspoertere data, synkronisere data med tjenere, endre innstillinger, og avslutte programmet/skru av GPS.",
   "@coachMarks_openDrawerToLoadProject": {},
   "noteList_loadingNotes": "Laster inn notater …",
   "@noteList_loadingNotes": {},
