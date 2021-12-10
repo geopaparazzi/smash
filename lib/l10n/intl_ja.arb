@@ -26,7 +26,7 @@
   "@main_loadingKnownProjections": {},
   "main_knownProjectionsLoaded": "既知のプロジェクションがロードされました。",
   "@main_knownProjectionsLoaded": {},
-  "main_loadingFences": "柵を読み込んでいます…",
+  "main_loadingFences": "フェンスを読み込んでいます…",
   "@main_loadingFences": {},
   "main_fencesLoaded": "フェンスが読み込まれました。",
   "@main_fencesLoaded": {},
