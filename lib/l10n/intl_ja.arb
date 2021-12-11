@@ -951,5 +951,7 @@
   "network_permissionOnServerDenied": "サーバーへのアクセスが拒否されました。",
   "@network_permissionOnServerDenied": {},
   "network_couldNotConnectToServer": "サーバーに接続できませんでした。オンラインですか？アドレスを確認してください。",
-  "@network_couldNotConnectToServer": {}
+  "@network_couldNotConnectToServer": {},
+  "exportWidget_imagesToFolderExported": "画像エクスポート",
+  "@exportWidget_imagesToFolderExported": {}
 }
