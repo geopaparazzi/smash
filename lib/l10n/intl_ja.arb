@@ -474,11 +474,11 @@
   "@about_tapHereToSeePrivacyPolicy": {},
   "gpsInfoButton_noGpsInfoAvailable": "利用可能なGPS情報がありません…",
   "@gpsInfoButton_noGpsInfoAvailable": {},
-  "gpsInfoButton_timestamp": "Timestamp",
+  "gpsInfoButton_timestamp": "タイムスタンプ",
   "@gpsInfoButton_timestamp": {},
   "gpsInfoButton_speed": "速度",
   "@gpsInfoButton_speed": {},
-  "gpsInfoButton_heading": "見出し",
+  "gpsInfoButton_heading": "方位角",
   "@gpsInfoButton_heading": {},
   "gpsInfoButton_accuracy": "精度",
   "@gpsInfoButton_accuracy": {},
@@ -951,5 +951,7 @@
   "network_permissionOnServerDenied": "サーバーへのアクセスが拒否されました。",
   "@network_permissionOnServerDenied": {},
   "network_couldNotConnectToServer": "サーバーに接続できませんでした。オンラインですか？アドレスを確認してください。",
-  "@network_couldNotConnectToServer": {}
+  "@network_couldNotConnectToServer": {},
+  "exportWidget_imagesToFolderExported": "画像エクスポート",
+  "@exportWidget_imagesToFolderExported": {}
 }
