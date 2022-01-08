@@ -276,6 +276,9 @@ class CurrentGpsLogLayer extends StatelessWidget {
       maxY: (maxElev.toDouble() + 1.0) * factor,
       lineTouchData: LineTouchData(
         enabled: true,
+        touchTooltipData: LineTouchTooltipData(
+          tooltipBgColor: SmashColors.mainBackground.withOpacity(0.8),
+        ),
       ),
       gridData: FlGridData(
         // show: true,
@@ -287,6 +290,12 @@ class CurrentGpsLogLayer extends StatelessWidget {
           showTitles: false,
         ),
         leftTitles: SideTitles(
+          showTitles: false,
+        ),
+        rightTitles: SideTitles(
+          showTitles: false,
+        ),
+        topTitles: SideTitles(
           showTitles: false,
         ),
       ),
