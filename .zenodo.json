@@ -1,0 +1,40 @@
+{
+  "access_right": "open",
+  "title":"SMASH",
+  "description":"SMASH, the free and open source digital field mapping for IOS and Android",
+  "language": "eng",
+  "license": {"id":"GPL-3.0-or-later"},
+  "keywords": ["gis","mobile", "smash", "android", "ios", "digital field mapping"],
+  "creators": [
+     {
+       "name":"Andrea Antonello",
+       "affiliation":"HydroloGIS S.r.l., Free University of Bolzano",
+       "orcid":"0000-0001-9543-751X"
+     },
+     {
+       "name":"Silvia Franceschi",
+       "affiliation":"HydroloGIS S.r.l."
+     }
+  ],
+  "contributors": [
+     {
+       "name":"Daniel Kastl",
+       "type": "Other"
+     },
+     {
+       "name":"Ko Nagase",
+       "type": "Other"
+     },
+     {
+       "name":"Mario Basa",
+       "type": "Other"
+     },
+     {
+       "name":"Francesco Frassinelli",
+       "type": "Other"
+     }
+  ],
+  "references": [
+    
+  ]
+}
