@@ -39,7 +39,6 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
-import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/eu/hydrologis/smash/util/coachmarks.dart';
 import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';

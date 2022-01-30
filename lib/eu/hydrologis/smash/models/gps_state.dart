@@ -4,17 +4,12 @@
  * found in the LICENSE file.
  */
 
-import 'dart:collection';
-import 'dart:math';
-
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/project/objects/logs.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 
 /// Current Gps Status.
@@ -143,6 +138,12 @@ class GpsState extends ChangeNotifierPlus {
     if (_projectState != null) {
       LogDataPoint ldp = LogDataPoint();
       ldp.logid = currentLogId;
+
+      /// Update the project's dirtyness state.
+      ///
+      /// The notes, images and logs are set to be dirty (i.e. synched)
+      /// if [doDirty] is true. They are set to be clean (i.e. ignored
+      /// by synch), is false.
       ldp.lon = longitude;
       ldp.lat = latitude;
       ldp.altim = altitude;

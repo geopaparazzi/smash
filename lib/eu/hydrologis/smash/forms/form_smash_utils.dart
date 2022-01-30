@@ -11,8 +11,6 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart'
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
-import 'package:smash/eu/hydrologis/smash/project/objects/images.dart';
-import 'package:smash/eu/hydrologis/smash/project/objects/notes.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
