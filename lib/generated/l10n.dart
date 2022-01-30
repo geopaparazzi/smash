@@ -45,10 +45,10 @@ class SL {
     );
   }
 
-  /// `Checking location permission...`
+  /// `Checking location permission…`
   String get main_check_location_permission {
     return Intl.message(
-      'Checking location permission...',
+      'Checking location permission…',
       name: 'main_check_location_permission',
       desc: '',
       args: [],
@@ -65,10 +65,10 @@ class SL {
     );
   }
 
-  /// `Checking storage permission...`
+  /// `Checking storage permission…`
   String get main_checkingStoragePermission {
     return Intl.message(
-      'Checking storage permission...',
+      'Checking storage permission…',
       name: 'main_checkingStoragePermission',
       desc: '',
       args: [],
@@ -85,10 +85,10 @@ class SL {
     );
   }
 
-  /// `Loading preferences...`
+  /// `Loading preferences…`
   String get main_loadingPreferences {
     return Intl.message(
-      'Loading preferences...',
+      'Loading preferences…',
       name: 'main_loadingPreferences',
       desc: '',
       args: [],
@@ -105,10 +105,10 @@ class SL {
     );
   }
 
-  /// `Loading workspace...`
+  /// `Loading workspace…`
   String get main_loadingWorkspace {
     return Intl.message(
-      'Loading workspace...',
+      'Loading workspace…',
       name: 'main_loadingWorkspace',
       desc: '',
       args: [],
@@ -125,10 +125,10 @@ class SL {
     );
   }
 
-  /// `Loading tags list...`
+  /// `Loading tags list…`
   String get main_loadingTagsList {
     return Intl.message(
-      'Loading tags list...',
+      'Loading tags list…',
       name: 'main_loadingTagsList',
       desc: '',
       args: [],
@@ -145,10 +145,10 @@ class SL {
     );
   }
 
-  /// `Loading known projections...`
+  /// `Loading known projections…`
   String get main_loadingKnownProjections {
     return Intl.message(
-      'Loading known projections...',
+      'Loading known projections…',
       name: 'main_loadingKnownProjections',
       desc: '',
       args: [],
@@ -165,10 +165,10 @@ class SL {
     );
   }
 
-  /// `Loading fences...`
+  /// `Loading fences…`
   String get main_loadingFences {
     return Intl.message(
-      'Loading fences...',
+      'Loading fences…',
       name: 'main_loadingFences',
       desc: '',
       args: [],
@@ -185,10 +185,10 @@ class SL {
     );
   }
 
-  /// `Loading layers list...`
+  /// `Loading layers list…`
   String get main_loadingLayersList {
     return Intl.message(
-      'Loading layers list...',
+      'Loading layers list…',
       name: 'main_loadingLayersList',
       desc: '',
       args: [],
@@ -205,20 +205,20 @@ class SL {
     );
   }
 
-  /// `This app collects location data to your device to enable gps logs recording even when the app is placed in background. No data is shared, it is only saved locally to the device.\n\nIf you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.\n`
+  /// `Grant location permission in the next step to allow GPS logging in the background. (Otherwise it only works in the foreground.)\nNo data is shared, and only saved locally on the device.`
   String get main_locationBackgroundWarning {
     return Intl.message(
-      'This app collects location data to your device to enable gps logs recording even when the app is placed in background. No data is shared, it is only saved locally to the device.\n\nIf you do not give permission to the background location service in the next dialog, you will still be able to collect data with SMASH, but will need to keep the app always in foreground to do so.\n',
+      'Grant location permission in the next step to allow GPS logging in the background. (Otherwise it only works in the foreground.)\nNo data is shared, and only saved locally on the device.',
       name: 'main_locationBackgroundWarning',
       desc: '',
       args: [],
     );
   }
 
-  /// `Please read carefully!\nDue to Android > 11 restrictions, the SMASH project folder needs to be placed inside the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage in order to be properly used. The only thing you have to pay attention to is that when the app is uninstalled, the system removes that folder.\n\nIn that case make sure you save your data first!\n\nWe will be working on a solution in the meanwhile.`
+  /// `Please read carefully!\nOn Android 11 and above, the SMASH project folder must be placed in the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage to be used.\nIf the app is uninstalled, the system removes it, so back up your data if you do.\n\nA better solution is in the works.`
   String get main_StorageIsInternalWarning {
     return Intl.message(
-      'Please read carefully!\nDue to Android > 11 restrictions, the SMASH project folder needs to be placed inside the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage in order to be properly used. The only thing you have to pay attention to is that when the app is uninstalled, the system removes that folder.\n\nIn that case make sure you save your data first!\n\nWe will be working on a solution in the meanwhile.',
+      'Please read carefully!\nOn Android 11 and above, the SMASH project folder must be placed in the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage to be used.\nIf the app is uninstalled, the system removes it, so back up your data if you do.\n\nA better solution is in the works.',
       name: 'main_StorageIsInternalWarning',
       desc: '',
       args: [],
@@ -255,10 +255,10 @@ class SL {
     );
   }
 
-  /// `Loading data...`
+  /// `Loading data…`
   String get mainView_loadingData {
     return Intl.message(
-      'Loading data...',
+      'Loading data…',
       name: 'mainView_loadingData',
       desc: '',
       args: [],
@@ -295,10 +295,10 @@ class SL {
     );
   }
 
-  /// `Are you sure you want to close the project?`
+  /// `Close the project?`
   String get mainView_areYouSureCloseTheProject {
     return Intl.message(
-      'Are you sure you want to close the project?',
+      'Close the project?',
       name: 'mainView_areYouSureCloseTheProject',
       desc: '',
       args: [],
@@ -735,10 +735,10 @@ class SL {
     );
   }
 
-  /// `Collecting sync stats...`
+  /// `Collecting sync stats…`
   String get gssExport_collectingSyncStats {
     return Intl.message(
-      'Collecting sync stats...',
+      'Collecting sync stats…',
       name: 'gssExport_collectingSyncStats',
       desc: '',
       args: [],
@@ -755,10 +755,10 @@ class SL {
     );
   }
 
-  /// `No GSS server url has been set. Check your settings.`
+  /// `No GSS server URL has been set. Check your settings.`
   String get gssExport_noGssUrlSet {
     return Intl.message(
-      'No GSS server url has been set. Check your settings.',
+      'No GSS server URL has been set. Check your settings.',
       name: 'gssExport_noGssUrlSet',
       desc: '',
       args: [],
@@ -795,10 +795,10 @@ class SL {
     );
   }
 
-  /// `Gps Logs:`
+  /// `GPS Logs:`
   String get gssExport_gpsLogs {
     return Intl.message(
-      'Gps Logs:',
+      'GPS Logs:',
       name: 'gssExport_gpsLogs',
       desc: '',
       args: [],
@@ -885,10 +885,10 @@ class SL {
     );
   }
 
-  /// `Searching...`
+  /// `Searching…`
   String get geocoding_searching {
     return Intl.message(
-      'Searching...',
+      'Searching…',
       name: 'geocoding_searching',
       desc: '',
       args: [],
@@ -955,10 +955,10 @@ class SL {
     );
   }
 
-  /// `Downloading data list...`
+  /// `Downloading data list…`
   String get gssImport_downloadingDataList {
     return Intl.message(
-      'Downloading data list...',
+      'Downloading data list…',
       name: 'gssImport_downloadingDataList',
       desc: '',
       args: [],
@@ -975,10 +975,10 @@ class SL {
     );
   }
 
-  /// `No GSS server url has been set. Check your settings.`
+  /// `No GSS server URL has been set. Check your settings.`
   String get gssImport_noGssUrlSet {
     return Intl.message(
-      'No GSS server url has been set. Check your settings.',
+      'No GSS server URL has been set. Check your settings.',
       name: 'gssImport_noGssUrlSet',
       desc: '',
       args: [],
@@ -1155,10 +1155,10 @@ class SL {
     );
   }
 
-  /// `Loading...`
+  /// `Loading…`
   String get layersView_loading {
     return Intl.message(
-      'Loading...',
+      'Loading…',
       name: 'layersView_loading',
       desc: '',
       args: [],
@@ -1265,20 +1265,20 @@ class SL {
     );
   }
 
-  /// `Loading TMS layers...`
+  /// `Loading TMS layers…`
   String get onlineSourcesPage_loadingTmsLayers {
     return Intl.message(
-      'Loading TMS layers...',
+      'Loading TMS layers…',
       name: 'onlineSourcesPage_loadingTmsLayers',
       desc: '',
       args: [],
     );
   }
 
-  /// `Loading WMS layers...`
+  /// `Loading WMS layers…`
   String get onlineSourcesPage_loadingWmsLayers {
     return Intl.message(
-      'Loading WMS layers...',
+      'Loading WMS layers…',
       name: 'onlineSourcesPage_loadingWmsLayers',
       desc: '',
       args: [],
@@ -1345,20 +1345,20 @@ class SL {
     );
   }
 
-  /// `DELETE`
+  /// `Delete`
   String get onlineSourcesPage_delete {
     return Intl.message(
-      'DELETE',
+      'Delete',
       name: 'onlineSourcesPage_delete',
       desc: '',
       args: [],
     );
   }
 
-  /// `ADD TO LAYERS`
+  /// `Add to layers`
   String get onlineSourcesPage_addToLayers {
     return Intl.message(
-      'ADD TO LAYERS',
+      'Add to layers',
       name: 'onlineSourcesPage_addToLayers',
       desc: '',
       args: [],
@@ -1395,10 +1395,10 @@ class SL {
     );
   }
 
-  /// `Insert the url of the service.`
+  /// `Insert the URL of the service.`
   String get onlineSourcesPage_insertUrlOfService {
     return Intl.message(
-      'Insert the url of the service.',
+      'Insert the URL of the service.',
       name: 'onlineSourcesPage_insertUrlOfService',
       desc: '',
       args: [],
@@ -1545,10 +1545,10 @@ class SL {
     );
   }
 
-  /// `CANCEL`
+  /// `Cancel`
   String get onlineSourcesPage_cancel {
     return Intl.message(
-      'CANCEL',
+      'Cancel',
       name: 'onlineSourcesPage_cancel',
       desc: '',
       args: [],
@@ -1585,10 +1585,10 @@ class SL {
     );
   }
 
-  /// `The base url ending with question mark.`
+  /// `The base URL-ending with question mark.`
   String get onlineSourcesPage_theBaseUrlWithQuestionMark {
     return Intl.message(
-      'The base url ending with question mark.',
+      'The base URL-ending with question mark.',
       name: 'onlineSourcesPage_theBaseUrlWithQuestionMark',
       desc: '',
       args: [],
@@ -1715,10 +1715,10 @@ class SL {
     );
   }
 
-  /// `Are you sure you want to delete the database configuration?`
+  /// `Delete the database configuration?`
   String get remoteDbPage_areYouSureDeleteDatabase {
     return Intl.message(
-      'Are you sure you want to delete the database configuration?',
+      'Delete the database configuration?',
       name: 'remoteDbPage_areYouSureDeleteDatabase',
       desc: '',
       args: [],
@@ -1775,10 +1775,10 @@ class SL {
     );
   }
 
-  /// `CANCEL`
+  /// `Cancel`
   String get remoteDbPage_cancel {
     return Intl.message(
-      'CANCEL',
+      'Cancel',
       name: 'remoteDbPage_cancel',
       desc: '',
       args: [],
@@ -1795,20 +1795,20 @@ class SL {
     );
   }
 
-  /// `The url needs to be defined (postgis:host:port/dbname)`
+  /// `The URL must be defined (postgis:host:port/databasename)`
   String get remoteDbPage_theUrlNeedsToBeDefined {
     return Intl.message(
-      'The url needs to be defined (postgis:host:port/dbname)',
+      'The URL must be defined (postgis:host:port/databasename)',
       name: 'remoteDbPage_theUrlNeedsToBeDefined',
       desc: '',
       args: [],
     );
   }
 
-  /// `The user needs to be defined.`
+  /// `A user must be defined.`
   String get remoteDbPage_theUserNeedsToBeDefined {
     return Intl.message(
-      'The user needs to be defined.',
+      'A user must be defined.',
       name: 'remoteDbPage_theUserNeedsToBeDefined',
       desc: '',
       args: [],
@@ -1825,30 +1825,30 @@ class SL {
     );
   }
 
-  /// `The password needs to be defined.`
+  /// `A password must be defined.`
   String get remoteDbPage_thePasswordNeedsToBeDefined {
     return Intl.message(
-      'The password needs to be defined.',
+      'A password must be defined.',
       name: 'remoteDbPage_thePasswordNeedsToBeDefined',
       desc: '',
       args: [],
     );
   }
 
-  /// `loading tables...`
+  /// `Loading tables…`
   String get remoteDbPage_loadingTables {
     return Intl.message(
-      'loading tables...',
+      'Loading tables…',
       name: 'remoteDbPage_loadingTables',
       desc: '',
       args: [],
     );
   }
 
-  /// `The table name needs to be defined.`
+  /// `The table name must be defined.`
   String get remoteDbPage_theTableNeedsToBeDefined {
     return Intl.message(
-      'The table name needs to be defined.',
+      'The table name must be defined.',
       name: 'remoteDbPage_theTableNeedsToBeDefined',
       desc: '',
       args: [],
@@ -1865,20 +1865,20 @@ class SL {
     );
   }
 
-  /// `optional where condition`
+  /// `optional "where" condition`
   String get remoteDbPage_optionalWhereCondition {
     return Intl.message(
-      'optional where condition',
+      'optional "where" condition',
       name: 'remoteDbPage_optionalWhereCondition',
       desc: '',
       args: [],
     );
   }
 
-  /// `Tiff Properties`
+  /// `TIFF Properties`
   String get geoImage_tiffProperties {
     return Intl.message(
-      'Tiff Properties',
+      'TIFF Properties',
       name: 'geoImage_tiffProperties',
       desc: '',
       args: [],
@@ -1905,20 +1905,20 @@ class SL {
     );
   }
 
-  /// `Gpx Properties`
+  /// `GPX Properties`
   String get gpx_gpxProperties {
     return Intl.message(
-      'Gpx Properties',
+      'GPX Properties',
       name: 'gpx_gpxProperties',
       desc: '',
       args: [],
     );
   }
 
-  /// `WAYPOINTS`
+  /// `Waypoints`
   String get gpx_wayPoints {
     return Intl.message(
-      'WAYPOINTS',
+      'Waypoints',
       name: 'gpx_wayPoints',
       desc: '',
       args: [],
@@ -1955,10 +1955,10 @@ class SL {
     );
   }
 
-  /// `TRACKS/ROUTES`
+  /// `Tracks/routes`
   String get gpx_tracksRoutes {
     return Intl.message(
-      'TRACKS/ROUTES',
+      'Tracks/routes',
       name: 'gpx_tracksRoutes',
       desc: '',
       args: [],
@@ -2045,10 +2045,10 @@ class SL {
     );
   }
 
-  /// `Loading data...`
+  /// `Loading data…`
   String get featureAttributesViewer_loadingData {
     return Intl.message(
-      'Loading data...',
+      'Loading data…',
       name: 'featureAttributesViewer_loadingData',
       desc: '',
       args: [],
@@ -2065,10 +2065,10 @@ class SL {
     );
   }
 
-  /// `FIELD`
+  /// `Field`
   String get featureAttributesViewer_field {
     return Intl.message(
-      'FIELD',
+      'Field',
       name: 'featureAttributesViewer_field',
       desc: '',
       args: [],
@@ -2185,10 +2185,10 @@ class SL {
     );
   }
 
-  /// `Saving image to db...`
+  /// `Saving image to database…`
   String get dataLoader_savingImageToDB {
     return Intl.message(
-      'Saving image to db...',
+      'Saving image to database…',
       name: 'dataLoader_savingImageToDB',
       desc: '',
       args: [],
@@ -2205,10 +2205,10 @@ class SL {
     );
   }
 
-  /// `Are you sure you want to remove note`
+  /// `Remove note?`
   String get dataLoader_areYouSureRemoveNote {
     return Intl.message(
-      'Are you sure you want to remove note',
+      'Remove note?',
       name: 'dataLoader_areYouSureRemoveNote',
       desc: '',
       args: [],
@@ -2275,60 +2275,60 @@ class SL {
     );
   }
 
-  /// `Are you sure you want to remove image`
+  /// `Remove the image?`
   String get dataLoader_areYouSureRemoveImage {
     return Intl.message(
-      'Are you sure you want to remove image',
+      'Remove the image?',
       name: 'dataLoader_areYouSureRemoveImage',
       desc: '',
       args: [],
     );
   }
 
-  /// `Loading image...`
+  /// `Loading image…`
   String get images_loadingImage {
     return Intl.message(
-      'Loading image...',
+      'Loading image…',
       name: 'images_loadingImage',
       desc: '',
       args: [],
     );
   }
 
-  /// `Loading information...`
+  /// `Loading info…`
   String get about_loadingInformation {
     return Intl.message(
-      'Loading information...',
+      'Loading info…',
       name: 'about_loadingInformation',
       desc: '',
       args: [],
     );
   }
 
-  /// `ABOUT `
+  /// `About `
   String get about_ABOUT {
     return Intl.message(
-      'ABOUT ',
+      'About ',
       name: 'about_ABOUT',
       desc: '',
       args: [],
     );
   }
 
-  /// `Smart Mobile App for Surveyor's Happiness`
+  /// `Smart Mobile App for Surveyor Happiness`
   String get about_smartMobileAppForSurveyor {
     return Intl.message(
-      'Smart Mobile App for Surveyor\'s Happiness',
+      'Smart Mobile App for Surveyor Happiness',
       name: 'about_smartMobileAppForSurveyor',
       desc: '',
       args: [],
     );
   }
 
-  /// `Application version`
+  /// `Version`
   String get about_applicationVersion {
     return Intl.message(
-      'Application version',
+      'Version',
       name: 'about_applicationVersion',
       desc: '',
       args: [],
@@ -2345,10 +2345,10 @@ class SL {
     );
   }
 
-  /// ` is available under the General Public License, version 3.`
+  /// ` is copylefted libre software, licensed GPLv3+.`
   String get about_isAvailableUnderGPL3 {
     return Intl.message(
-      ' is available under the General Public License, version 3.',
+      ' is copylefted libre software, licensed GPLv3+.',
       name: 'about_isAvailableUnderGPL3',
       desc: '',
       args: [],
@@ -2375,20 +2375,20 @@ class SL {
     );
   }
 
-  /// `Legal Information`
+  /// `Legal Info`
   String get about_legalInformation {
     return Intl.message(
-      'Legal Information',
+      'Legal Info',
       name: 'about_legalInformation',
       desc: '',
       args: [],
     );
   }
 
-  /// `Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit.`
+  /// `Copyright © 2020, HydroloGIS S.r.l. — some rights reserved. Tap to visit.`
   String get about_copyright2020HydroloGIS {
     return Intl.message(
-      'Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit.',
+      'Copyright © 2020, HydroloGIS S.r.l. — some rights reserved. Tap to visit.',
       name: 'about_copyright2020HydroloGIS',
       desc: '',
       args: [],
@@ -2435,10 +2435,10 @@ class SL {
     );
   }
 
-  /// `No GPS info available...`
+  /// `No GPS info available…`
   String get gpsInfoButton_noGpsInfoAvailable {
     return Intl.message(
-      'No GPS info available...',
+      'No GPS info available…',
       name: 'gpsInfoButton_noGpsInfoAvailable',
       desc: '',
       args: [],
@@ -2585,10 +2585,10 @@ class SL {
     );
   }
 
-  /// `Loading image...`
+  /// `Loading image…`
   String get imageWidgets_loadingImage {
     return Intl.message(
-      'Loading image...',
+      'Loading image…',
       name: 'imageWidgets_loadingImage',
       desc: '',
       args: [],
@@ -2645,10 +2645,10 @@ class SL {
     );
   }
 
-  /// `Loading logs...`
+  /// `Loading logs…`
   String get logList_loadingLogs {
     return Intl.message(
-      'Loading logs...',
+      'Loading logs…',
       name: 'logList_loadingLogs',
       desc: '',
       args: [],
@@ -2705,10 +2705,10 @@ class SL {
     );
   }
 
-  /// `An error occurred while exporting log to GPX.`
+  /// `Could not export log to GPX.`
   String get logList_errorOccurredExportingLogGPX {
     return Intl.message(
-      'An error occurred while exporting log to GPX.',
+      'Could not export log to GPX.',
       name: 'logList_errorOccurredExportingLogGPX',
       desc: '',
       args: [],
@@ -2725,20 +2725,20 @@ class SL {
     );
   }
 
-  /// `DELETE`
+  /// `Delete`
   String get logList_DELETE {
     return Intl.message(
-      'DELETE',
+      'Delete',
       name: 'logList_DELETE',
       desc: '',
       args: [],
     );
   }
 
-  /// `Are you sure you want to delete the log?`
+  /// `Delete the log?`
   String get logList_areYouSureDeleteTheLog {
     return Intl.message(
-      'Are you sure you want to delete the log?',
+      'Delete the log?',
       name: 'logList_areYouSureDeleteTheLog',
       desc: '',
       args: [],
@@ -2885,20 +2885,20 @@ class SL {
     );
   }
 
-  /// `Disable stats`
+  /// `Turn off stats`
   String get logProperties_disableStats {
     return Intl.message(
-      'Disable stats',
+      'Turn off stats',
       name: 'logProperties_disableStats',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enable stats`
+  /// `Turn on stats`
   String get logProperties_enableStats {
     return Intl.message(
-      'Enable stats',
+      'Turn on stats',
       name: 'logProperties_enableStats',
       desc: '',
       args: [],
@@ -2955,30 +2955,30 @@ class SL {
     );
   }
 
-  /// `Simple Notes List`
+  /// `Simple List of Notes`
   String get noteList_simpleNotesList {
     return Intl.message(
-      'Simple Notes List',
+      'Simple List of Notes',
       name: 'noteList_simpleNotesList',
       desc: '',
       args: [],
     );
   }
 
-  /// `Form Notes List`
+  /// `List of Form Notes`
   String get noteList_formNotesList {
     return Intl.message(
-      'Form Notes List',
+      'List of Form Notes',
       name: 'noteList_formNotesList',
       desc: '',
       args: [],
     );
   }
 
-  /// `Loading Notes...`
+  /// `Loading notes…`
   String get noteList_loadingNotes {
     return Intl.message(
-      'Loading Notes...',
+      'Loading notes…',
       name: 'noteList_loadingNotes',
       desc: '',
       args: [],
@@ -3025,20 +3025,20 @@ class SL {
     );
   }
 
-  /// `DELETE`
+  /// `Delete`
   String get noteList_DELETE {
     return Intl.message(
-      'DELETE',
+      'Delete',
       name: 'noteList_DELETE',
       desc: '',
       args: [],
     );
   }
 
-  /// `Are you sure you want to delete the note?`
+  /// `Delete the note?`
   String get noteList_areYouSureDeleteNote {
     return Intl.message(
-      'Are you sure you want to delete the note?',
+      'Delete the note?',
       name: 'noteList_areYouSureDeleteNote',
       desc: '',
       args: [],
@@ -3125,20 +3125,20 @@ class SL {
     );
   }
 
-  /// `Retina screen mode`
+  /// `HiDPI screen-mode`
   String get settings_retinaScreenMode {
     return Intl.message(
-      'Retina screen mode',
+      'HiDPI screen-mode',
       name: 'settings_retinaScreenMode',
       desc: '',
       args: [],
     );
   }
 
-  /// `To apply this setting you need to enter and exit the layer view.`
+  /// `Enter and exit the layer view to apply this setting.`
   String get settings_toApplySettingEnterExitLayerView {
     return Intl.message(
-      'To apply this setting you need to enter and exit the layer view.',
+      'Enter and exit the layer view to apply this setting.',
       name: 'settings_toApplySettingEnterExitLayerView',
       desc: '',
       args: [],
@@ -3195,10 +3195,10 @@ class SL {
     );
   }
 
-  /// `Map Tools Icon Size`
+  /// `Icon Size for Map Tools`
   String get settings_mapToolsIconSize {
     return Intl.message(
-      'Map Tools Icon Size',
+      'Icon Size for Map Tools',
       name: 'settings_mapToolsIconSize',
       desc: '',
       args: [],
@@ -3325,10 +3325,10 @@ class SL {
     );
   }
 
-  /// `MIN DIST FILTER BLOCKS`
+  /// `Min dist filter blocks`
   String get settings_minDistFilterBlocks {
     return Intl.message(
-      'MIN DIST FILTER BLOCKS',
+      'Min dist filter blocks',
       name: 'settings_minDistFilterBlocks',
       desc: '',
       args: [],
@@ -3345,10 +3345,10 @@ class SL {
     );
   }
 
-  /// `MIN TIME FILTER BLOCKS`
+  /// `Min time filter blocks`
   String get settings_minTimeFilterBlocks {
     return Intl.message(
-      'MIN TIME FILTER BLOCKS',
+      'Min time filter blocks',
       name: 'settings_minTimeFilterBlocks',
       desc: '',
       args: [],
@@ -3365,10 +3365,10 @@ class SL {
     );
   }
 
-  /// `HAS BEEN BLOCKED`
+  /// `Has been blocked`
   String get settings_hasBeenBlocked {
     return Intl.message(
-      'HAS BEEN BLOCKED',
+      'Has been blocked',
       name: 'settings_hasBeenBlocked',
       desc: '',
       args: [],
@@ -3385,10 +3385,10 @@ class SL {
     );
   }
 
-  /// `Time from prev [s]`
+  /// `Time since prev [s]`
   String get settings_timeFromPrevS {
     return Intl.message(
-      'Time from prev [s]',
+      'Time since prev [s]',
       name: 'settings_timeFromPrevS',
       desc: '',
       args: [],
@@ -3415,20 +3415,20 @@ class SL {
     );
   }
 
-  /// `Disable Filters.`
+  /// `Turn off Filters.`
   String get settings_disableFilters {
     return Intl.message(
-      'Disable Filters.',
+      'Turn off Filters.',
       name: 'settings_disableFilters',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enable Filters.`
+  /// `Turn on Filters.`
   String get settings_enableFilters {
     return Intl.message(
-      'Enable Filters.',
+      'Turn on Filters.',
       name: 'settings_enableFilters',
       desc: '',
       args: [],
@@ -3545,20 +3545,20 @@ class SL {
     );
   }
 
-  /// `Disable`
+  /// `Turn off`
   String get settings_disable {
     return Intl.message(
-      'Disable',
+      'Turn off',
       name: 'settings_disable',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enable`
+  /// `Turn on`
   String get settings_enable {
     return Intl.message(
-      'Enable',
+      'Turn on',
       name: 'settings_enable',
       desc: '',
       args: [],
@@ -3575,10 +3575,10 @@ class SL {
     );
   }
 
-  /// `WARNING: This will affect GPS position, notes insertion, log statistics and charting.`
+  /// `Warning: This will affect GPS position, notes insertion, log statistics and charting.`
   String get settings_warningThisWillAffectGpsPosition {
     return Intl.message(
-      'WARNING: This will affect GPS position, notes insertion, log statistics and charting.',
+      'Warning: This will affect GPS position, notes insertion, log statistics and charting.',
       name: 'settings_warningThisWillAffectGpsPosition',
       desc: '',
       args: [],
@@ -3595,10 +3595,10 @@ class SL {
     );
   }
 
-  /// `test gps log for demo use.`
+  /// `test GPS log for demo use.`
   String get settings_testGpsLogDemoUse {
     return Intl.message(
-      'test gps log for demo use.',
+      'test GPS log for demo use.',
       name: 'settings_testGpsLogDemoUse',
       desc: '',
       args: [],
@@ -3615,10 +3615,10 @@ class SL {
     );
   }
 
-  /// `SETTING`
+  /// `Setting`
   String get settings_SETTING {
     return Intl.message(
-      'SETTING',
+      'Setting',
       name: 'settings_SETTING',
       desc: '',
       args: [],
@@ -3635,10 +3635,10 @@ class SL {
     );
   }
 
-  /// `The value has to be an integer.`
+  /// `The value has to be a whole number.`
   String get settings_theValueHasToBeInt {
     return Intl.message(
-      'The value has to be an integer.',
+      'The value has to be a whole number.',
       name: 'settings_theValueHasToBeInt',
       desc: '',
       args: [],
@@ -3665,10 +3665,10 @@ class SL {
     );
   }
 
-  /// `use of google services (needs an app restart).`
+  /// `use of Google services (app restart needed).`
   String get settings_useOfGoogleServicesRestart {
     return Intl.message(
-      'use of google services (needs an app restart).',
+      'use of Google services (app restart needed).',
       name: 'settings_useOfGoogleServicesRestart',
       desc: '',
       args: [],
@@ -3705,10 +3705,10 @@ class SL {
     );
   }
 
-  /// `CANCEL`
+  /// `Cancel`
   String get settings_cancel {
     return Intl.message(
-      'CANCEL',
+      'Cancel',
       name: 'settings_cancel',
       desc: '',
       args: [],
@@ -3735,10 +3735,10 @@ class SL {
     );
   }
 
-  /// `Select a notes view mode.`
+  /// `Select a mode to view notes in.`
   String get settings_selectNotesViewMode {
     return Intl.message(
-      'Select a notes view mode.',
+      'Select a mode to view notes in.',
       name: 'settings_selectNotesViewMode',
       desc: '',
       args: [],
@@ -3795,10 +3795,10 @@ class SL {
     );
   }
 
-  /// `Max number of features to load per layer. To apply remove and add layer back.`
+  /// `Max features per layer. Remove and add the layer to apply.`
   String get settings_maxNumFeaturesPerLayer {
     return Intl.message(
-      'Max number of features to load per layer. To apply remove and add layer back.',
+      'Max features per layer. Remove and add the layer to apply.',
       name: 'settings_maxNumFeaturesPerLayer',
       desc: '',
       args: [],
@@ -3825,10 +3825,10 @@ class SL {
     );
   }
 
-  /// `Load only on the last visible map area. To apply remove and add layer back.`
+  /// `Load only on the last visible map area. Remove and add the layer again to apply.`
   String get settings_loadOnlyLastVisibleArea {
     return Intl.message(
-      'Load only on the last visible map area. To apply remove and add layer back.',
+      'Load only on the last visible map area. Remove and add the layer again to apply.',
       name: 'settings_loadOnlyLastVisibleArea',
       desc: '',
       args: [],
@@ -3895,10 +3895,10 @@ class SL {
     );
   }
 
-  /// `Diagnostics & Debug Log`
+  /// `Diagnostics and Debug Log`
   String get settings_diagnosticsDebugLog {
     return Intl.message(
-      'Diagnostics & Debug Log',
+      'Diagnostics and Debug Log',
       name: 'settings_diagnosticsDebugLog',
       desc: '',
       args: [],
@@ -3955,10 +3955,10 @@ class SL {
     );
   }
 
-  /// `Loading data...`
+  /// `Loading data…`
   String get settings_loadingData {
     return Intl.message(
-      'Loading data...',
+      'Loading data…',
       name: 'settings_loadingData',
       desc: '',
       args: [],
@@ -3985,30 +3985,30 @@ class SL {
     );
   }
 
-  /// `Device Id`
+  /// `Device ID`
   String get settings_deviceId {
     return Intl.message(
-      'Device Id',
+      'Device ID',
       name: 'settings_deviceId',
       desc: '',
       args: [],
     );
   }
 
-  /// `Override Device Id`
+  /// `Override Device ID`
   String get settings_overrideDeviceId {
     return Intl.message(
-      'Override Device Id',
+      'Override Device ID',
       name: 'settings_overrideDeviceId',
       desc: '',
       args: [],
     );
   }
 
-  /// `Override Id`
+  /// `Override ID`
   String get settings_overrideId {
     return Intl.message(
-      'Override Id',
+      'Override ID',
       name: 'settings_overrideId',
       desc: '',
       args: [],
@@ -4055,10 +4055,10 @@ class SL {
     );
   }
 
-  /// `Server url needs to start with http or https.`
+  /// `The server URL needs to start with HTTP or HTTPS.`
   String get settings_serverUrlStartWithHttp {
     return Intl.message(
-      'Server url needs to start with http or https.',
+      'The server URL needs to start with HTTP or HTTPS.',
       name: 'settings_serverUrlStartWithHttp',
       desc: '',
       args: [],
@@ -4205,10 +4205,10 @@ class SL {
     );
   }
 
-  /// `Modify geometries in editable vector layers.`
+  /// `Modify the geometry of editable vector layers.`
   String get toolbarTools_modifyGeomVectorLayers {
     return Intl.message(
-      'Modify geometries in editable vector layers.',
+      'Modify the geometry of editable vector layers.',
       name: 'toolbarTools_modifyGeomVectorLayers',
       desc: '',
       args: [],
@@ -4265,20 +4265,20 @@ class SL {
     );
   }
 
-  /// `view notes list`
+  /// `view list of notes`
   String get coachMarks_viewNotesList {
     return Intl.message(
-      'view notes list',
+      'view list of notes',
       name: 'coachMarks_viewNotesList',
       desc: '',
       args: [],
     );
   }
 
-  /// `view notes settings`
+  /// `view settings for notes`
   String get coachMarks_viewNotesSettings {
     return Intl.message(
-      'view notes settings',
+      'view settings for notes',
       name: 'coachMarks_viewNotesSettings',
       desc: '',
       args: [],
@@ -4305,10 +4305,10 @@ class SL {
     );
   }
 
-  /// `view form notes list`
+  /// `view list of form notes`
   String get coachMarks_viewFormNoteList {
     return Intl.message(
-      'view form notes list',
+      'view list of form notes',
       name: 'coachMarks_viewFormNoteList',
       desc: '',
       args: [],
@@ -4335,20 +4335,20 @@ class SL {
     );
   }
 
-  /// `view logs list`
+  /// `view list of logs`
   String get coachMarks_viewLogsList {
     return Intl.message(
-      'view logs list',
+      'view list of logs',
       name: 'coachMarks_viewLogsList',
       desc: '',
       args: [],
     );
   }
 
-  /// `view logs settings`
+  /// `view log settings`
   String get coachMarks_viewLogsSettings {
     return Intl.message(
-      'view logs settings',
+      'view log settings',
       name: 'coachMarks_viewLogsSettings',
       desc: '',
       args: [],
@@ -4395,10 +4395,10 @@ class SL {
     );
   }
 
-  /// `Layers View Button`
+  /// `Layer View Button`
   String get coachMarks_layersViewButton {
     return Intl.message(
-      'Layers View Button',
+      'Layer View Button',
       name: 'coachMarks_layersViewButton',
       desc: '',
       args: [],
@@ -4425,10 +4425,10 @@ class SL {
     );
   }
 
-  /// `Zoom In Button`
+  /// `Zoom-in Button`
   String get coachMarks_zoomInButton {
     return Intl.message(
-      'Zoom In Button',
+      'Zoom-in Button',
       name: 'coachMarks_zoomInButton',
       desc: '',
       args: [],
@@ -4445,10 +4445,10 @@ class SL {
     );
   }
 
-  /// `Zoom Out Button`
+  /// `Zoom-out Button`
   String get coachMarks_zoomOutButton {
     return Intl.message(
-      'Zoom Out Button',
+      'Zoom-out Button',
       name: 'coachMarks_zoomOutButton',
       desc: '',
       args: [],
@@ -4495,60 +4495,60 @@ class SL {
     );
   }
 
-  /// `Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.`
+  /// `Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras.`
   String get coachMarks_openEndDrawerToAccessProject {
     return Intl.message(
-      'Open the end drawer to access project info and sharing options as well as the MAP PLUGINS, feature tools and extras.',
+      'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras.',
       name: 'coachMarks_openEndDrawerToAccessProject',
       desc: '',
       args: [],
     );
   }
 
-  /// `Interactive coach marks button`
+  /// `Interactive coach-marks button`
   String get coachMarks_interactiveCoackMarksButton {
     return Intl.message(
-      'Interactive coach marks button',
+      'Interactive coach-marks button',
       name: 'coachMarks_interactiveCoackMarksButton',
       desc: '',
       args: [],
     );
   }
 
-  /// `Open the interactice coach marks that explain all the actions of the main map view.`
+  /// `Open the interactice coach marks explaining all the actions of the main map view.`
   String get coachMarks_openInteractiveCoachMarks {
     return Intl.message(
-      'Open the interactice coach marks that explain all the actions of the main map view.',
+      'Open the interactice coach marks explaining all the actions of the main map view.',
       name: 'coachMarks_openInteractiveCoachMarks',
       desc: '',
       args: [],
     );
   }
 
-  /// `Main Menu Button`
+  /// `Main-menu Button`
   String get coachMarks_mainMenuButton {
     return Intl.message(
-      'Main Menu Button',
+      'Main-menu Button',
       name: 'coachMarks_mainMenuButton',
       desc: '',
       args: [],
     );
   }
 
-  /// `Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.`
+  /// `Open the drawer to load or create a project, import and export data, sync with servers, access settings and exit the app/turn off the GPS.`
   String get coachMarks_openDrawerToLoadProject {
     return Intl.message(
-      'Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS.',
+      'Open the drawer to load or create a project, import and export data, sync with servers, access settings and exit the app/turn off the GPS.',
       name: 'coachMarks_openDrawerToLoadProject',
       desc: '',
       args: [],
     );
   }
 
-  /// `SKIP`
+  /// `Skip`
   String get coachMarks_skip {
     return Intl.message(
-      'SKIP',
+      'Skip',
       name: 'coachMarks_skip',
       desc: '',
       args: [],
@@ -4565,10 +4565,10 @@ class SL {
     );
   }
 
-  /// `DELETE`
+  /// `Delete`
   String get fence_delete {
     return Intl.message(
-      'DELETE',
+      'Delete',
       name: 'fence_delete',
       desc: '',
       args: [],
@@ -4585,20 +4585,20 @@ class SL {
     );
   }
 
-  /// `Are you sure you want to remove fence:`
+  /// `Remove the fence?`
   String get fence_areYouSureRemoveFence {
     return Intl.message(
-      'Are you sure you want to remove fence:',
+      'Remove the fence?',
       name: 'fence_areYouSureRemoveFence',
       desc: '',
       args: [],
     );
   }
 
-  /// `CANCEL`
+  /// `Cancel`
   String get fence_cancel {
     return Intl.message(
-      'CANCEL',
+      'Cancel',
       name: 'fence_cancel',
       desc: '',
       args: [],
@@ -4645,10 +4645,10 @@ class SL {
     );
   }
 
-  /// `The name needs to be defined.`
+  /// `The name must be defined.`
   String get fence_theNameNeedsToBeDefined {
     return Intl.message(
-      'The name needs to be defined.',
+      'The name must be defined.',
       name: 'fence_theNameNeedsToBeDefined',
       desc: '',
       args: [],
@@ -4675,10 +4675,10 @@ class SL {
     );
   }
 
-  /// `The radius needs to be a positive number in meters.`
+  /// `The radius must be a positive number in meters.`
   String get fence_radiusNeedsToBePositive {
     return Intl.message(
-      'The radius needs to be a positive number in meters.',
+      'The radius must be a positive number in meters.',
       name: 'fence_radiusNeedsToBePositive',
       desc: '',
       args: [],
@@ -4725,20 +4725,20 @@ class SL {
     );
   }
 
-  /// `Building base cache for performance increase (might take some time...`
+  /// `Building base cache for improved performance (might take a while)…`
   String get network_buildingBaseCachePerformance {
     return Intl.message(
-      'Building base cache for performance increase (might take some time...',
+      'Building base cache for improved performance (might take a while)…',
       name: 'network_buildingBaseCachePerformance',
       desc: '',
       args: [],
     );
   }
 
-  /// `This file is already in the process of being downloaded.`
+  /// `This file is already being downloaded.`
   String get network_thisFIleAlreadyBeingDownloaded {
     return Intl.message(
-      'This file is already in the process of being downloaded.',
+      'This file is already being downloaded.',
       name: 'network_thisFIleAlreadyBeingDownloaded',
       desc: '',
       args: [],
@@ -4765,10 +4765,10 @@ class SL {
     );
   }
 
-  /// `to the device? This can take some time.`
+  /// `to the device? This can take a while.`
   String get network_toTheDeviceTakeTime {
     return Intl.message(
-      'to the device? This can take some time.',
+      'to the device? This can take a while.',
       name: 'network_toTheDeviceTakeTime',
       desc: '',
       args: [],
@@ -4805,10 +4805,10 @@ class SL {
     );
   }
 
-  /// `please wait...`
+  /// `please wait…`
   String get network_pleaseWait {
     return Intl.message(
-      'please wait...',
+      'please wait…',
       name: 'network_pleaseWait',
       desc: '',
       args: [],
@@ -4895,20 +4895,20 @@ class SL {
     );
   }
 
-  /// `Enable drawing`
+  /// `Turn on drawing`
   String get form_sketch_enableDrawing {
     return Intl.message(
-      'Enable drawing',
+      'Turn on drawing',
       name: 'form_sketch_enableDrawing',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enable eraser`
+  /// `Turn on eraser`
   String get form_sketch_enableEraser {
     return Intl.message(
-      'Enable eraser',
+      'Turn on eraser',
       name: 'form_sketch_enableEraser',
       desc: '',
       args: [],
@@ -4962,8 +4962,12 @@ class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'de'),
+      Locale.fromSubtags(languageCode: 'fr'),
       Locale.fromSubtags(languageCode: 'it'),
       Locale.fromSubtags(languageCode: 'ja'),
+      Locale.fromSubtags(languageCode: 'nb', countryCode: 'NO'),
+      Locale.fromSubtags(languageCode: 'ru'),
     ];
   }
 
