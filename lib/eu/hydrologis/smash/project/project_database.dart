@@ -41,6 +41,11 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
+  String getPath() {
+    return path;
+  }
+
+  @override
   int getNotesCount(bool onlyDirty) {
     String where = !onlyDirty ? "" : " where $NOTES_COLUMN_ISDIRTY = 1";
     var resNotes = select("SELECT count(*) as count FROM $TABLE_NOTES$where");

@@ -14,10 +14,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:share_extend/share_extend.dart';
-import 'package:smash/eu/hydrologis/smash/export/export_widget.dart';
 import 'package:smash/eu/hydrologis/smash/gps/geocoding.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/import/import_widget.dart';
+
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
@@ -30,6 +29,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:smash_import_export_plugins/smash_import_export_plugins.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS_MODE";
@@ -89,6 +89,9 @@ class DashboardUtils {
   static List<Widget> getDrawerTilesList(
       BuildContext context, MapController mapController) {
     double iconSize = SmashUI.MEDIUM_ICON_SIZE;
+
+    var projectState = Provider.of<ProjectState>(context, listen: false);
+
     Color c = SmashColors.mainDecorations;
     return [
       ListTile(
@@ -122,7 +125,11 @@ class DashboardUtils {
         onTap: () {
           Navigator.of(context).pop();
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ImportWidget()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ImportWidget(
+                        projectDb: projectState.projectDb,
+                      )));
         },
       ),
       ListTile(
@@ -139,7 +146,11 @@ class DashboardUtils {
         onTap: () {
           Navigator.of(context).pop();
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ExportWidget()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ExportWidget(
+                        projectDb: projectState.projectDb,
+                      )));
         },
       ),
       ListTile(

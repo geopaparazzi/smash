@@ -182,7 +182,7 @@ packages:
       name: device_info_plus_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -934,12 +934,21 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smash_import_export_plugins:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: bc8f5ee
+      resolved-ref: bc8f5eed6d94c6487fcc3f381422a2ec89e0a9b1
+      url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
+    source: git
+    version: "0.0.1"
   smashlibs:
     dependency: "direct main"
     description:
       path: "."
-      ref: "47c6099"
-      resolved-ref: "47c60992757b1b2ca4912aa64954a0d546fe87f0"
+      ref: eb2f0e6
+      resolved-ref: eb2f0e6ab8fce5ee29983db8d7d61c75074e3eca
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
@@ -1117,7 +1126,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.8"
+    version: "2.3.10"
   wkt_parser:
     dependency: transitive
     description:

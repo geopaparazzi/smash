@@ -37,7 +37,14 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: 47c6099
+      ref: eb2f0e6
+      
+  smash_import_export_plugins:
+    # path: ../smash_import_export_plugins/
+    git:
+      url: https://github.com/geopaparazzi/smash_import_export_plugins.git
+      ref: bc8f5ee
+
 
   dart_shp: ^0.4.0
 
