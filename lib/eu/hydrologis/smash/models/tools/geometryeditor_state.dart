@@ -6,23 +6,20 @@
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' hide Polygon;
-import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_dragmarker/dragmarker.dart';
 import 'package:flutter_map_line_editor/polyeditor.dart';
 import 'package:latlong2/latlong.dart' hide Path;
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/tools.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class GeometryEditorState extends ChangeNotifier {
   static final type = BottomToolbarToolsRegistry.GEOMEDITOR;
@@ -292,10 +289,122 @@ class GeometryEditManager {
     }
   }
 
-  void onMapTap(BuildContext context, LatLng point) {
+  Future<void> onMapTap(BuildContext context, LatLng point) async {
     if (_isEditing) {
       if (polyEditor != null) {
         addPoint(point);
+      }
+    } else {
+      GeometryEditorState geomEditorState =
+          Provider.of<GeometryEditorState>(context, listen: false);
+      if (geomEditorState.isEnabled) {
+        // add a new geometry to a layer selected by the user
+        await _createNewGeometryOnSelectedLayer(
+            context, point, geomEditorState);
+      }
+    }
+  }
+
+  /// Ask the user on which layer to create a new geometry and make a fist one.
+  Future<void> _createNewGeometryOnSelectedLayer(BuildContext context,
+      LatLng point, GeometryEditorState geomEditorState) async {
+    List<LayerSource> editableLayers = LayerManager()
+        .getLayerSources()
+        .reversed
+        .where((l) => l is DbVectorLayerSource && l.isActive())
+        .toList();
+    Map<String, DbVectorLayerSource> name2SourceMap = {};
+    editableLayers.forEach((element) {
+      if (element is DbVectorLayerSource) {
+        name2SourceMap[element.getName()] = element;
+      }
+    });
+    if (name2SourceMap.length == 0) {
+      await SmashDialogs.showWarningDialog(
+          context, "No editable layer is currently loaded.");
+    } else {
+      var namesList = name2SourceMap.keys.toList();
+      String selectedName;
+      if (namesList.length > 1) {
+        selectedName = await SmashDialogs.showComboDialog(
+            context, "Create a new feature in the selected layer?", namesList,
+            allowCancel: true);
+      } else {
+        selectedName = namesList[0];
+      }
+      if (selectedName != null) {
+        var vectorLayer = name2SourceMap[selectedName];
+        var db = await DbVectorLayerSource.getDb(vectorLayer);
+        var table = vectorLayer.getName();
+        var tableColumns = await db.getTableColumns(SqlName(table));
+
+        // check if there is a pk and if the columns are set to be non null in other case
+        bool hasPk = false;
+        bool hasNonNull = false;
+        tableColumns.forEach((tc) {
+          var pk = tc[2];
+          if (pk == 1) {
+            hasPk = true;
+          } else {
+            var nonNull = tc[3];
+            if (nonNull == 1) {
+              hasNonNull = true;
+            }
+          }
+        });
+        if (!hasPk || hasNonNull) {
+          await SmashDialogs.showWarningDialog(context,
+              "Currently only editing of tables with a primary key and nullable columns is supported.");
+          return;
+        }
+
+        // create a minimal geometry to work on
+        var tableName = SqlName(table);
+        var gc = await db.getGeometryColumnsForTable(tableName);
+        var gType = gc.geometryType;
+        Geometry geometry;
+        var gf = GeometryFactory.defaultPrecision();
+        var dataPrj = SmashPrj.fromSrid(vectorLayer.getSrid());
+        var d = 0.0001;
+        if (gType.isPoint()) {
+          geometry =
+              gf.createPoint(Coordinate(point.longitude, point.latitude));
+        } else if (gType.isLine()) {
+          geometry = gf.createLineString([
+            Coordinate(point.longitude, point.latitude),
+            Coordinate(point.longitude + d, point.latitude)
+          ]);
+        } else if (gType.isPolygon()) {
+          geometry = gf.createPolygonFromCoords([
+            Coordinate(point.longitude, point.latitude),
+            Coordinate(point.longitude + d, point.latitude),
+            Coordinate(point.longitude, point.latitude + d),
+            Coordinate(point.longitude, point.latitude),
+          ]);
+        }
+        SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, geometry);
+        var sql =
+            "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
+        var lastId;
+        if (vectorLayer is DbVectorLayerSource) {
+          var sqlObj = db.geometryToSql(geometry);
+          lastId = db.execute(sql, arguments: [sqlObj], getLastInsertId: true);
+        }
+
+        EditableGeometry editGeom2 = EditableGeometry();
+        editGeom2.geometry = geometry;
+        editGeom2.db = db;
+        editGeom2.id = lastId;
+        editGeom2.table = table;
+        geomEditorState.editableGeometry = editGeom2;
+
+        // reload layer geoms
+        vectorLayer.isLoaded = false;
+        SmashMapBuilder mapBuilder =
+            Provider.of<SmashMapBuilder>(context, listen: false);
+        var layers = await LayerManager().loadLayers(mapBuilder.context);
+        mapBuilder.oneShotUpdateLayers = layers;
+        mapBuilder.reBuild();
       }
     }
   }
@@ -315,13 +424,11 @@ class GeometryEditManager {
         .where((l) => l is DbVectorLayerSource && l.isActive())
         .toList();
 
-    var radius = ZOOM2TOUCHRADIUS[zoom];
+    var radius = ZOOM2TOUCHRADIUS[zoom] * 10;
 
     var env =
         Envelope.fromCoordinate(Coordinate(point.longitude, point.latitude));
     env.expandByDistance(radius);
-
-    var currentEditing = editorState.editableGeometry;
 
     EditableGeometry editGeom;
     double minDist = 1000000000;
@@ -405,104 +512,9 @@ class GeometryEditManager {
     editorState.editableGeometry = null;
     stopEditing();
 
-    // propose to add a new geometry here if no geometry was selected
-    if (currentEditing == null) {
-      Map<String, DbVectorLayerSource> name2SourceMap = {};
-      editableLayers.forEach((element) {
-        if (element is DbVectorLayerSource) {
-          name2SourceMap[element.getName()] = element;
-        }
-      });
-      if (name2SourceMap.length == 0) {
-        await SmashDialogs.showWarningDialog(
-            context, "No editable layer is currently loaded.");
-      } else {
-        var selectedName = await SmashDialogs.showComboDialog(
-            context,
-            "Create a new feature in the selected layer?",
-            name2SourceMap.keys.toList(),
-            allowCancel: true);
-        if (selectedName != null) {
-          var vectorLayer = name2SourceMap[selectedName];
-          var db = await DbVectorLayerSource.getDb(vectorLayer);
-          var table = vectorLayer.getName();
-          var tableColumns = await db.getTableColumns(SqlName(table));
-
-          // check if there is a pk and if the columns are set to be non null in other case
-          bool hasPk = false;
-          bool hasNonNull = false;
-          tableColumns.forEach((tc) {
-            var pk = tc[2];
-            if (pk == 1) {
-              hasPk = true;
-            } else {
-              var nonNull = tc[3];
-              if (nonNull == 1) {
-                hasNonNull = true;
-              }
-            }
-          });
-          if (!hasPk || hasNonNull) {
-            await SmashDialogs.showWarningDialog(context,
-                "Currently only editing of tables with a primary key and nullable columns is supported.");
-            return;
-          }
-
-          // create a minimal geometry to work on
-          var tableName = SqlName(table);
-          var gc = await db.getGeometryColumnsForTable(tableName);
-          var gType = gc.geometryType;
-          Geometry geometry;
-          var gf = GeometryFactory.defaultPrecision();
-          var dataPrj = SmashPrj.fromSrid(vectorLayer.getSrid());
-          var d = 0.0001;
-          if (gType.isPoint()) {
-            geometry =
-                gf.createPoint(Coordinate(point.longitude, point.latitude));
-          } else if (gType.isLine()) {
-            geometry = gf.createLineString([
-              Coordinate(point.longitude, point.latitude),
-              Coordinate(point.longitude + d, point.latitude)
-            ]);
-          } else if (gType.isPolygon()) {
-            geometry = gf.createPolygonFromCoords([
-              Coordinate(point.longitude, point.latitude),
-              Coordinate(point.longitude + d, point.latitude),
-              Coordinate(point.longitude, point.latitude + d),
-              Coordinate(point.longitude, point.latitude),
-            ]);
-          }
-          SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, geometry);
-          var sql =
-              "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
-          var lastId;
-          if (vectorLayer is DbVectorLayerSource) {
-            var sqlObj = db.geometryToSql(geometry);
-            lastId =
-                db.execute(sql, arguments: [sqlObj], getLastInsertId: true);
-          }
-
-          EditableGeometry editGeom2 = EditableGeometry();
-          editGeom2.geometry = geometry;
-          editGeom2.db = db;
-          editGeom2.id = lastId;
-          editGeom2.table = table;
-          editorState.editableGeometry = editGeom;
-
-          // reload layer geoms
-          vectorLayer.isLoaded = false;
-          SmashMapBuilder mapBuilder =
-              Provider.of<SmashMapBuilder>(context, listen: false);
-          var layers = await LayerManager().loadLayers(mapBuilder.context);
-          mapBuilder.oneShotUpdateLayers = layers;
-          mapBuilder.reBuild();
-        }
-      }
-    } else {
-      SmashMapBuilder builder =
-          Provider.of<SmashMapBuilder>(context, listen: false);
-      builder.reBuild();
-    }
+    SmashMapBuilder builder =
+        Provider.of<SmashMapBuilder>(context, listen: false);
+    builder.reBuild();
   }
 
   Future<void> saveCurrentEdit(GeometryEditorState geomEditState) async {

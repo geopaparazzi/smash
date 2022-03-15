@@ -376,12 +376,12 @@ class MainViewWidgetState extends State<MainViewWidget>
         });
   }
 
-  void _handleTap(TapPosition tapPosition, LatLng latlng) {
+  Future<void> _handleTap(TapPosition tapPosition, LatLng latlng) async {
     if (_iconMode == IconMode.NAVIGATION_MODE) {
       // just center on the tapped position
       _mapController.move(latlng, _mapController.zoom);
     } else {
-      GeometryEditManager().onMapTap(context, latlng);
+      await GeometryEditManager().onMapTap(context, latlng);
     }
   }
 
