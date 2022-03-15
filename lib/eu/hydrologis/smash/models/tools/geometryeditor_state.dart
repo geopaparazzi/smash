@@ -359,10 +359,10 @@ class GeometryEditManager {
     Map<String, DbVectorLayerSource> name2SourceMap = _getName2SourcesMap();
     var vectorLayer = name2SourceMap[editableGeometry.table];
     var db = await DbVectorLayerSource.getDb(vectorLayer);
-    var dataPrj = SmashPrj.fromSrid(vectorLayer.getSrid());
+    // var dataPrj = SmashPrj.fromSrid(vectorLayer.getSrid());
     var coordinate = editableGeometry.geometry.getCoordinate();
     var p2 = gf.createPoint(Coordinate(point.longitude, point.latitude));
-    SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, p2);
+    // SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, p2);
     var geometry = gf.createLineString([coordinate, p2.getCoordinate()]);
     // var sql =
     //     "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
@@ -399,13 +399,13 @@ class GeometryEditManager {
     Map<String, DbVectorLayerSource> name2SourceMap = _getName2SourcesMap();
     var vectorLayer = name2SourceMap[editableGeometry.table];
     var db = await DbVectorLayerSource.getDb(vectorLayer);
-    var dataPrj = SmashPrj.fromSrid(vectorLayer.getSrid());
+    // var dataPrj = SmashPrj.fromSrid(vectorLayer.getSrid());
     var coordinates = editableGeometry.geometry.getCoordinates();
 
     if (coordinates.length == 1) {
       // point, we need to transit per line until we have coords to create a polygon
       var p2 = gf.createPoint(Coordinate(point.longitude, point.latitude));
-      SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, p2);
+      // SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, p2);
       var geometry = gf.createLineString([coordinates[0], p2.getCoordinate()]);
 
       EditableGeometry editGeometry = EditableGeometry();
@@ -423,7 +423,7 @@ class GeometryEditManager {
       coords.addAll(coordinates);
 
       var p3 = gf.createPoint(Coordinate(point.longitude, point.latitude));
-      SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, p3);
+      // SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, p3);
       coords.add(p3.getCoordinate());
       coords.add(coords[0]);
       var geometry = gf.createPolygonFromCoords(coords);
@@ -503,14 +503,14 @@ class GeometryEditManager {
         var gType = gc.geometryType;
         Geometry geometry;
         var gf = GeometryFactory.defaultPrecision();
-        var dataPrj = SmashPrj.fromSrid(vectorLayer.getSrid());
 
         // Create first as just point, even if the layer is of different type
         geometry = gf.createPoint(Coordinate(point.longitude, point.latitude));
 
-        SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, geometry);
         var lastId = -1;
         if (gType.isPoint()) {
+          var dataPrj = SmashPrj.fromSrid(vectorLayer.getSrid());
+          SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, geometry);
           var sql =
               "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
           if (vectorLayer is DbVectorLayerSource) {
