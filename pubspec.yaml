@@ -65,18 +65,21 @@ dependencies:
   # MIT
   flutter_ringtone_player: ^3.0.0
 
-  flutter_map_dragmarker:
-    git:
-      # url: https://github.com/moovida/flutter_map_dragmarker.git
-      # ref: upgrade_to_latlong2
-      url: https://github.com/ibrierley/flutter_map_dragmarker.git  
-      ref: nullsafety
+  # flutter_map_dragmarker:
+  #   git:
+  #     # url: https://github.com/moovida/flutter_map_dragmarker.git
+  #     # ref: upgrade_to_latlong2
+  #     url: https://github.com/ibrierley/flutter_map_dragmarker.git  
+  #     ref: nullsafety
 
+  # MIT
+  # this also pulls flutter_map_dragmarker
   flutter_map_line_editor:
     git:
-      url: https://github.com/moovida/flutter_map_line_editor.git
-      ref: upgrade_to_latlong2
-      # url: https://github.com/ibrierley/flutter_map_line_editor.git  
+      # url: https://github.com/moovida/flutter_map_line_editor.git
+      # ref: upgrade_to_latlong2
+      url: https://github.com/ibrierley/flutter_map_line_editor.git
+      ref: 91604d66c3b3fb1c197943679cc4eb701bb82a17
 
   # MIT
   sqlite3_flutter_libs: ^0.5.0

@@ -279,6 +279,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                             newPosition.center.latitude),
                         newPosition.zoom);
                   },
+                  allowPanningOnScrollingParent: false,
                   onTap: _handleTap,
                   onLongPress: _handleLongTap,
                   interactiveFlags: InteractiveFlag.all &
