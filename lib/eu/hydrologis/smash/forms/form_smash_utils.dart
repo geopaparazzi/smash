@@ -8,6 +8,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_sketch.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
@@ -71,6 +72,11 @@ class SmashFormHelper implements AFormhelper {
   /// Take a picture for forms
   Future<String> takePictureForForms(
       BuildContext context, bool fromGallery, List<String> imageSplit) async {
+    var gpsState = Provider.of<GpsState>(context, listen: false);
+    dynamic lastGpsPosition = _position;
+    if (gpsState != null && gpsState.lastGpsPosition != null) {
+      lastGpsPosition = gpsState.lastGpsPosition;
+    }
     var cameraResolution = GpPreferences().getStringSync(
         SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
     int imageQuality = CameraResolutions.MEDIUM_VAL;
@@ -89,11 +95,11 @@ class SmashFormHelper implements AFormhelper {
       ..timeStamp = DateTime.now().millisecondsSinceEpoch
       ..isDirty = 1;
 
-    dbImage.lon = _position.longitude;
-    dbImage.lat = _position.latitude;
+    dbImage.lon = lastGpsPosition.longitude;
+    dbImage.lat = lastGpsPosition.latitude;
     try {
-      dbImage.altim = _position.altitude;
-      dbImage.azim = _position.heading;
+      dbImage.altim = lastGpsPosition.altitude;
+      dbImage.azim = lastGpsPosition.heading;
     } catch (e) {
       dbImage.altim = -1;
       dbImage.azim = -1;
@@ -107,7 +113,7 @@ class SmashFormHelper implements AFormhelper {
         ? await Camera.loadImageFromGallery()
         : await Camera.takePicture(imageQuality: imageQuality);
     if (imagePath != null) {
-      var imageName = FileUtilities.nameFromFile(imagePath, true);
+      // var imageName = FileUtilities.nameFromFile(imagePath, true);
       dbImage.text =
           "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
       imageId =

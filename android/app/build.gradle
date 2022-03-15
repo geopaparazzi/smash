@@ -51,8 +51,8 @@ android {
     defaultConfig {
         applicationId "eu.hydrologis.smash"
         minSdkVersion 21
-        targetSdkVersion 30
-        compileSdkVersion 30
+        targetSdkVersion 31
+        compileSdkVersion 31
         buildToolsVersion = "30.0.3"
         
         versionCode flutterVersionCode.toInteger()
@@ -85,7 +85,7 @@ android {
 // this change also brings "multiDexEnabled true" in defaultConfig
 configurations.all {
     resolutionStrategy {
-        force 'com.google.android.gms:play-services-location:15.0.1'
+        force 'com.google.android.gms:play-services-location:17.0.0'
     }
 }
 // END WORKAROUND
@@ -95,9 +95,14 @@ flutter {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.3.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     // required to avoid crash on Android 12 API 31
     // implementation 'androidx.work:work-runtime-ktx:2.7.0'
+              // For Java
+    implementation 'androidx.work:work-runtime:2.7.1'
+
+    // For Kotlin
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
 }

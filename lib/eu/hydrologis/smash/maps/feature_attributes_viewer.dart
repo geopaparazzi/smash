@@ -23,8 +23,10 @@ import 'package:smashlibs/smashlibs.dart';
 
 class FeatureAttributesViewer extends StatefulWidget {
   final EditableQueryResult features;
+  final bool readOnly;
 
-  FeatureAttributesViewer(this.features, {Key key}) : super(key: key);
+  FeatureAttributesViewer(this.features, {this.readOnly = true, Key key})
+      : super(key: key);
 
   @override
   _FeatureAttributesViewerState createState() =>
@@ -38,6 +40,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
   MapController _mapController = MapController();
   var _baseLayer;
   bool _loading = true;
+  JTS.Geometry _geometry;
+  var _geomCols = {};
 
   @override
   void afterFirstLayout(BuildContext context) async {
@@ -46,10 +50,20 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     _total = widget.features.geoms.length;
 
     EditableQueryResult f = widget.features;
-    var geometry = f.geoms[_index];
-    var env = geometry.getEnvelopeInternal();
+    _geometry = f.geoms[_index];
+    var env = _geometry.getEnvelopeInternal();
     var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
         LatLng(env.getMaxY(), env.getMaxX()));
+
+    for (var i = 0; i < f.ids.length; i++) {
+      var db = f.dbs[i];
+      var tableName = f.ids[i];
+      var geometryColumn =
+          await db.getGeometryColumnsForTable(SqlName(tableName));
+      if (geometryColumn != null) {
+        _geomCols[tableName] = geometryColumn;
+      }
+    }
 
     _mapController.onReady.then((v) {
       _mapController.fitBounds(latLngBounds);
@@ -89,7 +103,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
       layers.add(_baseLayer);
     }
     _total = f.geoms.length;
-    var geometry = f.geoms[_index];
+
+    _geometry = f.geoms[_index];
 
     Map<String, dynamic> data = f.data[_index];
     Map<String, String> typesMap;
@@ -101,9 +116,9 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
       db = f.dbs[_index];
     }
 
-    var centroid = geometry.getCentroid().getCoordinate();
+    var centroid = _geometry.getCentroid().getCoordinate();
 
-    var geometryType = geometry.getGeometryType();
+    var geometryType = _geometry.getGeometryType();
     var gType = JTS.EGeometryType.forTypeName(geometryType);
     if (gType.isPoint()) {
       double size = 30;
@@ -138,8 +153,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
       layers.add(layer);
     } else if (gType.isLine()) {
       List<Polyline> lines = [];
-      for (int i = 0; i < geometry.getNumGeometries(); i++) {
-        var geometryN = geometry.getGeometryN(i);
+      for (int i = 0; i < _geometry.getNumGeometries(); i++) {
+        var geometryN = _geometry.getGeometryN(i);
         List<LatLng> linePoints =
             geometryN.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
         lines.add(Polyline(points: linePoints, strokeWidth: 5, color: border));
@@ -153,8 +168,8 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
       layers.add(lineLayer);
     } else if (gType.isPolygon()) {
       List<FM.Polygon> polygons = [];
-      for (int i = 0; i < geometry.getNumGeometries(); i++) {
-        var geometryN = geometry.getGeometryN(i);
+      for (int i = 0; i < _geometry.getNumGeometries(); i++) {
+        var geometryN = _geometry.getGeometryN(i);
         if (geometryN is JTS.Polygon) {
           var exteriorRing = geometryN.getExteriorRing();
           List<LatLng> polyPoints = exteriorRing
@@ -309,7 +324,10 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     List<DataRow> rows = [];
 
     data.forEach((key, value) {
-      bool editable = primaryKey != null && db != null && key != primaryKey;
+      bool editable = !widget.readOnly &&
+          primaryKey != null &&
+          db != null &&
+          key != primaryKey;
       var row = DataRow(
         cells: [
           DataCell(SmashUI.normalText(key)),
@@ -363,6 +381,54 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
       rows.add(row);
     });
 
+    // add also geometry area and perimeter where available
+
+    var geometryColumn = _geomCols[tablename];
+    if (geometryColumn != null) {
+      var checkGeom = _geometry.clone() as JTS.Geometry;
+      bool doRound = false;
+      if (geometryColumn.srid != SmashPrj.EPSG4326_INT) {
+        var to = SmashPrj.fromSrid(geometryColumn.srid);
+        SmashPrj.transformGeometry(SmashPrj.EPSG4326, to, checkGeom);
+        doRound = true;
+      }
+
+      rows.add(DataRow(
+        cells: [
+          DataCell(SmashUI.normalText("")),
+          DataCell(SmashUI.normalText("")),
+        ],
+      ));
+      var geometryType = checkGeom.getGeometryType();
+      var gType = JTS.EGeometryType.forTypeName(geometryType);
+      if (gType.isLine()) {
+        rows.add(DataRow(
+          cells: [
+            DataCell(SmashUI.normalText("Length")),
+            DataCell(SmashUI.normalText(doRound
+                ? checkGeom.getLength().toStringAsFixed(1)
+                : checkGeom.getLength().toString())),
+          ],
+        ));
+      } else if (gType.isPolygon()) {
+        rows.add(DataRow(
+          cells: [
+            DataCell(SmashUI.normalText("Perimeter")),
+            DataCell(SmashUI.normalText(doRound
+                ? checkGeom.getLength().toStringAsFixed(1)
+                : checkGeom.getLength().toString())),
+          ],
+        ));
+        rows.add(DataRow(
+          cells: [
+            DataCell(SmashUI.normalText("Area")),
+            DataCell(SmashUI.normalText(doRound
+                ? checkGeom.getArea().toStringAsFixed(1)
+                : checkGeom.getArea().toString())),
+          ],
+        ));
+      }
+    }
     return DataTable(
       columns: [
         DataColumn(

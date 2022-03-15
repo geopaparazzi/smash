@@ -378,8 +378,10 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
                 await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            FeatureAttributesViewer(totalQueryResult)));
+                        builder: (context) => FeatureAttributesViewer(
+                              totalQueryResult,
+                              readOnly: false,
+                            )));
               }
               // reload layer geoms
               await reloadDbLayers(db, table);

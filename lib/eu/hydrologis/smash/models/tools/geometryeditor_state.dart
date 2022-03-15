@@ -111,6 +111,8 @@ class GeometryEditManager {
 
   GeometryEditManager._internal();
 
+  bool isEditing() => _isEditing;
+
   void startEditing(EditableGeometry editGeometry, Function callbackRefresh,
       {EGeometryType geomType}) {
     if (!_isEditing) {
