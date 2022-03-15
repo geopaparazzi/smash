@@ -171,7 +171,7 @@ class DataLoaderUtilities {
       var iconData = getSmashIcon(noteExt.marker);
       var iconColor = ColorExt(noteExt.color);
 
-      double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
+      double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT + 4;
       if (note.text == null || note.text.length == 0) {
         textExtraHeight = 0;
       }
