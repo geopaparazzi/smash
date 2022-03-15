@@ -1,4 +1,4 @@
-# SMASH — Smart Mobile App for Surveyor Happiness
+# SMASH — Smart Mobile App for the Surveyor's Happiness
 
 [![Codemagic build status](https://api.codemagic.io/apps/5e988fb818efc25eecc9bbb8/5e988fb818efc25eecc9bbb7/status_badge.svg)](https://codemagic.io/apps/5e988fb818efc25eecc9bbb8/5e988fb818efc25eecc9bbb7/latest_build)
 
