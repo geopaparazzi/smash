@@ -281,8 +281,8 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
         onLongPress: () async {
           var t = geomEditState.editableGeometry.table;
           var db = geomEditState.editableGeometry.db;
-          bool hasDeleted =
-              await GeometryEditManager().deleteCurrentSelection(geomEditState);
+          bool hasDeleted = await GeometryEditManager()
+              .deleteCurrentSelection(context, geomEditState);
           if (hasDeleted) {
             // reload layer geoms
             await reloadDbLayers(db, t);
