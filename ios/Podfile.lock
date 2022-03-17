@@ -55,40 +55,40 @@ PODS:
     - Flutter
   - package_info_plus (0.4.5):
     - Flutter
-  - path_provider (0.0.1):
-    - Flutter
   - path_provider_ex (0.0.1):
+    - Flutter
+  - path_provider_ios (0.0.1):
     - Flutter
   - "permission_handler (5.1.0+2)":
     - Flutter
-  - SDWebImage (5.12.1):
-    - SDWebImage/Core (= 5.12.1)
-  - SDWebImage/Core (5.12.1)
+  - SDWebImage (5.12.5):
+    - SDWebImage/Core (= 5.12.5)
+  - SDWebImage/Core (5.12.5)
   - share_extend (0.0.1):
     - Flutter
-  - shared_preferences (0.0.1):
+  - shared_preferences_ios (0.0.1):
     - Flutter
-  - sqlite3 (3.36.0):
-    - sqlite3/common (= 3.36.0)
-  - sqlite3/common (3.36.0)
-  - sqlite3/fts5 (3.36.0):
+  - sqlite3 (3.38.1):
+    - sqlite3/common (= 3.38.1)
+  - sqlite3/common (3.38.1)
+  - sqlite3/fts5 (3.38.1):
     - sqlite3/common
-  - sqlite3/json1 (3.36.0):
+  - sqlite3/json1 (3.38.1):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.36.0):
+  - sqlite3/perf-threadsafe (3.38.1):
     - sqlite3/common
-  - sqlite3/rtree (3.36.0):
+  - sqlite3/rtree (3.38.1):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.36.0)
+    - sqlite3 (~> 3.38.0)
     - sqlite3/fts5
     - sqlite3/json1
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
-  - SwiftyGif (5.4.0)
+  - SwiftyGif (5.4.3)
   - Toast (4.0.0)
-  - url_launcher (0.0.1):
+  - url_launcher_ios (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -104,13 +104,13 @@ DEPENDENCIES:
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - path_provider_ex (from `.symlinks/plugins/path_provider_ex/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - share_extend (from `.symlinks/plugins/share_extend/ios`)
-  - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
-  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -146,20 +146,20 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
   path_provider_ex:
     :path: ".symlinks/plugins/path_provider_ex/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
   permission_handler:
     :path: ".symlinks/plugins/permission_handler/ios"
   share_extend:
     :path: ".symlinks/plugins/share_extend/ios"
-  shared_preferences:
-    :path: ".symlinks/plugins/shared_preferences/ios"
+  shared_preferences_ios:
+    :path: ".symlinks/plugins/shared_preferences_ios/ios"
   sqlite3_flutter_libs:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
-  url_launcher:
-    :path: ".symlinks/plugins/url_launcher/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   background_locator: d8daad218f2282920654de8a649b430d75c218d9
@@ -172,21 +172,21 @@ SPEC CHECKSUMS:
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   flutter_ringtone_player: 15eba85187230b87b2512f0e1b92225618bc03e7
   flutter_screen_wake: 4d3c2b43943ea81bd5e591fd4e639ea537f4ca5e
-  fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
-  image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
+  fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
+  image_picker: 541dcbb3b9cf32d87eacbd957845d8651d6c62c3
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
-  path_provider: d1e9807085df1f9cc9318206cd649dc0b76be3de
   path_provider_ex: 95397ca0c3f5f99c8538aec3736674fa9cefc1b6
+  path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0
-  SDWebImage: 4dc3e42d9ec0c1028b960a33ac6b637bb432207b
+  SDWebImage: 0905f1b7760fc8ac4198cae0036600d67478751e
   share_extend: b6748dc53695587891126a89533b862b92548c7b
-  shared_preferences: 5033afbb22d372e15aff8ff766df9021b845f273
-  sqlite3: 797b1b1f92baf74716a3179f69d9652ce4a5df3f
-  sqlite3_flutter_libs: a1d040d0c9b60435b50e9626a9e818ddff842487
-  SwiftyGif: 5d4af95df24caf1c570dbbcb32a3b8a0763bc6d7
+  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
+  sqlite3: cd8b3380fcf65663ed84d17aab294db7626a314e
+  sqlite3_flutter_libs: 14a93fdcff62c6a346356df0b8e1b3f35fbab8f2
+  SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  url_launcher: b6e016d912f04be9f5bf6e8e82dc599b7ba59649
+  url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
 
 PODFILE CHECKSUM: a347fd0ae05b3d8478a3efc87a129c3eb6e544ea
 
