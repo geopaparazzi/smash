@@ -25,11 +25,11 @@ dependencies:
   geoimage: ^0.2.0
 
   # apache 2
-  flutter_geopackage: ^0.5.0
+  flutter_geopackage: ^0.5.1
   # path: ../flutter_geopackage/
   #  git:
   #    url: https://github.com/moovida/flutter_geopackage.git
-  dart_hydrologis_db: ^0.7.0
+  dart_hydrologis_db: ^0.7.1
   # path: ../dart_hydrologis_db/
   # git:
   #  url: https://github.com/moovida/dart_hydrologis_db.git
@@ -37,13 +37,13 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: eb2f0e6
+      ref: 879a910
       
   smash_import_export_plugins:
     # path: ../smash_import_export_plugins/
     git:
       url: https://github.com/geopaparazzi/smash_import_export_plugins.git
-      ref: bc8f5ee
+      ref: f976890
 
 
   dart_shp: ^0.4.0
@@ -82,7 +82,7 @@ dependencies:
       ref: 91604d66c3b3fb1c197943679cc4eb701bb82a17
 
   # MIT
-  sqlite3_flutter_libs: ^0.5.0
+  sqlite3_flutter_libs: ^0.5.4
 
   # BSD
   flutter_map: ^0.14.0
@@ -109,7 +109,7 @@ dependencies:
     #   url: https://github.com/moovida/lat_lon_grid_plugin.git
     #   ref: version4smash
 
-  mapsforge_flutter:
+  mapsforge_flutter: #^2.0.1
     # path: /home/hydrologis/development/mapsforge_flutter/mapsforge_flutter
     git:
       url: https://github.com/mikes222/mapsforge_flutter.git
@@ -215,7 +215,9 @@ dev_dependencies:
     # git:
     #   url: https://github.com/moovida/flutter_launcher_icons.git
 
-  pedantic: ^1.9.0
+  test: ^1.20.1
+
+  lints: ^1.0.1
 
 #  flutter_test:
 #    sdk: flutter
