@@ -18,6 +18,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// Postgis vector data layer.
@@ -112,26 +113,25 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
 
       sldString = await _pgDb.getSld(sqlName);
       if (sldString == null) {
-        if (_geometryColumn.geometryType.isPoint()) {
-          sldString = DefaultSlds.simplePointSld();
-          await _pgDb.updateSld(sqlName, sldString);
-        } else if (_geometryColumn.geometryType.isLine()) {
-          sldString = DefaultSlds.simpleLineSld();
-          await _pgDb.updateSld(sqlName, sldString);
-        } else if (_geometryColumn.geometryType.isPolygon()) {
-          sldString = DefaultSlds.simplePolygonSld();
-          await _pgDb.updateSld(sqlName, sldString);
-        }
+        await createDefaultSld(sqlName);
       }
-      if (sldString != null) {
+      try {
+        if (sldString != null) {
+          _style = SldObjectParser.fromString(sldString);
+          _style.parse();
+
+          if (_style
+                  .featureTypeStyles.first.rules.first.textSymbolizers.length >
+              0) {
+            _textStyle = _style.featureTypeStyles.first.rules.first
+                .textSymbolizers.first.style;
+          }
+        }
+      } catch (e, s) {
+        SMLogger().e("error parsing SLD", e, s);
+        await createDefaultSld(sqlName);
         _style = SldObjectParser.fromString(sldString);
         _style.parse();
-
-        if (_style.featureTypeStyles.first.rules.first.textSymbolizers.length >
-            0) {
-          _textStyle = _style
-              .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
-        }
       }
       if (maxFeaturesToLoad == -1) {
         maxFeaturesToLoad = null;
@@ -168,6 +168,19 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
 
         isLoaded = true;
       }
+    }
+  }
+
+  Future<void> createDefaultSld(SqlName sqlName) async {
+    if (_geometryColumn.geometryType.isPoint()) {
+      sldString = DefaultSlds.simplePointSld();
+      await _pgDb.updateSld(sqlName, sldString);
+    } else if (_geometryColumn.geometryType.isLine()) {
+      sldString = DefaultSlds.simpleLineSld();
+      await _pgDb.updateSld(sqlName, sldString);
+    } else if (_geometryColumn.geometryType.isPolygon()) {
+      sldString = DefaultSlds.simplePolygonSld();
+      await _pgDb.updateSld(sqlName, sldString);
     }
   }
 

@@ -119,95 +119,34 @@ class GeometryEditManager {
 
   void startEditing(EditableGeometry editGeometry, Function callbackRefresh,
       {EGeometryType geomType}) {
+    _callbackRefresh = callbackRefresh;
+    _handleIconSize = GpPreferences()
+        .getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25)
+        .toDouble();
+    _intermediateHandleIconSize = GpPreferences()
+        .getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20)
+        .toDouble();
+    _dragHandlerIcon = Container(
+      decoration: BoxDecoration(
+          color: Colors.yellow,
+          borderRadius: BorderRadius.all(Radius.circular(_handleIconSize / 4)),
+          border: Border.all(color: Colors.black, width: 2)),
+    );
+
+    _intermediateHandlerIcon = Container(
+      child: Icon(
+        MdiIcons.plus,
+        size: _intermediateHandleIconSize / 2,
+        color: Colors.black,
+      ),
+      decoration: BoxDecoration(
+          color: Colors.yellow,
+          borderRadius:
+              BorderRadius.all(Radius.circular(_intermediateHandleIconSize)),
+          border: Border.all(color: Colors.black, width: 2)),
+    );
     if (!_isEditing) {
       if (editGeometry != null) {
-        // resetToNulls();
-
-        _callbackRefresh = callbackRefresh;
-        _handleIconSize = GpPreferences()
-            .getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25)
-            .toDouble();
-        _intermediateHandleIconSize = GpPreferences()
-            .getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20)
-            .toDouble();
-        _dragHandlerIcon = Container(
-          decoration: BoxDecoration(
-              color: Colors.yellow,
-              borderRadius:
-                  BorderRadius.all(Radius.circular(_handleIconSize / 4)),
-              border: Border.all(color: Colors.black, width: 2)),
-        );
-
-        _intermediateHandlerIcon = Container(
-          child: Icon(
-            MdiIcons.plus,
-            size: _intermediateHandleIconSize / 2,
-            color: Colors.black,
-          ),
-          decoration: BoxDecoration(
-              color: Colors.yellow,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(_intermediateHandleIconSize)),
-              border: Border.all(color: Colors.black, width: 2)),
-        );
-
-        // geomType = EGeometryType.forGeometry(editGeometry.geometry);
-        // if (geomType.isLine()) {
-        //   var geomPoints = editGeometry.geometry
-        //       .getCoordinates()
-        //       .map((c) => LatLng(c.y, c.x))
-        //       .toList();
-        //   polyLines = [];
-        //   editPolyline = new Polyline(
-        //       color: editBorder,
-        //       strokeWidth: editStrokeWidth,
-        //       points: geomPoints);
-        //   polyEditor = new PolyEditor(
-        //     addClosePathMarker: false,
-        //     points: geomPoints,
-        //     pointIcon: _dragHandlerIcon,
-        //     pointIconSize: Size(_handleIconSize, _handleIconSize),
-        //     intermediateIconSize:
-        //         Size(_intermediateHandleIconSize, _intermediateHandleIconSize),
-        //     intermediateIcon: _intermediateHandlerIcon,
-        //     callbackRefresh: callbackRefresh,
-        //   );
-        //   polyLines.add(editPolyline);
-        // } else if (geomType.isPolygon()) {
-        //   var geomPoints = editGeometry.geometry
-        //       .getCoordinates()
-        //       .map((c) => LatLng(c.y, c.x))
-        //       .toList();
-        //   geomPoints.removeLast();
-
-        //   polygons = [];
-        //   editPolygon = new Polygon(
-        //     color: editFill,
-        //     borderColor: editBorder,
-        //     borderStrokeWidth: editStrokeWidth,
-        //     points: geomPoints,
-        //   );
-        //   var backEditPolygon = new Polygon(
-        //     color: editFill.withAlpha(0),
-        //     borderColor: editBackBorder,
-        //     borderStrokeWidth: editStrokeWidth + 3,
-        //     points: geomPoints,
-        //   );
-        //   polyEditor = new PolyEditor(
-        //     addClosePathMarker: true,
-        //     points: geomPoints,
-        //     pointIcon: _dragHandlerIcon,
-        //     intermediateIcon: _intermediateHandlerIcon,
-        //     pointIconSize: Size(_handleIconSize, _handleIconSize),
-        //     intermediateIconSize:
-        //         Size(_intermediateHandleIconSize, _intermediateHandleIconSize),
-        //     callbackRefresh: callbackRefresh,
-        //   );
-
-        //   polygons.add(backEditPolygon);
-        //   polygons.add(editPolygon);
-        // } else if (geomType.isPoint()) {
-
         // When starting editing it is always a point.
         var coord = editGeometry.geometry.getCoordinate();
 
@@ -219,7 +158,6 @@ class GeometryEditManager {
           onDragEnd: (details, point) {},
           updateMapNearEdge: false,
         );
-        // }
       }
       _isEditing = true;
     }
@@ -311,14 +249,14 @@ class GeometryEditManager {
   }
 
   Future<void> onMapTap(BuildContext context, LatLng point) async {
-    if (_isEditing) {
+    GeometryEditorState geomEditorState =
+        Provider.of<GeometryEditorState>(context, listen: false);
+    if (_isEditing && geomEditorState.editableGeometry != null) {
       if (polyEditor != null && !_polygonInWork) {
         addPoint(point);
       } else {
         resetToNulls();
         // geometry is not yet of the layer type
-        GeometryEditorState geomEditorState =
-            Provider.of<GeometryEditorState>(context, listen: false);
         var editableGeometry = geomEditorState.editableGeometry;
 
         var tableName = SqlName(editableGeometry.table);
@@ -335,8 +273,6 @@ class GeometryEditManager {
         }
       }
     } else {
-      GeometryEditorState geomEditorState =
-          Provider.of<GeometryEditorState>(context, listen: false);
       if (geomEditorState.isEnabled) {
         // add a new geometry to a layer selected by the user
         await _createNewGeometryOnSelectedLayer(
@@ -526,6 +462,18 @@ class GeometryEditManager {
         editGeom2.id = lastId;
         editGeom2.table = table;
         geomEditorState.editableGeometry = editGeom2;
+
+        // When starting editing it is always a point.
+        var coord = editGeom2.geometry.getCoordinate();
+
+        pointEditor = DragMarker(
+          point: LatLng(coord.y, coord.x),
+          width: _handleIconSize,
+          height: _handleIconSize,
+          builder: (ctx) => Container(child: _dragHandlerIcon),
+          onDragEnd: (details, point) {},
+          updateMapNearEdge: false,
+        );
 
         // reload layer geoms
         vectorLayer.isLoaded = false;
@@ -788,7 +736,8 @@ class GeometryEditManager {
             "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
         if (vectorLayer is DbVectorLayerSource) {
           var sqlObj = db.geometryToSql(geom);
-          lastId = db.execute(sql, arguments: [sqlObj], getLastInsertId: true);
+          lastId =
+              await db.execute(sql, arguments: [sqlObj], getLastInsertId: true);
           editableGeometry.geometry = geom;
           editableGeometry.id = lastId;
         }

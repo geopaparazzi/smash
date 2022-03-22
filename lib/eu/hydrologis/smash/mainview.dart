@@ -226,7 +226,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 
     GeometryEditorState editorState =
         Provider.of<GeometryEditorState>(context, listen: false);
-    if (editorState.editableGeometry != null) {
+    if (editorState.isEnabled) {
       GeometryEditManager().startEditing(editorState.editableGeometry, () {
         setState(() {});
       });
