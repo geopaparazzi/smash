@@ -7,7 +7,7 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "36.0.0"
+    version: "37.0.0"
   after_layout:
     dependency: "direct main"
     description:
@@ -21,7 +21,7 @@ packages:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.1"
+    version: "3.4.0"
   animated_stack_widget:
     dependency: transitive
     description:
@@ -1057,8 +1057,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: f976890
-      resolved-ref: f976890065ed7d9792dc4da8dd273256ee9d5d81
+      ref: d4d71e3
+      resolved-ref: d4d71e31b81faff1883a5f224f849b0b61535455
       url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
     source: git
     version: "0.0.1"
@@ -1315,7 +1315,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.4"
   wkt_parser:
     dependency: transitive
     description:
