@@ -27,4 +27,4 @@ Main features:
 Help [translate SMASH on Hosted Weblate](https://hosted.weblate.org/engage/smash/). \
 [![Translation status](https://hosted.weblate.org/widgets/smash/-/multi-auto.svg)](https://hosted.weblate.org/engage/smash/?utm_source=widget)
 
-You can always add other lanuages.
+You can always add other languages.
