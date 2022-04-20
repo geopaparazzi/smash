@@ -1,0 +1,25 @@
+<p>SMASH is a digital field mapping application developed to perform fast qualitative engineering/geologic surveys and GIS data collection.</p>
+
+<p>
+The main aim of SMASH is to have a tool that:
+</p>
+<ul>
+<li>fits in any pocket and can be always at hand, when needed</li>
+<li>gives the possibility to take geo-referenced and possibly orientated pictures during a survey, with further possibility to import them into GIS applications like gvSIG</li>
+<li>is able to easily exploit an Internet connection, if available</li>
+<li>is extremely easy to use and intuitive, providing just few important functions</li>
+</ul>
+
+<p>
+The main features available in SMASH are:
+</p>
+
+<ul>
+<li>geo-referenced notes</li>
+<li>geo-referenced and oriented pictures</li>
+<li>gps track logging</li>
+<li>form-based data surveys</li>
+<li>easy export of collected data</li>
+<li>a map view for navigation with support for raster tiles and gpx vector data</li>
+<li>geopackage (OGC standard) support</li>
+</ul>
