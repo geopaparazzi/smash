@@ -83,11 +83,11 @@ android {
 
 // START WORKAROUND for hanging build
 // this change also brings "multiDexEnabled true" in defaultConfig
-configurations.all {
-    resolutionStrategy {
-        force 'com.google.android.gms:play-services-location:17.0.0'
-    }
-}
+// configurations.all {
+//     resolutionStrategy {
+//         force 'com.google.android.gms:play-services-location:17.0.0'
+//     }
+// }
 // END WORKAROUND
 
 flutter {
