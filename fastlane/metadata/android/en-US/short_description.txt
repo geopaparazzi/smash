@@ -1,1 +1,1 @@
-SMASH is a digital field mapping application developed to perform fast qualitative engineering/geologic surveys and GIS data collection.
+Digital field mapping app for geodiaries, fast surveys and GIS data collection.
