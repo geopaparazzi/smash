@@ -9,11 +9,10 @@ version: 1.7.4+66 # we keep the build number growing to have it properly handled
 # agvtool new-version -all 58
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=2.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
   flutter_localizations:
     sdk: flutter
   intl: '>=0.16.1 <=0.17.0'
@@ -37,13 +36,13 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: 879a910
+      ref: 7acb939
       
   smash_import_export_plugins:
     # path: ../smash_import_export_plugins/
     git:
       url: https://github.com/geopaparazzi/smash_import_export_plugins.git
-      ref: d4d71e3
+      ref: 3ed228d
 
 
   dart_shp: ^0.4.0
@@ -155,10 +154,10 @@ dependencies:
   #    <key>UIFileSharingEnabled</key>
   #    <true/>
   # GPL 3.0
-  background_locator: 1.6.12
-    # git:
-    #   url: https://github.com/rekab-app/background_locator.git
-    #   ref: 67de74edbc94d18b1e881d534e9358af695f12b7
+  background_locator: #1.6.12
+    git:
+      url: https://github.com/moovida/background_locator.git
+      ref: gms_free_1.6.12_version
 
   # MIT
   # geolocator: ^5.3.0

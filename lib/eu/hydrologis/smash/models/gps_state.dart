@@ -17,62 +17,69 @@ import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 /// Provides tracking of position and parameters related to GPS state.
 class GpsState extends ChangeNotifierPlus {
   GpsStatus _status = GpsStatus.NOGPS;
-  SmashPosition _lastPosition;
+  SmashPosition? _lastPosition;
 
   bool _isLogging = false;
-  int _currentLogId;
-  ProjectState _projectState;
+  int? _currentLogId;
+  ProjectState? _projectState;
 
   /// the gps insertion mode for notes. This can be GPS or map center.
   int _insertInGpsMode = POINT_INSERTION_MODE_GPS;
 
   /// Use the iltered GPS instead of the original GPS.
-  bool _useFilteredGps;
+  bool? _useFilteredGps;
 
   int gpsMinDistance = 1;
   int gpsTimeInterval = 1;
   bool doTestLog = false;
 
   List<LatLng> _currentLogPoints = [];
-  double _currentLogProgressive;
-  double _currentFilteredLogProgressive;
-  int _currentLogTimeDeltaMillis;
-  int _currentLogTimeInitMillis;
-  double _currentSpeedInMs;
+  double? _currentLogProgressive;
+  double? _currentFilteredLogProgressive;
+  int? _currentLogTimeDeltaMillis;
+  int? _currentLogTimeInitMillis;
+  double? _currentSpeedInMs;
   List<dynamic> _lastProgAndAltitudes = [];
   List<LatLng> _currentFilteredLogPoints = [];
 
-  String logMode;
-  String filteredLogMode;
-  String notesMode;
+  late String logMode;
+  late String filteredLogMode;
+  late String notesMode;
 
-  GpsStatus _lastGpsStatusBeforeLogging;
+  GpsStatus? _lastGpsStatusBeforeLogging;
 
   void init() {
     gpsMinDistance = GpPreferences()
-        .getIntSync(SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE, 1);
+            .getIntSync(SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE, 1) ??
+        1;
     gpsTimeInterval = GpPreferences()
-        .getIntSync(SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL, 1);
+            .getIntSync(SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL, 1) ??
+        1;
     doTestLog = GpPreferences()
         .getBooleanSync(SmashPreferencesKeys.KEY_GPS_TESTLOG, false);
 
     List<String> currentLogViewModes = GpPreferences().getStringListSync(
-        SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [
-      SmashPreferencesKeys.LOGVIEWMODES[0],
-      SmashPreferencesKeys.LOGVIEWMODES[1]
-    ]);
+            SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [
+          SmashPreferencesKeys.LOGVIEWMODES[0],
+          SmashPreferencesKeys.LOGVIEWMODES[1]
+        ]) ??
+        [
+          SmashPreferencesKeys.LOGVIEWMODES[0],
+          SmashPreferencesKeys.LOGVIEWMODES[1]
+        ];
     logMode = currentLogViewModes[0];
     filteredLogMode = currentLogViewModes[1];
     notesMode = GpPreferences().getStringSync(
-        SmashPreferencesKeys.KEY_NOTES_VIEW_MODE,
-        SmashPreferencesKeys.NOTESVIEWMODES[0]);
+            SmashPreferencesKeys.KEY_NOTES_VIEW_MODE,
+            SmashPreferencesKeys.NOTESVIEWMODES[0]) ??
+        SmashPreferencesKeys.NOTESVIEWMODES[0];
   }
 
   GpsStatus get status => _status;
 
-  SmashPosition get lastGpsPosition => _lastPosition;
+  SmashPosition? get lastGpsPosition => _lastPosition;
 
-  set lastGpsPosition(SmashPosition position) {
+  set lastGpsPosition(SmashPosition? position) {
     _lastPosition = position;
     notifyListeners(); //Msg("lastGpsPosition");
   }
@@ -100,12 +107,12 @@ class GpsState extends ChangeNotifierPlus {
       _useFilteredGps = GpPreferences().getBooleanSync(
           SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
     }
-    return _useFilteredGps;
+    return _useFilteredGps!;
   }
 
   bool get isLogging => _isLogging;
 
-  int get currentLogId => _currentLogId;
+  int? get currentLogId => _currentLogId;
 
   /// Set the _insertInGps without triggering a global notification.
   set useFilteredGpsQuiet(bool newUseFilteredGps) {
@@ -132,9 +139,9 @@ class GpsState extends ChangeNotifierPlus {
 
   void addLogPoint(double longitude, double latitude, double altitude,
       int timestamp, double accuracy, double speed,
-      {double longitudeFiltered,
-      double latitudeFiltered,
-      double accuracyFiltered}) {
+      {double? longitudeFiltered,
+      double? latitudeFiltered,
+      double? accuracyFiltered}) {
     if (_projectState != null) {
       LogDataPoint ldp = LogDataPoint();
       ldp.logid = currentLogId;
@@ -153,7 +160,7 @@ class GpsState extends ChangeNotifierPlus {
       ldp.filtered_lat = latitudeFiltered;
       ldp.filtered_lon = longitudeFiltered;
       ldp.speed = speed;
-      _projectState.projectDb.addGpsLogPoint(currentLogId, ldp);
+      _projectState?.projectDb?.addGpsLogPoint(currentLogId!, ldp);
     }
 
     if (_currentLogProgressive == null) {
@@ -165,17 +172,18 @@ class GpsState extends ChangeNotifierPlus {
     if (_currentLogPoints.isNotEmpty) {
       var distanceMeters =
           CoordinateUtilities.getDistance(_currentLogPoints.last, newPosLatLon);
-      _currentLogProgressive += distanceMeters;
+      _currentLogProgressive = _currentLogProgressive! + distanceMeters;
     }
     _currentLogPoints.add(newPosLatLon);
 
     // filtered log
     if (latitudeFiltered != null) {
-      var newFilteredPosLatLon = LatLng(latitudeFiltered, longitudeFiltered);
+      var newFilteredPosLatLon = LatLng(latitudeFiltered, longitudeFiltered!);
       if (_currentFilteredLogPoints.isNotEmpty) {
         var distanceMeters = CoordinateUtilities.getDistance(
             _currentFilteredLogPoints.last, newFilteredPosLatLon);
-        _currentFilteredLogProgressive += distanceMeters;
+        _currentFilteredLogProgressive =
+            _currentFilteredLogProgressive! + distanceMeters;
       }
       _currentFilteredLogPoints.add(newFilteredPosLatLon);
     }
@@ -184,7 +192,7 @@ class GpsState extends ChangeNotifierPlus {
     if (_currentLogTimeInitMillis == null) {
       _currentLogTimeInitMillis = timestamp;
     }
-    _currentLogTimeDeltaMillis = timestamp - _currentLogTimeInitMillis;
+    _currentLogTimeDeltaMillis = timestamp - _currentLogTimeInitMillis!;
 
     _currentSpeedInMs = speed;
 
@@ -222,8 +230,12 @@ class GpsState extends ChangeNotifierPlus {
       lp.isVisible = 1;
       lp.color = "#FF0000";
       lp.width = 3;
-      var logId = _projectState.projectDb.addGpsLog(l, lp);
-      return logId;
+      var logId = _projectState?.projectDb?.addGpsLog(l, lp);
+      if (logId != null) {
+        return logId;
+      } else {
+        return -1;
+      }
     } else {
       return -1;
     }
@@ -236,7 +248,7 @@ class GpsState extends ChangeNotifierPlus {
   ///
   /// Once logging, the [_onPositionUpdate] method adds the
   /// points as the come.
-  int startLogging(String logName) {
+  int? startLogging(String logName) {
     try {
       var logId = addGpsLog(logName);
       _currentLogId = logId;
@@ -272,12 +284,12 @@ class GpsState extends ChangeNotifierPlus {
 
     if (_projectState != null) {
       int endTs = DateTime.now().millisecondsSinceEpoch;
-      _projectState.projectDb.updateGpsLogEndts(_currentLogId, endTs);
+      _projectState?.projectDb?.updateGpsLogEndts(_currentLogId!, endTs);
     }
 
     if (_lastGpsStatusBeforeLogging == null)
       _lastGpsStatusBeforeLogging = GpsStatus.ON_NO_FIX;
-    _status = _lastGpsStatusBeforeLogging;
+    _status = _lastGpsStatusBeforeLogging!;
     _lastGpsStatusBeforeLogging = null;
     notifyListenersMsg("stopLogging");
   }

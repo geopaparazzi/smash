@@ -12,13 +12,13 @@ class RulerState extends ChangeNotifier {
 
   bool isEnabled = false;
 
-  double xTapPosition;
-  double yTapPosition;
-  double _lengthMeters;
+  double? xTapPosition;
+  double? yTapPosition;
+  double? _lengthMeters;
 
-  double get lengthMeters => _lengthMeters;
+  double? get lengthMeters => _lengthMeters;
 
-  set lengthMeters(double newLength) {
+  set lengthMeters(double? newLength) {
     _lengthMeters = newLength;
     notifyListeners();
   }

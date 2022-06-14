@@ -21,8 +21,8 @@ class Testlog {
     }
     var data1 = TESTLOG[_index];
     var data2 = TESTLOG[_index + 1];
-    var c1 = Coordinate(data1[0], data1[1]);
-    var c2 = Coordinate(data2[0], data2[1]);
+    var c1 = Coordinate(data1[0].toDouble(), data1[1].toDouble());
+    var c2 = Coordinate(data2[0].toDouble(), data2[1].toDouble());
     var azimuth = _azimuth(c1, c2);
     var altim = data1[2];
     var ts = data1[3].toDouble();
@@ -30,7 +30,7 @@ class Testlog {
     var speedMs = data1[5];
     _index++;
 
-    filter.process(c2.y, c2.x, accura, ts, speedMs);
+    filter.process(c2.y, c2.x, accura.toDouble(), ts, speedMs.toDouble());
 
     return SmashPosition.fromJson({
       ARG_LATITUDE: c2.y,
@@ -115,11 +115,11 @@ class TestLogStream {
     }
   }
 
-  StreamSubscription<SmashPosition> _streamSubscription;
+  late StreamSubscription<SmashPosition> _streamSubscription;
   final kalman = KalmanFilter();
   StreamController<SmashPosition> _controller =
       StreamController<SmashPosition>();
-  Timer timer;
+  Timer? timer;
   bool isActive = false;
 
   int millisecondsDuration = 500;
@@ -147,7 +147,7 @@ class TestLogStream {
   void stop() {
     if (timer != null) {
       isActive = false;
-      timer.cancel();
+      timer?.cancel();
       timer = null;
     }
   }

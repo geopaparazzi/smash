@@ -77,7 +77,7 @@ class LayerManager {
     } else {
       List<LayerSource> where = _layerSources.where((ts) {
         if (ts != null && ts.isActive()) {
-          String file = ts.getAbsolutePath();
+          String? file = ts.getAbsolutePath();
           if (file != null && file.isNotEmpty) {
             if (!File(file).existsSync()) {
               return false;

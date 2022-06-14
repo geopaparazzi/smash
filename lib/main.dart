@@ -106,7 +106,7 @@ class SmashApp extends StatelessWidget {
 }
 
 class WelcomeWidget extends StatefulWidget {
-  WelcomeWidget({Key key}) : super(key: key);
+  WelcomeWidget({Key? key}) : super(key: key);
 
   @override
   _WelcomeWidgetState createState() => _WelcomeWidgetState();
@@ -213,7 +213,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
   }
 }
 
-Future<String> handleFences(BuildContext context) async {
+Future<String?> handleFences(BuildContext context) async {
   try {
     FenceMaster().readFences();
   } on Exception catch (e, s) {
@@ -223,7 +223,7 @@ Future<String> handleFences(BuildContext context) async {
   return null;
 }
 
-Future<String> handleLayers(BuildContext context) async {
+Future<String?> handleLayers(BuildContext context) async {
   // init layer manager
   try {
     var layerManager = LayerManager();
@@ -248,7 +248,7 @@ Future<String> handleLayers(BuildContext context) async {
   return null;
 }
 
-Future<String> handleProjections(BuildContext context) async {
+Future<String?> handleProjections(BuildContext context) async {
   // read tags file
   try {
     List<String> projList = await GpPreferences().getProjections();
@@ -270,7 +270,7 @@ Future<String> handleProjections(BuildContext context) async {
   }
 }
 
-Future<String> handleTags(BuildContext context) async {
+Future<String?> handleTags(BuildContext context) async {
   // read tags file
   try {
     await TagsManager().readFileTags();
@@ -281,7 +281,7 @@ Future<String> handleTags(BuildContext context) async {
   return null;
 }
 
-Future<String> handlePreferences(BuildContext context) async {
+Future<String?> handlePreferences(BuildContext context) async {
   try {
     await GpPreferences().initialize();
 
@@ -299,11 +299,11 @@ Future<String> handlePreferences(BuildContext context) async {
   }
 }
 
-Future<String> handleWorkspace(BuildContext context) async {
+Future<String?> handleWorkspace(BuildContext context) async {
   try {
     await Workspace.init(doSafeMode: false);
     var directory = await Workspace.getConfigFolder();
-    bool init = SLogger().init(directory.path); // init logger
+    bool init = SLogger().init(directory.path) ?? false; // init logger
     if (init) SMLogger().setSubLogger(SLogger());
 
     // handle issues with Android 11 not taking the
@@ -326,7 +326,7 @@ Future<String> handleWorkspace(BuildContext context) async {
   }
 }
 
-Future<String> handleLocationPermission(BuildContext context) async {
+Future<String?> handleLocationPermission(BuildContext context) async {
   try {
     if (!SmashPlatform.isDesktop()) {
       var status = await Permission.location.status;
@@ -347,11 +347,12 @@ Future<String> handleLocationPermission(BuildContext context) async {
   }
 }
 
-Future<String> handleStoragePermission(BuildContext context) async {
+Future<String?> handleStoragePermission(BuildContext context) async {
   if (!SmashPlatform.isDesktop()) {
     var storagePermission = await PermissionManager()
         .add(PERMISSIONS.STORAGE)
-        // .add(PERMISSIONS.MANAGEEXTSTORAGE) // TODO comment this for store release
+        .add(
+            PERMISSIONS.MANAGEEXTSTORAGE) // TODO comment this for store release
         .check(context);
     if (!storagePermission) {
       return SL.of(context).main_storagePermissionIsMandatoryToOpenSmash;
@@ -360,7 +361,7 @@ Future<String> handleStoragePermission(BuildContext context) async {
   return null;
 }
 
-String logMsg(String msg, Exception e, StackTrace s) {
+String logMsg(String msg, Exception e, StackTrace? s) {
   SMLogger().e(msg, e, s);
   if (s != null) {
     msg += "\n" + Trace.format(s);
@@ -377,7 +378,7 @@ class ProgressTile extends StatefulWidget {
   final iconData;
 
   final initMsg;
-  final Future<String> Function(BuildContext) processFunction;
+  final Future<String?> Function(BuildContext) processFunction;
 
   ProgressTile(this.iconData, this.initMsg, this.doneMsg, this.orderNotifier,
       this.order, this.processFunction);
@@ -389,7 +390,7 @@ class ProgressTile extends StatefulWidget {
 class _ProgressTileState extends State<ProgressTile> {
   bool isDone = false;
   bool isStarted = false;
-  String error;
+  String? error;
 
   @override
   void initState() {
@@ -422,7 +423,7 @@ class _ProgressTileState extends State<ProgressTile> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle;
+    TextStyle? textStyle;
     if (isStarted) {
       textStyle = TextStyle(
         color: SmashColors.mainSelection,
@@ -440,14 +441,14 @@ class _ProgressTileState extends State<ProgressTile> {
               isDone ? widget.doneMsg : widget.initMsg,
               style: textStyle,
             )
-          : FlatButton(
+          : TextButton(
               child: Text(
                 SL.of(context).main_anErrorOccurredTapToView,
                 style:
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
               ),
               onPressed: () async {
-                await SmashDialogs.showErrorDialog(context, error);
+                await SmashDialogs.showErrorDialog(context, error!);
               },
             ),
     );

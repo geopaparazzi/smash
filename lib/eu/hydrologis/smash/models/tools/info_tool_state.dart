@@ -20,9 +20,9 @@ class InfoToolState extends ChangeNotifier {
   bool isEnabled = false;
   bool isSearching = false;
 
-  double xTapPosition;
-  double yTapPosition;
-  double tapRadius;
+  double? xTapPosition;
+  double? yTapPosition;
+  double? tapRadius;
 
   void setTapAreaCenter(double x, double y) {
     xTapPosition = x;

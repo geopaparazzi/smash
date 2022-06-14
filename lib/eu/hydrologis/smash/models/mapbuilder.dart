@@ -13,13 +13,13 @@ import 'package:provider/provider.dart';
 ///
 /// Used to trigger just map builds and keep context.
 class SmashMapBuilder extends ChangeNotifierPlus {
-  BuildContext context;
-  GlobalKey<ScaffoldState> scaffoldKey;
+  BuildContext? context;
+  GlobalKey<ScaffoldState>? scaffoldKey;
 
   /// List of rebuilt layers in case they are reloaded from outside the mapview.
   ///
   /// These are set to null after use.
-  List<LayerOptions> _oneShotUpdateLayers;
+  List<LayerOptions>? _oneShotUpdateLayers;
 
   bool _inProgress = false;
 
@@ -37,11 +37,11 @@ class SmashMapBuilder extends ChangeNotifierPlus {
     notifyListeners();
   }
 
-  set oneShotUpdateLayers(List<LayerOptions> newLayers) {
+  set oneShotUpdateLayers(List<LayerOptions>? newLayers) {
     _oneShotUpdateLayers = newLayers;
   }
 
-  List<LayerOptions> get oneShotUpdateLayers {
+  List<LayerOptions>? get oneShotUpdateLayers {
     try {
       return _oneShotUpdateLayers;
     } finally {
