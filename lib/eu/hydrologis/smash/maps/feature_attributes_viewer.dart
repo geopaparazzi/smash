@@ -25,7 +25,7 @@ class FeatureAttributesViewer extends StatefulWidget {
   final EditableQueryResult features;
   final bool readOnly;
 
-  FeatureAttributesViewer(this.features, {this.readOnly = true, Key key})
+  FeatureAttributesViewer(this.features, {this.readOnly = true, Key? key})
       : super(key: key);
 
   @override
@@ -36,11 +36,11 @@ class FeatureAttributesViewer extends StatefulWidget {
 class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     with AfterLayoutMixin {
   int _index = 0;
-  int _total;
+  late int _total;
   MapController _mapController = MapController();
   var _baseLayer;
   bool _loading = true;
-  JTS.Geometry _geometry;
+  late JTS.Geometry _geometry;
   var _geomCols = {};
 
   @override
@@ -51,13 +51,13 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
 
     EditableQueryResult f = widget.features;
     _geometry = f.geoms[_index];
-    var env = _geometry.getEnvelopeInternal();
+    var env = _geometry!.getEnvelopeInternal();
     var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
         LatLng(env.getMaxY(), env.getMaxX()));
 
-    for (var i = 0; i < f.ids.length; i++) {
-      var db = f.dbs[i];
-      var tableName = f.ids[i];
+    for (var i = 0; i < f.ids!.length; i++) {
+      var db = f.dbs![i];
+      var tableName = f.ids![i];
       var geometryColumn =
           await db.getGeometryColumnsForTable(SqlName(tableName));
       if (geometryColumn != null) {
@@ -107,13 +107,13 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     _geometry = f.geoms[_index];
 
     Map<String, dynamic> data = f.data[_index];
-    Map<String, String> typesMap;
+    Map<String, String>? typesMap;
     var primaryKey;
     var db;
-    if (f.editable[_index]) {
-      typesMap = f.fieldAndTypemap[_index];
-      primaryKey = f.primaryKeys[_index];
-      db = f.dbs[_index];
+    if (f.editable![_index]) {
+      typesMap = f.fieldAndTypemap![_index];
+      primaryKey = f.primaryKeys![_index];
+      db = f.dbs![_index];
     }
 
     var centroid = _geometry.getCentroid().getCoordinate();
@@ -128,7 +128,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
           new Marker(
             width: size,
             height: size,
-            point: LatLng(centroid.y, centroid.x),
+            point: LatLng(centroid!.y, centroid.x),
             builder: (ctx) => new Stack(
               children: <Widget>[
                 Center(
@@ -195,7 +195,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
       layers.add(polyLayer);
     }
 
-    var tableName = widget.features.ids[_index];
+    var tableName = widget.features.ids![_index];
     return Scaffold(
       appBar: AppBar(
         title: Text(tableName),
@@ -259,7 +259,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                       height: double.infinity,
                       child: FlutterMap(
                         options: new MapOptions(
-                          center: LatLng(centroid.y, centroid.x),
+                          center: LatLng(centroid!.y, centroid.x),
                           zoom: 15,
                           minZoom: 7,
                           maxZoom: 19,
@@ -273,7 +273,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
                         child: getDataTable(
-                            tableName, data, primaryKey, db, typesMap),
+                            tableName, data, primaryKey, db, typesMap!),
                       ),
                     ),
                   ],
@@ -294,7 +294,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                       width: double.infinity,
                       child: FlutterMap(
                         options: new MapOptions(
-                          center: LatLng(centroid.y, centroid.x),
+                          center: LatLng(centroid!.y, centroid.x),
                           zoom: 15,
                           minZoom: 7,
                           maxZoom: 19,
@@ -310,7 +310,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: getDataTable(
-                              tableName, data, primaryKey, db, typesMap),
+                              tableName, data, primaryKey, db, typesMap!),
                         ),
                       ),
                     ),
@@ -351,7 +351,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                 } else if (value is double) {
                   data[key] = double.parse(result);
                 } else {
-                  var typeString = typesMap[key].toUpperCase();
+                  var typeString = typesMap[key]!.toUpperCase();
 
                   if (SqliteTypes.isString(typeString)) {
                     data[key] = result;
@@ -389,7 +389,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
       bool doRound = false;
       if (geometryColumn.srid != SmashPrj.EPSG4326_INT) {
         var to = SmashPrj.fromSrid(geometryColumn.srid);
-        SmashPrj.transformGeometry(SmashPrj.EPSG4326, to, checkGeom);
+        SmashPrj.transformGeometry(SmashPrj.EPSG4326, to!, checkGeom);
         doRound = true;
       }
 

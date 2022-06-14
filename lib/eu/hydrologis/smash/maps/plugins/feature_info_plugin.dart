@@ -7,22 +7,19 @@ import 'dart:async';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart';
-import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
-import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/maps/feature_attributes_viewer.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
-import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// A plugin that handles tap info from vector layers
 class FeatureInfoPlugin implements MapPlugin {
@@ -131,18 +128,18 @@ class FeatureInfoLayer extends StatelessWidget {
       if (DbVectorLayerSource.isDbVectorLayerSource(vLayer)) {
         var db = await DbVectorLayerSource.getDb(vLayer);
 
-        var srid = vLayer.getSrid();
+        var srid = vLayer.getSrid()!;
         var boundsGeomInSrid = boundMap[srid];
         if (boundsGeomInSrid == null) {
           // create the env
           var tmp = GeometryUtilities.fromEnvelope(env, makeCircle: true);
-          var dataPrj = SmashPrj.fromSrid(srid);
+          var dataPrj = SmashPrj.fromSrid(srid)!;
           SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj, tmp);
           boundsGeomInSrid = tmp;
           boundsGeomInSrid.setSRID(srid);
           boundMap[srid] = boundsGeomInSrid;
         }
-        var layerName = SqlName(vLayer.getName());
+        var layerName = SqlName(vLayer.getName()!);
         var tableColumns = await db.getTableColumns(layerName);
         Map<String, String> typesMap = {};
         tableColumns.forEach((column) {
@@ -157,13 +154,13 @@ class FeatureInfoLayer extends StatelessWidget {
 
           var dataPrj = SmashPrj.fromSrid(srid);
           queryResult.geoms.forEach((g) {
-            totalQueryResult.ids.add(layerName.name);
-            totalQueryResult.primaryKeys.add(pk);
-            totalQueryResult.dbs.add(db);
-            totalQueryResult.fieldAndTypemap.add(typesMap);
-            totalQueryResult.editable.add(true);
+            totalQueryResult.ids!.add(layerName.name);
+            totalQueryResult.primaryKeys!.add(pk);
+            totalQueryResult.dbs!.add(db);
+            totalQueryResult.fieldAndTypemap!.add(typesMap);
+            totalQueryResult.editable!.add(true);
             if (srid != SmashPrj.EPSG4326_INT) {
-              SmashPrj.transformGeometry(dataPrj, SmashPrj.EPSG4326, g);
+              SmashPrj.transformGeometry(dataPrj!, SmashPrj.EPSG4326, g);
             }
             totalQueryResult.geoms.add(g);
           });
@@ -174,10 +171,10 @@ class FeatureInfoLayer extends StatelessWidget {
       } else if (vLayer is ShapefileSource) {
         var features = vLayer.getInRoi(roiGeom: boundsGeom);
         features.forEach((f) {
-          totalQueryResult.ids.add(vLayer.getName());
-          totalQueryResult.primaryKeys.add(null);
-          totalQueryResult.editable.add(false);
-          totalQueryResult.geoms.add(f.geometry);
+          totalQueryResult.ids!.add(vLayer.getName());
+          totalQueryResult.primaryKeys?.add(null);
+          totalQueryResult.editable!.add(false);
+          totalQueryResult.geoms.add(f.geometry!);
           totalQueryResult.data.add(f.attributes);
         });
       }
@@ -194,15 +191,15 @@ class FeatureInfoLayer extends StatelessWidget {
 }
 
 class EditableQueryResult {
-  List<String> ids;
+  List<String>? ids;
   List<Geometry> geoms = [];
   List<Map<String, dynamic>> data = [];
 
-  List<bool> editable;
-  List<String> primaryKeys;
-  List<dynamic> dbs;
-  List<Map<String, dynamic>> attributes;
-  List<Map<String, String>> fieldAndTypemap;
+  List<bool>? editable;
+  List<String?>? primaryKeys;
+  List<dynamic>? dbs;
+  List<Map<String, dynamic>>? attributes;
+  List<Map<String, String>>? fieldAndTypemap;
 }
 
 class TapSelectionCircle extends StatefulWidget {
@@ -220,7 +217,7 @@ class TapSelectionCircle extends StatefulWidget {
 }
 
 class _TapSelectionCircleState extends State<TapSelectionCircle> {
-  double size;
+  double? size;
   var shape;
   var color;
 

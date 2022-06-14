@@ -82,7 +82,7 @@ abstract class LayerSource {
   void setActive(bool active);
 
   /// Get the bounds for the resource.
-  Future<LatLngBounds> getBounds();
+  Future<LatLngBounds?> getBounds();
 
   /// Dispose the current layeresource.
   void disposeSource();
@@ -107,7 +107,7 @@ abstract class LayerSource {
   /// Get the srid integer.
   ///
   /// For sources that only read the srid onLoad, calculateSrid might be necessary before to avoid loading all data.
-  int getSrid();
+  int? getSrid();
 
   /// Get the proper icon for this layer.
   IconData getIcon();

@@ -446,7 +446,7 @@ class GeometryEditManager {
 
         var lastId = -1;
         if (gType.isPoint()) {
-          var dataPrj = SmashPrj.fromSrid(vectorLayer!.getSrid());
+          var dataPrj = SmashPrj.fromSrid(vectorLayer!.getSrid()!);
           SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj!, geometry);
           var sql =
               "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
@@ -528,7 +528,7 @@ class GeometryEditManager {
     EditableGeometry? editGeom;
     double minDist = 1000000000;
     for (LayerSource vLayer in editableLayers) {
-      var srid = vLayer.getSrid();
+      var srid = vLayer.getSrid()!;
       var db = await DbVectorLayerSource.getDb(vLayer);
       // create the env
       var dataPrj = SmashPrj.fromSrid(srid);

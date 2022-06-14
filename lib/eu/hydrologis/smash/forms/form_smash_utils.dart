@@ -285,12 +285,12 @@ class SmashDatabaseFormHelper implements AFormhelper {
 
   @override
   Future<bool> init() async {
-    _db = _queryResult.dbs[0];
+    _db = _queryResult.dbs?[0];
 
-    _titleWidget = SmashUI.titleText(_queryResult.ids.first,
+    _titleWidget = SmashUI.titleText(_queryResult.ids!.first,
         color: SmashColors.mainBackground, bold: true);
 
-    _tableName = _queryResult.ids.first;
+    _tableName = _queryResult.ids!.first;
 
     if (await _db.hasTable(SqlName(HM_FORMS_TABLE))) {
       QueryResult result = await _db.select(
@@ -338,7 +338,7 @@ class SmashDatabaseFormHelper implements AFormhelper {
 
   @override
   int getId() {
-    var pk = _queryResult.primaryKeys.first;
+    var pk = _queryResult.primaryKeys!.first;
     var id = _queryResult.data.first[pk];
     return id;
   }
@@ -381,7 +381,7 @@ class SmashDatabaseFormHelper implements AFormhelper {
       });
     });
 
-    var pk = _queryResult.primaryKeys.first;
+    var pk = _queryResult.primaryKeys!.first;
     var id = _queryResult.data.first[pk];
 
     var where = "$pk=$id";

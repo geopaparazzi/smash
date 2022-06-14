@@ -51,12 +51,12 @@ class RulerPluginLayer extends StatefulWidget {
 }
 
 class _RulerPluginLayerState extends State<RulerPluginLayer> {
-  LatLng runningPointLL;
-  double _x;
-  double _y;
-  double lengthMeters;
+  LatLng? runningPointLL;
+  double? _x;
+  double? _y;
+  double? lengthMeters;
 
-  List<Offset> pointsList;
+  List<Offset>? pointsList;
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +71,7 @@ class _RulerPluginLayerState extends State<RulerPluginLayer> {
           CustomPaint(
               size: Size.infinite,
               painter: LinePainter(
-                pointsList: pointsList,
+                pointsList: pointsList!,
               )),
         );
       }
@@ -112,7 +112,7 @@ class _RulerPluginLayerState extends State<RulerPluginLayer> {
     if (_x != null && _y != null) {
       pointsList = [];
       // print(p);
-      pointsList.add(p);
+      pointsList!.add(p);
       lengthMeters = 0.0;
       CustomPoint pixelOrigin = widget.map.getPixelOrigin();
       runningPointLL = widget.map
@@ -125,12 +125,12 @@ class _RulerPluginLayerState extends State<RulerPluginLayer> {
   void dragUpdate(RulerState rulerState, Offset p) {
     if (_x != null && _y != null) {
       if (pointsList != null) {
-        pointsList.add(p);
+        pointsList!.add(p);
         CustomPoint pixelOrigin = widget.map.getPixelOrigin();
         var tmpPointLL = widget.map.unproject(
             CustomPoint(pixelOrigin.x + p.dx, pixelOrigin.y + (p.dy)));
-        lengthMeters +=
-            CoordinateUtilities.getDistance(runningPointLL, tmpPointLL);
+        lengthMeters = lengthMeters! +
+            CoordinateUtilities.getDistance(runningPointLL!, tmpPointLL);
         rulerState.lengthMeters = lengthMeters;
         runningPointLL = tmpPointLL;
         setState(() {});
@@ -150,7 +150,7 @@ class _RulerPluginLayerState extends State<RulerPluginLayer> {
 }
 
 class LinePainter extends CustomPainter {
-  LinePainter({this.pointsList});
+  LinePainter({required this.pointsList});
   List<Offset> pointsList;
   final Paint paintObject = Paint();
   @override

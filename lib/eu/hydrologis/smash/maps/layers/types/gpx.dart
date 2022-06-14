@@ -24,21 +24,21 @@ import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class GpxSource extends VectorLayerSource implements SldLayerSource {
-  String _absolutePath;
-  String _name;
-  Gpx _gpx;
+  String? _absolutePath;
+  String? _name;
+  Gpx? _gpx;
   bool isVisible = true;
   String _attribution = "";
   int _srid = SmashPrj.EPSG4326_INT;
-  String sldPath;
+  late String sldPath;
 
   List<LatLng> _wayPoints = [];
   List<String> _wayPointNames = [];
   List<List<LatLng>> _tracksRoutes = [];
   LatLngBounds _gpxBounds = LatLngBounds();
 
-  String sldString;
-  SldObjectParser _style;
+  late String sldString;
+  late SldObjectParser _style;
   double minLineElev = double.infinity;
   double maxLineElev = double.negativeInfinity;
   ColorTables _colorTable = ColorTables.none;
@@ -57,9 +57,9 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
 
   Future<void> load(BuildContext context) async {
     if (!isLoaded) {
-      var parentFolder = FileUtilities.parentFolderFromFile(_absolutePath);
+      var parentFolder = FileUtilities.parentFolderFromFile(_absolutePath!);
 
-      var fileName = FileUtilities.nameFromFile(_absolutePath, false);
+      var fileName = FileUtilities.nameFromFile(_absolutePath!, false);
       _name ??= fileName;
 
       sldPath = FileUtilities.joinPaths(parentFolder, fileName + ".sld");
@@ -80,22 +80,22 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
         FileUtilities.writeStringToFile(sldPath, sldString);
       }
 
-      var xml = FileUtilities.readFile(_absolutePath);
-      try {
-        _gpx = GpxReader().fromString(xml);
-      } catch (e, s) {
-        SLogger().e("Error reading GPX file.", e, s);
-        throw e;
-      }
+      var xml = FileUtilities.readFile(_absolutePath!);
+      // try {
+      _gpx = GpxReader().fromString(xml);
+      // } catch(e, s) {
+      //   SLogger().e("Error reading GPX file.", e, s);
+      //   throw e;
+      // }
 
-      var tmp = _gpx.metadata?.name;
+      var tmp = _gpx!.metadata?.name;
       if (tmp != null && tmp.isNotEmpty) {
         _name = tmp;
       }
 
       int count = 1;
-      _gpx.wpts.forEach((wpt) {
-        var latLng = LatLng(wpt.lat, wpt.lon);
+      _gpx!.wpts.forEach((wpt) {
+        var latLng = LatLng(wpt.lat!, wpt.lon!);
         _gpxBounds.extend(latLng);
         _wayPoints.add(latLng);
         var name = wpt.name;
@@ -106,22 +106,22 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
         _wayPointNames.add(name);
       });
 
-      if (_gpx.wpts.isNotEmpty) {
-        _attribution = _attribution + "Wpts(${_gpx.wpts.length}) ";
+      if (_gpx!.wpts.isNotEmpty) {
+        _attribution = _attribution + "Wpts(${_gpx!.wpts.length}) ";
       }
 
       double lengthMeters = 0;
       var prevLatLng;
-      _gpx.trks.forEach((trk) {
+      _gpx!.trks.forEach((trk) {
         trk.trksegs.forEach((trkSeg) {
           List<LatLng> points = trkSeg.trkpts.map((wpt) {
             LatLng latLng;
             if (wpt.ele == null) {
-              latLng = LatLng(wpt.lat, wpt.lon);
+              latLng = LatLng(wpt.lat!, wpt.lon!);
             } else {
               latLng = ElevationPoint(wpt.lat, wpt.lon, wpt.ele);
-              minLineElev = min(minLineElev, wpt.ele);
-              maxLineElev = max(maxLineElev, wpt.ele);
+              minLineElev = min(minLineElev, wpt.ele!);
+              maxLineElev = max(maxLineElev, wpt.ele!);
             }
             if (prevLatLng != null) {
               var distance =
@@ -135,9 +135,9 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
           _tracksRoutes.add(points);
         });
       });
-      if (_gpx.trks.isNotEmpty) {
-        String info = "${_gpx.trks.length}";
-        if (_gpx.trks.length == 1) {
+      if (_gpx!.trks.isNotEmpty) {
+        String info = "${_gpx!.trks.length}";
+        if (_gpx!.trks.length == 1) {
           // for single track we also give the length in meters
           info = StringUtilities.formatMeters(lengthMeters);
         }
@@ -146,15 +146,15 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
 
       lengthMeters = 0;
       prevLatLng = null;
-      _gpx.rtes.forEach((rt) {
+      _gpx!.rtes.forEach((rt) {
         List<LatLng> points = rt.rtepts.map((wpt) {
           var latLng;
           if (wpt.ele == null) {
-            latLng = LatLng(wpt.lat, wpt.lon);
+            latLng = LatLng(wpt.lat!, wpt.lon!);
           } else {
             latLng = ElevationPoint(wpt.lat, wpt.lon, wpt.ele);
-            minLineElev = min(minLineElev, wpt.ele);
-            maxLineElev = max(maxLineElev, wpt.ele);
+            minLineElev = min(minLineElev, wpt.ele!);
+            maxLineElev = max(maxLineElev, wpt.ele!);
           }
           if (prevLatLng != null) {
             var distance = CoordinateUtilities.getDistance(prevLatLng, latLng);
@@ -163,12 +163,12 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
           prevLatLng = latLng;
           _gpxBounds.extend(latLng);
           return latLng;
-        }).toList();
+        }).toList() as List<LatLng>;
         _tracksRoutes.add(points);
       });
-      if (_gpx.rtes.isNotEmpty) {
-        String info = "${_gpx.rtes.length}";
-        if (_gpx.rtes.length == 1) {
+      if (_gpx!.rtes.isNotEmpty) {
+        String info = "${_gpx!.rtes.length}";
+        if (_gpx!.rtes.length == 1) {
           // for single track we also give the length in meters
           info = StringUtilities.formatMeters(lengthMeters);
         }
@@ -182,15 +182,15 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
     return _wayPoints.isNotEmpty || _tracksRoutes.isNotEmpty;
   }
 
-  String getAbsolutePath() {
+  String? getAbsolutePath() {
     return _absolutePath;
   }
 
-  String getUrl() {
+  String? getUrl() {
     return null;
   }
 
-  String getName() {
+  String? getName() {
     return _name;
   }
 
@@ -207,7 +207,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
   }
 
   String toJson() {
-    var relativePath = Workspace.makeRelative(_absolutePath);
+    var relativePath = Workspace.makeRelative(_absolutePath!);
     var json = '''
     {
         "$LAYERSKEY_LABEL": "$_name",
@@ -224,9 +224,9 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
   Future<List<LayerOptions>> toLayers(BuildContext context) async {
     load(context);
 
-    LineStyle lineStyle;
-    PointStyle pointStyle;
-    TextStyle textStyle;
+    LineStyle? lineStyle;
+    PointStyle? pointStyle;
+    TextStyle? textStyle;
     if (_style.featureTypeStyles.isNotEmpty) {
       var fts = _style.featureTypeStyles.first;
       if (fts.rules.isNotEmpty) {
@@ -258,14 +258,14 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
           _tracksRoutes[0][0] is ElevationPoint) {
         _tracksRoutes.forEach((linePoints) {
           lines = EnhancedColorUtility.buildPolylines(lines, linePoints,
-              _colorTable, lineStyle.strokeWidth, minLineElev, maxLineElev);
+              _colorTable, lineStyle!.strokeWidth, minLineElev, maxLineElev);
         });
       } else {
         _tracksRoutes.forEach((linePoints) {
           lines.add(Polyline(
             points: linePoints,
-            strokeWidth: lineStyle.strokeWidth,
-            color: ColorExt(lineStyle.strokeColorHex),
+            strokeWidth: lineStyle!.strokeWidth,
+            color: ColorExt(lineStyle!.strokeColorHex),
           ));
         });
       }
@@ -283,7 +283,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
 
       for (var i = 0; i < _wayPoints.length; i++) {
         var ll = _wayPoints[i];
-        var name = _wayPointNames[i];
+        String? name = _wayPointNames[i];
         if (textStyle.size == 0) {
           name = null;
         }
@@ -303,7 +303,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
                   MdiIcons.circle,
                   colorExt,
                   pointsSize,
-                  name,
+                  name!,
                   labelcolorExt,
                   colorExt.withAlpha(100),
                 ));
@@ -371,9 +371,9 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
     return _srid;
   }
 
-  String getUser() => null;
+  String? getUser() => null;
 
-  String getPassword() => null;
+  String? getPassword() => null;
 
   IconData getIcon() => SmashIcons.iconTypeGpx;
 
@@ -404,9 +404,9 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
   double _minSize = SmashUI.MIN_MARKER_SIZE;
   double _maxWidth = SmashUI.MAX_STROKE_SIZE;
   double _minWidth = SmashUI.MIN_STROKE_SIZE;
-  LineStyle lineStyle;
-  PointStyle pointStyle;
-  TextStyle textStyle;
+  LineStyle? lineStyle;
+  PointStyle? pointStyle;
+  TextStyle? textStyle;
 
   GpxPropertiesWidgetState(this._source);
 
@@ -432,21 +432,21 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
     pointStyle ??= PointStyle();
     textStyle ??= TextStyle();
 
-    double _pointSizeSliderValue = pointStyle.markerSize;
+    double _pointSizeSliderValue = pointStyle!.markerSize;
     if (_pointSizeSliderValue > _maxSize) {
       _pointSizeSliderValue = _maxSize;
     } else if (_pointSizeSliderValue < _minSize) {
       _pointSizeSliderValue = _minSize;
     }
-    ColorExt _pointColor = ColorExt(pointStyle.fillColorHex);
+    ColorExt _pointColor = ColorExt(pointStyle!.fillColorHex);
 
-    double _lineWidthSliderValue = lineStyle.strokeWidth;
+    double _lineWidthSliderValue = lineStyle!.strokeWidth;
     if (_lineWidthSliderValue > _maxWidth) {
       _lineWidthSliderValue = _maxWidth;
     } else if (_lineWidthSliderValue < _minWidth) {
       _lineWidthSliderValue = _minWidth;
     }
-    ColorExt _lineColor = ColorExt(lineStyle.strokeColorHex);
+    ColorExt _lineColor = ColorExt(lineStyle!.strokeColorHex);
 
     ColorTables ct = _source._colorTable;
 
@@ -500,7 +500,7 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                               right: SmashUI.DEFAULT_PADDING),
                                           child: ColorPickerButton(_pointColor,
                                               (newColor) {
-                                            pointStyle.fillColorHex =
+                                            pointStyle!.fillColorHex =
                                                 ColorExt.asHex(newColor);
                                           }),
                                         )),
@@ -525,7 +525,7 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                           divisions:
                                               SmashUI.MINMAX_MARKER_DIVISIONS,
                                           onChanged: (newSize) {
-                                            setState(() => pointStyle
+                                            setState(() => pointStyle!
                                                 .markerSize = newSize);
                                           },
                                           value: _pointSizeSliderValue,
@@ -543,9 +543,9 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                     title: SmashUI.normalText(SL
                                         .of(context)
                                         .gpx_viewLabelsIfAvailable), //"View labels if available?"
-                                    value: textStyle.size > 0,
+                                    value: textStyle!.size > 0,
                                     onChanged: (newValue) {
-                                      setState(() => textStyle.size = newValue
+                                      setState(() => textStyle!.size = newValue!
                                           ? 10
                                           : 0); // to view label, size needs to be >0
                                     }),
@@ -591,7 +591,7 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                               right: SmashUI.DEFAULT_PADDING),
                                           child: ColorPickerButton(_lineColor,
                                               (newColor) {
-                                            lineStyle.strokeColorHex =
+                                            lineStyle!.strokeColorHex =
                                                 ColorExt.asHex(newColor);
                                           }),
                                         )),
@@ -616,7 +616,7 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                           divisions:
                                               SmashUI.MINMAX_STROKE_DIVISIONS,
                                           onChanged: (newRating) {
-                                            setState(() => lineStyle
+                                            setState(() => lineStyle!
                                                 .strokeWidth = newRating);
                                           },
                                           value: _lineWidthSliderValue,
@@ -656,7 +656,7 @@ class GpxPropertiesWidgetState extends State<GpxPropertiesWidget> {
                                         }).toList(),
                                         onChanged: (selectedCt) async {
                                           setState(() {
-                                            _source._colorTable = selectedCt;
+                                            _source._colorTable = selectedCt!;
                                           });
                                         },
                                       ),

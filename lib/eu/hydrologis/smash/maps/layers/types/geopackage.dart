@@ -32,23 +32,23 @@ import 'package:image/image.dart' as IMG;
 class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
   static final double POINT_SIZE_FACTOR = 3;
 
-  String _absolutePath;
-  String _tableName;
+  late String _absolutePath;
+  late String _tableName;
   bool isVisible = true;
   String _attribution = "";
 
-  GPQueryResult _tableData;
-  JTS.Envelope _tableBounds;
-  GeometryColumn _geometryColumn;
-  SldObjectParser _style;
-  TextStyle _textStyle;
+  GPQueryResult? _tableData;
+  JTS.Envelope? _tableBounds;
+  GeometryColumn? _geometryColumn;
+  late SldObjectParser _style;
+  TextStyle? _textStyle;
 
-  GeopackageDb _gpkgDb;
-  int _srid;
+  GeopackageDb? _gpkgDb;
+  int? _srid;
 
   List<String> alphaFields = [];
-  String sldString;
-  JTS.EGeometryType geometryType;
+  String? sldString;
+  JTS.EGeometryType? geometryType;
 
   GeopackageSource.fromMap(Map<String, dynamic> map) {
     _tableName = map[LAYERSKEY_LABEL];
@@ -63,17 +63,17 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
 
   Future<void> load(BuildContext context) async {
     if (!isLoaded) {
-      int maxFeaturesToLoad = GpPreferences()
+      int? maxFeaturesToLoad = GpPreferences()
           .getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1);
       bool loadOnlyVisible = GpPreferences().getBooleanSync(
           SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
 
-      JTS.Envelope limitBounds;
+      JTS.Envelope? limitBounds;
       if (loadOnlyVisible) {
         var mapState = Provider.of<SmashMapState>(context, listen: false);
         if (mapState.mapController != null) {
-          var bounds = mapState.mapController.bounds;
-          var n = bounds.north;
+          var bounds = mapState.mapController!.bounds;
+          var n = bounds!.north;
           var s = bounds.south;
           var e = bounds.east;
           var w = bounds.west;
@@ -84,30 +84,30 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
 
       _getDatabase();
       var sqlName = SqlName(_tableName);
-      _geometryColumn = _gpkgDb.getGeometryColumnsForTable(sqlName);
-      _srid = _geometryColumn.srid;
-      geometryType = _geometryColumn.geometryType;
-      var alphaFieldsTmp = _gpkgDb.getTableColumns(sqlName);
+      _geometryColumn = _gpkgDb!.getGeometryColumnsForTable(sqlName);
+      _srid = _geometryColumn!.srid;
+      geometryType = _geometryColumn!.geometryType;
+      var alphaFieldsTmp = _gpkgDb!.getTableColumns(sqlName);
 
       alphaFields = alphaFieldsTmp.map((e) => e[0] as String).toList();
       alphaFields
-          .removeWhere((name) => name == _geometryColumn.geometryColumnName);
+          .removeWhere((name) => name == _geometryColumn!.geometryColumnName);
 
-      sldString = _gpkgDb.getSld(sqlName);
+      sldString = _gpkgDb!.getSld(sqlName);
       if (sldString == null) {
-        if (_geometryColumn.geometryType.isPoint()) {
+        if (_geometryColumn!.geometryType.isPoint()) {
           sldString = DefaultSlds.simplePointSld();
-          _gpkgDb.updateSld(sqlName, sldString);
-        } else if (_geometryColumn.geometryType.isLine()) {
+          _gpkgDb!.updateSld(sqlName, sldString!);
+        } else if (_geometryColumn!.geometryType.isLine()) {
           sldString = DefaultSlds.simpleLineSld();
-          _gpkgDb.updateSld(sqlName, sldString);
-        } else if (_geometryColumn.geometryType.isPolygon()) {
+          _gpkgDb!.updateSld(sqlName, sldString!);
+        } else if (_geometryColumn!.geometryType.isPolygon()) {
           sldString = DefaultSlds.simplePolygonSld();
-          _gpkgDb.updateSld(sqlName, sldString);
+          _gpkgDb!.updateSld(sqlName, sldString!);
         }
       }
       if (sldString != null) {
-        _style = SldObjectParser.fromString(sldString);
+        _style = SldObjectParser.fromString(sldString!);
         _style.parse();
 
         if (_style.featureTypeStyles.first.rules.first.textSymbolizers.length >
@@ -119,22 +119,22 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
       if (maxFeaturesToLoad == -1) {
         maxFeaturesToLoad = null;
       }
-      _tableData = _gpkgDb.getTableData(
+      _tableData = _gpkgDb!.getTableData(
         SqlName(_tableName),
         limit: maxFeaturesToLoad,
         envelope: limitBounds,
       );
 
-      var fromPrj = SmashPrj.fromSrid(_srid);
+      var fromPrj = SmashPrj.fromSrid(_srid!);
       if (fromPrj != null) {
-        SmashPrj.transformListToWgs84(fromPrj, _tableData.geoms);
+        SmashPrj.transformListToWgs84(fromPrj, _tableData!.geoms);
         _tableBounds = JTS.Envelope.empty();
-        _tableData.geoms.forEach((g) {
-          _tableBounds.expandToIncludeEnvelope(g.getEnvelopeInternal());
+        _tableData!.geoms.forEach((g) {
+          _tableBounds!.expandToIncludeEnvelope(g.getEnvelopeInternal());
         });
 
         _attribution =
-            "${_geometryColumn.geometryType.getTypeName()} (${_tableData.geoms.length}) ";
+            "${_geometryColumn!.geometryType.getTypeName()} (${_tableData!.geoms.length}) ";
 
         isLoaded = true;
       }
@@ -152,22 +152,22 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
   }
 
   bool hasData() {
-    return _tableData != null && _tableData.geoms.length > 0;
+    return _tableData != null && _tableData!.geoms.length > 0;
   }
 
   String getAbsolutePath() {
     return _absolutePath;
   }
 
-  String getUrl() {
+  String? getUrl() {
     return null;
   }
 
   IconData getIcon() => SmashIcons.iconTypeGeopackage;
 
-  String getUser() => null;
+  String? getUser() => null;
 
-  String getPassword() => null;
+  String? getPassword() => null;
 
   String getName() {
     return _tableName;
@@ -204,31 +204,31 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
     await load(context);
 
     List<LayerOptions> layers = [];
-    if (_tableData.geoms.isNotEmpty) {
+    if (_tableData!.geoms.isNotEmpty) {
       List<List<Marker>> allPoints = [];
       List<Polyline> allLines = [];
       List<Polygon> allPolygons = [];
 
-      Color pointFillColor;
+      Color? pointFillColor;
       _style.applyForEachRule((fts, Rule rule) {
-        if (geometryType.isPoint()) {
+        if (geometryType!.isPoint()) {
           List<Marker> points = makeMarkersForRule(rule);
           if (rule.pointSymbolizers.isNotEmpty && pointFillColor == null) {
             pointFillColor =
                 ColorExt(rule.pointSymbolizers[0].style.fillColorHex);
           }
           allPoints.add(points);
-        } else if (geometryType.isLine()) {
+        } else if (geometryType!.isLine()) {
           List<Polyline> lines = makeLinesForRule(rule);
           allLines.addAll(lines);
-        } else if (geometryType.isPolygon()) {
+        } else if (geometryType!.isPolygon()) {
           List<Polygon> polygons = makePolygonsForRule(rule);
           allPolygons.addAll(polygons);
         }
       });
 
       if (allPoints.isNotEmpty) {
-        addMarkerLayer(allPoints, layers, pointFillColor);
+        addMarkerLayer(allPoints, layers, pointFillColor!);
       } else if (allLines.isNotEmpty) {
         var lineLayer = PolylineLayerOptions(
           polylineCulling: true,
@@ -267,14 +267,14 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
     Color fillColor = ColorExt(polygonStyle.fillColorHex)
         .withAlpha((polygonStyle.fillOpacity * 255).toInt());
 
-    var featureCount = _tableData.geoms.length;
+    var featureCount = _tableData!.geoms.length;
     for (var i = 0; i < featureCount; i++) {
-      var geom = _tableData.geoms[i];
-      var attributes = _tableData.data[i];
+      var geom = _tableData!.geoms[i];
+      var attributes = _tableData!.data[i];
       if (key == null || attributes[key]?.toString() == value) {
         var count = geom.getNumGeometries();
         for (var i = 0; i < count; i++) {
-          JTS.Polygon p = geom.getGeometryN(i);
+          JTS.Polygon p = geom.getGeometryN(i) as JTS.Polygon;
           // ext ring
           var extCoords = p
               .getExteriorRing()
@@ -325,14 +325,14 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
     var lineOpacity = lineStyle.strokeOpacity * 255;
     lineStrokeColor = lineStrokeColor.withAlpha(lineOpacity.toInt());
 
-    var featureCount = _tableData.geoms.length;
+    var featureCount = _tableData!.geoms.length;
     for (var i = 0; i < featureCount; i++) {
-      var geom = _tableData.geoms[i];
-      var attributes = _tableData.data[i];
+      var geom = _tableData!.geoms[i];
+      var attributes = _tableData!.data[i];
       if (key == null || attributes[key]?.toString() == value) {
         var count = geom.getNumGeometries();
         for (var i = 0; i < count; i++) {
-          JTS.LineString l = geom.getGeometryN(i);
+          JTS.LineString l = geom.getGeometryN(i) as JTS.LineString;
           var linePoints =
               l.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
           lines.add(Polyline(
@@ -363,24 +363,24 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
     Color pointFillColor = ColorExt(pointStyle.fillColorHex);
     pointFillColor = pointFillColor.withOpacity(pointStyle.fillOpacity);
 
-    String labelName;
-    ColorExt labelColor;
+    String? labelName;
+    ColorExt? labelColor;
     if (_textStyle != null) {
-      labelName = _textStyle.labelName;
-      labelColor = ColorExt(_textStyle.textColor);
+      labelName = _textStyle!.labelName;
+      labelColor = ColorExt(_textStyle!.textColor);
     }
 
-    var featureCount = _tableData.geoms.length;
+    var featureCount = _tableData!.geoms.length;
     for (var i = 0; i < featureCount; i++) {
-      var geom = _tableData.geoms[i];
-      var attributes = _tableData.data[i];
+      var geom = _tableData!.geoms[i];
+      var attributes = _tableData!.data[i];
       if (key == null || attributes[key]?.toString() == value) {
         var count = geom.getNumGeometries();
         for (var i = 0; i < count; i++) {
-          JTS.Point l = geom.getGeometryN(i);
+          JTS.Point l = geom.getGeometryN(i) as JTS.Point;
           var labelText = attributes[labelName];
           double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
-          String labelTextString;
+          String? labelTextString;
           if (labelText == null) {
             textExtraHeight = 0;
           } else {
@@ -397,8 +397,8 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
                     iconData,
                     pointFillColor,
                     pointsSize,
-                    labelTextString,
-                    labelColor,
+                    labelTextString!,
+                    labelColor!,
                     pointFillColor.withAlpha(100),
                   ));
           points.add(m);
@@ -442,12 +442,12 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
   }
 
   @override
-  Future<LatLngBounds> getBounds() async {
+  Future<LatLngBounds?> getBounds() async {
     if (_tableBounds != null) {
-      var s = _tableBounds.getMinY();
-      var n = _tableBounds.getMaxY();
-      var w = _tableBounds.getMinX();
-      var e = _tableBounds.getMaxX();
+      var s = _tableBounds!.getMinY();
+      var n = _tableBounds!.getMaxY();
+      var w = _tableBounds!.getMinX();
+      var e = _tableBounds!.getMaxX();
       LatLngBounds b = LatLngBounds(LatLng(s, w), LatLng(n, e));
       return b;
     } else {
@@ -471,7 +471,7 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
   }
 
   @override
-  int getSrid() {
+  int? getSrid() {
     return _srid;
   }
 
@@ -483,22 +483,22 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
       }
       if (_srid == null) {
         _geometryColumn =
-            _gpkgDb.getGeometryColumnsForTable(SqlName(_tableName));
-        _srid = _geometryColumn.srid;
+            _gpkgDb!.getGeometryColumnsForTable(SqlName(_tableName));
+        _srid = _geometryColumn!.srid;
       }
     }
     return;
   }
 
   Widget getPropertiesWidget() {
-    return SldPropertiesEditor(sldString, geometryType,
+    return SldPropertiesEditor(sldString!, geometryType!,
         alphaFields: alphaFields);
   }
 
   @override
   void updateStyle(String newSldString) {
     sldString = newSldString;
-    var _styleTmp = SldObjectParser.fromString(sldString);
+    var _styleTmp = SldObjectParser.fromString(sldString!);
     _styleTmp.parse();
 
     // check is label has changed, in that case a reload will be necessary
@@ -513,7 +513,7 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
       _textStyle = textStyleTmp;
     }
     _style = _styleTmp;
-    _gpkgDb.updateSld(SqlName(_tableName), sldString);
+    _gpkgDb!.updateSld(SqlName(_tableName), sldString!);
   }
 
   @override
@@ -523,7 +523,7 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
 class GeopackageLazyTileImageProvider
     extends ImageProvider<GeopackageLazyTileImageProvider> {
   LazyGpkgTile _tile;
-  List<int> _rgbToHide;
+  List<int>? _rgbToHide;
   GeopackageLazyTileImageProvider(this._tile, this._rgbToHide);
 
   @override
@@ -548,12 +548,13 @@ class GeopackageLazyTileImageProvider
       if (_tile.tileImageBytes != null) {
         var finalBytes = _tile.tileImageBytes;
         if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && _rgbToHide != null) {
-          final image = IMG.decodeImage(_tile.tileImageBytes);
+          final image = IMG.decodeImage(_tile.tileImageBytes!);
           ImageUtilities.colorToAlphaImg(
-              image, _rgbToHide[0], _rgbToHide[1], _rgbToHide[2]);
+              image!, _rgbToHide![0], _rgbToHide![1], _rgbToHide![2]);
           finalBytes = IMG.encodePng(image);
         }
-        return await PaintingBinding.instance.instantiateImageCodec(finalBytes);
+        return await PaintingBinding.instance
+            .instantiateImageCodec(finalBytes! as Uint8List);
       }
     } catch (e) {
       print(e); // ignore later
@@ -572,7 +573,7 @@ class GeopackageLazyTileImageProvider
   int get hashCode {
     var objects = [_tile.tableName, _tile.xTile, _tile.yTile, _tile.zoomLevel];
     if (_rgbToHide != null) {
-      objects.addAll(_rgbToHide);
+      objects.addAll(_rgbToHide!);
     }
     return hashObjects(objects);
   }
@@ -635,7 +636,7 @@ class GeopackageTileImage extends ImageProvider<GeopackageTileImage> {
 
     var tileBytes = database.getTile(tableName, coords.x, coords.y, coords.z);
     if (tileBytes != null) {
-      Uint8List bytes = tileBytes;
+      Uint8List bytes = tileBytes as Uint8List;
       return await PaintingBinding.instance.instantiateImageCodec(bytes);
     } else {
       // TODO get from other zoomlevels

@@ -49,8 +49,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
   final CurrentGpsLogPluginOption currentGpsLogLayerOpts;
   final MapState map;
   final Stream<Null> stream;
-  Paint logPaint;
-  Paint filteredLogPaint;
+  late Paint logPaint;
+  late Paint filteredLogPaint;
   bool doOrig = true;
   bool doFiltered = true;
   // defines if to flatten the chart to have more realistic ratio
@@ -338,15 +338,15 @@ class CurrentLogPathPainter extends CustomPainter {
       Path path1 = Path();
       CustomPoint posPixel1 = map.project(currentLogPoints[0]);
       CustomPoint pixelOrigin = map.getPixelOrigin();
-      double center1X = posPixel1.x - pixelOrigin.x;
-      double center1Y = (posPixel1.y - pixelOrigin.y);
+      double center1X = posPixel1.x - pixelOrigin.x.toDouble();
+      double center1Y = (posPixel1.y - pixelOrigin.y.toDouble());
       path1.moveTo(center1X, center1Y);
 
       for (int i = 1; i < currentLogPoints.length; i++) {
         CustomPoint posPixel1 = map.project(currentLogPoints[i]);
         CustomPoint pixelOrigin = map.getPixelOrigin();
-        double center1X = posPixel1.x - pixelOrigin.x;
-        double center1Y = (posPixel1.y - pixelOrigin.y);
+        double center1X = posPixel1.x - pixelOrigin.x.toDouble();
+        double center1Y = (posPixel1.y - pixelOrigin.y.toDouble());
         path1.lineTo(center1X, center1Y);
       }
       canvas.drawPath(path1, logPaint);
@@ -356,15 +356,15 @@ class CurrentLogPathPainter extends CustomPainter {
       Path path2 = Path();
       CustomPoint posPixel2 = map.project(currentFilteredLogPoints[0]);
       CustomPoint pixelOrigin = map.getPixelOrigin();
-      double center2X = posPixel2.x - pixelOrigin.x;
-      double center2Y = (posPixel2.y - pixelOrigin.y);
+      double center2X = posPixel2.x - pixelOrigin.x.toDouble();
+      double center2Y = (posPixel2.y - pixelOrigin.y.toDouble());
       path2.moveTo(center2X, center2Y);
 
       for (int i = 1; i < currentFilteredLogPoints.length; i++) {
         CustomPoint posPixel2 = map.project(currentFilteredLogPoints[i]);
         CustomPoint pixelOrigin = map.getPixelOrigin();
-        double center2X = posPixel2.x - pixelOrigin.x;
-        double center2Y = (posPixel2.y - pixelOrigin.y);
+        double center2X = posPixel2.x - pixelOrigin.x.toDouble();
+        double center2Y = (posPixel2.y - pixelOrigin.y.toDouble());
         path2.lineTo(center2X, center2Y);
       }
 

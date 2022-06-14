@@ -8,7 +8,6 @@ import 'dart:convert' as JSON;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -19,7 +18,8 @@ class CenterCrossStyle {
   double lineWidth = 3;
 
   CenterCrossStyle.fromPreferences() {
-    var json = GpPreferences().getStringSync(SmashPreferencesKeys.KEY_CENTERCROSS_STYLE, null);
+    var json = GpPreferences()
+        .getStringSync(SmashPreferencesKeys.KEY_CENTERCROSS_STYLE, null);
     if (json != null) {
       Map<String, dynamic> data = JSON.jsonDecode(json);
       visible = data['visible'];
@@ -34,7 +34,8 @@ class CenterCrossStyle {
 
   Future saveToPreferences() async {
     var json = toJson();
-    await GpPreferences().setString(SmashPreferencesKeys.KEY_CENTERCROSS_STYLE, json);
+    await GpPreferences()
+        .setString(SmashPreferencesKeys.KEY_CENTERCROSS_STYLE, json);
   }
 
   String toJson() {
@@ -53,7 +54,8 @@ class CenterCrossStyle {
 
 class CenterCrossPlugin implements MapPlugin {
   @override
-  Widget createLayer(LayerOptions options, MapState mapState, Stream<Null> stream) {
+  Widget createLayer(
+      LayerOptions options, MapState mapState, Stream<Null> stream) {
     if (options is CenterCrossPluginOption) {
       return CenterCrossLayer(options, mapState, stream);
     }
@@ -71,7 +73,10 @@ class CenterCrossPluginOption extends LayerOptions {
   double crossSize;
   double lineWidth;
 
-  CenterCrossPluginOption({this.crossColor = Colors.black, this.crossSize = 10, this.lineWidth = 2});
+  CenterCrossPluginOption(
+      {this.crossColor = Colors.black,
+      this.crossSize = 10,
+      this.lineWidth = 2});
 }
 
 class CenterCrossLayer extends StatelessWidget {
@@ -87,8 +92,8 @@ class CenterCrossLayer extends StatelessWidget {
     CustomPoint centerPixel = map.project(center);
     CustomPoint pixelOrigin = map.getPixelOrigin();
 
-    double centerX = centerPixel.x - pixelOrigin.x;
-    double centerY = centerPixel.y - pixelOrigin.y;
+    double centerX = (centerPixel.x - pixelOrigin.x).toDouble();
+    double centerY = (centerPixel.y - pixelOrigin.y).toDouble();
     CustomPoint centerPix = CustomPoint(centerX, centerY);
 
     return CustomPaint(
@@ -103,7 +108,10 @@ class CenterCrossLayer extends StatelessWidget {
 }
 
 class CenterCrossLayerPainter extends CustomPainter {
-  CenterCrossLayerPainter(this.centerPixel, {this.crossColor, this.crossSize, this.lineWidth});
+  CenterCrossLayerPainter(this.centerPixel,
+      {required this.crossColor,
+      required this.crossSize,
+      required this.lineWidth});
 
   double lineWidth;
   double crossSize;
@@ -117,11 +125,11 @@ class CenterCrossLayerPainter extends CustomPainter {
       ..strokeCap = StrokeCap.square
       ..strokeWidth = lineWidth;
 
-    var p1 = Offset(centerPixel.x - crossSize / 2, centerPixel.y);
-    var p2 = Offset(centerPixel.x + crossSize / 2, centerPixel.y);
+    var p1 = Offset(centerPixel.x - crossSize / 2, centerPixel.y.toDouble());
+    var p2 = Offset(centerPixel.x + crossSize / 2, centerPixel.y.toDouble());
     canvas.drawLine(p1, p2, paint);
-    var p3 = Offset(centerPixel.x, centerPixel.y - crossSize / 2);
-    var p4 = Offset(centerPixel.x, centerPixel.y + crossSize / 2);
+    var p3 = Offset(centerPixel.x.toDouble(), centerPixel.y - crossSize / 2);
+    var p4 = Offset(centerPixel.x.toDouble(), centerPixel.y + crossSize / 2);
     canvas.drawLine(p3, p4, paint);
   }
 

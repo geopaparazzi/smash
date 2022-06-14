@@ -31,8 +31,8 @@ class SimpleHeat {
   var max = 1;
   var data = <Coordinate>[];
 
-  ui.Canvas _canvas;
-  ui.Size _size;
+  ui.Canvas? _canvas;
+  ui.Size? _size;
   SimpleHeat(ui.Canvas canvas, ui.Size size) {
     _canvas = canvas;
     _size = size;
@@ -104,15 +104,15 @@ class HeatmapPainter extends CustomPainter {
     var z = 1.0;
     var max = 1.0;
 
-    List<Polyline> lines = projectState.projectData.geopapLogs.polylines;
+    List<Polyline> lines = projectState.projectData!.geopapLogs!.polylines;
     for (var i = 0; i < lines.length; i++) {
       Polyline line = lines[i];
       var points = line.points;
       for (var point in points) {
         CustomPoint posPixel = map.project(point);
         CustomPoint pixelOrigin = map.getPixelOrigin();
-        double pixelX = (posPixel.x - pixelOrigin.x);
-        double pixelY = (posPixel.y - pixelOrigin.y);
+        double pixelX = (posPixel.x - pixelOrigin.x.toDouble());
+        double pixelY = (posPixel.y - pixelOrigin.y.toDouble());
         var pointOffset = Offset(pixelX, pixelY);
 
         if (size.contains(pointOffset)) {
@@ -133,14 +133,13 @@ class HeatmapPainter extends CustomPainter {
             radius: radius,
           );
           var paint = Paint()..shader = gradient.createShader(rect);
-          
+
           tmpCanvas.drawCircle(pointOffset, radius, paint);
         }
       }
     }
     // Note that you can draw pictures to other canvases using Canvas.drawPicture().
     ui.Picture picture = pictureRecorder.endRecording();
-
 
 // And here's your pixel data
     // ui.Image image = await picture.toImage(width, height);

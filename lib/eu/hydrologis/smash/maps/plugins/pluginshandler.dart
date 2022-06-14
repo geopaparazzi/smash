@@ -78,7 +78,7 @@ class _PluginCheckboxWidgetState extends State<PluginCheckboxWidget> {
       leading: Checkbox(
         value: plugin.isOn(),
         onChanged: (selected) async {
-          await plugin.toggle(selected);
+          await plugin.toggle(selected!);
           setState(() {});
           var projectState = Provider.of<ProjectState>(context, listen: false);
           projectState.reloadProject(context);
