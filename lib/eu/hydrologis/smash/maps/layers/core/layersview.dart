@@ -176,7 +176,7 @@ class LayersPageState extends State<LayersPage> {
             color: SmashColors.mainDecorations,
             icon: MdiIcons.magnifyScan,
             onTap: () async {
-              LatLngBounds bb = await layerSourceItem.getBounds();
+              LatLngBounds? bb = await layerSourceItem.getBounds();
               if (bb != null) {
                 setLayersOnChange(_layersList);
 

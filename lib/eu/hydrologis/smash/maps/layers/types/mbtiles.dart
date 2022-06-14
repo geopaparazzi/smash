@@ -18,24 +18,24 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 
-Uint8List _emptyImageBytes;
+Uint8List? _emptyImageBytes;
 
 class SmashMBTilesImageProvider extends TileProvider {
   final File mbtilesFile;
 
-  MBTilesDb _loadedDb;
+  MBTilesDb? _loadedDb;
   bool isDisposed = false;
-  LatLngBounds _bounds;
+  LatLngBounds? _bounds;
 
   SmashMBTilesImageProvider(this.mbtilesFile);
 
-  MBTilesDb open() {
+  MBTilesDb? open() {
     if (_loadedDb == null) {
       _loadedDb = MBTilesDb(mbtilesFile.path);
-      _loadedDb.open();
+      _loadedDb!.open();
 
       try {
-        var wesn = _loadedDb.getBounds();
+        var wesn = _loadedDb!.getBounds();
         LatLngBounds b = LatLngBounds.fromPoints(
             [LatLng(wesn[2], wesn[0]), LatLng(wesn[3], wesn[1])]);
         _bounds = b;
@@ -49,7 +49,7 @@ class SmashMBTilesImageProvider extends TileProvider {
       }
 
       if (isDisposed) {
-        _loadedDb.close();
+        _loadedDb!.close();
         _loadedDb = null;
         throw Exception('Tileprovider is already disposed');
       }
@@ -58,12 +58,12 @@ class SmashMBTilesImageProvider extends TileProvider {
     return _loadedDb;
   }
 
-  LatLngBounds get bounds => this._bounds;
+  LatLngBounds? get bounds => this._bounds;
 
   @override
   void dispose() {
     if (_loadedDb != null) {
-      _loadedDb.close();
+      _loadedDb!.close();
       _loadedDb = null;
     }
     isDisposed = true;
@@ -77,7 +77,7 @@ class SmashMBTilesImageProvider extends TileProvider {
         : coords.y.round();
     var z = coords.z.round();
 
-    return SmashMBTileImage(_loadedDb, Coords<int>(x, y)..z = z);
+    return SmashMBTileImage(_loadedDb!, Coords<int>(x, y)..z = z);
   }
 }
 
@@ -104,7 +104,7 @@ class SmashMBTileImage extends ImageProvider<SmashMBTileImage> {
 
     final db = key.database;
 
-    Uint8List bytes = db.getTile(coords.x, coords.y, coords.z);
+    List<int>? bytes = db.getTile(coords.x, coords.y, coords.z);
 
     if (bytes == null) {
       if (_emptyImageBytes == null) {
@@ -118,7 +118,8 @@ class SmashMBTileImage extends ImageProvider<SmashMBTileImage> {
             'Failed to load tile for coords: $coords');
       }
     }
-    return await PaintingBinding.instance.instantiateImageCodec(bytes);
+    return await PaintingBinding.instance
+        .instantiateImageCodec(bytes! as Uint8List);
   }
 
   @override

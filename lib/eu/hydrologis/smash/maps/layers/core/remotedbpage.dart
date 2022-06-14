@@ -9,7 +9,7 @@ import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class RemoteDbsWidget extends StatefulWidget {
-  RemoteDbsWidget({Key key}) : super(key: key);
+  RemoteDbsWidget({Key? key}) : super(key: key);
 
   @override
   _RemoteDbsWidgetState createState() => _RemoteDbsWidgetState();
@@ -22,7 +22,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
 
   void loadConfig() {
     sources = [];
-    var dbJson = GpPreferences().getStringSync(key, "");
+    var dbJson = GpPreferences().getStringSync(key, "") ?? "";
     var list = dbJson.isEmpty ? [] : jsonDecode(dbJson);
     if (list.isNotEmpty) {
       list.forEach((dynamic map) {
@@ -50,11 +50,11 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
       body: ListView.builder(
         itemCount: sources.length,
         itemBuilder: (BuildContext context, int index) {
-          DbVectorLayerSource source = sources[index];
-          String url = source.getUrl();
-          String table = source.getName();
-          String user = source.getUser();
-          String where = source.getWhere();
+          DbVectorLayerSource source = sources[index] as DbVectorLayerSource;
+          String? url = source.getUrl();
+          String? table = source.getName();
+          String? user = source.getUser();
+          String? where = source.getWhere();
           if (where != null && where.isNotEmpty) {
             where = "\nwhere: $where";
           } else {
@@ -67,13 +67,13 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
               color: SmashColors.mainDanger,
               icon: SmashIcons.deleteIcon,
               onTap: () async {
-                bool doDelete = await SmashDialogs.showConfirmDialog(
+                bool? doDelete = await SmashDialogs.showConfirmDialog(
                     context,
                     SL.of(context).remoteDbPage_delete, //"DELETE"
                     SL
                         .of(context)
                         .remoteDbPage_areYouSureDeleteDatabase); //'Are you sure you want to delete the database configuration?'
-                if (doDelete) {
+                if (doDelete!) {
                   sources.removeAt(index);
                   var list =
                       sources.map((s) => jsonDecode(s.toJson())).toList();
@@ -94,7 +94,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
                     await showRemoteDbPropertiesDialog(context, dbConfigMap);
                 if (newMap != null) {
                   var layerSource = DbVectorLayerSource.fromMap(newMap);
-                  sources[index] = layerSource;
+                  sources[index] = layerSource!;
                   var list =
                       sources.map((s) => jsonDecode(s.toJson())).toList();
                   var jsonString = jsonEncode(list);
@@ -110,7 +110,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
             actions: actions,
             secondaryActions: secondaryActions,
             child: ListTile(
-              title: Text(url),
+              title: Text(url!),
               subtitle: Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
@@ -150,7 +150,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
           Map<String, dynamic> dbConfigMap = {};
           var newMap = await showRemoteDbPropertiesDialog(context, dbConfigMap);
           if (newMap != null) {
-            var dbJson = GpPreferences().getStringSync(key, "");
+            var dbJson = GpPreferences().getStringSync(key, "") ?? "";
             var list = dbJson.isEmpty ? [] : jsonDecode(dbJson);
             list.add(newMap);
             var jsonString = jsonEncode(list);
@@ -165,7 +165,7 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
   }
 }
 
-Future<Map<String, dynamic>> showRemoteDbPropertiesDialog(
+Future<Map<String, dynamic>?> showRemoteDbPropertiesDialog(
     BuildContext context, Map<String, dynamic> dbConfigMap) async {
   return await showDialog<Map<String, dynamic>>(
     context: context,
@@ -188,13 +188,13 @@ Future<Map<String, dynamic>> showRemoteDbPropertiesDialog(
           );
         }),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(SL.of(context).remoteDbPage_cancel), //"CANCEL"
             onPressed: () {
               Navigator.of(context).pop(null);
             },
           ),
-          FlatButton(
+          TextButton(
             child: Text(SL.of(context).remoteDbPage_ok), //"OK"
             onPressed: () {
               Navigator.of(context).pop(dbConfigMap);
@@ -209,7 +209,7 @@ Future<Map<String, dynamic>> showRemoteDbPropertiesDialog(
 class RemoteDbPropertiesContainer extends StatefulWidget {
   final Map<String, dynamic> sourceMap;
 
-  RemoteDbPropertiesContainer(this.sourceMap, {Key key}) : super(key: key);
+  RemoteDbPropertiesContainer(this.sourceMap, {Key? key}) : super(key: key);
 
   @override
   _RemoteDbPropertiesContainerState createState() =>
@@ -219,7 +219,7 @@ class RemoteDbPropertiesContainer extends StatefulWidget {
 class _RemoteDbPropertiesContainerState
     extends State<RemoteDbPropertiesContainer> {
   final Map<String, dynamic> sourceMap;
-  List<String> _geomTables;
+  List<String>? _geomTables;
   bool _isLoadingGeomTables = false;
 
   _RemoteDbPropertiesContainerState(this.sourceMap) {}
@@ -242,7 +242,7 @@ class _RemoteDbPropertiesContainerState
       decoration: urlID,
       validator: (txt) {
         sourceMap[LAYERSKEY_URL] = txt;
-        var errorText = txt.isEmpty
+        var errorText = txt!.isEmpty
             ? SL
                 .of(context)
                 .remoteDbPage_theUrlNeedsToBeDefined //"The url needs to be defined (postgis:host:port/dbname)"
@@ -260,7 +260,7 @@ class _RemoteDbPropertiesContainerState
       decoration: userID,
       validator: (txt) {
         sourceMap[LAYERSKEY_USER] = txt;
-        var errorText = txt.isEmpty
+        var errorText = txt!.isEmpty
             ? SL.of(context).remoteDbPage_theUserNeedsToBeDefined
             : //"The user needs to be defined."
             null;
@@ -278,7 +278,7 @@ class _RemoteDbPropertiesContainerState
       decoration: passwordID,
       validator: (txt) {
         sourceMap[LAYERSKEY_PWD] = txt;
-        var errorText = txt.isEmpty
+        var errorText = txt!.isEmpty
             ? SL.of(context).remoteDbPage_thePasswordNeedsToBeDefined
             : //"The password needs to be defined."
             null;
@@ -292,15 +292,15 @@ class _RemoteDbPropertiesContainerState
           label:
               SL.of(context).remoteDbPage_loadingTables); //"loading tables..."
     } else if (_geomTables != null) {
-      if (!_geomTables.contains(tableName)) {
-        tableName = _geomTables[0];
+      if (!_geomTables!.contains(tableName)) {
+        tableName = _geomTables![0];
         sourceMap[LAYERSKEY_LABEL] = tableName;
       }
       tableWidget = DropdownButton<String>(
         isDense: false,
         isExpanded: true,
         value: tableName,
-        items: _geomTables
+        items: _geomTables!
             .map((table) => DropdownMenuItem<String>(
                   child: Text(table),
                   value: table,
@@ -322,7 +322,7 @@ class _RemoteDbPropertiesContainerState
         decoration: tableID,
         validator: (txt) {
           sourceMap[LAYERSKEY_LABEL] = txt;
-          var errorText = txt.isEmpty
+          var errorText = txt!.isEmpty
               ? SL.of(context).remoteDbPage_theTableNeedsToBeDefined
               : //"The table name needs to be defined."
               null;
@@ -348,7 +348,7 @@ class _RemoteDbPropertiesContainerState
                   bool isGeom =
                       await db.getGeometryColumnsForTable(tableName) != null;
                   if (isGeom) {
-                    _geomTables.add(tableName.name);
+                    _geomTables!.add(tableName.name);
                   }
                 }
                 setState(() {

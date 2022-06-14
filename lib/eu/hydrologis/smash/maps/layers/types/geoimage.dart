@@ -24,15 +24,15 @@ import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class GeoImageSource extends RasterLayerSource {
-  String _absolutePath;
-  String _name;
+  String? _absolutePath;
+  String? _name;
   double opacityPercentage = 100;
   bool isVisible = true;
-  LatLngBounds _imageBounds;
+  LatLngBounds? _imageBounds;
 
-  MyMemoryImage _memoryImage;
-  int _srid;
-  List<int> rgbToHide;
+  MyMemoryImage? _memoryImage;
+  late int _srid;
+  List<int>? rgbToHide;
 
   GeoImageSource.fromMap(Map<String, dynamic> map) {
     String relativePath = map[LAYERSKEY_FILE];
@@ -56,13 +56,13 @@ class GeoImageSource extends RasterLayerSource {
   }
 
   GeoImageSource(this._absolutePath) {
-    _name = FileUtilities.nameFromFile(_absolutePath, false);
+    _name = FileUtilities.nameFromFile(_absolutePath!, false);
   }
 
-  Future<void> load(BuildContext context) async {
+  Future<void> load(BuildContext? context) async {
     if (!isLoaded) {
       // print("LOAD WORLD FILE");
-      _name = FileUtilities.nameFromFile(_absolutePath, false);
+      _name = FileUtilities.nameFromFile(_absolutePath!, false);
 
       // GeoImage geoImage = GeoImage(File(_absolutePath));
       // geoImage.read();
@@ -86,9 +86,9 @@ class GeoImageSource extends RasterLayerSource {
         "path": _absolutePath,
       };
       if (rgbToHide != null) {
-        params['r'] = rgbToHide[0];
-        params['g'] = rgbToHide[1];
-        params['b'] = rgbToHide[2];
+        params['r'] = rgbToHide![0];
+        params['g'] = rgbToHide![1];
+        params['b'] = rgbToHide![2];
       }
       var res = await compute(getImage, params);
       _memoryImage = res[0];
@@ -96,7 +96,7 @@ class GeoImageSource extends RasterLayerSource {
       if (geoInfo.srid != -1) {
         _srid = geoInfo.srid;
       } else if (geoInfo.prjWkt != null) {
-        _srid = SmashPrj.getSridFromWkt(geoInfo.prjWkt);
+        _srid = SmashPrj.getSridFromWkt(geoInfo.prjWkt!)!;
       }
       var fromPrj = SmashPrj.fromSrid(_srid);
 
@@ -144,10 +144,10 @@ class GeoImageSource extends RasterLayerSource {
 
     var geoInfo = geoImage.geoInfo;
 
-    IMG.Image _decodedImage = geoImage.image;
+    IMG.Image _decodedImage = geoImage.image!;
 
     var ext = FileUtilities.getExtension(path);
-    var bytes = geoImage.imageBytes;
+    var bytes = geoImage.imageBytes!;
     // IMG.Image _decodedImage = IMG.decodeImage(bytes);
     bool changed = false;
     if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && r != null) {
@@ -160,17 +160,17 @@ class GeoImageSource extends RasterLayerSource {
       if (changed) {
         bytes = IMG.encodeJpg(_decodedImage);
       }
-      _memoryImage = MyMemoryImage(bytes, rgb);
+      _memoryImage = MyMemoryImage(bytes as Uint8List, rgb);
     } else if (ext == FileManager.PNG_EXT) {
       if (changed) {
         bytes = IMG.encodePng(_decodedImage);
       }
-      _memoryImage = MyMemoryImage(bytes, rgb);
+      _memoryImage = MyMemoryImage(bytes as Uint8List, rgb);
     } else if (GeoimageUtils.isTiff(path)) {
       // if (changed) {
       bytes = IMG.encodeJpg(_decodedImage, quality: 90);
       // }
-      _memoryImage = MyMemoryImage(bytes, rgb);
+      _memoryImage = MyMemoryImage(bytes as Uint8List, rgb);
     }
     return [_memoryImage, geoInfo];
   }
@@ -179,21 +179,21 @@ class GeoImageSource extends RasterLayerSource {
     return true;
   }
 
-  String getAbsolutePath() {
+  String? getAbsolutePath() {
     return _absolutePath;
   }
 
-  String getUrl() {
+  String? getUrl() {
     return null;
   }
 
   IconData getIcon() => SmashIcons.iconTypeRaster;
 
-  String getUser() => null;
+  String? getUser() => null;
 
-  String getPassword() => null;
+  String? getPassword() => null;
 
-  String getName() {
+  String? getName() {
     return _name;
   }
 
@@ -210,7 +210,7 @@ class GeoImageSource extends RasterLayerSource {
   }
 
   String toJson() {
-    var relativePath = Workspace.makeRelative(_absolutePath);
+    var relativePath = Workspace.makeRelative(_absolutePath!);
     var json = '''
     {
         "$LAYERSKEY_LABEL": "$_name",
@@ -231,8 +231,8 @@ class GeoImageSource extends RasterLayerSource {
       OverlayImageLayerOptions(overlayImages: [
         OverlayImage(
             gaplessPlayback: true,
-            imageProvider: _memoryImage,
-            bounds: _imageBounds,
+            imageProvider: _memoryImage!,
+            bounds: _imageBounds!,
             opacity: opacityPercentage / 100.0),
       ]),
     ];
@@ -245,7 +245,7 @@ class GeoImageSource extends RasterLayerSource {
     if (_imageBounds == null) {
       await load(null);
     }
-    return _imageBounds;
+    return _imageBounds!;
   }
 
   @override
@@ -421,7 +421,7 @@ class TiffPropertiesWidgetState extends State<TiffPropertiesWidget> {
                                 value: useHideColor,
                                 onChanged: (value) {
                                   setState(() {
-                                    useHideColor = value;
+                                    useHideColor = value!;
                                     _somethingChanged = true;
                                   });
                                 },

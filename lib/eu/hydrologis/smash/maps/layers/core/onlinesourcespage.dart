@@ -14,7 +14,7 @@ import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class OnlineSourcesPage extends StatefulWidget {
-  OnlineSourcesPage({Key key}) : super(key: key);
+  OnlineSourcesPage({Key? key}) : super(key: key);
 
   @override
   _OnlineSourcesPageState createState() => _OnlineSourcesPageState();
@@ -315,7 +315,7 @@ class OnlineSourceCard extends StatefulWidget {
   final type;
   OnlineSourceCard(this.type, this.layerSource, this.layers, this.sourcesList,
       this.index, this.reloadNotifier,
-      {Key key})
+      {Key? key})
       : super(key: key);
 
   @override
@@ -385,16 +385,16 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
 }
 
 class TmsData {
-  String name;
-  String url;
-  String subdomains;
-  String attribution;
-  String minZoom;
-  String maxZoom;
+  String? name;
+  String? url;
+  String? subdomains;
+  String? attribution;
+  String? minZoom;
+  String? maxZoom;
 }
 
 class AddTmsStepper extends StatefulWidget {
-  AddTmsStepper({Key key}) : super(key: key);
+  AddTmsStepper({Key? key}) : super(key: key);
 
   @override
   _AddTmsStepperState createState() => _AddTmsStepperState();
@@ -418,11 +418,11 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
             ),
             keyboardType: TextInputType.text,
             autocorrect: false,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               tmsData.name = value;
             },
             validator: (value) {
-              if (value.isEmpty || value.length < 1) {
+              if (value!.isEmpty || value!.length < 1) {
                 return SL.current
                     .onlineSourcesPage_pleaseEnterValidName; //"Please enter a valid name"
               }
@@ -444,12 +444,12 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
           TextFormField(
             keyboardType: TextInputType.text,
             autocorrect: false,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               print(value);
               tmsData.url = value;
             },
             validator: (value) {
-              if (value.isEmpty ||
+              if (value!.isEmpty ||
                   value.length < 1 ||
                   !value.toLowerCase().startsWith("http") ||
                   !value.contains("{x}") ||
@@ -468,7 +468,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
           TextFormField(
             keyboardType: TextInputType.text,
             autocorrect: false,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               tmsData.subdomains = value;
             },
             decoration: InputDecoration(
@@ -490,7 +490,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
           TextFormField(
             keyboardType: TextInputType.text,
             autocorrect: false,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               tmsData.attribution = value;
             },
             decoration: InputDecoration(
@@ -511,7 +511,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
         children: <Widget>[
           TextFormField(
             keyboardType: TextInputType.number,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               tmsData.minZoom = value;
             },
             initialValue: "0",
@@ -520,7 +520,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
           ),
           TextFormField(
             keyboardType: TextInputType.number,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               tmsData.maxZoom = value;
             },
             initialValue: "19",
@@ -551,8 +551,8 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
   }
 
   void _submitDetails() async {
-    final FormState formState = _formKey.currentState;
-    if (!formState.validate()) {
+    final FormState? formState = _formKey.currentState;
+    if (!formState!.validate()) {
       SmashDialogs.showWarningDialog(
           context,
           SL
@@ -560,7 +560,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
               .onlineSourcesPage_pleaseCheckYourData); //'Please check your data'
     } else {
       formState.save();
-      bool okToGo = await showDialog(
+      bool? okToGo = await showDialog(
         context: context,
         builder: (_) {
           return new AlertDialog(
@@ -570,14 +570,12 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
               child: new ListBody(
                 children: <Widget>[
                   new Text(SL.of(context).onlineSourcesPage_name +
-                      tmsData.name), //"Name: "
-                  new Text("URL: " + tmsData.url),
+                      tmsData.name!), //"Name: "
+                  new Text("URL: " + tmsData.url!),
                   new Text(SL.of(context).onlineSourcesPage_subDomains +
-                          tmsData.subdomains ??
-                      "- nv -"), //"Subdomains: "
+                      (tmsData.subdomains ?? "- nv -")), //"Subdomains: "
                   new Text(SL.of(context).onlineSourcesPage_attribution +
-                          tmsData.attribution ??
-                      "- nv -"), //"Attribution: "
+                      (tmsData.attribution ?? "- nv -")), //"Attribution: "
                   new Text(
                       "${SL.of(context).onlineSourcesPage_minZoom}: ${tmsData.minZoom ?? ""}"), //"Min zoom:"
                   new Text(
@@ -668,18 +666,18 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
 }
 
 class WmsData {
-  String layer;
-  String url;
-  String attribution;
-  String minZoom;
-  String maxZoom;
+  String? layer;
+  String? url;
+  String? attribution;
+  String? minZoom;
+  String? maxZoom;
   String format = LAYERSTYPE_FORMAT_JPG;
   String version = "1.1.1";
   int srid = SmashPrj.EPSG3857_INT;
 }
 
 class AddWmsStepper extends StatefulWidget {
-  AddWmsStepper({Key key}) : super(key: key);
+  AddWmsStepper({Key? key}) : super(key: key);
 
   @override
   _AddWmsStepperState createState() => _AddWmsStepperState();
@@ -701,15 +699,15 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
           TextFormField(
             keyboardType: TextInputType.text,
             autocorrect: false,
-            onSaved: (String value) {
-              if (value.contains("?")) {
+            onSaved: (String? value) {
+              if (value!.contains("?")) {
                 var markIndex = value.indexOf("?");
                 value = value.substring(0, markIndex + 1);
               }
               wmsData.url = value;
             },
             validator: (value) {
-              if (value.isEmpty ||
+              if (value!.isEmpty ||
                   value.length < 1 ||
                   !value.toLowerCase().startsWith("http")) {
                 return SL.current
@@ -740,11 +738,11 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
             ),
             keyboardType: TextInputType.text,
             autocorrect: false,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               wmsData.layer = value;
             },
             validator: (value) {
-              if (value.isEmpty || value.length < 1) {
+              if (value!.isEmpty || value.length < 1) {
                 return SL.current
                     .onlineSourcesPage_pleaseEnterValidLayer; //"Please enter a valid layer"
               }
@@ -806,7 +804,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
           TextFormField(
             keyboardType: TextInputType.text,
             autocorrect: false,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               wmsData.attribution = value;
             },
             decoration: InputDecoration(
@@ -827,7 +825,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
         children: <Widget>[
           TextFormField(
             keyboardType: TextInputType.number,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               wmsData.minZoom = value;
             },
             initialValue: "0",
@@ -836,7 +834,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
           ),
           TextFormField(
             keyboardType: TextInputType.number,
-            onSaved: (String value) {
+            onSaved: (String? value) {
               wmsData.maxZoom = value;
             },
             initialValue: "19",
@@ -867,15 +865,15 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
   }
 
   void _submitDetails() async {
-    final FormState formState = _formKey.currentState;
-    if (!formState.validate()) {
+    final FormState? formState = _formKey.currentState;
+    if (!formState!.validate()) {
       SmashDialogs.showWarningDialog(
           context,
           SL.current
               .onlineSourcesPage_pleaseCheckYourData); //'Please check your data'
     } else {
       formState.save();
-      bool okToGo = await showDialog(
+      bool? okToGo = await showDialog(
           context: context,
           builder: (_) {
             return new AlertDialog(
@@ -884,16 +882,15 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
                 child: new ListBody(
                   children: <Widget>[
                     new Text(SL.current.onlineSourcesPage_layer +
-                        wmsData.layer), //"Layer: "
+                        wmsData.layer!), //"Layer: "
                     new Text(SL.current.onlineSourcesPage_url +
-                        wmsData.url), //"URL: "
+                        wmsData.url!), //"URL: "
                     new Text("EPSG:${wmsData.srid}"),
                     new Text("Version: " + wmsData.version),
                     new Text(SL.current.onlineSourcesPage_attribution +
-                            wmsData.attribution ??
-                        "- nv -"), //"Attribution: "
+                        (wmsData.attribution ?? "- nv -")), //"Attribution: "
                     new Text(
-                        "${SL.current.onlineSourcesPage_format}: ${wmsData.format ?? ""}"), //Format
+                        "${SL.current.onlineSourcesPage_format}: ${wmsData.format}"), //Format
                     new Text(
                         "${SL.current.onlineSourcesPage_minZoom}: ${wmsData.minZoom ?? ""}"), //Min zoom
                     new Text(
