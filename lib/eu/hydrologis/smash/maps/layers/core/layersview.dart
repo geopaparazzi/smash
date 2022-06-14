@@ -162,7 +162,7 @@ class LayersPageState extends State<LayersPage> {
     return fixedList.map((idx) {
       var layerSourceItem = _layersList[idx];
       var srid = layerSourceItem.getSrid();
-      bool prjSupported;
+      bool? prjSupported;
       if (srid != null) {
         var projection = SmashPrj.fromSrid(srid);
         prjSupported = projection != null;
@@ -199,8 +199,7 @@ class LayersPageState extends State<LayersPage> {
                   MaterialPageRoute(builder: (context) => propertiesWidget));
               if (newSldString != null) {
                 if (layerSourceItem is SldLayerSource) {
-                  await (layerSourceItem as SldLayerSource)
-                      .updateStyle(newSldString);
+                  (layerSourceItem as SldLayerSource).updateStyle(newSldString);
                 }
               }
               _somethingChanged = true;
@@ -260,7 +259,7 @@ class LayersPageState extends State<LayersPage> {
                     ),
           leading: Icon(
             SmashIcons.forPath(
-                layerSourceItem.getAbsolutePath() ?? layerSourceItem.getUrl()),
+                layerSourceItem.getAbsolutePath() ?? layerSourceItem.getUrl()!),
             color: SmashColors.mainDecorations,
             size: SmashUI.MEDIUM_ICON_SIZE,
           ),
@@ -270,7 +269,7 @@ class LayersPageState extends State<LayersPage> {
             child: Checkbox(
                 value: layerSourceItem.isActive(),
                 onChanged: (isVisible) async {
-                  layerSourceItem.setActive(isVisible);
+                  layerSourceItem.setActive(isVisible!);
                   _somethingChanged = true;
                   if (isVisible &&
                       layerSourceItem is LoadableLayerSource &&
@@ -295,7 +294,7 @@ class LayersPageState extends State<LayersPage> {
     if (prjSupported == null || !prjSupported) {
       bool goToPrjPage = true;
       if (prjSupported == null && srid == null) {
-        int epsg = await SmashDialogs.showEpsgInputDialog(context);
+        int? epsg = await SmashDialogs.showEpsgInputDialog(context);
         if (epsg != null) {
           srid = epsg;
         } else {
@@ -395,7 +394,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       List<FeatureEntry> features = db.features();
       List<TileEntry> tiles = db.tiles();
 
-      List<String> selectedTables = [];
+      List<String>? selectedTables = [];
       List<String> allTables = [];
       List<String> featureTables = [];
       List<String> tilesTables = [];

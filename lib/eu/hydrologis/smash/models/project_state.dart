@@ -22,28 +22,28 @@ import 'package:smashlibs/smashlibs.dart';
 /// This provides the project database and triggers notification when that changes.
 class ProjectState extends ChangeNotifierPlus {
   String _projectName = "No project loaded";
-  String _projectPath;
-  GeopaparazziProjectDb _db;
-  ProjectData _projectData;
+  String? _projectPath;
+  GeopaparazziProjectDb? _db;
+  ProjectData? _projectData;
 
-  String get projectPath => _projectPath;
+  String? get projectPath => _projectPath;
 
   String get projectName => _projectName;
 
-  GeopaparazziProjectDb get projectDb => _db;
+  GeopaparazziProjectDb? get projectDb => _db;
 
-  ProjectData get projectData => _projectData;
+  ProjectData? get projectData => _projectData;
 
   Future<void> setNewProject(String path, BuildContext context) async {
     SMLogger().i("Set new project: $path");
     close();
     _projectPath = path;
-    await openDb(_projectPath);
+    await openDb(_projectPath!);
     await GpPreferences().addRecentProject(path);
     reloadProject(context);
   }
 
-  Future<void> openDb([String projectPath]) async {
+  Future<void> openDb([String? projectPath]) async {
     _projectPath = projectPath;
     if (_projectPath == null) {
       _projectPath = await GpPreferences()
@@ -58,22 +58,22 @@ class ProjectState extends ChangeNotifierPlus {
     try {
       SMLogger().i("Opening db $_projectPath...");
       _db = GeopaparazziProjectDb(_projectPath);
-      _db.open();
+      _db?.open();
       SMLogger().i("Db opened: $_projectPath");
     } on Exception catch (e, s) {
       SMLogger().e("Error opening project db: ", e, s);
     }
 
-    _db.createNecessaryExtraTables();
+    _db?.createNecessaryExtraTables();
     await GpPreferences()
-        .setString(SmashPreferencesKeys.KEY_LAST_GPAPPROJECT, _projectPath);
-    _projectName = FileUtilities.nameFromFile(_projectPath, false);
+        .setString(SmashPreferencesKeys.KEY_LAST_GPAPPROJECT, _projectPath!);
+    _projectName = FileUtilities.nameFromFile(_projectPath!, false);
   }
 
   void close() {
-    if (_db != null && _db.isOpen()) {
-      _db.close();
-      SMLogger().i("Closed db: ${_db.path}");
+    if (_db != null && _db!.isOpen()) {
+      _db!.close();
+      SMLogger().i("Closed db: ${_db!.path}");
     }
     _db = null;
     _projectPath = null;
@@ -91,32 +91,37 @@ class ProjectState extends ChangeNotifierPlus {
   void reloadProjectQuiet(SmashMapBuilder mapBuilder) {
     if (projectDb == null) return;
     ProjectData tmp = ProjectData();
-    tmp.projectName = basenameWithoutExtension(projectDb.path);
-    tmp.projectDirName = dirname(projectDb.path);
-    tmp.simpleNotesCount = projectDb.getSimpleNotesCount(false);
-    int imageNotescount = projectDb.getImagesCount(false);
-    tmp.simpleNotesCount += imageNotescount;
-    tmp.logsCount = projectDb.getGpsLogCount(false);
-    tmp.formNotesCount = projectDb.getFormNotesCount(false);
+    tmp.projectName = basenameWithoutExtension(projectDb!.path!);
+    tmp.projectDirName = dirname(projectDb!.path!);
+    tmp.simpleNotesCount = projectDb!.getSimpleNotesCount(false);
+    int imageNotescount = projectDb!.getImagesCount(false);
+    tmp.simpleNotesCount = tmp.simpleNotesCount! + imageNotescount;
+    tmp.logsCount = projectDb!.getGpsLogCount(false);
+    tmp.formNotesCount = projectDb!.getFormNotesCount(false);
 
     List<Marker> tmpList = [];
-    DataLoaderUtilities.loadImageMarkers(projectDb, tmpList, mapBuilder);
+    DataLoaderUtilities.loadImageMarkers(projectDb!, tmpList, mapBuilder);
     var notesMode = GpPreferences().getStringSync(
-        SmashPreferencesKeys.KEY_NOTES_VIEW_MODE,
-        SmashPreferencesKeys.NOTESVIEWMODES[0]);
+            SmashPreferencesKeys.KEY_NOTES_VIEW_MODE,
+            SmashPreferencesKeys.NOTESVIEWMODES[0]) ??
+        SmashPreferencesKeys.NOTESVIEWMODES[0];
     DataLoaderUtilities.loadNotesMarkers(
-        projectDb, tmpList, mapBuilder, notesMode);
+        projectDb!, tmpList, mapBuilder, notesMode);
     tmp.geopapMarkers = tmpList;
 
     List<String> currentLogViewModes = GpPreferences().getStringListSync(
-        SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [
-      SmashPreferencesKeys.LOGVIEWMODES[0],
-      SmashPreferencesKeys.LOGVIEWMODES[1]
-    ]);
+            SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [
+          SmashPreferencesKeys.LOGVIEWMODES[0],
+          SmashPreferencesKeys.LOGVIEWMODES[1]
+        ]) ??
+        [
+          SmashPreferencesKeys.LOGVIEWMODES[0],
+          SmashPreferencesKeys.LOGVIEWMODES[1]
+        ];
     var logMode = currentLogViewModes[0];
     var filteredLogMode = currentLogViewModes[1];
     tmp.geopapLogs = DataLoaderUtilities.loadLogLinesLayer(
-      projectDb,
+      projectDb!,
       logMode != SmashPreferencesKeys.LOGVIEWMODES[0],
       filteredLogMode != SmashPreferencesKeys.LOGVIEWMODES[0],
       logMode == SmashPreferencesKeys.LOGVIEWMODES[2],
@@ -127,11 +132,11 @@ class ProjectState extends ChangeNotifierPlus {
 }
 
 class ProjectData {
-  String projectName;
-  String projectDirName;
-  int simpleNotesCount;
-  int logsCount;
-  int formNotesCount;
-  List<Marker> geopapMarkers;
-  PolylineLayerOptions geopapLogs;
+  String? projectName;
+  String? projectDirName;
+  int? simpleNotesCount;
+  int? logsCount;
+  int? formNotesCount;
+  List<Marker>? geopapMarkers;
+  PolylineLayerOptions? geopapLogs;
 }

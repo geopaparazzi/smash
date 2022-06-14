@@ -31,7 +31,7 @@ class CoordinateUtilities {
 
   /// Get the distance between two latlong coordinates in meters, if not otherwise specified by [unit].
   static double getDistance(LatLng ll1, LatLng ll2) {
-    return geodesy.distanceBetweenTwoGeoPoints(ll1, ll2);
+    return geodesy.distanceBetweenTwoGeoPoints(ll1, ll2).toDouble();
   }
 
   /// Get the offset coordinate given a starting point, a distance in meters and an azimuth angle.
@@ -43,6 +43,7 @@ class CoordinateUtilities {
 }
 
 enum GpsStatus { NOGPS, OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
+
 const String ARG_LATITUDE = 'latitude';
 const String ARG_LONGITUDE = 'longitude';
 const String ARG_ACCURACY = 'accuracy';
@@ -57,14 +58,16 @@ const String ARG_LONGITUDE_FILTERED = 'longitude_filtered';
 const String ARG_ACCURACY_FILTERED = 'accuracy_filtered';
 
 class SmashPosition {
-  LocationDto _location;
+  late LocationDto _location;
   bool mocked = false;
-  double filteredLatitude;
-  double filteredLongitude;
-  double filteredAccuracy;
+  late double filteredLatitude;
+  late double filteredLongitude;
+  late double filteredAccuracy;
 
   SmashPosition.fromLocation(this._location,
-      {this.filteredLatitude, this.filteredLongitude, this.filteredAccuracy});
+      {required this.filteredLatitude,
+      required this.filteredLongitude,
+      required this.filteredAccuracy});
 
   SmashPosition.fromJson(Map<String, dynamic> json) {
     _location = LocationDto.fromJson({
@@ -139,7 +142,7 @@ class SmashLocationAccuracy {
     return [POWERSAVE, LOW, BALANCED, HIGH, NAVIGATION];
   }
 
-  static SmashLocationAccuracy fromCode(int code) {
+  static SmashLocationAccuracy fromCode(int? code) {
     for (var item in values()) {
       if (item.code == code) {
         return item;
@@ -158,7 +161,7 @@ class SmashLocationAccuracy {
   }
 
   static SmashLocationAccuracy fromPreferences() {
-    int prefCode = GpPreferences()
+    int? prefCode = GpPreferences()
         .getIntSync(SmashPreferencesKeys.KEY_GPS_ACCURACY, NAVIGATION.code);
     return fromCode(prefCode);
   }
@@ -197,16 +200,16 @@ abstract class GpsLoggingHandler {
 class GpsHandler {
   static const GPS_FORCED_OFF_KEY = "GPS_FORCED_OFF";
   static const String _isolateName = "LocatorIsolate";
-  ReceivePort port;
+  ReceivePort? port;
   int allPointsCount = 0;
   int filteredPointsCount = 0;
 
   static final GpsHandler _instance = GpsHandler._internal();
 
-  bool _locationServiceEnabled;
+  late bool _locationServiceEnabled;
 
-  Timer _timer;
-  GpsState _gpsState;
+  late Timer _timer;
+  late GpsState _gpsState;
   bool initialized = false;
 
   /// Accuracy for the location subscription
@@ -218,7 +221,7 @@ class GpsHandler {
   GpsHandler._internal();
 
   static void callback(LocationDto locationDto) async {
-    final SendPort send = IsolateNameServer.lookupPortByName(_isolateName);
+    final SendPort? send = IsolateNameServer.lookupPortByName(_isolateName);
     send?.send(locationDto);
   }
 
@@ -260,7 +263,7 @@ class GpsHandler {
     var gpsForcedOff =
         await GpPreferences().getBoolean(GPS_FORCED_OFF_KEY, false);
 
-    if (!gpsForcedOff) {
+    if (!gpsForcedOff!) {
       if (port == null) {
         SMLogger().i("Initialize geolocator");
         await closeGpsIsolate();
@@ -330,8 +333,8 @@ class GpsHandler {
     }
 
     port = ReceivePort();
-    IsolateNameServer.registerPortWithName(port.sendPort, _isolateName);
-    port.listen((dynamic data) {
+    IsolateNameServer.registerPortWithName(port!.sendPort, _isolateName);
+    port!.listen((dynamic data) {
       if (TestLogStream().isActive) {
         return;
       }

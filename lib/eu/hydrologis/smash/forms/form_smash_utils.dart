@@ -70,7 +70,7 @@ class SmashFormHelper implements AFormhelper {
   }
 
   /// Take a picture for forms
-  Future<String> takePictureForForms(
+  Future<String?> takePictureForForms(
       BuildContext context, bool fromGallery, List<String> imageSplit) async {
     var gpsState = Provider.of<GpsState>(context, listen: false);
     dynamic lastGpsPosition = _position;
@@ -137,7 +137,7 @@ class SmashFormHelper implements AFormhelper {
   }
 
   @override
-  Future<String> takeSketchForForms(
+  Future<String?> takeSketchForForms(
       BuildContext context, List<String> imageSplit) async {
     DbImage dbImage = DbImage()
       ..timeStamp = DateTime.now().millisecondsSinceEpoch
@@ -205,7 +205,7 @@ class SmashFormHelper implements AFormhelper {
     List<Widget> thumbList = [];
     for (int i = 0; i < imageSplit.length; i++) {
       var id = int.parse(imageSplit[i]);
-      Widget thumbnail = projectState.projectDb.getThumbnail(id);
+      Widget thumbnail = projectState.projectDb!.getThumbnail(id);
       Widget withBorder = Container(
         padding: SmashUI.defaultPadding(),
         child: thumbnail,
@@ -229,9 +229,9 @@ class SmashFormHelper implements AFormhelper {
       var iconName = TagsManager.getIcon4Section(_sectionMap);
       String iconColor = ColorExt.asHex(SmashColors.mainDecorationsDarker);
 
-      SmashPosition pos;
-      double lon;
-      double lat;
+      SmashPosition? pos;
+      late double lon;
+      late double lat;
       if (_position is SmashPosition) {
         pos = _position;
       } else {
@@ -259,11 +259,11 @@ class SmashFormHelper implements AFormhelper {
       next.marker = iconName;
       next.color = iconColor;
 
-      noteId = db.addNote(note);
+      noteId = db!.addNote(note);
     } else {
       noteId = _id;
       // update form for note
-      var note = db.getNoteById(_id);
+      var note = db!.getNoteById(_id);
       note.form = jsonForm;
       note.timeStamp = ts;
       db.updateNote(note);
@@ -279,7 +279,7 @@ class SmashDatabaseFormHelper implements AFormhelper {
   var _sectionName;
   var _db;
   List<Map<String, dynamic>> sectionMapList = [];
-  String _tableName;
+  late String _tableName;
 
   SmashDatabaseFormHelper(this._queryResult) {}
 
@@ -389,7 +389,7 @@ class SmashDatabaseFormHelper implements AFormhelper {
   }
 
   /// Take a picture for forms
-  Future<String> takePictureForForms(
+  Future<String?> takePictureForForms(
       BuildContext context, bool fromGallery, List<String> imageSplit) async {
     // DbImage dbImage = DbImage()
     //   ..timeStamp = DateTime.now().millisecondsSinceEpoch
@@ -466,7 +466,7 @@ class SmashDatabaseFormHelper implements AFormhelper {
     //   thumbList.add(withBorder);
     // }
     // return thumbList;
-    return null;
+    return [];
   }
 
   @override
@@ -474,6 +474,6 @@ class SmashDatabaseFormHelper implements AFormhelper {
       BuildContext context, List<String> imageSplit) {
     // // TODO: implement takeSketchForForms
     // throw UnimplementedError();
-    return null;
+    return Future.value(null);
   }
 }

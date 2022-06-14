@@ -28,9 +28,9 @@ class GeocodingPage extends StatefulWidget {
 }
 
 class GeocodingPageState extends State<GeocodingPage> {
-  List<Address> _addresses = [];
+  late List<Address> _addresses = [];
   var textEditingController = TextEditingController();
-  TextFormField textField;
+  late TextFormField textField;
   bool searching = false;
 
   @override
@@ -45,14 +45,14 @@ class GeocodingPageState extends State<GeocodingPage> {
   }
 
   Future<void> search(BuildContext context, String query) async {
-    List<Address> addresses;
+    List<Address> addresses = [];
     try {
       addresses = await Geocoder.local.findAddressesFromQuery(query);
     } on Exception catch (e, s) {
       SMLogger().e("Unable to geocode $query", e, s);
     }
     searching = false;
-    if (addresses == null || addresses.isEmpty) {
+    if (addresses.isEmpty) {
       SmashDialogs.showWarningDialog(context, "Could not find any address.");
     } else {
       setState(() {
@@ -72,7 +72,7 @@ class GeocodingPageState extends State<GeocodingPage> {
             SmashMapState mapState =
                 Provider.of<SmashMapState>(context, listen: false);
             mapState.center = Coordinate(
-                address.coordinates.longitude, address.coordinates.latitude);
+                address.coordinates.longitude!, address.coordinates.latitude!);
             Navigator.pop(context);
           },
         ),

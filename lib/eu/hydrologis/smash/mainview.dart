@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersview.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/current_log_plugin.dart';
@@ -58,7 +59,7 @@ import 'package:smashlibs/smashlibs.dart';
 import 'mainview_utils.dart';
 
 class MainViewWidget extends StatefulWidget {
-  MainViewWidget({Key key}) : super(key: key);
+  MainViewWidget({Key? key}) : super(key: key);
 
   @override
   MainViewWidgetState createState() => new MainViewWidgetState();
@@ -72,17 +73,17 @@ class MainViewWidgetState extends State<MainViewWidget>
 
   MainViewCoachMarks coachMarks = MainViewCoachMarks();
 
-  double _initLon;
-  double _initLat;
-  double _initZoom;
+  double? _initLon;
+  double? _initLat;
+  double? _initZoom;
 
-  MapController _mapController;
+  MapController? _mapController;
 
   List<LayerOptions> _activeLayers = [];
 
-  double _iconSize;
+  double? _iconSize;
 
-  Timer _centerOnGpsTimer;
+  Timer? _centerOnGpsTimer;
 
   IconMode _iconMode = IconMode.NAVIGATION_MODE;
 
@@ -92,7 +93,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 
     WidgetsBinding.instance.addObserver(this);
 
-    ScreenUtilities.keepScreenOn(GpPreferences().getKeepScreenOn());
+    ScreenUtilities.keepScreenOn(GpPreferences().getKeepScreenOn() ?? false);
 
     SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
     GpsState gpsState = Provider.of<GpsState>(context, listen: false);
@@ -105,14 +106,15 @@ class MainViewWidgetState extends State<MainViewWidget>
     mapState.mapController = _mapController;
 
     int noteInGpsMode = GpPreferences()
-        .getIntSync(KEY_DO_NOTE_IN_GPS, POINT_INSERTION_MODE_GPS);
+            .getIntSync(KEY_DO_NOTE_IN_GPS, POINT_INSERTION_MODE_GPS) ??
+        POINT_INSERTION_MODE_GPS;
     gpsState.insertInGpsQuiet = noteInGpsMode;
 
     // check center on gps
-    bool centerOnGps = GpPreferences().getCenterOnGps();
+    bool centerOnGps = GpPreferences().getCenterOnGps() ?? false;
     mapState.centerOnGpsQuiet = centerOnGps;
     // check rotate on heading
-    bool rotateOnHeading = GpPreferences().getRotateOnHeading();
+    bool rotateOnHeading = GpPreferences().getRotateOnHeading() ?? false;
     mapState.rotateOnHeadingQuiet = rotateOnHeading;
 
     // set initial status
@@ -159,7 +161,7 @@ class MainViewWidgetState extends State<MainViewWidget>
               posLL = LatLng(gpsState.lastGpsPosition.latitude,
                   gpsState.lastGpsPosition.longitude);
             }
-            _mapController?.move(posLL, _mapController?.zoom);
+            _mapController?.move(posLL, _mapController?.zoom ?? DEFAULT_ZOOM);
           }
         }
       }

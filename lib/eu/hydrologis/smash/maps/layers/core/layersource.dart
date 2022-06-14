@@ -42,8 +42,9 @@ const LAYERSKEY_SUBDOMAINS = 'subdomains';
 const LAYERSKEY_MINZOOM = 'minzoom';
 const LAYERSKEY_MAXZOOM = 'maxzoom';
 const LAYERSKEY_GPKG_DOOVERLAY = "geopackage_dooverlay";
-const DEFAULT_MINZOOM = 1;
-const DEFAULT_MAXZOOM = 19;
+const double DEFAULT_MINZOOM = 1;
+const double DEFAULT_ZOOM = 16;
+const double DEFAULT_MAXZOOM = 19;
 
 const LAYERSTYPE_WMS = 'wms';
 const LAYERSTYPE_TMS = 'tms';
@@ -55,17 +56,17 @@ const LAYERSTYPE_FORMAT_TIFF = "image/tiff";
 /// A generic persistable layer source.
 abstract class LayerSource {
   /// Get the optional absolute file path, if file based.
-  String getAbsolutePath();
+  String? getAbsolutePath();
 
   /// Get the optional URL if URL based.
-  String getUrl();
+  String? getUrl();
 
   /// Get the name for this layerSource.
-  String getName();
+  String? getName();
 
-  String getUser();
+  String? getUser();
 
-  String getPassword();
+  String? getPassword();
 
   /// Get the optional attribution of the dataset.
   String getAttribution();
@@ -123,9 +124,9 @@ abstract class LayerSource {
     try {
       var map = jsonDecode(json);
 
-      String file = map[LAYERSKEY_FILE];
-      String type = map[LAYERSKEY_TYPE];
-      String url = map[LAYERSKEY_URL];
+      String? file = map[LAYERSKEY_FILE];
+      String? type = map[LAYERSKEY_TYPE];
+      String? url = map[LAYERSKEY_URL];
       if (type != null && type == LAYERSTYPE_WMS) {
         var wms = WmsSource.fromMap(map);
         return [wms];
@@ -139,7 +140,7 @@ abstract class LayerSource {
         GeoImageSource world = GeoImageSource.fromMap(map);
         return [world];
       } else if (file != null && FileManager.isGeopackage(file)) {
-        bool isVector = map[LAYERSKEY_ISVECTOR];
+        bool? isVector = map[LAYERSKEY_ISVECTOR];
         if (isVector == null || !isVector) {
           TileSource ts = TileSource.fromMap(map);
           return [ts];
@@ -173,7 +174,7 @@ abstract class LayerSource {
       }
       if (this is DbVectorLayerSource &&
           other is DbVectorLayerSource &&
-          !areDbSame(this, other)) {
+          !areDbSame(this as DbVectorLayerSource, other)) {
         return false;
       }
       return true;
@@ -229,13 +230,13 @@ abstract class VectorLayerSource extends LoadableLayerSource {}
 
 /// Interface for database vector sources.
 abstract class DbVectorLayerSource extends EditableVectorLayerSource {
-  String getWhere();
-  String getUser();
-  String getPassword();
+  String? getWhere();
+  String? getUser();
+  String? getPassword();
 
   dynamic get db;
 
-  static Future<dynamic> getDb(LayerSource source) async {
+  static Future<dynamic> getDb(LayerSource? source) async {
     if (!(source is DbVectorLayerSource)) {
       return null;
     }
@@ -254,7 +255,7 @@ abstract class DbVectorLayerSource extends EditableVectorLayerSource {
     }
   }
 
-  static LayerSource fromMap(Map<String, dynamic> map) {
+  static LayerSource? fromMap(Map<String, dynamic> map) {
     var url = map[LAYERSKEY_URL];
     if (url != null && url.startsWith("postgis")) {
       return PostgisSource.fromMap(map);

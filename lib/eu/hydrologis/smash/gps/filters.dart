@@ -13,23 +13,23 @@ class GpsFilterManagerMessage {
   bool isLogging = false;
   bool blockedByFilter = false;
 
-  LatLng previousPosLatLon;
-  LatLng newPosLatLon;
+  LatLng? previousPosLatLon;
+  LatLng? newPosLatLon;
 
-  double distanceLastEvent;
-  int maxAllowedDistanceLastEvent;
-  int minAllowedDistanceLastEvent;
+  double? distanceLastEvent;
+  int? maxAllowedDistanceLastEvent;
+  int? minAllowedDistanceLastEvent;
 
-  int timeDeltaLastEvent;
-  int minAllowedTimeDeltaLastEvent;
+  int? timeDeltaLastEvent;
+  int? minAllowedTimeDeltaLastEvent;
 
   var timestamp;
-  bool mocked;
-  double accuracy;
-  double altitude;
-  double heading;
-  double speed;
-  double speedAccuracy;
+  bool? mocked;
+  double? accuracy;
+  double? altitude;
+  double? heading;
+  double? speed;
+  double? speedAccuracy;
 
   @override
   bool operator ==(Object other) =>
@@ -45,17 +45,17 @@ class GpsFilterManager {
   factory GpsFilterManager() => _instance;
 
   static const MAX_DELTA_FOR_FIX = 60000.0;
-  int _lastGpsEventTs;
+  late int _lastGpsEventTs;
   bool filtersEnabled = true;
 
   /// The previous VALID position recorded.
   ///
   /// In the case the position is discarded due to [isValid]
   /// or [passesFilters] returning false, the point is not updated.
-  SmashPosition _previousLogPosition;
-  GpsState _gpsState;
+  SmashPosition? _previousLogPosition;
+  late GpsState _gpsState;
 
-  GpsFilterManagerMessage currentMessage;
+  GpsFilterManagerMessage? currentMessage;
 
   /// Last recorded delta from the last position event in milliseconds.
   var _lastFixDelta;
@@ -137,7 +137,7 @@ class GpsFilterManager {
       var newPosLatLon = LatLng(position.latitude, position.longitude);
       if (_previousLogPosition != null) {
         var previousPosLatLon = LatLng(
-            _previousLogPosition.latitude, _previousLogPosition.longitude);
+            _previousLogPosition!.latitude, _previousLogPosition!.longitude);
         msg.previousPosLatLon = previousPosLatLon;
         msg.newPosLatLon = newPosLatLon;
         var ts = position.time.round();
@@ -146,7 +146,7 @@ class GpsFilterManager {
         var distanceLastLogged =
             CoordinateUtilities.getDistance(previousPosLatLon, newPosLatLon);
         var deltaSecondsLastLogged =
-            ((ts - _previousLogPosition.time) / 1000).round();
+            ((ts - _previousLogPosition!.time) / 1000).round();
         if (deltaSecondsLastLogged < 0) {
           deltaSecondsLastLogged = 0;
         }
@@ -205,7 +205,7 @@ class GpsFilterManager {
 
 /// Original code by https://github.com/Bresiu/KalmanFilter
 class KalmanFilter {
-  static KalmanFilter instance;
+  static KalmanFilter? instance;
   static getInstance() {
     if (instance == null) {
       instance = KalmanFilter();
@@ -215,10 +215,10 @@ class KalmanFilter {
 
   final double _minAccuracy = 1;
 
-  double _timeStampMilliseconds;
-  double _lat;
-  double _lng;
-  double _variance;
+  late double _timeStampMilliseconds;
+  late double _lat;
+  late double _lng;
+  late double _variance;
 
   KalmanFilter() {
     this._variance = -1;
