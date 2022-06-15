@@ -78,7 +78,7 @@ abstract class LayerSource {
   Future<List<LayerOptions>?> toLayers(BuildContext context);
 
   /// Returns the active flag of the layer (usually visible/non visible).
-  bool? isActive();
+  bool isActive();
 
   /// Toggle the active flag.
   void setActive(bool active);
