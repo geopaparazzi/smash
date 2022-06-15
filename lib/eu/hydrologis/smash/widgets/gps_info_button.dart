@@ -136,7 +136,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       Widget gpsInfo;
       if (gpsState.lastGpsPosition != null) {
-        var pos = gpsState.lastGpsPosition;
+        var pos = gpsState.lastGpsPosition!;
 
         Widget tableWidget;
 

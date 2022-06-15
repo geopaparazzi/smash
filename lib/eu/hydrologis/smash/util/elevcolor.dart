@@ -58,7 +58,7 @@ class ColorTables {
       [none, elevation, slope, speed, accuracy];
 
   final String name;
-  final List<Color> colors;
+  final List<Color>? colors;
 
   const ColorTables._(this.name, this.colors);
 
@@ -66,19 +66,19 @@ class ColorTables {
     return this != none;
   }
 
-  Rainbow getColorInterpolator({double min, double max}) {
+  Rainbow getColorInterpolator({double? min, double? max}) {
     if (name == slope.name) {
-      return Rainbow(rangeStart: 0.0, rangeEnd: 0.3, spectrum: colors);
+      return Rainbow(rangeStart: 0.0, rangeEnd: 0.3, spectrum: colors!);
     } else if (name == accuracy.name) {
-      return Rainbow(rangeStart: 0, rangeEnd: 50, spectrum: colors);
+      return Rainbow(rangeStart: 0, rangeEnd: 50, spectrum: colors!);
     } else if (min == null || max == null) {
       throw ArgumentError(
           "The colortable needs min and max range to be defined.");
     }
-    return Rainbow(rangeStart: min, rangeEnd: max, spectrum: colors);
+    return Rainbow(rangeStart: min, rangeEnd: max, spectrum: colors!);
   }
 
-  static ColorTables forName(String name) {
+  static ColorTables? forName(String name) {
     return valuesLogs.firstWhere((ct) => ct.name == name);
   }
 }
@@ -125,7 +125,7 @@ class EnhancedColorUtility {
   }
 
   /// Build an enhanced color string.
-  static String buildEnhancedColor(String color, {ColorTables ct}) {
+  static String buildEnhancedColor(String color, {ColorTables? ct}) {
     if (ct == null) {
       return color;
     }
@@ -150,8 +150,8 @@ class EnhancedColorUtility {
       List<Polyline> back = [];
       List<Polyline> front = [];
       loopLine(linePoints, interval, (startI, endI, points) {
-        ElevationPoint p1 = linePoints[startI];
-        ElevationPoint p2 = linePoints[endI];
+        ElevationPoint p1 = linePoints[startI] as ElevationPoint;
+        ElevationPoint p2 = linePoints[endI] as ElevationPoint;
         List<Color> grad = [rb[p1.altitude], rb[p2.altitude]];
         back.add(Polyline(
           points: points,
@@ -175,8 +175,8 @@ class EnhancedColorUtility {
       List<Polyline> front = [];
       double prevSlope = 0.0;
       loopLine(linePoints, interval, (startI, endI, points) {
-        ElevationPoint p1 = linePoints[startI];
-        ElevationPoint p2 = linePoints[endI];
+        ElevationPoint p1 = linePoints[startI] as ElevationPoint;
+        ElevationPoint p2 = linePoints[endI] as ElevationPoint;
         var distance = CoordinateUtilities.getDistance(p1, p2);
         if (distance == 0.0) {
           distance = 0.1;
@@ -214,8 +214,8 @@ class EnhancedColorUtility {
       List<Polyline> back = [];
       List<Polyline> front = [];
       loopLine(linePoints, interval, (startI, endI, points) {
-        LatLngExt p1 = linePoints[startI];
-        LatLngExt p2 = linePoints[endI];
+        LatLngExt p1 = linePoints[startI] as LatLngExt;
+        LatLngExt p2 = linePoints[endI] as LatLngExt;
 
         List<Color> grad = [rb[p1.speed], rb[p2.speed]];
         back.add(Polyline(
@@ -240,8 +240,8 @@ class EnhancedColorUtility {
       List<Polyline> back = [];
       List<Polyline> front = [];
       loopLine(linePoints, interval, (startI, endI, points) {
-        LatLngExt p1 = linePoints[startI];
-        LatLngExt p2 = linePoints[endI];
+        LatLngExt p1 = linePoints[startI] as LatLngExt;
+        LatLngExt p2 = linePoints[endI] as LatLngExt;
 
         List<Color> grad = [rb[p1.accuracy], rb[p2.accuracy]];
         back.add(Polyline(
@@ -288,7 +288,7 @@ class EnhancedColorUtility {
       List<Color> grad = [];
       for (var i = 0; i < linePoints.length; i++) {
         if (interval == 1 || i % interval == 0) {
-          ElevationPoint p = linePoints[i];
+          ElevationPoint p = linePoints[i] as ElevationPoint;
           grad.add(rb[p.altitude]);
         }
       }
@@ -308,8 +308,8 @@ class EnhancedColorUtility {
       List<double> colorStops = getLineCoordinateStops(linePoints);
       List<Color> grad = [rb[0.0]];
       for (var i = 1; i < linePoints.length; i++) {
-        ElevationPoint p1 = linePoints[i - 1];
-        ElevationPoint p2 = linePoints[i];
+        ElevationPoint p1 = linePoints[i - 1] as ElevationPoint;
+        ElevationPoint p2 = linePoints[i] as ElevationPoint;
         var distance = CoordinateUtilities.getDistance(p1, p2);
         if (distance == 0.0) {
           distance = 0.1;
@@ -338,7 +338,7 @@ class EnhancedColorUtility {
       List<double> colorStops = getLineCoordinateStops(linePoints);
       List<Color> grad = [];
       for (var i = 0; i < linePoints.length; i++) {
-        LatLngExt p1 = linePoints[i];
+        LatLngExt p1 = linePoints[i] as LatLngExt;
         grad.add(rb[p1.speed]);
       }
       lines.add(Polyline(
@@ -357,7 +357,7 @@ class EnhancedColorUtility {
 
       List<Color> grad = [];
       for (var i = 0; i < linePoints.length; i++) {
-        LatLngExt p1 = linePoints[i];
+        LatLngExt p1 = linePoints[i] as LatLngExt;
         grad.add(rb[p1.accuracy]);
       }
 
@@ -374,7 +374,7 @@ class EnhancedColorUtility {
   }
 
   static List<double> getLineCoordinateStops(List<LatLng> linePoints,
-      [int interval]) {
+      [int? interval]) {
     interval ??= 1;
     List<double> lineStops = [];
     double runningDistance = 0;

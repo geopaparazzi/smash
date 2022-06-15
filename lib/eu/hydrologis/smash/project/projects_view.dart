@@ -18,7 +18,7 @@ import 'package:smashlibs/smashlibs.dart';
 
 class ProjectView extends StatelessWidget {
   final bool isOpeningPage;
-  ProjectView({this.isOpeningPage = false, Key key}) : super(key: key);
+  ProjectView({this.isOpeningPage = false, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +51,12 @@ class ProjectView extends StatelessWidget {
                   left: inset, right: inset, bottom: inset),
               child: Container(
                 width: double.infinity,
-                child: OutlineButton(
-                  borderSide:
-                      BorderSide(color: SmashColors.mainDecorations, width: 3),
-                  shape: StadiumBorder(),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                        color: SmashColors.mainDecorations, width: 3),
+                  ),
+                  // shape: StadiumBorder(),
                   onPressed: () async {
                     await initGps(context);
 
@@ -96,10 +98,12 @@ class ProjectView extends StatelessWidget {
                   left: inset, right: inset, bottom: inset),
               child: Container(
                 width: double.infinity,
-                child: OutlineButton(
-                  borderSide:
-                      BorderSide(color: SmashColors.mainDecorations, width: 3),
-                  shape: StadiumBorder(),
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                        color: SmashColors.mainDecorations, width: 3),
+                  ),
+                  // shape: StadiumBorder(),
                   onPressed: () async {
                     await initGps(context);
                     await _createNewProjectAndOpenMainView(context);

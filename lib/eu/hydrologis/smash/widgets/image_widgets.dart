@@ -30,20 +30,22 @@ class ImageWidgetUtilities {
   static Future<int> saveImageToSmashDb(BuildContext context, String path,
       DbImage dbImageToCompleteAndSave) async {
     var imageBytes = ImageUtilities.bytesFromImageFile(path);
-    var thumbBytes = ImageUtilities.resizeImage(imageBytes, newWidth: 200);
+    List<int>? thumbBytes =
+        ImageUtilities.resizeImage(imageBytes as Uint8List, newWidth: 200);
 
     ProjectState projectState =
         Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
 
     DbImageData imgData = DbImageData()
-      ..thumb = thumbBytes
+      ..thumb = thumbBytes as Uint8List?
       ..data = imageBytes;
 
-    return db.transaction((_db) {
+    return db!.transaction((_db) {
       int imgDataId = _db.insertMap(TABLE_IMAGE_DATA, imgData.toMap());
       dbImageToCompleteAndSave.imageDataId = imgDataId;
-      int imgId = _db.insertMap(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
+      int? imgId =
+          _db.insertMap(TABLE_IMAGES, dbImageToCompleteAndSave.toMap());
       if (imgId == null) {
         SMLogger().e("Could not save image to db: $path", null, null);
       }
@@ -86,7 +88,7 @@ class SmashImageZoomWidget extends StatelessWidget {
         title: Text(_title),
       ),
       body: FutureBuilder<void>(
-        future: getImageData(projectState.projectDb),
+        future: getImageData(projectState.projectDb!),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             // If the Future is complete, display the preview.

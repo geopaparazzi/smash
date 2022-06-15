@@ -38,10 +38,10 @@ const int POINT_INSERTION_MODE_MAPCENTER = 1;
 
 class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue,
-      {Color textColor,
-      Color badgeColor,
-      BadgePosition badgePosition,
-      double iconSize}) {
+      {Color? textColor,
+      Color? badgeColor,
+      BadgePosition? badgePosition,
+      double? iconSize}) {
     if (badgeValue > 0) {
       return Badge(
         badgeColor: badgeColor != null ? badgeColor : SmashColors.mainSelection,
@@ -66,7 +66,7 @@ class DashboardUtils {
   }
 
   static Widget makeToolbarZoomBadge(Widget widget, int badgeValue,
-      {double iconSize}) {
+      {double? iconSize}) {
     if (badgeValue > 0) {
       return Badge(
         badgeColor: SmashColors.mainDecorations,
@@ -128,7 +128,7 @@ class DashboardUtils {
               context,
               MaterialPageRoute(
                   builder: (context) => ImportWidget(
-                        projectDb: projectState.projectDb,
+                        projectDb: projectState.projectDb!,
                       )));
         },
       ),
@@ -149,7 +149,7 @@ class DashboardUtils {
               context,
               MaterialPageRoute(
                   builder: (context) => ExportWidget(
-                        projectDb: projectState.projectDb,
+                        projectDb: projectState.projectDb!,
                       )));
         },
       ),
@@ -234,14 +234,14 @@ class DashboardUtils {
                 Provider.of<ProjectState>(context, listen: false);
             var mapBuilder =
                 Provider.of<SmashMapBuilder>(context, listen: false);
-            String projectPath = projectState.projectPath;
+            String projectPath = projectState.projectPath!;
             if (Platform.isIOS) {
               projectPath =
                   IOS_DOCUMENTSFOLDER + Workspace.makeRelative(projectPath);
             }
             var isLandscape = ScreenUtilities.isLandscape(context);
             SmashDialogs.showInfoDialog(
-                mapBuilder.context,
+                mapBuilder.context!,
                 "${SL.of(context).mainviewUtils_project}: ${projectState.projectName}\n${SL.of(context).mainviewUtils_database}: $projectPath"
                     .trim(), //Project //Database
                 doLandscape: isLandscape,
@@ -252,7 +252,7 @@ class DashboardUtils {
                       color: SmashColors.mainDecorations,
                     ),
                     onPressed: () async {
-                      shareProject(mapBuilder.context);
+                      shareProject(mapBuilder.context!);
                     },
                   )
                 ]);
@@ -399,7 +399,7 @@ class DashboardUtils {
                     leading: Checkbox(
                         value: mapState.rotateOnHeading,
                         onChanged: (value) {
-                          if (!value) {
+                          if (!value!) {
                             mapState.heading = 0;
                           }
                           mapState.rotateOnHeading = value;
@@ -412,7 +412,7 @@ class DashboardUtils {
     );
   }
 
-  static Icon getGpsStatusIcon(GpsStatus status, [double iconSize]) {
+  static Icon getGpsStatusIcon(GpsStatus status, [double? iconSize]) {
     Color color;
     IconData iconData;
     switch (status) {
@@ -460,7 +460,7 @@ class DashboardUtils {
           );
   }
 
-  static Icon getLoggingIcon(GpsStatus status, {double size}) {
+  static Icon getLoggingIcon(GpsStatus status, {double? size}) {
     Color color;
     IconData iconData;
     switch (status) {

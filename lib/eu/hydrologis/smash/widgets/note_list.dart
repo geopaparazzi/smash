@@ -90,7 +90,7 @@ class NotesListWidgetState extends State<NotesListWidget>
                   itemCount: _notesList.length,
                   itemBuilder: (context, index) {
                     return NoteInfo(
-                        _notesList[index], db, projectState, loadNotes);
+                        _notesList[index], db!, projectState, loadNotes);
                   })),
     );
   }
@@ -123,9 +123,9 @@ class _NoteInfoState extends State<NoteInfo> {
     double lat;
     double lon;
     if (dynNote is Note) {
-      id = dynNote.id;
-      markerName = dynNote.noteExt.marker;
-      markerColor = dynNote.noteExt.color;
+      id = dynNote.id!;
+      markerName = dynNote.noteExt!.marker;
+      markerColor = dynNote.noteExt!.color;
       text = dynNote.text;
       ts = dynNote.timeStamp;
       lon = dynNote.lon;
@@ -133,7 +133,7 @@ class _NoteInfoState extends State<NoteInfo> {
       if (dynNote.hasForm()) {
         isForm = true;
         // text should get the label, if there is one
-        text = FormUtilities.getFormItemLabel(dynNote.form, text);
+        text = FormUtilities.getFormItemLabel(dynNote.form!, text);
       }
     } else {
       id = dynNote.id;
@@ -196,11 +196,13 @@ class _NoteInfoState extends State<NoteInfo> {
         icon: MdiIcons.delete,
         onTap: () async {
           bool doDelete = await SmashDialogs.showConfirmDialog(
-              context,
-              SL.of(context).noteList_DELETE, //"DELETE"
-              SL
-                  .of(context)
-                  .noteList_areYouSureDeleteNote); //'Are you sure you want to delete the note?'
+                  context,
+                  SL.of(context).noteList_DELETE, //"DELETE"
+                  SL
+                      .of(context)
+                      .noteList_areYouSureDeleteNote) //'Are you sure you want to delete the note?'
+              ??
+              false;
           if (doDelete) {
             if (dynNote is Note) {
               widget.db.deleteNote(id);
