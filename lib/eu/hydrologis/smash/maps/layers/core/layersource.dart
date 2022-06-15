@@ -44,6 +44,8 @@ const LAYERSKEY_MAXZOOM = 'maxzoom';
 const LAYERSKEY_GPKG_DOOVERLAY = "geopackage_dooverlay";
 const double DEFAULT_MINZOOM = 1;
 const double DEFAULT_ZOOM = 16;
+const int DEFAULT_MINZOOM_INT = 1;
+const int DEFAULT_MAXZOOM_INT = 16;
 const double DEFAULT_MAXZOOM = 19;
 
 const LAYERSTYPE_WMS = 'wms';
@@ -69,14 +71,14 @@ abstract class LayerSource {
   String? getPassword();
 
   /// Get the optional attribution of the dataset.
-  String getAttribution();
+  String? getAttribution();
 
   /// Convert the current layer source to an array of layers
   /// with their data loaded and ready to be displayed in map.
-  Future<List<LayerOptions>> toLayers(BuildContext context);
+  Future<List<LayerOptions>?> toLayers(BuildContext context);
 
   /// Returns the active flag of the layer (usually visible/non visible).
-  bool isActive();
+  bool? isActive();
 
   /// Toggle the active flag.
   void setActive(bool active);

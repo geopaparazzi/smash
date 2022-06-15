@@ -20,24 +20,24 @@ import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class ShapefileSource extends VectorLayerSource implements SldLayerSource {
-  String _absolutePath;
-  String _name;
-  ShapefileFeatureReader _shpReader;
-  String sldPath;
+  String? _absolutePath;
+  String? _name;
+  ShapefileFeatureReader? _shpReader;
+  String? sldPath;
 
   bool isVisible = true;
   String _attribution = "";
-  int _srid; //SmashPrj.EPSG4326_INT;
+  int? _srid; //SmashPrj.EPSG4326_INT;
 
   List<Feature> features = [];
-  JTS.STRtree _featureTree;
-  JTS.Envelope _shpBounds;
-  SldObjectParser _style;
-  TextStyle _textStyle;
+  JTS.STRtree? _featureTree;
+  JTS.Envelope? _shpBounds;
+  late SldObjectParser _style;
+  TextStyle? _textStyle;
 
   List<String> alphaFields = [];
-  String sldString;
-  JTS.EGeometryType geometryType;
+  String? sldString;
+  JTS.EGeometryType? geometryType;
 
   ShapefileSource.fromMap(Map<String, dynamic> map) {
     _name = map[LAYERSKEY_LABEL];
@@ -51,25 +51,25 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
 
   Future<void> load(BuildContext context) async {
     if (!isLoaded) {
-      _name = FileUtilities.nameFromFile(_absolutePath, false);
+      _name = FileUtilities.nameFromFile(_absolutePath!, false);
 
-      var parentFolder = FileUtilities.parentFolderFromFile(_absolutePath);
+      var parentFolder = FileUtilities.parentFolderFromFile(_absolutePath!);
 
       var defaultUtf8Charset = Charset();
-      var shpFile = File(_absolutePath);
+      var shpFile = File(_absolutePath!);
       _shpReader = ShapefileFeatureReader(shpFile, charset: defaultUtf8Charset);
-      await _shpReader.open();
+      await _shpReader!.open();
 
-      var numFields = _shpReader.header.getNumFields();
+      var numFields = _shpReader!.header!.getNumFields();
       for (var i = 0; i < numFields; i++) {
-        alphaFields.add(_shpReader.header.getFieldName(i));
+        alphaFields.add(_shpReader!.header!.getFieldName(i));
       }
 
-      Projection fromPrj = SmashPrj.fromDataFile(_absolutePath);
+      Projection? fromPrj = SmashPrj.fromDataFile(_absolutePath!);
       if (fromPrj != null) {
         var srid = SmashPrj.getSrid(fromPrj);
         if (srid == null) {
-          srid = SmashPrj.getSridFromDataFile(_absolutePath);
+          srid = SmashPrj.getSridFromDataFile(_absolutePath!);
         }
         if (srid == null) {
           _srid = await SmashPrj.getSridFromMatchingInPreferences(fromPrj);
@@ -81,49 +81,49 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
       _shpBounds = JTS.Envelope.empty();
       _featureTree = JTS.STRtree();
 
-      while (await _shpReader.hasNext()) {
-        var feature = await _shpReader.next();
+      while (await _shpReader!.hasNext()) {
+        var feature = await _shpReader!.next();
         var geometry = feature.geometry;
         if (geometryType == null) {
           geometryType =
-              JTS.EGeometryType.forTypeName(geometry.getGeometryType());
+              JTS.EGeometryType.forTypeName(geometry!.getGeometryType());
         }
-        SmashPrj.transformGeometryToWgs84(fromPrj, geometry);
+        SmashPrj.transformGeometryToWgs84(fromPrj!, geometry!);
         var envLL = geometry.getEnvelopeInternal();
-        _shpBounds.expandToIncludeEnvelope(envLL);
+        _shpBounds!.expandToIncludeEnvelope(envLL);
         features.add(feature);
-        _featureTree.insert(envLL, feature);
+        _featureTree!.insert(envLL, feature);
       }
       SMLogger()
           .d("Loaded ${features.length} Shp features of envelope: $_shpBounds");
 
-      _shpReader.close();
+      _shpReader!.close();
 
-      sldPath = FileUtilities.joinPaths(parentFolder, _name + ".sld");
-      var sldFile = File(sldPath);
+      sldPath = FileUtilities.joinPaths(parentFolder, _name! + ".sld");
+      var sldFile = File(sldPath!);
 
       if (sldFile.existsSync()) {
-        sldString = FileUtilities.readFile(sldPath);
-        _style = SldObjectParser.fromString(sldString);
+        sldString = FileUtilities.readFile(sldPath!);
+        _style = SldObjectParser.fromString(sldString!);
         _style.parse();
       } else {
-        if (geometryType.isPoint()) {
+        if (geometryType!.isPoint()) {
           sldString = DefaultSlds.simplePointSld();
-        } else if (geometryType.isLine()) {
+        } else if (geometryType!.isLine()) {
           sldString = DefaultSlds.simpleLineSld();
-        } else if (geometryType.isPolygon()) {
+        } else if (geometryType!.isPolygon()) {
           sldString = DefaultSlds.simplePolygonSld();
         }
         if (sldString != null) {
-          FileUtilities.writeStringToFile(sldPath, sldString);
-          _style = SldObjectParser.fromString(sldString);
+          FileUtilities.writeStringToFile(sldPath!, sldString!);
+          _style = SldObjectParser.fromString(sldString!);
           _style.parse();
         }
       }
       _textStyle = _style.getFirstTextStyle(false);
 
       _attribution = _attribution +
-          "${features[0].geometry.getGeometryType()} (${features.length}) ";
+          "${features[0].geometry!.getGeometryType()} (${features.length}) ";
 
       isLoaded = true;
     }
@@ -133,19 +133,19 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     return features.isNotEmpty;
   }
 
-  String getAbsolutePath() {
+  String? getAbsolutePath() {
     return _absolutePath;
   }
 
-  String getUrl() {
+  String? getUrl() {
     return null;
   }
 
-  String getUser() => null;
+  String? getUser() => null;
 
-  String getPassword() => null;
+  String? getPassword() => null;
 
-  String getName() {
+  String? getName() {
     return _name;
   }
 
@@ -164,7 +164,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
   IconData getIcon() => SmashIcons.iconTypeShp;
 
   String toJson() {
-    var relativePath = Workspace.makeRelative(_absolutePath);
+    var relativePath = Workspace.makeRelative(_absolutePath!);
     var json = '''
     {
         "$LAYERSKEY_LABEL": "$_name",
@@ -176,14 +176,14 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     return json;
   }
 
-  List<Feature> getInRoi({JTS.Geometry roiGeom, JTS.Envelope roiEnvelope}) {
+  List<Feature> getInRoi({JTS.Geometry? roiGeom, JTS.Envelope? roiEnvelope}) {
     if (roiEnvelope != null || roiGeom != null) {
       if (roiEnvelope == null) {
-        roiEnvelope = roiGeom.getEnvelopeInternal();
+        roiEnvelope = roiGeom!.getEnvelopeInternal();
       }
-      List<Feature> result = _featureTree.query(roiEnvelope).cast();
+      List<Feature> result = _featureTree!.query(roiEnvelope).cast();
       if (roiGeom != null) {
-        result.removeWhere((f) => !f.geometry.intersects(roiGeom));
+        result.removeWhere((f) => !f.geometry!.intersects(roiGeom));
       }
       return result;
     } else {
@@ -202,26 +202,26 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
       List<Polyline> allLines = [];
       List<Polygon> allPolygons = [];
 
-      Color pointFillColor;
+      Color? pointFillColor;
       _style.applyForEachRule((fts, Rule rule) {
-        if (geometryType.isPoint()) {
+        if (geometryType!.isPoint()) {
           List<Marker> points = makeMarkersForRule(rule);
           if (rule.pointSymbolizers.isNotEmpty && pointFillColor == null) {
             pointFillColor =
                 ColorExt(rule.pointSymbolizers[0].style.fillColorHex);
           }
           allPoints.add(points);
-        } else if (geometryType.isLine()) {
+        } else if (geometryType!.isLine()) {
           List<Polyline> lines = makeLinesForRule(rule);
           allLines.addAll(lines);
-        } else if (geometryType.isPolygon()) {
+        } else if (geometryType!.isPolygon()) {
           List<Polygon> polygons = makePolygonsForRule(rule);
           allPolygons.addAll(polygons);
         }
       });
 
       if (allPoints.isNotEmpty) {
-        addMarkerLayer(allPoints, layers, pointFillColor);
+        addMarkerLayer(allPoints, layers, pointFillColor!);
       } else if (allLines.isNotEmpty) {
         var lineLayer = PolylineLayerOptions(
           polylineCulling: true,
@@ -295,9 +295,9 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
 
     features.forEach((f) {
       if (key == null || f.attributes[key]?.toString() == value) {
-        var count = f.geometry.getNumGeometries();
+        var count = f.geometry!.getNumGeometries();
         for (var i = 0; i < count; i++) {
-          JTS.Polygon p = f.geometry.getGeometryN(i);
+          JTS.Polygon p = f.geometry!.getGeometryN(i) as JTS.Polygon;
           // ext ring
           var extCoords = p
               .getExteriorRing()
@@ -350,9 +350,9 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
 
     features.forEach((f) {
       if (key == null || f.attributes[key]?.toString() == value) {
-        var count = f.geometry.getNumGeometries();
+        var count = f.geometry!.getNumGeometries();
         for (var i = 0; i < count; i++) {
-          JTS.LineString l = f.geometry.getGeometryN(i);
+          JTS.LineString l = f.geometry!.getGeometryN(i) as JTS.LineString;
           var linePoints =
               l.getCoordinates().map((c) => LatLng(c.y, c.x)).toList();
           lines.add(Polyline(
@@ -383,18 +383,18 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     Color pointFillColor = ColorExt(pointStyle.fillColorHex);
     pointFillColor = pointFillColor.withOpacity(pointStyle.fillOpacity);
 
-    String labelName;
-    ColorExt labelColor;
+    String? labelName;
+    ColorExt? labelColor;
     if (_textStyle != null) {
-      labelName = _textStyle.labelName;
-      labelColor = ColorExt(_textStyle.textColor);
+      labelName = _textStyle!.labelName;
+      labelColor = ColorExt(_textStyle!.textColor);
     }
 
     features.forEach((f) {
       if (key == null || f.attributes[key]?.toString() == value) {
-        var count = f.geometry.getNumGeometries();
+        var count = f.geometry!.getNumGeometries();
         for (var i = 0; i < count; i++) {
-          JTS.Point l = f.geometry.getGeometryN(i);
+          JTS.Point l = f.geometry!.getGeometryN(i) as JTS.Point;
           var labelText = f.attributes[labelName];
           double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
           if (labelText == null) {
@@ -411,7 +411,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
                     pointFillColor,
                     pointsSize,
                     labelText.toString(),
-                    labelColor,
+                    labelColor!,
                     pointFillColor.withAlpha(100),
                   ));
           points.add(m);
@@ -423,12 +423,12 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
   }
 
   @override
-  Future<LatLngBounds> getBounds() async {
+  Future<LatLngBounds?> getBounds() async {
     if (_shpBounds != null) {
-      var s = _shpBounds.getMinY();
-      var n = _shpBounds.getMaxY();
-      var w = _shpBounds.getMinX();
-      var e = _shpBounds.getMaxX();
+      var s = _shpBounds!.getMinY();
+      var n = _shpBounds!.getMaxY();
+      var w = _shpBounds!.getMinX();
+      var e = _shpBounds!.getMaxX();
       LatLngBounds b = LatLngBounds(LatLng(s, w), LatLng(n, e));
       return b;
     } else {
@@ -452,7 +452,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
   }
 
   Widget getPropertiesWidget() {
-    return SldPropertiesEditor(sldString, geometryType,
+    return SldPropertiesEditor(sldString!, geometryType!,
         alphaFields: alphaFields);
   }
 
@@ -462,19 +462,19 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
   }
 
   @override
-  int getSrid() {
+  int? getSrid() {
     return _srid;
   }
 
   @override
   void updateStyle(String newSldString) {
     sldString = newSldString;
-    _style = SldObjectParser.fromString(sldString);
+    _style = SldObjectParser.fromString(sldString!);
     _style.parse();
     if (_style.featureTypeStyles.first.rules.first.textSymbolizers.length > 0) {
       _textStyle = _style
           .featureTypeStyles.first.rules.first.textSymbolizers.first.style;
     }
-    FileUtilities.writeStringToFile(sldPath, sldString);
+    FileUtilities.writeStringToFile(sldPath!, sldString!);
   }
 }
