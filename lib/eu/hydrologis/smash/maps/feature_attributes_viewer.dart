@@ -77,7 +77,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     var activeBaseLayers = LayerManager().getLayerSources(onlyActive: true);
     if (activeBaseLayers.isNotEmpty) {
       var baseLayers = await activeBaseLayers[0].toLayers(context);
-      if (baseLayers.isNotEmpty) {
+      if (baseLayers!.isNotEmpty) {
         for (var baseLayer in baseLayers) {
           if (baseLayer is TileLayerOptions) {
             _baseLayer = baseLayer;

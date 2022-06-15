@@ -17,18 +17,18 @@ import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class WmsSource extends RasterLayerSource {
-  String _getCapabilitiesUrl;
-  String _layerName;
-  double opacityPercentage = 100;
-  String imageFormat;
-  bool isVisible = true;
+  String? _getCapabilitiesUrl;
+  String? _layerName;
+  double? opacityPercentage = 100;
+  String? imageFormat;
+  bool? isVisible = true;
   LatLngBounds _serviceBounds = LatLngBounds();
   bool _hasBounds = false;
   String attribution = "";
   String version = "1.1.1";
   int _srid = SmashPrj.EPSG3857_INT;
 
-  Function errorTileCallback = (tile, exception) {
+  ErrorTileCallBack? errorTileCallback = (tile, exception) {
     // ignore tiles that can't load to avoid
     SMLogger().e("Unable to load WMS tile: ${tile.coordsKey}", exception, null);
   };
@@ -57,19 +57,19 @@ class WmsSource extends RasterLayerSource {
     return true;
   }
 
-  String getAbsolutePath() {
+  String? getAbsolutePath() {
     return null;
   }
 
-  String getUrl() {
+  String? getUrl() {
     return _getCapabilitiesUrl;
   }
 
-  String getUser() => null;
+  String? getUser() => null;
 
-  String getPassword() => null;
+  String? getPassword() => null;
 
-  String getName() {
+  String? getName() {
     return _layerName;
   }
 
@@ -78,7 +78,7 @@ class WmsSource extends RasterLayerSource {
   }
 
   bool isActive() {
-    return isVisible;
+    return isVisible ?? true;
   }
 
   String getVersion() => version;
@@ -117,15 +117,15 @@ class WmsSource extends RasterLayerSource {
 
     List<LayerOptions> layers = [
       TileLayerOptions(
-        opacity: opacityPercentage / 100.0,
+        opacity: opacityPercentage! / 100.0,
         backgroundColor: Colors.transparent,
         wmsOptions: WMSTileLayerOptions(
           crs: crs,
           version: version,
           transparent: true,
-          format: imageFormat,
-          baseUrl: _getCapabilitiesUrl,
-          layers: [_layerName],
+          format: imageFormat!,
+          baseUrl: _getCapabilitiesUrl!,
+          layers: [_layerName!],
         ),
         overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
         errorTileCallback: errorTileCallback,
@@ -183,7 +183,7 @@ class WmsPropertiesWidgetState extends State<WmsPropertiesWidget> {
 
   @override
   void initState() {
-    _opacitySliderValue = _source.opacityPercentage;
+    _opacitySliderValue = _source.opacityPercentage!;
     if (_opacitySliderValue > 100) {
       _opacitySliderValue = 100;
     }
@@ -291,6 +291,7 @@ class _LonLat extends Projection {
 
   @override
   LatLng unproject(CustomPoint point) {
-    return LatLng(inclusiveLat(point.y), inclusiveLng(point.x));
+    return LatLng(
+        inclusiveLat(point.y.toDouble()), inclusiveLng(point.x.toDouble()));
   }
 }

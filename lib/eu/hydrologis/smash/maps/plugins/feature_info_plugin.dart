@@ -171,7 +171,7 @@ class FeatureInfoLayer extends StatelessWidget {
       } else if (vLayer is ShapefileSource) {
         var features = vLayer.getInRoi(roiGeom: boundsGeom);
         features.forEach((f) {
-          totalQueryResult.ids!.add(vLayer.getName());
+          totalQueryResult.ids!.add(vLayer.getName()!);
           totalQueryResult.primaryKeys?.add(null);
           totalQueryResult.editable!.add(false);
           totalQueryResult.geoms.add(f.geometry!);
