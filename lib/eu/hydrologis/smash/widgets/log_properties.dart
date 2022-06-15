@@ -37,8 +37,8 @@ class LogPropertiesWidget extends StatefulWidget {
 
 class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
   Log4ListWidget _logItem;
-  double _widthSliderValue;
-  ColorExt _logColor;
+  late double _widthSliderValue;
+  late ColorExt _logColor;
   ColorTables _ct = ColorTables.none;
   double maxWidth = 20.0;
   bool _somethingChanged = false;
@@ -47,13 +47,13 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 
   @override
   void initState() {
-    _widthSliderValue = _logItem.width;
+    _widthSliderValue = _logItem.width!;
     if (_widthSliderValue > maxWidth) {
       _widthSliderValue = maxWidth;
     }
 
     var logColor =
-        EnhancedColorUtility.splitEnhancedColorString(_logItem.color);
+        EnhancedColorUtility.splitEnhancedColorString(_logItem.color!);
     _logColor = ColorExt(logColor[0]);
     _ct = logColor[1];
 
@@ -76,8 +76,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
-            projectState.projectDb
-                .updateGpsLogStyle(_logItem.id, _logItem.color, _logItem.width);
+            projectState.projectDb!.updateGpsLogStyle(
+                _logItem.id!, _logItem.color!, _logItem.width!);
             projectState.reloadProject(context);
           }
           Navigator.pop(context, _somethingChanged);
@@ -111,7 +111,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                             padding: const EdgeInsets.all(4.0),
                             child: EditableTextField(
                               SL.of(context).logProperties_logName, //"Log Name"
-                              _logItem.name,
+                              _logItem.name!,
                               (res) {
                                 if (res == null || res.trim().length == 0) {
                                   res = _logItem.name;
@@ -119,8 +119,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                                 ProjectState projectState =
                                     Provider.of<ProjectState>(context,
                                         listen: false);
-                                projectState.projectDb
-                                    .updateGpsLogName(_logItem.id, res);
+                                projectState.projectDb!
+                                    .updateGpsLogName(_logItem.id!, res);
                                 setState(() {
                                   _logItem.name = res;
                                 });
@@ -154,8 +154,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
           TableUtilities.cellForString(
               SL.of(context).logProperties_start), //"Start"
           TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
-              .format(
-                  new DateTime.fromMillisecondsSinceEpoch(_logItem.startTime))),
+              .format(new DateTime.fromMillisecondsSinceEpoch(
+                  _logItem.startTime!))),
         ],
       ),
       TableRow(
@@ -164,7 +164,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
               SL.of(context).logProperties_end), //"End"
           TableUtilities.cellForString(TimeUtilities.ISO8601_TS_FORMATTER
               .format(
-                  new DateTime.fromMillisecondsSinceEpoch(_logItem.endTime))),
+                  new DateTime.fromMillisecondsSinceEpoch(_logItem.endTime!))),
         ],
       ),
       TableRow(
@@ -172,7 +172,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
           TableUtilities.cellForString(
               SL.of(context).logProperties_duration), //"Duration"
           TableUtilities.cellForString(StringUtilities.formatDurationMillis(
-              _logItem.endTime - _logItem.startTime)),
+              _logItem.endTime! - _logItem.startTime!)),
         ],
       ),
       TableRow(
@@ -213,7 +213,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                   }).toList(),
                   onChanged: (selectedCt) async {
                     setState(() {
-                      _ct = selectedCt;
+                      _ct = selectedCt!;
                       _somethingChanged = true;
                     });
                   },
@@ -263,14 +263,14 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
         padding: const EdgeInsets.only(left: 4.0),
         child: EditableTextField(
           SL.of(context).logProperties_logName, //"Log Name"
-          item.name,
+          item.name!,
           (res) {
             if (res == null || res.trim().length == 0) {
               res = item.name;
             }
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
-            projectState.projectDb.updateGpsLogName(item.id, res);
+            projectState.projectDb!.updateGpsLogName(item.id!, res);
             setState(() {
               item.name = res;
             });
@@ -296,25 +296,25 @@ class LatLngExt extends ElevationPoint {
 class LogProfileView extends StatefulWidget {
   final Log4ListWidget logItem;
 
-  LogProfileView(this.logItem, {Key key}) : super(key: key);
+  LogProfileView(this.logItem, {Key? key}) : super(key: key);
 
   @override
   _LogProfileViewState createState() => _LogProfileViewState();
 }
 
 class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
-  LatLngExt hoverPoint;
+  LatLngExt? hoverPoint;
   List<LatLngExt> points = [];
-  LatLng center;
-  LatLngBounds bounds;
-  double totalLengthMeters;
+  LatLng? center;
+  LatLngBounds? bounds;
+  double? totalLengthMeters;
   double minLineElev = double.infinity;
   double maxLineElev = double.negativeInfinity;
   MapController mapController = new MapController();
   List<Marker> staticMarkers = [];
   bool _showStats = true;
 
-  Function errorTileCallback = (tile, exception) {
+  ErrorTileCallBack? errorTileCallback = (Tile tile, dynamic exception) {
     // ignore tiles that can't load to avoid
     SMLogger().e("Unable to load tile: ${tile.coordsKey}", exception, null);
   };
@@ -330,48 +330,48 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
 
   void loadData(BuildContext context) {
     ProjectState project = Provider.of<ProjectState>(context, listen: false);
-    var logDataPoints = project.projectDb.getLogDataPoints(widget.logItem.id);
+    var logDataPoints = project.projectDb!.getLogDataPoints(widget.logItem.id!);
     bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(
         SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
-    LatLngExt prevll;
+    LatLngExt? prevll;
     double progressiveMeters = 0;
     var maxSpeedLL;
     var maxSpeed = double.negativeInfinity;
     logDataPoints.forEach((p) {
       LatLng llTmp;
       if (useGpsFilteredGenerally && p.filtered_accuracy != null) {
-        llTmp = LatLng(p.filtered_lat, p.filtered_lon);
+        llTmp = LatLng(p.filtered_lat!, p.filtered_lon!);
       } else {
         llTmp = LatLng(p.lat, p.lon);
       }
       LatLngExt llExt;
       if (prevll == null) {
-        llExt = LatLngExt(
-            llTmp.latitude, llTmp.longitude, p.altim, 0, 0, p.ts, p.accuracy);
+        llExt = LatLngExt(llTmp.latitude, llTmp.longitude, p.altim!, 0, 0,
+            p.ts!, p.accuracy!);
       } else {
-        var distanceMeters = CoordinateUtilities.getDistance(prevll, llTmp);
+        var distanceMeters = CoordinateUtilities.getDistance(prevll!, llTmp);
         progressiveMeters += distanceMeters;
-        var deltaTs = (p.ts - prevll.ts) / 1000;
+        var deltaTs = (p.ts! - prevll!.ts) / 1000;
         var speedMS = distanceMeters / deltaTs;
         if (speedMS > maxSpeed) {
           maxSpeed = speedMS;
           maxSpeedLL = LatLng(p.lat, p.lon);
         }
 
-        llExt = LatLngExt(p.lat, p.lon, p.altim, progressiveMeters, speedMS,
-            p.ts, p.accuracy);
+        llExt = LatLngExt(p.lat, p.lon, p.altim!, progressiveMeters, speedMS,
+            p.ts!, p.accuracy!);
       }
 
       points.add(llExt);
-      minLineElev = min(minLineElev, p.altim);
-      maxLineElev = max(maxLineElev, p.altim);
+      minLineElev = min(minLineElev, p.altim!);
+      maxLineElev = max(maxLineElev, p.altim!);
       prevll = llExt;
     });
     totalLengthMeters = progressiveMeters;
-    var halfLength = totalLengthMeters / 2;
+    var halfLength = totalLengthMeters! / 2;
     var halfLengthLL;
-    var halfTime = logDataPoints.first.ts +
-        (logDataPoints.last.ts - logDataPoints.first.ts) / 2;
+    var halfTime = logDataPoints.first.ts! +
+        (logDataPoints.last.ts! - logDataPoints.first.ts!) / 2;
     var halfTimeLL;
     var minElevLL;
     var maxElevLL;
@@ -379,18 +379,18 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     var maxElev = double.negativeInfinity;
 
     Envelope env = Envelope.empty();
-    LatLng prevll2 = null;
+    LatLng? prevll2 = null;
     progressiveMeters = 0;
     logDataPoints.forEach((point) {
       var lat = point.lat;
       var lon = point.lon;
       env.expandToInclude(lon, lat);
-      if (halfTimeLL == null && point.ts > halfTime) {
+      if (halfTimeLL == null && point.ts! > halfTime) {
         halfTimeLL = LatLng(lat, lon);
       }
       var llTmp = LatLng(lat, lon);
       if (prevll2 != null) {
-        var distanceMeters = CoordinateUtilities.getDistance(prevll2, llTmp);
+        var distanceMeters = CoordinateUtilities.getDistance(prevll2!, llTmp);
         progressiveMeters += distanceMeters;
         if (halfLengthLL == null && progressiveMeters >= halfLength) {
           halfLengthLL = llTmp;
@@ -398,13 +398,13 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       }
       prevll2 = llTmp;
 
-      if (point.altim < minElev) {
+      if (point.altim! < minElev) {
         minElevLL = LatLng(point.lat, point.lon);
-        minElev = point.altim;
+        minElev = point.altim!;
       }
-      if (point.altim > maxElev) {
+      if (point.altim! > maxElev) {
         maxElevLL = LatLng(point.lat, point.lon);
-        maxElev = point.altim;
+        maxElev = point.altim!;
       }
     });
 
@@ -412,9 +412,9 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       LatLng(env.getMinY(), env.getMinX()),
       LatLng(env.getMaxY(), env.getMaxX())
     ]);
-    mapController.fitBounds(bounds);
+    mapController.fitBounds(bounds!);
 
-    center = LatLng(env.centre().y, env.centre().x);
+    center = LatLng(env.centre()!.y, env.centre()!.x);
 
     // create static markers
     // start
@@ -461,7 +461,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
 
     if (hoverPoint is LatLng)
       markers.add(Marker(
-          point: hoverPoint,
+          point: hoverPoint!,
           width: 15,
           height: 15,
           builder: (BuildContext context) => Container(
@@ -472,44 +472,44 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
 
     var height = ScreenUtilities.getHeight(context);
 
-    String progString;
+    String? progString;
     if (hoverPoint != null) {
-      var prog = hoverPoint.prog;
+      var prog = hoverPoint!.prog;
       var progFormatted = StringUtilities.formatMeters(prog);
       progString =
           "${SL.of(context).logProperties_distanceAtPosition} $progFormatted"; //Distance at position:
     }
     var totalNew;
-    String totalString;
+    String? totalString;
     if (totalLengthMeters != null) {
-      if (totalLengthMeters > 1000) {
-        var totalKm = totalLengthMeters / 1000.0;
+      if (totalLengthMeters! > 1000) {
+        var totalKm = totalLengthMeters! / 1000.0;
         totalNew = "${totalKm.toStringAsFixed(1)} km";
       } else {
-        totalNew = "${totalLengthMeters.toInt()} m";
+        totalNew = "${totalLengthMeters!.toInt()} m";
       }
       totalString =
           "${SL.of(context).logProperties_totalDistance} $totalNew"; //Total distance:
     }
 
-    int durationMillis = widget.logItem.endTime - widget.logItem.startTime;
+    int durationMillis = widget.logItem.endTime! - widget.logItem.startTime!;
     String durationStr = StringUtilities.formatDurationMillis(durationMillis);
-    String currentTouchStr;
+    String? currentTouchStr;
     if (hoverPoint != null) {
-      int currentTouchMillis = hoverPoint.ts - widget.logItem.startTime;
+      int currentTouchMillis = hoverPoint!.ts - widget.logItem.startTime!;
       currentTouchStr =
           StringUtilities.formatDurationMillis(currentTouchMillis);
     }
 
-    PolylineLayerOptions polylines;
+    PolylineLayerOptions? polylines;
     if (bounds != null) {
       var clrSplit =
-          EnhancedColorUtility.splitEnhancedColorString(widget.logItem.color);
+          EnhancedColorUtility.splitEnhancedColorString(widget.logItem.color!);
       ColorTables colorTable = clrSplit[1];
       if (colorTable.isValid()) {
         List<Polyline> lines = [];
         EnhancedColorUtility.buildPolylines(lines, points, colorTable,
-            widget.logItem.width, minLineElev, maxLineElev);
+            widget.logItem.width!, minLineElev, maxLineElev);
 
         polylines = PolylineLayerOptions(
           polylineCulling: true,
@@ -522,8 +522,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
             Polyline(
               points: points,
               color: ColorExt(EnhancedColorUtility.splitEnhancedColorString(
-                  widget.logItem.color)[0]),
-              strokeWidth: widget.logItem.width,
+                  widget.logItem.color!)[0]),
+              strokeWidth: widget.logItem.width!,
             ),
           ],
         );
@@ -604,27 +604,27 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: SmashUI.normalText(widget.logItem.name,
+                          child: SmashUI.normalText(widget.logItem.name!,
                               bold: true, underline: true),
                         ),
                         SmashUI.normalText(
                             "${SL.of(context).logProperties_totalDuration} $durationStr"), //Total duration:
                         SmashUI.normalText(
-                            "${SL.of(context).logProperties_timestamp} ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(hoverPoint.ts))}"), //Timestamp:
+                            "${SL.of(context).logProperties_timestamp} ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(hoverPoint!.ts))}"), //Timestamp:
                         SmashUI.normalText(
                             "${SL.of(context).logProperties_durationAtPosition} $currentTouchStr"), //Duration at position:
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
-                          child: SmashUI.normalText(totalString),
+                          child: SmashUI.normalText(totalString!),
                         ),
-                        SmashUI.normalText(progString),
+                        SmashUI.normalText(progString!),
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),
                           child: SmashUI.normalText(
-                              "${SL.of(context).logProperties_speed} ${hoverPoint.speed.toStringAsFixed(0)} m/s (${(hoverPoint.speed * 3.6).toStringAsFixed(0)} km/h)"), //Speed:
+                              "${SL.of(context).logProperties_speed} ${hoverPoint!.speed.toStringAsFixed(0)} m/s (${(hoverPoint!.speed * 3.6).toStringAsFixed(0)} km/h)"), //Speed:
                         ),
                         SmashUI.normalText(
-                            "${SL.of(context).logProperties_elevation} ${hoverPoint.altitude.toInt()}m"), //Elevation:
+                            "${SL.of(context).logProperties_elevation} ${hoverPoint!.altitude.toInt()}m"), //Elevation:
                       ],
                     ),
                   ),
@@ -646,7 +646,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                       onNotification:
                           (ElevationHoverNotification notification) {
                         setState(() {
-                          hoverPoint = notification.position;
+                          hoverPoint = notification.position as LatLngExt;
                         });
 
                         return true;

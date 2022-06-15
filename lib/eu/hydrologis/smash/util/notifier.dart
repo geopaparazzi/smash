@@ -10,7 +10,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 const DEBUG_NOTIFICATIONS = false;
 
 class ChangeNotifierPlus with ChangeNotifier {
-  void notifyListenersMsg([String msg]) {
+  void notifyListenersMsg([String? msg]) {
     if (DEBUG_NOTIFICATIONS) {
       print(
           "${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.now())}:: ${runtimeType.toString()}: ${msg ?? "notify triggered"}");

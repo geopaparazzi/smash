@@ -33,22 +33,22 @@ import 'package:smashlibs/smashlibs.dart';
 class DataLoaderUtilities {
   static Note addNote(
       SmashMapBuilder mapBuilder, int doInGpsMode, MapController mapController,
-      {String form, String iconName, String color, String text}) {
+      {String? form, String? iconName, String? color, String? text}) {
     int ts = DateTime.now().millisecondsSinceEpoch;
-    SmashPosition pos;
+    SmashPosition? pos;
     double lon;
     double lat;
     double altim;
     if (doInGpsMode == POINT_INSERTION_MODE_GPS) {
-      var gpsState = Provider.of<GpsState>(mapBuilder.context, listen: false);
+      var gpsState = Provider.of<GpsState>(mapBuilder.context!, listen: false);
       pos = gpsState.lastGpsPosition;
 
       if (!gpsState.useFilteredGps) {
-        lon = pos.longitude;
+        lon = pos!.longitude;
         lat = pos.latitude;
         altim = pos.altitude;
       } else {
-        lon = pos.filteredLongitude;
+        lon = pos!.filteredLongitude;
         lat = pos.filteredLatitude;
         altim = pos.altitude;
       }
@@ -59,8 +59,8 @@ class DataLoaderUtilities {
       altim = -1;
     }
     Note note = Note()
-      ..text = text ??= SL.of(mapBuilder.context).dataLoader_note //"note"
-      ..description = SL.of(mapBuilder.context).dataLoader_POI //"POI"
+      ..text = text ??= SL.of(mapBuilder.context!).dataLoader_note //"note"
+      ..description = SL.of(mapBuilder.context!).dataLoader_POI //"POI"
       ..timeStamp = ts
       ..lon = lon
       ..lat = lat
@@ -85,9 +85,9 @@ class DataLoaderUtilities {
     note.noteExt = next;
 
     var projectState =
-        Provider.of<ProjectState>(mapBuilder.context, listen: false);
+        Provider.of<ProjectState>(mapBuilder.context!, listen: false);
     var db = projectState.projectDb;
-    db.addNote(note);
+    db!.addNote(note);
 
     return note;
   }
@@ -99,7 +99,7 @@ class DataLoaderUtilities {
     BuildContext parentContext,
     dynamic position,
     bool usefiltered, {
-    int noteId,
+    int? noteId,
   }) async {
     DbImage dbImage = DbImage()
       ..timeStamp = DateTime.now().millisecondsSinceEpoch
@@ -132,7 +132,7 @@ class DataLoaderUtilities {
                     SL
                         .of(context)
                         .dataLoader_savingImageToDB, //"Saving image to db...",
-                    (String imagePath) {
+                    (String? imagePath) {
                   if (imagePath != null) {
                     String imageName =
                         FileUtilities.nameFromFile(imagePath, true);
@@ -166,7 +166,7 @@ class DataLoaderUtilities {
 
     List<Note> notesList = db.getNotes();
     notesList.forEach((note) {
-      NoteExt noteExt = note.noteExt;
+      NoteExt noteExt = note.noteExt!;
 
       var iconData = getSmashIcon(noteExt.marker);
       var iconColor = ColorExt(noteExt.color);
@@ -176,11 +176,11 @@ class DataLoaderUtilities {
         textExtraHeight = 0;
       }
 
-      String text = note.text;
+      String? text = note.text;
       if (notesMode == SmashPreferencesKeys.NOTESVIEWMODES[1]) {
         text = null; // so the text of the icon is not made in MarkerIcon
       } else if (note.hasForm()) {
-        text = FormUtilities.getFormItemLabel(note.form, note.text);
+        text = FormUtilities.getFormItemLabel(note.form!, note.text);
       }
 
       tmp.add(Marker(
@@ -193,15 +193,15 @@ class DataLoaderUtilities {
               iconData,
               iconColor,
               noteExt.size,
-              text,
+              text!,
               SmashColors.mainTextColorNeutral,
               iconColor.withAlpha(80),
             ),
             onTap: () {
               bool sizeSnackBar =
-                  ScreenUtilities.isLargeScreen(mapBuilder.context) &&
-                      ScreenUtilities.isLandscape(mapBuilder.context);
-              var halfWidth = ScreenUtilities.getWidth(mapBuilder.context);
+                  ScreenUtilities.isLargeScreen(mapBuilder.context!) &&
+                      ScreenUtilities.isLandscape(mapBuilder.context!);
+              var halfWidth = ScreenUtilities.getWidth(mapBuilder.context!);
               if (sizeSnackBar) {
                 halfWidth /= 2;
                 if (halfWidth < 100) {
@@ -232,7 +232,7 @@ class DataLoaderUtilities {
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context)
+                                      .of(mapBuilder.context!)
                                       .dataLoader_Note), //"Note"
                                   TableUtilities.cellForString(note.text),
                                 ],
@@ -240,7 +240,7 @@ class DataLoaderUtilities {
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context)
+                                      .of(mapBuilder.context!)
                                       .dataLoader_longitude), //"Longitude"
                                   TableUtilities.cellForString(note.lon
                                       .toStringAsFixed(SmashPreferencesKeys
@@ -250,7 +250,7 @@ class DataLoaderUtilities {
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context)
+                                      .of(mapBuilder.context!)
                                       .dataLoader_latitude), //"Latitude"
                                   TableUtilities.cellForString(note.lat
                                       .toStringAsFixed(SmashPreferencesKeys
@@ -260,9 +260,9 @@ class DataLoaderUtilities {
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context)
+                                      .of(mapBuilder.context!)
                                       .dataLoader_altitude), //"Altitude"
-                                  TableUtilities.cellForString(note.altim
+                                  TableUtilities.cellForString(note.altim!
                                       .toStringAsFixed(SmashPreferencesKeys
                                           .KEY_ELEV_DECIMALS)),
                                 ],
@@ -270,7 +270,7 @@ class DataLoaderUtilities {
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context)
+                                      .of(mapBuilder.context!)
                                       .dataLoader_timestamp), //"Timestamp"
                                   TableUtilities.cellForString(
                                       TimeUtilities.ISO8601_TS_FORMATTER.format(
@@ -281,7 +281,7 @@ class DataLoaderUtilities {
                               TableRow(
                                 children: [
                                   TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context)
+                                      .of(mapBuilder.context!)
                                       .dataLoader_hasForm), //"Has Form"
                                   TableUtilities.cellForString(
                                       "${note.hasForm()}"),
@@ -305,7 +305,7 @@ class DataLoaderUtilities {
                             iconSize: SmashUI.MEDIUM_ICON_SIZE,
                             onPressed: () {
                               var label =
-                                  "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
+                                  "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim!.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
                               var urlStr = UrlUtilities.osmUrlFromLatLong(
                                   note.lat, note.lon,
                                   withMarker: true);
@@ -322,7 +322,7 @@ class DataLoaderUtilities {
                             iconSize: SmashUI.MEDIUM_ICON_SIZE,
                             onPressed: () {
                               if (note.hasForm()) {
-                                var sectionMap = jsonDecode(note.form);
+                                var sectionMap = jsonDecode(note.form!);
                                 var sectionName = sectionMap[ATTR_SECTIONNAME];
                                 SmashPosition sp = SmashPosition.fromCoords(
                                     note.lon,
@@ -334,7 +334,7 @@ class DataLoaderUtilities {
                                 var titleWidget = SmashUI.titleText(sectionName,
                                     color: SmashColors.mainBackground,
                                     bold: true);
-                                var formHelper = SmashFormHelper(note.id,
+                                var formHelper = SmashFormHelper(note.id!,
                                     sectionName, sectionMap, titleWidget, sp);
 
                                 Navigator.push(
@@ -363,14 +363,14 @@ class DataLoaderUtilities {
                                   await SmashDialogs.showConfirmDialog(
                                       ctx,
                                       SL
-                                          .of(mapBuilder.context)
+                                          .of(mapBuilder.context!)
                                           .dataLoader_removeNote, //"Remove Note",
-                                      "${SL.of(mapBuilder.context).dataLoader_areYouSureRemoveNote} " //Are you sure you want to remove note
+                                      "${SL.of(mapBuilder.context!).dataLoader_areYouSureRemoveNote} " //Are you sure you want to remove note
                                       "${note.id}?");
-                              if (doRemove) {
-                                db.deleteNote(note.id);
+                              if (doRemove!) {
+                                db.deleteNote(note.id!);
                                 var projectState = Provider.of<ProjectState>(
-                                    mapBuilder.context,
+                                    mapBuilder.context!,
                                     listen: false);
                                 projectState.reloadProject(ctx);
                               }
@@ -405,9 +405,9 @@ class DataLoaderUtilities {
   static void loadImageMarkers(
       GeopaparazziProjectDb db, List<Marker> tmp, SmashMapBuilder mapBuilder) {
     // IMAGES
-    bool sizeSnackBar = ScreenUtilities.isLargeScreen(mapBuilder.context) &&
-        ScreenUtilities.isLandscape(mapBuilder.context);
-    var halfWidth = ScreenUtilities.getWidth(mapBuilder.context);
+    bool sizeSnackBar = ScreenUtilities.isLargeScreen(mapBuilder.context!) &&
+        ScreenUtilities.isLandscape(mapBuilder.context!);
+    var halfWidth = ScreenUtilities.getWidth(mapBuilder.context!);
     if (sizeSnackBar) {
       halfWidth /= 2;
       if (halfWidth < 100) {
@@ -427,7 +427,7 @@ class DataLoaderUtilities {
         builder: (ctx) => new Container(
             child: GestureDetector(
           onTap: () {
-            var thumb = db.getThumbnail(image.imageDataId);
+            var thumb = db.getThumbnail(image.imageDataId!);
             ScaffoldMessenger.of(ctx).clearSnackBars();
             ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
               width: sizeSnackBar ? halfWidth : null,
@@ -473,7 +473,7 @@ class DataLoaderUtilities {
                           children: [
                             TableUtilities.cellForString(
                                 SL.of(ctx).dataLoader_altitude), //"Altitude"
-                            TableUtilities.cellForString(image.altim
+                            TableUtilities.cellForString(image.altim!
                                 .toStringAsFixed(
                                     SmashPreferencesKeys.KEY_ELEV_DECIMALS)),
                           ],
@@ -499,7 +499,7 @@ class DataLoaderUtilities {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          thumb,
+                          thumb!,
                         ],
                       ),
                       onTap: () {
@@ -525,13 +525,13 @@ class DataLoaderUtilities {
                           iconSize: SmashUI.MEDIUM_ICON_SIZE,
                           onPressed: () async {
                             var label =
-                                "image: ${image.text}\nlat: ${image.lat.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)}\nlon: ${image.lon.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)}\naltim: ${image.altim.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
+                                "image: ${image.text}\nlat: ${image.lat.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)}\nlon: ${image.lon.toStringAsFixed(SmashPreferencesKeys.KEY_LATLONG_DECIMALS)}\naltim: ${image.altim!.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(image.timeStamp))}";
                             var urlStr = UrlUtilities.osmUrlFromLatLong(
                                 image.lat, image.lon,
                                 withMarker: true);
                             label = "$label\n$urlStr";
                             var uint8list =
-                                db.getImageDataBytes(image.imageDataId);
+                                db.getImageDataBytes(image.imageDataId!);
                             await ShareHandler.shareImage(label, uint8list);
                             ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
                           },
@@ -550,10 +550,10 @@ class DataLoaderUtilities {
                                     .dataLoader_removeImage, //"Remove Image",
                                 "${SL.of(ctx).dataLoader_areYouSureRemoveImage} " //Are you sure you want to remove image
                                 "${image.id}?");
-                            if (doRemove) {
-                              db.deleteImage(image.id);
+                            if (doRemove!) {
+                              db.deleteImage(image.id!);
                               var projectState = Provider.of<ProjectState>(
-                                  mapBuilder.context,
+                                  mapBuilder.context!,
                                   listen: false);
                               projectState
                                   .reloadProject(ctx); // TODO check await
@@ -684,7 +684,7 @@ class DataLoaderUtilities {
         if (ct.isValid()) {
           var minMax = rangeMap[logId];
           EnhancedColorUtility.buildPolylines(
-              lines, points, ct, width, minMax[0], minMax[1]);
+              lines, points, ct, width, minMax![0], minMax![1]);
         } else {
           dynamic colorObj = ColorExt(colString);
           if (doOrigTransp) {
@@ -709,7 +709,7 @@ class DataLoaderUtilities {
           if (ct.isValid()) {
             var minMax = rangeMap[logId];
             EnhancedColorUtility.buildPolylines(
-                lines, points, ct, width, minMax[0], minMax[1]);
+                lines, points, ct, width, minMax![0], minMax![1]);
           } else {
             dynamic colorObj = ColorExt(colString);
             if (doFilteredTransp) {

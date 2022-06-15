@@ -138,11 +138,13 @@ class DownloadMapFromListTileProgressWidgetState
                   .network_thisFIleAlreadyBeingDownloaded); //"This file is already in the process of being downloaded."
           return;
         }
-        bool doDownload = await SmashDialogs.showConfirmDialog(
-            context,
-            SL.of(context).network_download, //"Download"
-            "${SL.of(context).network_downloadFile} $name " //"Download file"
-            "${SL.of(context).network_toTheDeviceTakeTime}"); //"to the device? This can take some time."
+        bool? doDownload = await SmashDialogs.showConfirmDialog(
+                context,
+                SL.of(context).network_download, //"Download"
+                "${SL.of(context).network_downloadFile} $name " //"Download file"
+                "${SL.of(context).network_toTheDeviceTakeTime}") //"to the device? This can take some time."
+            ??
+            false;
         if (doDownload) {
           await downloadFile();
         }

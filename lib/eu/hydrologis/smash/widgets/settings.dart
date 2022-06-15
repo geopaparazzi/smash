@@ -43,7 +43,7 @@ const SETTINGS_EDIT_HANLDE_ICON_SIZES = [
 ];
 
 class SettingsWidget extends StatefulWidget {
-  SettingsWidget({Key key}) : super(key: key);
+  SettingsWidget({Key? key}) : super(key: key);
 
   @override
   _SettingsWidgetState createState() => new _SettingsWidgetState();
@@ -56,7 +56,7 @@ class SettingsWidget extends StatefulWidget {
 }
 
 class _SettingsWidgetState extends State<SettingsWidget> {
-  Widget _selectedSetting;
+  late Widget _selectedSetting;
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +195,9 @@ class CameraSettingState extends State<CameraSetting> {
   @override
   Widget build(BuildContext context) {
     String value = GpPreferences().getStringSync(
-        SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
+            SmashPreferencesKeys.KEY_CAMERA_RESOLUTION,
+            CameraResolutions.MEDIUM) ??
+        CameraResolutions.MEDIUM;
     return Scaffold(
       appBar: new AppBar(
         title: Row(
@@ -232,7 +234,7 @@ class CameraSettingState extends State<CameraSetting> {
                       textAlign: TextAlign.justify,
                     ),
                   ),
-                  DropdownButton(
+                  DropdownButton<String>(
                     value: value,
                     isExpanded: false,
                     items: [
@@ -269,7 +271,8 @@ class CameraSettingState extends State<CameraSetting> {
                     ],
                     onChanged: (selected) async {
                       await GpPreferences().setString(
-                          SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, selected);
+                          SmashPreferencesKeys.KEY_CAMERA_RESOLUTION,
+                          selected!);
                       setState(() {});
                     },
                   ),
@@ -303,7 +306,9 @@ class ScreenSettingState extends State<ScreenSetting> {
     bool retinaModeOn = GpPreferences()
         .getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, false);
     double currentIconSize = GpPreferences().getDoubleSync(
-        SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+            SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE,
+            SmashUI.MEDIUM_ICON_SIZE) ??
+        SmashUI.MEDIUM_ICON_SIZE;
     //    String themeStr = GpPreferences().getStringSync(KEY_THEME, SmashThemes.LIGHT.toString());
     //    SmashThemes theme = SmashThemes.LIGHT;
     //    if (themeStr == SmashThemes.DARK.toString()) {
@@ -336,7 +341,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                 value: keepScreenOn,
                 onChanged: (selected) async {
                   await GpPreferences().setBoolean(
-                      SmashPreferencesKeys.KEY_KEEP_SCREEN_ON, selected);
+                      SmashPreferencesKeys.KEY_KEEP_SCREEN_ON, selected!);
                   SettingsWidget.reloadMapSettings(context);
                   setState(() {});
                 },
@@ -352,7 +357,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                 value: retinaModeOn,
                 onChanged: (selected) async {
                   await GpPreferences().setBoolean(
-                      SmashPreferencesKeys.KEY_RETINA_MODE_ON, selected);
+                      SmashPreferencesKeys.KEY_RETINA_MODE_ON, selected!);
                   SettingsWidget.reloadMapSettings(context);
                   setState(() {});
                 },
@@ -401,7 +406,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                       ],
                       onChanged: (selected) async {
                         await GpPreferences()
-                            .setString(KEY_COLORPICKER_TYPE, selected);
+                            .setString(KEY_COLORPICKER_TYPE, selected!);
                         setState(() {});
                       },
                     ),
@@ -618,7 +623,7 @@ class GpsSettingsState extends State<GpsSettings> {
   int _count = 0;
   bool isPaused = false;
 
-  MapController _mapController;
+  late MapController _mapController;
   @override
   void initState() {
     _mapController = MapController();
@@ -689,7 +694,7 @@ class GpsSettingsState extends State<GpsSettings> {
           return new Marker(
             width: 10,
             height: 10,
-            point: msg.newPosLatLon,
+            point: msg.newPosLatLon!,
             builder: (ctx) => new Stack(
               children: <Widget>[
                 Center(
@@ -727,17 +732,17 @@ class GpsSettingsState extends State<GpsSettings> {
                     int i = gpsInfoListCounter[index];
                     var infoMap = {
                       SL.of(context).settings_longitudeDeg: //"longitude [deg]"
-                          msg.newPosLatLon.longitude.toStringAsFixed(6),
+                          msg.newPosLatLon!.longitude.toStringAsFixed(6),
                       SL.of(context).settings_latitudeDeg: //"latitude [deg]"
-                          msg.newPosLatLon.latitude.toStringAsFixed(6),
+                          msg.newPosLatLon!.latitude.toStringAsFixed(6),
                       SL.of(context).settings_accuracyM: //"accuracy [m]"
-                          msg.accuracy.toStringAsFixed(0),
+                          msg.accuracy!.toStringAsFixed(0),
                       SL.of(context).settings_altitudeM: //"altitude [m]"
-                          msg.altitude.toStringAsFixed(0),
+                          msg.altitude!.toStringAsFixed(0),
                       SL.of(context).settings_headingDeg: //"heading [deg]"
-                          msg.heading.toStringAsFixed(0),
+                          msg.heading!.toStringAsFixed(0),
                       SL.of(context).settings_speedMS: //"speed [m/s]"
-                          msg.speed.toStringAsFixed(0),
+                          msg.speed!.toStringAsFixed(0),
                       SL.of(context).settings_isLogging: //"is logging?"
                           msg.isLogging,
                       SL.of(context).settings_mockLocations: //"mock locations?"
@@ -750,13 +755,13 @@ class GpsSettingsState extends State<GpsSettings> {
                         backgroundColor: Colors.white.withAlpha(0),
                         withBorder: true);
 
-                    double distanceLastEvent = msg.distanceLastEvent;
+                    double distanceLastEvent = msg.distanceLastEvent!;
                     int minAllowedDistanceLastEvent =
-                        msg.minAllowedDistanceLastEvent;
+                        msg.minAllowedDistanceLastEvent!;
 
-                    int timeLastEvent = msg.timeDeltaLastEvent;
+                    int timeLastEvent = msg.timeDeltaLastEvent!;
                     int minAllowedTimeLastEvent =
-                        msg.minAllowedTimeDeltaLastEvent;
+                        msg.minAllowedTimeDeltaLastEvent!;
 
                     bool minDistFilterBlocks =
                         distanceLastEvent <= minAllowedDistanceLastEvent;
@@ -905,7 +910,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       onPressed: () {
                         var z = _mapController.zoom + 1;
                         if (z > 21) z = 21;
-                        _mapController.move(gpsInfoList.last.newPosLatLon, z);
+                        _mapController.move(gpsInfoList.last.newPosLatLon!, z);
                       },
                     ),
                     IconButton(
@@ -917,7 +922,7 @@ class GpsSettingsState extends State<GpsSettings> {
                       onPressed: () {
                         var z = _mapController.zoom - 1;
                         if (z < 7) z = 7;
-                        _mapController.move(gpsInfoList.last.newPosLatLon, z);
+                        _mapController.move(gpsInfoList.last.newPosLatLon!, z);
                       },
                     ),
                     Spacer(
@@ -951,15 +956,18 @@ class GpsSettingsState extends State<GpsSettings> {
 
   SingleChildScrollView getSettingsPart(BuildContext context) {
     int minDistance = GpPreferences().getIntSync(
-        SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE,
-        SmashPreferencesKeys.MINDISTANCES[1]);
+            SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE,
+            SmashPreferencesKeys.MINDISTANCES[1]) ??
+        SmashPreferencesKeys.MINDISTANCES[1];
     int timeInterval = GpPreferences().getIntSync(
-        SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL,
-        SmashPreferencesKeys.TIMEINTERVALS[1]);
+            SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL,
+            SmashPreferencesKeys.TIMEINTERVALS[1]) ??
+        SmashPreferencesKeys.TIMEINTERVALS[1];
     bool doTestLog = GpPreferences()
         .getBooleanSync(SmashPreferencesKeys.KEY_GPS_TESTLOG, false);
     var testlogDurationKey = "KEY_GPS_TESTLOG_DURATIONMILLIS";
-    int testLogDuration = GpPreferences().getIntSync(testlogDurationKey, 500);
+    int testLogDuration =
+        GpPreferences().getIntSync(testlogDurationKey, 500) ?? 500;
     bool showAllGpsPointCount = GpPreferences()
         .getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, false);
     bool showValidGpsPointCount = GpPreferences()
@@ -1002,7 +1010,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selValid) async {
                           await GpPreferences().setBoolean(
                               SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS,
-                              selValid);
+                              selValid!);
                           Provider.of<SmashMapBuilder>(context, listen: false)
                               .reBuild();
                           setState(() {});
@@ -1023,7 +1031,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selAll) async {
                           await GpPreferences().setBoolean(
                               SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS,
-                              selAll);
+                              selAll!);
 
                           Provider.of<SmashMapBuilder>(context, listen: false)
                               .reBuild();
@@ -1117,7 +1125,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selected) async {
                           await GpPreferences().setInt(
                               SmashPreferencesKeys.KEY_GPS_MIN_DISTANCE,
-                              selected);
+                              selected!);
                           var gpsState =
                               Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsMinDistance = selected;
@@ -1149,7 +1157,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (selected) async {
                           await GpPreferences().setInt(
                               SmashPreferencesKeys.KEY_GPS_TIMEINTERVAL,
-                              selected);
+                              selected!);
                           var gpsState =
                               Provider.of<GpsState>(context, listen: false);
                           gpsState.gpsTimeInterval = selected;
@@ -1193,7 +1201,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         onChanged: (newValue) async {
                           var gpsState =
                               Provider.of<GpsState>(context, listen: false);
-                          gpsState.useFilteredGpsQuiet = newValue;
+                          gpsState.useFilteredGpsQuiet = newValue!;
                           await GpPreferences().setBoolean(
                               SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY,
                               newValue);
@@ -1228,7 +1236,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         value: doTestLog,
                         onChanged: (newValue) async {
                           await GpPreferences().setBoolean(
-                              SmashPreferencesKeys.KEY_GPS_TESTLOG, newValue);
+                              SmashPreferencesKeys.KEY_GPS_TESTLOG, newValue!);
                           var gpsState =
                               Provider.of<GpsState>(context, listen: false);
                           gpsState.doTestLog = newValue;
@@ -1301,7 +1309,7 @@ class GpsSettingsState extends State<GpsSettings> {
                             await GpPreferences().setBoolean(
                                 SmashPreferencesKeys
                                     .KEY_GPS_USE_GOOGLE_SERVICES,
-                                newValue);
+                                newValue!);
                             setState(() {});
                           },
                         ),
@@ -1318,7 +1326,7 @@ class GpsSettingsState extends State<GpsSettings> {
 }
 
 class GpsLogsSetting extends StatefulWidget {
-  GpsLogsSetting({Key key}) : super(key: key);
+  GpsLogsSetting({Key? key}) : super(key: key);
 
   @override
   _GpsLogsSettingState createState() => _GpsLogsSettingState();
@@ -1363,7 +1371,7 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
                 onChanged: (selected) async {
                   await GpPreferences().setStringList(
                       SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE,
-                      [selected, gpsState.filteredLogMode]);
+                      [selected!, gpsState.filteredLogMode]);
                   gpsState.logMode = selected;
                   setState(() {});
                 },
@@ -1397,7 +1405,7 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
                 onChanged: (selected) async {
                   await GpPreferences().setStringList(
                       SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE,
-                      [gpsState.logMode, selected]);
+                      [gpsState.logMode, selected!]);
                   gpsState.filteredLogMode = selected;
                   setState(() {});
                 },
@@ -1422,7 +1430,7 @@ class _GpsLogsSettingState extends State<GpsLogsSetting> {
 }
 
 class NotesViewSetting extends StatefulWidget {
-  NotesViewSetting({Key key}) : super(key: key);
+  NotesViewSetting({Key? key}) : super(key: key);
 
   @override
   _NotesViewSettingState createState() => _NotesViewSettingState();
@@ -1464,7 +1472,7 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
             }).toList(),
             onChanged: (selected) async {
               await GpPreferences().setString(
-                  SmashPreferencesKeys.KEY_NOTES_VIEW_MODE, selected);
+                  SmashPreferencesKeys.KEY_NOTES_VIEW_MODE, selected!);
               gpsState.notesMode = selected;
               setState(() {});
             },
@@ -1474,11 +1482,11 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
           cancelLabel: SL.of(context).settings_cancel, //'CANCEL'
           cancelFunction: () => Navigator.pop(context),
           okLabel: SL.of(context).settings_ok, //'OK'
-          okFunction: () async {
+          okFunction: () {
             Navigator.pop(context);
             var projectState =
                 Provider.of<ProjectState>(context, listen: false);
-            await projectState.reloadProject(context);
+            projectState.reloadProject(context);
           },
         ),
       ],
@@ -1487,7 +1495,7 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
 }
 
 class PluginsViewSetting extends StatefulWidget {
-  PluginsViewSetting({Key key}) : super(key: key);
+  PluginsViewSetting({Key? key}) : super(key: key);
 
   @override
   _PluginsViewSettingState createState() => _PluginsViewSettingState();
@@ -1538,13 +1546,17 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
     bool loadOnlyVisible = GpPreferences().getBooleanSync(
         SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
     int maxFeaturesToLoad = GpPreferences()
-        .getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1);
+            .getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1) ??
+        -1;
     int tapAreaPixels = GpPreferences()
-        .getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50);
+            .getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50) ??
+        50;
     int handleIconSize =
-        GpPreferences().getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25);
+        GpPreferences().getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25) ??
+            25;
     int intermediateHandleIconSize = GpPreferences()
-        .getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20);
+            .getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20) ??
+        20;
 
     return Scaffold(
       appBar: new AppBar(
@@ -1609,7 +1621,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                           onChanged: (selected) async {
                             await GpPreferences().setInt(
                                 SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES,
-                                selected);
+                                selected!);
                             setState(() {});
                           },
                         ),
@@ -1641,7 +1653,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                             await GpPreferences().setBoolean(
                                 SmashPreferencesKeys
                                     .KEY_VECTOR_LOAD_ONLY_VISIBLE,
-                                newValue);
+                                newValue!);
                             setState(() {});
                           },
                         ),
@@ -1683,7 +1695,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                           onChanged: (selected) async {
                             await GpPreferences().setInt(
                                 SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE,
-                                selected);
+                                selected!);
                             setState(() {});
                           },
                         ),
@@ -1725,7 +1737,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                           }).toList(),
                           onChanged: (selected) async {
                             await GpPreferences().setInt(
-                                SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, selected);
+                                SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, selected!);
                             setState(() {});
                           },
                         ),
@@ -1754,7 +1766,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                           onChanged: (selected) async {
                             await GpPreferences().setInt(
                                 SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE,
-                                selected);
+                                selected!);
                             setState(() {});
                           },
                         ),
@@ -1835,7 +1847,7 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
 class DebugLogViewer extends StatefulWidget {
   final ProjectState projectState;
 
-  DebugLogViewer(this.projectState, {Key key}) : super(key: key);
+  DebugLogViewer(this.projectState, {Key? key}) : super(key: key);
 
   @override
   _DebugLogViewerState createState() => _DebugLogViewerState();
@@ -1843,8 +1855,8 @@ class DebugLogViewer extends StatefulWidget {
 
 class _DebugLogViewerState extends State<DebugLogViewer> {
   int limit = 1000;
-  List<GpLogItem> logItems;
-  List<GpLogItem> allLogItems;
+  late List<dynamic> logItems;
+  late List<dynamic> allLogItems;
   bool isViewingErrors = false;
 
   var levelToColor = {
@@ -1948,9 +1960,9 @@ class _DebugLogViewerState extends State<DebugLogViewer> {
           : ListView.builder(
               itemCount: logItems.length,
               itemBuilder: (BuildContext context, int index) {
-                GpLogItem logItem = logItems[index];
-                Color c = levelToColor[logItem.level];
-                String msg = logItem.message;
+                GpLogItem logItem = logItems[index] as GpLogItem;
+                Color c = levelToColor[logItem.level]!;
+                String msg = logItem.message!;
                 String ts = HU.TimeUtilities.ISO8601_TS_FORMATTER_MILLIS
                     .format(DateTime.fromMillisecondsSinceEpoch(logItem.ts));
                 var iconData = levelToIcon[logItem.level];
@@ -1981,8 +1993,8 @@ class DeviceSettingsState extends State<DeviceSettings> {
   //static final subtitle = "Device identifier";
   static final iconData = MdiIcons.tabletCellphone;
 
-  String _deviceId;
-  String _overrideId;
+  late String _deviceId;
+  late String _overrideId;
 
   @override
   void initState() {
@@ -1991,13 +2003,13 @@ class DeviceSettingsState extends State<DeviceSettings> {
   }
 
   Future<void> getIds() async {
-    String id = await Device().getDeviceId();
-    String overrideId = await GpPreferences()
+    String? id = await Device().getDeviceId();
+    String? overrideId = await GpPreferences()
         .getString(SmashPreferencesKeys.DEVICE_ID_OVERRIDE, id);
 
     setState(() {
-      _deviceId = id;
-      _overrideId = overrideId;
+      _deviceId = id!;
+      _overrideId = overrideId!;
     });
   }
 

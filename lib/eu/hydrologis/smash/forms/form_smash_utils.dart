@@ -205,7 +205,7 @@ class SmashFormHelper implements AFormhelper {
     List<Widget> thumbList = [];
     for (int i = 0; i < imageSplit.length; i++) {
       var id = int.parse(imageSplit[i]);
-      Widget thumbnail = projectState.projectDb!.getThumbnail(id);
+      Widget? thumbnail = projectState.projectDb!.getThumbnail(id);
       Widget withBorder = Container(
         padding: SmashUI.defaultPadding(),
         child: thumbnail,
@@ -259,7 +259,7 @@ class SmashFormHelper implements AFormhelper {
       next.marker = iconName;
       next.color = iconColor;
 
-      noteId = db!.addNote(note);
+      noteId = db!.addNote(note)!;
     } else {
       noteId = _id;
       // update form for note

@@ -18,7 +18,7 @@ class ENotificationSounds {
 
   const ENotificationSounds._(this.name, this.androidCode, this.iosCode);
 
-  static ENotificationSounds forName(String name) {
+  static ENotificationSounds? forName(String? name) {
     if (name == null) {
       return null;
     }

@@ -25,12 +25,12 @@ class FenceMaster {
   static final JSON_ONENTER = "onenter";
   static final JSON_ONEXIT = "onexit";
 
-  Fence currentFence;
+  Fence? currentFence;
   bool firstPositionUpdate = true;
 
   bool _hasFences = false;
 
-  List<Fence> fencesList;
+  late List<Fence> fencesList;
 
   factory FenceMaster() {
     return _singleton;
@@ -41,7 +41,7 @@ class FenceMaster {
 
   void readFences() {
     currentFence = null;
-    var fenceJson = GpPreferences().getStringSync(KEY, "");
+    var fenceJson = GpPreferences().getStringSync(KEY, "")!;
     fencesList = [];
     if (fenceJson.isNotEmpty) {
       var json = jsonDecode(fenceJson);
@@ -85,7 +85,7 @@ class FenceMaster {
     return removed;
   }
 
-  Fence findIn(LatLng center) {
+  Fence? findIn(LatLng center) {
     if (!_hasFences) {
       return null;
     }
@@ -119,26 +119,26 @@ class FenceMaster {
       if (fence.onEnter != null &&
           fence.onEnter != ENotificationSounds.nosound) {
         SMLogger().d("ENTER RING ${fence.name}");
-        await fence.onEnter
+        await fence.onEnter!
             .playTone(durationSeconds: FenceMaster.DEFAULT_SOUND_DURATION);
       }
       SMLogger().d("ENTER POST ${fence.name}");
     } else if (fence == null && currentFence != null) {
       // exited fence
-      var tmpFence = currentFence;
+      var tmpFence = currentFence!;
       currentFence = null;
       SMLogger().d("EXIT ${tmpFence.name}");
       if (tmpFence.onExit != null &&
           tmpFence.onExit != ENotificationSounds.nosound) {
         SMLogger().d("EXIT RING ${tmpFence.name}");
-        await tmpFence.onExit
+        await tmpFence.onExit!
             .playTone(durationSeconds: FenceMaster.DEFAULT_SOUND_DURATION);
       }
       SMLogger().d("EXIT POST ${tmpFence.name}");
     }
   }
 
-  Future<Fence> showFencePropertiesDialog(
+  Future<Fence?> showFencePropertiesDialog(
       BuildContext context, Fence fence, bool allowDelete) async {
     return await showDialog<Fence>(
       context: context,
@@ -161,29 +161,31 @@ class FenceMaster {
           }),
           actions: <Widget>[
             if (allowDelete)
-              FlatButton(
+              TextButton(
                 child: Text(
                   SL.of(context).fence_delete, //"DELETE"
                   style: TextStyle(color: SmashColors.mainDanger),
                 ),
                 onPressed: () async {
                   var res = await SmashDialogs.showConfirmDialog(
-                      context,
-                      SL.of(context).fence_removeFence, //"Remove fence"
-                      "${SL.of(context).fence_areYouSureRemoveFence} ${fence.name}"); //"Are you sure you want to remove fence:"
+                          context,
+                          SL.of(context).fence_removeFence, //"Remove fence"
+                          "${SL.of(context).fence_areYouSureRemoveFence} ${fence.name}") //"Are you sure you want to remove fence:"
+                      ??
+                      false;
                   if (res) {
                     FenceMaster().remove(fence);
                   }
                   Navigator.of(context).pop(null);
                 },
               ),
-            FlatButton(
+            TextButton(
               child: Text(SL.of(context).fence_cancel), //"CANCEL"
               onPressed: () {
                 Navigator.of(context).pop(null);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text(SL.of(context).fence_ok), //"OK"
               onPressed: () {
                 Navigator.of(context).pop(fence);
@@ -200,10 +202,10 @@ class Fence {
   int creationTs;
   String name = SL.current.fence_aNewFence; //"a new fence"
   double radius = FenceMaster.DEFAULT_FENCE_RADIUS;
-  double lat;
-  double lon;
-  ENotificationSounds onEnter = ENotificationSounds.nosound;
-  ENotificationSounds onExit = ENotificationSounds.nosound;
+  late double lat;
+  late double lon;
+  ENotificationSounds? onEnter = ENotificationSounds.nosound;
+  ENotificationSounds? onExit = ENotificationSounds.nosound;
 
   Fence() : creationTs = DateTime.now().millisecondsSinceEpoch;
 
@@ -214,12 +216,12 @@ class Fence {
       FenceMaster.JSON_RADIUS_METERS: radius,
       FenceMaster.JSON_LAT: lat,
       FenceMaster.JSON_LON: lon,
-      FenceMaster.JSON_ONENTER: onEnter.name,
-      FenceMaster.JSON_ONEXIT: onExit.name,
+      FenceMaster.JSON_ONENTER: onEnter?.name,
+      FenceMaster.JSON_ONEXIT: onExit?.name,
     };
   }
 
-  operator ==(other) => creationTs == other.creationTs;
+  operator ==(other) => creationTs == (other as Fence).creationTs;
 
   int get hashCode => HashUtilities.hashObjects([creationTs]);
 }
@@ -227,7 +229,7 @@ class Fence {
 class FencePropertiesContainer extends StatefulWidget {
   final Fence fence;
 
-  FencePropertiesContainer(this.fence, {Key key}) : super(key: key);
+  FencePropertiesContainer(this.fence, {Key? key}) : super(key: key);
 
   @override
   _FencePropertiesContainerState createState() =>
@@ -251,7 +253,7 @@ class _FencePropertiesContainerState extends State<FencePropertiesContainer> {
       autofocus: false,
       decoration: nameID,
       validator: (txt) {
-        fence.name = txt;
+        fence.name = txt!;
         var nameErrorText = txt.isEmpty
             ? SL
                 .of(context)
@@ -272,7 +274,7 @@ class _FencePropertiesContainerState extends State<FencePropertiesContainer> {
       autovalidateMode: AutovalidateMode.always,
       decoration: radiusID,
       validator: (txt) {
-        double rad = double.tryParse(txt);
+        double? rad = double.tryParse(txt!);
         if (rad != null) {
           fence.radius = rad;
         }

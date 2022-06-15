@@ -36,13 +36,13 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
 
   GeopaparazziProjectDb(dbPath) : super(dbPath);
 
-  open({Function populateFunction}) {
+  open({Function? populateFunction}) {
     super.open(populateFunction: createDatabase);
   }
 
   @override
   String getPath() {
-    return path;
+    return path!;
   }
 
   @override
@@ -88,7 +88,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  List<Note> getNotes({bool doSimple, bool onlyDirty: false}) {
+  List<Note> getNotes({bool? doSimple, bool onlyDirty: false}) {
     String where = "";
     if (onlyDirty) {
       where = " where $NOTES_COLUMN_ISDIRTY=1";
@@ -155,7 +155,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
       } else {
         // insert the note ext
         noteExt.noteId = note.id;
-        int noteExtId = addNoteExt(noteExt);
+        int? noteExtId = addNoteExt(noteExt);
         noteExt.id = noteExtId;
       }
       note.noteExt = noteExt;
@@ -216,7 +216,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
     } else {
       // insert the note ext
       noteExt.noteId = note.id;
-      int noteExtId = addNoteExt(noteExt);
+      int? noteExtId = addNoteExt(noteExt);
       noteExt.id = noteExtId;
     }
     note.noteExt = noteExt;
@@ -266,7 +266,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  Image getThumbnail(int imageDataId) {
+  Image? getThumbnail(int imageDataId) {
     var uint8list = getThumbnailBytes(imageDataId);
     if (uint8list != null) {
       return ImageWidgetUtilities.imageFromBytes(uint8list);
@@ -275,7 +275,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  Uint8List getThumbnailBytes(int imageDataId) {
+  Uint8List? getThumbnailBytes(int imageDataId) {
     var imageDataList = getQueryObjectsList(
         ImageDataQueryBuilder(doData: false, doThumb: true),
         whereString: "where $IMAGESDATA_COLUMN_ID=$imageDataId");
@@ -289,16 +289,16 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  Image getImage(int imageDataId) {
-    Uint8List imageDataBytes = getImageDataBytes(imageDataId);
+  Image? getImage(int imageDataId) {
+    Uint8List? imageDataBytes = getImageDataBytes(imageDataId);
     if (imageDataBytes != null)
       return ImageWidgetUtilities.imageFromBytes(imageDataBytes);
     return null;
   }
 
   @override
-  Uint8List getImageDataBytes(int imageDataId) {
-    Uint8List imageDataBytes;
+  Uint8List? getImageDataBytes(int imageDataId) {
+    Uint8List? imageDataBytes;
     var whereStr = "where $IMAGESDATA_COLUMN_ID=$imageDataId";
     try {
       List<DbImageData> imageDataList = getQueryObjectsList(
@@ -307,7 +307,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
       if (imageDataList != null && imageDataList.length == 1) {
         DbImageData imgDataMap = imageDataList.first;
         if (imgDataMap != null && imgDataMap.data != null) {
-          imageDataBytes = imgDataMap.data;
+          imageDataBytes = imgDataMap.data!;
         }
       }
     } catch (ex) {
@@ -316,7 +316,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
       var res = select(sizeQuery);
       if (res.length == 1) {
         int blobSize = res.first.get('blobsize');
-        List<int> total = List();
+        List<int> total = [];
         if (blobSize > MAXBLOBSIZE) {
           for (int i = 1; i <= blobSize; i = i + MAXBLOBSIZE) {
             int from = i;
@@ -338,31 +338,31 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  int addNote(Note note) {
+  int? addNote(Note note) {
     var noteId = insertMap(SqlName(TABLE_NOTES), note.toMap());
     note.id = noteId;
     if (note.noteExt == null) {
       NoteExt noteExt = NoteExt();
       noteExt.noteId = note.id;
-      int noteExtId = addNoteExt(noteExt);
+      int? noteExtId = addNoteExt(noteExt);
       noteExt.id = noteExtId;
       note.noteExt = noteExt;
     } else {
-      note.noteExt.noteId = noteId;
-      int extid = addNoteExt(note.noteExt);
-      note.noteExt.id = extid;
+      note.noteExt!.noteId = noteId;
+      int? extid = addNoteExt(note.noteExt!);
+      note.noteExt!.id = extid;
     }
     return noteId;
   }
 
   @override
-  int addNoteExt(NoteExt noteExt) {
+  int? addNoteExt(NoteExt noteExt) {
     var noteExtId = insertMap(SqlName(TABLE_NOTESEXT), noteExt.toMap());
     return noteExtId;
   }
 
   @override
-  int deleteNote(int noteId) {
+  int? deleteNote(int noteId) {
     var sql = "delete from $TABLE_NOTES where $NOTES_COLUMN_ID=$noteId";
     var deletedCount = execute(sql);
 
@@ -371,20 +371,20 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  int deleteImageByNoteId(int noteId) {
+  int? deleteImageByNoteId(int noteId) {
     var deleteSql =
         "delete from $TABLE_IMAGES where $IMAGES_COLUMN_NOTE_ID=$noteId";
     return execute(deleteSql);
   }
 
   @override
-  int deleteImage(int imageId) {
+  int? deleteImage(int imageId) {
     String sql = "delete from $TABLE_IMAGES where $IMAGES_COLUMN_ID=$imageId";
     return execute(sql);
   }
 
   @override
-  int updateNoteImages(int noteId, List<int> imageIds) {
+  int? updateNoteImages(int noteId, List<int> imageIds) {
     if (imageIds == null || imageIds.isEmpty) {
       return 0;
     }
@@ -434,7 +434,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  Log getLogById(int logId) {
+  Log? getLogById(int logId) {
     String logsQuery = '''
         select $LOGS_COLUMN_ID, $LOGS_COLUMN_STARTTS, $LOGS_COLUMN_ENDTS, $LOGS_COLUMN_TEXT, $LOGS_COLUMN_ISDIRTY, $LOGS_COLUMN_LENGTHM
         from $TABLE_GPSLOGS
@@ -485,7 +485,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  LogProperty getLogProperties(int logId) {
+  LogProperty? getLogProperties(int logId) {
     String logPropQuery = """
             select $LOGSPROP_COLUMN_ID, $LOGSPROP_COLUMN_COLOR, $LOGSPROP_COLUMN_VISIBLE, 
             $LOGSPROP_COLUMN_WIDTH,$LOGSPROP_COLUMN_LOGID
@@ -506,7 +506,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   /// Get the start position coordinate of a log identified by [logId].
-  LatLng getLogStartPosition(int logId) {
+  LatLng? getLogStartPosition(int logId) {
     var sql = '''
       select $LOGSDATA_COLUMN_LON, $LOGSDATA_COLUMN_LAT from $TABLE_GPSLOG_DATA 
       where $LOGSDATA_COLUMN_LOGID=$logId
@@ -549,9 +549,10 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  int addGpsLog(Log insertLog, LogProperty prop) {
+  int? addGpsLog(Log insertLog, LogProperty prop) {
     Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
-      int insertedId = _db.insertMap(SqlName(TABLE_GPSLOGS), insertLog.toMap());
+      int? insertedId =
+          _db.insertMap(SqlName(TABLE_GPSLOGS), insertLog.toMap());
       prop.logid = insertedId;
       insertLog.id = insertedId;
       _db.insertMap(SqlName(TABLE_GPSLOG_PROPERTIES), prop.toMap());
@@ -561,9 +562,9 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  int addGpsLogPoint(int logId, LogDataPoint logPoint) {
+  int? addGpsLogPoint(int logId, LogDataPoint logPoint) {
     logPoint.logid = logId;
-    int insertedId = insertMap(SqlName(TABLE_GPSLOG_DATA), logPoint.toMap());
+    int? insertedId = insertMap(SqlName(TABLE_GPSLOG_DATA), logPoint.toMap());
     return insertedId;
   }
 
@@ -602,14 +603,14 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
       // update log stats
       _db.updateLogLength(logId);
       var newEndTs = _db.getLogDataPoints(logId).last.ts;
-      _db.updateGpsLogEndts(logId, newEndTs);
+      _db.updateGpsLogEndts(logId, newEndTs!);
 
       return true;
     });
   }
 
   @override
-  int updateGpsLogEndts(int logId, int endTs) {
+  int? updateGpsLogEndts(int logId, int endTs) {
     var updatedId = execute(
         "update $TABLE_GPSLOGS set $LOGS_COLUMN_ENDTS=$endTs where $LOGS_COLUMN_ID=$logId");
     updateLogLength(logId);
@@ -617,21 +618,21 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  int updateGpsLogName(int logId, String name) {
+  int? updateGpsLogName(int logId, String name) {
     var updatedId = execute(
         "update $TABLE_GPSLOGS set $LOGS_COLUMN_TEXT='$name' where $LOGS_COLUMN_ID=$logId");
     return updatedId;
   }
 
   @override
-  int updateGpsLogStyle(int logId, String color, double width) {
+  int? updateGpsLogStyle(int logId, String color, double width) {
     var updatedId = execute(
         "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_COLOR='$color', $LOGSPROP_COLUMN_WIDTH=$width where $LOGSPROP_COLUMN_LOGID=$logId");
     return updatedId;
   }
 
   @override
-  int updateGpsLogVisibility(bool isVisible, [int logId]) {
+  int? updateGpsLogVisibility(bool isVisible, [int? logId]) {
     String where = "";
     if (logId != null) {
       where = " where $LOGSPROP_COLUMN_LOGID=$logId";
@@ -643,7 +644,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  int invertGpsLogsVisibility() {
+  int? invertGpsLogsVisibility() {
     String sql = '''
       update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_VISIBLE= CASE
         WHEN $LOGSPROP_COLUMN_VISIBLE = 1 THEN 0
@@ -655,7 +656,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
-  double updateLogLength(int logId) {
+  double? updateLogLength(int logId) {
     var sql = '''
       SELECT $LOGSDATA_COLUMN_LON,$LOGSDATA_COLUMN_LAT,$LOGSDATA_COLUMN_TS 
       FROM $TABLE_GPSLOG_DATA 
@@ -665,7 +666,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
     double summedDistance = 0.0;
 
     var res = select(sql);
-    LatLng previousPosition;
+    LatLng? previousPosition;
     res.forEach((QueryResultRow map) {
       var lon = map.get(LOGSDATA_COLUMN_LON);
       var lat = map.get(LOGSDATA_COLUMN_LAT);
@@ -673,7 +674,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
       LatLng pos = LatLng(lat, lon);
       if (previousPosition != null) {
         var distanceMeters =
-            CoordinateUtilities.getDistance(pos, previousPosition);
+            CoordinateUtilities.getDistance(pos, previousPosition!);
         summedDistance += distanceMeters;
       }
       previousPosition = pos;
@@ -697,13 +698,13 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
     var map = note.toMap();
     var noteId = map.remove(NOTES_COLUMN_ID);
 
-    int count =
+    int? count =
         updateMap(SqlName(TABLE_NOTES), map, "$NOTES_COLUMN_ID=$noteId");
     if (count == 1) {
-      var extMap = note.noteExt.toMap();
+      var extMap = note.noteExt!.toMap();
       int noteExtId = extMap.remove(NOTESEXT_COLUMN_ID);
       extMap.remove(NOTESEXT_COLUMN_NOTEID);
-      int extCount = updateMap(
+      int? extCount = updateMap(
           SqlName(TABLE_NOTESEXT), extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
       if (extCount != 1) {
         SMLogger().e(
@@ -714,7 +715,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
     } else {
       SMLogger().e("Note not updated for note $noteId", null, null);
     }
-    return count;
+    return count!;
   }
 
   @override

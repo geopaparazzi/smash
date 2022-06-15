@@ -16,7 +16,7 @@ class MainViewCoachMarks {
   GlobalKey toolbarButtonKey = GlobalKey();
   GlobalKey coachMarkButtonKey = GlobalKey();
 
-  List<TargetFocus> targets = List();
+  List<TargetFocus> targets = [];
 
   void initCoachMarks() {
     var all = 11;
@@ -27,11 +27,11 @@ class MainViewCoachMarks {
 
     var title =
         "$i/$all ${SL.current.coachMarks_simpleNoteButton}"; //Simple Notes Button
-    var singleTap =
+    String? singleTap =
         "${s}${SL.current.coachMarks_addNewNote}"; //"add a new note"
-    var longTap =
+    String? longTap =
         "${l}${SL.current.coachMarks_viewNotesList}"; //"view notes list"
-    var doubleTap =
+    String? doubleTap =
         "${d}${SL.current.coachMarks_viewNotesSettings}"; //"view notes settings"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
@@ -183,7 +183,7 @@ class MainViewCoachMarks {
   }
 
   TargetContent getContentTarget(
-      String title, String singleTap, String longTap, String doubleTap,
+      String title, String? singleTap, String? longTap, String? doubleTap,
       {ContentAlign alignContent = ContentAlign.top}) {
     var size = SmashUI.MEDIUM_SIZE;
     var widgets = <Widget>[];

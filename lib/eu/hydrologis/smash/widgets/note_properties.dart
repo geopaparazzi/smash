@@ -15,7 +15,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
   Note _note;
   double _sizeSliderValue = 10;
   double _maxSize = 100.0;
-  ColorExt _noteColor;
+  late ColorExt _noteColor;
   String _marker = NoteExt.DEFAULT_MARKER;
   bool _somethingChanged = false;
   var chosenIconsList = [];
@@ -24,15 +24,16 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 
   @override
   void initState() {
-    _sizeSliderValue = _note?.noteExt?.size;
+    _sizeSliderValue = _note.noteExt!.size;
     if (_sizeSliderValue > _maxSize) {
       _sizeSliderValue = _maxSize;
     }
-    _noteColor = ColorExt(_note.noteExt.color);
-    _marker = _note.noteExt.marker;
+    _noteColor = ColorExt(_note.noteExt!.color);
+    _marker = _note.noteExt!.marker;
 
     chosenIconsList.addAll(GpPreferences().getStringListSync(
-        SmashPreferencesKeys.KEY_ICONS_LIST, DEFAULT_NOTES_ICONDATA));
+            SmashPreferencesKeys.KEY_ICONS_LIST, DEFAULT_NOTES_ICONDATA) ??
+        DEFAULT_NOTES_ICONDATA);
     if (!chosenIconsList.contains(_marker)) {
       chosenIconsList.insert(0, _marker);
     }
@@ -67,13 +68,13 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 
     return WillPopScope(
         onWillPop: () async {
-          _note.noteExt.color = ColorExt.asHex(_noteColor);
-          _note.noteExt.marker = _marker;
-          _note.noteExt.size = _sizeSliderValue;
+          _note.noteExt!.color = ColorExt.asHex(_noteColor);
+          _note.noteExt!.marker = _marker;
+          _note.noteExt!.size = _sizeSliderValue;
 
           ProjectState projectState =
               Provider.of<ProjectState>(context, listen: false);
-          projectState.projectDb.updateNote(_note);
+          projectState.projectDb!.updateNote(_note);
           projectState.reloadProject(context);
           return true;
         },
@@ -230,7 +231,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
       TableRow(
         children: [
           TableUtilities.cellForString("Altitude"),
-          TableUtilities.cellForString(_note.altim
+          TableUtilities.cellForString(_note.altim!
               .toStringAsFixed(SmashPreferencesKeys.KEY_ELEV_DECIMALS)),
         ],
       ),

@@ -54,7 +54,8 @@ class _LoggingButtonState extends State<LoggingButton> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => LogListWidget(projectState.projectDb)));
+                  builder: (context) =>
+                      LogListWidget(projectState.projectDb!)));
         },
         onDoubleTap: () async {
           Dialog settingsDialog = Dialog(
@@ -92,7 +93,7 @@ class _LoggingButtonState extends State<LoggingButton> {
         String logName =
             "log_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
 
-        String userString = await SmashDialogs.showInputDialog(
+        String? userString = await SmashDialogs.showInputDialog(
           context,
           SL.of(context).gpsLogButton_newLog, //"New Log"
           SL
@@ -105,7 +106,7 @@ class _LoggingButtonState extends State<LoggingButton> {
 
         if (userString != null) {
           if (userString.trim().length == 0) userString = logName;
-          int logId = gpsLoggingState.startLogging(userString);
+          int? logId = gpsLoggingState.startLogging(userString);
           if (logId == null) {
             SMLogger().e(
                 "${SL.of(context).gpsLogButton_couldNotStartLogging} $userString",
