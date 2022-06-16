@@ -684,7 +684,7 @@ class DataLoaderUtilities {
         if (ct.isValid()) {
           var minMax = rangeMap[logId];
           EnhancedColorUtility.buildPolylines(
-              lines, points, ct, width, minMax![0], minMax![1]);
+              lines, points, ct, width, minMax![0], minMax[1]);
         } else {
           dynamic colorObj = ColorExt(colString);
           if (doOrigTransp) {
@@ -709,7 +709,7 @@ class DataLoaderUtilities {
           if (ct.isValid()) {
             var minMax = rangeMap[logId];
             EnhancedColorUtility.buildPolylines(
-                lines, points, ct, width, minMax![0], minMax![1]);
+                lines, points, ct, width, minMax![0], minMax[1]);
           } else {
             dynamic colorObj = ColorExt(colString);
             if (doFilteredTransp) {

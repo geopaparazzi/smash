@@ -25,7 +25,7 @@ import 'package:smashlibs/smashlibs.dart';
 class FeatureInfoPlugin implements MapPlugin {
   @override
   Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+      LayerOptions options, MapState mapState, Stream<void> stream) {
     if (options is FeatureInfoPluginOption) {
       return FeatureInfoLayer(options, mapState, stream);
     }
@@ -48,7 +48,7 @@ class FeatureInfoPluginOption extends LayerOptions {
 class FeatureInfoLayer extends StatelessWidget {
   final FeatureInfoPluginOption featureInfoLayerOpts;
   final MapState map;
-  final Stream<Null> stream;
+  final Stream<void> stream;
 
   FeatureInfoLayer(this.featureInfoLayerOpts, this.map, this.stream);
 

@@ -21,7 +21,7 @@ import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 class GpsPositionPlugin implements MapPlugin {
   @override
   Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+      LayerOptions options, MapState mapState, Stream<void> stream) {
     if (options is GpsPositionPluginOption) {
       return GpsPositionLayer(options, mapState, stream);
     }
@@ -53,7 +53,7 @@ class GpsPositionPluginOption extends LayerOptions {
 class GpsPositionLayer extends StatelessWidget {
   final GpsPositionPluginOption gpsPositionLayerOpts;
   final MapState map;
-  final Stream<Null> stream;
+  final Stream<void> stream;
 
   GpsPositionLayer(this.gpsPositionLayerOpts, this.map, this.stream);
 

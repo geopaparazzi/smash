@@ -22,7 +22,7 @@ import 'package:fl_chart/fl_chart.dart';
 class CurrentGpsLogPlugin implements MapPlugin {
   @override
   Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+      LayerOptions options, MapState mapState, Stream<void> stream) {
     if (options is CurrentGpsLogPluginOption) {
       return CurrentGpsLogLayer(options, mapState, stream);
     }
@@ -48,7 +48,7 @@ class CurrentGpsLogPluginOption extends LayerOptions {
 class CurrentGpsLogLayer extends StatelessWidget {
   final CurrentGpsLogPluginOption currentGpsLogLayerOpts;
   final MapState map;
-  final Stream<Null> stream;
+  final Stream<void> stream;
   late Paint logPaint;
   late Paint filteredLogPaint;
   bool doOrig = true;

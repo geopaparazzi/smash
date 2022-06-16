@@ -30,7 +30,7 @@ class ScaleLayerPluginOption extends LayerOptions {
 class ScaleLayerPlugin implements MapPlugin {
   @override
   Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+      LayerOptions options, MapState mapState, Stream<void> stream) {
     if (options is ScaleLayerPluginOption) {
       return ScaleLayerWidget(options, mapState);
     }

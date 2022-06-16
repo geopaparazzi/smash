@@ -51,7 +51,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
 
     EditableQueryResult f = widget.features;
     _geometry = f.geoms[_index];
-    var env = _geometry!.getEnvelopeInternal();
+    var env = _geometry.getEnvelopeInternal();
     var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
         LatLng(env.getMaxY(), env.getMaxX()));
 

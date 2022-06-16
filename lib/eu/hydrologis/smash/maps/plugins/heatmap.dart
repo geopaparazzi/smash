@@ -50,7 +50,7 @@ class SimpleHeat {
 class HeatmapPlugin implements MapPlugin {
   @override
   Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+      LayerOptions options, MapState mapState, Stream<void> stream) {
     if (options is HeatmapPluginOption) {
       return HeatmapLayer(options, mapState);
     }

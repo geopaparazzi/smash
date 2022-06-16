@@ -115,7 +115,7 @@ class TestLogStream {
     }
   }
 
-  late StreamSubscription<SmashPosition> _streamSubscription;
+  StreamSubscription<SmashPosition>? _streamSubscription;
   final kalman = KalmanFilter();
   StreamController<SmashPosition> _controller =
       StreamController<SmashPosition>();
@@ -140,7 +140,7 @@ class TestLogStream {
     });
   }
 
-  StreamSubscription<SmashPosition> get streamSubscription {
+  StreamSubscription<SmashPosition>? get streamSubscription {
     return _streamSubscription;
   }
 

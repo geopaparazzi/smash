@@ -544,7 +544,7 @@ class GeometryEditManager {
         SmashPrj.transformGeometry(
             SmashPrj.EPSG4326, dataPrj!, touchBufferLayerPrj);
         SmashPrj.transformGeometry(
-            SmashPrj.EPSG4326, dataPrj!, touchPointLayerPrj);
+            SmashPrj.EPSG4326, dataPrj, touchPointLayerPrj);
       }
       var tableName = vLayer.getName();
       var sqlName = SqlName(tableName!);

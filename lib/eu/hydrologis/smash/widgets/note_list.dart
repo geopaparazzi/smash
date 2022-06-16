@@ -222,7 +222,7 @@ class _NoteInfoState extends State<NoteInfo> {
         subtitle: Text(
             '${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(ts))}'),
         leading: Icon(
-          getSmashIcon(markerName) ?? MdiIcons.mapMarker,
+          getSmashIcon(markerName),
           color: ColorExt(markerColor),
           size: SmashUI.MEDIUM_ICON_SIZE,
         ),
