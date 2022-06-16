@@ -265,7 +265,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
           lines.add(Polyline(
             points: linePoints,
             strokeWidth: lineStyle!.strokeWidth,
-            color: ColorExt(lineStyle!.strokeColorHex),
+            color: ColorExt(lineStyle.strokeColorHex),
           ));
         });
       }

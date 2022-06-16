@@ -54,9 +54,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "gms_free_1.6.12_version"
-      resolved-ref: "1fe5d850504befacac4c6a31dccb1913dfa971e4"
-      url: "https://github.com/moovida/background_locator.git"
+      ref: "830989e338b2d7b789dc2ffa2bd407e7a1d92b19"
+      resolved-ref: "830989e338b2d7b789dc2ffa2bd407e7a1d92b19"
+      url: "https://github.com/caiobraga/background_locator.git"
     source: git
     version: "1.6.12"
   badges:

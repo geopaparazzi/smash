@@ -136,7 +136,7 @@ class GeoImageSource extends RasterLayerSource {
     var r = map['r'];
     var g = map['g'];
     var b = map['b'];
-    List<int> rgb = [r, g, b];
+    List<int?> rgb = [r, g, b];
     File imageFile = new File(path);
 
     GeoImage geoImage = GeoImage(imageFile);
@@ -147,7 +147,7 @@ class GeoImageSource extends RasterLayerSource {
     IMG.Image _decodedImage = geoImage.image!;
 
     var ext = FileUtilities.getExtension(path);
-    var bytes = geoImage.imageBytes!;
+    List<int>? bytes = geoImage.imageBytes;
     // IMG.Image _decodedImage = IMG.decodeImage(bytes);
     bool changed = false;
     if (EXPERIMENTAL_HIDE_COLOR_RASTER__ENABLED && r != null) {
@@ -446,8 +446,8 @@ class MyMemoryImage extends ImageProvider<MyMemoryImage> {
   const MyMemoryImage(this.bytes, this.rgbToHide) : assert(bytes != null);
 
   /// The bytes to decode into an image.
-  final Uint8List bytes;
-  final List<int> rgbToHide;
+  final Uint8List? bytes;
+  final List<int?> rgbToHide;
 
   /// The scale to place in the [ImageInfo] object of the image.
   final double scale = 1.0;
@@ -469,7 +469,7 @@ class MyMemoryImage extends ImageProvider<MyMemoryImage> {
   Future<ui.Codec> _loadAsync(MyMemoryImage key, DecoderCallback decode) async {
     assert(key == this);
 
-    return await PaintingBinding.instance.instantiateImageCodec(bytes);
+    return await PaintingBinding.instance.instantiateImageCodec(bytes!);
   }
 
   @override

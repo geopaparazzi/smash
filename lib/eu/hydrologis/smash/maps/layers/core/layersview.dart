@@ -195,7 +195,7 @@ class LayersPageState extends State<LayersPage> {
             icon: MdiIcons.palette,
             onTap: () async {
               var propertiesWidget = layerSourceItem.getPropertiesWidget();
-              String newSldString = await Navigator.push(context,
+              String? newSldString = await Navigator.push(context,
                   MaterialPageRoute(builder: (context) => propertiesWidget));
               if (newSldString != null) {
                 if (layerSourceItem is SldLayerSource) {
