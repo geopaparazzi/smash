@@ -286,18 +286,22 @@ class CurrentGpsLogLayer extends StatelessWidget {
         drawHorizontalLine: true,
       ),
       titlesData: FlTitlesData(
-        bottomTitles: SideTitles(
+        bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
           showTitles: false,
-        ),
-        leftTitles: SideTitles(
+        )),
+        leftTitles: AxisTitles(
+            sideTitles: SideTitles(
           showTitles: false,
-        ),
-        rightTitles: SideTitles(
+        )),
+        rightTitles: AxisTitles(
+            sideTitles: SideTitles(
           showTitles: false,
-        ),
-        topTitles: SideTitles(
+        )),
+        topTitles: AxisTitles(
+            sideTitles: SideTitles(
           showTitles: false,
-        ),
+        )),
       ),
       lineBarsData: [
         LineChartBarData(
@@ -305,17 +309,16 @@ class CurrentGpsLogLayer extends StatelessWidget {
               .map((e) => FlSpot(e[0], (e[1] * factor).roundToDouble()))
               .toList(),
           isCurved: true,
-          colors: [
-            Colors.black.withAlpha(160),
-          ],
+          color: Colors.black.withAlpha(160),
           barWidth: 2,
           isStrokeCapRound: true,
           dotData: FlDotData(
             show: false,
           ),
-          belowBarData: BarAreaData(show: true, colors: [
-            Colors.black.withAlpha(20),
-          ]),
+          belowBarData: BarAreaData(
+            show: true,
+            color: Colors.black.withAlpha(20),
+          ),
         )
       ],
     );
