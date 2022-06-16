@@ -162,10 +162,13 @@ dependencies:
   #    <true/>
   # GPL 3.0
   background_locator: #1.6.12
+    # git:
+    #   url: https://github.com/moovida/background_locator.git
+    #   ref: gms_free_1.6.12_version
     git:
-      url: https://github.com/moovida/background_locator.git
-      ref: gms_free_1.6.12_version
-
+      url: https://github.com/caiobraga/background_locator.git
+      ref: 830989e338b2d7b789dc2ffa2bd407e7a1d92b19
+      
   # MIT
   # geolocator: ^5.3.0
   # on IOS heading is not supported. For rotation we should try the plugin: location: 2.3.5

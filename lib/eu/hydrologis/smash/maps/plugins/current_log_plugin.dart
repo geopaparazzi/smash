@@ -49,8 +49,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
   final CurrentGpsLogPluginOption currentGpsLogLayerOpts;
   final MapState map;
   final Stream<void> stream;
-  late Paint logPaint;
-  late Paint filteredLogPaint;
+  Paint? logPaint;
+  Paint? filteredLogPaint;
   bool doOrig = true;
   bool doFiltered = true;
   // defines if to flatten the chart to have more realistic ratio
@@ -323,8 +323,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
 }
 
 class CurrentLogPathPainter extends CustomPainter {
-  var logPaint;
-  var filtereLogPaint;
+  Paint? logPaint;
+  Paint? filtereLogPaint;
   List<LatLng> currentLogPoints;
   List<LatLng> currentFilteredLogPoints;
   MapState map;
@@ -349,7 +349,7 @@ class CurrentLogPathPainter extends CustomPainter {
         double center1Y = (posPixel1.y - pixelOrigin.y.toDouble());
         path1.lineTo(center1X, center1Y);
       }
-      canvas.drawPath(path1, logPaint);
+      canvas.drawPath(path1, logPaint!);
     }
 
     if (filtereLogPaint != null) {
@@ -368,7 +368,7 @@ class CurrentLogPathPainter extends CustomPainter {
         path2.lineTo(center2X, center2Y);
       }
 
-      canvas.drawPath(path2, filtereLogPaint);
+      canvas.drawPath(path2, filtereLogPaint!);
     }
   }
 

@@ -280,10 +280,10 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     var value = filter?.uniqueValueValue;
 
     var polygonSymbolizersList = rule.polygonSymbolizers;
-    if (polygonSymbolizersList == null || polygonSymbolizersList.isEmpty) {
+    if (polygonSymbolizersList.isEmpty) {
       return [];
     }
-    var polygonStyle = polygonSymbolizersList[0].style ??= PolygonStyle();
+    var polygonStyle = polygonSymbolizersList[0].style;
 
     var lineWidth = polygonStyle.strokeWidth;
     Color lineStrokeColor = ColorExt(polygonStyle.strokeColorHex);
@@ -338,10 +338,10 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     var value = filter?.uniqueValueValue;
 
     var lineSymbolizersList = rule.lineSymbolizers;
-    if (lineSymbolizersList == null || lineSymbolizersList.isEmpty) {
+    if (lineSymbolizersList.isEmpty) {
       return [];
     }
-    var lineStyle = lineSymbolizersList[0].style ??= LineStyle();
+    var lineStyle = lineSymbolizersList[0].style;
 
     var lineWidth = lineStyle.strokeWidth;
     Color lineStrokeColor = ColorExt(lineStyle.strokeColorHex);
@@ -374,10 +374,10 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     var value = filter?.uniqueValueValue;
 
     var pointSymbolizersList = rule.pointSymbolizers;
-    if (pointSymbolizersList == null || pointSymbolizersList.isEmpty) {
+    if (pointSymbolizersList.isEmpty) {
       return [];
     }
-    var pointStyle = pointSymbolizersList[0].style ??= PointStyle();
+    var pointStyle = pointSymbolizersList[0].style;
     var iconData = SmashIcons.forSldWkName(pointStyle.markerName);
     var pointsSize = pointStyle.markerSize * 3;
     Color pointFillColor = ColorExt(pointStyle.fillColorHex);
