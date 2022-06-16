@@ -422,7 +422,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
               tmsData.name = value;
             },
             validator: (value) {
-              if (value!.isEmpty || value!.length < 1) {
+              if (value!.isEmpty || value.length < 1) {
                 return SL.current
                     .onlineSourcesPage_pleaseEnterValidName; //"Please enter a valid name"
               }

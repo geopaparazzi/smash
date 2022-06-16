@@ -19,7 +19,7 @@ import 'package:smashlibs/smashlibs.dart';
 class RulerPlugin implements MapPlugin {
   @override
   Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+      LayerOptions options, MapState mapState, Stream<void> stream) {
     if (options is RulerPluginOptions) {
       return RulerPluginLayer(options, mapState, stream);
     }
@@ -42,7 +42,7 @@ class RulerPluginOptions extends LayerOptions {
 class RulerPluginLayer extends StatefulWidget {
   final RulerPluginOptions rulerPluginLayerOpts;
   final MapState map;
-  final Stream<Null> stream;
+  final Stream<void> stream;
 
   RulerPluginLayer(this.rulerPluginLayerOpts, this.map, this.stream);
 

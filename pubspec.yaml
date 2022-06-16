@@ -10,16 +10,16 @@ version: 1.7.4+66 # we keep the build number growing to have it properly handled
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=2.0.0"
+  flutter: ">=2.0.0 <3.0.0"
 
-dependency_overrides:
-  intl: '0.17.0'  
+# dependency_overrides:
+#   intl: '0.17.0'  
 
 dependencies:
   flutter_localizations:
     sdk: flutter
-  # intl: '>=0.16.1 <=0.17.0'
-  intl: '0.17.0'
+  intl: '>=0.16.1 <=0.17.0'
+  # intl: '0.17.0'
 
   ##################################
   # OWN
@@ -37,16 +37,16 @@ dependencies:
   # git:
   #  url: https://github.com/moovida/dart_hydrologis_db.git
   smashlibs:
-    # path: ../smashlibs/
-    git:
-      url: https://github.com/moovida/smashlibs.git
-      ref: 7acb939
+    path: ../smashlibs/
+    # git:
+    #   url: https://github.com/moovida/smashlibs.git
+    #   ref: 7acb939
       
   smash_import_export_plugins:
-    # path: ../smash_import_export_plugins/
-    git:
-      url: https://github.com/geopaparazzi/smash_import_export_plugins.git
-      ref: 3ed228d
+    path: ../smash_import_export_plugins/
+    # git:
+    #   url: https://github.com/geopaparazzi/smash_import_export_plugins.git
+    #   ref: 3ed228d
 
 
   dart_shp: ^0.4.0
@@ -77,40 +77,43 @@ dependencies:
 
   # MIT
   # this also pulls flutter_map_dragmarker
-  flutter_map_line_editor:
-    git:
-      # url: https://github.com/moovida/flutter_map_line_editor.git
-      # ref: upgrade_to_latlong2
-      url: https://github.com/ibrierley/flutter_map_line_editor.git
-      ref: 91604d66c3b3fb1c197943679cc4eb701bb82a17
+  flutter_map_line_editor: ^2.0.0
+    # git:
+    #   # url: https://github.com/moovida/flutter_map_line_editor.git
+    #   # ref: upgrade_to_latlong2
+    #   url: https://github.com/ibrierley/flutter_map_line_editor.git
+    #   ref: 91604d66c3b3fb1c197943679cc4eb701bb82a17
 
   # MIT
   sqlite3_flutter_libs: ^0.5.4
 
   # BSD
-  flutter_map: ^0.14.0
+  flutter_map: ^1.0.0
   # git:
   #   url: https://github.com/moovida/flutter_map.git
   #   ref: version4smash
 
   positioned_tap_detector_2: ^1.0.4
   
-  flutter_map_marker_cluster: ^0.4.0
-    # git:
-    #   url: https://github.com/moovida/flutter_map_marker_cluster.git
-    #   ref: version4smash
+  flutter_map_marker_cluster: #^0.4.0
+    git:
+      # url: https://github.com/pablojimpas/flutter_map_marker_cluster.git
+      url: https://github.com/moovida/flutter_map_marker_cluster.git
+      ref: bump-flutter_map-1.0.0
+      # url: https://github.com/moovida/flutter_map_marker_cluster.git
+      # ref: with_flutter_map_1
 
   # GPL 3.0
-  map_elevation: ^1.2.0
+  map_elevation: ^2.0.0
     # git:
     #   url: https://github.com/moovida/map_elevation.git
     #   ref: fix_latlng_lib
 
   # MIT
-  lat_lon_grid_plugin: ^0.2.2
-    # git:
-    #   url: https://github.com/moovida/lat_lon_grid_plugin.git
-    #   ref: version4smash
+  lat_lon_grid_plugin: #^0.2.2
+    git:
+      url: https://github.com/moovida/lat_lon_grid_plugin.git
+      ref: bump_flutter_map_to_1
 
   mapsforge_flutter: #^2.0.1
     # path: /home/hydrologis/development/mapsforge_flutter/mapsforge_flutter

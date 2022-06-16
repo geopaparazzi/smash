@@ -244,7 +244,7 @@ class GpsHandler {
     });
 
     // activate test stream, even if it will be silent
-    TestLogStream().streamSubscription.onData((SmashPosition pos) {
+    TestLogStream().streamSubscription!.onData((SmashPosition pos) {
       _onPositionUpdate(pos);
     });
   }
@@ -320,7 +320,7 @@ class GpsHandler {
 
   /// Close the handler.
   Future close() async {
-    _timer?.cancel();
+    _timer.cancel();
 
     await closeGpsIsolate();
 

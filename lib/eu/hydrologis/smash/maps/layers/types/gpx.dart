@@ -119,7 +119,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
             if (wpt.ele == null) {
               latLng = LatLng(wpt.lat!, wpt.lon!);
             } else {
-              latLng = ElevationPoint(wpt.lat, wpt.lon, wpt.ele);
+              latLng = ElevationPoint(wpt.lat!, wpt.lon!, wpt.ele!);
               minLineElev = min(minLineElev, wpt.ele!);
               maxLineElev = max(maxLineElev, wpt.ele!);
             }
@@ -152,7 +152,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
           if (wpt.ele == null) {
             latLng = LatLng(wpt.lat!, wpt.lon!);
           } else {
-            latLng = ElevationPoint(wpt.lat, wpt.lon, wpt.ele);
+            latLng = ElevationPoint(wpt.lat!, wpt.lon!, wpt.ele!);
             minLineElev = min(minLineElev, wpt.ele!);
             maxLineElev = max(maxLineElev, wpt.ele!);
           }

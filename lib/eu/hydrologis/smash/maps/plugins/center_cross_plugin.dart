@@ -55,7 +55,7 @@ class CenterCrossStyle {
 class CenterCrossPlugin implements MapPlugin {
   @override
   Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+      LayerOptions options, MapState mapState, Stream<void> stream) {
     if (options is CenterCrossPluginOption) {
       return CenterCrossLayer(options, mapState, stream);
     }
@@ -82,7 +82,7 @@ class CenterCrossPluginOption extends LayerOptions {
 class CenterCrossLayer extends StatelessWidget {
   final CenterCrossPluginOption scaleLayerOpts;
   final MapState map;
-  final Stream<Null> stream;
+  final Stream<void> stream;
 
   CenterCrossLayer(this.scaleLayerOpts, this.map, this.stream);
 

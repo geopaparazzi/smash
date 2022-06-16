@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart' as FM;
-import 'package:flutter_map/src/layer/tile_layer.dart' hide Tile;
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:mapsforge_flutter/core.dart';
@@ -211,7 +210,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
   }
 
   @override
-  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
+  ImageProvider getImage(FM.Coords<num> coords, FM.TileLayerOptions options) {
     int xTile = coords.x.round();
     int yTile = coords.y.round();
     int zoom = coords.z.round();

@@ -14,25 +14,26 @@ import 'intl/messages_all.dart';
 
 class SL {
   SL();
-  
-  static SL current;
-  
-  static const AppLocalizationDelegate delegate =
-    AppLocalizationDelegate();
+
+  static late SL current;
+
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<SL> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name); 
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
       SL.current = SL();
-      
+
       return SL.current;
     });
-  } 
+  }
 
   static SL of(BuildContext context) {
-    return Localizations.of<SL>(context, SL);
+    return Localizations.of<SL>(context, SL)!;
   }
 
   /// `Welcome to SMASH!`

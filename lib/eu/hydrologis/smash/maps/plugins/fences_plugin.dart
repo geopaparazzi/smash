@@ -19,7 +19,7 @@ import 'package:smash/eu/hydrologis/smash/util/notifications.dart';
 class FencesPlugin implements MapPlugin {
   @override
   Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<Null> stream) {
+      LayerOptions options, MapState mapState, Stream<void> stream) {
     if (options is FencesPluginOption) {
       return FencesLayer(options, mapState, stream);
     }
@@ -59,7 +59,7 @@ class FencesPluginOption extends LayerOptions {
 class FencesLayer extends StatelessWidget {
   final FencesPluginOption opts;
   final MapState mapState;
-  final Stream<Null> stream;
+  final Stream<void> stream;
 
   FencesLayer(this.opts, this.mapState, this.stream) {}
 

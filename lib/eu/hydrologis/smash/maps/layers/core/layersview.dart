@@ -446,7 +446,7 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
         return true;
       }
     } finally {
-      ch?.close(filePath);
+      ch.close(filePath);
     }
   } else {
     SmashDialogs.showWarningDialog(
