@@ -37,16 +37,16 @@ dependencies:
   # git:
   #  url: https://github.com/moovida/dart_hydrologis_db.git
   smashlibs:
-    path: ../smashlibs/
-    # git:
-    #   url: https://github.com/moovida/smashlibs.git
-    #   ref: 7acb939
+    # path: ../smashlibs/
+    git:
+      url: https://github.com/moovida/smashlibs.git
+      ref: 2c27b2c
       
   smash_import_export_plugins:
-    path: ../smash_import_export_plugins/
-    # git:
-    #   url: https://github.com/geopaparazzi/smash_import_export_plugins.git
-    #   ref: 3ed228d
+    # path: ../smash_import_export_plugins/
+    git:
+      url: https://github.com/geopaparazzi/smash_import_export_plugins.git
+      ref: 0e6e8fb
 
 
   dart_shp: ^0.4.0
@@ -89,9 +89,9 @@ dependencies:
 
   # BSD
   flutter_map: ^1.0.0
-  # git:
-  #   url: https://github.com/moovida/flutter_map.git
-  #   ref: version4smash
+    # git:
+    #   url: https://github.com/fleaflet/flutter_map.git
+    #   ref: 1dfc30ed5e4a1f26796266200b737191131af397
 
   positioned_tap_detector_2: ^1.0.4
   
@@ -130,7 +130,7 @@ dependencies:
     #   url: https://github.com/moovida/extended_image
 
   # BSD
-  fl_chart: ^0.40.2
+  fl_chart: ^0.51.0
 
   # MIT
   permission_handler: ^8.1.4+2

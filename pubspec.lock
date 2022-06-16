@@ -282,7 +282,7 @@ packages:
       name: fl_chart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.40.6"
+    version: "0.51.0"
   flutter:
     dependency: transitive
     description: flutter
@@ -559,7 +559,7 @@ packages:
     description:
       path: "."
       ref: bump_flutter_map_to_1
-      resolved-ref: aad33f0e3ffd3c94e2509d46afaf9d45b3c40706
+      resolved-ref: "63d331237c2abcdcd129fa10a885470bedf74ed7"
       url: "https://github.com/moovida/lat_lon_grid_plugin.git"
     source: git
     version: "0.2.2"
@@ -767,7 +767,7 @@ packages:
       name: path_provider_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.14"
+    version: "2.0.15"
   path_provider_ex:
     dependency: transitive
     description:
@@ -1072,16 +1072,20 @@ packages:
   smash_import_export_plugins:
     dependency: "direct main"
     description:
-      path: "../smash_import_export_plugins"
-      relative: true
-    source: path
+      path: "."
+      ref: "0e6e8fb"
+      resolved-ref: "0e6e8fba084c3ce6ec35844e732ad7ae29ca8775"
+      url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
+    source: git
     version: "0.0.1"
   smashlibs:
     dependency: "direct main"
     description:
-      path: "../smashlibs"
-      relative: true
-    source: path
+      path: "."
+      ref: "2c27b2c"
+      resolved-ref: "2c27b2cb0ebb2afd944b23e19c4144adc35d56ba"
+      url: "https://github.com/moovida/smashlibs.git"
+    source: git
     version: "1.0.0"
   source_map_stack_trace:
     dependency: transitive
