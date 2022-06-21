@@ -334,7 +334,7 @@ packages:
       name: flutter_map
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.1.0"
   flutter_map_dragmarker:
     dependency: transitive
     description:
@@ -409,13 +409,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.22.0"
-  flutter_tags:
+  flutter_tags_x:
     dependency: transitive
     description:
-      name: flutter_tags
+      name: flutter_tags_x
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-nullsafety.1"
+    version: "1.1.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -888,7 +888,7 @@ packages:
       name: postgres
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.4"
+    version: "2.4.5"
   process:
     dependency: transitive
     description:
@@ -1049,7 +1049,7 @@ packages:
       name: shelf_packages_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.1"
   shelf_static:
     dependency: transitive
     description:
@@ -1073,8 +1073,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0e6e8fb"
-      resolved-ref: "0e6e8fba084c3ce6ec35844e732ad7ae29ca8775"
+      ref: "0ec0a96"
+      resolved-ref: "0ec0a9634bcd941922e6faa53a0f10e7613b036b"
       url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
     source: git
     version: "0.0.1"
@@ -1082,8 +1082,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2c27b2c"
-      resolved-ref: "2c27b2cb0ebb2afd944b23e19c4144adc35d56ba"
+      ref: "399f9c3"
+      resolved-ref: "399f9c3b3e807db7c37520606a7508e685999081"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
@@ -1261,7 +1261,7 @@ packages:
       name: url_launcher_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.5"
+    version: "2.1.0"
   url_launcher_web:
     dependency: transitive
     description:
