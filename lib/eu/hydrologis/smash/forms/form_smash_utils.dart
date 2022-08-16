@@ -130,7 +130,7 @@ class SmashFormHelper implements AFormhelper {
         return value;
       } else {
         SmashDialogs.showWarningDialog(
-            context, SL().form_smash_cantSaveImageDb);
+            context, SL.of(context).form_smash_cantSaveImageDb);
         return null;
       }
     }
@@ -176,7 +176,7 @@ class SmashFormHelper implements AFormhelper {
         return value;
       } else {
         SmashDialogs.showWarningDialog(
-            context, SL().form_smash_cantSaveImageDb);
+            context, SL.of(context).form_smash_cantSaveImageDb);
         return null;
       }
     }

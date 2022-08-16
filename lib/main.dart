@@ -23,6 +23,7 @@ import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/tools/ruler_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
+import 'package:smash/eu/hydrologis/smash/util/localization.dart';
 import 'package:smash_import_export_plugins/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -80,7 +81,7 @@ class SmashApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: SL.delegate.supportedLocales,
+      supportedLocales: SL.supportedLocales,
       // PRE GEN
       // localizationsDelegates: [
       //   AppLocalizations.delegate, // available after codegen
@@ -133,6 +134,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Localization.init(context);
     Widget widgetToLoad;
     if (_initFinished) {
       // load projects page
@@ -217,7 +219,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
 
 Future<String?> handleFences(BuildContext context) async {
   try {
-    FenceMaster().readFences();
+    FenceMaster().readFences(context);
   } on Exception catch (e, s) {
     var msg = "Error while reading fences.";
     return logMsg(msg, e, s);
@@ -317,7 +319,7 @@ Future<String?> handleWorkspace(BuildContext context) async {
           GpPreferences().getBooleanSync("SHOWN_FS_MOVED_WARNING", false);
       if (!shownAlready) {
         await SmashDialogs.showWarningDialog(
-            context, SL().main_StorageIsInternalWarning);
+            context, SL.of(context).main_StorageIsInternalWarning);
         await GpPreferences().setBoolean("SHOWN_FS_MOVED_WARNING", true);
       }
     }

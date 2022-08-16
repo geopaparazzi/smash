@@ -33,7 +33,7 @@ class _SketchPageState extends State<SketchPage> {
       actions = <Widget>[
         new IconButton(
           icon: new Icon(Icons.content_copy),
-          tooltip: SL().form_sketch_newSketch,
+          tooltip: SL.of(context).form_sketch_newSketch,
           onPressed: () => setState(() {
             _finished = false;
             _controller = _newController();
@@ -46,31 +46,31 @@ class _SketchPageState extends State<SketchPage> {
             icon: new Icon(
               Icons.undo,
             ),
-            tooltip: SL().form_sketch_undo,
+            tooltip: SL.of(context).form_sketch_undo,
             onPressed: () {
               if (_controller.isEmpty) {
                 showModalBottomSheet(
                     context: context,
                     builder: (BuildContext context) =>
-                        new Text(SL().form_sketch_noUndo));
+                        new Text(SL.of(context).form_sketch_noUndo));
               } else {
                 _controller.undo();
               }
             }),
         new IconButton(
             icon: new Icon(Icons.delete),
-            tooltip: SL().form_sketch_clear,
+            tooltip: SL.of(context).form_sketch_clear,
             onPressed: _controller.clear),
         new IconButton(
           icon: new Icon(Icons.check),
-          tooltip: SL().form_sketch_save,
+          tooltip: SL.of(context).form_sketch_save,
           onPressed: () => Navigator.pop(context, _controller.finish().toPNG()),
         ) //_show(_controller.finish(), context)),
       ];
     }
     return new Scaffold(
       appBar: new AppBar(
-          title: Text(SL().form_sketch_sketcher),
+          title: Text(SL.of(context).form_sketch_sketcher),
           actions: actions,
           bottom: new PreferredSize(
             child: new DrawBar(_controller),
@@ -114,8 +114,8 @@ class DrawBar extends StatelessWidget {
                 color: SmashColors.mainBackground,
               ),
               tooltip: _controller.eraseMode
-                  ? SL().form_sketch_enableDrawing
-                  : SL().form_sketch_enableEraser,
+                  ? SL.of(context).form_sketch_enableDrawing
+                  : SL.of(context).form_sketch_enableEraser,
               onPressed: () {
                 setState(() {
                   _controller.eraseMode = !_controller.eraseMode;
@@ -145,8 +145,8 @@ class _ColorPickerButtonState extends State<ColorPickerButton> {
     return new IconButton(
         icon: new Icon(_iconData, color: _color),
         tooltip: widget._background
-            ? SL().form_sketch_backColor
-            : SL().form_sketch_strokeColor,
+            ? SL.of(context).form_sketch_backColor
+            : SL.of(context).form_sketch_strokeColor,
         onPressed: _pickColor);
   }
 
@@ -158,7 +158,7 @@ class _ColorPickerButtonState extends State<ColorPickerButton> {
             builder: (BuildContext context) {
               return new Scaffold(
                   appBar: new AppBar(
-                    title: Text(SL().form_sketch_pickColor),
+                    title: Text(SL.of(context).form_sketch_pickColor),
                   ),
                   body: new Container(
                       alignment: Alignment.center,
