@@ -3,7 +3,7 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'package:catcher/catcher.dart';
+// import 'package:catcher/catcher.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
@@ -34,20 +34,21 @@ import 'generated/l10n.dart';
 const DOCATCHER = false;
 
 void main() {
-  if (DOCATCHER) {
-    CatcherOptions debugOptions =
-        CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
-    CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
-      EmailManualHandler(["feedback@geopaparazzi.eu"])
-    ]);
+  // TODO endable catcher again once it is aligned with libs
+  // if (DOCATCHER) {
+  //   CatcherOptions debugOptions =
+  //       CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
+  //   CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
+  //     EmailManualHandler(["feedback@geopaparazzi.eu"])
+  //   ]);
 
-    Catcher(
-        rootWidget: getMainWidget(),
-        debugConfig: debugOptions,
-        releaseConfig: releaseOptions);
-  } else {
-    runApp(getMainWidget());
-  }
+  //   Catcher(
+  //       rootWidget: getMainWidget(),
+  //       debugConfig: debugOptions,
+  //       releaseConfig: releaseOptions);
+  // } else {
+  runApp(getMainWidget());
+  // }
 }
 
 MultiProvider getMainWidget() {
@@ -91,7 +92,7 @@ class SmashApp extends StatelessWidget {
       //   const Locale.fromSubtags(languageCode: 'zh'),
       // ],
       // END PRE GEN
-      navigatorKey: Catcher.navigatorKey,
+      // navigatorKey: Catcher.navigatorKey,
       title: Workspace.APP_NAME,
       //theme: Provider.of<ThemeState>(context).currentThemeData,
       theme: ThemeData(

@@ -258,19 +258,22 @@ class MainViewCoachMarks {
   }
 
   void showTutorial(BuildContext context) {
-    TutorialCoachMark(context,
+    TutorialCoachMark(
         targets: targets,
         colorShadow: SmashColors.mainDecorations,
         alignSkip: Alignment.topCenter,
         textSkip: SL.of(context).coachMarks_skip, //"SKIP"
         paddingFocus: 10,
-        opacityShadow: 0.7, onFinish: () {
-      // print("finish");
-    }, onClickTarget: (target) {
-      // print(target);
-    }, onSkip: () {
-      // print("skip");
-    })
-      ..show();
+        opacityShadow: 0.7,
+        onFinish: () {
+          // print("finish");
+        },
+        onClickTarget: (target) {
+          // print(target);
+        },
+        onSkip: () {
+          // print("skip");
+        })
+      ..show(context: context);
   }
 }
