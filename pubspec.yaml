@@ -40,13 +40,13 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: 399f9c3
+      # ref: 351222c
       
   smash_import_export_plugins:
     # path: ../smash_import_export_plugins/
     git:
       url: https://github.com/geopaparazzi/smash_import_export_plugins.git
-      ref: 0ec0a96
+      # ref: aa3dda3
 
 
   dart_shp: ^0.4.0
@@ -63,10 +63,10 @@ dependencies:
   # OTHERS
   ##################################
   # Apache 2.0
-  catcher: ^0.6.6
+  # catcher: ^0.6.9
 
   # MIT
-  flutter_ringtone_player: ^3.0.0
+  flutter_ringtone_player: ^3.2.0
 
   # flutter_map_dragmarker:
   #   git:
@@ -77,7 +77,7 @@ dependencies:
 
   # MIT
   # this also pulls flutter_map_dragmarker
-  flutter_map_line_editor: ^2.0.0
+  flutter_map_line_editor: ^3.0.0
     # git:
     #   # url: https://github.com/moovida/flutter_map_line_editor.git
     #   # ref: upgrade_to_latlong2
@@ -85,21 +85,21 @@ dependencies:
     #   ref: 91604d66c3b3fb1c197943679cc4eb701bb82a17
 
   # MIT
-  sqlite3_flutter_libs: ^0.5.4
+  sqlite3_flutter_libs: ^0.5.9
 
   # BSD
-  flutter_map: ^1.0.0
+  flutter_map: ^2.2.0
     # git:
     #   url: https://github.com/fleaflet/flutter_map.git
     #   ref: 1dfc30ed5e4a1f26796266200b737191131af397
 
   positioned_tap_detector_2: ^1.0.4
   
-  flutter_map_marker_cluster: #^0.4.0
-    git:
+  flutter_map_marker_cluster: ^0.5.4
+    # git:
       # url: https://github.com/pablojimpas/flutter_map_marker_cluster.git
-      url: https://github.com/moovida/flutter_map_marker_cluster.git
-      ref: bump-flutter_map-1.0.0
+      # url: https://github.com/moovida/flutter_map_marker_cluster.git
+      # ref: bump-flutter_map-1.0.0
       # url: https://github.com/moovida/flutter_map_marker_cluster.git
       # ref: with_flutter_map_1
 
@@ -110,10 +110,10 @@ dependencies:
     #   ref: fix_latlng_lib
 
   # MIT
-  lat_lon_grid_plugin: #^0.2.2
-    git:
-      url: https://github.com/moovida/lat_lon_grid_plugin.git
-      ref: bump_flutter_map_to_1
+  lat_lon_grid_plugin: ^0.2.3
+    # git:
+    #   url: https://github.com/moovida/lat_lon_grid_plugin.git
+    #   ref: bump_flutter_map_to_1
 
   mapsforge_flutter: #^2.0.1
     # path: /home/hydrologis/development/mapsforge_flutter/mapsforge_flutter
@@ -122,26 +122,26 @@ dependencies:
       # url: https://github.com/moovida/mapsforge_flutter.git
       path: mapsforge_flutter
       # ref: 33b2dda0512f9f6de250451e7d3854127eebc3d5
-      ref: 4a44d52deb389934f357af922788a5b5db226bce
+      # ref: 4a44d52deb389934f357af922788a5b5db226bce
 
   #MIT
-  extended_image: ^6.0.1
+  extended_image: ^6.3.0
     # git:
     #   url: https://github.com/moovida/extended_image
 
   # BSD
-  fl_chart: ^0.51.0
+  fl_chart: ^0.55.1
 
   # MIT
-  permission_handler: ^8.1.4+2
+  permission_handler: ^10.0.0
   # git: 
   #   url: https://github.com/Baseflow/flutter-permission-handler.git
   #   path: permission_handler
   # BSD License
-  synchronized: ^3.0.0
+  synchronized: ^3.0.0+3
 
   # Apache 2
-  badges: ^2.0.1
+  badges: ^2.0.3
   # git:
   #   url: https://github.com/moovida/flutter_badges.git
   # MIT
@@ -201,7 +201,7 @@ dependencies:
   # BSD
   url_launcher: ^6.0.6
 
-  xml: '>=4.5.1 <=5.3.1'
+  xml: ^6.1.0 #'>=4.5.1 <=5.3.1'
 
   # Apache 2.0
   gpx: ^2.1.0
@@ -210,7 +210,7 @@ dependencies:
     #   ref: "540e167"
 
   # Apache 2.0
-  pdf: '>=2.1.0 <=3.6.0'
+  # pdf: '>=2.1.0 <=3.6.0'
 
   # image: 3.0.0-nullsafety.0
   # image: '>=2.1.14 <3.0.0-nullsafety.0'

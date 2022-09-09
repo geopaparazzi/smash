@@ -299,7 +299,8 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                 message: SL
                     .of(context)
                     .gpsInfoButton_copyLatitudeToClipboard, //"Copy latitude to clipboard."
-                child: RaisedButton(
+                child: ElevatedButton(
+                  style: SmashUI.defaultElevateButtonStyle(),
                   onPressed: () async {
                     await Clipboard.setData(ClipboardData(
                         text: pos.latitude.toStringAsFixed(
@@ -327,7 +328,8 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                 message: SL
                     .of(context)
                     .gpsInfoButton_copyLongitudeToClipboard, //"Copy longitude to clipboard."
-                child: RaisedButton(
+                child: ElevatedButton(
+                  style: SmashUI.defaultElevateButtonStyle(),
                   onPressed: () async {
                     await Clipboard.setData(ClipboardData(
                         text: pos.longitude.toStringAsFixed(

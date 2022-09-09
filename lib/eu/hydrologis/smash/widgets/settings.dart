@@ -1251,7 +1251,8 @@ class GpsSettingsState extends State<GpsSettings> {
                   title: Text(SL
                       .of(context)
                       .settings_setDurationGpsPointsInMilli), //"Set duration for GPS points in milliseconds."
-                  subtitle: FlatButton(
+                  subtitle: TextButton(
+                      style: SmashUI.defaultFlatButtonStyle(),
                       onPressed: () async {
                         var newValue = await SmashDialogs.showInputDialog(
                             context,
@@ -1821,8 +1822,9 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
               leading: Icon(MdiIcons.tableEye),
               title: Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: RaisedButton(
-                    color: SmashColors.mainBackground,
+                child: ElevatedButton(
+                    style: SmashUI.defaultElevateButtonStyle(
+                        color: SmashColors.mainBackground),
                     child: Text(SL
                         .of(context)
                         .settings_openFullDebugLog), //"Open full debug log"

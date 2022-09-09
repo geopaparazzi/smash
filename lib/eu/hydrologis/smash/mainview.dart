@@ -767,18 +767,20 @@ class MainViewWidgetState extends State<MainViewWidget>
     }
     if (PluginsHandler.GRID.isOn()) {
       var gridLayer = MapPluginLatLonGridOptions(
+        labelStyle: TextStyle(
+          color: SmashColors.mainBackground,
+          backgroundColor: SmashColors.mainDecorations.withAlpha(170),
+          fontSize: 12.0,
+        ),
         lineColor: SmashColors.mainDecorations,
-        textColor: SmashColors.mainBackground,
         lineWidth: 0.5,
-        textBackgroundColor: SmashColors.mainDecorations.withAlpha(170),
         showCardinalDirections: true,
         showCardinalDirectionsAsPrefix: false,
-        textSize: 12.0,
         showLabels: true,
         rotateLonLabels: true,
         placeLabelsOnLines: true,
-        offsetLonTextBottom: 20.0,
-        offsetLatTextLeft: 20.0,
+        offsetLonLabelsBottom: 20.0,
+        offsetLatLabelsLeft: 20.0,
       );
       layers.add(gridLayer);
       pluginsList.add(MapPluginLatLonGrid());

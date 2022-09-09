@@ -962,7 +962,9 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
             ),
             Padding(
               padding: SmashUI.defaultPadding(),
-              child: new RaisedButton(
+              child: new ElevatedButton(
+                style: SmashUI.defaultElevateButtonStyle(
+                    color: SmashColors.mainDecorations),
                 child: Padding(
                   padding: SmashUI.defaultPadding(),
                   child: SmashUI.titleText(
@@ -970,7 +972,6 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
                       color: SmashColors.mainBackground),
                 ),
                 onPressed: _submitDetails,
-                color: SmashColors.mainDecorations,
               ),
             ),
           ],

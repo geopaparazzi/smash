@@ -46,7 +46,11 @@ class TileSource extends TiledRasterLayerSource {
 
   ErrorTileCallBack? errorTileCallback = (tile, exception) {
     // ignore tiles that can't load to avoid
-    SMLogger().e("Unable to load tile: ${tile.coordsKey}", exception, null);
+    if (exception is String) {
+      SMLogger().e(tile, null, null);
+    } else {
+      SMLogger().e("Unable to load tile: ${tile.coordsKey}", exception, null);
+    }
   };
   bool overrideTilesOnUrlChange = true;
 
