@@ -504,7 +504,8 @@ class TileSource extends TiledRasterLayerSource {
 
   @override
   void disposeSource() {
-    ConnectionsHandler().close(getAbsolutePath()!, tableName: getName());
+    ConnectionsHandler()
+        .close(getAbsolutePath() ?? getUrl()!, tableName: getName());
   }
 
   @override

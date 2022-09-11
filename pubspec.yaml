@@ -121,8 +121,7 @@ dependencies:
       url: https://github.com/mikes222/mapsforge_flutter.git
       # url: https://github.com/moovida/mapsforge_flutter.git
       path: mapsforge_flutter
-      # ref: 33b2dda0512f9f6de250451e7d3854127eebc3d5
-      # ref: 4a44d52deb389934f357af922788a5b5db226bce
+      ref: 29d4c8e1aed0c22456a13c5c99a25a7db9d0b3e0
 
   #MIT
   extended_image: ^6.3.0

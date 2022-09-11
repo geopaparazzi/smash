@@ -420,7 +420,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.4"
+    version: "1.1.5"
   flutter_tags_x:
     dependency: transitive
     description:
@@ -624,8 +624,8 @@ packages:
     dependency: "direct main"
     description:
       path: mapsforge_flutter
-      ref: HEAD
-      resolved-ref: "64502c948b47e1087403bfd427aba2da56e72895"
+      ref: "29d4c8e1aed0c22456a13c5c99a25a7db9d0b3e0"
+      resolved-ref: "29d4c8e1aed0c22456a13c5c99a25a7db9d0b3e0"
       url: "https://github.com/mikes222/mapsforge_flutter.git"
     source: git
     version: "2.0.2"
@@ -882,7 +882,7 @@ packages:
       name: postgres
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.6"
+    version: "2.5.0"
   process:
     dependency: transitive
     description:
@@ -1061,7 +1061,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ada397b56c94f83f5593ad8ffc072c41c48c6f43
+      resolved-ref: "17a585da137b7edcda8b0232e24903de1ee510bc"
       url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
     source: git
     version: "0.0.1"
