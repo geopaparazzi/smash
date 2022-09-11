@@ -283,86 +283,108 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     var padLeft = 5.0;
     var pad = 3.0;
 
-    List<Widget> actions = [];
-    List<Widget> secondaryActions = [];
+    var startActionPane = ActionPane(
+      extentRatio: 0.35,
+      dragDismissible: false,
+      motion: const ScrollMotion(),
+      dismissible: DismissiblePane(onDismissed: () {}),
+      children: [
+        // ZOOM TO
+        SlidableAction(
+            label: SL.of(context).logList_zoomTo, //'Zoom to'
+            foregroundColor: SmashColors.mainDecorations,
+            icon: MdiIcons.magnifyScan,
+            onPressed: (context) async {
+              SmashMapState mapState =
+                  Provider.of<SmashMapState>(context, listen: false);
+              var logDataPoints = db.getLogDataPoints(logItem.id!);
+              Envelope env = Envelope.empty();
+              logDataPoints.forEach((point) {
+                var lat = point.lat;
+                var lon = point.lon;
+                env.expandToInclude(lon, lat);
+              });
+              mapState.setBounds(env);
+              Navigator.of(context).pop();
+            }),
+        // PROPERTIES
+        SlidableAction(
+          onPressed: (context) async {
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LogPropertiesWidget(logItem)));
+            setState(() {});
+          },
+          foregroundColor: SmashColors.mainDecorations,
+          icon: MdiIcons.palette,
+          label: SL.of(context).logList_properties, //'Properties'
+        ),
+        // PROFILE VIEW
+        SlidableAction(
+          label: SL.of(context).logList_profileView, //'Profile View'
+          foregroundColor: SmashColors.mainDecorations,
+          icon: MdiIcons.chartAreaspline,
+          onPressed: (context) async {
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LogProfileView(logItem)));
+            setState(() {});
+          },
+        )
+      ],
+    );
 
-    actions.add(IconSlideAction(
-        caption: SL.of(context).logList_zoomTo, //'Zoom to'
-        color: SmashColors.mainDecorations,
-        icon: MdiIcons.magnifyScan,
-        onTap: () async {
-          SmashMapState mapState =
-              Provider.of<SmashMapState>(context, listen: false);
-          var logDataPoints = db.getLogDataPoints(logItem.id!);
-          Envelope env = Envelope.empty();
-          logDataPoints.forEach((point) {
-            var lat = point.lat;
-            var lon = point.lon;
-            env.expandToInclude(lon, lat);
-          });
-          mapState.setBounds(env);
-          Navigator.of(context).pop();
-        }));
-    actions.add(IconSlideAction(
-      caption: SL.of(context).logList_properties, //'Properties'
-      color: SmashColors.mainDecorations,
-      icon: MdiIcons.palette,
-      onTap: () async {
-        await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => LogPropertiesWidget(logItem)));
-        setState(() {});
-      },
-    ));
-    actions.add(IconSlideAction(
-      caption: SL.of(context).logList_profileView, //'Profile View'
-      color: SmashColors.mainDecorations,
-      icon: MdiIcons.chartAreaspline,
-      onTap: () async {
-        await Navigator.push(context,
-            MaterialPageRoute(builder: (context) => LogProfileView(logItem)));
-        setState(() {});
-      },
-    ));
-    secondaryActions.add(IconSlideAction(
-        caption: SL.of(context).logList_toGPX, //'To GPX'
-        color: SmashColors.mainDecorations,
-        icon: MdiIcons.mapMarker,
-        onTap: () async {
-          var exportsFolder = await Workspace.getExportsFolder();
-          try {
-            await GpxExporter.exportLog(db, logItem.id!, exportsFolder.path);
-            SmashDialogs.showInfoDialog(
-                context,
-                SL
-                    .of(context)
-                    .logList_gpsSavedInExportFolder); //"GPX saved in export folder."
-          } on Exception catch (e, s) {
-            SMLogger().e("Error exporting log GPX", e, s);
-            SmashDialogs.showErrorDialog(
-                context,
-                SL
-                    .of(context)
-                    .logList_errorOccurredExportingLogGPX); //"An error occurred while exporting log to GPX."
-          }
-        }));
-    secondaryActions.add(IconSlideAction(
-        caption: SL.of(context).logList_delete, //'Delete'
-        color: SmashColors.mainDanger,
-        icon: MdiIcons.delete,
-        onTap: () async {
-          bool? doDelete = await SmashDialogs.showConfirmDialog(
-              context,
-              SL.of(context).logList_DELETE, //"DELETE"
-              SL
-                  .of(context)
-                  .logList_areYouSureDeleteTheLog); //'Are you sure you want to delete the log?'
-          if (doDelete != null && doDelete) {
-            db.deleteGpslog(logItem.id!);
-            widget.reloadLogFunction();
-          }
-        }));
+    var endActionPane = ActionPane(
+      extentRatio: 0.35,
+      dragDismissible: false,
+      motion: const ScrollMotion(),
+      dismissible: DismissiblePane(onDismissed: () {}),
+      children: [
+        // TO GPX
+        SlidableAction(
+            label: SL.of(context).logList_toGPX, //'To GPX'
+            foregroundColor: SmashColors.mainDecorations,
+            icon: MdiIcons.mapMarker,
+            onPressed: (context) async {
+              var exportsFolder = await Workspace.getExportsFolder();
+              try {
+                await GpxExporter.exportLog(
+                    db, logItem.id!, exportsFolder.path);
+                SmashDialogs.showInfoDialog(
+                    context,
+                    SL
+                        .of(context)
+                        .logList_gpsSavedInExportFolder); //"GPX saved in export folder."
+              } on Exception catch (e, s) {
+                SMLogger().e("Error exporting log GPX", e, s);
+                SmashDialogs.showErrorDialog(
+                    context,
+                    SL
+                        .of(context)
+                        .logList_errorOccurredExportingLogGPX); //"An error occurred while exporting log to GPX."
+              }
+            }),
+        // DELETE
+        SlidableAction(
+            label: SL.of(context).logList_delete, //'Delete'
+            foregroundColor: SmashColors.mainDanger,
+            icon: MdiIcons.delete,
+            onPressed: (context) async {
+              bool? doDelete = await SmashDialogs.showConfirmDialog(
+                  context,
+                  SL.of(context).logList_DELETE, //"DELETE"
+                  SL
+                      .of(context)
+                      .logList_areYouSureDeleteTheLog); //'Are you sure you want to delete the log?'
+              if (doDelete != null && doDelete) {
+                db.deleteGpslog(logItem.id!);
+                widget.reloadLogFunction();
+              }
+            })
+      ],
+    );
 
     var logColorObject =
         EnhancedColorUtility.splitEnhancedColorString(logItem.color!);
@@ -380,10 +402,11 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         size: SmashUI.MEDIUM_ICON_SIZE,
       );
     }
+
     return Slidable(
       key: Key("logview-${logItem.id}"),
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
+      startActionPane: startActionPane,
+      endActionPane: endActionPane,
       child: ListTile(
         title: SmashUI.normalText('${logItem.name}',
             bold: true, textAlign: TextAlign.left),
@@ -439,8 +462,6 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
               setState(() {});
             }),
       ),
-      actions: actions,
-      secondaryActions: secondaryActions,
     );
   }
 

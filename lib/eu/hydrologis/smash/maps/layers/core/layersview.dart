@@ -167,15 +167,15 @@ class LayersPageState extends State<LayersPage> {
         var projection = SmashPrj.fromSrid(srid);
         prjSupported = projection != null;
       }
-      List<Widget> actions = [];
-      List<Widget> secondaryActions = [];
+      List<Widget> startActions = [];
+      List<Widget> endActions = [];
 
       if (layerSourceItem.isZoomable()) {
-        actions.add(IconSlideAction(
-            caption: SL.of(context).layersView_zoomTo, //'Zoom to'
-            color: SmashColors.mainDecorations,
+        startActions.add(SlidableAction(
+            label: SL.of(context).layersView_zoomTo, //'Zoom to'
+            foregroundColor: SmashColors.mainDecorations,
             icon: MdiIcons.magnifyScan,
-            onTap: () async {
+            onPressed: (context) async {
               LatLngBounds? bb = await layerSourceItem.getBounds();
               if (bb != null) {
                 setLayersOnChange(_layersList);
@@ -189,11 +189,11 @@ class LayersPageState extends State<LayersPage> {
             }));
       }
       if (layerSourceItem.hasProperties()) {
-        actions.add(IconSlideAction(
-            caption: SL.of(context).layersView_properties, //'Properties'
-            color: SmashColors.mainDecorations,
+        startActions.add(SlidableAction(
+            label: SL.of(context).layersView_properties, //'Properties'
+            foregroundColor: SmashColors.mainDecorations,
             icon: MdiIcons.palette,
-            onTap: () async {
+            onPressed: (context) async {
               var propertiesWidget = layerSourceItem.getPropertiesWidget();
               String? newSldString = await Navigator.push(context,
                   MaterialPageRoute(builder: (context) => propertiesWidget));
@@ -205,11 +205,11 @@ class LayersPageState extends State<LayersPage> {
               _somethingChanged = true;
             }));
       }
-      secondaryActions.add(IconSlideAction(
-          caption: SL.of(context).layersView_delete, //'Delete'
-          color: SmashColors.mainDanger,
+      endActions.add(SlidableAction(
+          label: SL.of(context).layersView_delete, //'Delete'
+          foregroundColor: SmashColors.mainDanger,
           icon: MdiIcons.delete,
-          onTap: () {
+          onPressed: (context) {
             if (layerSourceItem.isActive()) {
               _somethingChanged = true;
             }
@@ -221,8 +221,20 @@ class LayersPageState extends State<LayersPage> {
       var key = "$idx-${layerSourceItem.getName()}";
       return Slidable(
         key: Key(key),
-        actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
+        startActionPane: ActionPane(
+          extentRatio: 0.35,
+          dragDismissible: false,
+          motion: const ScrollMotion(),
+          dismissible: DismissiblePane(onDismissed: () {}),
+          children: startActions,
+        ),
+        endActionPane: ActionPane(
+          extentRatio: 0.35,
+          dragDismissible: false,
+          motion: const ScrollMotion(),
+          dismissible: DismissiblePane(onDismissed: () {}),
+          children: endActions,
+        ),
         child: ListTile(
           title: SingleChildScrollView(
             child: Text('${layerSourceItem.getName()}'),
@@ -284,8 +296,6 @@ class LayersPageState extends State<LayersPage> {
                 }),
           ),
         ),
-        actions: actions,
-        secondaryActions: secondaryActions,
       );
     }).toList();
   }
