@@ -58,7 +58,7 @@ Future<FM.LatLngBounds> getMapsforgeBounds(File file) async {
 /// Flutter mapsforge renderer with synched executeJob for
 /// concurrent access control.
 class SmashMapDataStoreRenderer extends MapDataStoreRenderer {
-  var lock = Lock();
+  var lock = Lock(reentrant: true);
 
   SmashMapDataStoreRenderer(MapDataStore mapDataStore, RenderTheme renderTheme,
       SymbolCache symbolCache, bool renderLabels)
@@ -66,8 +66,42 @@ class SmashMapDataStoreRenderer extends MapDataStoreRenderer {
 
   Future<JobResult> executeJobSync(Job job) async {
     return await lock.synchronized(() async {
+      // try {
       return await executeJob(job);
+      // } catch (e) {
+      //   print(e);
+      //   return Future.value(JobResult(null, JOBRESULT.ERROR));
+      // }
     });
+  }
+}
+
+class AndromapImageLoader implements ImageLoader {
+  static final String PREFIX_FILE = "file:";
+
+  final String absolutePathPrefix;
+
+  const AndromapImageLoader({required this.absolutePathPrefix});
+
+  ///
+  /// Returns the content of the symbol given as [src] as [ByteData]. This method reads the file or resource and returns the requested bytes.
+  ///
+  @override
+  Future<ByteData?> fetchResource(String src) async {
+    // compatibility with mapsforge
+    if (src.startsWith(PREFIX_FILE)) {
+      src = src.substring(PREFIX_FILE.length);
+    }
+    if (!absolutePathPrefix.endsWith("/")) {
+      src = "/" + src;
+    }
+    src = absolutePathPrefix + src;
+    File file = File(src);
+    if (await file.exists()) {
+      Uint8List bytes = await file.readAsBytes();
+      return ByteData.view(bytes.buffer);
+    }
+    return null;
   }
 }
 
@@ -89,32 +123,35 @@ class MapsforgeTileProvider extends FM.TileProvider {
       {this.tileSize: MAPSFORGE_TILESIZE});
 
   Future<void> open() async {
-    _displayModel = DisplayModel(
-      maxZoomLevel: 24,
-    );
+    _displayModel = DisplayModel(maxZoomLevel: 24, fontScaleFactor: 1.5);
 
     String? content;
     var parentFolder = FileUtilities.parentFolderFromFile(_mapsforgeFile.path);
-    var nameNoExt = FileUtilities.nameFromFile(_mapsforgeFile.path, false);
-    var resourcesFolderPath = FileUtilities.joinPaths(parentFolder, nameNoExt);
-    Directory resourcesFolderFile = Directory(resourcesFolderPath);
+    // var nameNoExt = FileUtilities.nameFromFile(_mapsforgeFile.path, false);
+    // var resourcesFolderPath = FileUtilities.joinPaths(parentFolder, nameNoExt);
+    var andromapStyleFolderPath =
+        FileUtilities.joinPaths(parentFolder, "Elevate");
+    Directory andromapStylePathFolder = Directory(andromapStyleFolderPath);
     File xmlFile;
-    String? relativePath;
-    if (resourcesFolderFile.existsSync()) {
+    String? andromapResourcesPath;
+    if (andromapStylePathFolder.existsSync()) {
       // check if rendertheme xml exists
-      var xmlPath = resourcesFolderPath + ".xml";
+      var xmlPath = andromapStyleFolderPath + "/Elevate.xml";
       xmlFile = File(xmlPath);
       if (xmlFile.existsSync()) {
-        relativePath = resourcesFolderPath;
+        andromapResourcesPath = andromapStyleFolderPath;
         content = FileUtilities.readFile(xmlPath);
       }
     }
     SymbolCache symbolCache;
     if (content == null) {
       content = await rootBundle.loadString("assets/defaultrender.xml");
-      symbolCache = FileSymbolCache(rootBundle);
+      symbolCache =
+          FileSymbolCache(imageLoader: ImageBundleLoader(bundle: rootBundle));
     } else {
-      symbolCache = FileSymbolCache.withRelativePathPrefix(relativePath!);
+      symbolCache = FileSymbolCache(
+          imageLoader:
+              AndromapImageLoader(absolutePathPrefix: andromapResourcesPath!));
     }
 
     RenderThemeBuilder renderThemeBuilder = RenderThemeBuilder();
@@ -163,7 +200,6 @@ class MapsforgeTileProvider extends FM.TileProvider {
   Future<void> fillCache() async {
     if (_mbtilesCache != null) {
       BoundingBox bBox = _mapDataStore!.boundingBox;
-      var userScaleFactor = _displayModel.getUserScaleFactor();
       List<int> zoomLevels = [3, 4, 5, 6, 7, 8, 9];
       int indoorLevel = 0; // TODO take care of indoor if interest is there
       for (var i = 0; i < zoomLevels.length; i++) {
@@ -181,10 +217,11 @@ class MapsforgeTileProvider extends FM.TileProvider {
           for (var y = minTileY; y <= maxTileY; y++) {
             Tile tile = new Tile(x, y, z, indoorLevel);
             Job mapGeneratorJob = new Job(tile, false, tileSize.toInt());
-            var resultTile =
+            JobResult jobResult =
                 await dataStoreRenderer.executeJobSync(mapGeneratorJob);
-            if (resultTile != null) {
-              ui.Image img = (resultTile as FlutterTileBitmap).getClonedImage();
+            if (jobResult.bitmap != null) {
+              ui.Image img =
+                  (jobResult.bitmap as FlutterTileBitmap).getClonedImage();
               var byteData = await img.toByteData(format: ImageByteFormat.png);
               if (byteData != null) {
                 var bytes = byteData.buffer.asUint8List();
@@ -205,10 +242,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
 
     // TODO take care of indoor if interest is there (the last 0)
     Tile tile = new Tile(xTile, yTile, zoom, 0);
-    var userScaleFactor = _displayModel.getUserScaleFactor();
     Job mapGeneratorJob = new Job(tile, false, tileSize.toInt());
-    // MapDataStoreRenderer dataStoreRenderer = MapDataStoreRenderer(
-    //     _mapDataStore, _renderTheme, _graphicFactory, true);
     return MapsforgeImageProvider(
         dataStoreRenderer, mapGeneratorJob, tile, _mbtilesCache!);
   }
