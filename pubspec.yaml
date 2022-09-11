@@ -181,7 +181,7 @@ dependencies:
   #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
   
   # apache
-  latlong2: ^0.8.0
+  latlong2: ^0.8.1
 
   # MIT
   geodesy: ^0.4.0-nullsafety.0
@@ -190,7 +190,7 @@ dependencies:
   flutter_geocoder: ^0.2.2-nullsafety
 
   # MIT
-  flutter_slidable: ^0.6.0
+  flutter_slidable: ^2.0.0
 
   # BSD  rainbow_vis: 1.0.3
   rainbow_color: 2.0.1

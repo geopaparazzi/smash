@@ -61,12 +61,12 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
             where = "";
           }
 
-          List<Widget> secondaryActions = [];
-          secondaryActions.add(IconSlideAction(
-              caption: SL.of(context).remoteDbPage_delete, //'Delete'
-              color: SmashColors.mainDanger,
+          List<Widget> endActions = [];
+          endActions.add(SlidableAction(
+              label: SL.of(context).remoteDbPage_delete, //'Delete'
+              foregroundColor: SmashColors.mainDanger,
               icon: SmashIcons.deleteIcon,
-              onTap: () async {
+              onPressed: (context) async {
                 bool? doDelete = await SmashDialogs.showConfirmDialog(
                     context,
                     SL.of(context).remoteDbPage_delete, //"DELETE"
@@ -83,12 +83,12 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
                   setState(() {});
                 }
               }));
-          List<Widget> actions = [];
-          actions.add(IconSlideAction(
-              caption: SL.of(context).remoteDbPage_edit, //"Edit"
+          List<Widget> startActions = [];
+          startActions.add(SlidableAction(
+              label: SL.of(context).remoteDbPage_edit, //"Edit"
               icon: SmashIcons.editIcon,
-              color: SmashColors.mainDecorations,
-              onTap: () async {
+              foregroundColor: SmashColors.mainDecorations,
+              onPressed: (context) async {
                 var dbConfigMap = jsonDecode(source.toJson());
                 var newMap =
                     await showRemoteDbPropertiesDialog(context, dbConfigMap);
@@ -105,10 +105,20 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
               }));
 
           return Slidable(
-            actionPane: SlidableDrawerActionPane(),
-            actionExtentRatio: 0.25,
-            actions: actions,
-            secondaryActions: secondaryActions,
+            startActionPane: ActionPane(
+              extentRatio: 0.35,
+              dragDismissible: false,
+              motion: const ScrollMotion(),
+              dismissible: DismissiblePane(onDismissed: () {}),
+              children: startActions,
+            ),
+            endActionPane: ActionPane(
+              extentRatio: 0.35,
+              dragDismissible: false,
+              motion: const ScrollMotion(),
+              dismissible: DismissiblePane(onDismissed: () {}),
+              children: endActions,
+            ),
             child: ListTile(
               title: Text(url!),
               subtitle: Padding(
