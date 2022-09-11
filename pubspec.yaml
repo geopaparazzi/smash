@@ -199,7 +199,7 @@ dependencies:
   stack_trace: ^1.10.0
 
   # BSD
-  url_launcher: ^6.0.6
+  url_launcher: ^6.1.5
 
   xml: ^6.1.0 #'>=4.5.1 <=5.3.1'
 
@@ -220,7 +220,7 @@ dependencies:
 
 dev_dependencies:
   # MIT
-  flutter_launcher_icons: ^0.9.0
+  flutter_launcher_icons: ^0.10.0
     # git:
     #   url: https://github.com/moovida/flutter_launcher_icons.git
 
