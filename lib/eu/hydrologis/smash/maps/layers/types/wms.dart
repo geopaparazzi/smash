@@ -112,7 +112,7 @@ class WmsSource extends RasterLayerSource {
 
     Crs crs = Epsg3857();
     if (_srid == 4326) {
-      crs = Epsg4326Flip();
+      crs = Epsg4326();
     }
 
     List<LayerOptions> layers = [

@@ -376,6 +376,36 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                   .of(context)
                   .onlineSourcesPage_addToLayers, //'ADD TO LAYERS'
               okFunction: () => Navigator.pop(context, widget.layerSource),
+              cancelLabel: "Modify",
+              cancelFunction: () async {
+                if (widget.type != LAYERSTYPE_TMS) {
+                  WmsData wmsData = WmsData();
+                  wmsData.url = widget.layerSource.getUrl();
+                  wmsData.layer = widget.layerSource.getName();
+                  wmsData.attribution = widget.layerSource.getAttribution();
+                  wmsData.format = widget.layerSource.imageFormat;
+                  wmsData.srid = widget.layerSource.getSrid();
+                  wmsData.version = widget.layerSource.getVersion();
+                  // wmsData.minZoom = widget.layerSource.getVersion();
+                  // wmsData.maxZoom = widget.layerSource.getVersion();
+
+                  String layerJson = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddWmsStepper(
+                                wmsData: wmsData,
+                              )));
+                  if (layerJson != null) {
+                    widget.sourcesList.removeAt(widget.index);
+                    await GpPreferences().setWmsList(widget.sourcesList);
+                    await GpPreferences().addNewWms(layerJson);
+                    widget.reloadNotifier.value =
+                        widget.reloadNotifier.value + 1;
+                    // await getList();
+                    setState(() {});
+                  }
+                }
+              },
             ),
           ],
         ),
@@ -666,18 +696,19 @@ class _AddTmsStepperState extends State<AddTmsStepper> {
 }
 
 class WmsData {
-  String? layer;
-  String? url;
-  String? attribution;
-  String? minZoom;
-  String? maxZoom;
+  String layer = "";
+  String url = "";
+  String attribution = "";
+  String minZoom = "0";
+  String maxZoom = "19";
   String format = LAYERSTYPE_FORMAT_JPG;
   String version = "1.1.1";
   int srid = SmashPrj.EPSG3857_INT;
 }
 
 class AddWmsStepper extends StatefulWidget {
-  AddWmsStepper({Key? key}) : super(key: key);
+  WmsData? wmsData;
+  AddWmsStepper({this.wmsData, Key? key}) : super(key: key);
 
   @override
   _AddWmsStepperState createState() => _AddWmsStepperState();
@@ -685,166 +716,190 @@ class AddWmsStepper extends StatefulWidget {
 
 class _AddWmsStepperState extends State<AddWmsStepper> {
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
-  static WmsData wmsData = WmsData();
-  List<Step> steps = [
-    Step(
-      title: Text(SL.current
-          .onlineSourcesPage_insertUrlOfService), //"Insert the url of the service."
-      subtitle: Text(SL.current
-          .onlineSourcesPage_theBaseUrlWithQuestionMark), //"The base url ending with question mark."
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(
-        children: <Widget>[
-          TextFormField(
-            keyboardType: TextInputType.text,
-            autocorrect: false,
-            onSaved: (String? value) {
-              if (value!.contains("?")) {
-                var markIndex = value.indexOf("?");
-                value = value.substring(0, markIndex + 1);
-              }
-              wmsData.url = value;
-            },
-            validator: (value) {
-              if (value!.isEmpty ||
-                  value.length < 1 ||
-                  !value.toLowerCase().startsWith("http")) {
-                return SL.current
-                    .onlineSourcesPage_pleaseEnterValidWmsUrl; //"Please enter a valid WMS URL"
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              labelText: SL.current.onlineSourcesPage_enterUrl, //"enter URL"
-              icon: const Icon(MdiIcons.link),
+
+  late List<Step> steps;
+  late WmsData wmsData;
+
+  @override
+  void initState() {
+    if (widget.wmsData == null) {
+      wmsData = WmsData();
+    } else {
+      wmsData = widget.wmsData!;
+    }
+
+    steps = [
+      Step(
+        title: Text(SL.current
+            .onlineSourcesPage_insertUrlOfService), //"Insert the url of the service."
+        subtitle: Text(SL.current
+            .onlineSourcesPage_theBaseUrlWithQuestionMark), //"The base url ending with question mark."
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(
+          children: <Widget>[
+            TextFormField(
+              initialValue: wmsData.url,
+              keyboardType: TextInputType.text,
+              autocorrect: false,
+              onSaved: (String? value) {
+                if (value!.contains("?")) {
+                  var markIndex = value.indexOf("?");
+                  value = value.substring(0, markIndex + 1);
+                }
+                wmsData.url = value;
+              },
+              validator: (value) {
+                if (value!.isEmpty ||
+                    value.length < 1 ||
+                    !value.toLowerCase().startsWith("http")) {
+                  return SL.current
+                      .onlineSourcesPage_pleaseEnterValidWmsUrl; //"Please enter a valid WMS URL"
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                labelText: SL.current.onlineSourcesPage_enterUrl, //"enter URL"
+                icon: const Icon(MdiIcons.link),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-    Step(
-      title: Text(
-          SL.current.onlineSourcesPage_setWmsLayerName), //"Set WMS layer name"
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(
-        children: <Widget>[
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: SL.current
-                  .onlineSourcesPage_enterLayerToLoad, //"enter layer to load"
-              icon: const Icon(MdiIcons.text),
+      Step(
+        title: Text(SL
+            .current.onlineSourcesPage_setWmsLayerName), //"Set WMS layer name"
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(
+          children: <Widget>[
+            TextFormField(
+              initialValue: wmsData.layer,
+              decoration: InputDecoration(
+                labelText: SL.current
+                    .onlineSourcesPage_enterLayerToLoad, //"enter layer to load"
+                icon: const Icon(MdiIcons.text),
+              ),
+              keyboardType: TextInputType.text,
+              autocorrect: false,
+              onSaved: (String? value) {
+                if (value != null) {
+                  wmsData.layer = value;
+                }
+              },
+              validator: (value) {
+                if (value!.isEmpty || value.length < 1) {
+                  return SL.current
+                      .onlineSourcesPage_pleaseEnterValidLayer; //"Please enter a valid layer"
+                }
+                return null;
+              },
             ),
-            keyboardType: TextInputType.text,
-            autocorrect: false,
-            onSaved: (String? value) {
-              wmsData.layer = value;
-            },
-            validator: (value) {
-              if (value!.isEmpty || value.length < 1) {
-                return SL.current
-                    .onlineSourcesPage_pleaseEnterValidLayer; //"Please enter a valid layer"
-              }
-              return null;
-            },
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-    Step(
-      title: Text(SL.current
-          .onlineSourcesPage_setWmsImageFormat), //"Set WMS image format"
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(children: <Widget>[
-        StringCombo([
-          LAYERSTYPE_FORMAT_JPG,
-          LAYERSTYPE_FORMAT_PNG,
-          LAYERSTYPE_FORMAT_TIFF
-        ], LAYERSTYPE_FORMAT_JPG, (newSelection) {
-          wmsData.format = newSelection;
-        }),
-      ]),
-    ),
-    Step(
-      title: Text("Select CRS"),
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(children: <Widget>[
-        StringCombo([
-          "EPSG:3857",
-          "EPSG:4326",
-        ], "EPSG:3857", (String newSelection) {
-          var code = newSelection.replaceFirst("EPSG:", "");
-          wmsData.srid = int.parse(code);
-        }),
-      ]),
-    ),
-    Step(
-      title: Text("Select Version"),
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(children: <Widget>[
-        StringCombo([
-          "1.1.1",
-          "1.3.0",
-        ], "1.1.1", (String newSelection) {
-          wmsData.version = newSelection;
-        }),
-      ]),
-    ),
-    Step(
-      title: Text(SL
-          .current.onlineSourcesPage_addAnAttribution), //"Add an attribution."
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(
-        children: <Widget>[
-          TextFormField(
-            keyboardType: TextInputType.text,
-            autocorrect: false,
-            onSaved: (String? value) {
-              wmsData.attribution = value;
-            },
-            decoration: InputDecoration(
-              labelText: SL.current
-                  .onlineSourcesPage_enterAttribution, //"enter attribution"
-              icon: const Icon(MdiIcons.license),
+      Step(
+        title: Text(SL.current
+            .onlineSourcesPage_setWmsImageFormat), //"Set WMS image format"
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(children: <Widget>[
+          StringCombo([
+            LAYERSTYPE_FORMAT_JPG,
+            LAYERSTYPE_FORMAT_PNG,
+            LAYERSTYPE_FORMAT_TIFF
+          ], wmsData.format, (newSelection) {
+            wmsData.format = newSelection;
+          }),
+        ]),
+      ),
+      Step(
+        title: Text("Select CRS"),
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(children: <Widget>[
+          StringCombo([
+            "EPSG:3857",
+            "EPSG:4326",
+          ], "EPSG:" + wmsData.srid.toString(), (String newSelection) {
+            var code = newSelection.replaceFirst("EPSG:", "");
+            wmsData.srid = int.parse(code);
+          }),
+        ]),
+      ),
+      Step(
+        title: Text("Select Version"),
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(children: <Widget>[
+          StringCombo([
+            "1.1.1",
+            "1.3.0",
+          ], wmsData.version, (String newSelection) {
+            wmsData.version = newSelection;
+          }),
+        ]),
+      ),
+      Step(
+        title: Text(SL.current
+            .onlineSourcesPage_addAnAttribution), //"Add an attribution."
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(
+          children: <Widget>[
+            TextFormField(
+              initialValue: wmsData.attribution,
+              keyboardType: TextInputType.text,
+              autocorrect: false,
+              onSaved: (String? value) {
+                if (value != null) {
+                  wmsData.attribution = value;
+                }
+              },
+              decoration: InputDecoration(
+                labelText: SL.current
+                    .onlineSourcesPage_enterAttribution, //"enter attribution"
+                icon: const Icon(MdiIcons.license),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-    Step(
-      title: Text(
-          SL.current.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(
-        children: <Widget>[
-          TextFormField(
-            keyboardType: TextInputType.number,
-            onSaved: (String? value) {
-              wmsData.minZoom = value;
-            },
-            initialValue: "0",
-            decoration: InputDecoration(
-                labelText: SL.current.onlineSourcesPage_minZoom), //"min zoom"
-          ),
-          TextFormField(
-            keyboardType: TextInputType.number,
-            onSaved: (String? value) {
-              wmsData.maxZoom = value;
-            },
-            initialValue: "19",
-            decoration: InputDecoration(
-                labelText: SL.current.onlineSourcesPage_maxZoom), //"max zoom"
-          ),
-        ],
+      Step(
+        title: Text(SL
+            .current.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(
+          children: <Widget>[
+            TextFormField(
+              keyboardType: TextInputType.number,
+              onSaved: (String? value) {
+                if (value != null) {
+                  wmsData.minZoom = value;
+                }
+              },
+              initialValue: wmsData.minZoom,
+              decoration: InputDecoration(
+                  labelText: SL.current.onlineSourcesPage_minZoom), //"min zoom"
+            ),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              onSaved: (String? value) {
+                if (value != null) {
+                  wmsData.maxZoom = value;
+                }
+              },
+              initialValue: wmsData.maxZoom,
+              decoration: InputDecoration(
+                  labelText: SL.current.onlineSourcesPage_maxZoom), //"max zoom"
+            ),
+          ],
+        ),
       ),
-    ),
-  ];
+    ];
+    super.initState();
+  }
 
   int currentStep = 0;
 
@@ -882,19 +937,19 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
                 child: new ListBody(
                   children: <Widget>[
                     new Text(SL.current.onlineSourcesPage_layer +
-                        wmsData.layer!), //"Layer: "
+                        wmsData.layer), //"Layer: "
                     new Text(SL.current.onlineSourcesPage_url +
-                        wmsData.url!), //"URL: "
+                        wmsData.url), //"URL: "
                     new Text("EPSG:${wmsData.srid}"),
                     new Text("Version: " + wmsData.version),
                     new Text(SL.current.onlineSourcesPage_attribution +
-                        (wmsData.attribution ?? "- nv -")), //"Attribution: "
+                        (wmsData.attribution)), //"Attribution: "
                     new Text(
                         "${SL.current.onlineSourcesPage_format}: ${wmsData.format}"), //Format
                     new Text(
-                        "${SL.current.onlineSourcesPage_minZoom}: ${wmsData.minZoom ?? ""}"), //Min zoom
+                        "${SL.current.onlineSourcesPage_minZoom}: ${wmsData.minZoom}"), //Min zoom
                     new Text(
-                        "${SL.current.onlineSourcesPage_maxZoom}: ${wmsData.maxZoom ?? ""}"), //Max zoom
+                        "${SL.current.onlineSourcesPage_maxZoom}: ${wmsData.maxZoom}"), //Max zoom
                   ],
                 ),
               ),
@@ -921,10 +976,10 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
         {
             "$LAYERSKEY_LABEL": "${wmsData.layer}",
             "$LAYERSKEY_URL": "${wmsData.url}",
-            "$LAYERSKEY_MINZOOM": ${wmsData.minZoom ?? 0},
-            "$LAYERSKEY_MAXZOOM": ${wmsData.maxZoom ?? 19},
+            "$LAYERSKEY_MINZOOM": ${wmsData.minZoom},
+            "$LAYERSKEY_MAXZOOM": ${wmsData.maxZoom},
             "$LAYERSKEY_OPACITY": 100,
-            "$LAYERSKEY_ATTRIBUTION": "${wmsData.attribution ?? ""}",
+            "$LAYERSKEY_ATTRIBUTION": "${wmsData.attribution}",
             "$LAYERSKEY_TYPE": "$LAYERSTYPE_WMS",
             "$LAYERSKEY_FORMAT": "${wmsData.format}",
             "$LAYERSKEY_SRID": ${wmsData.srid},
