@@ -127,8 +127,6 @@ class MapsforgeTileProvider extends FM.TileProvider {
 
     String? content;
     var parentFolder = FileUtilities.parentFolderFromFile(_mapsforgeFile.path);
-    // var nameNoExt = FileUtilities.nameFromFile(_mapsforgeFile.path, false);
-    // var resourcesFolderPath = FileUtilities.joinPaths(parentFolder, nameNoExt);
     var andromapStyleFolderPath =
         FileUtilities.joinPaths(parentFolder, "Elevate");
     Directory andromapStylePathFolder = Directory(andromapStyleFolderPath);
