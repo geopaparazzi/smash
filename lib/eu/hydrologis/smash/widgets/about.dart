@@ -5,7 +5,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,7 +20,7 @@ class AboutPage extends StatefulWidget {
 
 class AboutPageState extends State<AboutPage> {
   String? _appName;
-  late String _version;
+  String? _version;
 
   Future<void> getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -42,9 +42,9 @@ class AboutPageState extends State<AboutPage> {
 
   @override
   Widget build(BuildContext context) {
-    String version = _version;
+    String? version = _version;
 
-    return _appName == null
+    return _version == null
         ? SmashCircularProgress(
             label: SL
                 .of(context)
@@ -68,7 +68,7 @@ class AboutPageState extends State<AboutPage> {
                     title: Text(SL
                         .of(context)
                         .about_applicationVersion), //"Application version"
-                    subtitle: Text(version),
+                    subtitle: Text(version!),
                   ),
                   ListTile(
                     title: Text(SL.of(context).about_license), //"License"
