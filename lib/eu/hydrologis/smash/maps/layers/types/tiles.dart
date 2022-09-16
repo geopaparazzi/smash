@@ -311,7 +311,7 @@ class TileSource extends TiledRasterLayerSource {
         } else if (FileManager.isGeopackage(getAbsolutePath())) {
           var ch = ConnectionsHandler();
           var db = ch.open(absolutePath!, tableName: name);
-          var tileEntry = db.tile(SqlName(name!));
+          var tileEntry = db.tile(TableName(name!, schemaSupported: false));
           if (tileEntry != null) {
             var env = tileEntry.bounds;
             if (tileEntry.srid != Proj.EPSG4326_INT) {
@@ -381,7 +381,7 @@ class TileSource extends TiledRasterLayerSource {
       var db = ch.open(absolutePath!, tableName: name);
 
       if (doGpkgAsOverlay != null && doGpkgAsOverlay!) {
-        var tileEntry = db.tile(SqlName(name!));
+        var tileEntry = db.tile(TableName(name!, schemaSupported: false));
         var to4326function;
         if (tileEntry!.srid != Proj.EPSG4326_INT) {
           to4326function = (var envelope) {
@@ -408,7 +408,8 @@ class TileSource extends TiledRasterLayerSource {
           OverlayImageLayerOptions(overlayImages: overlayImages),
         ];
       } else {
-        var tileProvider = GeopackageTileImageProvider(db, SqlName(name!));
+        var tileProvider = GeopackageTileImageProvider(
+            db, TableName(name!, schemaSupported: false));
         return [
           TileLayerOptions(
             tileProvider: tileProvider,

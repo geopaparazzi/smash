@@ -50,11 +50,13 @@ class ImageWidgetUtilities {
 
     return Transaction(db as ADb).runInTransaction((GeopaparazziProjectDb _db) {
       try {
-        int? imgDataId =
-            _db.insertMap(SqlName(TABLE_IMAGE_DATA), imgData.toMap());
+        int? imgDataId = _db.insertMap(
+            TableName(TABLE_IMAGE_DATA, schemaSupported: false),
+            imgData.toMap());
         dbImageToCompleteAndSave.imageDataId = imgDataId;
         int? imgId = _db.insertMap(
-            SqlName(TABLE_IMAGES), dbImageToCompleteAndSave.toMap());
+            TableName(TABLE_IMAGES, schemaSupported: false),
+            dbImageToCompleteAndSave.toMap());
         if (imgId == null) {
           SMLogger().e(
               "Could not save image to db: $imageIdentifier4Error", null, null);

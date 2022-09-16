@@ -7,6 +7,7 @@ import 'package:badges/badges.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
+import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -334,7 +335,9 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
           if (id != null) {
             var table = editableGeometry.table;
             var db = editableGeometry.db;
-            var tableName = SqlName(table!);
+            var tableName = TableName(table!,
+                schemaSupported:
+                    db is PostgisDb || db is PostgresqlDb ? true : false);
             var key = await db.getPrimaryKey(tableName);
             var geometryColumn = await db.getGeometryColumnsForTable(tableName);
             var tableColumns = await db.getTableColumns(tableName);

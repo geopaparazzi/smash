@@ -339,7 +339,8 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
 
   @override
   int? addNote(Note note) {
-    var noteId = insertMap(SqlName(TABLE_NOTES), note.toMap());
+    var noteId =
+        insertMap(TableName(TABLE_NOTES, schemaSupported: false), note.toMap());
     note.id = noteId;
     if (note.noteExt == null) {
       NoteExt noteExt = NoteExt();
@@ -357,7 +358,8 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
 
   @override
   int? addNoteExt(NoteExt noteExt) {
-    var noteExtId = insertMap(SqlName(TABLE_NOTESEXT), noteExt.toMap());
+    var noteExtId = insertMap(
+        TableName(TABLE_NOTESEXT, schemaSupported: false), noteExt.toMap());
     return noteExtId;
   }
 
@@ -551,11 +553,12 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   @override
   int? addGpsLog(Log insertLog, LogProperty prop) {
     Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
-      int? insertedId =
-          _db.insertMap(SqlName(TABLE_GPSLOGS), insertLog.toMap());
+      int? insertedId = _db.insertMap(
+          TableName(TABLE_GPSLOGS, schemaSupported: false), insertLog.toMap());
       prop.logid = insertedId;
       insertLog.id = insertedId;
-      _db.insertMap(SqlName(TABLE_GPSLOG_PROPERTIES), prop.toMap());
+      _db.insertMap(TableName(TABLE_GPSLOG_PROPERTIES, schemaSupported: false),
+          prop.toMap());
     });
 
     return insertLog.id;
@@ -564,7 +567,8 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   @override
   int? addGpsLogPoint(int logId, LogDataPoint logPoint) {
     logPoint.logid = logId;
-    int? insertedId = insertMap(SqlName(TABLE_GPSLOG_DATA), logPoint.toMap());
+    int? insertedId = insertMap(
+        TableName(TABLE_GPSLOG_DATA, schemaSupported: false), logPoint.toMap());
     return insertedId;
   }
 
@@ -698,14 +702,16 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
     var map = note.toMap();
     var noteId = map.remove(NOTES_COLUMN_ID);
 
-    int? count =
-        updateMap(SqlName(TABLE_NOTES), map, "$NOTES_COLUMN_ID=$noteId");
+    int? count = updateMap(TableName(TABLE_NOTES, schemaSupported: false), map,
+        "$NOTES_COLUMN_ID=$noteId");
     if (count == 1) {
       var extMap = note.noteExt!.toMap();
       int noteExtId = extMap.remove(NOTESEXT_COLUMN_ID);
       extMap.remove(NOTESEXT_COLUMN_NOTEID);
       int? extCount = updateMap(
-          SqlName(TABLE_NOTESEXT), extMap, "$NOTESEXT_COLUMN_ID=$noteExtId");
+          TableName(TABLE_NOTESEXT, schemaSupported: false),
+          extMap,
+          "$NOTESEXT_COLUMN_ID=$noteExtId");
       if (extCount != 1) {
         SMLogger().e(
             "Note ext values not updated for note $noteId and noteext $noteExtId",
@@ -861,7 +867,8 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   createNecessaryExtraTables() {
-    bool hasNotesExt = hasTable(SqlName(TABLE_NOTESEXT));
+    bool hasNotesExt =
+        hasTable(TableName(TABLE_NOTESEXT, schemaSupported: false));
     if (!hasNotesExt) {
       SMLogger().w("Adding extra database table $TABLE_NOTESEXT.");
       Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
@@ -876,7 +883,8 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
       });
     }
 
-    var tableColumns = getTableColumns(SqlName(TABLE_GPSLOG_DATA));
+    var tableColumns =
+        getTableColumns(TableName(TABLE_GPSLOG_DATA, schemaSupported: false));
     bool hasFiltered = false;
     tableColumns.forEach((list) {
       String name = list[0];

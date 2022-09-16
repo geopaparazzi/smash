@@ -10,6 +10,7 @@ import 'dart:ui';
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' as JTS;
+import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart' as FM;
 import 'package:flutter_map/plugin_api.dart';
@@ -58,8 +59,10 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     for (var i = 0; i < f.ids!.length; i++) {
       var db = f.dbs![i];
       var tableName = f.ids![i];
-      var geometryColumn =
-          await db.getGeometryColumnsForTable(SqlName(tableName));
+      var geometryColumn = await db.getGeometryColumnsForTable(TableName(
+          tableName,
+          schemaSupported:
+              db is PostgisDb || db is PostgresqlDb ? true : false));
       if (geometryColumn != null) {
         _geomCols[tableName] = geometryColumn;
       }
@@ -273,7 +276,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
                         child: getDataTable(
-                            tableName, data, primaryKey, db, typesMap!),
+                            tableName, data, primaryKey, db, typesMap),
                       ),
                     ),
                   ],
@@ -320,7 +323,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
   }
 
   Widget getDataTable(String tablename, Map<String, dynamic> data,
-      String primaryKey, dynamic db, Map<String, String> typesMap) {
+      String? primaryKey, dynamic db, Map<String, String>? typesMap) {
     List<DataRow> rows = [];
 
     data.forEach((key, value) {
@@ -350,7 +353,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                   data[key] = int.parse(result);
                 } else if (value is double) {
                   data[key] = double.parse(result);
-                } else {
+                } else if (typesMap != null) {
                   var typeString = typesMap[key]!.toUpperCase();
 
                   if (SqliteTypes.isString(typeString)) {
@@ -371,7 +374,13 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                   key: data[key],
                 };
                 var where = "$primaryKey=$pkValue";
-                await db.updateMap(SqlName(tablename), map, where);
+                await db.updateMap(
+                    TableName(tablename,
+                        schemaSupported: db is PostgisDb || db is PostgresqlDb
+                            ? true
+                            : false),
+                    map,
+                    where);
                 setState(() {});
               }
             }

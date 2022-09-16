@@ -7,6 +7,7 @@
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart' hide Polygon;
 import 'package:dart_jts/dart_jts.dart' as JTS;
+import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/plugin_api.dart';
@@ -260,7 +261,11 @@ class GeometryEditManager {
         // geometry is not yet of the layer type
         var editableGeometry = geomEditorState.editableGeometry;
 
-        var tableName = SqlName(editableGeometry!.table!);
+        var tableName = TableName(editableGeometry!.table!,
+            schemaSupported: editableGeometry.db is PostgisDb ||
+                    editableGeometry.db is PostgresqlDb
+                ? true
+                : false);
         var gc =
             await editableGeometry.db.getGeometryColumnsForTable(tableName);
         var gType = gc.geometryType;
@@ -288,7 +293,7 @@ class GeometryEditManager {
   Future<void> _completeFirstLineGeometry(
       EditableGeometry editableGeometry,
       LatLng point,
-      SqlName tableName,
+      TableName tableName,
       gc,
       GeometryEditorState geomEditorState,
       BuildContext context) async {
@@ -328,7 +333,7 @@ class GeometryEditManager {
   Future<void> _handlePolygonGeometry(
       EditableGeometry editableGeometry,
       LatLng point,
-      SqlName tableName,
+      TableName tableName,
       gc,
       GeometryEditorState geomEditorState,
       BuildContext context) async {
@@ -412,7 +417,9 @@ class GeometryEditManager {
         var vectorLayer = name2SourceMap[selectedName];
         var db = await DbVectorLayerSource.getDb(vectorLayer);
         var table = vectorLayer?.getName();
-        var tableColumns = await db.getTableColumns(SqlName(table!));
+        var tableColumns = await db.getTableColumns(TableName(table!,
+            schemaSupported:
+                db is PostgisDb || db is PostgresqlDb ? true : false));
 
         // check if there is a pk and if the columns are set to be non null in other case
         bool hasPk = false;
@@ -435,7 +442,9 @@ class GeometryEditManager {
         }
 
         // create a minimal geometry to work on
-        var tableName = SqlName(table);
+        var tableName = TableName(table,
+            schemaSupported:
+                db is PostgisDb || db is PostgresqlDb ? true : false);
         var gc = await db.getGeometryColumnsForTable(tableName);
         var gType = gc.geometryType;
         Geometry geometry;
@@ -450,11 +459,8 @@ class GeometryEditManager {
           SmashPrj.transformGeometry(SmashPrj.EPSG4326, dataPrj!, geometry);
           var sql =
               "INSERT INTO ${tableName.fixedName} (${gc.geometryColumnName}) VALUES (?);";
-          if (vectorLayer is DbVectorLayerSource) {
-            var sqlObj = db.geometryToSql(geometry);
-            lastId =
-                db.execute(sql, arguments: [sqlObj], getLastInsertId: true);
-          }
+          var sqlObj = db.geometryToSql(geometry);
+          lastId = db.execute(sql, arguments: [sqlObj], getLastInsertId: true);
         }
 
         EditableGeometry editGeom2 = EditableGeometry();
@@ -547,7 +553,9 @@ class GeometryEditManager {
             SmashPrj.EPSG4326, dataPrj, touchPointLayerPrj);
       }
       var tableName = vLayer.getName();
-      var sqlName = SqlName(tableName!);
+      var sqlName = TableName(tableName!,
+          schemaSupported:
+              db is PostgisDb || db is PostgresqlDb ? true : false);
       var gc = await db.getGeometryColumnsForTable(sqlName);
       var primaryKey = await db.getPrimaryKey(sqlName);
       // if polygon, then it has to be inside,
@@ -680,7 +688,9 @@ class GeometryEditManager {
       var editableGeometry = geomEditState.editableGeometry;
       var db = editableGeometry!.db;
 
-      var tableName = SqlName(editableGeometry.table!);
+      var tableName = TableName(editableGeometry.table!,
+          schemaSupported:
+              db is PostgisDb || db is PostgresqlDb ? true : false);
       var primaryKey = await db.getPrimaryKey(tableName);
       var geometryColumn = await db.getGeometryColumnsForTable(tableName);
       EGeometryType gType = geometryColumn.geometryType;
@@ -729,7 +739,9 @@ class GeometryEditManager {
         Map<String, DbVectorLayerSource> name2SourceMap = _getName2SourcesMap();
         var vectorLayer = name2SourceMap[editableGeometry.table];
         var db = await DbVectorLayerSource.getDb(vectorLayer);
-        var tableName = SqlName(editableGeometry.table!);
+        var tableName = TableName(editableGeometry.table!,
+            schemaSupported:
+                db is PostgisDb || db is PostgresqlDb ? true : false);
         var gc =
             await editableGeometry.db.getGeometryColumnsForTable(tableName);
         var lastId = -1;
@@ -753,8 +765,10 @@ class GeometryEditManager {
     if (editableGeometry != null) {
       var id = editableGeometry.id;
       if (id != null) {
-        var table = SqlName(editableGeometry.table!);
         var db = editableGeometry.db;
+        var table = TableName(editableGeometry.table!,
+            schemaSupported:
+                db is PostgisDb || db is PostgresqlDb ? true : false);
         var pk = await db.getPrimaryKey(table);
         var sql = "delete from ${table.fixedName} where $pk=$id";
         await db.execute(sql);

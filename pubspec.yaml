@@ -27,15 +27,6 @@ dependencies:
   # apache 2
   geoimage: ^0.2.0
 
-  # apache 2
-  flutter_geopackage: ^0.5.1
-  # path: ../flutter_geopackage/
-  #  git:
-  #    url: https://github.com/moovida/flutter_geopackage.git
-  dart_hydrologis_db: ^0.7.2
-  # path: ../dart_hydrologis_db/
-  # git:
-  #  url: https://github.com/moovida/dart_hydrologis_db.git
   smashlibs:
     # path: ../smashlibs/
     git:
@@ -51,12 +42,25 @@ dependencies:
 
   dart_shp: ^0.4.0
 
-  dart_hydrologis_utils: ^0.6.0
+  dart_hydrologis_utils: ^0.6.1
     # path: ../dart_hydrologis_utils/
   dart_jts: ^0.2.0
     # path: ../dart_jts/
 
-  dart_postgis: ^0.2.0
+
+
+  dart_hydrologis_db: ^1.0.0
+  # path: ../dart_hydrologis_db/
+  # git:
+  #  url: https://github.com/moovida/dart_hydrologis_db.git
+
+  # apache 2
+  flutter_geopackage: ^0.6.0
+  # path: ../flutter_geopackage/
+  #  git:
+  #    url: https://github.com/moovida/flutter_geopackage.git
+  
+  dart_postgis: ^0.3.0
   # git:
   #   url: https://github.com/moovida/dart_postgis
   ##################################

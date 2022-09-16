@@ -231,6 +231,7 @@ class _RemoteDbPropertiesContainerState
   final Map<String, dynamic> sourceMap;
   List<String>? _geomTables;
   bool _isLoadingGeomTables = false;
+  String? errorMessage;
 
   _RemoteDbPropertiesContainerState(this.sourceMap) {}
 
@@ -301,7 +302,7 @@ class _RemoteDbPropertiesContainerState
       tableWidget = SmashCircularProgress(
           label:
               SL.of(context).remoteDbPage_loadingTables); //"loading tables..."
-    } else if (_geomTables != null) {
+    } else if (_geomTables != null && _geomTables!.isNotEmpty) {
       if (!_geomTables!.contains(tableName)) {
         tableName = _geomTables![0];
         sourceMap[LAYERSKEY_LABEL] = tableName;
@@ -345,40 +346,49 @@ class _RemoteDbPropertiesContainerState
           IconButton(
             icon: Icon(MdiIcons.refresh),
             onPressed: () async {
+              errorMessage = null;
               setState(() {
                 _isLoadingGeomTables = true;
               });
-              var s = PostgisSource.fromMap(sourceMap);
-              var db = await PostgisConnectionsHandler()
-                  .open(s.getUrl(), s.getName(), s.getUser(), s.getPassword());
-              if (db != null) {
-                var tables = await db.getTables(true);
-                _geomTables = [];
-                for (var tableName in tables) {
-                  bool isGeom =
-                      await db.getGeometryColumnsForTable(tableName) != null;
-                  if (isGeom) {
-                    _geomTables!.add(tableName.name);
+              try {
+                var s = PostgisSource.fromMap(sourceMap);
+                var db = await PostgisConnectionsHandler().open(
+                    s.getUrl(), s.getName(), s.getUser(), s.getPassword());
+                if (db != null) {
+                  var tables = await db.getTables(true);
+                  _geomTables = [];
+                  for (var tableName in tables) {
+                    bool isGeom =
+                        await db.getGeometryColumnsForTable(tableName) != null;
+                    if (isGeom) {
+                      _geomTables!.add(tableName.name);
+                    }
                   }
+                  setState(() {
+                    _isLoadingGeomTables = false;
+                  });
+                } else {
+                  setState(() {
+                    _isLoadingGeomTables = false;
+                  });
+                  SmashDialogs.showWarningDialog(
+                      context,
+                      SL
+                          .of(context)
+                          .remoteDbPage_unableToConnectToDatabase); //"Unable to connect to the database. Check parameters and network."
                 }
+              } catch (e) {
+                errorMessage = e.toString();
                 setState(() {
                   _isLoadingGeomTables = false;
                 });
-              } else {
-                setState(() {
-                  _isLoadingGeomTables = false;
-                });
-                SmashDialogs.showWarningDialog(
-                    context,
-                    SL
-                        .of(context)
-                        .remoteDbPage_unableToConnectToDatabase); //"Unable to connect to the database. Check parameters and network."
               }
             },
           )
         ],
       );
     }
+
     var whereEC = new TextEditingController(text: where);
     var whereID = new InputDecoration(
         labelText: SL
@@ -421,6 +431,12 @@ class _RemoteDbPropertiesContainerState
             padding: const EdgeInsets.all(8.0),
             child: whereWidget,
           ),
+          if (errorMessage != null)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SmashUI.normalText(errorMessage!,
+                  color: SmashColors.mainDanger),
+            ),
         ],
       ),
     );

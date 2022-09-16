@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_sketch.dart';
@@ -292,7 +293,9 @@ class SmashDatabaseFormHelper implements AFormhelper {
 
     _tableName = _queryResult.ids!.first;
 
-    if (await _db.hasTable(SqlName(HM_FORMS_TABLE))) {
+    if (await _db.hasTable(TableName(HM_FORMS_TABLE,
+        schemaSupported:
+            _db is PostgisDb || _db is PostgresqlDb ? true : false))) {
       QueryResult result = await _db.select(
           "select $FORMS_FIELD from $HM_FORMS_TABLE where $FORMS_TABLENAME_FIELD='$_tableName'");
       if (result.length == 1) {
@@ -385,7 +388,12 @@ class SmashDatabaseFormHelper implements AFormhelper {
     var id = _queryResult.data.first[pk];
 
     var where = "$pk=$id";
-    await _db.updateMap(SqlName(_tableName), data, where);
+    await _db.updateMap(
+        TableName(_tableName,
+            schemaSupported:
+                _db is PostgisDb || _db is PostgresqlDb ? true : false),
+        data,
+        where);
   }
 
   /// Take a picture for forms

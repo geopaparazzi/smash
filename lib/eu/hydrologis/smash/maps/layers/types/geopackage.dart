@@ -83,7 +83,7 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
       }
 
       _getDatabase();
-      var sqlName = SqlName(_tableName);
+      var sqlName = TableName(_tableName, schemaSupported: false);
       _geometryColumn = _gpkgDb!.getGeometryColumnsForTable(sqlName);
       _srid = _geometryColumn!.srid;
       geometryType = _geometryColumn!.geometryType;
@@ -120,7 +120,7 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
         maxFeaturesToLoad = null;
       }
       _tableData = _gpkgDb!.getTableData(
-        SqlName(_tableName),
+        TableName(_tableName, schemaSupported: false),
         limit: maxFeaturesToLoad,
         envelope: limitBounds,
       );
@@ -482,8 +482,8 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
         _getDatabase();
       }
       if (_srid == null) {
-        _geometryColumn =
-            _gpkgDb!.getGeometryColumnsForTable(SqlName(_tableName));
+        _geometryColumn = _gpkgDb!.getGeometryColumnsForTable(
+            TableName(_tableName, schemaSupported: false));
         _srid = _geometryColumn!.srid;
       }
     }
@@ -513,7 +513,8 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
       _textStyle = textStyleTmp;
     }
     _style = _styleTmp;
-    _gpkgDb!.updateSld(SqlName(_tableName), sldString!);
+    _gpkgDb!
+        .updateSld(TableName(_tableName, schemaSupported: false), sldString!);
   }
 
   @override
@@ -593,7 +594,7 @@ var _emptyImageBytes;
 /// This works different than the overlay image version (which could make things go OOM).
 class GeopackageTileImageProvider extends TileProvider {
   GeopackageDb _loadedDb;
-  SqlName _tableName;
+  TableName _tableName;
 
   GeopackageTileImageProvider(this._loadedDb, this._tableName);
 
@@ -616,7 +617,7 @@ class GeopackageTileImageProvider extends TileProvider {
 
 class GeopackageTileImage extends ImageProvider<GeopackageTileImage> {
   final GeopackageDb database;
-  SqlName tableName;
+  TableName tableName;
   final Coords<int> coords;
   GeopackageTileImage(this.database, this.tableName, this.coords);
 
