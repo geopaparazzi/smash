@@ -47,6 +47,7 @@ class CurrentGpsLogPluginOption extends LayerOptions {
 
 class CurrentGpsLogLayer extends StatelessWidget {
   final CurrentGpsLogPluginOption currentGpsLogLayerOpts;
+  final ValueNotifier panelExpandedValue = ValueNotifier(true);
   final MapState map;
   final Stream<void> stream;
   Paint? logPaint;
@@ -86,39 +87,6 @@ class CurrentGpsLogLayer extends StatelessWidget {
             ..strokeWidth = currentGpsLogLayerOpts.logWidth;
         }
 
-        var currentLogStats = gpsState.getCurrentLogStats();
-        double distanceMeter = currentLogStats[0] as double;
-        double distanceMeterFiltered = currentLogStats[1] as double;
-        int timestampDelta = currentLogStats[2] as int;
-        double speedMs = currentLogStats[3];
-        double speedKmH = speedMs * 3600 / 1000;
-        List<dynamic> elevDataTmp = currentLogStats[4];
-        double minElev = double.infinity;
-        double maxElev = double.negativeInfinity;
-
-        List<dynamic> elevData = [];
-        elevDataTmp.forEach((xy) {
-          var tmp = xy[1];
-          if (tmp < minElev) {
-            minElev = tmp;
-          }
-          if (tmp > maxElev) {
-            maxElev = tmp;
-          }
-          elevData.add(xy);
-        });
-
-        if (_doFlatChart && (maxElev - minElev) < 25) {
-          maxElev = minElev + 25;
-        }
-        int minElevInt = minElev.round();
-        int maxElevInt = maxElev.round();
-
-        var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
-        var distStr = StringUtilities.formatMeters(distanceMeter);
-        var distFilteredStr =
-            StringUtilities.formatMeters(distanceMeterFiltered);
-
         return Stack(
           children: [
             CustomPaint(
@@ -129,124 +97,13 @@ class CurrentGpsLogLayer extends StatelessWidget {
                   gpsState.currentFilteredLogPoints,
                   map),
             ),
-            Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: SmashColors.mainBackground.withOpacity(0.7),
-                    borderRadius: BorderRadius.circular(8)),
-                child: Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: Icon(SmashIcons.iconTime),
-                          ),
-                          SmashUI.normalText("$timeStr"),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                right: 5.0,
-                              ),
-                              child: Icon(SmashIcons.iconDistance),
-                            ),
-                            SmashUI.normalText("$distStr"),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 3.0, left: 5.0),
-                              child: Icon(SmashIcons.iconFilter),
-                            ),
-                            SmashUI.normalText("$distFilteredStr"),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                right: 5.0,
-                              ),
-                              child: Icon(SmashIcons.iconSpeed),
-                            ),
-                            SmashUI.normalText(
-                                speedKmH.toStringAsFixed(0) + " Km/h"),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                right: 5.0,
-                              ),
-                              child: Icon(MdiIcons.elevationRise),
-                            ),
-                            SmashUI.normalText(
-                                "${(elevData.last[1] as double).toStringAsFixed(0)} m"),
-                          ],
-                        ),
-                      ),
-                      if (maxElevInt != minElevInt)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Text("${maxElevInt + 1}",
-                              style: TextStyle(
-                                  fontSize: 10, fontWeight: FontWeight.bold)),
-                        ),
-                      GestureDetector(
-                        onDoubleTap: () {
-                          _doFlatChart = !_doFlatChart;
-                          String msg = "Show exagerated elev chart.";
-                          if (_doFlatChart) {
-                            msg = "Show proper ratio chart.";
-                          }
-                          final snackBar = SnackBar(
-                            content: Text(msg),
-                            behavior: SnackBarBehavior.floating,
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 2.0, left: 2.0),
-                          child: SizedBox(
-                            height: 100,
-                            width: 180,
-                            child: LineChart(
-                              getProfileData(elevData, minElevInt, maxElevInt),
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (maxElevInt != minElevInt)
-                        Text("${minElevInt - 1}",
-                            style: TextStyle(
-                                fontSize: 10, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                ),
-              ),
+            ValueListenableBuilder(
+              valueListenable: panelExpandedValue,
+              builder: (context, snapshot, child) {
+                return panelExpandedValue.value
+                    ? _getInfoWidget(context, gpsState)
+                    : _getTinyInfoWidget(context, gpsState);
+              },
             ),
           ],
         );
@@ -254,6 +111,212 @@ class CurrentGpsLogLayer extends StatelessWidget {
         return Container();
       }
     });
+  }
+
+  Widget _getTinyInfoWidget(BuildContext context, GpsState gpsState) {
+    var currentLogStats = gpsState.getCurrentLogStats();
+    int timestampDelta = currentLogStats[2] as int;
+    var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        decoration: BoxDecoration(
+            color: SmashColors.mainBackground.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(8)),
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: Icon(SmashIcons.iconTime),
+                  ),
+                  SmashUI.normalText("$timeStr"),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: RotatedBox(
+                      quarterTurns: 2,
+                      child: IconButton(
+                        icon: Icon(MdiIcons.resize),
+                        onPressed: () {
+                          panelExpandedValue.value = !panelExpandedValue.value;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _getInfoWidget(BuildContext context, GpsState gpsState) {
+    var currentLogStats = gpsState.getCurrentLogStats();
+    double distanceMeter = currentLogStats[0] as double;
+    double distanceMeterFiltered = currentLogStats[1] as double;
+    int timestampDelta = currentLogStats[2] as int;
+    double speedMs = currentLogStats[3];
+    double speedKmH = speedMs * 3600 / 1000;
+    List<dynamic> elevDataTmp = currentLogStats[4];
+    double minElev = double.infinity;
+    double maxElev = double.negativeInfinity;
+
+    List<dynamic> elevData = [];
+    elevDataTmp.forEach((xy) {
+      var tmp = xy[1];
+      if (tmp < minElev) {
+        minElev = tmp;
+      }
+      if (tmp > maxElev) {
+        maxElev = tmp;
+      }
+      elevData.add(xy);
+    });
+
+    if (_doFlatChart && (maxElev - minElev) < 25) {
+      maxElev = minElev + 25;
+    }
+    int minElevInt = minElev.round();
+    int maxElevInt = maxElev.round();
+
+    var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
+    var distStr = StringUtilities.formatMeters(distanceMeter);
+    var distFilteredStr = StringUtilities.formatMeters(distanceMeterFiltered);
+    return Align(
+      alignment: Alignment.topRight,
+      child: Container(
+        decoration: BoxDecoration(
+            color: SmashColors.mainBackground.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(8)),
+        child: Padding(
+          padding: SmashUI.defaultPadding(),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 5.0),
+                    child: Icon(SmashIcons.iconTime),
+                  ),
+                  SmashUI.normalText("$timeStr"),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 5.0,
+                      ),
+                      child: Icon(SmashIcons.iconDistance),
+                    ),
+                    SmashUI.normalText("$distStr"),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 3.0, left: 5.0),
+                      child: Icon(SmashIcons.iconFilter),
+                    ),
+                    SmashUI.normalText("$distFilteredStr"),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 5.0,
+                      ),
+                      child: Icon(SmashIcons.iconSpeed),
+                    ),
+                    SmashUI.normalText(speedKmH.toStringAsFixed(0) + " Km/h"),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 5.0,
+                      ),
+                      child: Icon(MdiIcons.elevationRise),
+                    ),
+                    SmashUI.normalText(
+                        "${(elevData.last[1] as double).toStringAsFixed(0)} m"),
+                  ],
+                ),
+              ),
+              if (maxElevInt != minElevInt)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text("${maxElevInt + 1}",
+                      style:
+                          TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                ),
+              GestureDetector(
+                onDoubleTap: () {
+                  _doFlatChart = !_doFlatChart;
+                  String msg = "Show exagerated elev chart.";
+                  if (_doFlatChart) {
+                    msg = "Show proper ratio chart.";
+                  }
+                  final snackBar = SnackBar(
+                    content: Text(msg),
+                    behavior: SnackBarBehavior.floating,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+                  child: SizedBox(
+                    height: 100,
+                    width: 180,
+                    child: LineChart(
+                      getProfileData(elevData, minElevInt, maxElevInt),
+                    ),
+                  ),
+                ),
+              ),
+              if (maxElevInt != minElevInt)
+                Text("${minElevInt - 1}",
+                    style:
+                        TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: IconButton(
+                  icon: Icon(MdiIcons.resize),
+                  onPressed: () {
+                    panelExpandedValue.value = !panelExpandedValue.value;
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   LineChartData getProfileData(List<dynamic> xyList, int minElev, int maxElev) {

@@ -364,22 +364,20 @@ time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSince
           title = SL.current.gps_smashIsLogging; //"SMASH is logging"
 
           var currentLogStats = _gpsState.getCurrentLogStats();
-          double distanceMeter = currentLogStats[0] as double;
-          double distanceMeterFiltered = currentLogStats[1] as double;
-          int timestampDelta = currentLogStats[2] as int;
+          if (currentLogStats[0] != null &&
+              currentLogStats[1] != null &&
+              currentLogStats[2] != null) {
+            double distanceMeter = currentLogStats[0] as double;
+            double distanceMeterFiltered = currentLogStats[1] as double;
+            int timestampDelta = currentLogStats[2] as int;
 
-          if (distanceMeter != null &&
-              timestampDelta != null &&
-              distanceMeterFiltered != null) {
             var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
             var distStr = StringUtilities.formatMeters(distanceMeter);
             var distFilteredStr =
                 StringUtilities.formatMeters(distanceMeterFiltered);
 
-            if (timeStr != null) {
-              msg = "$timeStr, $distStr ($distFilteredStr)";
-              bigMsg = msg + "\n" + bigMsg;
-            }
+            msg = "$timeStr, $distStr ($distFilteredStr)";
+            bigMsg = msg + "\n" + bigMsg;
           }
 
           GPS.BackgroundLocator.updateNotificationText(

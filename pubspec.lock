@@ -1105,7 +1105,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "2977dfa248fd4532cf4c2aad995d9e8250ae334a"
+      resolved-ref: "6e85607e6ff2337d31b87dbd05a9de20a61df6f5"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
