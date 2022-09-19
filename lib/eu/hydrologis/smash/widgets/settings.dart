@@ -1547,7 +1547,7 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
     bool loadOnlyVisible = GpPreferences().getBooleanSync(
         SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
     int maxFeaturesToLoad = GpPreferences()
-            .getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1) ??
+            .getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, 1000) ??
         -1;
     int tapAreaPixels = GpPreferences()
             .getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50) ??
