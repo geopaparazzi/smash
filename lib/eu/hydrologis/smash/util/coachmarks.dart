@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smash/eu/hydrologis/smash/util/localization.dart';
+import 'package:smash/eu/hydrologis/smash/l10n/localization.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
