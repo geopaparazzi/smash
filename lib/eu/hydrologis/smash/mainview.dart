@@ -148,7 +148,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 
     _centerOnGpsTimer =
         Timer.periodic(Duration(milliseconds: 3000), (timer) async {
-      if (context != null && _mapController != null) {
+      if (_mapController != null) {
         var mapState = Provider.of<SmashMapState>(context, listen: false);
         if (mapState.centerOnGps) {
           GpsState gpsState = Provider.of<GpsState>(context, listen: false);
@@ -161,7 +161,31 @@ class MainViewWidgetState extends State<MainViewWidget>
               posLL = LatLng(gpsState.lastGpsPosition!.latitude,
                   gpsState.lastGpsPosition!.longitude);
             }
-            _mapController?.move(posLL, _mapController?.zoom ?? DEFAULT_ZOOM);
+            var bb = _mapController!.bounds;
+            var doCenter = true;
+            if (bb != null) {
+              var n = bb.north;
+              var s = bb.south;
+              var e = bb.east;
+              var w = bb.west;
+
+              var deltaX = (e - w) / 4;
+              var deltaY = (n - s) / 4;
+              n -= deltaY;
+              s += deltaY;
+              e -= deltaX;
+              w += deltaX;
+
+              if (posLL.latitude > s &&
+                  posLL.latitude < n &&
+                  posLL.longitude > w &&
+                  posLL.longitude < e) {
+                doCenter = false;
+              }
+            }
+            if (doCenter) {
+              _mapController!.move(posLL, _mapController!.zoom);
+            }
           }
         }
       }

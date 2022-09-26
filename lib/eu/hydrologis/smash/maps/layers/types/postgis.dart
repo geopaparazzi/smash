@@ -77,7 +77,7 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
   Future<void> load(BuildContext context) async {
     if (!isLoaded) {
       int? maxFeaturesToLoad = GpPreferences()
-          .getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, -1);
+          .getIntSync(SmashPreferencesKeys.KEY_VECTOR_MAX_FEATURES, 1000);
       bool loadOnlyVisible = GpPreferences().getBooleanSync(
           SmashPreferencesKeys.KEY_VECTOR_LOAD_ONLY_VISIBLE, false);
 
