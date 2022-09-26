@@ -623,7 +623,7 @@ class DataLoaderUtilities {
       var logid = map.get(LOGSDATA_COLUMN_LOGID);
       var log = logs[logid];
       if (log != null) {
-        var altim = map.get(LOGSDATA_COLUMN_ALTIM);
+        var altim = map.get(LOGSDATA_COLUMN_ALTIM) ?? -1.0;
 
         var minMax =
             rangeMap[logid] ?? [double.infinity, double.negativeInfinity];
@@ -632,7 +632,7 @@ class DataLoaderUtilities {
         rangeMap[logid] = [newMin, newMax];
 
         var ts = map.get(LOGSDATA_COLUMN_TS)?.toInt();
-        var acc = map.get(LOGSDATA_COLUMN_ACCURACY);
+        var acc = map.get(LOGSDATA_COLUMN_ACCURACY) ?? -1.0;
         var latF = map.get(LOGSDATA_COLUMN_LAT_FILTERED);
         doOrig = doOrig || latF == null;
         doFiltered = doFiltered && latF != null;

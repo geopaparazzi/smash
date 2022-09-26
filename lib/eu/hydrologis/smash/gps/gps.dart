@@ -93,6 +93,9 @@ class SmashPosition {
       ARG_ALTITUDE: -1.0,
       ARG_HEADING: -1.0,
       ARG_TIME: time,
+      ARG_ACCURACY: -1.0,
+      ARG_SPEED: -1.0,
+      ARG_SPEED_ACCURACY: -1.0,
     });
   }
 
