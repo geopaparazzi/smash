@@ -653,8 +653,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_activatePointFlow":
             MessageLookupByLibrary.simpleMessage("Attiva flusso puntuale."),
         "settings_all": MessageLookupByLibrary.simpleMessage("tutti"),
-        "settings_allowSelfSignedCert": MessageLookupByLibrary.simpleMessage(
-            "Permetti certificati autofirmati"),
         "settings_altitudeM":
             MessageLookupByLibrary.simpleMessage("altitudine [m]"),
         "settings_camera": MessageLookupByLibrary.simpleMessage("Fotocamera"),
@@ -690,8 +688,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_enableFilters":
             MessageLookupByLibrary.simpleMessage("Abilita Filtri."),
         "settings_filters": MessageLookupByLibrary.simpleMessage("Filtri"),
-        "settings_geopaparazziSurveyServer":
-            MessageLookupByLibrary.simpleMessage("Geopaparazzi Survey Server"),
         "settings_gps": MessageLookupByLibrary.simpleMessage("GPS"),
         "settings_gpsFilter":
             MessageLookupByLibrary.simpleMessage("Filtro GPS"),
@@ -699,7 +695,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Filtri GPS e posizioni fittizie"),
         "settings_gpsLogsViewMode": MessageLookupByLibrary.simpleMessage(
             "Modalità vista registrazioni GPS"),
-        "settings_gss": MessageLookupByLibrary.simpleMessage("GSS"),
         "settings_hasBeenBlocked":
             MessageLookupByLibrary.simpleMessage("E\' stato bloccato"),
         "settings_headingDeg":
@@ -778,12 +773,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Schermo, barra di scala e dimensioni icone"),
         "settings_selectNotesViewMode": MessageLookupByLibrary.simpleMessage(
             "Seleziona una modalità vista note."),
-        "settings_serverPassword":
-            MessageLookupByLibrary.simpleMessage("Password del server"),
-        "settings_serverUrl":
-            MessageLookupByLibrary.simpleMessage("URL del server"),
-        "settings_serverUrlStartWithHttp": MessageLookupByLibrary.simpleMessage(
-            "L\'URL del server deve iniziare con HTTP o HTTPS."),
         "settings_setDurationGpsPointsInMilli":
             MessageLookupByLibrary.simpleMessage(
                 "Imposta la durata per i punti GPS in millisecondi."),

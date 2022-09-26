@@ -632,8 +632,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_activatePointFlow":
             MessageLookupByLibrary.simpleMessage("Activate point flow."),
         "settings_all": MessageLookupByLibrary.simpleMessage("all"),
-        "settings_allowSelfSignedCert": MessageLookupByLibrary.simpleMessage(
-            "Allow self signed certificates"),
         "settings_altitudeM":
             MessageLookupByLibrary.simpleMessage("altitude [m]"),
         "settings_camera": MessageLookupByLibrary.simpleMessage("Camera"),
@@ -673,8 +671,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_enableFilters":
             MessageLookupByLibrary.simpleMessage("Turn on Filters."),
         "settings_filters": MessageLookupByLibrary.simpleMessage("Filters"),
-        "settings_geopaparazziSurveyServer":
-            MessageLookupByLibrary.simpleMessage("Geopaparazzi Survey Server"),
         "settings_gps": MessageLookupByLibrary.simpleMessage("GPS"),
         "settings_gpsFilter":
             MessageLookupByLibrary.simpleMessage("GPS Filter"),
@@ -682,7 +678,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "GPS filters and mock locations"),
         "settings_gpsLogsViewMode":
             MessageLookupByLibrary.simpleMessage("GPS Logs view mode"),
-        "settings_gss": MessageLookupByLibrary.simpleMessage("GSS"),
         "settings_hasBeenBlocked":
             MessageLookupByLibrary.simpleMessage("Has been blocked"),
         "settings_headingDeg":
@@ -768,12 +763,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Screen, Scalebar and Icon Size"),
         "settings_selectNotesViewMode": MessageLookupByLibrary.simpleMessage(
             "Select a mode to view notes in."),
-        "settings_serverPassword":
-            MessageLookupByLibrary.simpleMessage("Server Password"),
-        "settings_serverUrl":
-            MessageLookupByLibrary.simpleMessage("Server URL"),
-        "settings_serverUrlStartWithHttp": MessageLookupByLibrary.simpleMessage(
-            "The server URL needs to start with HTTP or HTTPS."),
         "settings_setDurationGpsPointsInMilli":
             MessageLookupByLibrary.simpleMessage(
                 "Set duration for GPS points in milliseconds."),

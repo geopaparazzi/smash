@@ -3550,66 +3550,6 @@ class SL {
     );
   }
 
-  /// `GSS`
-  String get settings_gss {
-    return Intl.message(
-      'GSS',
-      name: 'settings_gss',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Geopaparazzi Survey Server`
-  String get settings_geopaparazziSurveyServer {
-    return Intl.message(
-      'Geopaparazzi Survey Server',
-      name: 'settings_geopaparazziSurveyServer',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Server URL`
-  String get settings_serverUrl {
-    return Intl.message(
-      'Server URL',
-      name: 'settings_serverUrl',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The server URL needs to start with HTTP or HTTPS.`
-  String get settings_serverUrlStartWithHttp {
-    return Intl.message(
-      'The server URL needs to start with HTTP or HTTPS.',
-      name: 'settings_serverUrlStartWithHttp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Server Password`
-  String get settings_serverPassword {
-    return Intl.message(
-      'Server Password',
-      name: 'settings_serverPassword',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Allow self signed certificates`
-  String get settings_allowSelfSignedCert {
-    return Intl.message(
-      'Allow self signed certificates',
-      name: 'settings_allowSelfSignedCert',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Zoom out`
   String get toolbarTools_zoomOut {
     return Intl.message(

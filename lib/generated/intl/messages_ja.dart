@@ -565,8 +565,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_activatePointFlow":
             MessageLookupByLibrary.simpleMessage("ポイントフローをアクティブ化します。"),
         "settings_all": MessageLookupByLibrary.simpleMessage("全部"),
-        "settings_allowSelfSignedCert":
-            MessageLookupByLibrary.simpleMessage("自己署名証明書を許可する"),
         "settings_altitudeM": MessageLookupByLibrary.simpleMessage("高度 [m]"),
         "settings_camera": MessageLookupByLibrary.simpleMessage("カメラ"),
         "settings_cameraResolution":
@@ -602,15 +600,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_enableFilters":
             MessageLookupByLibrary.simpleMessage("フィルターを有効にします。"),
         "settings_filters": MessageLookupByLibrary.simpleMessage("フィルター"),
-        "settings_geopaparazziSurveyServer":
-            MessageLookupByLibrary.simpleMessage("Geopaparazzi Survey Server"),
         "settings_gps": MessageLookupByLibrary.simpleMessage("GPS"),
         "settings_gpsFilter": MessageLookupByLibrary.simpleMessage("GPSフィルター"),
         "settings_gpsFiltersAndMockLoc":
             MessageLookupByLibrary.simpleMessage("GPSフィルターとモックロケーション"),
         "settings_gpsLogsViewMode":
             MessageLookupByLibrary.simpleMessage("GPSログビューモード"),
-        "settings_gss": MessageLookupByLibrary.simpleMessage("GSS"),
         "settings_hasBeenBlocked":
             MessageLookupByLibrary.simpleMessage("フィルターによるブロック"),
         "settings_headingDeg":
@@ -687,11 +682,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("画面、スケールバー、アイコンのサイズ"),
         "settings_selectNotesViewMode":
             MessageLookupByLibrary.simpleMessage("ノートビューモードを選択してください。"),
-        "settings_serverPassword":
-            MessageLookupByLibrary.simpleMessage("サーバーパスワード"),
-        "settings_serverUrl": MessageLookupByLibrary.simpleMessage("サーバーURL"),
-        "settings_serverUrlStartWithHttp": MessageLookupByLibrary.simpleMessage(
-            "サーバーのURLはhttpまたはhttpsで始まる必要があります。"),
         "settings_setDurationGpsPointsInMilli":
             MessageLookupByLibrary.simpleMessage("GPSポイントの継続時間をミリ秒単位で設定します。"),
         "settings_setMockedGpsDuration":

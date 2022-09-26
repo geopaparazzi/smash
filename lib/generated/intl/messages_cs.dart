@@ -638,8 +638,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_activatePointFlow":
             MessageLookupByLibrary.simpleMessage("Aktivovat bodový tok."),
         "settings_all": MessageLookupByLibrary.simpleMessage("vše"),
-        "settings_allowSelfSignedCert": MessageLookupByLibrary.simpleMessage(
-            "Povolení vlastnoručně podepsaných certifikátů"),
         "settings_altitudeM":
             MessageLookupByLibrary.simpleMessage("nadmořská výška [m]"),
         "settings_camera": MessageLookupByLibrary.simpleMessage("Fotoaparát"),
@@ -680,15 +678,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_enableFilters":
             MessageLookupByLibrary.simpleMessage("Zapnout filtry."),
         "settings_filters": MessageLookupByLibrary.simpleMessage("Filtry"),
-        "settings_geopaparazziSurveyServer":
-            MessageLookupByLibrary.simpleMessage("Geopaparazzi Survey Server"),
         "settings_gps": MessageLookupByLibrary.simpleMessage("GPS"),
         "settings_gpsFilter": MessageLookupByLibrary.simpleMessage("GPS filtr"),
         "settings_gpsFiltersAndMockLoc": MessageLookupByLibrary.simpleMessage(
             "Filtry GPS a zkušební lokality"),
         "settings_gpsLogsViewMode":
             MessageLookupByLibrary.simpleMessage("Režim zobrazení záznamů GPS"),
-        "settings_gss": MessageLookupByLibrary.simpleMessage("GSS"),
         "settings_hasBeenBlocked":
             MessageLookupByLibrary.simpleMessage("Byl blokován"),
         "settings_headingDeg":
@@ -775,12 +770,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Velikost obrazovky, panelu měřítek a ikon"),
         "settings_selectNotesViewMode": MessageLookupByLibrary.simpleMessage(
             "Vyberte režim, ve kterém chcete poznámky zobrazit."),
-        "settings_serverPassword":
-            MessageLookupByLibrary.simpleMessage("Heslo serveru"),
-        "settings_serverUrl":
-            MessageLookupByLibrary.simpleMessage("Server URL"),
-        "settings_serverUrlStartWithHttp": MessageLookupByLibrary.simpleMessage(
-            "Adresa URL serveru musí začínat HTTP nebo HTTPS."),
         "settings_setDurationGpsPointsInMilli":
             MessageLookupByLibrary.simpleMessage(
                 "Nastavení doby trvání bodů GPS v milisekundách."),

@@ -636,8 +636,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_activatePointFlow":
             MessageLookupByLibrary.simpleMessage("Aktiver punktflyt."),
         "settings_all": MessageLookupByLibrary.simpleMessage("alle"),
-        "settings_allowSelfSignedCert": MessageLookupByLibrary.simpleMessage(
-            "Tillat selvsignerte sertifikater."),
         "settings_altitudeM": MessageLookupByLibrary.simpleMessage("høyde [m]"),
         "settings_camera": MessageLookupByLibrary.simpleMessage("Kamera"),
         "settings_cameraResolution":
@@ -676,9 +674,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_enableFilters":
             MessageLookupByLibrary.simpleMessage("Skru på filtre."),
         "settings_filters": MessageLookupByLibrary.simpleMessage("Filtre"),
-        "settings_geopaparazziSurveyServer":
-            MessageLookupByLibrary.simpleMessage(
-                "Geopaparazzi-undersøkelsestjener"),
         "settings_gps": MessageLookupByLibrary.simpleMessage("GPS"),
         "settings_gpsFilter":
             MessageLookupByLibrary.simpleMessage("GPS-filter"),
@@ -686,7 +681,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "GPS-filtre og jukseposisjoner"),
         "settings_gpsLogsViewMode":
             MessageLookupByLibrary.simpleMessage("GPS-loggvisningsmodus"),
-        "settings_gss": MessageLookupByLibrary.simpleMessage("GSS"),
         "settings_hasBeenBlocked":
             MessageLookupByLibrary.simpleMessage("Har blitt blokkert"),
         "settings_headingDeg":
@@ -773,12 +767,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Skjerm, skaleringsfelt og ikonstørrelse"),
         "settings_selectNotesViewMode": MessageLookupByLibrary.simpleMessage(
             "Velg modus å vise notater i."),
-        "settings_serverPassword":
-            MessageLookupByLibrary.simpleMessage("Tjenerpassord"),
-        "settings_serverUrl":
-            MessageLookupByLibrary.simpleMessage("Tjenernettadresse"),
-        "settings_serverUrlStartWithHttp": MessageLookupByLibrary.simpleMessage(
-            "Tjenernettadressen må starte med HTTP eller HTTPS."),
         "settings_setDurationGpsPointsInMilli":
             MessageLookupByLibrary.simpleMessage(
                 "Sett varighet for GPS-punkter i millisekunder."),

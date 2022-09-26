@@ -457,8 +457,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_accuracyM":
             MessageLookupByLibrary.simpleMessage("précision [m]"),
         "settings_all": MessageLookupByLibrary.simpleMessage("tous"),
-        "settings_allowSelfSignedCert": MessageLookupByLibrary.simpleMessage(
-            "Autoriser les certificats auto-signés"),
         "settings_altitudeM":
             MessageLookupByLibrary.simpleMessage("altitude [m]"),
         "settings_camera": MessageLookupByLibrary.simpleMessage("Caméra"),
@@ -483,7 +481,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_gps": MessageLookupByLibrary.simpleMessage("GPS"),
         "settings_gpsLogsViewMode": MessageLookupByLibrary.simpleMessage(
             "Mode d\'aperçu des journaux de GPS"),
-        "settings_gss": MessageLookupByLibrary.simpleMessage("GSS"),
         "settings_headingDeg":
             MessageLookupByLibrary.simpleMessage("direction [deg]"),
         "settings_infoTool":
@@ -527,12 +524,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "settings_screen": MessageLookupByLibrary.simpleMessage("L\'écran"),
         "settings_selectNotesViewMode": MessageLookupByLibrary.simpleMessage(
             "Sélectionnez un mode pour voir les notes."),
-        "settings_serverPassword":
-            MessageLookupByLibrary.simpleMessage("Mot de passe du serveur"),
-        "settings_serverUrl":
-            MessageLookupByLibrary.simpleMessage("L\'URL du serveur"),
-        "settings_serverUrlStartWithHttp": MessageLookupByLibrary.simpleMessage(
-            "L\'URL du serveur doit commencer par HTTP ou HTTPS."),
         "settings_setDurationGpsPointsInMilli":
             MessageLookupByLibrary.simpleMessage(
                 "Définir la durée des points du GPS en millisecondes."),
