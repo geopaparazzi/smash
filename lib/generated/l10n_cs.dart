@@ -1055,24 +1055,6 @@ class SLCs extends SL {
   String get settings_pleaseEnterValidPassword => 'Zadejte platné heslo serveru.';
 
   @override
-  String get settings_gss => 'GSS';
-
-  @override
-  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
-
-  @override
-  String get settings_serverUrl => 'Server URL';
-
-  @override
-  String get settings_serverUrlStartWithHttp => 'Adresa URL serveru musí začínat HTTP nebo HTTPS.';
-
-  @override
-  String get settings_serverPassword => 'Heslo serveru';
-
-  @override
-  String get settings_allowSelfSignedCert => 'Povolení vlastnoručně podepsaných certifikátů';
-
-  @override
   String get toolbarTools_zoomOut => 'Oddálit';
 
   @override

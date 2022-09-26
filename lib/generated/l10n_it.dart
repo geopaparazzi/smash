@@ -1055,24 +1055,6 @@ class SLIt extends SL {
   String get settings_pleaseEnterValidPassword => 'Si prega di inserire una password valida per il server.';
 
   @override
-  String get settings_gss => 'GSS';
-
-  @override
-  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
-
-  @override
-  String get settings_serverUrl => 'URL del server';
-
-  @override
-  String get settings_serverUrlStartWithHttp => 'L\'URL del server deve iniziare con HTTP o HTTPS.';
-
-  @override
-  String get settings_serverPassword => 'Password del server';
-
-  @override
-  String get settings_allowSelfSignedCert => 'Permetti certificati autofirmati';
-
-  @override
   String get toolbarTools_zoomOut => 'Rimpicciolisci';
 
   @override

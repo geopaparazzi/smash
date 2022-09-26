@@ -1055,24 +1055,6 @@ class SLFr extends SL {
   String get settings_pleaseEnterValidPassword => 'Veuillez entrer un mot de passe de serveur valide.';
 
   @override
-  String get settings_gss => 'GSS';
-
-  @override
-  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
-
-  @override
-  String get settings_serverUrl => 'L\'URL du serveur';
-
-  @override
-  String get settings_serverUrlStartWithHttp => 'L\'URL du serveur doit commencer par HTTP ou HTTPS.';
-
-  @override
-  String get settings_serverPassword => 'Mot de passe du serveur';
-
-  @override
-  String get settings_allowSelfSignedCert => 'Autoriser les certificats auto-signés';
-
-  @override
   String get toolbarTools_zoomOut => 'Dézoomer';
 
   @override

@@ -1055,24 +1055,6 @@ class SLJa extends SL {
   String get settings_pleaseEnterValidPassword => '有効なサーバーパスワードを入力してください。';
 
   @override
-  String get settings_gss => 'GSS';
-
-  @override
-  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
-
-  @override
-  String get settings_serverUrl => 'サーバーURL';
-
-  @override
-  String get settings_serverUrlStartWithHttp => 'サーバーのURLはhttpまたはhttpsで始まる必要があります。';
-
-  @override
-  String get settings_serverPassword => 'サーバーパスワード';
-
-  @override
-  String get settings_allowSelfSignedCert => '自己署名証明書を許可する';
-
-  @override
   String get toolbarTools_zoomOut => '縮小';
 
   @override

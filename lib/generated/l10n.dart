@@ -2206,42 +2206,6 @@ abstract class SL {
   /// **'Please enter a valid server password.'**
   String get settings_pleaseEnterValidPassword;
 
-  /// No description provided for @settings_gss.
-  ///
-  /// In en, this message translates to:
-  /// **'GSS'**
-  String get settings_gss;
-
-  /// No description provided for @settings_geopaparazziSurveyServer.
-  ///
-  /// In en, this message translates to:
-  /// **'Geopaparazzi Survey Server'**
-  String get settings_geopaparazziSurveyServer;
-
-  /// No description provided for @settings_serverUrl.
-  ///
-  /// In en, this message translates to:
-  /// **'Server URL'**
-  String get settings_serverUrl;
-
-  /// No description provided for @settings_serverUrlStartWithHttp.
-  ///
-  /// In en, this message translates to:
-  /// **'The server URL needs to start with HTTP or HTTPS.'**
-  String get settings_serverUrlStartWithHttp;
-
-  /// No description provided for @settings_serverPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Server Password'**
-  String get settings_serverPassword;
-
-  /// No description provided for @settings_allowSelfSignedCert.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow self signed certificates'**
-  String get settings_allowSelfSignedCert;
-
   /// No description provided for @toolbarTools_zoomOut.
   ///
   /// In en, this message translates to:

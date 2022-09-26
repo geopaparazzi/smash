@@ -1055,24 +1055,6 @@ class SLRu extends SL {
   String get settings_pleaseEnterValidPassword => 'Please enter a valid server password.';
 
   @override
-  String get settings_gss => 'GSS';
-
-  @override
-  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
-
-  @override
-  String get settings_serverUrl => 'Server URL';
-
-  @override
-  String get settings_serverUrlStartWithHttp => 'The server URL needs to start with HTTP or HTTPS.';
-
-  @override
-  String get settings_serverPassword => 'Server Password';
-
-  @override
-  String get settings_allowSelfSignedCert => 'Allow self signed certificates';
-
-  @override
   String get toolbarTools_zoomOut => 'Zoom out';
 
   @override
