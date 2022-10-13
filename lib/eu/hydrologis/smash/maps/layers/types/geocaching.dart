@@ -6,23 +6,18 @@
 
 import 'dart:convert';
 import 'dart:core';
-import 'dart:io';
-import 'dart:math';
 
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:flutter/material.dart' hide TextStyle;
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
+    hide TextStyle;
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:gpx/gpx.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:map_elevation/map_elevation.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
-import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
-import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class GeocachingSource extends VectorLayerSource {
   String? _absolutePath;
@@ -133,6 +128,8 @@ class GeocachingSource extends VectorLayerSource {
         var code = pointData['code'] ?? " - nv - ";
         var premiumOnly = pointData['premiumOnly'] ?? false;
         var geocacheType = pointData['geocacheType'] ?? 2;
+        var detailsUrl = pointData['detailsUrl'] ?? "";
+        var completeUrl = "https://www.geocaching.com" + detailsUrl;
         var postedCoordinates = pointData['postedCoordinates'];
         if (postedCoordinates == null) {
           // print(pointData);
@@ -211,6 +208,41 @@ class GeocachingSource extends VectorLayerSource {
                                     getTableRow("last found date",
                                         lastFoundDate.replaceFirst("T", " ")),
                                     getTableRow("premium", premiumOnly),
+                                    TableRow(
+                                      children: [
+                                        TableUtilities.cellForString(
+                                            "details at"),
+                                        TableCell(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Text.rich(TextSpan(
+                                                style: TextStyle(
+                                                  fontSize: 27,
+                                                ),
+                                                children: [
+                                                  TextSpan(
+                                                      style: TextStyle(
+                                                          color: Colors.blue,
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .underline),
+                                                      text: detailsUrl,
+                                                      recognizer:
+                                                          TapGestureRecognizer()
+                                                            ..onTap = () async {
+                                                              var urllaunchable =
+                                                                  await canLaunchUrlString(
+                                                                      completeUrl);
+                                                              if (urllaunchable) {
+                                                                await launchUrlString(
+                                                                    completeUrl);
+                                                              }
+                                                            }),
+                                                ])),
+                                          ),
+                                        ),
+                                      ],
+                                    )
                                   ],
                                 ),
                               ],
