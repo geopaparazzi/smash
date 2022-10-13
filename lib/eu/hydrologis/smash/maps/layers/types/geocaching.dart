@@ -184,69 +184,60 @@ class GeocachingSource extends VectorLayerSource {
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Padding(
-                            padding: SmashUI.defaultPadding(),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Table(
-                                  columnWidths: {
-                                    0: FlexColumnWidth(0.4),
-                                    1: FlexColumnWidth(0.6),
-                                  },
-                                  children: [
-                                    getTableRow("name", name),
-                                    getTableRow("owner", owner),
-                                    getTableRow("id", id),
-                                    getTableRow("code", code),
-                                    getTableRow("type", type[0]),
-                                    getTableRow("difficulty", "$difficulty/5"),
-                                    getTableRow("placed date",
-                                        placedDate.split("T")[0]),
-                                    getTableRow("last found date",
-                                        lastFoundDate.replaceFirst("T", " ")),
-                                    getTableRow("premium", premiumOnly),
-                                    TableRow(
-                                      children: [
-                                        TableUtilities.cellForString(
-                                            "details at"),
-                                        TableCell(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Text.rich(TextSpan(
-                                                style: TextStyle(
-                                                  fontSize: 27,
-                                                ),
-                                                children: [
-                                                  TextSpan(
-                                                      style: TextStyle(
-                                                          color: Colors.blue,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline),
-                                                      text: detailsUrl,
-                                                      recognizer:
-                                                          TapGestureRecognizer()
-                                                            ..onTap = () async {
-                                                              var urllaunchable =
-                                                                  await canLaunchUrlString(
-                                                                      completeUrl);
-                                                              if (urllaunchable) {
-                                                                await launchUrlString(
-                                                                    completeUrl);
-                                                              }
-                                                            }),
-                                                ])),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ],
+                          Table(
+                            border: TableBorder.symmetric(
+                              inside: BorderSide(width: 1),
                             ),
+                            columnWidths: {
+                              0: FlexColumnWidth(0.4),
+                              1: FlexColumnWidth(0.6),
+                            },
+                            children: [
+                              getTableRow("name", name),
+                              getTableRow("owner", owner),
+                              getTableRow("id", id),
+                              getTableRow("code", code),
+                              getTableRow("type", type[0]),
+                              getTableRow("difficulty", "$difficulty/5"),
+                              getTableRow(
+                                  "placed date", placedDate.split("T")[0]),
+                              getTableRow("last found date",
+                                  lastFoundDate.replaceFirst("T", " ")),
+                              getTableRow("premium", premiumOnly),
+                              TableRow(
+                                children: [
+                                  TableUtilities.cellForString("details at"),
+                                  TableCell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Text.rich(TextSpan(
+                                          style: TextStyle(
+                                            fontSize: 27,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                                style: TextStyle(
+                                                    color: Colors.blue,
+                                                    decoration: TextDecoration
+                                                        .underline),
+                                                text: detailsUrl,
+                                                recognizer:
+                                                    TapGestureRecognizer()
+                                                      ..onTap = () async {
+                                                        var urllaunchable =
+                                                            await canLaunchUrlString(
+                                                                completeUrl);
+                                                        if (urllaunchable) {
+                                                          await launchUrlString(
+                                                              completeUrl);
+                                                        }
+                                                      }),
+                                          ])),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
                           ),
                           Padding(
                             padding: EdgeInsets.only(top: 5),
