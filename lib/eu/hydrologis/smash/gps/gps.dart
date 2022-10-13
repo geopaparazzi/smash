@@ -19,6 +19,7 @@ import 'package:geodesy/geodesy.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
+import 'package:smash/eu/hydrologis/smash/l10n/localization.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smash/generated/l10n.dart';
@@ -200,7 +201,7 @@ abstract class GpsLoggingHandler {
 /// * registre for updates through the [SmashPositionListener] interface
 /// * handle the GPS logging
 ///
-class GpsHandler {
+class GpsHandler with Localization {
   static const GPS_FORCED_OFF_KEY = "GPS_FORCED_OFF";
   static const String _isolateName = "LocatorIsolate";
   ReceivePort? port;
@@ -360,11 +361,11 @@ speed: ${(position.speed * 3.6).toStringAsFixed(0)}km/h
 heading: ${position.heading.round()}
 time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(position.time.toInt()))}""";
 
-        var title = SL.current.gps_smashIsActive; //"SMASH is active"
+        var title = loc.gps_smashIsActive; //"SMASH is active"
         var msg = pos;
         var bigMsg = posLines + "\n" + extraPos;
         if (_gpsState.isLogging) {
-          title = SL.current.gps_smashIsLogging; //"SMASH is logging"
+          title = loc.gps_smashIsLogging; //"SMASH is logging"
 
           var currentLogStats = _gpsState.getCurrentLogStats();
           if (currentLogStats[0] != null &&
@@ -395,11 +396,11 @@ time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSince
     SMLogger().i("Register for location updates.");
     var androidNotificationSettings = AndroidNotificationSettings(
       notificationChannelName:
-          SL.current.gps_locationTracking, //"Location tracking"
-      notificationTitle: SL.current
+          loc.gps_locationTracking, //"Location tracking"
+      notificationTitle: loc
           .gps_smashLocServiceIsActive, //"SMASH location service is active."
       notificationMsg: "",
-      notificationBigMsg: SL.current
+      notificationBigMsg: loc
           .gps_backgroundLocIsOnToKeepRegistering, //"Background location is on to keep the app registering the location even when the app is in background."
       notificationIcon: "smash_notification",
       notificationIconColor: SmashColors.mainDecorations,

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:smash/eu/hydrologis/smash/l10n/localization.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/wms.dart';
@@ -430,137 +431,146 @@ class AddTmsStepper extends StatefulWidget {
   _AddTmsStepperState createState() => _AddTmsStepperState();
 }
 
-class _AddTmsStepperState extends State<AddTmsStepper> {
+class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   static TmsData tmsData = TmsData();
-  List<Step> steps = [
-    Step(
-      title: Text(SL.current
-          .onlineSourcesPage_setNameTmsService), //"Set a name for the TMS service"
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(
-        children: <Widget>[
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: SL.current.onlineSourcesPage_enterName, //"enter name"
-              icon: const Icon(MdiIcons.text),
+  late List<Step> steps;
+
+  @override
+  void initState() {
+    steps = [
+      Step(
+        title: Text(loc
+            .onlineSourcesPage_setNameTmsService),
+        //"Set a name for the TMS service"
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(
+          children: <Widget>[
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: loc.onlineSourcesPage_enterName, //"enter name"
+                icon: const Icon(MdiIcons.text),
+              ),
+              keyboardType: TextInputType.text,
+              autocorrect: false,
+              onSaved: (String? value) {
+                tmsData.name = value;
+              },
+              validator: (value) {
+                if (value!.isEmpty || value.length < 1) {
+                  return loc
+                      .onlineSourcesPage_pleaseEnterValidName; //"Please enter a valid name"
+                }
+                return null;
+              },
             ),
-            keyboardType: TextInputType.text,
-            autocorrect: false,
-            onSaved: (String? value) {
-              tmsData.name = value;
-            },
-            validator: (value) {
-              if (value!.isEmpty || value.length < 1) {
-                return SL.current
-                    .onlineSourcesPage_pleaseEnterValidName; //"Please enter a valid name"
-              }
-              return null;
-            },
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-    Step(
-      title: Text(SL.current
-          .onlineSourcesPage_insertUrlOfService), //"Insert the url of the service."
-      subtitle: Text(SL.current
-          .onlineSourcesPage_placeXyzBetBrackets), //"Place the x, y, z between curly brackets."
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(
-        children: <Widget>[
-          TextFormField(
-            keyboardType: TextInputType.text,
-            autocorrect: false,
-            onSaved: (String? value) {
-              print(value);
-              tmsData.url = value;
-            },
-            validator: (value) {
-              if (value!.isEmpty ||
-                  value.length < 1 ||
-                  !value.toLowerCase().startsWith("http") ||
-                  !value.contains("{x}") ||
-                  !value.contains("{y}") ||
-                  !value.contains("{z}")) {
-                return SL.current
-                    .onlineSourcesPage_pleaseEnterValidTmsUrl; //'Please enter a valid TMS URL'
-              }
-              return null;
-            },
-            decoration: InputDecoration(
-              labelText: SL.current.onlineSourcesPage_enterUrl, //"enter URL"
-              icon: const Icon(MdiIcons.link),
+      Step(
+        title: Text(loc
+            .onlineSourcesPage_insertUrlOfService),
+        //"Insert the url of the service."
+        subtitle: Text(loc
+            .onlineSourcesPage_placeXyzBetBrackets),
+        //"Place the x, y, z between curly brackets."
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(
+          children: <Widget>[
+            TextFormField(
+              keyboardType: TextInputType.text,
+              autocorrect: false,
+              onSaved: (String? value) {
+                print(value);
+                tmsData.url = value;
+              },
+              validator: (value) {
+                if (value!.isEmpty ||
+                    value.length < 1 ||
+                    !value.toLowerCase().startsWith("http") ||
+                    !value.contains("{x}") ||
+                    !value.contains("{y}") ||
+                    !value.contains("{z}")) {
+                  return loc
+                      .onlineSourcesPage_pleaseEnterValidTmsUrl; //'Please enter a valid TMS URL'
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                labelText: loc.onlineSourcesPage_enterUrl, //"enter URL"
+                icon: const Icon(MdiIcons.link),
+              ),
             ),
-          ),
-          TextFormField(
-            keyboardType: TextInputType.text,
-            autocorrect: false,
-            onSaved: (String? value) {
-              tmsData.subdomains = value;
-            },
-            decoration: InputDecoration(
-              icon: const Icon(MdiIcons.fileTree),
-              labelText: SL.current
-                  .onlineSourcesPage_enterSubDomains, //"enter subdomains"
+            TextFormField(
+              keyboardType: TextInputType.text,
+              autocorrect: false,
+              onSaved: (String? value) {
+                tmsData.subdomains = value;
+              },
+              decoration: InputDecoration(
+                icon: const Icon(MdiIcons.fileTree),
+                labelText: loc
+                    .onlineSourcesPage_enterSubDomains, //"enter subdomains"
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-    Step(
-      title: Text(
-          SL.current.onlineSourcesPage_addAttribution), //"Add an attribution."
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(
-        children: <Widget>[
-          TextFormField(
-            keyboardType: TextInputType.text,
-            autocorrect: false,
-            onSaved: (String? value) {
-              tmsData.attribution = value;
-            },
-            decoration: InputDecoration(
-              labelText: SL.current
-                  .onlineSourcesPage_enterAttribution, //"enter attribution"
-              icon: const Icon(MdiIcons.license),
+      Step(
+        title: Text(
+            loc.onlineSourcesPage_addAttribution), //"Add an attribution."
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(
+          children: <Widget>[
+            TextFormField(
+              keyboardType: TextInputType.text,
+              autocorrect: false,
+              onSaved: (String? value) {
+                tmsData.attribution = value;
+              },
+              decoration: InputDecoration(
+                labelText: loc
+                    .onlineSourcesPage_enterAttribution, //"enter attribution"
+                icon: const Icon(MdiIcons.license),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-    Step(
-      title: Text(
-          SL.current.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
-      isActive: true,
-      state: StepState.indexed,
-      content: Column(
-        children: <Widget>[
-          TextFormField(
-            keyboardType: TextInputType.number,
-            onSaved: (String? value) {
-              tmsData.minZoom = value;
-            },
-            initialValue: "0",
-            decoration: InputDecoration(
-                labelText: SL.current.onlineSourcesPage_minZoom), //"min zoom"
-          ),
-          TextFormField(
-            keyboardType: TextInputType.number,
-            onSaved: (String? value) {
-              tmsData.maxZoom = value;
-            },
-            initialValue: "19",
-            decoration: InputDecoration(
-                labelText: SL.current.onlineSourcesPage_maxZoom), //"max zoom"
-          ),
-        ],
+      Step(
+        title: Text(
+            loc.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
+        isActive: true,
+        state: StepState.indexed,
+        content: Column(
+          children: <Widget>[
+            TextFormField(
+              keyboardType: TextInputType.number,
+              onSaved: (String? value) {
+                tmsData.minZoom = value;
+              },
+              initialValue: "0",
+              decoration: InputDecoration(
+                  labelText: loc.onlineSourcesPage_minZoom), //"min zoom"
+            ),
+            TextFormField(
+              keyboardType: TextInputType.number,
+              onSaved: (String? value) {
+                tmsData.maxZoom = value;
+              },
+              initialValue: "19",
+              decoration: InputDecoration(
+                  labelText: loc.onlineSourcesPage_maxZoom), //"max zoom"
+            ),
+          ],
+        ),
       ),
-    ),
-  ];
+    ];
+    super.initState();
+  }
 
   int currentStep = 0;
 
@@ -714,7 +724,7 @@ class AddWmsStepper extends StatefulWidget {
   _AddWmsStepperState createState() => _AddWmsStepperState();
 }
 
-class _AddWmsStepperState extends State<AddWmsStepper> {
+class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   late List<Step> steps;
@@ -730,9 +740,9 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
 
     steps = [
       Step(
-        title: Text(SL.current
+        title: Text(loc
             .onlineSourcesPage_insertUrlOfService), //"Insert the url of the service."
-        subtitle: Text(SL.current
+        subtitle: Text(loc
             .onlineSourcesPage_theBaseUrlWithQuestionMark), //"The base url ending with question mark."
         isActive: true,
         state: StepState.indexed,
@@ -753,13 +763,13 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
                 if (value!.isEmpty ||
                     value.length < 1 ||
                     !value.toLowerCase().startsWith("http")) {
-                  return SL.current
+                  return loc
                       .onlineSourcesPage_pleaseEnterValidWmsUrl; //"Please enter a valid WMS URL"
                 }
                 return null;
               },
               decoration: InputDecoration(
-                labelText: SL.current.onlineSourcesPage_enterUrl, //"enter URL"
+                labelText: loc.onlineSourcesPage_enterUrl, //"enter URL"
                 icon: const Icon(MdiIcons.link),
               ),
             ),
@@ -767,8 +777,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
         ),
       ),
       Step(
-        title: Text(SL
-            .current.onlineSourcesPage_setWmsLayerName), //"Set WMS layer name"
+        title: Text(loc.onlineSourcesPage_setWmsLayerName), //"Set WMS layer name"
         isActive: true,
         state: StepState.indexed,
         content: Column(
@@ -776,7 +785,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
             TextFormField(
               initialValue: wmsData.layer,
               decoration: InputDecoration(
-                labelText: SL.current
+                labelText: loc
                     .onlineSourcesPage_enterLayerToLoad, //"enter layer to load"
                 icon: const Icon(MdiIcons.text),
               ),
@@ -789,7 +798,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
               },
               validator: (value) {
                 if (value!.isEmpty || value.length < 1) {
-                  return SL.current
+                  return loc
                       .onlineSourcesPage_pleaseEnterValidLayer; //"Please enter a valid layer"
                 }
                 return null;
@@ -799,7 +808,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
         ),
       ),
       Step(
-        title: Text(SL.current
+        title: Text(loc
             .onlineSourcesPage_setWmsImageFormat), //"Set WMS image format"
         isActive: true,
         state: StepState.indexed,
@@ -841,7 +850,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
         ]),
       ),
       Step(
-        title: Text(SL.current
+        title: Text(loc
             .onlineSourcesPage_addAnAttribution), //"Add an attribution."
         isActive: true,
         state: StepState.indexed,
@@ -857,7 +866,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
                 }
               },
               decoration: InputDecoration(
-                labelText: SL.current
+                labelText: loc
                     .onlineSourcesPage_enterAttribution, //"enter attribution"
                 icon: const Icon(MdiIcons.license),
               ),
@@ -866,8 +875,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
         ),
       ),
       Step(
-        title: Text(SL
-            .current.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
+        title: Text(loc.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
         isActive: true,
         state: StepState.indexed,
         content: Column(
@@ -881,7 +889,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
               },
               initialValue: wmsData.minZoom,
               decoration: InputDecoration(
-                  labelText: SL.current.onlineSourcesPage_minZoom), //"min zoom"
+                  labelText: loc.onlineSourcesPage_minZoom), //"min zoom"
             ),
             TextFormField(
               keyboardType: TextInputType.number,
@@ -892,7 +900,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
               },
               initialValue: wmsData.maxZoom,
               decoration: InputDecoration(
-                  labelText: SL.current.onlineSourcesPage_maxZoom), //"max zoom"
+                  labelText: loc.onlineSourcesPage_maxZoom), //"max zoom"
             ),
           ],
         ),
@@ -924,7 +932,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
     if (!formState!.validate()) {
       SmashDialogs.showWarningDialog(
           context,
-          SL.current
+          loc
               .onlineSourcesPage_pleaseCheckYourData); //'Please check your data'
     } else {
       formState.save();
@@ -932,37 +940,37 @@ class _AddWmsStepperState extends State<AddWmsStepper> {
           context: context,
           builder: (_) {
             return new AlertDialog(
-              title: new Text(SL.current.onlineSourcesPage_details), //"Details"
+              title: new Text(loc.onlineSourcesPage_details), //"Details"
               content: new SingleChildScrollView(
                 child: new ListBody(
                   children: <Widget>[
-                    new Text(SL.current.onlineSourcesPage_layer +
+                    new Text(loc.onlineSourcesPage_layer +
                         wmsData.layer), //"Layer: "
-                    new Text(SL.current.onlineSourcesPage_url +
+                    new Text(loc.onlineSourcesPage_url +
                         wmsData.url), //"URL: "
                     new Text("EPSG:${wmsData.srid}"),
                     new Text("Version: " + wmsData.version),
-                    new Text(SL.current.onlineSourcesPage_attribution +
+                    new Text(loc.onlineSourcesPage_attribution +
                         (wmsData.attribution)), //"Attribution: "
                     new Text(
-                        "${SL.current.onlineSourcesPage_format}: ${wmsData.format}"), //Format
+                        "${loc.onlineSourcesPage_format}: ${wmsData.format}"), //Format
                     new Text(
-                        "${SL.current.onlineSourcesPage_minZoom}: ${wmsData.minZoom}"), //Min zoom
+                        "${loc.onlineSourcesPage_minZoom}: ${wmsData.minZoom}"), //Min zoom
                     new Text(
-                        "${SL.current.onlineSourcesPage_maxZoom}: ${wmsData.maxZoom}"), //Max zoom
+                        "${loc.onlineSourcesPage_maxZoom}: ${wmsData.maxZoom}"), //Max zoom
                   ],
                 ),
               ),
               actions: <Widget>[
                 new TextButton(
                   child:
-                      new Text(SL.current.onlineSourcesPage_cancel), //'CANCEL'
+                      new Text(loc.onlineSourcesPage_cancel), //'CANCEL'
                   onPressed: () {
                     Navigator.pop(context, false);
                   },
                 ),
                 new TextButton(
-                  child: new Text(SL.current.onlineSourcesPage_ok), //'OK'
+                  child: new Text(loc.onlineSourcesPage_ok), //'OK'
                   onPressed: () {
                     Navigator.pop(context, true);
                   },

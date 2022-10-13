@@ -522,7 +522,7 @@ class FenceButton extends StatelessWidget {
         onTap: () async {
           var mapState = Provider.of<SmashMapState>(context, listen: false);
 
-          Fence tmpfence = Fence()
+          Fence tmpfence = Fence(context)
             ..lat = mapState.center.y
             ..lon = mapState.center.x;
 

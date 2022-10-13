@@ -1,4455 +1,2777 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'intl/messages_all.dart';
+import 'dart:async';
 
-// **************************************************************************
-// Generator: Flutter Intl IDE plugin
-// Made by Localizely
-// **************************************************************************
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
 
-// ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
-// ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
-// ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
+import 'l10n_cs.dart';
+import 'l10n_de.dart';
+import 'l10n_en.dart';
+import 'l10n_fr.dart';
+import 'l10n_it.dart';
+import 'l10n_ja.dart';
+import 'l10n_nb.dart';
+import 'l10n_ru.dart';
 
-class SL {
-  SL();
+/// Callers can lookup localized strings with an instance of SL
+/// returned by `SL.of(context)`.
+///
+/// Applications need to include `SL.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'generated/l10n.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: SL.localizationsDelegates,
+///   supportedLocales: SL.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the SL.supportedLocales
+/// property.
+abstract class SL {
+  SL(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
-  static SL? _current;
-
-  static SL get current {
-    assert(_current != null,
-        'No instance of SL was loaded. Try to initialize the SL delegate before accessing SL.current.');
-    return _current!;
-  }
-
-  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
-
-  static Future<SL> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name);
-    return initializeMessages(localeName).then((_) {
-      Intl.defaultLocale = localeName;
-      final instance = SL();
-      SL._current = instance;
-
-      return instance;
-    });
-  }
+  final String localeName;
 
   static SL of(BuildContext context) {
-    final instance = SL.maybeOf(context);
-    assert(instance != null,
-        'No instance of SL present in the widget tree. Did you add SL.delegate in localizationsDelegates?');
-    return instance!;
-  }
-
-  static SL? maybeOf(BuildContext context) {
-    return Localizations.of<SL>(context, SL);
-  }
-
-  /// `Welcome to SMASH!`
-  String get main_welcome {
-    return Intl.message(
-      'Welcome to SMASH!',
-      name: 'main_welcome',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Checking location permission…`
-  String get main_check_location_permission {
-    return Intl.message(
-      'Checking location permission…',
-      name: 'main_check_location_permission',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Location permission granted.`
-  String get main_location_permission_granted {
-    return Intl.message(
-      'Location permission granted.',
-      name: 'main_location_permission_granted',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Checking storage permission…`
-  String get main_checkingStoragePermission {
-    return Intl.message(
-      'Checking storage permission…',
-      name: 'main_checkingStoragePermission',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Storage permission granted.`
-  String get main_storagePermissionGranted {
-    return Intl.message(
-      'Storage permission granted.',
-      name: 'main_storagePermissionGranted',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading preferences…`
-  String get main_loadingPreferences {
-    return Intl.message(
-      'Loading preferences…',
-      name: 'main_loadingPreferences',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Preferences loaded.`
-  String get main_preferencesLoaded {
-    return Intl.message(
-      'Preferences loaded.',
-      name: 'main_preferencesLoaded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading workspace…`
-  String get main_loadingWorkspace {
-    return Intl.message(
-      'Loading workspace…',
-      name: 'main_loadingWorkspace',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Workspace loaded.`
-  String get main_workspaceLoaded {
-    return Intl.message(
-      'Workspace loaded.',
-      name: 'main_workspaceLoaded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading tags list…`
-  String get main_loadingTagsList {
-    return Intl.message(
-      'Loading tags list…',
-      name: 'main_loadingTagsList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Tags list loaded.`
-  String get main_tagsListLoaded {
-    return Intl.message(
-      'Tags list loaded.',
-      name: 'main_tagsListLoaded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading known projections…`
-  String get main_loadingKnownProjections {
-    return Intl.message(
-      'Loading known projections…',
-      name: 'main_loadingKnownProjections',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Known projections loaded.`
-  String get main_knownProjectionsLoaded {
-    return Intl.message(
-      'Known projections loaded.',
-      name: 'main_knownProjectionsLoaded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading fences…`
-  String get main_loadingFences {
-    return Intl.message(
-      'Loading fences…',
-      name: 'main_loadingFences',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fences loaded.`
-  String get main_fencesLoaded {
-    return Intl.message(
-      'Fences loaded.',
-      name: 'main_fencesLoaded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading layers list…`
-  String get main_loadingLayersList {
-    return Intl.message(
-      'Loading layers list…',
-      name: 'main_loadingLayersList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Layers list loaded.`
-  String get main_layersListLoaded {
-    return Intl.message(
-      'Layers list loaded.',
-      name: 'main_layersListLoaded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Grant location permission in the next step to allow GPS logging in the background. (Otherwise it only works in the foreground.)\nNo data is shared, and only saved locally on the device.`
-  String get main_locationBackgroundWarning {
-    return Intl.message(
-      'Grant location permission in the next step to allow GPS logging in the background. (Otherwise it only works in the foreground.)\nNo data is shared, and only saved locally on the device.',
-      name: 'main_locationBackgroundWarning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please read carefully!\nOn Android 11 and above, the SMASH project folder must be placed in the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage to be used.\nIf the app is uninstalled, the system removes it, so back up your data if you do.\n\nA better solution is in the works.`
-  String get main_StorageIsInternalWarning {
-    return Intl.message(
-      'Please read carefully!\nOn Android 11 and above, the SMASH project folder must be placed in the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage to be used.\nIf the app is uninstalled, the system removes it, so back up your data if you do.\n\nA better solution is in the works.',
-      name: 'main_StorageIsInternalWarning',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Location permission is mandatory to open SMASH.`
-  String get main_locationPermissionIsMandatoryToOpenSmash {
-    return Intl.message(
-      'Location permission is mandatory to open SMASH.',
-      name: 'main_locationPermissionIsMandatoryToOpenSmash',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Storage permission is mandatory to open SMASH.`
-  String get main_storagePermissionIsMandatoryToOpenSmash {
-    return Intl.message(
-      'Storage permission is mandatory to open SMASH.',
-      name: 'main_storagePermissionIsMandatoryToOpenSmash',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `An error occurred. Tap to view.`
-  String get main_anErrorOccurredTapToView {
-    return Intl.message(
-      'An error occurred. Tap to view.',
-      name: 'main_anErrorOccurredTapToView',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading data…`
-  String get mainView_loadingData {
-    return Intl.message(
-      'Loading data…',
-      name: 'mainView_loadingData',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn GPS on`
-  String get mainView_turnGpsOn {
-    return Intl.message(
-      'Turn GPS on',
-      name: 'mainView_turnGpsOn',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn GPS off`
-  String get mainView_turnGpsOff {
-    return Intl.message(
-      'Turn GPS off',
-      name: 'mainView_turnGpsOff',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Exit`
-  String get mainView_exit {
-    return Intl.message(
-      'Exit',
-      name: 'mainView_exit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Close the project?`
-  String get mainView_areYouSureCloseTheProject {
-    return Intl.message(
-      'Close the project?',
-      name: 'mainView_areYouSureCloseTheProject',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Active operations will be stopped.`
-  String get mainView_activeOperationsWillBeStopped {
-    return Intl.message(
-      'Active operations will be stopped.',
-      name: 'mainView_activeOperationsWillBeStopped',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Show interactive coach marks.`
-  String get mainView_showInteractiveCoachMarks {
-    return Intl.message(
-      'Show interactive coach marks.',
-      name: 'mainView_showInteractiveCoachMarks',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open tools drawer.`
-  String get mainView_openToolsDrawer {
-    return Intl.message(
-      'Open tools drawer.',
-      name: 'mainView_openToolsDrawer',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom in`
-  String get mainView_zoomIn {
-    return Intl.message(
-      'Zoom in',
-      name: 'mainView_zoomIn',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom out`
-  String get mainView_zoomOut {
-    return Intl.message(
-      'Zoom out',
-      name: 'mainView_zoomOut',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Form Notes`
-  String get mainView_formNotes {
-    return Intl.message(
-      'Form Notes',
-      name: 'mainView_formNotes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Simple Notes`
-  String get mainView_simpleNotes {
-    return Intl.message(
-      'Simple Notes',
-      name: 'mainView_simpleNotes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Projects`
-  String get mainviewUtils_projects {
-    return Intl.message(
-      'Projects',
-      name: 'mainviewUtils_projects',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Import`
-  String get mainviewUtils_import {
-    return Intl.message(
-      'Import',
-      name: 'mainviewUtils_import',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export`
-  String get mainviewUtils_export {
-    return Intl.message(
-      'Export',
-      name: 'mainviewUtils_export',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Settings`
-  String get mainviewUtils_settings {
-    return Intl.message(
-      'Settings',
-      name: 'mainviewUtils_settings',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Online Help`
-  String get mainviewUtils_onlineHelp {
-    return Intl.message(
-      'Online Help',
-      name: 'mainviewUtils_onlineHelp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `About`
-  String get mainviewUtils_about {
-    return Intl.message(
-      'About',
-      name: 'mainviewUtils_about',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Project Info`
-  String get mainviewUtils_projectInfo {
-    return Intl.message(
-      'Project Info',
-      name: 'mainviewUtils_projectInfo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Project`
-  String get mainviewUtils_project {
-    return Intl.message(
-      'Project',
-      name: 'mainviewUtils_project',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Database`
-  String get mainviewUtils_database {
-    return Intl.message(
-      'Database',
-      name: 'mainviewUtils_database',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Extras`
-  String get mainviewUtils_extras {
-    return Intl.message(
-      'Extras',
-      name: 'mainviewUtils_extras',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Available icons`
-  String get mainviewUtils_availableIcons {
-    return Intl.message(
-      'Available icons',
-      name: 'mainviewUtils_availableIcons',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Offline maps`
-  String get mainviewUtils_offlineMaps {
-    return Intl.message(
-      'Offline maps',
-      name: 'mainviewUtils_offlineMaps',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Position Tools`
-  String get mainviewUtils_positionTools {
-    return Intl.message(
-      'Position Tools',
-      name: 'mainviewUtils_positionTools',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Go to`
-  String get mainviewUtils_goTo {
-    return Intl.message(
-      'Go to',
-      name: 'mainviewUtils_goTo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Share position`
-  String get mainviewUtils_sharePosition {
-    return Intl.message(
-      'Share position',
-      name: 'mainviewUtils_sharePosition',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Rotate map with GPS`
-  String get mainviewUtils_rotateMapWithGps {
-    return Intl.message(
-      'Rotate map with GPS',
-      name: 'mainviewUtils_rotateMapWithGps',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Geocoding`
-  String get geocoding_geocoding {
-    return Intl.message(
-      'Geocoding',
-      name: 'geocoding_geocoding',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nothing to look for. Insert an address.`
-  String get geocoding_nothingToLookFor {
-    return Intl.message(
-      'Nothing to look for. Insert an address.',
-      name: 'geocoding_nothingToLookFor',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Launch Geocoding`
-  String get geocoding_launchGeocoding {
-    return Intl.message(
-      'Launch Geocoding',
-      name: 'geocoding_launchGeocoding',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Searching…`
-  String get geocoding_searching {
-    return Intl.message(
-      'Searching…',
-      name: 'geocoding_searching',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `SMASH is active`
-  String get gps_smashIsActive {
-    return Intl.message(
-      'SMASH is active',
-      name: 'gps_smashIsActive',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `SMASH is logging`
-  String get gps_smashIsLogging {
-    return Intl.message(
-      'SMASH is logging',
-      name: 'gps_smashIsLogging',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Location tracking`
-  String get gps_locationTracking {
-    return Intl.message(
-      'Location tracking',
-      name: 'gps_locationTracking',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `SMASH location service is active.`
-  String get gps_smashLocServiceIsActive {
-    return Intl.message(
-      'SMASH location service is active.',
-      name: 'gps_smashLocServiceIsActive',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Background location is on to keep the app registering the location even when the app is in background.`
-  String get gps_backgroundLocIsOnToKeepRegistering {
-    return Intl.message(
-      'Background location is on to keep the app registering the location even when the app is in background.',
-      name: 'gps_backgroundLocIsOnToKeepRegistering',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Layer List`
-  String get layersView_layerList {
-    return Intl.message(
-      'Layer List',
-      name: 'layersView_layerList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Load remote database`
-  String get layersView_loadRemoteDatabase {
-    return Intl.message(
-      'Load remote database',
-      name: 'layersView_loadRemoteDatabase',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Load online sources`
-  String get layersView_loadOnlineSources {
-    return Intl.message(
-      'Load online sources',
-      name: 'layersView_loadOnlineSources',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Load local datasets`
-  String get layersView_loadLocalDatasets {
-    return Intl.message(
-      'Load local datasets',
-      name: 'layersView_loadLocalDatasets',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading…`
-  String get layersView_loading {
-    return Intl.message(
-      'Loading…',
-      name: 'layersView_loading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom to`
-  String get layersView_zoomTo {
-    return Intl.message(
-      'Zoom to',
-      name: 'layersView_zoomTo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Properties`
-  String get layersView_properties {
-    return Intl.message(
-      'Properties',
-      name: 'layersView_properties',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete`
-  String get layersView_delete {
-    return Intl.message(
-      'Delete',
-      name: 'layersView_delete',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The proj could not be recognised. Tap to enter epsg manually.`
-  String get layersView_projCouldNotBeRecognized {
-    return Intl.message(
-      'The proj could not be recognised. Tap to enter epsg manually.',
-      name: 'layersView_projCouldNotBeRecognized',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The proj is not supported. Tap to solve.`
-  String get layersView_projNotSupported {
-    return Intl.message(
-      'The proj is not supported. Tap to solve.',
-      name: 'layersView_projNotSupported',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Only image files with world file definition are supported.`
-  String get layersView_onlyImageFilesWithWorldDef {
-    return Intl.message(
-      'Only image files with world file definition are supported.',
-      name: 'layersView_onlyImageFilesWithWorldDef',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Only image files with prj file definition are supported.`
-  String get layersView_onlyImageFileWithPrjDef {
-    return Intl.message(
-      'Only image files with prj file definition are supported.',
-      name: 'layersView_onlyImageFileWithPrjDef',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Select table to load.`
-  String get layersView_selectTableToLoad {
-    return Intl.message(
-      'Select table to load.',
-      name: 'layersView_selectTableToLoad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `File format not supported.`
-  String get layersView_fileFormatNotSUpported {
-    return Intl.message(
-      'File format not supported.',
-      name: 'layersView_fileFormatNotSUpported',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Online Sources Catalog`
-  String get onlineSourcesPage_onlineSourcesCatalog {
-    return Intl.message(
-      'Online Sources Catalog',
-      name: 'onlineSourcesPage_onlineSourcesCatalog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading TMS layers…`
-  String get onlineSourcesPage_loadingTmsLayers {
-    return Intl.message(
-      'Loading TMS layers…',
-      name: 'onlineSourcesPage_loadingTmsLayers',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading WMS layers…`
-  String get onlineSourcesPage_loadingWmsLayers {
-    return Intl.message(
-      'Loading WMS layers…',
-      name: 'onlineSourcesPage_loadingWmsLayers',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Import from file`
-  String get onlineSourcesPage_importFromFile {
-    return Intl.message(
-      'Import from file',
-      name: 'onlineSourcesPage_importFromFile',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The file`
-  String get onlineSourcesPage_theFile {
-    return Intl.message(
-      'The file',
-      name: 'onlineSourcesPage_theFile',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `doesn't exist`
-  String get onlineSourcesPage_doesntExist {
-    return Intl.message(
-      'doesn\'t exist',
-      name: 'onlineSourcesPage_doesntExist',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Online sources imported.`
-  String get onlineSourcesPage_onlineSourcesImported {
-    return Intl.message(
-      'Online sources imported.',
-      name: 'onlineSourcesPage_onlineSourcesImported',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Export to file`
-  String get onlineSourcesPage_exportToFile {
-    return Intl.message(
-      'Export to file',
-      name: 'onlineSourcesPage_exportToFile',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Exported to:`
-  String get onlineSourcesPage_exportedTo {
-    return Intl.message(
-      'Exported to:',
-      name: 'onlineSourcesPage_exportedTo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete`
-  String get onlineSourcesPage_delete {
-    return Intl.message(
-      'Delete',
-      name: 'onlineSourcesPage_delete',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Add to layers`
-  String get onlineSourcesPage_addToLayers {
-    return Intl.message(
-      'Add to layers',
-      name: 'onlineSourcesPage_addToLayers',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set a name for the TMS service`
-  String get onlineSourcesPage_setNameTmsService {
-    return Intl.message(
-      'Set a name for the TMS service',
-      name: 'onlineSourcesPage_setNameTmsService',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `enter name`
-  String get onlineSourcesPage_enterName {
-    return Intl.message(
-      'enter name',
-      name: 'onlineSourcesPage_enterName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please enter a valid name`
-  String get onlineSourcesPage_pleaseEnterValidName {
-    return Intl.message(
-      'Please enter a valid name',
-      name: 'onlineSourcesPage_pleaseEnterValidName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Insert the URL of the service.`
-  String get onlineSourcesPage_insertUrlOfService {
-    return Intl.message(
-      'Insert the URL of the service.',
-      name: 'onlineSourcesPage_insertUrlOfService',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Place the x, y, z between curly brackets.`
-  String get onlineSourcesPage_placeXyzBetBrackets {
-    return Intl.message(
-      'Place the x, y, z between curly brackets.',
-      name: 'onlineSourcesPage_placeXyzBetBrackets',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please enter a valid TMS URL`
-  String get onlineSourcesPage_pleaseEnterValidTmsUrl {
-    return Intl.message(
-      'Please enter a valid TMS URL',
-      name: 'onlineSourcesPage_pleaseEnterValidTmsUrl',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `enter URL`
-  String get onlineSourcesPage_enterUrl {
-    return Intl.message(
-      'enter URL',
-      name: 'onlineSourcesPage_enterUrl',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `enter subdomains`
-  String get onlineSourcesPage_enterSubDomains {
-    return Intl.message(
-      'enter subdomains',
-      name: 'onlineSourcesPage_enterSubDomains',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Add an attribution.`
-  String get onlineSourcesPage_addAttribution {
-    return Intl.message(
-      'Add an attribution.',
-      name: 'onlineSourcesPage_addAttribution',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `enter attribution`
-  String get onlineSourcesPage_enterAttribution {
-    return Intl.message(
-      'enter attribution',
-      name: 'onlineSourcesPage_enterAttribution',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set min and max zoom.`
-  String get onlineSourcesPage_setMinMaxZoom {
-    return Intl.message(
-      'Set min and max zoom.',
-      name: 'onlineSourcesPage_setMinMaxZoom',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Min zoom`
-  String get onlineSourcesPage_minZoom {
-    return Intl.message(
-      'Min zoom',
-      name: 'onlineSourcesPage_minZoom',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Max zoom`
-  String get onlineSourcesPage_maxZoom {
-    return Intl.message(
-      'Max zoom',
-      name: 'onlineSourcesPage_maxZoom',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please check your data`
-  String get onlineSourcesPage_pleaseCheckYourData {
-    return Intl.message(
-      'Please check your data',
-      name: 'onlineSourcesPage_pleaseCheckYourData',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Details`
-  String get onlineSourcesPage_details {
-    return Intl.message(
-      'Details',
-      name: 'onlineSourcesPage_details',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Name: `
-  String get onlineSourcesPage_name {
-    return Intl.message(
-      'Name: ',
-      name: 'onlineSourcesPage_name',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Subdomains: `
-  String get onlineSourcesPage_subDomains {
-    return Intl.message(
-      'Subdomains: ',
-      name: 'onlineSourcesPage_subDomains',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Attribution: `
-  String get onlineSourcesPage_attribution {
-    return Intl.message(
-      'Attribution: ',
-      name: 'onlineSourcesPage_attribution',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get onlineSourcesPage_cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'onlineSourcesPage_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `OK`
-  String get onlineSourcesPage_ok {
-    return Intl.message(
-      'OK',
-      name: 'onlineSourcesPage_ok',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `New TMS Online Service`
-  String get onlineSourcesPage_newTmsOnlineService {
-    return Intl.message(
-      'New TMS Online Service',
-      name: 'onlineSourcesPage_newTmsOnlineService',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save`
-  String get onlineSourcesPage_save {
-    return Intl.message(
-      'Save',
-      name: 'onlineSourcesPage_save',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The base URL-ending with question mark.`
-  String get onlineSourcesPage_theBaseUrlWithQuestionMark {
-    return Intl.message(
-      'The base URL-ending with question mark.',
-      name: 'onlineSourcesPage_theBaseUrlWithQuestionMark',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please enter a valid WMS URL`
-  String get onlineSourcesPage_pleaseEnterValidWmsUrl {
-    return Intl.message(
-      'Please enter a valid WMS URL',
-      name: 'onlineSourcesPage_pleaseEnterValidWmsUrl',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set WMS layer name`
-  String get onlineSourcesPage_setWmsLayerName {
-    return Intl.message(
-      'Set WMS layer name',
-      name: 'onlineSourcesPage_setWmsLayerName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `enter layer to load`
-  String get onlineSourcesPage_enterLayerToLoad {
-    return Intl.message(
-      'enter layer to load',
-      name: 'onlineSourcesPage_enterLayerToLoad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please enter a valid layer`
-  String get onlineSourcesPage_pleaseEnterValidLayer {
-    return Intl.message(
-      'Please enter a valid layer',
-      name: 'onlineSourcesPage_pleaseEnterValidLayer',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set WMS image format`
-  String get onlineSourcesPage_setWmsImageFormat {
-    return Intl.message(
-      'Set WMS image format',
-      name: 'onlineSourcesPage_setWmsImageFormat',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Add an attribution.`
-  String get onlineSourcesPage_addAnAttribution {
-    return Intl.message(
-      'Add an attribution.',
-      name: 'onlineSourcesPage_addAnAttribution',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Layer: `
-  String get onlineSourcesPage_layer {
-    return Intl.message(
-      'Layer: ',
-      name: 'onlineSourcesPage_layer',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `URL: `
-  String get onlineSourcesPage_url {
-    return Intl.message(
-      'URL: ',
-      name: 'onlineSourcesPage_url',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Format`
-  String get onlineSourcesPage_format {
-    return Intl.message(
-      'Format',
-      name: 'onlineSourcesPage_format',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `New WMS Online Service`
-  String get onlineSourcesPage_newWmsOnlineService {
-    return Intl.message(
-      'New WMS Online Service',
-      name: 'onlineSourcesPage_newWmsOnlineService',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remote Databases`
-  String get remoteDbPage_remoteDatabases {
-    return Intl.message(
-      'Remote Databases',
-      name: 'remoteDbPage_remoteDatabases',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete`
-  String get remoteDbPage_delete {
-    return Intl.message(
-      'Delete',
-      name: 'remoteDbPage_delete',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete the database configuration?`
-  String get remoteDbPage_areYouSureDeleteDatabase {
-    return Intl.message(
-      'Delete the database configuration?',
-      name: 'remoteDbPage_areYouSureDeleteDatabase',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Edit`
-  String get remoteDbPage_edit {
-    return Intl.message(
-      'Edit',
-      name: 'remoteDbPage_edit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `table`
-  String get remoteDbPage_table {
-    return Intl.message(
-      'table',
-      name: 'remoteDbPage_table',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `user`
-  String get remoteDbPage_user {
-    return Intl.message(
-      'user',
-      name: 'remoteDbPage_user',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Load in map.`
-  String get remoteDbPage_loadInMap {
-    return Intl.message(
-      'Load in map.',
-      name: 'remoteDbPage_loadInMap',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Database Parameters`
-  String get remoteDbPage_databaseParameters {
-    return Intl.message(
-      'Database Parameters',
-      name: 'remoteDbPage_databaseParameters',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get remoteDbPage_cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'remoteDbPage_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `OK`
-  String get remoteDbPage_ok {
-    return Intl.message(
-      'OK',
-      name: 'remoteDbPage_ok',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The URL must be defined (postgis:host:port/databasename)`
-  String get remoteDbPage_theUrlNeedsToBeDefined {
-    return Intl.message(
-      'The URL must be defined (postgis:host:port/databasename)',
-      name: 'remoteDbPage_theUrlNeedsToBeDefined',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `A user must be defined.`
-  String get remoteDbPage_theUserNeedsToBeDefined {
-    return Intl.message(
-      'A user must be defined.',
-      name: 'remoteDbPage_theUserNeedsToBeDefined',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `password`
-  String get remoteDbPage_password {
-    return Intl.message(
-      'password',
-      name: 'remoteDbPage_password',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `A password must be defined.`
-  String get remoteDbPage_thePasswordNeedsToBeDefined {
-    return Intl.message(
-      'A password must be defined.',
-      name: 'remoteDbPage_thePasswordNeedsToBeDefined',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading tables…`
-  String get remoteDbPage_loadingTables {
-    return Intl.message(
-      'Loading tables…',
-      name: 'remoteDbPage_loadingTables',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The table name must be defined.`
-  String get remoteDbPage_theTableNeedsToBeDefined {
-    return Intl.message(
-      'The table name must be defined.',
-      name: 'remoteDbPage_theTableNeedsToBeDefined',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Unable to connect to the database. Check parameters and network.`
-  String get remoteDbPage_unableToConnectToDatabase {
-    return Intl.message(
-      'Unable to connect to the database. Check parameters and network.',
-      name: 'remoteDbPage_unableToConnectToDatabase',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `optional "where" condition`
-  String get remoteDbPage_optionalWhereCondition {
-    return Intl.message(
-      'optional "where" condition',
-      name: 'remoteDbPage_optionalWhereCondition',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `TIFF Properties`
-  String get geoImage_tiffProperties {
-    return Intl.message(
-      'TIFF Properties',
-      name: 'geoImage_tiffProperties',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Opacity`
-  String get geoImage_opacity {
-    return Intl.message(
-      'Opacity',
-      name: 'geoImage_opacity',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Color to hide`
-  String get geoImage_colorToHide {
-    return Intl.message(
-      'Color to hide',
-      name: 'geoImage_colorToHide',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPX Properties`
-  String get gpx_gpxProperties {
-    return Intl.message(
-      'GPX Properties',
-      name: 'gpx_gpxProperties',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Waypoints`
-  String get gpx_wayPoints {
-    return Intl.message(
-      'Waypoints',
-      name: 'gpx_wayPoints',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Color`
-  String get gpx_color {
-    return Intl.message(
-      'Color',
-      name: 'gpx_color',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Size`
-  String get gpx_size {
-    return Intl.message(
-      'Size',
-      name: 'gpx_size',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `View labels if available?`
-  String get gpx_viewLabelsIfAvailable {
-    return Intl.message(
-      'View labels if available?',
-      name: 'gpx_viewLabelsIfAvailable',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Tracks/routes`
-  String get gpx_tracksRoutes {
-    return Intl.message(
-      'Tracks/routes',
-      name: 'gpx_tracksRoutes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Width`
-  String get gpx_width {
-    return Intl.message(
-      'Width',
-      name: 'gpx_width',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Palette`
-  String get gpx_palette {
-    return Intl.message(
-      'Palette',
-      name: 'gpx_palette',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Tile Properties`
-  String get tiles_tileProperties {
-    return Intl.message(
-      'Tile Properties',
-      name: 'tiles_tileProperties',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Opacity`
-  String get tiles_opacity {
-    return Intl.message(
-      'Opacity',
-      name: 'tiles_opacity',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).`
-  String get tiles_loadGeoPackageAsOverlay {
-    return Intl.message(
-      'Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).',
-      name: 'tiles_loadGeoPackageAsOverlay',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Color to hide`
-  String get tiles_colorToHide {
-    return Intl.message(
-      'Color to hide',
-      name: 'tiles_colorToHide',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `WMS Properties`
-  String get wms_wmsProperties {
-    return Intl.message(
-      'WMS Properties',
-      name: 'wms_wmsProperties',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Opacity`
-  String get wms_opacity {
-    return Intl.message(
-      'Opacity',
-      name: 'wms_opacity',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading data…`
-  String get featureAttributesViewer_loadingData {
-    return Intl.message(
-      'Loading data…',
-      name: 'featureAttributesViewer_loadingData',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set new value`
-  String get featureAttributesViewer_setNewValue {
-    return Intl.message(
-      'Set new value',
-      name: 'featureAttributesViewer_setNewValue',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Field`
-  String get featureAttributesViewer_field {
-    return Intl.message(
-      'Field',
-      name: 'featureAttributesViewer_field',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `VALUE`
-  String get featureAttributesViewer_value {
-    return Intl.message(
-      'VALUE',
-      name: 'featureAttributesViewer_value',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Projects View`
-  String get projectsView_projectsView {
-    return Intl.message(
-      'Projects View',
-      name: 'projectsView_projectsView',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open an existing project`
-  String get projectsView_openExistingProject {
-    return Intl.message(
-      'Open an existing project',
-      name: 'projectsView_openExistingProject',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Create a new project`
-  String get projectsView_createNewProject {
-    return Intl.message(
-      'Create a new project',
-      name: 'projectsView_createNewProject',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Recent projects`
-  String get projectsView_recentProjects {
-    return Intl.message(
-      'Recent projects',
-      name: 'projectsView_recentProjects',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `New Project`
-  String get projectsView_newProject {
-    return Intl.message(
-      'New Project',
-      name: 'projectsView_newProject',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter a name for the new project or accept the proposed.`
-  String get projectsView_enterNameForNewProject {
-    return Intl.message(
-      'Enter a name for the new project or accept the proposed.',
-      name: 'projectsView_enterNameForNewProject',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `note`
-  String get dataLoader_note {
-    return Intl.message(
-      'note',
-      name: 'dataLoader_note',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Note`
-  String get dataLoader_Note {
-    return Intl.message(
-      'Note',
-      name: 'dataLoader_Note',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Has Form`
-  String get dataLoader_hasForm {
-    return Intl.message(
-      'Has Form',
-      name: 'dataLoader_hasForm',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `POI`
-  String get dataLoader_POI {
-    return Intl.message(
-      'POI',
-      name: 'dataLoader_POI',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Saving image to database…`
-  String get dataLoader_savingImageToDB {
-    return Intl.message(
-      'Saving image to database…',
-      name: 'dataLoader_savingImageToDB',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove Note`
-  String get dataLoader_removeNote {
-    return Intl.message(
-      'Remove Note',
-      name: 'dataLoader_removeNote',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove note?`
-  String get dataLoader_areYouSureRemoveNote {
-    return Intl.message(
-      'Remove note?',
-      name: 'dataLoader_areYouSureRemoveNote',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Image`
-  String get dataLoader_image {
-    return Intl.message(
-      'Image',
-      name: 'dataLoader_image',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Longitude`
-  String get dataLoader_longitude {
-    return Intl.message(
-      'Longitude',
-      name: 'dataLoader_longitude',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Latitude`
-  String get dataLoader_latitude {
-    return Intl.message(
-      'Latitude',
-      name: 'dataLoader_latitude',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Altitude`
-  String get dataLoader_altitude {
-    return Intl.message(
-      'Altitude',
-      name: 'dataLoader_altitude',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Timestamp`
-  String get dataLoader_timestamp {
-    return Intl.message(
-      'Timestamp',
-      name: 'dataLoader_timestamp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove Image`
-  String get dataLoader_removeImage {
-    return Intl.message(
-      'Remove Image',
-      name: 'dataLoader_removeImage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove the image?`
-  String get dataLoader_areYouSureRemoveImage {
-    return Intl.message(
-      'Remove the image?',
-      name: 'dataLoader_areYouSureRemoveImage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading image…`
-  String get images_loadingImage {
-    return Intl.message(
-      'Loading image…',
-      name: 'images_loadingImage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading info…`
-  String get about_loadingInformation {
-    return Intl.message(
-      'Loading info…',
-      name: 'about_loadingInformation',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `About `
-  String get about_ABOUT {
-    return Intl.message(
-      'About ',
-      name: 'about_ABOUT',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Smart Mobile App for Surveyor Happiness`
-  String get about_smartMobileAppForSurveyor {
-    return Intl.message(
-      'Smart Mobile App for Surveyor Happiness',
-      name: 'about_smartMobileAppForSurveyor',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Version`
-  String get about_applicationVersion {
-    return Intl.message(
-      'Version',
-      name: 'about_applicationVersion',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `License`
-  String get about_license {
-    return Intl.message(
-      'License',
-      name: 'about_license',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// ` is copylefted libre software, licensed GPLv3+.`
-  String get about_isAvailableUnderGPL3 {
-    return Intl.message(
-      ' is copylefted libre software, licensed GPLv3+.',
-      name: 'about_isAvailableUnderGPL3',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Source Code`
-  String get about_sourceCode {
-    return Intl.message(
-      'Source Code',
-      name: 'about_sourceCode',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Tap here to visit the source code repository`
-  String get about_tapHereToVisitRepo {
-    return Intl.message(
-      'Tap here to visit the source code repository',
-      name: 'about_tapHereToVisitRepo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Legal Info`
-  String get about_legalInformation {
-    return Intl.message(
-      'Legal Info',
-      name: 'about_legalInformation',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Copyright © 2020, HydroloGIS S.r.l. — some rights reserved. Tap to visit.`
-  String get about_copyright2020HydroloGIS {
-    return Intl.message(
-      'Copyright © 2020, HydroloGIS S.r.l. — some rights reserved. Tap to visit.',
-      name: 'about_copyright2020HydroloGIS',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Supported by`
-  String get about_supportedBy {
-    return Intl.message(
-      'Supported by',
-      name: 'about_supportedBy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Partially supported by the project Steep Stream of the University of Trento.`
-  String get about_partiallySupportedByUniversityTrento {
-    return Intl.message(
-      'Partially supported by the project Steep Stream of the University of Trento.',
-      name: 'about_partiallySupportedByUniversityTrento',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Privacy Policy`
-  String get about_privacyPolicy {
-    return Intl.message(
-      'Privacy Policy',
-      name: 'about_privacyPolicy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Tap here to see the privacy policy that covers user and location data.`
-  String get about_tapHereToSeePrivacyPolicy {
-    return Intl.message(
-      'Tap here to see the privacy policy that covers user and location data.',
-      name: 'about_tapHereToSeePrivacyPolicy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No GPS info available…`
-  String get gpsInfoButton_noGpsInfoAvailable {
-    return Intl.message(
-      'No GPS info available…',
-      name: 'gpsInfoButton_noGpsInfoAvailable',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Timestamp`
-  String get gpsInfoButton_timestamp {
-    return Intl.message(
-      'Timestamp',
-      name: 'gpsInfoButton_timestamp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Speed`
-  String get gpsInfoButton_speed {
-    return Intl.message(
-      'Speed',
-      name: 'gpsInfoButton_speed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Heading`
-  String get gpsInfoButton_heading {
-    return Intl.message(
-      'Heading',
-      name: 'gpsInfoButton_heading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Accuracy`
-  String get gpsInfoButton_accuracy {
-    return Intl.message(
-      'Accuracy',
-      name: 'gpsInfoButton_accuracy',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Altitude`
-  String get gpsInfoButton_altitude {
-    return Intl.message(
-      'Altitude',
-      name: 'gpsInfoButton_altitude',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Latitude`
-  String get gpsInfoButton_latitude {
-    return Intl.message(
-      'Latitude',
-      name: 'gpsInfoButton_latitude',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Copy latitude to clipboard.`
-  String get gpsInfoButton_copyLatitudeToClipboard {
-    return Intl.message(
-      'Copy latitude to clipboard.',
-      name: 'gpsInfoButton_copyLatitudeToClipboard',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Longitude`
-  String get gpsInfoButton_longitude {
-    return Intl.message(
-      'Longitude',
-      name: 'gpsInfoButton_longitude',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Copy longitude to clipboard.`
-  String get gpsInfoButton_copyLongitudeToClipboard {
-    return Intl.message(
-      'Copy longitude to clipboard.',
-      name: 'gpsInfoButton_copyLongitudeToClipboard',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Stop Logging?`
-  String get gpsLogButton_stopLogging {
-    return Intl.message(
-      'Stop Logging?',
-      name: 'gpsLogButton_stopLogging',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Stop logging and close the current GPS log?`
-  String get gpsLogButton_stopLoggingAndCloseLog {
-    return Intl.message(
-      'Stop logging and close the current GPS log?',
-      name: 'gpsLogButton_stopLoggingAndCloseLog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `New Log`
-  String get gpsLogButton_newLog {
-    return Intl.message(
-      'New Log',
-      name: 'gpsLogButton_newLog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter a name for the new log`
-  String get gpsLogButton_enterNameForNewLog {
-    return Intl.message(
-      'Enter a name for the new log',
-      name: 'gpsLogButton_enterNameForNewLog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Could not start logging: `
-  String get gpsLogButton_couldNotStartLogging {
-    return Intl.message(
-      'Could not start logging: ',
-      name: 'gpsLogButton_couldNotStartLogging',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading image…`
-  String get imageWidgets_loadingImage {
-    return Intl.message(
-      'Loading image…',
-      name: 'imageWidgets_loadingImage',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPS Logs list`
-  String get logList_gpsLogsList {
-    return Intl.message(
-      'GPS Logs list',
-      name: 'logList_gpsLogsList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Select all`
-  String get logList_selectAll {
-    return Intl.message(
-      'Select all',
-      name: 'logList_selectAll',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Unselect all`
-  String get logList_unSelectAll {
-    return Intl.message(
-      'Unselect all',
-      name: 'logList_unSelectAll',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Invert selection`
-  String get logList_invertSelection {
-    return Intl.message(
-      'Invert selection',
-      name: 'logList_invertSelection',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Merge selected`
-  String get logList_mergeSelected {
-    return Intl.message(
-      'Merge selected',
-      name: 'logList_mergeSelected',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading logs…`
-  String get logList_loadingLogs {
-    return Intl.message(
-      'Loading logs…',
-      name: 'logList_loadingLogs',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom to`
-  String get logList_zoomTo {
-    return Intl.message(
-      'Zoom to',
-      name: 'logList_zoomTo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Properties`
-  String get logList_properties {
-    return Intl.message(
-      'Properties',
-      name: 'logList_properties',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Profile View`
-  String get logList_profileView {
-    return Intl.message(
-      'Profile View',
-      name: 'logList_profileView',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `To GPX`
-  String get logList_toGPX {
-    return Intl.message(
-      'To GPX',
-      name: 'logList_toGPX',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPX saved in export folder.`
-  String get logList_gpsSavedInExportFolder {
-    return Intl.message(
-      'GPX saved in export folder.',
-      name: 'logList_gpsSavedInExportFolder',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Could not export log to GPX.`
-  String get logList_errorOccurredExportingLogGPX {
-    return Intl.message(
-      'Could not export log to GPX.',
-      name: 'logList_errorOccurredExportingLogGPX',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete`
-  String get logList_delete {
-    return Intl.message(
-      'Delete',
-      name: 'logList_delete',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete`
-  String get logList_DELETE {
-    return Intl.message(
-      'Delete',
-      name: 'logList_DELETE',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete the log?`
-  String get logList_areYouSureDeleteTheLog {
-    return Intl.message(
-      'Delete the log?',
-      name: 'logList_areYouSureDeleteTheLog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `hours`
-  String get logList_hours {
-    return Intl.message(
-      'hours',
-      name: 'logList_hours',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `hour`
-  String get logList_hour {
-    return Intl.message(
-      'hour',
-      name: 'logList_hour',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `min`
-  String get logList_minutes {
-    return Intl.message(
-      'min',
-      name: 'logList_minutes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPS Log Properties`
-  String get logProperties_gpsLogProperties {
-    return Intl.message(
-      'GPS Log Properties',
-      name: 'logProperties_gpsLogProperties',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Log Name`
-  String get logProperties_logName {
-    return Intl.message(
-      'Log Name',
-      name: 'logProperties_logName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Start`
-  String get logProperties_start {
-    return Intl.message(
-      'Start',
-      name: 'logProperties_start',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `End`
-  String get logProperties_end {
-    return Intl.message(
-      'End',
-      name: 'logProperties_end',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Duration`
-  String get logProperties_duration {
-    return Intl.message(
-      'Duration',
-      name: 'logProperties_duration',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Color`
-  String get logProperties_color {
-    return Intl.message(
-      'Color',
-      name: 'logProperties_color',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Palette`
-  String get logProperties_palette {
-    return Intl.message(
-      'Palette',
-      name: 'logProperties_palette',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Width`
-  String get logProperties_width {
-    return Intl.message(
-      'Width',
-      name: 'logProperties_width',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Distance at position:`
-  String get logProperties_distanceAtPosition {
-    return Intl.message(
-      'Distance at position:',
-      name: 'logProperties_distanceAtPosition',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Total distance:`
-  String get logProperties_totalDistance {
-    return Intl.message(
-      'Total distance:',
-      name: 'logProperties_totalDistance',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPS Log View`
-  String get logProperties_gpsLogView {
-    return Intl.message(
-      'GPS Log View',
-      name: 'logProperties_gpsLogView',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn off stats`
-  String get logProperties_disableStats {
-    return Intl.message(
-      'Turn off stats',
-      name: 'logProperties_disableStats',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn on stats`
-  String get logProperties_enableStats {
-    return Intl.message(
-      'Turn on stats',
-      name: 'logProperties_enableStats',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Total duration:`
-  String get logProperties_totalDuration {
-    return Intl.message(
-      'Total duration:',
-      name: 'logProperties_totalDuration',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Timestamp:`
-  String get logProperties_timestamp {
-    return Intl.message(
-      'Timestamp:',
-      name: 'logProperties_timestamp',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Duration at position:`
-  String get logProperties_durationAtPosition {
-    return Intl.message(
-      'Duration at position:',
-      name: 'logProperties_durationAtPosition',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Speed:`
-  String get logProperties_speed {
-    return Intl.message(
-      'Speed:',
-      name: 'logProperties_speed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Elevation:`
-  String get logProperties_elevation {
-    return Intl.message(
-      'Elevation:',
-      name: 'logProperties_elevation',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Simple List of Notes`
-  String get noteList_simpleNotesList {
-    return Intl.message(
-      'Simple List of Notes',
-      name: 'noteList_simpleNotesList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `List of Form Notes`
-  String get noteList_formNotesList {
-    return Intl.message(
-      'List of Form Notes',
-      name: 'noteList_formNotesList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading notes…`
-  String get noteList_loadingNotes {
-    return Intl.message(
-      'Loading notes…',
-      name: 'noteList_loadingNotes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom to`
-  String get noteList_zoomTo {
-    return Intl.message(
-      'Zoom to',
-      name: 'noteList_zoomTo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `'Edit'`
-  String get noteList_edit {
-    return Intl.message(
-      '\'Edit\'',
-      name: 'noteList_edit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Properties`
-  String get noteList_properties {
-    return Intl.message(
-      'Properties',
-      name: 'noteList_properties',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete`
-  String get noteList_delete {
-    return Intl.message(
-      'Delete',
-      name: 'noteList_delete',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete`
-  String get noteList_DELETE {
-    return Intl.message(
-      'Delete',
-      name: 'noteList_DELETE',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete the note?`
-  String get noteList_areYouSureDeleteNote {
-    return Intl.message(
-      'Delete the note?',
-      name: 'noteList_areYouSureDeleteNote',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Settings`
-  String get settings_settings {
-    return Intl.message(
-      'Settings',
-      name: 'settings_settings',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Camera`
-  String get settings_camera {
-    return Intl.message(
-      'Camera',
-      name: 'settings_camera',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Camera Resolution`
-  String get settings_cameraResolution {
-    return Intl.message(
-      'Camera Resolution',
-      name: 'settings_cameraResolution',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Resolution`
-  String get settings_resolution {
-    return Intl.message(
-      'Resolution',
-      name: 'settings_resolution',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The camera resolution`
-  String get settings_theCameraResolution {
-    return Intl.message(
-      'The camera resolution',
-      name: 'settings_theCameraResolution',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Screen`
-  String get settings_screen {
-    return Intl.message(
-      'Screen',
-      name: 'settings_screen',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Screen, Scalebar and Icon Size`
-  String get settings_screenScaleBarIconSize {
-    return Intl.message(
-      'Screen, Scalebar and Icon Size',
-      name: 'settings_screenScaleBarIconSize',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Keep Screen On`
-  String get settings_keepScreenOn {
-    return Intl.message(
-      'Keep Screen On',
-      name: 'settings_keepScreenOn',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `HiDPI screen-mode`
-  String get settings_retinaScreenMode {
-    return Intl.message(
-      'HiDPI screen-mode',
-      name: 'settings_retinaScreenMode',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Enter and exit the layer view to apply this setting.`
-  String get settings_toApplySettingEnterExitLayerView {
-    return Intl.message(
-      'Enter and exit the layer view to apply this setting.',
-      name: 'settings_toApplySettingEnterExitLayerView',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Color Picker to use`
-  String get settings_colorPickerToUse {
-    return Intl.message(
-      'Color Picker to use',
-      name: 'settings_colorPickerToUse',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Map Center Cross`
-  String get settings_mapCenterCross {
-    return Intl.message(
-      'Map Center Cross',
-      name: 'settings_mapCenterCross',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Color`
-  String get settings_color {
-    return Intl.message(
-      'Color',
-      name: 'settings_color',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Size`
-  String get settings_size {
-    return Intl.message(
-      'Size',
-      name: 'settings_size',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Width`
-  String get settings_width {
-    return Intl.message(
-      'Width',
-      name: 'settings_width',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Icon Size for Map Tools`
-  String get settings_mapToolsIconSize {
-    return Intl.message(
-      'Icon Size for Map Tools',
-      name: 'settings_mapToolsIconSize',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPS`
-  String get settings_gps {
-    return Intl.message(
-      'GPS',
-      name: 'settings_gps',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPS filters and mock locations`
-  String get settings_gpsFiltersAndMockLoc {
-    return Intl.message(
-      'GPS filters and mock locations',
-      name: 'settings_gpsFiltersAndMockLoc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Live Preview`
-  String get settings_livePreview {
-    return Intl.message(
-      'Live Preview',
-      name: 'settings_livePreview',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `No point available yet.`
-  String get settings_noPointAvailableYet {
-    return Intl.message(
-      'No point available yet.',
-      name: 'settings_noPointAvailableYet',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `longitude [deg]`
-  String get settings_longitudeDeg {
-    return Intl.message(
-      'longitude [deg]',
-      name: 'settings_longitudeDeg',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `latitude [deg]`
-  String get settings_latitudeDeg {
-    return Intl.message(
-      'latitude [deg]',
-      name: 'settings_latitudeDeg',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `accuracy [m]`
-  String get settings_accuracyM {
-    return Intl.message(
-      'accuracy [m]',
-      name: 'settings_accuracyM',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `altitude [m]`
-  String get settings_altitudeM {
-    return Intl.message(
-      'altitude [m]',
-      name: 'settings_altitudeM',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `heading [deg]`
-  String get settings_headingDeg {
-    return Intl.message(
-      'heading [deg]',
-      name: 'settings_headingDeg',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `speed [m/s]`
-  String get settings_speedMS {
-    return Intl.message(
-      'speed [m/s]',
-      name: 'settings_speedMS',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `is logging?`
-  String get settings_isLogging {
-    return Intl.message(
-      'is logging?',
-      name: 'settings_isLogging',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `mock locations?`
-  String get settings_mockLocations {
-    return Intl.message(
-      'mock locations?',
-      name: 'settings_mockLocations',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Min dist filter blocks`
-  String get settings_minDistFilterBlocks {
-    return Intl.message(
-      'Min dist filter blocks',
-      name: 'settings_minDistFilterBlocks',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Min dist filter passes`
-  String get settings_minDistFilterPasses {
-    return Intl.message(
-      'Min dist filter passes',
-      name: 'settings_minDistFilterPasses',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Min time filter blocks`
-  String get settings_minTimeFilterBlocks {
-    return Intl.message(
-      'Min time filter blocks',
-      name: 'settings_minTimeFilterBlocks',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Min time filter passes`
-  String get settings_minTimeFilterPasses {
-    return Intl.message(
-      'Min time filter passes',
-      name: 'settings_minTimeFilterPasses',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Has been blocked`
-  String get settings_hasBeenBlocked {
-    return Intl.message(
-      'Has been blocked',
-      name: 'settings_hasBeenBlocked',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Distance from prev [m]`
-  String get settings_distanceFromPrevM {
-    return Intl.message(
-      'Distance from prev [m]',
-      name: 'settings_distanceFromPrevM',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Time since prev [s]`
-  String get settings_timeFromPrevS {
-    return Intl.message(
-      'Time since prev [s]',
-      name: 'settings_timeFromPrevS',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Location Info`
-  String get settings_locationInfo {
-    return Intl.message(
-      'Location Info',
-      name: 'settings_locationInfo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Filters`
-  String get settings_filters {
-    return Intl.message(
-      'Filters',
-      name: 'settings_filters',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn off Filters.`
-  String get settings_disableFilters {
-    return Intl.message(
-      'Turn off Filters.',
-      name: 'settings_disableFilters',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn on Filters.`
-  String get settings_enableFilters {
-    return Intl.message(
-      'Turn on Filters.',
-      name: 'settings_enableFilters',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom in`
-  String get settings_zoomIn {
-    return Intl.message(
-      'Zoom in',
-      name: 'settings_zoomIn',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom out`
-  String get settings_zoomOut {
-    return Intl.message(
-      'Zoom out',
-      name: 'settings_zoomOut',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Activate point flow.`
-  String get settings_activatePointFlow {
-    return Intl.message(
-      'Activate point flow.',
-      name: 'settings_activatePointFlow',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Pause points flow.`
-  String get settings_pausePointsFlow {
-    return Intl.message(
-      'Pause points flow.',
-      name: 'settings_pausePointsFlow',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Visualize point count`
-  String get settings_visualizePointCount {
-    return Intl.message(
-      'Visualize point count',
-      name: 'settings_visualizePointCount',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Show the GPS points count for VALID points.`
-  String get settings_showGpsPointsValidPoints {
-    return Intl.message(
-      'Show the GPS points count for VALID points.',
-      name: 'settings_showGpsPointsValidPoints',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Show the GPS points count for ALL points.`
-  String get settings_showGpsPointsAllPoints {
-    return Intl.message(
-      'Show the GPS points count for ALL points.',
-      name: 'settings_showGpsPointsAllPoints',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Log filters`
-  String get settings_logFilters {
-    return Intl.message(
-      'Log filters',
-      name: 'settings_logFilters',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Min distance between 2 points.`
-  String get settings_minDistanceBetween2Points {
-    return Intl.message(
-      'Min distance between 2 points.',
-      name: 'settings_minDistanceBetween2Points',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Min timespan between 2 points.`
-  String get settings_minTimespanBetween2Points {
-    return Intl.message(
-      'Min timespan between 2 points.',
-      name: 'settings_minTimespanBetween2Points',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPS Filter`
-  String get settings_gpsFilter {
-    return Intl.message(
-      'GPS Filter',
-      name: 'settings_gpsFilter',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn off`
-  String get settings_disable {
-    return Intl.message(
-      'Turn off',
-      name: 'settings_disable',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn on`
-  String get settings_enable {
-    return Intl.message(
-      'Turn on',
-      name: 'settings_enable',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `the use of filtered GPS.`
-  String get settings_theUseOfTheGps {
-    return Intl.message(
-      'the use of filtered GPS.',
-      name: 'settings_theUseOfTheGps',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Warning: This will affect GPS position, notes insertion, log statistics and charting.`
-  String get settings_warningThisWillAffectGpsPosition {
-    return Intl.message(
-      'Warning: This will affect GPS position, notes insertion, log statistics and charting.',
-      name: 'settings_warningThisWillAffectGpsPosition',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Mock locations`
-  String get settings_MockLocations {
-    return Intl.message(
-      'Mock locations',
-      name: 'settings_MockLocations',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `test GPS log for demo use.`
-  String get settings_testGpsLogDemoUse {
-    return Intl.message(
-      'test GPS log for demo use.',
-      name: 'settings_testGpsLogDemoUse',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set duration for GPS points in milliseconds.`
-  String get settings_setDurationGpsPointsInMilli {
-    return Intl.message(
-      'Set duration for GPS points in milliseconds.',
-      name: 'settings_setDurationGpsPointsInMilli',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Setting`
-  String get settings_SETTING {
-    return Intl.message(
-      'Setting',
-      name: 'settings_SETTING',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Set Mocked GPS duration`
-  String get settings_setMockedGpsDuration {
-    return Intl.message(
-      'Set Mocked GPS duration',
-      name: 'settings_setMockedGpsDuration',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The value has to be a whole number.`
-  String get settings_theValueHasToBeInt {
-    return Intl.message(
-      'The value has to be a whole number.',
-      name: 'settings_theValueHasToBeInt',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `milliseconds`
-  String get settings_milliseconds {
-    return Intl.message(
-      'milliseconds',
-      name: 'settings_milliseconds',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Use Google Services to improve location`
-  String get settings_useGoogleToImproveLoc {
-    return Intl.message(
-      'Use Google Services to improve location',
-      name: 'settings_useGoogleToImproveLoc',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `use of Google services (app restart needed).`
-  String get settings_useOfGoogleServicesRestart {
-    return Intl.message(
-      'use of Google services (app restart needed).',
-      name: 'settings_useOfGoogleServicesRestart',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPS Logs view mode`
-  String get settings_gpsLogsViewMode {
-    return Intl.message(
-      'GPS Logs view mode',
-      name: 'settings_gpsLogsViewMode',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Log view mode for original data.`
-  String get settings_logViewModeForOrigData {
-    return Intl.message(
-      'Log view mode for original data.',
-      name: 'settings_logViewModeForOrigData',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Log view mode for filtered data.`
-  String get settings_logViewModeFilteredData {
-    return Intl.message(
-      'Log view mode for filtered data.',
-      name: 'settings_logViewModeFilteredData',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get settings_cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'settings_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `OK`
-  String get settings_ok {
-    return Intl.message(
-      'OK',
-      name: 'settings_ok',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Notes view modes`
-  String get settings_notesViewModes {
-    return Intl.message(
-      'Notes view modes',
-      name: 'settings_notesViewModes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Select a mode to view notes in.`
-  String get settings_selectNotesViewMode {
-    return Intl.message(
-      'Select a mode to view notes in.',
-      name: 'settings_selectNotesViewMode',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Map Plugins`
-  String get settings_mapPlugins {
-    return Intl.message(
-      'Map Plugins',
-      name: 'settings_mapPlugins',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Vector Layers`
-  String get settings_vectorLayers {
-    return Intl.message(
-      'Vector Layers',
-      name: 'settings_vectorLayers',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading Options and Info Tool`
-  String get settings_loadingOptionsInfoTool {
-    return Intl.message(
-      'Loading Options and Info Tool',
-      name: 'settings_loadingOptionsInfoTool',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Data loading`
-  String get settings_dataLoading {
-    return Intl.message(
-      'Data loading',
-      name: 'settings_dataLoading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Max number of features.`
-  String get settings_maxNumberFeatures {
-    return Intl.message(
-      'Max number of features.',
-      name: 'settings_maxNumberFeatures',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Max features per layer. Remove and add the layer to apply.`
-  String get settings_maxNumFeaturesPerLayer {
-    return Intl.message(
-      'Max features per layer. Remove and add the layer to apply.',
-      name: 'settings_maxNumFeaturesPerLayer',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `all`
-  String get settings_all {
-    return Intl.message(
-      'all',
-      name: 'settings_all',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Load map area.`
-  String get settings_loadMapArea {
-    return Intl.message(
-      'Load map area.',
-      name: 'settings_loadMapArea',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Load only on the last visible map area. Remove and add the layer again to apply.`
-  String get settings_loadOnlyLastVisibleArea {
-    return Intl.message(
-      'Load only on the last visible map area. Remove and add the layer again to apply.',
-      name: 'settings_loadOnlyLastVisibleArea',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Info Tool`
-  String get settings_infoTool {
-    return Intl.message(
-      'Info Tool',
-      name: 'settings_infoTool',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Tap size of the info tool in pixels.`
-  String get settings_tapSizeInfoToolPixels {
-    return Intl.message(
-      'Tap size of the info tool in pixels.',
-      name: 'settings_tapSizeInfoToolPixels',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Editing tool`
-  String get settings_editingTool {
-    return Intl.message(
-      'Editing tool',
-      name: 'settings_editingTool',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Editing drag handler icon size.`
-  String get settings_editingDragIconSize {
-    return Intl.message(
-      'Editing drag handler icon size.',
-      name: 'settings_editingDragIconSize',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Editing intermediate drag handler icon size.`
-  String get settings_editingIntermediateDragIconSize {
-    return Intl.message(
-      'Editing intermediate drag handler icon size.',
-      name: 'settings_editingIntermediateDragIconSize',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Diagnostics`
-  String get settings_diagnostics {
-    return Intl.message(
-      'Diagnostics',
-      name: 'settings_diagnostics',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Diagnostics and Debug Log`
-  String get settings_diagnosticsDebugLog {
-    return Intl.message(
-      'Diagnostics and Debug Log',
-      name: 'settings_diagnosticsDebugLog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open full debug log`
-  String get settings_openFullDebugLog {
-    return Intl.message(
-      'Open full debug log',
-      name: 'settings_openFullDebugLog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Debug Log View`
-  String get settings_debugLogView {
-    return Intl.message(
-      'Debug Log View',
-      name: 'settings_debugLogView',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `View all messages`
-  String get settings_viewAllMessages {
-    return Intl.message(
-      'View all messages',
-      name: 'settings_viewAllMessages',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `View only errors and warnings`
-  String get settings_viewOnlyErrorsWarnings {
-    return Intl.message(
-      'View only errors and warnings',
-      name: 'settings_viewOnlyErrorsWarnings',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Clear debug log`
-  String get settings_clearDebugLog {
-    return Intl.message(
-      'Clear debug log',
-      name: 'settings_clearDebugLog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Loading data…`
-  String get settings_loadingData {
-    return Intl.message(
-      'Loading data…',
-      name: 'settings_loadingData',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Device`
-  String get settings_device {
-    return Intl.message(
-      'Device',
-      name: 'settings_device',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Device identifier`
-  String get settings_deviceIdentifier {
-    return Intl.message(
-      'Device identifier',
-      name: 'settings_deviceIdentifier',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Device ID`
-  String get settings_deviceId {
-    return Intl.message(
-      'Device ID',
-      name: 'settings_deviceId',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Override Device ID`
-  String get settings_overrideDeviceId {
-    return Intl.message(
-      'Override Device ID',
-      name: 'settings_overrideDeviceId',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Override ID`
-  String get settings_overrideId {
-    return Intl.message(
-      'Override ID',
-      name: 'settings_overrideId',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Please enter a valid server password.`
-  String get settings_pleaseEnterValidPassword {
-    return Intl.message(
-      'Please enter a valid server password.',
-      name: 'settings_pleaseEnterValidPassword',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom out`
-  String get toolbarTools_zoomOut {
-    return Intl.message(
-      'Zoom out',
-      name: 'toolbarTools_zoomOut',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom in`
-  String get toolbarTools_zoomIn {
-    return Intl.message(
-      'Zoom in',
-      name: 'toolbarTools_zoomIn',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel current edit.`
-  String get toolbarTools_cancelCurrentEdit {
-    return Intl.message(
-      'Cancel current edit.',
-      name: 'toolbarTools_cancelCurrentEdit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save current edit.`
-  String get toolbarTools_saveCurrentEdit {
-    return Intl.message(
-      'Save current edit.',
-      name: 'toolbarTools_saveCurrentEdit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Insert point in map center.`
-  String get toolbarTools_insertPointMapCenter {
-    return Intl.message(
-      'Insert point in map center.',
-      name: 'toolbarTools_insertPointMapCenter',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Insert point in GPS position.`
-  String get toolbarTools_insertPointGpsPos {
-    return Intl.message(
-      'Insert point in GPS position.',
-      name: 'toolbarTools_insertPointGpsPos',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove selected feature.`
-  String get toolbarTools_removeSelectedFeature {
-    return Intl.message(
-      'Remove selected feature.',
-      name: 'toolbarTools_removeSelectedFeature',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Show feature attributes.`
-  String get toolbarTools_showFeatureAttributes {
-    return Intl.message(
-      'Show feature attributes.',
-      name: 'toolbarTools_showFeatureAttributes',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The feature does not have a primary key. Editing is not allowed.`
-  String get toolbarTools_featureDoesNotHavePrimaryKey {
-    return Intl.message(
-      'The feature does not have a primary key. Editing is not allowed.',
-      name: 'toolbarTools_featureDoesNotHavePrimaryKey',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Query features from loaded vector layers.`
-  String get toolbarTools_queryFeaturesVectorLayers {
-    return Intl.message(
-      'Query features from loaded vector layers.',
-      name: 'toolbarTools_queryFeaturesVectorLayers',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Measure distances on the map with your finger.`
-  String get toolbarTools_measureDistanceWithFinger {
-    return Intl.message(
-      'Measure distances on the map with your finger.',
-      name: 'toolbarTools_measureDistanceWithFinger',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Toggle fence in map center.`
-  String get toolbarTools_toggleFenceMapCenter {
-    return Intl.message(
-      'Toggle fence in map center.',
-      name: 'toolbarTools_toggleFenceMapCenter',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Modify the geometry of editable vector layers.`
-  String get toolbarTools_modifyGeomVectorLayers {
-    return Intl.message(
-      'Modify the geometry of editable vector layers.',
-      name: 'toolbarTools_modifyGeomVectorLayers',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Single tap: `
-  String get coachMarks_singleTap {
-    return Intl.message(
-      'Single tap: ',
-      name: 'coachMarks_singleTap',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Long tap: `
-  String get coachMarks_longTap {
-    return Intl.message(
-      'Long tap: ',
-      name: 'coachMarks_longTap',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Double tap: `
-  String get coachMarks_doubleTap {
-    return Intl.message(
-      'Double tap: ',
-      name: 'coachMarks_doubleTap',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Simple Notes Button`
-  String get coachMarks_simpleNoteButton {
-    return Intl.message(
-      'Simple Notes Button',
-      name: 'coachMarks_simpleNoteButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `add a new note`
-  String get coachMarks_addNewNote {
-    return Intl.message(
-      'add a new note',
-      name: 'coachMarks_addNewNote',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `view list of notes`
-  String get coachMarks_viewNotesList {
-    return Intl.message(
-      'view list of notes',
-      name: 'coachMarks_viewNotesList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `view settings for notes`
-  String get coachMarks_viewNotesSettings {
-    return Intl.message(
-      'view settings for notes',
-      name: 'coachMarks_viewNotesSettings',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Form Notes Button`
-  String get coachMarks_formNotesButton {
-    return Intl.message(
-      'Form Notes Button',
-      name: 'coachMarks_formNotesButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `add new form note`
-  String get coachMarks_addNewFormNote {
-    return Intl.message(
-      'add new form note',
-      name: 'coachMarks_addNewFormNote',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `view list of form notes`
-  String get coachMarks_viewFormNoteList {
-    return Intl.message(
-      'view list of form notes',
-      name: 'coachMarks_viewFormNoteList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPS Log Button`
-  String get coachMarks_gpsLogButton {
-    return Intl.message(
-      'GPS Log Button',
-      name: 'coachMarks_gpsLogButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `start logging/stop logging`
-  String get coachMarks_startStopLogging {
-    return Intl.message(
-      'start logging/stop logging',
-      name: 'coachMarks_startStopLogging',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `view list of logs`
-  String get coachMarks_viewLogsList {
-    return Intl.message(
-      'view list of logs',
-      name: 'coachMarks_viewLogsList',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `view log settings`
-  String get coachMarks_viewLogsSettings {
-    return Intl.message(
-      'view log settings',
-      name: 'coachMarks_viewLogsSettings',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GPS Info Button (if applicable)`
-  String get coachMarks_gpsInfoButton {
-    return Intl.message(
-      'GPS Info Button (if applicable)',
-      name: 'coachMarks_gpsInfoButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `center map on GPS position`
-  String get coachMarks_centerMapOnGpsPos {
-    return Intl.message(
-      'center map on GPS position',
-      name: 'coachMarks_centerMapOnGpsPos',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `show GPS info`
-  String get coachMarks_showGpsInfo {
-    return Intl.message(
-      'show GPS info',
-      name: 'coachMarks_showGpsInfo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `toggle automatic center on GPS`
-  String get coachMarks_toggleAutoCenterGps {
-    return Intl.message(
-      'toggle automatic center on GPS',
-      name: 'coachMarks_toggleAutoCenterGps',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Layer View Button`
-  String get coachMarks_layersViewButton {
-    return Intl.message(
-      'Layer View Button',
-      name: 'coachMarks_layersViewButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open the layers view`
-  String get coachMarks_openLayersView {
-    return Intl.message(
-      'Open the layers view',
-      name: 'coachMarks_openLayersView',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open the layer plugins dialog`
-  String get coachMarks_openLayersPluginDialog {
-    return Intl.message(
-      'Open the layer plugins dialog',
-      name: 'coachMarks_openLayersPluginDialog',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom-in Button`
-  String get coachMarks_zoomInButton {
-    return Intl.message(
-      'Zoom-in Button',
-      name: 'coachMarks_zoomInButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom in the map by one level`
-  String get coachMarks_zoomImMapOneLevel {
-    return Intl.message(
-      'Zoom in the map by one level',
-      name: 'coachMarks_zoomImMapOneLevel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom-out Button`
-  String get coachMarks_zoomOutButton {
-    return Intl.message(
-      'Zoom-out Button',
-      name: 'coachMarks_zoomOutButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Zoom out the map by one level`
-  String get coachMarks_zoomOutMapOneLevel {
-    return Intl.message(
-      'Zoom out the map by one level',
-      name: 'coachMarks_zoomOutMapOneLevel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Bottom Tools Button`
-  String get coachMarks_bottomToolsButton {
-    return Intl.message(
-      'Bottom Tools Button',
-      name: 'coachMarks_bottomToolsButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Toggle bottom tools bar. `
-  String get coachMarks_toggleBottomToolsBar {
-    return Intl.message(
-      'Toggle bottom tools bar. ',
-      name: 'coachMarks_toggleBottomToolsBar',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Tools Button`
-  String get coachMarks_toolsButton {
-    return Intl.message(
-      'Tools Button',
-      name: 'coachMarks_toolsButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras.`
-  String get coachMarks_openEndDrawerToAccessProject {
-    return Intl.message(
-      'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras.',
-      name: 'coachMarks_openEndDrawerToAccessProject',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Interactive coach-marks button`
-  String get coachMarks_interactiveCoackMarksButton {
-    return Intl.message(
-      'Interactive coach-marks button',
-      name: 'coachMarks_interactiveCoackMarksButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open the interactice coach marks explaining all the actions of the main map view.`
-  String get coachMarks_openInteractiveCoachMarks {
-    return Intl.message(
-      'Open the interactice coach marks explaining all the actions of the main map view.',
-      name: 'coachMarks_openInteractiveCoachMarks',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Main-menu Button`
-  String get coachMarks_mainMenuButton {
-    return Intl.message(
-      'Main-menu Button',
-      name: 'coachMarks_mainMenuButton',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Open the drawer to load or create a project, import and export data, sync with servers, access settings and exit the app/turn off the GPS.`
-  String get coachMarks_openDrawerToLoadProject {
-    return Intl.message(
-      'Open the drawer to load or create a project, import and export data, sync with servers, access settings and exit the app/turn off the GPS.',
-      name: 'coachMarks_openDrawerToLoadProject',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Skip`
-  String get coachMarks_skip {
-    return Intl.message(
-      'Skip',
-      name: 'coachMarks_skip',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Fence Properties`
-  String get fence_fenceProperties {
-    return Intl.message(
-      'Fence Properties',
-      name: 'fence_fenceProperties',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Delete`
-  String get fence_delete {
-    return Intl.message(
-      'Delete',
-      name: 'fence_delete',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove fence`
-  String get fence_removeFence {
-    return Intl.message(
-      'Remove fence',
-      name: 'fence_removeFence',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Remove the fence?`
-  String get fence_areYouSureRemoveFence {
-    return Intl.message(
-      'Remove the fence?',
-      name: 'fence_areYouSureRemoveFence',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancel`
-  String get fence_cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'fence_cancel',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `OK`
-  String get fence_ok {
-    return Intl.message(
-      'OK',
-      name: 'fence_ok',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `a new fence`
-  String get fence_aNewFence {
-    return Intl.message(
-      'a new fence',
-      name: 'fence_aNewFence',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Label`
-  String get fence_label {
-    return Intl.message(
-      'Label',
-      name: 'fence_label',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `A name for the fence.`
-  String get fence_aNameForFence {
-    return Intl.message(
-      'A name for the fence.',
-      name: 'fence_aNameForFence',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The name must be defined.`
-  String get fence_theNameNeedsToBeDefined {
-    return Intl.message(
-      'The name must be defined.',
-      name: 'fence_theNameNeedsToBeDefined',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Radius`
-  String get fence_radius {
-    return Intl.message(
-      'Radius',
-      name: 'fence_radius',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The fence radius in meters.`
-  String get fence_theFenceRadiusMeters {
-    return Intl.message(
-      'The fence radius in meters.',
-      name: 'fence_theFenceRadiusMeters',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `The radius must be a positive number in meters.`
-  String get fence_radiusNeedsToBePositive {
-    return Intl.message(
-      'The radius must be a positive number in meters.',
-      name: 'fence_radiusNeedsToBePositive',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `On enter`
-  String get fence_onEnter {
-    return Intl.message(
-      'On enter',
-      name: 'fence_onEnter',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `On exit`
-  String get fence_onExit {
-    return Intl.message(
-      'On exit',
-      name: 'fence_onExit',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Cancelled by user.`
-  String get network_cancelledByUser {
-    return Intl.message(
-      'Cancelled by user.',
-      name: 'network_cancelledByUser',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Completed.`
-  String get network_completed {
-    return Intl.message(
-      'Completed.',
-      name: 'network_completed',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Building base cache for improved performance (might take a while)…`
-  String get network_buildingBaseCachePerformance {
-    return Intl.message(
-      'Building base cache for improved performance (might take a while)…',
-      name: 'network_buildingBaseCachePerformance',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `This file is already being downloaded.`
-  String get network_thisFIleAlreadyBeingDownloaded {
-    return Intl.message(
-      'This file is already being downloaded.',
-      name: 'network_thisFIleAlreadyBeingDownloaded',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Download`
-  String get network_download {
-    return Intl.message(
-      'Download',
-      name: 'network_download',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Download file`
-  String get network_downloadFile {
-    return Intl.message(
-      'Download file',
-      name: 'network_downloadFile',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `to the device? This can take a while.`
-  String get network_toTheDeviceTakeTime {
-    return Intl.message(
-      'to the device? This can take a while.',
-      name: 'network_toTheDeviceTakeTime',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Available maps`
-  String get network_availableMaps {
-    return Intl.message(
-      'Available maps',
-      name: 'network_availableMaps',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Search map by name`
-  String get network_searchMapByName {
-    return Intl.message(
-      'Search map by name',
-      name: 'network_searchMapByName',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Uploading`
-  String get network_uploading {
-    return Intl.message(
-      'Uploading',
-      name: 'network_uploading',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `please wait…`
-  String get network_pleaseWait {
-    return Intl.message(
-      'please wait…',
-      name: 'network_pleaseWait',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Permission on server denied.`
-  String get network_permissionOnServerDenied {
-    return Intl.message(
-      'Permission on server denied.',
-      name: 'network_permissionOnServerDenied',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Could not connect to the server. Is it online? Check your address.`
-  String get network_couldNotConnectToServer {
-    return Intl.message(
-      'Could not connect to the server. Is it online? Check your address.',
-      name: 'network_couldNotConnectToServer',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `New Sketch`
-  String get form_sketch_newSketch {
-    return Intl.message(
-      'New Sketch',
-      name: 'form_sketch_newSketch',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Undo`
-  String get form_sketch_undo {
-    return Intl.message(
-      'Undo',
-      name: 'form_sketch_undo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nothing to undo`
-  String get form_sketch_noUndo {
-    return Intl.message(
-      'Nothing to undo',
-      name: 'form_sketch_noUndo',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Clear`
-  String get form_sketch_clear {
-    return Intl.message(
-      'Clear',
-      name: 'form_sketch_clear',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Save`
-  String get form_sketch_save {
-    return Intl.message(
-      'Save',
-      name: 'form_sketch_save',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Sketcher`
-  String get form_sketch_sketcher {
-    return Intl.message(
-      'Sketcher',
-      name: 'form_sketch_sketcher',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn on drawing`
-  String get form_sketch_enableDrawing {
-    return Intl.message(
-      'Turn on drawing',
-      name: 'form_sketch_enableDrawing',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Turn on eraser`
-  String get form_sketch_enableEraser {
-    return Intl.message(
-      'Turn on eraser',
-      name: 'form_sketch_enableEraser',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Background color`
-  String get form_sketch_backColor {
-    return Intl.message(
-      'Background color',
-      name: 'form_sketch_backColor',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Stroke color`
-  String get form_sketch_strokeColor {
-    return Intl.message(
-      'Stroke color',
-      name: 'form_sketch_strokeColor',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Pick color`
-  String get form_sketch_pickColor {
-    return Intl.message(
-      'Pick color',
-      name: 'form_sketch_pickColor',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Could not save image in database.`
-  String get form_smash_cantSaveImageDb {
-    return Intl.message(
-      'Could not save image in database.',
-      name: 'form_smash_cantSaveImageDb',
-      desc: '',
-      args: [],
-    );
-  }
+    return Localizations.of<SL>(context, SL)!;
+  }
+
+  static const LocalizationsDelegate<SL> delegate = _SLDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+  ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en'),
+    Locale('cs'),
+    Locale('de'),
+    Locale('fr'),
+    Locale('it'),
+    Locale('ja'),
+    Locale('nb'),
+    Locale('nb', 'NO'),
+    Locale('ru')
+  ];
+
+  /// No description provided for @main_welcome.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to SMASH!'**
+  String get main_welcome;
+
+  /// No description provided for @main_check_location_permission.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking location permission…'**
+  String get main_check_location_permission;
+
+  /// No description provided for @main_location_permission_granted.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission granted.'**
+  String get main_location_permission_granted;
+
+  /// No description provided for @main_checkingStoragePermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking storage permission…'**
+  String get main_checkingStoragePermission;
+
+  /// No description provided for @main_storagePermissionGranted.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage permission granted.'**
+  String get main_storagePermissionGranted;
+
+  /// No description provided for @main_loadingPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading preferences…'**
+  String get main_loadingPreferences;
+
+  /// No description provided for @main_preferencesLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences loaded.'**
+  String get main_preferencesLoaded;
+
+  /// No description provided for @main_loadingWorkspace.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading workspace…'**
+  String get main_loadingWorkspace;
+
+  /// No description provided for @main_workspaceLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Workspace loaded.'**
+  String get main_workspaceLoaded;
+
+  /// No description provided for @main_loadingTagsList.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading tags list…'**
+  String get main_loadingTagsList;
+
+  /// No description provided for @main_tagsListLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags list loaded.'**
+  String get main_tagsListLoaded;
+
+  /// No description provided for @main_loadingKnownProjections.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading known projections…'**
+  String get main_loadingKnownProjections;
+
+  /// No description provided for @main_knownProjectionsLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Known projections loaded.'**
+  String get main_knownProjectionsLoaded;
+
+  /// No description provided for @main_loadingFences.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading fences…'**
+  String get main_loadingFences;
+
+  /// No description provided for @main_fencesLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Fences loaded.'**
+  String get main_fencesLoaded;
+
+  /// No description provided for @main_loadingLayersList.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading layers list…'**
+  String get main_loadingLayersList;
+
+  /// No description provided for @main_layersListLoaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Layers list loaded.'**
+  String get main_layersListLoaded;
+
+  /// No description provided for @main_locationBackgroundWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Grant location permission in the next step to allow GPS logging in the background. (Otherwise it only works in the foreground.)\nNo data is shared, and only saved locally on the device.'**
+  String get main_locationBackgroundWarning;
+
+  /// No description provided for @main_StorageIsInternalWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Please read carefully!\nOn Android 11 and above, the SMASH project folder must be placed in the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage to be used.\nIf the app is uninstalled, the system removes it, so back up your data if you do.\n\nA better solution is in the works.'**
+  String get main_StorageIsInternalWarning;
+
+  /// No description provided for @main_locationPermissionIsMandatoryToOpenSmash.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission is mandatory to open SMASH.'**
+  String get main_locationPermissionIsMandatoryToOpenSmash;
+
+  /// No description provided for @main_storagePermissionIsMandatoryToOpenSmash.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage permission is mandatory to open SMASH.'**
+  String get main_storagePermissionIsMandatoryToOpenSmash;
+
+  /// No description provided for @main_anErrorOccurredTapToView.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred. Tap to view.'**
+  String get main_anErrorOccurredTapToView;
+
+  /// No description provided for @mainView_loadingData.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading data…'**
+  String get mainView_loadingData;
+
+  /// No description provided for @mainView_turnGpsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn GPS on'**
+  String get mainView_turnGpsOn;
+
+  /// No description provided for @mainView_turnGpsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn GPS off'**
+  String get mainView_turnGpsOff;
+
+  /// No description provided for @mainView_exit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get mainView_exit;
+
+  /// No description provided for @mainView_areYouSureCloseTheProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Close the project?'**
+  String get mainView_areYouSureCloseTheProject;
+
+  /// No description provided for @mainView_activeOperationsWillBeStopped.
+  ///
+  /// In en, this message translates to:
+  /// **'Active operations will be stopped.'**
+  String get mainView_activeOperationsWillBeStopped;
+
+  /// No description provided for @mainView_showInteractiveCoachMarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Show interactive coach marks.'**
+  String get mainView_showInteractiveCoachMarks;
+
+  /// No description provided for @mainView_openToolsDrawer.
+  ///
+  /// In en, this message translates to:
+  /// **'Open tools drawer.'**
+  String get mainView_openToolsDrawer;
+
+  /// No description provided for @mainView_zoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get mainView_zoomIn;
+
+  /// No description provided for @mainView_zoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get mainView_zoomOut;
+
+  /// No description provided for @mainView_formNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Form Notes'**
+  String get mainView_formNotes;
+
+  /// No description provided for @mainView_simpleNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple Notes'**
+  String get mainView_simpleNotes;
+
+  /// No description provided for @mainviewUtils_projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get mainviewUtils_projects;
+
+  /// No description provided for @mainviewUtils_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get mainviewUtils_import;
+
+  /// No description provided for @mainviewUtils_export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get mainviewUtils_export;
+
+  /// No description provided for @mainviewUtils_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get mainviewUtils_settings;
+
+  /// No description provided for @mainviewUtils_onlineHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Online Help'**
+  String get mainviewUtils_onlineHelp;
+
+  /// No description provided for @mainviewUtils_about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get mainviewUtils_about;
+
+  /// No description provided for @mainviewUtils_projectInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Info'**
+  String get mainviewUtils_projectInfo;
+
+  /// No description provided for @mainviewUtils_project.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get mainviewUtils_project;
+
+  /// No description provided for @mainviewUtils_database.
+  ///
+  /// In en, this message translates to:
+  /// **'Database'**
+  String get mainviewUtils_database;
+
+  /// No description provided for @mainviewUtils_extras.
+  ///
+  /// In en, this message translates to:
+  /// **'Extras'**
+  String get mainviewUtils_extras;
+
+  /// No description provided for @mainviewUtils_availableIcons.
+  ///
+  /// In en, this message translates to:
+  /// **'Available icons'**
+  String get mainviewUtils_availableIcons;
+
+  /// No description provided for @mainviewUtils_offlineMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline maps'**
+  String get mainviewUtils_offlineMaps;
+
+  /// No description provided for @mainviewUtils_positionTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Position Tools'**
+  String get mainviewUtils_positionTools;
+
+  /// No description provided for @mainviewUtils_goTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to'**
+  String get mainviewUtils_goTo;
+
+  /// No description provided for @mainviewUtils_sharePosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Share position'**
+  String get mainviewUtils_sharePosition;
+
+  /// No description provided for @mainviewUtils_rotateMapWithGps.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate map with GPS'**
+  String get mainviewUtils_rotateMapWithGps;
+
+  /// No description provided for @geocoding_geocoding.
+  ///
+  /// In en, this message translates to:
+  /// **'Geocoding'**
+  String get geocoding_geocoding;
+
+  /// No description provided for @geocoding_nothingToLookFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to look for. Insert an address.'**
+  String get geocoding_nothingToLookFor;
+
+  /// No description provided for @geocoding_launchGeocoding.
+  ///
+  /// In en, this message translates to:
+  /// **'Launch Geocoding'**
+  String get geocoding_launchGeocoding;
+
+  /// No description provided for @geocoding_searching.
+  ///
+  /// In en, this message translates to:
+  /// **'Searching…'**
+  String get geocoding_searching;
+
+  /// No description provided for @gps_smashIsActive.
+  ///
+  /// In en, this message translates to:
+  /// **'SMASH is active'**
+  String get gps_smashIsActive;
+
+  /// No description provided for @gps_smashIsLogging.
+  ///
+  /// In en, this message translates to:
+  /// **'SMASH is logging'**
+  String get gps_smashIsLogging;
+
+  /// No description provided for @gps_locationTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Location tracking'**
+  String get gps_locationTracking;
+
+  /// No description provided for @gps_smashLocServiceIsActive.
+  ///
+  /// In en, this message translates to:
+  /// **'SMASH location service is active.'**
+  String get gps_smashLocServiceIsActive;
+
+  /// No description provided for @gps_backgroundLocIsOnToKeepRegistering.
+  ///
+  /// In en, this message translates to:
+  /// **'Background location is on to keep the app registering the location even when the app is in background.'**
+  String get gps_backgroundLocIsOnToKeepRegistering;
+
+  /// No description provided for @layersView_layerList.
+  ///
+  /// In en, this message translates to:
+  /// **'Layer List'**
+  String get layersView_layerList;
+
+  /// No description provided for @layersView_loadRemoteDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Load remote database'**
+  String get layersView_loadRemoteDatabase;
+
+  /// No description provided for @layersView_loadOnlineSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Load online sources'**
+  String get layersView_loadOnlineSources;
+
+  /// No description provided for @layersView_loadLocalDatasets.
+  ///
+  /// In en, this message translates to:
+  /// **'Load local datasets'**
+  String get layersView_loadLocalDatasets;
+
+  /// No description provided for @layersView_loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get layersView_loading;
+
+  /// No description provided for @layersView_zoomTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom to'**
+  String get layersView_zoomTo;
+
+  /// No description provided for @layersView_properties.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties'**
+  String get layersView_properties;
+
+  /// No description provided for @layersView_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get layersView_delete;
+
+  /// No description provided for @layersView_projCouldNotBeRecognized.
+  ///
+  /// In en, this message translates to:
+  /// **'The proj could not be recognised. Tap to enter epsg manually.'**
+  String get layersView_projCouldNotBeRecognized;
+
+  /// No description provided for @layersView_projNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'The proj is not supported. Tap to solve.'**
+  String get layersView_projNotSupported;
+
+  /// No description provided for @layersView_onlyImageFilesWithWorldDef.
+  ///
+  /// In en, this message translates to:
+  /// **'Only image files with world file definition are supported.'**
+  String get layersView_onlyImageFilesWithWorldDef;
+
+  /// No description provided for @layersView_onlyImageFileWithPrjDef.
+  ///
+  /// In en, this message translates to:
+  /// **'Only image files with prj file definition are supported.'**
+  String get layersView_onlyImageFileWithPrjDef;
+
+  /// No description provided for @layersView_selectTableToLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Select table to load.'**
+  String get layersView_selectTableToLoad;
+
+  /// No description provided for @layersView_fileFormatNotSUpported.
+  ///
+  /// In en, this message translates to:
+  /// **'File format not supported.'**
+  String get layersView_fileFormatNotSUpported;
+
+  /// No description provided for @onlineSourcesPage_onlineSourcesCatalog.
+  ///
+  /// In en, this message translates to:
+  /// **'Online Sources Catalog'**
+  String get onlineSourcesPage_onlineSourcesCatalog;
+
+  /// No description provided for @onlineSourcesPage_loadingTmsLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading TMS layers…'**
+  String get onlineSourcesPage_loadingTmsLayers;
+
+  /// No description provided for @onlineSourcesPage_loadingWmsLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading WMS layers…'**
+  String get onlineSourcesPage_loadingWmsLayers;
+
+  /// No description provided for @onlineSourcesPage_importFromFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from file'**
+  String get onlineSourcesPage_importFromFile;
+
+  /// No description provided for @onlineSourcesPage_theFile.
+  ///
+  /// In en, this message translates to:
+  /// **'The file'**
+  String get onlineSourcesPage_theFile;
+
+  /// No description provided for @onlineSourcesPage_doesntExist.
+  ///
+  /// In en, this message translates to:
+  /// **'doesn\'t exist'**
+  String get onlineSourcesPage_doesntExist;
+
+  /// No description provided for @onlineSourcesPage_onlineSourcesImported.
+  ///
+  /// In en, this message translates to:
+  /// **'Online sources imported.'**
+  String get onlineSourcesPage_onlineSourcesImported;
+
+  /// No description provided for @onlineSourcesPage_exportToFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to file'**
+  String get onlineSourcesPage_exportToFile;
+
+  /// No description provided for @onlineSourcesPage_exportedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Exported to:'**
+  String get onlineSourcesPage_exportedTo;
+
+  /// No description provided for @onlineSourcesPage_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get onlineSourcesPage_delete;
+
+  /// No description provided for @onlineSourcesPage_addToLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to layers'**
+  String get onlineSourcesPage_addToLayers;
+
+  /// No description provided for @onlineSourcesPage_setNameTmsService.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a name for the TMS service'**
+  String get onlineSourcesPage_setNameTmsService;
+
+  /// No description provided for @onlineSourcesPage_enterName.
+  ///
+  /// In en, this message translates to:
+  /// **'enter name'**
+  String get onlineSourcesPage_enterName;
+
+  /// No description provided for @onlineSourcesPage_pleaseEnterValidName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid name'**
+  String get onlineSourcesPage_pleaseEnterValidName;
+
+  /// No description provided for @onlineSourcesPage_insertUrlOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert the URL of the service.'**
+  String get onlineSourcesPage_insertUrlOfService;
+
+  /// No description provided for @onlineSourcesPage_placeXyzBetBrackets.
+  ///
+  /// In en, this message translates to:
+  /// **'Place the x, y, z between curly brackets.'**
+  String get onlineSourcesPage_placeXyzBetBrackets;
+
+  /// No description provided for @onlineSourcesPage_pleaseEnterValidTmsUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid TMS URL'**
+  String get onlineSourcesPage_pleaseEnterValidTmsUrl;
+
+  /// No description provided for @onlineSourcesPage_enterUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'enter URL'**
+  String get onlineSourcesPage_enterUrl;
+
+  /// No description provided for @onlineSourcesPage_enterSubDomains.
+  ///
+  /// In en, this message translates to:
+  /// **'enter subdomains'**
+  String get onlineSourcesPage_enterSubDomains;
+
+  /// No description provided for @onlineSourcesPage_addAttribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an attribution.'**
+  String get onlineSourcesPage_addAttribution;
+
+  /// No description provided for @onlineSourcesPage_enterAttribution.
+  ///
+  /// In en, this message translates to:
+  /// **'enter attribution'**
+  String get onlineSourcesPage_enterAttribution;
+
+  /// No description provided for @onlineSourcesPage_setMinMaxZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Set min and max zoom.'**
+  String get onlineSourcesPage_setMinMaxZoom;
+
+  /// No description provided for @onlineSourcesPage_minZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Min zoom'**
+  String get onlineSourcesPage_minZoom;
+
+  /// No description provided for @onlineSourcesPage_maxZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Max zoom'**
+  String get onlineSourcesPage_maxZoom;
+
+  /// No description provided for @onlineSourcesPage_pleaseCheckYourData.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your data'**
+  String get onlineSourcesPage_pleaseCheckYourData;
+
+  /// No description provided for @onlineSourcesPage_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get onlineSourcesPage_details;
+
+  /// No description provided for @onlineSourcesPage_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name: '**
+  String get onlineSourcesPage_name;
+
+  /// No description provided for @onlineSourcesPage_subDomains.
+  ///
+  /// In en, this message translates to:
+  /// **'Subdomains: '**
+  String get onlineSourcesPage_subDomains;
+
+  /// No description provided for @onlineSourcesPage_attribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Attribution: '**
+  String get onlineSourcesPage_attribution;
+
+  /// No description provided for @onlineSourcesPage_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get onlineSourcesPage_cancel;
+
+  /// No description provided for @onlineSourcesPage_ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get onlineSourcesPage_ok;
+
+  /// No description provided for @onlineSourcesPage_newTmsOnlineService.
+  ///
+  /// In en, this message translates to:
+  /// **'New TMS Online Service'**
+  String get onlineSourcesPage_newTmsOnlineService;
+
+  /// No description provided for @onlineSourcesPage_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get onlineSourcesPage_save;
+
+  /// No description provided for @onlineSourcesPage_theBaseUrlWithQuestionMark.
+  ///
+  /// In en, this message translates to:
+  /// **'The base URL-ending with question mark.'**
+  String get onlineSourcesPage_theBaseUrlWithQuestionMark;
+
+  /// No description provided for @onlineSourcesPage_pleaseEnterValidWmsUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid WMS URL'**
+  String get onlineSourcesPage_pleaseEnterValidWmsUrl;
+
+  /// No description provided for @onlineSourcesPage_setWmsLayerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Set WMS layer name'**
+  String get onlineSourcesPage_setWmsLayerName;
+
+  /// No description provided for @onlineSourcesPage_enterLayerToLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'enter layer to load'**
+  String get onlineSourcesPage_enterLayerToLoad;
+
+  /// No description provided for @onlineSourcesPage_pleaseEnterValidLayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid layer'**
+  String get onlineSourcesPage_pleaseEnterValidLayer;
+
+  /// No description provided for @onlineSourcesPage_setWmsImageFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Set WMS image format'**
+  String get onlineSourcesPage_setWmsImageFormat;
+
+  /// No description provided for @onlineSourcesPage_addAnAttribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an attribution.'**
+  String get onlineSourcesPage_addAnAttribution;
+
+  /// No description provided for @onlineSourcesPage_layer.
+  ///
+  /// In en, this message translates to:
+  /// **'Layer: '**
+  String get onlineSourcesPage_layer;
+
+  /// No description provided for @onlineSourcesPage_url.
+  ///
+  /// In en, this message translates to:
+  /// **'URL: '**
+  String get onlineSourcesPage_url;
+
+  /// No description provided for @onlineSourcesPage_format.
+  ///
+  /// In en, this message translates to:
+  /// **'Format'**
+  String get onlineSourcesPage_format;
+
+  /// No description provided for @onlineSourcesPage_newWmsOnlineService.
+  ///
+  /// In en, this message translates to:
+  /// **'New WMS Online Service'**
+  String get onlineSourcesPage_newWmsOnlineService;
+
+  /// No description provided for @remoteDbPage_remoteDatabases.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote Databases'**
+  String get remoteDbPage_remoteDatabases;
+
+  /// No description provided for @remoteDbPage_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get remoteDbPage_delete;
+
+  /// No description provided for @remoteDbPage_areYouSureDeleteDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the database configuration?'**
+  String get remoteDbPage_areYouSureDeleteDatabase;
+
+  /// No description provided for @remoteDbPage_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get remoteDbPage_edit;
+
+  /// No description provided for @remoteDbPage_table.
+  ///
+  /// In en, this message translates to:
+  /// **'table'**
+  String get remoteDbPage_table;
+
+  /// No description provided for @remoteDbPage_user.
+  ///
+  /// In en, this message translates to:
+  /// **'user'**
+  String get remoteDbPage_user;
+
+  /// No description provided for @remoteDbPage_loadInMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Load in map.'**
+  String get remoteDbPage_loadInMap;
+
+  /// No description provided for @remoteDbPage_databaseParameters.
+  ///
+  /// In en, this message translates to:
+  /// **'Database Parameters'**
+  String get remoteDbPage_databaseParameters;
+
+  /// No description provided for @remoteDbPage_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get remoteDbPage_cancel;
+
+  /// No description provided for @remoteDbPage_ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get remoteDbPage_ok;
+
+  /// No description provided for @remoteDbPage_theUrlNeedsToBeDefined.
+  ///
+  /// In en, this message translates to:
+  /// **'The URL must be defined (postgis:host:port/databasename)'**
+  String get remoteDbPage_theUrlNeedsToBeDefined;
+
+  /// No description provided for @remoteDbPage_theUserNeedsToBeDefined.
+  ///
+  /// In en, this message translates to:
+  /// **'A user must be defined.'**
+  String get remoteDbPage_theUserNeedsToBeDefined;
+
+  /// No description provided for @remoteDbPage_password.
+  ///
+  /// In en, this message translates to:
+  /// **'password'**
+  String get remoteDbPage_password;
+
+  /// No description provided for @remoteDbPage_thePasswordNeedsToBeDefined.
+  ///
+  /// In en, this message translates to:
+  /// **'A password must be defined.'**
+  String get remoteDbPage_thePasswordNeedsToBeDefined;
+
+  /// No description provided for @remoteDbPage_loadingTables.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading tables…'**
+  String get remoteDbPage_loadingTables;
+
+  /// No description provided for @remoteDbPage_theTableNeedsToBeDefined.
+  ///
+  /// In en, this message translates to:
+  /// **'The table name must be defined.'**
+  String get remoteDbPage_theTableNeedsToBeDefined;
+
+  /// No description provided for @remoteDbPage_unableToConnectToDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to connect to the database. Check parameters and network.'**
+  String get remoteDbPage_unableToConnectToDatabase;
+
+  /// No description provided for @remoteDbPage_optionalWhereCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'optional \"where\" condition'**
+  String get remoteDbPage_optionalWhereCondition;
+
+  /// No description provided for @geoImage_tiffProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'TIFF Properties'**
+  String get geoImage_tiffProperties;
+
+  /// No description provided for @geoImage_opacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opacity'**
+  String get geoImage_opacity;
+
+  /// No description provided for @geoImage_colorToHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Color to hide'**
+  String get geoImage_colorToHide;
+
+  /// No description provided for @gpx_gpxProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'GPX Properties'**
+  String get gpx_gpxProperties;
+
+  /// No description provided for @gpx_wayPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Waypoints'**
+  String get gpx_wayPoints;
+
+  /// No description provided for @gpx_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get gpx_color;
+
+  /// No description provided for @gpx_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get gpx_size;
+
+  /// No description provided for @gpx_viewLabelsIfAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'View labels if available?'**
+  String get gpx_viewLabelsIfAvailable;
+
+  /// No description provided for @gpx_tracksRoutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracks/routes'**
+  String get gpx_tracksRoutes;
+
+  /// No description provided for @gpx_width.
+  ///
+  /// In en, this message translates to:
+  /// **'Width'**
+  String get gpx_width;
+
+  /// No description provided for @gpx_palette.
+  ///
+  /// In en, this message translates to:
+  /// **'Palette'**
+  String get gpx_palette;
+
+  /// No description provided for @tiles_tileProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Tile Properties'**
+  String get tiles_tileProperties;
+
+  /// No description provided for @tiles_opacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opacity'**
+  String get tiles_opacity;
+
+  /// No description provided for @tiles_loadGeoPackageAsOverlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).'**
+  String get tiles_loadGeoPackageAsOverlay;
+
+  /// No description provided for @tiles_colorToHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Color to hide'**
+  String get tiles_colorToHide;
+
+  /// No description provided for @wms_wmsProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'WMS Properties'**
+  String get wms_wmsProperties;
+
+  /// No description provided for @wms_opacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Opacity'**
+  String get wms_opacity;
+
+  /// No description provided for @featureAttributesViewer_loadingData.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading data…'**
+  String get featureAttributesViewer_loadingData;
+
+  /// No description provided for @featureAttributesViewer_setNewValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Set new value'**
+  String get featureAttributesViewer_setNewValue;
+
+  /// No description provided for @featureAttributesViewer_field.
+  ///
+  /// In en, this message translates to:
+  /// **'Field'**
+  String get featureAttributesViewer_field;
+
+  /// No description provided for @featureAttributesViewer_value.
+  ///
+  /// In en, this message translates to:
+  /// **'VALUE'**
+  String get featureAttributesViewer_value;
+
+  /// No description provided for @projectsView_projectsView.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects View'**
+  String get projectsView_projectsView;
+
+  /// No description provided for @projectsView_openExistingProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Open an existing project'**
+  String get projectsView_openExistingProject;
+
+  /// No description provided for @projectsView_createNewProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new project'**
+  String get projectsView_createNewProject;
+
+  /// No description provided for @projectsView_recentProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent projects'**
+  String get projectsView_recentProjects;
+
+  /// No description provided for @projectsView_newProject.
+  ///
+  /// In en, this message translates to:
+  /// **'New Project'**
+  String get projectsView_newProject;
+
+  /// No description provided for @projectsView_enterNameForNewProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name for the new project or accept the proposed.'**
+  String get projectsView_enterNameForNewProject;
+
+  /// No description provided for @dataLoader_note.
+  ///
+  /// In en, this message translates to:
+  /// **'note'**
+  String get dataLoader_note;
+
+  /// No description provided for @dataLoader_Note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get dataLoader_Note;
+
+  /// No description provided for @dataLoader_hasForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Has Form'**
+  String get dataLoader_hasForm;
+
+  /// No description provided for @dataLoader_POI.
+  ///
+  /// In en, this message translates to:
+  /// **'POI'**
+  String get dataLoader_POI;
+
+  /// No description provided for @dataLoader_savingImageToDB.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving image to database…'**
+  String get dataLoader_savingImageToDB;
+
+  /// No description provided for @dataLoader_removeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Note'**
+  String get dataLoader_removeNote;
+
+  /// No description provided for @dataLoader_areYouSureRemoveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove note?'**
+  String get dataLoader_areYouSureRemoveNote;
+
+  /// No description provided for @dataLoader_image.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
+  String get dataLoader_image;
+
+  /// No description provided for @dataLoader_longitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude'**
+  String get dataLoader_longitude;
+
+  /// No description provided for @dataLoader_latitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get dataLoader_latitude;
+
+  /// No description provided for @dataLoader_altitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Altitude'**
+  String get dataLoader_altitude;
+
+  /// No description provided for @dataLoader_timestamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamp'**
+  String get dataLoader_timestamp;
+
+  /// No description provided for @dataLoader_removeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Image'**
+  String get dataLoader_removeImage;
+
+  /// No description provided for @dataLoader_areYouSureRemoveImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the image?'**
+  String get dataLoader_areYouSureRemoveImage;
+
+  /// No description provided for @images_loadingImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading image…'**
+  String get images_loadingImage;
+
+  /// No description provided for @about_loadingInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading info…'**
+  String get about_loadingInformation;
+
+  /// No description provided for @about_ABOUT.
+  ///
+  /// In en, this message translates to:
+  /// **'About '**
+  String get about_ABOUT;
+
+  /// No description provided for @about_smartMobileAppForSurveyor.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart Mobile App for Surveyor Happiness'**
+  String get about_smartMobileAppForSurveyor;
+
+  /// No description provided for @about_applicationVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get about_applicationVersion;
+
+  /// No description provided for @about_license.
+  ///
+  /// In en, this message translates to:
+  /// **'License'**
+  String get about_license;
+
+  /// No description provided for @about_isAvailableUnderGPL3.
+  ///
+  /// In en, this message translates to:
+  /// **' is copylefted libre software, licensed GPLv3+.'**
+  String get about_isAvailableUnderGPL3;
+
+  /// No description provided for @about_sourceCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Source Code'**
+  String get about_sourceCode;
+
+  /// No description provided for @about_tapHereToVisitRepo.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap here to visit the source code repository'**
+  String get about_tapHereToVisitRepo;
+
+  /// No description provided for @about_legalInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal Info'**
+  String get about_legalInformation;
+
+  /// No description provided for @about_copyright2020HydroloGIS.
+  ///
+  /// In en, this message translates to:
+  /// **'Copyright © 2020, HydroloGIS S.r.l. — some rights reserved. Tap to visit.'**
+  String get about_copyright2020HydroloGIS;
+
+  /// No description provided for @about_supportedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Supported by'**
+  String get about_supportedBy;
+
+  /// No description provided for @about_partiallySupportedByUniversityTrento.
+  ///
+  /// In en, this message translates to:
+  /// **'Partially supported by the project Steep Stream of the University of Trento.'**
+  String get about_partiallySupportedByUniversityTrento;
+
+  /// No description provided for @about_privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get about_privacyPolicy;
+
+  /// No description provided for @about_tapHereToSeePrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap here to see the privacy policy that covers user and location data.'**
+  String get about_tapHereToSeePrivacyPolicy;
+
+  /// No description provided for @gpsInfoButton_noGpsInfoAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No GPS info available…'**
+  String get gpsInfoButton_noGpsInfoAvailable;
+
+  /// No description provided for @gpsInfoButton_timestamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamp'**
+  String get gpsInfoButton_timestamp;
+
+  /// No description provided for @gpsInfoButton_speed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get gpsInfoButton_speed;
+
+  /// No description provided for @gpsInfoButton_heading.
+  ///
+  /// In en, this message translates to:
+  /// **'Heading'**
+  String get gpsInfoButton_heading;
+
+  /// No description provided for @gpsInfoButton_accuracy.
+  ///
+  /// In en, this message translates to:
+  /// **'Accuracy'**
+  String get gpsInfoButton_accuracy;
+
+  /// No description provided for @gpsInfoButton_altitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Altitude'**
+  String get gpsInfoButton_altitude;
+
+  /// No description provided for @gpsInfoButton_latitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get gpsInfoButton_latitude;
+
+  /// No description provided for @gpsInfoButton_copyLatitudeToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy latitude to clipboard.'**
+  String get gpsInfoButton_copyLatitudeToClipboard;
+
+  /// No description provided for @gpsInfoButton_longitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude'**
+  String get gpsInfoButton_longitude;
+
+  /// No description provided for @gpsInfoButton_copyLongitudeToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy longitude to clipboard.'**
+  String get gpsInfoButton_copyLongitudeToClipboard;
+
+  /// No description provided for @gpsLogButton_stopLogging.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Logging?'**
+  String get gpsLogButton_stopLogging;
+
+  /// No description provided for @gpsLogButton_stopLoggingAndCloseLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop logging and close the current GPS log?'**
+  String get gpsLogButton_stopLoggingAndCloseLog;
+
+  /// No description provided for @gpsLogButton_newLog.
+  ///
+  /// In en, this message translates to:
+  /// **'New Log'**
+  String get gpsLogButton_newLog;
+
+  /// No description provided for @gpsLogButton_enterNameForNewLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name for the new log'**
+  String get gpsLogButton_enterNameForNewLog;
+
+  /// No description provided for @gpsLogButton_couldNotStartLogging.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start logging: '**
+  String get gpsLogButton_couldNotStartLogging;
+
+  /// No description provided for @imageWidgets_loadingImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading image…'**
+  String get imageWidgets_loadingImage;
+
+  /// No description provided for @logList_gpsLogsList.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Logs list'**
+  String get logList_gpsLogsList;
+
+  /// No description provided for @logList_selectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get logList_selectAll;
+
+  /// No description provided for @logList_unSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Unselect all'**
+  String get logList_unSelectAll;
+
+  /// No description provided for @logList_invertSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Invert selection'**
+  String get logList_invertSelection;
+
+  /// No description provided for @logList_mergeSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge selected'**
+  String get logList_mergeSelected;
+
+  /// No description provided for @logList_loadingLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading logs…'**
+  String get logList_loadingLogs;
+
+  /// No description provided for @logList_zoomTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom to'**
+  String get logList_zoomTo;
+
+  /// No description provided for @logList_properties.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties'**
+  String get logList_properties;
+
+  /// No description provided for @logList_profileView.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile View'**
+  String get logList_profileView;
+
+  /// No description provided for @logList_toGPX.
+  ///
+  /// In en, this message translates to:
+  /// **'To GPX'**
+  String get logList_toGPX;
+
+  /// No description provided for @logList_gpsSavedInExportFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'GPX saved in export folder.'**
+  String get logList_gpsSavedInExportFolder;
+
+  /// No description provided for @logList_errorOccurredExportingLogGPX.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export log to GPX.'**
+  String get logList_errorOccurredExportingLogGPX;
+
+  /// No description provided for @logList_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get logList_delete;
+
+  /// No description provided for @logList_DELETE.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get logList_DELETE;
+
+  /// No description provided for @logList_areYouSureDeleteTheLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the log?'**
+  String get logList_areYouSureDeleteTheLog;
+
+  /// No description provided for @logList_hours.
+  ///
+  /// In en, this message translates to:
+  /// **'hours'**
+  String get logList_hours;
+
+  /// No description provided for @logList_hour.
+  ///
+  /// In en, this message translates to:
+  /// **'hour'**
+  String get logList_hour;
+
+  /// No description provided for @logList_minutes.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get logList_minutes;
+
+  /// No description provided for @logProperties_gpsLogProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Log Properties'**
+  String get logProperties_gpsLogProperties;
+
+  /// No description provided for @logProperties_logName.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Name'**
+  String get logProperties_logName;
+
+  /// No description provided for @logProperties_start.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get logProperties_start;
+
+  /// No description provided for @logProperties_end.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get logProperties_end;
+
+  /// No description provided for @logProperties_duration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get logProperties_duration;
+
+  /// No description provided for @logProperties_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get logProperties_color;
+
+  /// No description provided for @logProperties_palette.
+  ///
+  /// In en, this message translates to:
+  /// **'Palette'**
+  String get logProperties_palette;
+
+  /// No description provided for @logProperties_width.
+  ///
+  /// In en, this message translates to:
+  /// **'Width'**
+  String get logProperties_width;
+
+  /// No description provided for @logProperties_distanceAtPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance at position:'**
+  String get logProperties_distanceAtPosition;
+
+  /// No description provided for @logProperties_totalDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Total distance:'**
+  String get logProperties_totalDistance;
+
+  /// No description provided for @logProperties_gpsLogView.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Log View'**
+  String get logProperties_gpsLogView;
+
+  /// No description provided for @logProperties_disableStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off stats'**
+  String get logProperties_disableStats;
+
+  /// No description provided for @logProperties_enableStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on stats'**
+  String get logProperties_enableStats;
+
+  /// No description provided for @logProperties_totalDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Total duration:'**
+  String get logProperties_totalDuration;
+
+  /// No description provided for @logProperties_timestamp.
+  ///
+  /// In en, this message translates to:
+  /// **'Timestamp:'**
+  String get logProperties_timestamp;
+
+  /// No description provided for @logProperties_durationAtPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration at position:'**
+  String get logProperties_durationAtPosition;
+
+  /// No description provided for @logProperties_speed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed:'**
+  String get logProperties_speed;
+
+  /// No description provided for @logProperties_elevation.
+  ///
+  /// In en, this message translates to:
+  /// **'Elevation:'**
+  String get logProperties_elevation;
+
+  /// No description provided for @noteList_simpleNotesList.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple List of Notes'**
+  String get noteList_simpleNotesList;
+
+  /// No description provided for @noteList_formNotesList.
+  ///
+  /// In en, this message translates to:
+  /// **'List of Form Notes'**
+  String get noteList_formNotesList;
+
+  /// No description provided for @noteList_loadingNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading notes…'**
+  String get noteList_loadingNotes;
+
+  /// No description provided for @noteList_zoomTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom to'**
+  String get noteList_zoomTo;
+
+  /// No description provided for @noteList_edit.
+  ///
+  /// In en, this message translates to:
+  /// **'\'Edit\''**
+  String get noteList_edit;
+
+  /// No description provided for @noteList_properties.
+  ///
+  /// In en, this message translates to:
+  /// **'Properties'**
+  String get noteList_properties;
+
+  /// No description provided for @noteList_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get noteList_delete;
+
+  /// No description provided for @noteList_DELETE.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get noteList_DELETE;
+
+  /// No description provided for @noteList_areYouSureDeleteNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the note?'**
+  String get noteList_areYouSureDeleteNote;
+
+  /// No description provided for @settings_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings_settings;
+
+  /// No description provided for @settings_camera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get settings_camera;
+
+  /// No description provided for @settings_cameraResolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera Resolution'**
+  String get settings_cameraResolution;
+
+  /// No description provided for @settings_resolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolution'**
+  String get settings_resolution;
+
+  /// No description provided for @settings_theCameraResolution.
+  ///
+  /// In en, this message translates to:
+  /// **'The camera resolution'**
+  String get settings_theCameraResolution;
+
+  /// No description provided for @settings_screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen'**
+  String get settings_screen;
+
+  /// No description provided for @settings_screenScaleBarIconSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen, Scalebar and Icon Size'**
+  String get settings_screenScaleBarIconSize;
+
+  /// No description provided for @settings_keepScreenOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Screen On'**
+  String get settings_keepScreenOn;
+
+  /// No description provided for @settings_retinaScreenMode.
+  ///
+  /// In en, this message translates to:
+  /// **'HiDPI screen-mode'**
+  String get settings_retinaScreenMode;
+
+  /// No description provided for @settings_toApplySettingEnterExitLayerView.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter and exit the layer view to apply this setting.'**
+  String get settings_toApplySettingEnterExitLayerView;
+
+  /// No description provided for @settings_colorPickerToUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Color Picker to use'**
+  String get settings_colorPickerToUse;
+
+  /// No description provided for @settings_mapCenterCross.
+  ///
+  /// In en, this message translates to:
+  /// **'Map Center Cross'**
+  String get settings_mapCenterCross;
+
+  /// No description provided for @settings_color.
+  ///
+  /// In en, this message translates to:
+  /// **'Color'**
+  String get settings_color;
+
+  /// No description provided for @settings_size.
+  ///
+  /// In en, this message translates to:
+  /// **'Size'**
+  String get settings_size;
+
+  /// No description provided for @settings_width.
+  ///
+  /// In en, this message translates to:
+  /// **'Width'**
+  String get settings_width;
+
+  /// No description provided for @settings_mapToolsIconSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Icon Size for Map Tools'**
+  String get settings_mapToolsIconSize;
+
+  /// No description provided for @settings_gps.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS'**
+  String get settings_gps;
+
+  /// No description provided for @settings_gpsFiltersAndMockLoc.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS filters and mock locations'**
+  String get settings_gpsFiltersAndMockLoc;
+
+  /// No description provided for @settings_livePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Preview'**
+  String get settings_livePreview;
+
+  /// No description provided for @settings_noPointAvailableYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No point available yet.'**
+  String get settings_noPointAvailableYet;
+
+  /// No description provided for @settings_longitudeDeg.
+  ///
+  /// In en, this message translates to:
+  /// **'longitude [deg]'**
+  String get settings_longitudeDeg;
+
+  /// No description provided for @settings_latitudeDeg.
+  ///
+  /// In en, this message translates to:
+  /// **'latitude [deg]'**
+  String get settings_latitudeDeg;
+
+  /// No description provided for @settings_accuracyM.
+  ///
+  /// In en, this message translates to:
+  /// **'accuracy [m]'**
+  String get settings_accuracyM;
+
+  /// No description provided for @settings_altitudeM.
+  ///
+  /// In en, this message translates to:
+  /// **'altitude [m]'**
+  String get settings_altitudeM;
+
+  /// No description provided for @settings_headingDeg.
+  ///
+  /// In en, this message translates to:
+  /// **'heading [deg]'**
+  String get settings_headingDeg;
+
+  /// No description provided for @settings_speedMS.
+  ///
+  /// In en, this message translates to:
+  /// **'speed [m/s]'**
+  String get settings_speedMS;
+
+  /// No description provided for @settings_isLogging.
+  ///
+  /// In en, this message translates to:
+  /// **'is logging?'**
+  String get settings_isLogging;
+
+  /// No description provided for @settings_mockLocations.
+  ///
+  /// In en, this message translates to:
+  /// **'mock locations?'**
+  String get settings_mockLocations;
+
+  /// No description provided for @settings_minDistFilterBlocks.
+  ///
+  /// In en, this message translates to:
+  /// **'Min dist filter blocks'**
+  String get settings_minDistFilterBlocks;
+
+  /// No description provided for @settings_minDistFilterPasses.
+  ///
+  /// In en, this message translates to:
+  /// **'Min dist filter passes'**
+  String get settings_minDistFilterPasses;
+
+  /// No description provided for @settings_minTimeFilterBlocks.
+  ///
+  /// In en, this message translates to:
+  /// **'Min time filter blocks'**
+  String get settings_minTimeFilterBlocks;
+
+  /// No description provided for @settings_minTimeFilterPasses.
+  ///
+  /// In en, this message translates to:
+  /// **'Min time filter passes'**
+  String get settings_minTimeFilterPasses;
+
+  /// No description provided for @settings_hasBeenBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Has been blocked'**
+  String get settings_hasBeenBlocked;
+
+  /// No description provided for @settings_distanceFromPrevM.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance from prev [m]'**
+  String get settings_distanceFromPrevM;
+
+  /// No description provided for @settings_timeFromPrevS.
+  ///
+  /// In en, this message translates to:
+  /// **'Time since prev [s]'**
+  String get settings_timeFromPrevS;
+
+  /// No description provided for @settings_locationInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Info'**
+  String get settings_locationInfo;
+
+  /// No description provided for @settings_filters.
+  ///
+  /// In en, this message translates to:
+  /// **'Filters'**
+  String get settings_filters;
+
+  /// No description provided for @settings_disableFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off Filters.'**
+  String get settings_disableFilters;
+
+  /// No description provided for @settings_enableFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Filters.'**
+  String get settings_enableFilters;
+
+  /// No description provided for @settings_zoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get settings_zoomIn;
+
+  /// No description provided for @settings_zoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get settings_zoomOut;
+
+  /// No description provided for @settings_activatePointFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate point flow.'**
+  String get settings_activatePointFlow;
+
+  /// No description provided for @settings_pausePointsFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause points flow.'**
+  String get settings_pausePointsFlow;
+
+  /// No description provided for @settings_visualizePointCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Visualize point count'**
+  String get settings_visualizePointCount;
+
+  /// No description provided for @settings_showGpsPointsValidPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the GPS points count for VALID points.'**
+  String get settings_showGpsPointsValidPoints;
+
+  /// No description provided for @settings_showGpsPointsAllPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the GPS points count for ALL points.'**
+  String get settings_showGpsPointsAllPoints;
+
+  /// No description provided for @settings_logFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Log filters'**
+  String get settings_logFilters;
+
+  /// No description provided for @settings_minDistanceBetween2Points.
+  ///
+  /// In en, this message translates to:
+  /// **'Min distance between 2 points.'**
+  String get settings_minDistanceBetween2Points;
+
+  /// No description provided for @settings_minTimespanBetween2Points.
+  ///
+  /// In en, this message translates to:
+  /// **'Min timespan between 2 points.'**
+  String get settings_minTimespanBetween2Points;
+
+  /// No description provided for @settings_gpsFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Filter'**
+  String get settings_gpsFilter;
+
+  /// No description provided for @settings_disable.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get settings_disable;
+
+  /// No description provided for @settings_enable.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on'**
+  String get settings_enable;
+
+  /// No description provided for @settings_theUseOfTheGps.
+  ///
+  /// In en, this message translates to:
+  /// **'the use of filtered GPS.'**
+  String get settings_theUseOfTheGps;
+
+  /// No description provided for @settings_warningThisWillAffectGpsPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning: This will affect GPS position, notes insertion, log statistics and charting.'**
+  String get settings_warningThisWillAffectGpsPosition;
+
+  /// No description provided for @settings_MockLocations.
+  ///
+  /// In en, this message translates to:
+  /// **'Mock locations'**
+  String get settings_MockLocations;
+
+  /// No description provided for @settings_testGpsLogDemoUse.
+  ///
+  /// In en, this message translates to:
+  /// **'test GPS log for demo use.'**
+  String get settings_testGpsLogDemoUse;
+
+  /// No description provided for @settings_setDurationGpsPointsInMilli.
+  ///
+  /// In en, this message translates to:
+  /// **'Set duration for GPS points in milliseconds.'**
+  String get settings_setDurationGpsPointsInMilli;
+
+  /// No description provided for @settings_SETTING.
+  ///
+  /// In en, this message translates to:
+  /// **'Setting'**
+  String get settings_SETTING;
+
+  /// No description provided for @settings_setMockedGpsDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Mocked GPS duration'**
+  String get settings_setMockedGpsDuration;
+
+  /// No description provided for @settings_theValueHasToBeInt.
+  ///
+  /// In en, this message translates to:
+  /// **'The value has to be a whole number.'**
+  String get settings_theValueHasToBeInt;
+
+  /// No description provided for @settings_milliseconds.
+  ///
+  /// In en, this message translates to:
+  /// **'milliseconds'**
+  String get settings_milliseconds;
+
+  /// No description provided for @settings_useGoogleToImproveLoc.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Google Services to improve location'**
+  String get settings_useGoogleToImproveLoc;
+
+  /// No description provided for @settings_useOfGoogleServicesRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'use of Google services (app restart needed).'**
+  String get settings_useOfGoogleServicesRestart;
+
+  /// No description provided for @settings_gpsLogsViewMode.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Logs view mode'**
+  String get settings_gpsLogsViewMode;
+
+  /// No description provided for @settings_logViewModeForOrigData.
+  ///
+  /// In en, this message translates to:
+  /// **'Log view mode for original data.'**
+  String get settings_logViewModeForOrigData;
+
+  /// No description provided for @settings_logViewModeFilteredData.
+  ///
+  /// In en, this message translates to:
+  /// **'Log view mode for filtered data.'**
+  String get settings_logViewModeFilteredData;
+
+  /// No description provided for @settings_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get settings_cancel;
+
+  /// No description provided for @settings_ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get settings_ok;
+
+  /// No description provided for @settings_notesViewModes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes view modes'**
+  String get settings_notesViewModes;
+
+  /// No description provided for @settings_selectNotesViewMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a mode to view notes in.'**
+  String get settings_selectNotesViewMode;
+
+  /// No description provided for @settings_mapPlugins.
+  ///
+  /// In en, this message translates to:
+  /// **'Map Plugins'**
+  String get settings_mapPlugins;
+
+  /// No description provided for @settings_vectorLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Vector Layers'**
+  String get settings_vectorLayers;
+
+  /// No description provided for @settings_loadingOptionsInfoTool.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading Options and Info Tool'**
+  String get settings_loadingOptionsInfoTool;
+
+  /// No description provided for @settings_dataLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Data loading'**
+  String get settings_dataLoading;
+
+  /// No description provided for @settings_maxNumberFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Max number of features.'**
+  String get settings_maxNumberFeatures;
+
+  /// No description provided for @settings_maxNumFeaturesPerLayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Max features per layer. Remove and add the layer to apply.'**
+  String get settings_maxNumFeaturesPerLayer;
+
+  /// No description provided for @settings_all.
+  ///
+  /// In en, this message translates to:
+  /// **'all'**
+  String get settings_all;
+
+  /// No description provided for @settings_loadMapArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Load map area.'**
+  String get settings_loadMapArea;
+
+  /// No description provided for @settings_loadOnlyLastVisibleArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Load only on the last visible map area. Remove and add the layer again to apply.'**
+  String get settings_loadOnlyLastVisibleArea;
+
+  /// No description provided for @settings_infoTool.
+  ///
+  /// In en, this message translates to:
+  /// **'Info Tool'**
+  String get settings_infoTool;
+
+  /// No description provided for @settings_tapSizeInfoToolPixels.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap size of the info tool in pixels.'**
+  String get settings_tapSizeInfoToolPixels;
+
+  /// No description provided for @settings_editingTool.
+  ///
+  /// In en, this message translates to:
+  /// **'Editing tool'**
+  String get settings_editingTool;
+
+  /// No description provided for @settings_editingDragIconSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Editing drag handler icon size.'**
+  String get settings_editingDragIconSize;
+
+  /// No description provided for @settings_editingIntermediateDragIconSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Editing intermediate drag handler icon size.'**
+  String get settings_editingIntermediateDragIconSize;
+
+  /// No description provided for @settings_diagnostics.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostics'**
+  String get settings_diagnostics;
+
+  /// No description provided for @settings_diagnosticsDebugLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagnostics and Debug Log'**
+  String get settings_diagnosticsDebugLog;
+
+  /// No description provided for @settings_openFullDebugLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Open full debug log'**
+  String get settings_openFullDebugLog;
+
+  /// No description provided for @settings_debugLogView.
+  ///
+  /// In en, this message translates to:
+  /// **'Debug Log View'**
+  String get settings_debugLogView;
+
+  /// No description provided for @settings_viewAllMessages.
+  ///
+  /// In en, this message translates to:
+  /// **'View all messages'**
+  String get settings_viewAllMessages;
+
+  /// No description provided for @settings_viewOnlyErrorsWarnings.
+  ///
+  /// In en, this message translates to:
+  /// **'View only errors and warnings'**
+  String get settings_viewOnlyErrorsWarnings;
+
+  /// No description provided for @settings_clearDebugLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear debug log'**
+  String get settings_clearDebugLog;
+
+  /// No description provided for @settings_loadingData.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading data…'**
+  String get settings_loadingData;
+
+  /// No description provided for @settings_device.
+  ///
+  /// In en, this message translates to:
+  /// **'Device'**
+  String get settings_device;
+
+  /// No description provided for @settings_deviceIdentifier.
+  ///
+  /// In en, this message translates to:
+  /// **'Device identifier'**
+  String get settings_deviceIdentifier;
+
+  /// No description provided for @settings_deviceId.
+  ///
+  /// In en, this message translates to:
+  /// **'Device ID'**
+  String get settings_deviceId;
+
+  /// No description provided for @settings_overrideDeviceId.
+  ///
+  /// In en, this message translates to:
+  /// **'Override Device ID'**
+  String get settings_overrideDeviceId;
+
+  /// No description provided for @settings_overrideId.
+  ///
+  /// In en, this message translates to:
+  /// **'Override ID'**
+  String get settings_overrideId;
+
+  /// No description provided for @settings_pleaseEnterValidPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid server password.'**
+  String get settings_pleaseEnterValidPassword;
+
+  /// No description provided for @toolbarTools_zoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get toolbarTools_zoomOut;
+
+  /// No description provided for @toolbarTools_zoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get toolbarTools_zoomIn;
+
+  /// No description provided for @toolbarTools_cancelCurrentEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel current edit.'**
+  String get toolbarTools_cancelCurrentEdit;
+
+  /// No description provided for @toolbarTools_saveCurrentEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Save current edit.'**
+  String get toolbarTools_saveCurrentEdit;
+
+  /// No description provided for @toolbarTools_insertPointMapCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert point in map center.'**
+  String get toolbarTools_insertPointMapCenter;
+
+  /// No description provided for @toolbarTools_insertPointGpsPos.
+  ///
+  /// In en, this message translates to:
+  /// **'Insert point in GPS position.'**
+  String get toolbarTools_insertPointGpsPos;
+
+  /// No description provided for @toolbarTools_removeSelectedFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove selected feature.'**
+  String get toolbarTools_removeSelectedFeature;
+
+  /// No description provided for @toolbarTools_showFeatureAttributes.
+  ///
+  /// In en, this message translates to:
+  /// **'Show feature attributes.'**
+  String get toolbarTools_showFeatureAttributes;
+
+  /// No description provided for @toolbarTools_featureDoesNotHavePrimaryKey.
+  ///
+  /// In en, this message translates to:
+  /// **'The feature does not have a primary key. Editing is not allowed.'**
+  String get toolbarTools_featureDoesNotHavePrimaryKey;
+
+  /// No description provided for @toolbarTools_queryFeaturesVectorLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Query features from loaded vector layers.'**
+  String get toolbarTools_queryFeaturesVectorLayers;
+
+  /// No description provided for @toolbarTools_measureDistanceWithFinger.
+  ///
+  /// In en, this message translates to:
+  /// **'Measure distances on the map with your finger.'**
+  String get toolbarTools_measureDistanceWithFinger;
+
+  /// No description provided for @toolbarTools_toggleFenceMapCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle fence in map center.'**
+  String get toolbarTools_toggleFenceMapCenter;
+
+  /// No description provided for @toolbarTools_modifyGeomVectorLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Modify the geometry of editable vector layers.'**
+  String get toolbarTools_modifyGeomVectorLayers;
+
+  /// No description provided for @coachMarks_singleTap.
+  ///
+  /// In en, this message translates to:
+  /// **'Single tap: '**
+  String get coachMarks_singleTap;
+
+  /// No description provided for @coachMarks_longTap.
+  ///
+  /// In en, this message translates to:
+  /// **'Long tap: '**
+  String get coachMarks_longTap;
+
+  /// No description provided for @coachMarks_doubleTap.
+  ///
+  /// In en, this message translates to:
+  /// **'Double tap: '**
+  String get coachMarks_doubleTap;
+
+  /// No description provided for @coachMarks_simpleNoteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple Notes Button'**
+  String get coachMarks_simpleNoteButton;
+
+  /// No description provided for @coachMarks_addNewNote.
+  ///
+  /// In en, this message translates to:
+  /// **'add a new note'**
+  String get coachMarks_addNewNote;
+
+  /// No description provided for @coachMarks_viewNotesList.
+  ///
+  /// In en, this message translates to:
+  /// **'view list of notes'**
+  String get coachMarks_viewNotesList;
+
+  /// No description provided for @coachMarks_viewNotesSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'view settings for notes'**
+  String get coachMarks_viewNotesSettings;
+
+  /// No description provided for @coachMarks_formNotesButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Form Notes Button'**
+  String get coachMarks_formNotesButton;
+
+  /// No description provided for @coachMarks_addNewFormNote.
+  ///
+  /// In en, this message translates to:
+  /// **'add new form note'**
+  String get coachMarks_addNewFormNote;
+
+  /// No description provided for @coachMarks_viewFormNoteList.
+  ///
+  /// In en, this message translates to:
+  /// **'view list of form notes'**
+  String get coachMarks_viewFormNoteList;
+
+  /// No description provided for @coachMarks_gpsLogButton.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Log Button'**
+  String get coachMarks_gpsLogButton;
+
+  /// No description provided for @coachMarks_startStopLogging.
+  ///
+  /// In en, this message translates to:
+  /// **'start logging/stop logging'**
+  String get coachMarks_startStopLogging;
+
+  /// No description provided for @coachMarks_viewLogsList.
+  ///
+  /// In en, this message translates to:
+  /// **'view list of logs'**
+  String get coachMarks_viewLogsList;
+
+  /// No description provided for @coachMarks_viewLogsSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'view log settings'**
+  String get coachMarks_viewLogsSettings;
+
+  /// No description provided for @coachMarks_gpsInfoButton.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Info Button (if applicable)'**
+  String get coachMarks_gpsInfoButton;
+
+  /// No description provided for @coachMarks_centerMapOnGpsPos.
+  ///
+  /// In en, this message translates to:
+  /// **'center map on GPS position'**
+  String get coachMarks_centerMapOnGpsPos;
+
+  /// No description provided for @coachMarks_showGpsInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'show GPS info'**
+  String get coachMarks_showGpsInfo;
+
+  /// No description provided for @coachMarks_toggleAutoCenterGps.
+  ///
+  /// In en, this message translates to:
+  /// **'toggle automatic center on GPS'**
+  String get coachMarks_toggleAutoCenterGps;
+
+  /// No description provided for @coachMarks_layersViewButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Layer View Button'**
+  String get coachMarks_layersViewButton;
+
+  /// No description provided for @coachMarks_openLayersView.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the layers view'**
+  String get coachMarks_openLayersView;
+
+  /// No description provided for @coachMarks_openLayersPluginDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the layer plugins dialog'**
+  String get coachMarks_openLayersPluginDialog;
+
+  /// No description provided for @coachMarks_zoomInButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom-in Button'**
+  String get coachMarks_zoomInButton;
+
+  /// No description provided for @coachMarks_zoomImMapOneLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in the map by one level'**
+  String get coachMarks_zoomImMapOneLevel;
+
+  /// No description provided for @coachMarks_zoomOutButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom-out Button'**
+  String get coachMarks_zoomOutButton;
+
+  /// No description provided for @coachMarks_zoomOutMapOneLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out the map by one level'**
+  String get coachMarks_zoomOutMapOneLevel;
+
+  /// No description provided for @coachMarks_bottomToolsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottom Tools Button'**
+  String get coachMarks_bottomToolsButton;
+
+  /// No description provided for @coachMarks_toggleBottomToolsBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle bottom tools bar. '**
+  String get coachMarks_toggleBottomToolsBar;
+
+  /// No description provided for @coachMarks_toolsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools Button'**
+  String get coachMarks_toolsButton;
+
+  /// No description provided for @coachMarks_openEndDrawerToAccessProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras.'**
+  String get coachMarks_openEndDrawerToAccessProject;
+
+  /// No description provided for @coachMarks_interactiveCoackMarksButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Interactive coach-marks button'**
+  String get coachMarks_interactiveCoackMarksButton;
+
+  /// No description provided for @coachMarks_openInteractiveCoachMarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the interactice coach marks explaining all the actions of the main map view.'**
+  String get coachMarks_openInteractiveCoachMarks;
+
+  /// No description provided for @coachMarks_mainMenuButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Main-menu Button'**
+  String get coachMarks_mainMenuButton;
+
+  /// No description provided for @coachMarks_openDrawerToLoadProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the drawer to load or create a project, import and export data, sync with servers, access settings and exit the app/turn off the GPS.'**
+  String get coachMarks_openDrawerToLoadProject;
+
+  /// No description provided for @coachMarks_skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get coachMarks_skip;
+
+  /// No description provided for @fence_fenceProperties.
+  ///
+  /// In en, this message translates to:
+  /// **'Fence Properties'**
+  String get fence_fenceProperties;
+
+  /// No description provided for @fence_delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get fence_delete;
+
+  /// No description provided for @fence_removeFence.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove fence'**
+  String get fence_removeFence;
+
+  /// No description provided for @fence_areYouSureRemoveFence.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the fence?'**
+  String get fence_areYouSureRemoveFence;
+
+  /// No description provided for @fence_cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get fence_cancel;
+
+  /// No description provided for @fence_ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get fence_ok;
+
+  /// No description provided for @fence_aNewFence.
+  ///
+  /// In en, this message translates to:
+  /// **'a new fence'**
+  String get fence_aNewFence;
+
+  /// No description provided for @fence_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get fence_label;
+
+  /// No description provided for @fence_aNameForFence.
+  ///
+  /// In en, this message translates to:
+  /// **'A name for the fence.'**
+  String get fence_aNameForFence;
+
+  /// No description provided for @fence_theNameNeedsToBeDefined.
+  ///
+  /// In en, this message translates to:
+  /// **'The name must be defined.'**
+  String get fence_theNameNeedsToBeDefined;
+
+  /// No description provided for @fence_radius.
+  ///
+  /// In en, this message translates to:
+  /// **'Radius'**
+  String get fence_radius;
+
+  /// No description provided for @fence_theFenceRadiusMeters.
+  ///
+  /// In en, this message translates to:
+  /// **'The fence radius in meters.'**
+  String get fence_theFenceRadiusMeters;
+
+  /// No description provided for @fence_radiusNeedsToBePositive.
+  ///
+  /// In en, this message translates to:
+  /// **'The radius must be a positive number in meters.'**
+  String get fence_radiusNeedsToBePositive;
+
+  /// No description provided for @fence_onEnter.
+  ///
+  /// In en, this message translates to:
+  /// **'On enter'**
+  String get fence_onEnter;
+
+  /// No description provided for @fence_onExit.
+  ///
+  /// In en, this message translates to:
+  /// **'On exit'**
+  String get fence_onExit;
+
+  /// No description provided for @network_cancelledByUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled by user.'**
+  String get network_cancelledByUser;
+
+  /// No description provided for @network_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed.'**
+  String get network_completed;
+
+  /// No description provided for @network_buildingBaseCachePerformance.
+  ///
+  /// In en, this message translates to:
+  /// **'Building base cache for improved performance (might take a while)…'**
+  String get network_buildingBaseCachePerformance;
+
+  /// No description provided for @network_thisFIleAlreadyBeingDownloaded.
+  ///
+  /// In en, this message translates to:
+  /// **'This file is already being downloaded.'**
+  String get network_thisFIleAlreadyBeingDownloaded;
+
+  /// No description provided for @network_download.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get network_download;
+
+  /// No description provided for @network_downloadFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Download file'**
+  String get network_downloadFile;
+
+  /// No description provided for @network_toTheDeviceTakeTime.
+  ///
+  /// In en, this message translates to:
+  /// **'to the device? This can take a while.'**
+  String get network_toTheDeviceTakeTime;
+
+  /// No description provided for @network_availableMaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Available maps'**
+  String get network_availableMaps;
+
+  /// No description provided for @network_searchMapByName.
+  ///
+  /// In en, this message translates to:
+  /// **'Search map by name'**
+  String get network_searchMapByName;
+
+  /// No description provided for @network_uploading.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading'**
+  String get network_uploading;
+
+  /// No description provided for @network_pleaseWait.
+  ///
+  /// In en, this message translates to:
+  /// **'please wait…'**
+  String get network_pleaseWait;
+
+  /// No description provided for @network_permissionOnServerDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission on server denied.'**
+  String get network_permissionOnServerDenied;
+
+  /// No description provided for @network_couldNotConnectToServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not connect to the server. Is it online? Check your address.'**
+  String get network_couldNotConnectToServer;
+
+  /// No description provided for @form_sketch_newSketch.
+  ///
+  /// In en, this message translates to:
+  /// **'New Sketch'**
+  String get form_sketch_newSketch;
+
+  /// No description provided for @form_sketch_undo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get form_sketch_undo;
+
+  /// No description provided for @form_sketch_noUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to undo'**
+  String get form_sketch_noUndo;
+
+  /// No description provided for @form_sketch_clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get form_sketch_clear;
+
+  /// No description provided for @form_sketch_save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get form_sketch_save;
+
+  /// No description provided for @form_sketch_sketcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Sketcher'**
+  String get form_sketch_sketcher;
+
+  /// No description provided for @form_sketch_enableDrawing.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on drawing'**
+  String get form_sketch_enableDrawing;
+
+  /// No description provided for @form_sketch_enableEraser.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on eraser'**
+  String get form_sketch_enableEraser;
+
+  /// No description provided for @form_sketch_backColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Background color'**
+  String get form_sketch_backColor;
+
+  /// No description provided for @form_sketch_strokeColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Stroke color'**
+  String get form_sketch_strokeColor;
+
+  /// No description provided for @form_sketch_pickColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick color'**
+  String get form_sketch_pickColor;
+
+  /// No description provided for @form_smash_cantSaveImageDb.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save image in database.'**
+  String get form_smash_cantSaveImageDb;
 }
 
-class AppLocalizationDelegate extends LocalizationsDelegate<SL> {
-  const AppLocalizationDelegate();
+class _SLDelegate extends LocalizationsDelegate<SL> {
+  const _SLDelegate();
 
-  List<Locale> get supportedLocales {
-    return const <Locale>[
-      Locale.fromSubtags(languageCode: 'en'),
-      Locale.fromSubtags(languageCode: 'cs'),
-      Locale.fromSubtags(languageCode: 'de'),
-      Locale.fromSubtags(languageCode: 'fr'),
-      Locale.fromSubtags(languageCode: 'it'),
-      Locale.fromSubtags(languageCode: 'ja'),
-      Locale.fromSubtags(languageCode: 'nb', countryCode: 'NO'),
-      Locale.fromSubtags(languageCode: 'ru'),
-    ];
+  @override
+  Future<SL> load(Locale locale) {
+    return SynchronousFuture<SL>(lookupSL(locale));
   }
 
   @override
-  bool isSupported(Locale locale) => _isSupported(locale);
-  @override
-  Future<SL> load(Locale locale) => SL.load(locale);
-  @override
-  bool shouldReload(AppLocalizationDelegate old) => false;
+  bool isSupported(Locale locale) => <String>['cs', 'de', 'en', 'fr', 'it', 'ja', 'nb', 'ru'].contains(locale.languageCode);
 
-  bool _isSupported(Locale locale) {
-    for (var supportedLocale in supportedLocales) {
-      if (supportedLocale.languageCode == locale.languageCode) {
-        return true;
-      }
-    }
-    return false;
+  @override
+  bool shouldReload(_SLDelegate old) => false;
+}
+
+SL lookupSL(Locale locale) {
+
+  // Lookup logic when language+country codes are specified.
+  switch (locale.languageCode) {
+    case 'nb': {
+  switch (locale.countryCode) {
+    case 'NO': return SLNbNo();
+   }
+  break;
+   }
   }
+
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'cs': return SLCs();
+    case 'de': return SLDe();
+    case 'en': return SLEn();
+    case 'fr': return SLFr();
+    case 'it': return SLIt();
+    case 'ja': return SLJa();
+    case 'nb': return SLNb();
+    case 'ru': return SLRu();
+  }
+
+  throw FlutterError(
+    'SL.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
 }

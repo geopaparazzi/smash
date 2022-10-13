@@ -39,7 +39,7 @@ class FenceMaster {
 
   bool get hasFences => _hasFences;
 
-  void readFences() {
+  void readFences(BuildContext context) {
     currentFence = null;
     var fenceJson = GpPreferences().getStringSync(KEY, "")!;
     fencesList = [];
@@ -48,7 +48,7 @@ class FenceMaster {
       if (json is List<dynamic>) {
         json.forEach((fenceMap) {
           if (fenceMap is Map) {
-            Fence fence = Fence()
+            Fence fence = Fence(context)
               ..name = fenceMap[JSON_NAME]
               ..radius = fenceMap[JSON_RADIUS_METERS]
               ..lat = fenceMap[JSON_LAT]
@@ -200,14 +200,16 @@ class FenceMaster {
 
 class Fence {
   int creationTs;
-  String name = SL.current.fence_aNewFence; //"a new fence"
+  String name;
   double radius = FenceMaster.DEFAULT_FENCE_RADIUS;
   late double lat;
   late double lon;
   ENotificationSounds? onEnter = ENotificationSounds.nosound;
   ENotificationSounds? onExit = ENotificationSounds.nosound;
 
-  Fence() : creationTs = DateTime.now().millisecondsSinceEpoch;
+  Fence(BuildContext context) :
+        creationTs = DateTime.now().millisecondsSinceEpoch,
+        name = SL.of(context).fence_aNewFence; //"a new fence"
 
   dynamic toJson() {
     return {

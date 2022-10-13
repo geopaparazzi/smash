@@ -13,6 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
+import 'package:smash/eu/hydrologis/smash/l10n/localization.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
@@ -80,7 +81,7 @@ class SmashApp extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: SL.delegate.supportedLocales,
+      supportedLocales: SL.supportedLocales,
       // PRE GEN
       // localizationsDelegates: [
       //   AppLocalizations.delegate, // available after codegen
@@ -133,6 +134,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Localization.init(context);
     Widget widgetToLoad;
     if (_initFinished) {
       // load projects page
@@ -217,7 +219,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
 
 Future<String?> handleFences(BuildContext context) async {
   try {
-    FenceMaster().readFences();
+    FenceMaster().readFences(context);
   } on Exception catch (e, s) {
     var msg = "Error while reading fences.";
     return logMsg(msg, e, s);
@@ -317,7 +319,7 @@ Future<String?> handleWorkspace(BuildContext context) async {
           GpPreferences().getBooleanSync("SHOWN_FS_MOVED_WARNING", false);
       if (!shownAlready) {
         await SmashDialogs.showWarningDialog(
-            context, SL().main_StorageIsInternalWarning);
+            context, SL.of(context).main_StorageIsInternalWarning);
         await GpPreferences().setBoolean("SHOWN_FS_MOVED_WARNING", true);
       }
     }
