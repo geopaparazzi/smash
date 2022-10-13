@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/geocaching.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
@@ -135,6 +136,9 @@ abstract class LayerSource {
       } else if (file != null && FileManager.isGpx(file)) {
         GpxSource gpx = GpxSource.fromMap(map);
         return [gpx];
+      } else if (file != null && FileManager.isGeocaching(file)) {
+        GeocachingSource geocaching = GeocachingSource.fromMap(map);
+        return [geocaching];
       } else if (file != null && FileManager.isShp(file)) {
         ShapefileSource shp = ShapefileSource.fromMap(map);
         return [shp];

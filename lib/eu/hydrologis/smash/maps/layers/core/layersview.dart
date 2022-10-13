@@ -20,6 +20,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/remotedbpage.dart';
+import 'package:smash/eu/hydrologis/smash/maps/layers/types/geocaching.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
@@ -356,6 +357,13 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
     await gpxLayer.load(context);
     if (gpxLayer.hasData()) {
       LayerManager().addLayerSource(gpxLayer);
+      return true;
+    }
+  } else if (FileManager.isGeocaching(filePath)) {
+    GeocachingSource geocachingLayer = GeocachingSource(filePath);
+    await geocachingLayer.load(context);
+    if (geocachingLayer.hasData()) {
+      LayerManager().addLayerSource(geocachingLayer);
       return true;
     }
   } else if (FileManager.isShp(filePath)) {
