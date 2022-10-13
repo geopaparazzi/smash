@@ -36,5 +36,11 @@
   "main_locationBackgroundWarning": "Erteilen Sie im nächsten Schritt die Standortfreigabe, um die GPS-Aufzeichnung im Hintergrund zu ermöglichen. ( Andernfalls funktioniert das System nur im Vordergrund.)\nEs werden keine Daten weitergegeben, sondern nur lokal auf dem Gerät gespeichert.",
   "@main_locationBackgroundWarning": {},
   "main_StorageIsInternalWarning": "Bitte aufmerksam lesen!\nUnter Android 11 und höher muss sich der SMASH-Projektordner im Verzeichnis\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nbefinden.\nBei Deinstallation der App wird er vom System entfernt, daher sollten Sie Ihre Daten sichern.\n\nEine bessere Lösung ist in Arbeit.",
-  "@main_StorageIsInternalWarning": {}
+  "@main_StorageIsInternalWarning": {},
+  "exportWidget_export": "Exportieren",
+  "@exportWidget_export": {},
+  "exportWidget_pdfExported": "PDF exportiert",
+  "@exportWidget_pdfExported": {},
+  "exportWidget_gpxExported": "GPX exportiert",
+  "@exportWidget_gpxExported": {}
 }
