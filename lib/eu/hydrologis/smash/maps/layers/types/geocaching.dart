@@ -106,7 +106,7 @@ class GeocachingSource extends VectorLayerSource {
     {
         "$LAYERSKEY_FILE":"$relativePath",
         "$LAYERSKEY_SRID": $_srid,
-        "$LAYERSKEY_ISVISIBLE": $isVisible,
+        "$LAYERSKEY_ISVISIBLE": $isVisible
     }
     ''';
     return json;
