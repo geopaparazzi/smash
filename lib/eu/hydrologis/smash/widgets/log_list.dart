@@ -6,6 +6,7 @@
 
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -220,6 +221,7 @@ class LogInfo extends StatefulWidget {
 
 class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   String timeString = "- nv -";
+  String dayString = "- nv -";
   String lengthString = "- nv -";
   String countString = "- nv -";
 
@@ -228,6 +230,9 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
 
   @override
   void afterFirstLayout(BuildContext context) {
+    dayString = TimeUtilities.ISO8601_TS_FORMATTER
+        .format(DateTime.fromMillisecondsSinceEpoch(widget.logItem.startTime!));
+
     timeString = _getTime(widget.logItem, widget.gpsState, widget.db);
     // lengthString = _getLength(widget.logItem, widget.gpsState);
     List<double> upDownLengthCount = _getElevMinMaxAndLengthDeltaCount(
@@ -260,6 +265,10 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     var db = widget.db;
 
     var size = 15.0;
+    var dayIcon = Icon(
+      MdiIcons.calendar,
+      size: size,
+    );
     var timeIcon = Icon(
       MdiIcons.clockOutline,
       size: size,
@@ -419,11 +428,20 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(right: pad),
+                    child: dayIcon,
+                  ),
+                  Text(dayString),
+                ],
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: pad),
                     child: timeIcon,
                   ),
                   Text(timeString),
                   Padding(
-                    padding: EdgeInsets.only(left: padLeft, right: pad),
+                    padding: EdgeInsets.only(right: pad),
                     child: distIcon,
                   ),
                   Text(lengthString),
@@ -467,39 +485,25 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
 
   String _getTime(
       Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
-    var minutes = (item.endTime! - item.startTime!) / 1000 / 60;
+    var endTime = item.endTime!;
     if (item.endTime == 0) {
       if (gpsState.isLogging && item.id == gpsState.currentLogId) {
-        minutes = (DateTime.now().millisecondsSinceEpoch - item.startTime!) /
-            1000 /
-            60;
+        endTime = DateTime.now().millisecondsSinceEpoch;
       } else {
         // needs to be fixed using the points. Do it and refresh.
         var data = db.getLogDataPointsById(item.id!);
-        if (data != null && data.length > 0) {
+        if (data.length > 0) {
           var last = data.last;
           var ts = last.ts;
           db.updateGpsLogEndts(item.id!, ts!);
-          minutes = (ts - item.startTime!) / 1000 / 60;
-        } else {
-          minutes = 0;
         }
-
         return "";
       }
     }
 
-    if (minutes > 60) {
-      var h = minutes ~/ 60;
-      var m = (minutes % 60).round();
-      var hStr = h > 1
-          ? SL.of(context).logList_hours //"hours"
-          : SL.of(context).logList_hour; //"hour"
-      return "$h $hStr $m ${SL.of(context).logList_minutes}"; // "$h $hStr $m min";
-    } else {
-      var m = minutes.toInt();
-      return "$m ${SL.of(context).logList_minutes}"; //"$m min"
-    }
+    var timeStr =
+        StringUtilities.formatDurationMillis(endTime - item.startTime!);
+    return timeStr;
   }
 
   List<double> _getElevMinMaxAndLengthDeltaCount(
