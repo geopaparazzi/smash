@@ -4,7 +4,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class GpsFilterManagerMessage {
@@ -54,6 +54,7 @@ class GpsFilterManager {
   /// or [passesFilters] returning false, the point is not updated.
   SmashPosition? _previousLogPosition;
   late GpsState _gpsState;
+  late ProjectState _projectState;
 
   GpsFilterManagerMessage? currentMessage;
 
@@ -64,15 +65,16 @@ class GpsFilterManager {
     _lastGpsEventTs = DateTime.now().millisecondsSinceEpoch;
   }
 
-  void setGpsState(GpsState gpsState) {
+  void setStates(GpsState gpsState, ProjectState projectState) {
     _gpsState = gpsState;
+    _projectState = projectState;
   }
 
   /// Check if the GPS has a fix based on the time passed from the last gps position event.
   void checkFix() {
     if (TestLogStream().isActive) {
       var status =
-          _gpsState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
+          _projectState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
       if (_gpsState.status != status) {
         _gpsState.status = status;
       }
@@ -95,8 +97,8 @@ class GpsFilterManager {
   /// Returns true if the point was not blocked.
   bool onNewPositionEvent(SmashPosition position) {
     if (position != null && position.mocked) {
-      if (_gpsState.isLogging && _gpsState.currentLogId != null) {
-        _gpsState.addLogPoint(
+      if (_projectState.isLogging && _projectState.currentLogId != null) {
+        _projectState.addLogPoint(
           position.longitude,
           position.latitude,
           position.altitude,
@@ -110,7 +112,7 @@ class GpsFilterManager {
       }
       _previousLogPosition = position;
       _gpsState.statusQuiet =
-          _gpsState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
+          _projectState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
       _gpsState.lastGpsPosition = position;
       return true;
     }
@@ -132,7 +134,7 @@ class GpsFilterManager {
 
       bool setGpsState = false;
       var tmpStatus =
-          _gpsState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
+          _projectState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
 
       var newPosLatLon = LatLng(position.latitude, position.longitude);
       if (_previousLogPosition != null) {
@@ -157,9 +159,9 @@ class GpsFilterManager {
         if (filtersEnabled) {
           if (isPassingFilters) {
             // if logging add to visible log and into db
-            if (_gpsState.isLogging && _gpsState.currentLogId != null) {
+            if (_projectState.isLogging && _projectState.currentLogId != null) {
               msg.isLogging = true;
-              _gpsState.addLogPoint(
+              _projectState.addLogPoint(
                 position.longitude,
                 position.latitude,
                 position.altitude,

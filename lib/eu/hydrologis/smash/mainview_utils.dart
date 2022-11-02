@@ -17,7 +17,6 @@ import 'package:share_extend/share_extend.dart';
 import 'package:smash/eu/hydrologis/smash/gps/geocoding.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -31,10 +30,6 @@ import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash_import_export_plugins/smash_import_export_plugins.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-const String KEY_DO_NOTE_IN_GPS = "KEY_DO_NOTE_IN_GPS_MODE";
-const int POINT_INSERTION_MODE_GPS = 0;
-const int POINT_INSERTION_MODE_MAPCENTER = 1;
 
 class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue,

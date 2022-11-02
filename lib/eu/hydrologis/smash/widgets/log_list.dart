@@ -14,7 +14,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
@@ -194,8 +193,8 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                 itemCount: _logsList.length,
                 itemBuilder: (context, index) {
                   Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
-                  return LogInfo(
-                      logItem, gpsState, db, loadLogs, useGpsFilteredGenerally,
+                  return LogInfo(logItem, gpsState, projectState, loadLogs,
+                      useGpsFilteredGenerally,
                       key: Key("${logItem.id}"));
                 }),
       ),
@@ -204,14 +203,14 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
 }
 
 class LogInfo extends StatefulWidget {
-  final GeopaparazziProjectDb db;
+  final ProjectState projectState;
   final gpsState;
   final Log4ListWidget logItem;
   final reloadLogFunction;
   final useGpsFilteredGenerally;
 
-  LogInfo(this.logItem, this.gpsState, this.db, this.reloadLogFunction,
-      this.useGpsFilteredGenerally,
+  LogInfo(this.logItem, this.gpsState, this.projectState,
+      this.reloadLogFunction, this.useGpsFilteredGenerally,
       {Key? key})
       : super(key: key);
 
@@ -232,11 +231,12 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   void afterFirstLayout(BuildContext context) {
     dayString = TimeUtilities.ISO8601_TS_FORMATTER
         .format(DateTime.fromMillisecondsSinceEpoch(widget.logItem.startTime!));
+    var db = widget.projectState.projectDb!;
 
-    timeString = _getTime(widget.logItem, widget.gpsState, widget.db);
+    timeString = _getTime(widget.logItem, widget.gpsState, widget.projectState);
     // lengthString = _getLength(widget.logItem, widget.gpsState);
-    List<double> upDownLengthCount = _getElevMinMaxAndLengthDeltaCount(
-        widget.logItem, widget.gpsState, widget.db);
+    List<double> upDownLengthCount =
+        _getElevMinMaxAndLengthDeltaCount(widget.logItem, widget.gpsState, db);
     if (upDownLengthCount[0] == -1) {
       upString = "- nv -";
       downString = "- nv -";
@@ -262,7 +262,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   @override
   Widget build(BuildContext context) {
     Log4ListWidget logItem = widget.logItem;
-    var db = widget.db;
+    var db = widget.projectState.projectDb!;
 
     var size = 15.0;
     var dayIcon = Icon(
@@ -484,18 +484,18 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   }
 
   String _getTime(
-      Log4ListWidget item, GpsState gpsState, GeopaparazziProjectDb db) {
+      Log4ListWidget item, GpsState gpsState, ProjectState projectState) {
     var endTime = item.endTime!;
     if (item.endTime == 0) {
-      if (gpsState.isLogging && item.id == gpsState.currentLogId) {
+      if (projectState.isLogging && item.id == projectState.currentLogId) {
         endTime = DateTime.now().millisecondsSinceEpoch;
       } else {
         // needs to be fixed using the points. Do it and refresh.
-        var data = db.getLogDataPointsById(item.id!);
+        var data = projectState.projectDb!.getLogDataPointsById(item.id!);
         if (data.length > 0) {
           var last = data.last;
           var ts = last.ts;
-          db.updateGpsLogEndts(item.id!, ts!);
+          projectState.projectDb!.updateGpsLogEndts(item.id!, ts!);
         }
         return "";
       }

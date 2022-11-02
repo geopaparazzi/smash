@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
@@ -32,6 +31,9 @@ class _LoggingButtonState extends State<LoggingButton> {
   @override
   Widget build(BuildContext context) {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
+      ProjectState projectState =
+          Provider.of<ProjectState>(context, listen: false);
+
       return GestureDetector(
         child: Padding(
           padding: SmashUI.defaultPadding(),
@@ -45,7 +47,7 @@ class _LoggingButtonState extends State<LoggingButton> {
         onTap: () {
           if (gpsState.status != GpsStatus.NOGPS &&
               gpsState.status != GpsStatus.OFF) {
-            _toggleLoggingFunction(context, gpsState);
+            _toggleLoggingFunction(context, projectState, gpsState);
           }
         },
         onLongPress: () {
@@ -74,8 +76,9 @@ class _LoggingButtonState extends State<LoggingButton> {
     });
   }
 
-  _toggleLoggingFunction(BuildContext context, GpsState gpsLoggingState) async {
-    if (gpsLoggingState.isLogging) {
+  _toggleLoggingFunction(BuildContext context, ProjectState projectState,
+      GpsState gpsState) async {
+    if (projectState.isLogging) {
       var stopLogging = await SmashDialogs.showConfirmDialog(
           context,
           SL.of(context).gpsLogButton_stopLogging, //"Stop Logging?"
@@ -83,9 +86,7 @@ class _LoggingButtonState extends State<LoggingButton> {
               .of(context)
               .gpsLogButton_stopLoggingAndCloseLog); //"Stop logging and close the current GPS log?"
       if (stopLogging != null && stopLogging) {
-        gpsLoggingState.stopLogging();
-        ProjectState projectState =
-            Provider.of<ProjectState>(context, listen: false);
+        projectState.stopLogging(gpsState);
         projectState.reloadProject(context);
       }
     } else {
@@ -106,7 +107,7 @@ class _LoggingButtonState extends State<LoggingButton> {
 
         if (userString != null) {
           if (userString.trim().length == 0) userString = logName;
-          int? logId = gpsLoggingState.startLogging(userString);
+          int? logId = projectState.startLogging(userString, gpsState);
           if (logId == null) {
             SMLogger().e(
                 "${SL.of(context).gpsLogButton_couldNotStartLogging} $userString",

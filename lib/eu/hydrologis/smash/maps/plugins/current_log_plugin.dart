@@ -13,7 +13,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' hide Path;
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -64,7 +64,10 @@ class CurrentGpsLogLayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
-      if (gpsState.isLogging && gpsState.currentLogPoints.length > 1) {
+      ProjectState projectState =
+          Provider.of<ProjectState>(context, listen: false);
+
+      if (projectState.isLogging && projectState.currentLogPoints.length > 1) {
         if (gpsState.logMode == SmashPreferencesKeys.LOGVIEWMODES[0]) {
           doOrig = false;
         } else {
@@ -93,16 +96,16 @@ class CurrentGpsLogLayer extends StatelessWidget {
               painter: CurrentLogPathPainter(
                   logPaint,
                   filteredLogPaint,
-                  gpsState.currentLogPoints,
-                  gpsState.currentFilteredLogPoints,
+                  projectState.currentLogPoints,
+                  projectState.currentFilteredLogPoints,
                   map),
             ),
             ValueListenableBuilder(
               valueListenable: panelExpandedValue,
               builder: (context, snapshot, child) {
                 return panelExpandedValue.value
-                    ? _getInfoWidget(context, gpsState)
-                    : _getTinyInfoWidget(context, gpsState);
+                    ? _getInfoWidget(context, projectState)
+                    : _getTinyInfoWidget(context, projectState);
               },
             ),
           ],
@@ -113,8 +116,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
     });
   }
 
-  Widget _getTinyInfoWidget(BuildContext context, GpsState gpsState) {
-    var currentLogStats = gpsState.getCurrentLogStats();
+  Widget _getTinyInfoWidget(BuildContext context, ProjectState projectState) {
+    var currentLogStats = projectState.getCurrentLogStats();
     int timestampDelta = currentLogStats[2] as int;
     var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
     return Align(
@@ -159,8 +162,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
     );
   }
 
-  Widget _getInfoWidget(BuildContext context, GpsState gpsState) {
-    var currentLogStats = gpsState.getCurrentLogStats();
+  Widget _getInfoWidget(BuildContext context, ProjectState projectState) {
+    var currentLogStats = projectState.getCurrentLogStats();
     double distanceMeter = currentLogStats[0] as double;
     double distanceMeterFiltered = currentLogStats[1] as double;
     int timestampDelta = currentLogStats[2] as int;

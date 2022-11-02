@@ -11,7 +11,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/mainview.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -58,8 +57,6 @@ class ProjectView extends StatelessWidget {
                   ),
                   // shape: StadiumBorder(),
                   onPressed: () async {
-                    await initGps(context);
-
                     var lastUsedFolder = await Workspace.getLastUsedFolder();
                     var selectedPath = await Navigator.push(
                         context,
@@ -105,7 +102,6 @@ class ProjectView extends StatelessWidget {
                   ),
                   // shape: StadiumBorder(),
                   onPressed: () async {
-                    await initGps(context);
                     await _createNewProjectAndOpenMainView(context);
                   },
                   child: Padding(
@@ -164,7 +160,6 @@ class ProjectView extends StatelessWidget {
                                   subtitle: Text(folder),
                                   trailing: Icon(MdiIcons.arrowRight),
                                   onTap: () async {
-                                    await initGps(context);
                                     await _openMainViewOnProject(context, path);
                                   },
                                 ),
@@ -218,34 +213,39 @@ class ProjectView extends StatelessWidget {
       }
       var gpFile = new File(newPath);
       var projectState = Provider.of<ProjectState>(context, listen: false);
-      var gpsState = Provider.of<GpsState>(context, listen: false);
-      gpsState.projectState = projectState;
       await projectState.setNewProject(gpFile.path, context);
-      Navigator.pop(context);
       if (isOpeningPage) {
+        await initGpsTmp(context);
+        Navigator.pop(context);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => MainViewWidget()));
+      } else {
+        Navigator.pop(context);
       }
     }
   }
 
   _openMainViewOnProject(BuildContext context, String selectedPath) async {
     var projectState = Provider.of<ProjectState>(context, listen: false);
-    var gpsState = Provider.of<GpsState>(context, listen: false);
-    gpsState.projectState = projectState;
     await projectState.setNewProject(selectedPath, context);
-    Navigator.pop(context);
     if (isOpeningPage) {
+      await initGpsTmp(context);
+
+      Navigator.pop(context);
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => MainViewWidget()));
+    } else {
+      Navigator.pop(context);
     }
   }
 
-  initGps(BuildContext context) async {
+  initGpsTmp(BuildContext context) async {
     if (isOpeningPage) {
       GpsState gpsState = Provider.of<GpsState>(context, listen: false);
       gpsState.init();
-      await GpsHandler().init(gpsState);
+      ProjectState projectState =
+          Provider.of<ProjectState>(context, listen: false);
+      await GpsHandler().init(gpsState, projectState);
     }
   }
 }

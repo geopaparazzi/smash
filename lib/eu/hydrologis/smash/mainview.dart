@@ -35,7 +35,6 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/heatmap.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/ruler_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -420,6 +419,9 @@ class MainViewWidgetState extends State<MainViewWidget>
       SmashMapState mapState) {
     if (Platform.isIOS) {
       return Consumer<GpsState>(builder: (context, gpsState, child) {
+        ProjectState projectState =
+            Provider.of<ProjectState>(context, listen: false);
+
         var gpsStatusIcon = DashboardUtils.getGpsStatusIcon(
             gpsState.status, SmashUI.MEDIUM_ICON_SIZE);
         var gpsIsOff = gpsState.status == GpsStatus.OFF;
@@ -436,7 +438,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             await FenceMaster().writeFences();
             if (gpsIsOff) {
               gpsState.status = GpsStatus.ON_NO_FIX;
-              await GpsHandler().init(gpsState);
+              await GpsHandler().init(gpsState, projectState);
 
               await GpPreferences()
                   .setBoolean(GpsHandler.GPS_FORCED_OFF_KEY, false);

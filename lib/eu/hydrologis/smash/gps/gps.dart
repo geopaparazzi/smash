@@ -20,7 +20,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/l10n/localization.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
+import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
@@ -40,87 +40,6 @@ class CoordinateUtilities {
       LatLng coordinate, double distanceInMeter, double azimuth) {
     return geodesy.destinationPointByDistanceAndBearing(
         coordinate, distanceInMeter, azimuth);
-  }
-}
-
-enum GpsStatus { NOGPS, OFF, NOPERMISSION, ON_NO_FIX, ON_WITH_FIX, LOGGING }
-
-const String ARG_LATITUDE = 'latitude';
-const String ARG_LONGITUDE = 'longitude';
-const String ARG_ACCURACY = 'accuracy';
-const String ARG_ALTITUDE = 'altitude';
-const String ARG_SPEED = 'speed';
-const String ARG_SPEED_ACCURACY = 'speed_accuracy';
-const String ARG_HEADING = 'heading';
-const String ARG_TIME = 'time';
-const String ARG_MOCKED = 'mocked';
-const String ARG_LATITUDE_FILTERED = 'latitude_filtered';
-const String ARG_LONGITUDE_FILTERED = 'longitude_filtered';
-const String ARG_ACCURACY_FILTERED = 'accuracy_filtered';
-
-class SmashPosition {
-  late LocationDto _location;
-  bool mocked = false;
-  late double filteredLatitude;
-  late double filteredLongitude;
-  late double filteredAccuracy;
-
-  SmashPosition.fromLocation(this._location,
-      {required this.filteredLatitude,
-      required this.filteredLongitude,
-      required this.filteredAccuracy});
-
-  SmashPosition.fromJson(Map<String, dynamic> json) {
-    _location = LocationDto.fromJson({
-      Keys.ARG_LATITUDE: json[ARG_LATITUDE],
-      Keys.ARG_LONGITUDE: json[ARG_LONGITUDE],
-      Keys.ARG_ALTITUDE: json[ARG_ALTITUDE],
-      Keys.ARG_HEADING: json[ARG_HEADING],
-      Keys.ARG_ACCURACY: json[ARG_ACCURACY],
-      Keys.ARG_TIME: json[ARG_TIME],
-      Keys.ARG_SPEED: json[ARG_SPEED],
-      Keys.ARG_SPEED_ACCURACY: json[ARG_SPEED_ACCURACY],
-    });
-    mocked = json[ARG_MOCKED];
-    filteredLatitude = json[ARG_LATITUDE_FILTERED];
-    filteredLongitude = json[ARG_LONGITUDE_FILTERED];
-    filteredAccuracy = json[ARG_ACCURACY_FILTERED];
-  }
-  SmashPosition.fromCoords(double lon, double lat, double time) {
-    _location = LocationDto.fromJson({
-      ARG_LATITUDE: lat,
-      ARG_LONGITUDE: lon,
-      ARG_ALTITUDE: -1.0,
-      ARG_HEADING: -1.0,
-      ARG_TIME: time,
-      ARG_ACCURACY: -1.0,
-      ARG_SPEED: -1.0,
-      ARG_SPEED_ACCURACY: -1.0,
-    });
-  }
-
-  double get latitude => _location.latitude;
-  double get longitude => _location.longitude;
-  double get accuracy => _location.accuracy;
-
-  double get altitude => _location.altitude;
-  double get speed => _location.speed;
-  double get speedAccuracy => _location.speedAccuracy;
-  double get heading => _location.heading;
-  double get time => _location.time;
-
-  @override
-  String toString() {
-    return """SmashPosition{
-      latitude: $latitude, 
-      longitude: $longitude, 
-      accuracy: $accuracy, 
-      altitude: $altitude, 
-      speed: $speed, 
-      speedAccuracy: $speedAccuracy, 
-      heading: $heading, 
-      time: $time
-    }""";
   }
 }
 
@@ -214,6 +133,7 @@ class GpsHandler with Localization {
 
   late Timer _timer;
   late GpsState _gpsState;
+  late ProjectState _projectState;
   bool initialized = false;
 
   /// Accuracy for the location subscription
@@ -229,16 +149,17 @@ class GpsHandler with Localization {
     send?.send(locationDto);
   }
 
-  Future<void> init(GpsState initGpsState) async {
+  Future<void> init(GpsState initGpsState, ProjectState projectState) async {
     SMLogger().i("Init GpsHandler");
     if (SmashPlatform.isDesktop()) {
       SMLogger().i("No gps handler active on desktop.");
       return;
     }
     _gpsState = initGpsState;
+    _projectState = projectState;
     _locationServiceEnabled = false;
 
-    GpsFilterManager().setGpsState(_gpsState);
+    GpsFilterManager().setStates(_gpsState, _projectState);
 
     // first time wait for it
     await initGpsWithCheck();
@@ -364,10 +285,10 @@ time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSince
         var title = loc.gps_smashIsActive; //"SMASH is active"
         var msg = pos;
         var bigMsg = posLines + "\n" + extraPos;
-        if (_gpsState.isLogging) {
+        if (_projectState.isLogging) {
           title = loc.gps_smashIsLogging; //"SMASH is logging"
 
-          var currentLogStats = _gpsState.getCurrentLogStats();
+          var currentLogStats = _projectState.getCurrentLogStats();
           if (currentLogStats[0] != null &&
               currentLogStats[1] != null &&
               currentLogStats[2] != null) {
@@ -395,10 +316,9 @@ time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSince
     var smashLocationAccuracy = SmashLocationAccuracy.fromPreferences();
     SMLogger().i("Register for location updates.");
     var androidNotificationSettings = AndroidNotificationSettings(
-      notificationChannelName:
-          loc.gps_locationTracking, //"Location tracking"
-      notificationTitle: loc
-          .gps_smashLocServiceIsActive, //"SMASH location service is active."
+      notificationChannelName: loc.gps_locationTracking, //"Location tracking"
+      notificationTitle:
+          loc.gps_smashLocServiceIsActive, //"SMASH location service is active."
       notificationMsg: "",
       notificationBigMsg: loc
           .gps_backgroundLocIsOnToKeepRegistering, //"Background location is on to keep the app registering the location even when the app is in background."

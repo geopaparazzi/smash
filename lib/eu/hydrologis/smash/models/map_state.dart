@@ -8,7 +8,6 @@ import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 
 /// Current state of the Map view.
 ///

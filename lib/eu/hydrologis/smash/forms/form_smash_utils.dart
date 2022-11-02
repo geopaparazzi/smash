@@ -9,7 +9,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_sketch.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';

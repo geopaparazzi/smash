@@ -6,8 +6,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:smash/eu/hydrologis/smash/util/notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// A dedicated map builder class.
 ///

@@ -15,7 +15,6 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/models/gps_state.dart';
 
 /// Plugin to show the current GPS position
 class GpsPositionPlugin implements MapPlugin {

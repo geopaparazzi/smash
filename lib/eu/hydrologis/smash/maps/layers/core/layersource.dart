@@ -125,7 +125,7 @@ abstract class LayerSource {
   /// Create a layersource from a presistence [json].
   static List<LayerSource> fromJson(String json) {
     try {
-      var map = jsonDecode(json);
+      var map = jsonDecode(json.trim());
 
       String? file = map[LAYERSKEY_FILE];
       String? type = map[LAYERSKEY_TYPE];
