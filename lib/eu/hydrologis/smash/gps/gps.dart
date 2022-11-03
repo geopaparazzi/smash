@@ -9,26 +9,24 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:background_locator/background_locator.dart' as GPS;
-import 'package:background_locator/keys.dart';
 import 'package:background_locator/location_dto.dart';
 import 'package:background_locator/settings/android_settings.dart';
 import 'package:background_locator/settings/ios_settings.dart';
 import 'package:background_locator/settings/locator_settings.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:geodesy/geodesy.dart';
+import 'package:geodesy/geodesy.dart' as GEOD;
 import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/l10n/localization.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
-import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// Utilities to work with coordinates.
 class CoordinateUtilities {
-  static final Geodesy geodesy = Geodesy();
+  static final geodesy = GEOD.Geodesy();
 
   /// Get the distance between two latlong coordinates in meters, if not otherwise specified by [unit].
   static double getDistance(LatLng ll1, LatLng ll2) {
@@ -246,7 +244,7 @@ class GpsHandler with Localization {
   /// Close the handler.
   Future close() async {
     _timer?.cancel();
-    _gpsState.stopAllTimers();
+    _gpsState.stopAllGpsTimers();
 
     await closeGpsIsolate();
 
