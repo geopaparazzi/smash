@@ -364,8 +364,7 @@ class DataLoaderUtilities {
                                       SL
                                           .of(mapBuilder.context!)
                                           .dataLoader_removeNote, //"Remove Note",
-                                      "${SL.of(mapBuilder.context!).dataLoader_areYouSureRemoveNote} " //Are you sure you want to remove note
-                                      "${note.id}?");
+                                      "${SL.of(mapBuilder.context!).dataLoader_areYouSureRemoveNote} (id:${note.id} - ${note.text})");
                               if (doRemove!) {
                                 db.deleteNote(note.id!);
                                 var projectState = Provider.of<ProjectState>(
