@@ -131,7 +131,7 @@ class GpsHandler with Localization {
 
   late bool _locationServiceEnabled;
 
-  late Timer _timer;
+  Timer? _timer;
   late GpsState _gpsState;
   late ProjectState _projectState;
   bool initialized = false;
@@ -245,7 +245,8 @@ class GpsHandler with Localization {
 
   /// Close the handler.
   Future close() async {
-    _timer.cancel();
+    _timer?.cancel();
+    _gpsState.stopAllTimers();
 
     await closeGpsIsolate();
 
