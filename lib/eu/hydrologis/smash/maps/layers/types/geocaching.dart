@@ -68,6 +68,17 @@ class GeocachingSource extends VectorLayerSource {
       var jsonString = FileUtilities.readFile(_absolutePath!);
       var dataMap = jsonDecode(jsonString);
       _pointsList = dataMap['results'];
+      for (var point in _pointsList) {
+        var postedCoordinates = point['postedCoordinates'];
+        if (postedCoordinates == null) {
+          continue;
+        }
+        var latitude = postedCoordinates['latitude'];
+        var longitude = postedCoordinates['longitude'];
+        _bounds.extend(LatLng(latitude, longitude));
+      }
+
+      _attribution = "(${_pointsList.length}) Geocaching HQ";
       isLoaded = true;
     }
   }
@@ -132,7 +143,6 @@ class GeocachingSource extends VectorLayerSource {
         var completeUrl = "https://www.geocaching.com" + detailsUrl;
         var postedCoordinates = pointData['postedCoordinates'];
         if (postedCoordinates == null) {
-          // print(pointData);
           continue;
         }
         var latitude = postedCoordinates['latitude'];
@@ -141,22 +151,36 @@ class GeocachingSource extends VectorLayerSource {
         var placedDate = pointData['placedDate'] ?? " - nv - ";
         var lastFoundDate = pointData['lastFoundDate'] ?? " - nv - ";
         var owner = pointData['owner']?['username'] ?? " - nv - ";
+        var userFound = pointData['userFound'] != null;
+        var userDidNotFind = pointData['userDidNotFind'] != null;
 
         var color = ColorExt("#007106");
         var labelColor = ColorExt("#ffffff");
         if (premiumOnly) {
-          color = ColorExt("#8b0003");
+          color = ColorExt("#004dc3");
           labelColor = ColorExt("#ffffff");
         }
+        var iconData;
         List type = type2NameMap[geocacheType] ?? ["UNKNOWN", MdiIcons.archive];
-        var iconData = type[1];
+        if (userFound) {
+          iconData = MdiIcons.emoticonHappy;
+          color = ColorExt("#ffe900");
+          labelColor = ColorExt("#000000");
+        } else if (userDidNotFind) {
+          iconData = MdiIcons.emoticonSad;
+          color = ColorExt("#ff0100");
+          labelColor = ColorExt("#000000");
+        } else {
+          iconData = type[1];
+        }
 
         double textExtraHeight = MARKER_ICON_TEXT_EXTRA_HEIGHT;
         var pointsSize = 48.0;
+        var latLng = LatLng(latitude, longitude);
         Marker m = Marker(
             width: pointsSize * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
             height: pointsSize + textExtraHeight,
-            point: LatLng(latitude, longitude),
+            point: latLng,
             builder: (ctx) => GestureDetector(
                   child: MarkerIcon(
                     iconData,
