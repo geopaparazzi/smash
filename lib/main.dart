@@ -34,6 +34,7 @@ import 'generated/l10n.dart';
 const DOCATCHER = false;
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
   // TODO endable catcher again once it is aligned with libs
   // if (DOCATCHER) {
   //   CatcherOptions debugOptions =
