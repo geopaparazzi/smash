@@ -8,11 +8,11 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
-import 'package:background_locator/background_locator.dart' as GPS;
-import 'package:background_locator/location_dto.dart';
-import 'package:background_locator/settings/android_settings.dart';
-import 'package:background_locator/settings/ios_settings.dart';
-import 'package:background_locator/settings/locator_settings.dart';
+import 'package:background_locator_2/background_locator.dart' as GPS;
+import 'package:background_locator_2/location_dto.dart';
+import 'package:background_locator_2/settings/android_settings.dart';
+import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:geodesy/geodesy.dart' as GEOD;
 import 'package:latlong2/latlong.dart';
@@ -142,6 +142,7 @@ class GpsHandler with Localization {
 
   GpsHandler._internal();
 
+  @pragma('vm:entry-point')
   static void callback(LocationDto locationDto) async {
     final SendPort? send = IsolateNameServer.lookupPortByName(_isolateName);
     send?.send(locationDto);
