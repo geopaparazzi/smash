@@ -295,6 +295,19 @@ Future<String?> handlePreferences(BuildContext context) async {
     }
 
     await GpPreferences().setBoolean(GpsHandler.GPS_FORCED_OFF_KEY, false);
+
+    bool? allowSelfCert = await GpPreferences().getBoolean(
+        SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_ALLOW_SELFCERTIFICATE, true);
+    String? gssUrl = await GpPreferences()
+        .getString(SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_URL, "");
+    if (gssUrl!.isNotEmpty) {
+      var url = gssUrl
+          .replaceFirst("https://", "")
+          .replaceFirst("http://", "")
+          .split(":")[0];
+      NetworkHelper.toggleAllowSelfSignedCertificates(allowSelfCert!, url);
+    }
+
     return null;
   } on Exception catch (e, s) {
     var msg = "Error while reading preferences.";
