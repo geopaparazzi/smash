@@ -306,6 +306,11 @@ Future<String?> handlePreferences(BuildContext context) async {
           .replaceFirst("http://", "")
           .split(":")[0];
       NetworkHelper.toggleAllowSelfSignedCertificates(allowSelfCert!, url);
+    } else {
+      // reset setting to disabled
+      await GpPreferences().setBoolean(
+          SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_ALLOW_SELFCERTIFICATE,
+          false);
     }
 
     return null;
