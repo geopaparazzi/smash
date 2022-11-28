@@ -8,11 +8,11 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
-import 'package:background_locator/background_locator.dart' as GPS;
-import 'package:background_locator/location_dto.dart';
-import 'package:background_locator/settings/android_settings.dart';
-import 'package:background_locator/settings/ios_settings.dart';
-import 'package:background_locator/settings/locator_settings.dart';
+import 'package:background_locator_2/background_locator.dart' as GPS;
+import 'package:background_locator_2/location_dto.dart';
+import 'package:background_locator_2/settings/android_settings.dart';
+import 'package:background_locator_2/settings/ios_settings.dart';
+import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:geodesy/geodesy.dart' as GEOD;
 import 'package:latlong2/latlong.dart';
@@ -118,6 +118,7 @@ abstract class GpsLoggingHandler {
 /// * registre for updates through the [SmashPositionListener] interface
 /// * handle the GPS logging
 ///
+@pragma('vm:entry-point')
 class GpsHandler with Localization {
   static const GPS_FORCED_OFF_KEY = "GPS_FORCED_OFF";
   static const String _isolateName = "LocatorIsolate";
@@ -142,9 +143,10 @@ class GpsHandler with Localization {
 
   GpsHandler._internal();
 
+  @pragma('vm:entry-point')
   static void callback(LocationDto locationDto) async {
     final SendPort? send = IsolateNameServer.lookupPortByName(_isolateName);
-    send?.send(locationDto);
+    send?.send(locationDto.toJson());
   }
 
   Future<void> init(GpsState initGpsState, ProjectState projectState) async {
@@ -258,10 +260,11 @@ class GpsHandler with Localization {
 
     port = ReceivePort();
     IsolateNameServer.registerPortWithName(port!.sendPort, _isolateName);
-    port!.listen((dynamic data) {
-      if (TestLogStream().isActive) {
+    port!.listen((dynamic json) {
+      if (TestLogStream().isActive || json == null) {
         return;
       }
+      LocationDto data = LocationDto.fromJson(json);
       if (data != null) {
         KalmanFilter kalman = KalmanFilter.getInstance();
         kalman.process(data.latitude, data.longitude, data.accuracy, data.time,

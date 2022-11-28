@@ -50,15 +50,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.9.0"
-  background_locator:
+  background_locator_2:
     dependency: "direct main"
     description:
       path: "."
-      ref: "830989e338b2d7b789dc2ffa2bd407e7a1d92b19"
-      resolved-ref: "830989e338b2d7b789dc2ffa2bd407e7a1d92b19"
-      url: "https://github.com/caiobraga/background_locator.git"
+      ref: "fix/callback-in-release-build"
+      resolved-ref: "3e0e4dcad802b5122d480c940e391c4b518a4f45"
+      url: "https://github.com/sanak/background_locator_2.git"
     source: git
-    version: "1.6.12"
+    version: "2.0.6"
   badges:
     dependency: "direct main"
     description:
