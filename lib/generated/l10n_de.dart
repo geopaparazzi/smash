@@ -155,6 +155,102 @@ class SLDe extends SL {
   String get mainviewUtils_rotateMapWithGps => 'Rotate map with GPS';
 
   @override
+  String get exportWidget_export => 'Exportieren';
+
+  @override
+  String get exportWidget_pdfExported => 'PDF exportiert';
+
+  @override
+  String get exportWidget_exportToPortableDocumentFormat => 'Export project to Portable Document Format';
+
+  @override
+  String get exportWidget_gpxExported => 'GPX exportiert';
+
+  @override
+  String get exportWidget_exportToGpx => 'Export project to GPX';
+
+  @override
+  String get exportWidget_kmlExported => 'KML exported';
+
+  @override
+  String get exportWidget_exportToKml => 'Export project to KML';
+
+  @override
+  String get exportWidget_imagesToFolderExported => 'Images exported';
+
+  @override
+  String get exportWidget_exportImagesToFolder => 'Export project images to folder';
+
+  @override
+  String get exportWidget_exportImagesToFolderTitle => 'Images';
+
+  @override
+  String get exportWidget_geopackageExported => 'Geopackage exported';
+
+  @override
+  String get exportWidget_exportToGeopackage => 'Export project to Geopackage';
+
+  @override
+  String get exportWidget_exportToGSS => 'Export to Geopaparazzi Survey Server';
+
+  @override
+  String get gssExport_gssExport => 'GSS Export';
+
+  @override
+  String get gssExport_setProjectDirty => 'Set project to DIRTY?';
+
+  @override
+  String get gssExport_thisCantBeUndone => 'This can\'t be undone!';
+
+  @override
+  String get gssExport_restoreProjectAsDirty => 'Restore project as all dirty.';
+
+  @override
+  String get gssExport_setProjectClean => 'Set project to CLEAN?';
+
+  @override
+  String get gssExport_restoreProjectAsClean => 'Restore project as all clean.';
+
+  @override
+  String get gssExport_nothingToSync => 'Nothing to sync.';
+
+  @override
+  String get gssExport_collectingSyncStats => 'Collecting sync stats…';
+
+  @override
+  String get gssExport_unableToSyncDueToError => 'Unable to sync due to an error, check diagnostics.';
+
+  @override
+  String get gssExport_noGssUrlSet => 'No GSS server URL has been set. Check your settings.';
+
+  @override
+  String get gssExport_noGssPasswordSet => 'No GSS server password has been set. Check your settings.';
+
+  @override
+  String get gssExport_synStats => 'Sync Stats';
+
+  @override
+  String get gssExport_followingDataWillBeUploaded => 'The following data will be uploaded upon sync.';
+
+  @override
+  String get gssExport_gpsLogs => 'GPS Logs:';
+
+  @override
+  String get gssExport_simpleNotes => 'Simple Notes:';
+
+  @override
+  String get gssExport_formNotes => 'Form Notes:';
+
+  @override
+  String get gssExport_images => 'Images:';
+
+  @override
+  String get gssExport_shouldNotHappen => 'Should not happen';
+
+  @override
+  String get gssExport_upload => 'Upload';
+
+  @override
   String get geocoding_geocoding => 'Geocoding';
 
   @override
@@ -180,6 +276,57 @@ class SLDe extends SL {
 
   @override
   String get gps_backgroundLocIsOnToKeepRegistering => 'Background location is on to keep the app registering the location even when the app is in background.';
+
+  @override
+  String get gssImport_gssImport => 'GSS Import';
+
+  @override
+  String get gssImport_downloadingDataList => 'Downloading data list…';
+
+  @override
+  String get gssImport_unableDownloadDataList => 'Unable to download data list due to an error. Check your settings and the log.';
+
+  @override
+  String get gssImport_noGssUrlSet => 'No GSS server URL has been set. Check your settings.';
+
+  @override
+  String get gssImport_noGssPasswordSet => 'No GSS server password has been set. Check your settings.';
+
+  @override
+  String get gssImport_noPermToAccessServer => 'No permission to access the server. Check your credentials.';
+
+  @override
+  String get gssImport_data => 'Data';
+
+  @override
+  String get gssImport_dataSetsDownloadedMapsFolder => 'Datasets are downloaded into the maps folder.';
+
+  @override
+  String get gssImport_noDataAvailable => 'No data available.';
+
+  @override
+  String get gssImport_projects => 'Projects';
+
+  @override
+  String get gssImport_projectsDownloadedProjectFolder => 'Projects are downloaded into the projects folder.';
+
+  @override
+  String get gssImport_noProjectsAvailable => 'No projects available.';
+
+  @override
+  String get gssImport_forms => 'Forms';
+
+  @override
+  String get gssImport_tagsDownloadedFormsFolder => 'Tags files are downloaded into the forms folder.';
+
+  @override
+  String get gssImport_noTagsAvailable => 'No tags available.';
+
+  @override
+  String get importWidget_import => 'Import';
+
+  @override
+  String get importWidget_importFromGeopaparazzi => 'Import from Geopaparazzi Survey Server';
 
   @override
   String get layersView_layerList => 'Layer List';
@@ -746,7 +893,7 @@ class SLDe extends SL {
   String get noteList_zoomTo => 'Zoom to';
 
   @override
-  String get noteList_edit => '\'Edit\'';
+  String get noteList_edit => 'Edit';
 
   @override
   String get noteList_properties => 'Properties';
@@ -1053,6 +1200,24 @@ class SLDe extends SL {
 
   @override
   String get settings_pleaseEnterValidPassword => 'Please enter a valid server password.';
+
+  @override
+  String get settings_gss => 'GSS';
+
+  @override
+  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
+
+  @override
+  String get settings_serverUrl => 'Server URL';
+
+  @override
+  String get settings_serverUrlStartWithHttp => 'The server URL needs to start with HTTP or HTTPS.';
+
+  @override
+  String get settings_serverPassword => 'Server Password';
+
+  @override
+  String get settings_allowSelfSignedCert => 'Allow self signed certificates';
 
   @override
   String get toolbarTools_zoomOut => 'Zoom out';

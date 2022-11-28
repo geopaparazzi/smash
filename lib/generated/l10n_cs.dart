@@ -155,6 +155,102 @@ class SLCs extends SL {
   String get mainviewUtils_rotateMapWithGps => 'Otočení mapy pomocí GPS';
 
   @override
+  String get exportWidget_export => 'Export';
+
+  @override
+  String get exportWidget_pdfExported => 'PDF exportováno';
+
+  @override
+  String get exportWidget_exportToPortableDocumentFormat => 'Export projektu do formátu Portable Document Format';
+
+  @override
+  String get exportWidget_gpxExported => 'GPX exportováno';
+
+  @override
+  String get exportWidget_exportToGpx => 'Export projektu do GPX';
+
+  @override
+  String get exportWidget_kmlExported => 'KML exportováno';
+
+  @override
+  String get exportWidget_exportToKml => 'Export projektu do KML';
+
+  @override
+  String get exportWidget_imagesToFolderExported => 'Obrázky exportované';
+
+  @override
+  String get exportWidget_exportImagesToFolder => 'Export obrázků projektu do složky';
+
+  @override
+  String get exportWidget_exportImagesToFolderTitle => 'Obrázky';
+
+  @override
+  String get exportWidget_geopackageExported => 'Geopackage exportován';
+
+  @override
+  String get exportWidget_exportToGeopackage => 'Export projektu do Geopackage';
+
+  @override
+  String get exportWidget_exportToGSS => 'Export do Geopaparazzi Survey Server';
+
+  @override
+  String get gssExport_gssExport => 'Export GSS';
+
+  @override
+  String get gssExport_setProjectDirty => 'Nastavit projekt na DIRTY?';
+
+  @override
+  String get gssExport_thisCantBeUndone => 'To se nedá vrátit!';
+
+  @override
+  String get gssExport_restoreProjectAsDirty => 'Obnovit projekt jako celý špinavý.';
+
+  @override
+  String get gssExport_setProjectClean => 'Nastavit projekt na ČISTÝ?';
+
+  @override
+  String get gssExport_restoreProjectAsClean => 'Obnovit projekt jako čistý.';
+
+  @override
+  String get gssExport_nothingToSync => 'Není co synchronizovat.';
+
+  @override
+  String get gssExport_collectingSyncStats => 'Sbírání statistik synchronizace…';
+
+  @override
+  String get gssExport_unableToSyncDueToError => 'Synchronizaci nelze provést z důvodu chyby, zkontrolujte diagnostiku.';
+
+  @override
+  String get gssExport_noGssUrlSet => 'Nebyla nastavena žádná adresa URL serveru GSS. Zkontrolujte nastavení.';
+
+  @override
+  String get gssExport_noGssPasswordSet => 'Nebylo nastaveno žádné heslo serveru GSS. Zkontrolujte nastavení.';
+
+  @override
+  String get gssExport_synStats => 'Statistiky synchronizace';
+
+  @override
+  String get gssExport_followingDataWillBeUploaded => 'Při synchronizaci se nahrají následující data.';
+
+  @override
+  String get gssExport_gpsLogs => 'Protokoly GPS:';
+
+  @override
+  String get gssExport_simpleNotes => 'Jednoduché poznámky:';
+
+  @override
+  String get gssExport_formNotes => 'Poznámky k formuláři:';
+
+  @override
+  String get gssExport_images => 'Obrázky:';
+
+  @override
+  String get gssExport_shouldNotHappen => 'Nemělo by se to stát';
+
+  @override
+  String get gssExport_upload => 'Nahrát';
+
+  @override
   String get geocoding_geocoding => 'Geokódování';
 
   @override
@@ -180,6 +276,57 @@ class SLCs extends SL {
 
   @override
   String get gps_backgroundLocIsOnToKeepRegistering => 'Poloha na pozadí je zapnutá, aby aplikace registrovala polohu, i když je na pozadí.';
+
+  @override
+  String get gssImport_gssImport => 'Import GSS';
+
+  @override
+  String get gssImport_downloadingDataList => 'Stahování seznamu dat…';
+
+  @override
+  String get gssImport_unableDownloadDataList => 'Seznam dat nelze stáhnout z důvodu chyby. Zkontrolujte nastavení a protokol.';
+
+  @override
+  String get gssImport_noGssUrlSet => 'Nebyla nastavena žádná adresa URL serveru GSS. Zkontrolujte nastavení.';
+
+  @override
+  String get gssImport_noGssPasswordSet => 'Nebylo nastaveno žádné heslo serveru GSS. Zkontrolujte nastavení.';
+
+  @override
+  String get gssImport_noPermToAccessServer => 'Nemáte oprávnění k přístupu na server. Zkontrolujte své pověření.';
+
+  @override
+  String get gssImport_data => 'Data';
+
+  @override
+  String get gssImport_dataSetsDownloadedMapsFolder => 'Datové sady se stahují do složky map.';
+
+  @override
+  String get gssImport_noDataAvailable => 'Nejsou k dispozici žádné údaje.';
+
+  @override
+  String get gssImport_projects => 'Projekty';
+
+  @override
+  String get gssImport_projectsDownloadedProjectFolder => 'Projekty se stahují do složky projects.';
+
+  @override
+  String get gssImport_noProjectsAvailable => 'Žádné projekty nejsou k dispozici.';
+
+  @override
+  String get gssImport_forms => 'Formuláře';
+
+  @override
+  String get gssImport_tagsDownloadedFormsFolder => 'Soubory značek jsou staženy do složky formulářů.';
+
+  @override
+  String get gssImport_noTagsAvailable => 'Nejsou k dispozici žádné štítky.';
+
+  @override
+  String get importWidget_import => 'Import';
+
+  @override
+  String get importWidget_importFromGeopaparazzi => 'Import z Geopaparazzi Survey Serveru';
 
   @override
   String get layersView_layerList => 'Seznam vrstev';
@@ -746,7 +893,7 @@ class SLCs extends SL {
   String get noteList_zoomTo => 'Přiblížit na';
 
   @override
-  String get noteList_edit => '\'Upravit\'';
+  String get noteList_edit => 'Upravit';
 
   @override
   String get noteList_properties => 'Vlastnosti';
@@ -1053,6 +1200,24 @@ class SLCs extends SL {
 
   @override
   String get settings_pleaseEnterValidPassword => 'Zadejte platné heslo serveru.';
+
+  @override
+  String get settings_gss => 'GSS';
+
+  @override
+  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
+
+  @override
+  String get settings_serverUrl => 'Server URL';
+
+  @override
+  String get settings_serverUrlStartWithHttp => 'Adresa URL serveru musí začínat HTTP nebo HTTPS.';
+
+  @override
+  String get settings_serverPassword => 'Heslo serveru';
+
+  @override
+  String get settings_allowSelfSignedCert => 'Povolení vlastnoručně podepsaných certifikátů';
 
   @override
   String get toolbarTools_zoomOut => 'Oddálit';

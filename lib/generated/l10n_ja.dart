@@ -56,7 +56,7 @@ class SLJa extends SL {
   String get main_layersListLoaded => 'レイヤーリストが読み込まれました。';
 
   @override
-  String get main_locationBackgroundWarning => 'バックグラウンドでのGPSロギングを有効にするため、次のステップで位置情報を許可してください。(許可しない場合はフォアグラウンドでのみ動作します。)\nデータは共有されず、デバイスにローカルにのみ保存されます。';
+  String get main_locationBackgroundWarning => 'バックグラウンドでのGPSロギングを有効にするため、次のステップで位置情報を許可してください。(許可しない場合はフォアグラウンドでのみ動作します。)\nデータは共有されず、デバイスのローカルにのみ保存されます。';
 
   @override
   String get main_StorageIsInternalWarning => '注意してお読みください!\nAndroid 11以降では、SMASHのプロジェクトフォルダを、ストレージ内の\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nフォルダに配置しないと使用できません。\nアプリをアンインストールすると、システムがフォルダを削除しますので、アンインストールする場合はデータをバックアップしてください。\n\nより良い解決策を検討中です。';
@@ -155,6 +155,102 @@ class SLJa extends SL {
   String get mainviewUtils_rotateMapWithGps => 'GPSで地図を回転';
 
   @override
+  String get exportWidget_export => 'エクスポート';
+
+  @override
+  String get exportWidget_pdfExported => 'PDFエクスポート済み';
+
+  @override
+  String get exportWidget_exportToPortableDocumentFormat => 'プロジェクトをPDF形式にエクスポート';
+
+  @override
+  String get exportWidget_gpxExported => 'GPXエクスポート済み';
+
+  @override
+  String get exportWidget_exportToGpx => 'プロジェクトをGPXにエクスポート';
+
+  @override
+  String get exportWidget_kmlExported => 'KMLエクスポート済み';
+
+  @override
+  String get exportWidget_exportToKml => 'プロジェクトをKMLにエクスポート';
+
+  @override
+  String get exportWidget_imagesToFolderExported => '画像エクスポート済み';
+
+  @override
+  String get exportWidget_exportImagesToFolder => 'プロジェクトの画像をフォルダにエクスポート';
+
+  @override
+  String get exportWidget_exportImagesToFolderTitle => '画像';
+
+  @override
+  String get exportWidget_geopackageExported => 'GeoPackageエクスポート済み';
+
+  @override
+  String get exportWidget_exportToGeopackage => 'プロジェクトをGeoPackageにエクスポート';
+
+  @override
+  String get exportWidget_exportToGSS => 'Geopaparazzi Survey Serverにエクスポート';
+
+  @override
+  String get gssExport_gssExport => 'GSSエクスポート';
+
+  @override
+  String get gssExport_setProjectDirty => 'プロジェクトをダーティに設定しますか？';
+
+  @override
+  String get gssExport_thisCantBeUndone => 'これは元に戻せません！';
+
+  @override
+  String get gssExport_restoreProjectAsDirty => 'プロジェクトをすべてダーティとして復元します。';
+
+  @override
+  String get gssExport_setProjectClean => 'プロジェクトをクリーンに設定しますか？';
+
+  @override
+  String get gssExport_restoreProjectAsClean => 'プロジェクトをすべてクリーンな状態で復元します。';
+
+  @override
+  String get gssExport_nothingToSync => '同期するものがありません。';
+
+  @override
+  String get gssExport_collectingSyncStats => '同期統計を収集しています…';
+
+  @override
+  String get gssExport_unableToSyncDueToError => 'エラーのため同期できません。診断を確認してください。';
+
+  @override
+  String get gssExport_noGssUrlSet => 'GSSサーバーのURLが設定されていません。設定を確認してください。';
+
+  @override
+  String get gssExport_noGssPasswordSet => 'GSSサーバーのパスワードが設定されていません。設定を確認してください。';
+
+  @override
+  String get gssExport_synStats => '同期統計';
+
+  @override
+  String get gssExport_followingDataWillBeUploaded => '次のデータは同期時にアップロードされます。';
+
+  @override
+  String get gssExport_gpsLogs => 'GPSログ:';
+
+  @override
+  String get gssExport_simpleNotes => 'シンプルノート:';
+
+  @override
+  String get gssExport_formNotes => 'フォームノート:';
+
+  @override
+  String get gssExport_images => '画像:';
+
+  @override
+  String get gssExport_shouldNotHappen => '発生してはならない';
+
+  @override
+  String get gssExport_upload => 'アップロード';
+
+  @override
   String get geocoding_geocoding => 'ジオコーディング';
 
   @override
@@ -180,6 +276,57 @@ class SLJa extends SL {
 
   @override
   String get gps_backgroundLocIsOnToKeepRegistering => 'アプリがバックグラウンドにある場合でも、アプリが位置情報を登録し続けるために、バックグラウンドロケーションがオンになっています。';
+
+  @override
+  String get gssImport_gssImport => 'GSSインポート';
+
+  @override
+  String get gssImport_downloadingDataList => 'データリストをダウンロードしています…';
+
+  @override
+  String get gssImport_unableDownloadDataList => 'エラーのため、データリストをダウンロードできません。設定とログを確認してください。';
+
+  @override
+  String get gssImport_noGssUrlSet => 'GSSサーバーのURLが設定されていません。設定を確認してください。';
+
+  @override
+  String get gssImport_noGssPasswordSet => 'GSSサーバーのパスワードが設定されていません。設定を確認してください。';
+
+  @override
+  String get gssImport_noPermToAccessServer => 'サーバーにアクセスする権限がありません。資格情報を確認してください。';
+
+  @override
+  String get gssImport_data => 'データ';
+
+  @override
+  String get gssImport_dataSetsDownloadedMapsFolder => 'データセットはマップフォルダーにダウンロードされます。';
+
+  @override
+  String get gssImport_noDataAvailable => '利用可能なデータがありません。';
+
+  @override
+  String get gssImport_projects => 'プロジェクト';
+
+  @override
+  String get gssImport_projectsDownloadedProjectFolder => 'プロジェクトはプロジェクトフォルダーにダウンロードされます。';
+
+  @override
+  String get gssImport_noProjectsAvailable => '利用可能なプロジェクトがありません。';
+
+  @override
+  String get gssImport_forms => 'フォーム';
+
+  @override
+  String get gssImport_tagsDownloadedFormsFolder => 'タグファイルはフォームフォルダーにダウンロードされます。';
+
+  @override
+  String get gssImport_noTagsAvailable => '使用可能なタグはありません。';
+
+  @override
+  String get importWidget_import => 'インポート';
+
+  @override
+  String get importWidget_importFromGeopaparazzi => 'Geopaparazzi Survey Serverからインポート';
 
   @override
   String get layersView_layerList => 'レイヤーリスト';
@@ -302,13 +449,13 @@ class SLJa extends SL {
   String get onlineSourcesPage_details => '詳細';
 
   @override
-  String get onlineSourcesPage_name => '名前:';
+  String get onlineSourcesPage_name => '名前: ';
 
   @override
-  String get onlineSourcesPage_subDomains => 'サブドメイン:';
+  String get onlineSourcesPage_subDomains => 'サブドメイン: ';
 
   @override
-  String get onlineSourcesPage_attribution => '帰属:';
+  String get onlineSourcesPage_attribution => '帰属: ';
 
   @override
   String get onlineSourcesPage_cancel => 'キャンセル';
@@ -344,10 +491,10 @@ class SLJa extends SL {
   String get onlineSourcesPage_addAnAttribution => '帰属を追加します。';
 
   @override
-  String get onlineSourcesPage_layer => 'レイヤー:';
+  String get onlineSourcesPage_layer => 'レイヤー: ';
 
   @override
-  String get onlineSourcesPage_url => 'URL:';
+  String get onlineSourcesPage_url => 'URL: ';
 
   @override
   String get onlineSourcesPage_format => 'フォーマット';
@@ -620,7 +767,7 @@ class SLJa extends SL {
   String get gpsLogButton_enterNameForNewLog => '新しいログの名前を入力してください';
 
   @override
-  String get gpsLogButton_couldNotStartLogging => 'ロギングを開始できませんでした:';
+  String get gpsLogButton_couldNotStartLogging => 'ロギングを開始できませんでした: ';
 
   @override
   String get imageWidgets_loadingImage => '画像を読み込んでいます…';
@@ -746,7 +893,7 @@ class SLJa extends SL {
   String get noteList_zoomTo => 'ズーム';
 
   @override
-  String get noteList_edit => '\'編集\'';
+  String get noteList_edit => '編集';
 
   @override
   String get noteList_properties => 'プロパティ';
@@ -1055,6 +1202,24 @@ class SLJa extends SL {
   String get settings_pleaseEnterValidPassword => '有効なサーバーパスワードを入力してください。';
 
   @override
+  String get settings_gss => 'GSS';
+
+  @override
+  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
+
+  @override
+  String get settings_serverUrl => 'サーバーURL';
+
+  @override
+  String get settings_serverUrlStartWithHttp => 'サーバーのURLはhttpまたはhttpsで始まる必要があります。';
+
+  @override
+  String get settings_serverPassword => 'サーバーパスワード';
+
+  @override
+  String get settings_allowSelfSignedCert => '自己署名証明書を許可する';
+
+  @override
   String get toolbarTools_zoomOut => '縮小';
 
   @override
@@ -1094,13 +1259,13 @@ class SLJa extends SL {
   String get toolbarTools_modifyGeomVectorLayers => '編集可能なベクターレイヤーのジオメトリを変更します。';
 
   @override
-  String get coachMarks_singleTap => 'シングルタップ:';
+  String get coachMarks_singleTap => 'シングルタップ: ';
 
   @override
-  String get coachMarks_longTap => 'ロングタップ:';
+  String get coachMarks_longTap => 'ロングタップ: ';
 
   @override
-  String get coachMarks_doubleTap => 'ダブルタップ:';
+  String get coachMarks_doubleTap => 'ダブルタップ: ';
 
   @override
   String get coachMarks_simpleNoteButton => 'シンプルノートボタン';
@@ -1172,7 +1337,7 @@ class SLJa extends SL {
   String get coachMarks_bottomToolsButton => '下部ツールボタン';
 
   @override
-  String get coachMarks_toggleBottomToolsBar => '下部のツールバーを切り替えます。';
+  String get coachMarks_toggleBottomToolsBar => '下部のツールバーを切り替えます。 ';
 
   @override
   String get coachMarks_toolsButton => 'ツールボタン';

@@ -155,6 +155,102 @@ class SLFr extends SL {
   String get mainviewUtils_rotateMapWithGps => 'Pivoter la carte grâce au GPS';
 
   @override
+  String get exportWidget_export => 'Exporter';
+
+  @override
+  String get exportWidget_pdfExported => 'PDF exporté';
+
+  @override
+  String get exportWidget_exportToPortableDocumentFormat => 'Exporter le projet en Portable Document Format (PDF)';
+
+  @override
+  String get exportWidget_gpxExported => 'GPX exporté';
+
+  @override
+  String get exportWidget_exportToGpx => 'Exporter le projet au format GPX';
+
+  @override
+  String get exportWidget_kmlExported => 'KML exporté';
+
+  @override
+  String get exportWidget_exportToKml => 'Exporter le projet au format KML';
+
+  @override
+  String get exportWidget_imagesToFolderExported => 'Images exportées';
+
+  @override
+  String get exportWidget_exportImagesToFolder => 'Exporter les images du projet dans un dossier';
+
+  @override
+  String get exportWidget_exportImagesToFolderTitle => 'Images';
+
+  @override
+  String get exportWidget_geopackageExported => 'Geopackage exporté';
+
+  @override
+  String get exportWidget_exportToGeopackage => 'Exporter le projets vers Geopackage';
+
+  @override
+  String get exportWidget_exportToGSS => 'Exporter vers Geopaparazzi Survey Server';
+
+  @override
+  String get gssExport_gssExport => 'Export en GSS';
+
+  @override
+  String get gssExport_setProjectDirty => 'Set project to DIRTY?';
+
+  @override
+  String get gssExport_thisCantBeUndone => 'Cela ne peut être annulé !';
+
+  @override
+  String get gssExport_restoreProjectAsDirty => 'Restore project as all dirty.';
+
+  @override
+  String get gssExport_setProjectClean => 'Set project to CLEAN?';
+
+  @override
+  String get gssExport_restoreProjectAsClean => 'Restore project as all clean.';
+
+  @override
+  String get gssExport_nothingToSync => 'Rien à synchroniser.';
+
+  @override
+  String get gssExport_collectingSyncStats => 'Récupération des statistiques de synchronisation…';
+
+  @override
+  String get gssExport_unableToSyncDueToError => 'Échec de la synchronisation, veuillez analyser le diagnostique.';
+
+  @override
+  String get gssExport_noGssUrlSet => 'Aucune URL vers un serveur GSS n\'a été spécifiée. Veuillez vérifier vos préférences.';
+
+  @override
+  String get gssExport_noGssPasswordSet => 'Aucun mot de passe pour le serveur GSS n\'a été spécifié. Veuillez vérifier vos préférences.';
+
+  @override
+  String get gssExport_synStats => 'Statistiques de synchronisation';
+
+  @override
+  String get gssExport_followingDataWillBeUploaded => 'Les données suivantes seront envoyées lors de la synchronisation.';
+
+  @override
+  String get gssExport_gpsLogs => 'Journal GPS :';
+
+  @override
+  String get gssExport_simpleNotes => 'Notes simples :';
+
+  @override
+  String get gssExport_formNotes => 'Notes de formulaire :';
+
+  @override
+  String get gssExport_images => 'Images :';
+
+  @override
+  String get gssExport_shouldNotHappen => 'Ceci ne devrait pas arriver';
+
+  @override
+  String get gssExport_upload => 'Envoyer';
+
+  @override
   String get geocoding_geocoding => 'Geocoding';
 
   @override
@@ -180,6 +276,57 @@ class SLFr extends SL {
 
   @override
   String get gps_backgroundLocIsOnToKeepRegistering => 'La localisation en arrière-plan est active pour permettre à l\'application d\'enregistrer la position même quand elle est en arrière-plan.';
+
+  @override
+  String get gssImport_gssImport => 'Importer en GSS';
+
+  @override
+  String get gssImport_downloadingDataList => 'Téléchargement de la liste des données…';
+
+  @override
+  String get gssImport_unableDownloadDataList => 'Le téléchargement de la liste des données à échoué. Veuillez vérifier vos préférences et le journal.';
+
+  @override
+  String get gssImport_noGssUrlSet => 'Aucune URL de serveur GSS n\'a été spécifiée. Veuillez vérifier vos préférences.';
+
+  @override
+  String get gssImport_noGssPasswordSet => 'Aucun mot de passe pour le serveur GSS n\'a été spécifié. Veuillez vérifier vos préférences.';
+
+  @override
+  String get gssImport_noPermToAccessServer => 'Aucune permission pour l\'accès au serveur. Veuillez vérifier vos identifiants.';
+
+  @override
+  String get gssImport_data => 'Données';
+
+  @override
+  String get gssImport_dataSetsDownloadedMapsFolder => 'Les jeux de données sont téléchargés dans le dossier des cartes.';
+
+  @override
+  String get gssImport_noDataAvailable => 'Aucune donnée disponible.';
+
+  @override
+  String get gssImport_projects => 'Projets';
+
+  @override
+  String get gssImport_projectsDownloadedProjectFolder => 'Les projets sont téléchargés dans le dossier des projets.';
+
+  @override
+  String get gssImport_noProjectsAvailable => 'Aucun projet disponible.';
+
+  @override
+  String get gssImport_forms => 'Formulaires';
+
+  @override
+  String get gssImport_tagsDownloadedFormsFolder => 'Les fichiers de marquage sont téléchargés dans le dossier des formulaires.';
+
+  @override
+  String get gssImport_noTagsAvailable => 'Aucun marquage disponible.';
+
+  @override
+  String get importWidget_import => 'Importer';
+
+  @override
+  String get importWidget_importFromGeopaparazzi => 'Importer depuis Geopaparazzi Survey Server';
 
   @override
   String get layersView_layerList => 'Liste des calques';
@@ -1053,6 +1200,24 @@ class SLFr extends SL {
 
   @override
   String get settings_pleaseEnterValidPassword => 'Veuillez entrer un mot de passe de serveur valide.';
+
+  @override
+  String get settings_gss => 'GSS';
+
+  @override
+  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
+
+  @override
+  String get settings_serverUrl => 'L\'URL du serveur';
+
+  @override
+  String get settings_serverUrlStartWithHttp => 'L\'URL du serveur doit commencer par HTTP ou HTTPS.';
+
+  @override
+  String get settings_serverPassword => 'Mot de passe du serveur';
+
+  @override
+  String get settings_allowSelfSignedCert => 'Autoriser les certificats auto-signés';
 
   @override
   String get toolbarTools_zoomOut => 'Dézoomer';

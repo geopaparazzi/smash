@@ -406,6 +406,198 @@ abstract class SL {
   /// **'Rotate map with GPS'**
   String get mainviewUtils_rotateMapWithGps;
 
+  /// No description provided for @exportWidget_export.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get exportWidget_export;
+
+  /// No description provided for @exportWidget_pdfExported.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF exported'**
+  String get exportWidget_pdfExported;
+
+  /// No description provided for @exportWidget_exportToPortableDocumentFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Export project to Portable Document Format'**
+  String get exportWidget_exportToPortableDocumentFormat;
+
+  /// No description provided for @exportWidget_gpxExported.
+  ///
+  /// In en, this message translates to:
+  /// **'GPX exported'**
+  String get exportWidget_gpxExported;
+
+  /// No description provided for @exportWidget_exportToGpx.
+  ///
+  /// In en, this message translates to:
+  /// **'Export project to GPX'**
+  String get exportWidget_exportToGpx;
+
+  /// No description provided for @exportWidget_kmlExported.
+  ///
+  /// In en, this message translates to:
+  /// **'KML exported'**
+  String get exportWidget_kmlExported;
+
+  /// No description provided for @exportWidget_exportToKml.
+  ///
+  /// In en, this message translates to:
+  /// **'Export project to KML'**
+  String get exportWidget_exportToKml;
+
+  /// No description provided for @exportWidget_imagesToFolderExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Images exported'**
+  String get exportWidget_imagesToFolderExported;
+
+  /// No description provided for @exportWidget_exportImagesToFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Export project images to folder'**
+  String get exportWidget_exportImagesToFolder;
+
+  /// No description provided for @exportWidget_exportImagesToFolderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get exportWidget_exportImagesToFolderTitle;
+
+  /// No description provided for @exportWidget_geopackageExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Geopackage exported'**
+  String get exportWidget_geopackageExported;
+
+  /// No description provided for @exportWidget_exportToGeopackage.
+  ///
+  /// In en, this message translates to:
+  /// **'Export project to Geopackage'**
+  String get exportWidget_exportToGeopackage;
+
+  /// No description provided for @exportWidget_exportToGSS.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to Geopaparazzi Survey Server'**
+  String get exportWidget_exportToGSS;
+
+  /// No description provided for @gssExport_gssExport.
+  ///
+  /// In en, this message translates to:
+  /// **'GSS Export'**
+  String get gssExport_gssExport;
+
+  /// No description provided for @gssExport_setProjectDirty.
+  ///
+  /// In en, this message translates to:
+  /// **'Set project to DIRTY?'**
+  String get gssExport_setProjectDirty;
+
+  /// No description provided for @gssExport_thisCantBeUndone.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be undone!'**
+  String get gssExport_thisCantBeUndone;
+
+  /// No description provided for @gssExport_restoreProjectAsDirty.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore project as all dirty.'**
+  String get gssExport_restoreProjectAsDirty;
+
+  /// No description provided for @gssExport_setProjectClean.
+  ///
+  /// In en, this message translates to:
+  /// **'Set project to CLEAN?'**
+  String get gssExport_setProjectClean;
+
+  /// No description provided for @gssExport_restoreProjectAsClean.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore project as all clean.'**
+  String get gssExport_restoreProjectAsClean;
+
+  /// No description provided for @gssExport_nothingToSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to sync.'**
+  String get gssExport_nothingToSync;
+
+  /// No description provided for @gssExport_collectingSyncStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Collecting sync stats…'**
+  String get gssExport_collectingSyncStats;
+
+  /// No description provided for @gssExport_unableToSyncDueToError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to sync due to an error, check diagnostics.'**
+  String get gssExport_unableToSyncDueToError;
+
+  /// No description provided for @gssExport_noGssUrlSet.
+  ///
+  /// In en, this message translates to:
+  /// **'No GSS server URL has been set. Check your settings.'**
+  String get gssExport_noGssUrlSet;
+
+  /// No description provided for @gssExport_noGssPasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'No GSS server password has been set. Check your settings.'**
+  String get gssExport_noGssPasswordSet;
+
+  /// No description provided for @gssExport_synStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Stats'**
+  String get gssExport_synStats;
+
+  /// No description provided for @gssExport_followingDataWillBeUploaded.
+  ///
+  /// In en, this message translates to:
+  /// **'The following data will be uploaded upon sync.'**
+  String get gssExport_followingDataWillBeUploaded;
+
+  /// No description provided for @gssExport_gpsLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'GPS Logs:'**
+  String get gssExport_gpsLogs;
+
+  /// No description provided for @gssExport_simpleNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple Notes:'**
+  String get gssExport_simpleNotes;
+
+  /// No description provided for @gssExport_formNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Form Notes:'**
+  String get gssExport_formNotes;
+
+  /// No description provided for @gssExport_images.
+  ///
+  /// In en, this message translates to:
+  /// **'Images:'**
+  String get gssExport_images;
+
+  /// No description provided for @gssExport_shouldNotHappen.
+  ///
+  /// In en, this message translates to:
+  /// **'Should not happen'**
+  String get gssExport_shouldNotHappen;
+
+  /// No description provided for @gssExport_upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get gssExport_upload;
+
   /// No description provided for @geocoding_geocoding.
   ///
   /// In en, this message translates to:
@@ -459,6 +651,108 @@ abstract class SL {
   /// In en, this message translates to:
   /// **'Background location is on to keep the app registering the location even when the app is in background.'**
   String get gps_backgroundLocIsOnToKeepRegistering;
+
+  /// No description provided for @gssImport_gssImport.
+  ///
+  /// In en, this message translates to:
+  /// **'GSS Import'**
+  String get gssImport_gssImport;
+
+  /// No description provided for @gssImport_downloadingDataList.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading data list…'**
+  String get gssImport_downloadingDataList;
+
+  /// No description provided for @gssImport_unableDownloadDataList.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to download data list due to an error. Check your settings and the log.'**
+  String get gssImport_unableDownloadDataList;
+
+  /// No description provided for @gssImport_noGssUrlSet.
+  ///
+  /// In en, this message translates to:
+  /// **'No GSS server URL has been set. Check your settings.'**
+  String get gssImport_noGssUrlSet;
+
+  /// No description provided for @gssImport_noGssPasswordSet.
+  ///
+  /// In en, this message translates to:
+  /// **'No GSS server password has been set. Check your settings.'**
+  String get gssImport_noGssPasswordSet;
+
+  /// No description provided for @gssImport_noPermToAccessServer.
+  ///
+  /// In en, this message translates to:
+  /// **'No permission to access the server. Check your credentials.'**
+  String get gssImport_noPermToAccessServer;
+
+  /// No description provided for @gssImport_data.
+  ///
+  /// In en, this message translates to:
+  /// **'Data'**
+  String get gssImport_data;
+
+  /// No description provided for @gssImport_dataSetsDownloadedMapsFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Datasets are downloaded into the maps folder.'**
+  String get gssImport_dataSetsDownloadedMapsFolder;
+
+  /// No description provided for @gssImport_noDataAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available.'**
+  String get gssImport_noDataAvailable;
+
+  /// No description provided for @gssImport_projects.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects'**
+  String get gssImport_projects;
+
+  /// No description provided for @gssImport_projectsDownloadedProjectFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Projects are downloaded into the projects folder.'**
+  String get gssImport_projectsDownloadedProjectFolder;
+
+  /// No description provided for @gssImport_noProjectsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No projects available.'**
+  String get gssImport_noProjectsAvailable;
+
+  /// No description provided for @gssImport_forms.
+  ///
+  /// In en, this message translates to:
+  /// **'Forms'**
+  String get gssImport_forms;
+
+  /// No description provided for @gssImport_tagsDownloadedFormsFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags files are downloaded into the forms folder.'**
+  String get gssImport_tagsDownloadedFormsFolder;
+
+  /// No description provided for @gssImport_noTagsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No tags available.'**
+  String get gssImport_noTagsAvailable;
+
+  /// No description provided for @importWidget_import.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get importWidget_import;
+
+  /// No description provided for @importWidget_importFromGeopaparazzi.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from Geopaparazzi Survey Server'**
+  String get importWidget_importFromGeopaparazzi;
 
   /// No description provided for @layersView_layerList.
   ///
@@ -1591,7 +1885,7 @@ abstract class SL {
   /// No description provided for @noteList_edit.
   ///
   /// In en, this message translates to:
-  /// **'\'Edit\''**
+  /// **'Edit'**
   String get noteList_edit;
 
   /// No description provided for @noteList_properties.
@@ -2205,6 +2499,42 @@ abstract class SL {
   /// In en, this message translates to:
   /// **'Please enter a valid server password.'**
   String get settings_pleaseEnterValidPassword;
+
+  /// No description provided for @settings_gss.
+  ///
+  /// In en, this message translates to:
+  /// **'GSS'**
+  String get settings_gss;
+
+  /// No description provided for @settings_geopaparazziSurveyServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Geopaparazzi Survey Server'**
+  String get settings_geopaparazziSurveyServer;
+
+  /// No description provided for @settings_serverUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Server URL'**
+  String get settings_serverUrl;
+
+  /// No description provided for @settings_serverUrlStartWithHttp.
+  ///
+  /// In en, this message translates to:
+  /// **'The server URL needs to start with HTTP or HTTPS.'**
+  String get settings_serverUrlStartWithHttp;
+
+  /// No description provided for @settings_serverPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Server Password'**
+  String get settings_serverPassword;
+
+  /// No description provided for @settings_allowSelfSignedCert.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow self signed certificates'**
+  String get settings_allowSelfSignedCert;
 
   /// No description provided for @toolbarTools_zoomOut.
   ///
