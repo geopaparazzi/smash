@@ -272,12 +272,14 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
     for (var i = 0; i < _tmsSourcesList.length; i++) {
       var json = _tmsSourcesList[i];
       var map = jsonDecode(json);
-      var type = map[LAYERSKEY_TYPE];
-      if (type == LAYERSTYPE_TMS) {
-        var layerSource = TileSource.fromMap(map);
-        var layers = await layerSource.toLayers(context);
-        _tmsCardsList.add(OnlineSourceCard(
-            type, layerSource, layers, _tmsSourcesList, i, reloadNotifier));
+      if (map is Map<String, dynamic>) {
+        var type = map[LAYERSKEY_TYPE];
+        if (type == LAYERSTYPE_TMS) {
+          var layerSource = TileSource.fromMap(map);
+          var layers = await layerSource.toLayers(context);
+          _tmsCardsList.add(OnlineSourceCard(
+              type, layerSource, layers, _tmsSourcesList, i, reloadNotifier));
+        }
       }
     }
     // WMS
@@ -294,12 +296,14 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
     for (var i = 0; i < _wmsSourcesList.length; i++) {
       var json = _wmsSourcesList[i];
       var map = jsonDecode(json);
-      var type = map[LAYERSKEY_TYPE];
-      if (type == LAYERSTYPE_WMS) {
-        var layerSource = WmsSource.fromMap(map);
-        var layers = await layerSource.toLayers(context);
-        _wmsCardsList.add(OnlineSourceCard(
-            type, layerSource, layers, _wmsSourcesList, i, reloadNotifier));
+      if (map is Map<String, dynamic>) {
+        var type = map[LAYERSKEY_TYPE];
+        if (type == LAYERSTYPE_WMS) {
+          var layerSource = WmsSource.fromMap(map);
+          var layers = await layerSource.toLayers(context);
+          _wmsCardsList.add(OnlineSourceCard(
+              type, layerSource, layers, _wmsSourcesList, i, reloadNotifier));
+        }
       }
     }
 
@@ -390,7 +394,7 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                   // wmsData.minZoom = widget.layerSource.getVersion();
                   // wmsData.maxZoom = widget.layerSource.getVersion();
 
-                  String layerJson = await Navigator.push(
+                  String? layerJson = await Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => AddWmsStepper(
@@ -440,8 +444,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
   void initState() {
     steps = [
       Step(
-        title: Text(loc
-            .onlineSourcesPage_setNameTmsService),
+        title: Text(loc.onlineSourcesPage_setNameTmsService),
         //"Set a name for the TMS service"
         isActive: true,
         state: StepState.indexed,
@@ -469,11 +472,9 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
         ),
       ),
       Step(
-        title: Text(loc
-            .onlineSourcesPage_insertUrlOfService),
+        title: Text(loc.onlineSourcesPage_insertUrlOfService),
         //"Insert the url of the service."
-        subtitle: Text(loc
-            .onlineSourcesPage_placeXyzBetBrackets),
+        subtitle: Text(loc.onlineSourcesPage_placeXyzBetBrackets),
         //"Place the x, y, z between curly brackets."
         isActive: true,
         state: StepState.indexed,
@@ -511,16 +512,16 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
               },
               decoration: InputDecoration(
                 icon: const Icon(MdiIcons.fileTree),
-                labelText: loc
-                    .onlineSourcesPage_enterSubDomains, //"enter subdomains"
+                labelText:
+                    loc.onlineSourcesPage_enterSubDomains, //"enter subdomains"
               ),
             ),
           ],
         ),
       ),
       Step(
-        title: Text(
-            loc.onlineSourcesPage_addAttribution), //"Add an attribution."
+        title:
+            Text(loc.onlineSourcesPage_addAttribution), //"Add an attribution."
         isActive: true,
         state: StepState.indexed,
         content: Column(
@@ -541,8 +542,8 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
         ),
       ),
       Step(
-        title: Text(
-            loc.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
+        title:
+            Text(loc.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
         isActive: true,
         state: StepState.indexed,
         content: Column(
@@ -777,7 +778,8 @@ class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
         ),
       ),
       Step(
-        title: Text(loc.onlineSourcesPage_setWmsLayerName), //"Set WMS layer name"
+        title:
+            Text(loc.onlineSourcesPage_setWmsLayerName), //"Set WMS layer name"
         isActive: true,
         state: StepState.indexed,
         content: Column(
@@ -808,8 +810,8 @@ class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
         ),
       ),
       Step(
-        title: Text(loc
-            .onlineSourcesPage_setWmsImageFormat), //"Set WMS image format"
+        title: Text(
+            loc.onlineSourcesPage_setWmsImageFormat), //"Set WMS image format"
         isActive: true,
         state: StepState.indexed,
         content: Column(children: <Widget>[
@@ -850,8 +852,8 @@ class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
         ]),
       ),
       Step(
-        title: Text(loc
-            .onlineSourcesPage_addAnAttribution), //"Add an attribution."
+        title: Text(
+            loc.onlineSourcesPage_addAnAttribution), //"Add an attribution."
         isActive: true,
         state: StepState.indexed,
         content: Column(
@@ -875,7 +877,8 @@ class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
         ),
       ),
       Step(
-        title: Text(loc.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
+        title:
+            Text(loc.onlineSourcesPage_setMinMaxZoom), //"Set min and max zoom."
         isActive: true,
         state: StepState.indexed,
         content: Column(
@@ -930,10 +933,8 @@ class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
   void _submitDetails() async {
     final FormState? formState = _formKey.currentState;
     if (!formState!.validate()) {
-      SmashDialogs.showWarningDialog(
-          context,
-          loc
-              .onlineSourcesPage_pleaseCheckYourData); //'Please check your data'
+      SmashDialogs.showWarningDialog(context,
+          loc.onlineSourcesPage_pleaseCheckYourData); //'Please check your data'
     } else {
       formState.save();
       bool? okToGo = await showDialog(
@@ -946,8 +947,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
                   children: <Widget>[
                     new Text(loc.onlineSourcesPage_layer +
                         wmsData.layer), //"Layer: "
-                    new Text(loc.onlineSourcesPage_url +
-                        wmsData.url), //"URL: "
+                    new Text(loc.onlineSourcesPage_url + wmsData.url), //"URL: "
                     new Text("EPSG:${wmsData.srid}"),
                     new Text("Version: " + wmsData.version),
                     new Text(loc.onlineSourcesPage_attribution +
@@ -963,8 +963,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
               ),
               actions: <Widget>[
                 new TextButton(
-                  child:
-                      new Text(loc.onlineSourcesPage_cancel), //'CANCEL'
+                  child: new Text(loc.onlineSourcesPage_cancel), //'CANCEL'
                   onPressed: () {
                     Navigator.pop(context, false);
                   },

@@ -115,6 +115,9 @@ class WmsSource extends RasterLayerSource {
       crs = Epsg4326();
     }
 
+    if (!_getCapabilitiesUrl!.endsWith("?")) {
+      _getCapabilitiesUrl = _getCapabilitiesUrl! + "?";
+    }
     List<LayerOptions> layers = [
       TileLayerOptions(
         opacity: opacityPercentage! / 100.0,
