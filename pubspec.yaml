@@ -173,9 +173,10 @@ dependencies:
     #   url: https://github.com/caiobraga/background_locator.git
     #   ref: 830989e338b2d7b789dc2ffa2bd407e7a1d92b19
   background_locator_2:
+    # path: ../background_locator_2/
     git:
-      url: https://github.com/Yukams/background_locator_fixed.git
-      ref: 10b10556223cbd477372f9ca2db8d39bbb44f0d1
+      url: https://github.com/sanak/background_locator_2.git
+      ref: fix/callback-in-release-build
 
       
   # MIT

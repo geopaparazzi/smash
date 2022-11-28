@@ -118,6 +118,7 @@ abstract class GpsLoggingHandler {
 /// * registre for updates through the [SmashPositionListener] interface
 /// * handle the GPS logging
 ///
+@pragma('vm:entry-point')
 class GpsHandler with Localization {
   static const GPS_FORCED_OFF_KEY = "GPS_FORCED_OFF";
   static const String _isolateName = "LocatorIsolate";
@@ -145,7 +146,7 @@ class GpsHandler with Localization {
   @pragma('vm:entry-point')
   static void callback(LocationDto locationDto) async {
     final SendPort? send = IsolateNameServer.lookupPortByName(_isolateName);
-    send?.send(locationDto);
+    send?.send(locationDto.toJson());
   }
 
   Future<void> init(GpsState initGpsState, ProjectState projectState) async {
@@ -259,10 +260,11 @@ class GpsHandler with Localization {
 
     port = ReceivePort();
     IsolateNameServer.registerPortWithName(port!.sendPort, _isolateName);
-    port!.listen((dynamic data) {
-      if (TestLogStream().isActive) {
+    port!.listen((dynamic json) {
+      if (TestLogStream().isActive || json == null) {
         return;
       }
+      LocationDto data = LocationDto.fromJson(json);
       if (data != null) {
         KalmanFilter kalman = KalmanFilter.getInstance();
         kalman.process(data.latitude, data.longitude, data.accuracy, data.time,

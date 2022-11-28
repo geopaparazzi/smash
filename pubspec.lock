@@ -54,9 +54,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "10b10556223cbd477372f9ca2db8d39bbb44f0d1"
-      resolved-ref: "10b10556223cbd477372f9ca2db8d39bbb44f0d1"
-      url: "https://github.com/Yukams/background_locator_fixed.git"
+      ref: "fix/callback-in-release-build"
+      resolved-ref: "3e0e4dcad802b5122d480c940e391c4b518a4f45"
+      url: "https://github.com/sanak/background_locator_2.git"
     source: git
     version: "2.0.6"
   badges:
