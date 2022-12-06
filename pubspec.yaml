@@ -28,16 +28,16 @@ dependencies:
   geoimage: ^0.2.0
 
   smashlibs:
-    path: ../smashlibs/
-    # git:
-    #   url: https://github.com/moovida/smashlibs.git
-      # ref: 351222c
+    # path: ../smashlibs/
+    git:
+      url: https://github.com/moovida/smashlibs.git
+      ref: e08e258
       
   smash_import_export_plugins:
-    path: ../smash_import_export_plugins/
-    # git:
-    #   url: https://github.com/geopaparazzi/smash_import_export_plugins.git
-      # ref: aa3dda3
+    # path: ../smash_import_export_plugins/
+    git:
+      url: https://github.com/geopaparazzi/smash_import_export_plugins.git
+      ref: e9e7944
 
 
   dart_shp: ^0.4.0
