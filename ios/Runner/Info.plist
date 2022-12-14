@@ -1,80 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-	<dict>
-		<key>CFBundleDevelopmentRegion</key>
-		<string>en</string>
-		<key>CFBundleExecutable</key>
-		<string>$(EXECUTABLE_NAME)</string>
-		<key>CFBundleIdentifier</key>
-		<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-		<key>CFBundleInfoDictionaryVersion</key>
-		<string>6.0</string>
-		<key>CFBundleName</key>
-		<string>smash</string>
-		<key>CFBundlePackageType</key>
-		<string>APPL</string>
-		<key>CFBundleShortVersionString</key>
-		<string>$(FLUTTER_BUILD_NAME)</string>
-		<key>CFBundleSignature</key>
-		<string>????</string>
-		<key>CFBundleVersion</key>
-		<string>66</string>
-		<key>LSRequiresIPhoneOS</key>
-		<true />
-		<key>LSSupportsOpeningDocumentsInPlace</key>
-		<true />
-		<key>ITSAppUsesNonExemptEncryption</key>
-		<false />
-		<key>NSAppleMusicUsageDescription</key>
-		<string>The app needs to access the music library to attach media to the survey.</string>
-		<key>NSCalendarsUsageDescription</key>
-		<string>The app needs access to the calendar to connect information to tasks.</string>
-		<key>NSCameraUsageDescription</key>
-		<string>The app needs to use the camera to take picture notes during the field mapping activity.</string>
-		<key>NSContactsUsageDescription</key>
-		<string>The app needs to access contacts to share surveyed information to selected contacts.</string>
-		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
-		<key>NSLocationAlwaysUsageDescription</key>
-		<string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
-		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>The app needs access to location when open to allow the user to map geographic data on the territory.</string>
-		<key>NSMicrophoneUsageDescription</key>
-		<string>The app needs to use the camera to take vocal notes during the field mapping activity.</string>
-		<key>NSMotionUsageDescription</key>
-		<string>The app needs to access your motion to work on the survey.</string>
-		<key>NSPhotoLibraryUsageDescription</key>
-		<string>The app needs to access the photo library to attach media to the survey.</string>
-		<key>NSSpeechRecognitionUsageDescription</key>
-		<string>The app needs to access the speech recognition library to enable vocal gestures.</string>
-		<key>UIBackgroundModes</key>
-		<array>
-			<string>fetch</string>
-			<string>location</string>
-			<string>remote-notification</string>
-		</array>
-		<key>UIFileSharingEnabled</key>
-		<true />
-		<key>UILaunchStoryboardName</key>
-		<string>LaunchScreen</string>
-		<key>UIMainStoryboardFile</key>
-		<string>Main</string>
-		<key>UISupportedInterfaceOrientations</key>
-		<array>
-			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
-			<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		</array>
-		<key>UISupportedInterfaceOrientations~ipad</key>
-		<array>
-			<string>UIInterfaceOrientationPortrait</string>
-			<string>UIInterfaceOrientationPortraitUpsideDown</string>
-			<string>UIInterfaceOrientationLandscapeLeft</string>
-			<string>UIInterfaceOrientationLandscapeRight</string>
-		</array>
-		<key>UIViewControllerBasedStatusBarAppearance</key>
-		<false />
-	</dict>
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Smash</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>smash</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+</dict>
 </plist>
