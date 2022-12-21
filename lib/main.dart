@@ -373,8 +373,8 @@ Future<String?> handleStoragePermission(BuildContext context) async {
   if (!SmashPlatform.isDesktop()) {
     var storagePermission = await PermissionManager()
         .add(PERMISSIONS.STORAGE)
-        .add(
-            PERMISSIONS.MANAGEEXTSTORAGE) // TODO comment this for store release
+        //.add(
+        //    PERMISSIONS.MANAGEEXTSTORAGE) // TODO comment this for store release
         .check(context);
     if (!storagePermission) {
       return SL.of(context).main_storagePermissionIsMandatoryToOpenSmash;

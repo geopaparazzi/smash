@@ -89,7 +89,8 @@ dependencies:
     #   ref: 91604d66c3b3fb1c197943679cc4eb701bb82a17
 
   # MIT
-  sqlite3_flutter_libs: ^0.5.9
+  #sqlite3_flutter_libs: ^0.5.9
+  sqlite3_flutter_libs: ^0.5.12
 
   # BSD
   flutter_map: ^2.2.0
@@ -136,12 +137,13 @@ dependencies:
   fl_chart: ^0.55.1
 
   # MIT
-  permission_handler: ^10.0.0
+  permission_handler: ^10.2.0
+  #permission_handler: ^10.0.0
   # git: 
   #   url: https://github.com/Baseflow/flutter-permission-handler.git
   #   path: permission_handler
   # BSD License
-  synchronized: ^3.0.0+3
+  #synchronized: ^3.0.0+3
 
   # Apache 2
   badges: ^2.0.3
@@ -172,12 +174,12 @@ dependencies:
     # git:
     #   url: https://github.com/caiobraga/background_locator.git
     #   ref: 830989e338b2d7b789dc2ffa2bd407e7a1d92b19
-  background_locator_2:
+  #background_locator_2:
     # path: ../background_locator_2/
-    git:
-      url: https://github.com/sanak/background_locator_2.git
-      ref: fix/callback-in-release-build
-
+  #  git:
+  #    url: https://github.com/sanak/background_locator_2.git
+  #    ref: fix/callback-in-release-build
+  background_locator_2: ^2.0.5
       
   # MIT
   # geolocator: ^5.3.0

@@ -53,12 +53,10 @@ packages:
   background_locator_2:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "fix/callback-in-release-build"
-      resolved-ref: "3e0e4dcad802b5122d480c940e391c4b518a4f45"
-      url: "https://github.com/sanak/background_locator_2.git"
-    source: git
-    version: "2.0.6"
+      name: background_locator_2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.5"
   badges:
     dependency: "direct main"
     description:
@@ -1145,7 +1143,7 @@ packages:
     source: hosted
     version: "1.1.1"
   synchronized:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: synchronized
       url: "https://pub.dartlang.org"
