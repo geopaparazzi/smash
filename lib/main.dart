@@ -25,6 +25,7 @@ import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smash_import_export_plugins/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
+import 'package:smashlibs/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:stack_trace/stack_trace.dart';
 
@@ -77,6 +78,7 @@ class SmashApp extends StatelessWidget {
       localizationsDelegates: [
         SL.delegate,
         IEL.delegate,
+        SLL.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

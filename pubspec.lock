@@ -100,7 +100,7 @@ packages:
       name: checked_yaml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   cli_util:
     dependency: transitive
     description:
@@ -451,7 +451,7 @@ packages:
       name: gpx
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.2.1"
   http:
     dependency: transitive
     description:
@@ -486,7 +486,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.2"
+    version: "3.3.0"
   image_picker:
     dependency: transitive
     description:
@@ -514,7 +514,7 @@ packages:
       name: image_picker_ios
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.6+3"
+    version: "0.8.6+5"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -1074,8 +1074,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: e9e7944
-      resolved-ref: e9e7944523ea803e71936b89d0761173c26e1015
+      ref: "14e158e"
+      resolved-ref: "14e158e3d750d6f7ffa1735b8b655c253b8b599a"
       url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
     source: git
     version: "0.0.1"
@@ -1083,8 +1083,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: e08e258
-      resolved-ref: e08e258234c583229e984cc6650df08879ad1734
+      ref: "0185ed0"
+      resolved-ref: "0185ed0f2b9fa1afce06183bd66c7acab31aa165"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

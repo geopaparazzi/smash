@@ -724,23 +724,25 @@ class MainViewWidgetState extends State<MainViewWidget>
           var selectedType = await SmashDialogs.showComboDialog(
               mapBuilder.context!, titleWithMode, types);
           var noteInGpsMode = gpsState.insertInGpsMode;
-          if (selectedType == types[0]) {
-            Note note = DataLoaderUtilities.addNote(
-                mapBuilder, noteInGpsMode, _mapController!);
-            await Navigator.push(
-                mapBuilder.context!,
-                MaterialPageRoute(
-                    builder: (context) => NotePropertiesWidget(note)));
-          } else if (selectedType == types[1]) {
-            await DataLoaderUtilities.addImage(
-                mapBuilder.context!,
-                noteInGpsMode == POINT_INSERTION_MODE_GPS
-                    ? gpsState.lastGpsPosition
-                    : _mapController!.center,
-                gpsState.useFilteredGps);
-            ProjectState projectState =
-                Provider.of<ProjectState>(context, listen: false);
-            projectState.reloadProject(context);
+          if (selectedType != null) {
+            if (selectedType == types[0]) {
+              Note note = DataLoaderUtilities.addNote(
+                  mapBuilder, noteInGpsMode, _mapController!);
+              await Navigator.push(
+                  mapBuilder.context!,
+                  MaterialPageRoute(
+                      builder: (context) => NotePropertiesWidget(note)));
+            } else if (selectedType == types[1]) {
+              await DataLoaderUtilities.addImage(
+                  mapBuilder.context!,
+                  noteInGpsMode == POINT_INSERTION_MODE_GPS
+                      ? gpsState.lastGpsPosition
+                      : _mapController!.center,
+                  gpsState.useFilteredGps);
+              ProjectState projectState =
+                  Provider.of<ProjectState>(context, listen: false);
+              projectState.reloadProject(context);
+            }
           }
         },
         onLongPress: () {
