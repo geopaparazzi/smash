@@ -13,6 +13,7 @@ import 'l10n_it.dart';
 import 'l10n_ja.dart';
 import 'l10n_nb.dart';
 import 'l10n_ru.dart';
+import 'l10n_zh.dart';
 
 /// Callers can lookup localized strings with an instance of SL
 /// returned by `SL.of(context)`.
@@ -103,7 +104,9 @@ abstract class SL {
     Locale('ja'),
     Locale('nb'),
     Locale('nb', 'NO'),
-    Locale('ru')
+    Locale('ru'),
+    Locale('zh'),
+    Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans')
   ];
 
   /// No description provided for @main_welcome.
@@ -3068,13 +3071,23 @@ class _SLDelegate extends LocalizationsDelegate<SL> {
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['cs', 'de', 'en', 'fr', 'it', 'ja', 'nb', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['cs', 'de', 'en', 'fr', 'it', 'ja', 'nb', 'ru', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_SLDelegate old) => false;
 }
 
 SL lookupSL(Locale locale) {
+
+  // Lookup logic when language+script codes are specified.
+  switch (locale.languageCode) {
+    case 'zh': {
+  switch (locale.scriptCode) {
+    case 'Hans': return SLZhHans();
+   }
+  break;
+   }
+  }
 
   // Lookup logic when language+country codes are specified.
   switch (locale.languageCode) {
@@ -3096,6 +3109,7 @@ SL lookupSL(Locale locale) {
     case 'ja': return SLJa();
     case 'nb': return SLNb();
     case 'ru': return SLRu();
+    case 'zh': return SLZh();
   }
 
   throw FlutterError(

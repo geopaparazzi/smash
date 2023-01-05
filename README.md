@@ -34,6 +34,7 @@ Build and run:
 ```sh
 # To solve Weblate duplicated translation issue
 echo '{}' > lib/l10n/intl_nb.arb
+echo '{}' > lib/l10n/intl_zh.arb
 flutter pub get
 flutter gen-l10n
 flutter run
