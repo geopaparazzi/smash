@@ -44,6 +44,16 @@ class GeocachingSource extends VectorLayerSource {
     7005: ["GIGA_EVENT", MdiIcons.calendarStar],
   };
 
+  Map<int, String> size2NameMap = {
+    1: "Unknown",
+    2: "Micro",
+    8: "Small",
+    3: "Regular",
+    4: "Large",
+    5: "Virtual",
+    6: "Other",
+  };
+
   bool isVisible = true;
   String _attribution = "Geocaching HQ";
   List<dynamic> _pointsList = [];
@@ -139,6 +149,8 @@ class GeocachingSource extends VectorLayerSource {
         var code = pointData['code'] ?? " - nv - ";
         var premiumOnly = pointData['premiumOnly'] ?? false;
         var geocacheType = pointData['geocacheType'] ?? 2;
+        var size = pointData['containerType'] ?? 1;
+        var sizeStr = size2NameMap[size];
         var detailsUrl = pointData['detailsUrl'] ?? "";
         var completeUrl = "https://www.geocaching.com" + detailsUrl;
         var postedCoordinates = pointData['postedCoordinates'];
@@ -223,6 +235,7 @@ class GeocachingSource extends VectorLayerSource {
                               getTableRow("code", code),
                               getTableRow("type", type[0]),
                               getTableRow("difficulty", "$difficulty/5"),
+                              getTableRow("size", "$sizeStr"),
                               getTableRow(
                                   "placed date", placedDate.split("T")[0]),
                               getTableRow("last found date",
