@@ -1489,52 +1489,52 @@ class SLZhHans extends SLZh {
   String get main_welcome => '欢迎使用SMASH!';
 
   @override
-  String get main_check_location_permission => '正在检测位置权限';
+  String get main_check_location_permission => '正在检测位置权限…';
 
   @override
-  String get main_location_permission_granted => '位置权限已授予';
+  String get main_location_permission_granted => '位置权限已授予.';
 
   @override
-  String get main_checkingStoragePermission => '正在检测存储权限';
+  String get main_checkingStoragePermission => '正在检测存储权限…';
 
   @override
-  String get main_storagePermissionGranted => '存储权限已授予';
+  String get main_storagePermissionGranted => '存储权限已授予.';
 
   @override
-  String get main_loadingPreferences => '正在载入配置文件';
+  String get main_loadingPreferences => '正在载入配置文件…';
 
   @override
-  String get main_preferencesLoaded => '配置文件载入完毕';
+  String get main_preferencesLoaded => '配置文件载入完毕.';
 
   @override
-  String get main_loadingWorkspace => '正在载入工作空间';
+  String get main_loadingWorkspace => '正在载入工作空间…';
 
   @override
-  String get main_workspaceLoaded => '工作空间载入完毕';
+  String get main_workspaceLoaded => '工作空间载入完毕.';
 
   @override
-  String get main_loadingTagsList => '正在载入Tag列表';
+  String get main_loadingTagsList => '正在载入Tag列表…';
 
   @override
-  String get main_tagsListLoaded => 'Tag列表载入完毕';
+  String get main_tagsListLoaded => 'Tag列表载入完毕.';
 
   @override
-  String get main_loadingKnownProjections => '正在载入已知投影';
+  String get main_loadingKnownProjections => '正在载入已知投影…';
 
   @override
-  String get main_knownProjectionsLoaded => '投影载入完毕';
+  String get main_knownProjectionsLoaded => '投影载入完毕.';
 
   @override
   String get main_loadingFences => '正在载入地理围栏…';
 
   @override
-  String get main_fencesLoaded => '地理围栏载入完毕';
+  String get main_fencesLoaded => '地理围栏载入完毕.';
 
   @override
-  String get main_loadingLayersList => '正在载入图层列表';
+  String get main_loadingLayersList => '正在载入图层列表…';
 
   @override
-  String get main_layersListLoaded => '图层列表加载完毕';
+  String get main_layersListLoaded => '图层列表加载完毕.';
 
   @override
   String get main_locationBackgroundWarning => '下一步授予位置权限将允许GPS在后台记录日志(否则GPS日志将在前台运行)，提示：日志数据只存放在设备本地，不会进行数据上传。';
@@ -2555,4 +2555,25 @@ class SLZhHans extends SLZh {
 
   @override
   String get settings_testGpsLogDemoUse => '为演示用的测试GPS日志。';
+
+  @override
+  String get settings_setDurationGpsPointsInMilli => '设置GPS点间隔时间(毫秒数)。';
+
+  @override
+  String get settings_SETTING => '设置';
+
+  @override
+  String get settings_setMockedGpsDuration => '设置GPS模拟时间间隔';
+
+  @override
+  String get settings_theValueHasToBeInt => '此值必须是个完整数值。';
+
+  @override
+  String get settings_milliseconds => '毫秒数';
+
+  @override
+  String get settings_useGoogleToImproveLoc => '使用Google服务改进位置';
+
+  @override
+  String get settings_useOfGoogleServicesRestart => '使用Google服务（需要重启app）。';
 }
