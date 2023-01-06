@@ -1,0 +1,8 @@
+- new enhanced editing workflow: tap to add geometries, long tap to edit
+- area and length (polygons and lines) added to attributes table
+- images of forms now have their own position, not the note's
+- single tap now centers on map position
+- language updates for Italian, French, Japanese, Norwegian, Russian
+- fix for empty exported image folder
+- fix for misbehaving measure tool
+- fix for geopackage export (was connecting logs)
