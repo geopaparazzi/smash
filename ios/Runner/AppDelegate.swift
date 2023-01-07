@@ -1,6 +1,6 @@
 import UIKit
 import Flutter
-import background_locator
+import background_locator_2
 
 func registerPlugins(registry: FlutterPluginRegistry) -> () {
     GeneratedPluginRegistrant.register(with: registry)
