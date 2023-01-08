@@ -9,6 +9,7 @@ import 'dart:io';
 
 import 'package:badges/badges.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -340,6 +341,65 @@ class DashboardUtils {
               Navigator.pop(context);
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => GeocodingPage()));
+            },
+          ),
+          ListTile(
+            leading: new Icon(
+              MdiIcons.mapMarkerUp,
+              color: c,
+              size: iconSize,
+            ),
+            title: SmashUI.normalText(
+              SL.of(context).mainviewUtils_goToCoordinate, //"Go to coordinate",
+              bold: true,
+              color: c,
+            ),
+            onTap: () async {
+              var coord = await SmashDialogs.showInputDialog(
+                context,
+                SL.of(context).mainviewUtils_goToCoordinate,
+                SL.of(context).mainviewUtils_enterLonLat,
+                validationFunction: (String value) {
+                  if (value.isEmpty) {
+                    return SL.of(context).mainviewUtils_goToCoordinateEmpty;
+                  } else {
+                    // if (value.toUpperCase().contains("N") &&
+                    //     value.toUpperCase().contains("E")) {
+                    //   return null;
+                    // } else {
+                    var coordSplit = value.split(",");
+                    bool wrongCoord = false;
+                    if (coordSplit.length != 2) {
+                      wrongCoord = true;
+                    } else {
+                      try {
+                        double.parse(coordSplit[0]);
+                        double.parse(coordSplit[1]);
+                      } catch (e) {
+                        wrongCoord = true;
+                      }
+                    }
+                    if (wrongCoord) {
+                      return SL
+                          .of(context)
+                          .mainviewUtils_goToCoordinateWrongFormat;
+                    }
+                    // }
+                  }
+                  return null;
+                },
+              );
+              if (coord != null) {
+                Navigator.pop(context);
+
+                SmashMapState mapState =
+                    Provider.of<SmashMapState>(context, listen: false);
+                mapState.center = Coordinate(double.parse(coord.split(",")[0]),
+                    double.parse(coord.split(",")[1]));
+              }
+
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => GeocodingPage()));
             },
           ),
           ListTile(

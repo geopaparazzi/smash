@@ -149,6 +149,18 @@ class SLNb extends SL {
   String get mainviewUtils_goTo => 'Go to';
 
   @override
+  String get mainviewUtils_goToCoordinate => 'Go to coordinate';
+
+  @override
+  String get mainviewUtils_enterLonLat => 'Enter longitude, latitude';
+
+  @override
+  String get mainviewUtils_goToCoordinateWrongFormat => 'Wrong coordinate format. Should be: 11.18463, 46.12345';
+
+  @override
+  String get mainviewUtils_goToCoordinateEmpty => 'This can\'t be empty.';
+
+  @override
   String get mainviewUtils_sharePosition => 'Share position';
 
   @override

@@ -8,7 +8,7 @@ import 'dart:async';
 
 import 'package:dart_jts/dart_jts.dart' hide Position, Distance;
 import 'package:flutter/material.dart';
-import 'package:flutter_geocoder/geocoder.dart';
+import 'package:geocoding/geocoding.dart' as GC;
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/generated/l10n.dart';
@@ -28,7 +28,7 @@ class GeocodingPage extends StatefulWidget {
 }
 
 class GeocodingPageState extends State<GeocodingPage> {
-  late List<Address> _addresses = [];
+  List<List> _addresses = [];
   var textEditingController = TextEditingController();
   late TextFormField textField;
   bool searching = false;
@@ -45,40 +45,47 @@ class GeocodingPageState extends State<GeocodingPage> {
   }
 
   Future<void> search(BuildContext context, String query) async {
-    List<Address> addresses = [];
+    List<GC.Location> tmp = [];
     try {
-      addresses = await Geocoder.local.findAddressesFromQuery(query);
+      tmp = await GC.locationFromAddress(query);
     } on Exception catch (e, s) {
       SMLogger().e("Unable to geocode $query", e, s);
     }
     searching = false;
-    if (addresses.isEmpty) {
+    if (tmp.isEmpty) {
       SmashDialogs.showWarningDialog(context, "Could not find any address.");
     } else {
-      setState(() {
-        _addresses.clear();
-        _addresses.addAll(addresses);
-      });
+      _addresses.clear();
+      for (var l in tmp) {
+        List<GC.Placemark> placemarks =
+            await GC.placemarkFromCoordinates(l.latitude, l.longitude);
+        if (placemarks.isNotEmpty) {
+          var first = placemarks[0];
+          var label = "${first.name}, ${first.street}, ${first.locality}";
+          _addresses.add([label, l]);
+        }
+      }
+
+      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
     List<ListTile> _list = List.from(_addresses.map((address) {
+      GC.Location l = address[1];
       return ListTile(
         leading: IconButton(
           icon: Icon(Icons.navigation),
           onPressed: () {
             SmashMapState mapState =
                 Provider.of<SmashMapState>(context, listen: false);
-            mapState.center = Coordinate(
-                address.coordinates.longitude!, address.coordinates.latitude!);
+            mapState.center = Coordinate(l.longitude, l.latitude);
             Navigator.pop(context);
           },
         ),
-        title: Text("${address.addressLine}"),
-        subtitle: Text(
-            "Lat: ${address.coordinates.latitude} Lon: ${address.coordinates.longitude}"),
+        title: Text("${address[0]}"),
+        subtitle: Text("Lat: ${l.latitude} Lon: ${l.longitude}"),
       );
     }));
 

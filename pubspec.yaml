@@ -31,13 +31,13 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: 0185ed0
+      ref: 9f248a1
       
   smash_import_export_plugins:
     # path: ../smash_import_export_plugins/
     git:
       url: https://github.com/geopaparazzi/smash_import_export_plugins.git
-      ref: 14e158e
+      ref: 01f0c33
 
 
   dart_shp: ^0.4.0
@@ -196,8 +196,10 @@ dependencies:
   # MIT
   geodesy: ^0.4.0-nullsafety.0
 
-  # BSD
-  flutter_geocoder: ^0.2.2-nullsafety
+  # # BSD
+  # flutter_geocoder: ^0.2.2-nullsafety
+  # MIT
+  geocoding: ^2.0.5
 
   # MIT
   flutter_slidable: ^2.0.0

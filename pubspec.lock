@@ -288,13 +288,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
-  flutter_geocoder:
-    dependency: "direct main"
-    description:
-      name: flutter_geocoder
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.2-nullsafety"
   flutter_geopackage:
     dependency: "direct main"
     description:
@@ -417,6 +410,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.3"
+  geocoding:
+    dependency: "direct main"
+    description:
+      name: geocoding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.5"
+  geocoding_platform_interface:
+    dependency: transitive
+    description:
+      name: geocoding_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   geodesy:
     dependency: "direct main"
     description:
@@ -1015,7 +1022,7 @@ packages:
       name: shared_preferences_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   shared_preferences_platform_interface:
     dependency: transitive
     description:
@@ -1074,8 +1081,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "14e158e"
-      resolved-ref: "14e158e3d750d6f7ffa1735b8b655c253b8b599a"
+      ref: "01f0c33"
+      resolved-ref: "01f0c33de169ca63210849b3ae6ffb7ac512fcb9"
       url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
     source: git
     version: "0.0.1"
@@ -1083,8 +1090,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0185ed0"
-      resolved-ref: "0185ed0f2b9fa1afce06183bd66c7acab31aa165"
+      ref: "9f248a1"
+      resolved-ref: "9f248a1b3dd69e93b7de8b323f3c6381ad62ae39"
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"

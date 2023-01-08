@@ -397,6 +397,30 @@ abstract class SL {
   /// **'Go to'**
   String get mainviewUtils_goTo;
 
+  /// No description provided for @mainviewUtils_goToCoordinate.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to coordinate'**
+  String get mainviewUtils_goToCoordinate;
+
+  /// No description provided for @mainviewUtils_enterLonLat.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter longitude, latitude'**
+  String get mainviewUtils_enterLonLat;
+
+  /// No description provided for @mainviewUtils_goToCoordinateWrongFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong coordinate format. Should be: 11.18463, 46.12345'**
+  String get mainviewUtils_goToCoordinateWrongFormat;
+
+  /// No description provided for @mainviewUtils_goToCoordinateEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This can\'t be empty.'**
+  String get mainviewUtils_goToCoordinateEmpty;
+
   /// No description provided for @mainviewUtils_sharePosition.
   ///
   /// In en, this message translates to:
