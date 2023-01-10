@@ -982,5 +982,13 @@
   "network_thisFIleAlreadyBeingDownloaded": "Tento soubor je již stažen.",
   "@network_thisFIleAlreadyBeingDownloaded": {},
   "network_download": "Stáhnout",
-  "@network_download": {}
+  "@network_download": {},
+  "mainviewUtils_enterLonLat": "Zadejte zeměpisnou délku, šířku",
+  "@mainviewUtils_enterLonLat": {},
+  "mainviewUtils_goToCoordinateEmpty": "Nemůže být prázdný.",
+  "@mainviewUtils_goToCoordinateEmpty": {},
+  "mainviewUtils_goToCoordinate": "Přejít na souřadnice",
+  "@mainviewUtils_goToCoordinate": {},
+  "mainviewUtils_goToCoordinateWrongFormat": "Špatný formát souřadnic. Mělo by být: 11.18463, 46.12345",
+  "@mainviewUtils_goToCoordinateWrongFormat": {}
 }
