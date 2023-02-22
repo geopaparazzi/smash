@@ -149,16 +149,16 @@ class SLCs extends SL {
   String get mainviewUtils_goTo => 'Přejít na';
 
   @override
-  String get mainviewUtils_goToCoordinate => 'Go to coordinate';
+  String get mainviewUtils_goToCoordinate => 'Přejít na souřadnice';
 
   @override
-  String get mainviewUtils_enterLonLat => 'Enter longitude, latitude';
+  String get mainviewUtils_enterLonLat => 'Zadejte zeměpisnou délku, šířku';
 
   @override
-  String get mainviewUtils_goToCoordinateWrongFormat => 'Wrong coordinate format. Should be: 11.18463, 46.12345';
+  String get mainviewUtils_goToCoordinateWrongFormat => 'Špatný formát souřadnic. Mělo by být: 11.18463, 46.12345';
 
   @override
-  String get mainviewUtils_goToCoordinateEmpty => 'This can\'t be empty.';
+  String get mainviewUtils_goToCoordinateEmpty => 'Nemůže být prázdný.';
 
   @override
   String get mainviewUtils_sharePosition => 'Sdílet pozici';
