@@ -31,13 +31,13 @@ dependencies:
     # path: ../smashlibs/
     git:
       url: https://github.com/moovida/smashlibs.git
-      ref: 9f248a1
+      ref: ecc1d3e
       
   smash_import_export_plugins:
     # path: ../smash_import_export_plugins/
     git:
       url: https://github.com/geopaparazzi/smash_import_export_plugins.git
-      ref: 01f0c33
+      ref: d27b20c
 
 
   dart_shp: ^0.4.0

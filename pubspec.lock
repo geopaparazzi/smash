@@ -1081,8 +1081,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "01f0c33"
-      resolved-ref: "01f0c33de169ca63210849b3ae6ffb7ac512fcb9"
+      ref: d27b20c
+      resolved-ref: d27b20c114fd1045b6996e013fa4e49696d23131
       url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
     source: git
     version: "0.0.1"
@@ -1090,8 +1090,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "9f248a1"
-      resolved-ref: "9f248a1b3dd69e93b7de8b323f3c6381ad62ae39"
+      ref: ecc1d3e
+      resolved-ref: ecc1d3e7eb2d1312ec70cf41fbbeae7366a4927b
       url: "https://github.com/moovida/smashlibs.git"
     source: git
     version: "1.0.0"
