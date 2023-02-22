@@ -23,9 +23,9 @@ class OnlineSourcesPage extends StatefulWidget {
 
 class _OnlineSourcesPageState extends State<OnlineSourcesPage>
     with AfterLayoutMixin {
-  List<Widget> _tmsCardsList = [];
+  List<Widget>? _tmsCardsList;
   List<String> _tmsSourcesList = [];
-  List<Widget> _wmsCardsList = [];
+  List<Widget>? _wmsCardsList;
   List<String> _wmsSourcesList = [];
   ValueNotifier<int> reloadNotifier = ValueNotifier<int>(0);
 
@@ -73,7 +73,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: _tmsCardsList,
+                        children: _tmsCardsList!,
                       ),
                     ),
                     Positioned(
@@ -82,7 +82,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                       child: FloatingActionButton(
                           child: Icon(MdiIcons.plus),
                           onPressed: () async {
-                            String layerJson = await Navigator.push(
+                            String? layerJson = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => AddTmsStepper()));
@@ -109,7 +109,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: _wmsCardsList,
+                        children: _wmsCardsList!,
                       ),
                     ),
                     Positioned(
@@ -118,7 +118,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
                       child: FloatingActionButton(
                           child: Icon(MdiIcons.plus),
                           onPressed: () async {
-                            String layerJson = await Navigator.push(
+                            String? layerJson = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => AddWmsStepper()));
@@ -254,7 +254,11 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
     // TMS
     var tmsList = GpPreferences().getTmsListSync();
     _tmsSourcesList.clear();
-    _tmsCardsList.clear();
+    if (_tmsCardsList != null) {
+      _tmsCardsList!.clear();
+    } else {
+      _tmsCardsList = [];
+    }
     if (tmsList.isEmpty) {
       // load a default set if empty
       for (var i = 0; i < onlinesTilesSources.length; i++) {
@@ -277,7 +281,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
         if (type == LAYERSTYPE_TMS) {
           var layerSource = TileSource.fromMap(map);
           var layers = await layerSource.toLayers(context);
-          _tmsCardsList.add(OnlineSourceCard(
+          _tmsCardsList!.add(OnlineSourceCard(
               type, layerSource, layers, _tmsSourcesList, i, reloadNotifier));
         }
       }
@@ -285,7 +289,11 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
     // WMS
     var wmsList = GpPreferences().getWmsListSync();
     _wmsSourcesList.clear();
-    _wmsCardsList.clear();
+    if (_wmsCardsList != null) {
+      _wmsCardsList!.clear();
+    } else {
+      _wmsCardsList = [];
+    }
     if (wmsList.isNotEmpty) {
       // load from preferences
       for (var i = 0; i < wmsList.length; i++) {
@@ -301,7 +309,7 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
         if (type == LAYERSTYPE_WMS) {
           var layerSource = WmsSource.fromMap(map);
           var layers = await layerSource.toLayers(context);
-          _wmsCardsList.add(OnlineSourceCard(
+          _wmsCardsList!.add(OnlineSourceCard(
               type, layerSource, layers, _wmsSourcesList, i, reloadNotifier));
         }
       }
@@ -383,7 +391,29 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
               okFunction: () => Navigator.pop(context, widget.layerSource),
               cancelLabel: "Modify",
               cancelFunction: () async {
-                if (widget.type != LAYERSTYPE_TMS) {
+                if (widget.type == LAYERSTYPE_TMS) {
+                  TmsData tmsData = TmsData();
+                  tmsData.url = widget.layerSource.getUrl();
+                  tmsData.name = widget.layerSource.getName();
+                  tmsData.attribution = widget.layerSource.getAttribution();
+                  tmsData.subdomains = widget.layerSource.subdomains.join(",");
+
+                  String? layerJson = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddTmsStepper(
+                                tmsData: tmsData,
+                              )));
+                  if (layerJson != null) {
+                    widget.sourcesList.removeAt(widget.index);
+                    await GpPreferences().setTmsList(widget.sourcesList);
+                    await GpPreferences().addNewTms(layerJson);
+                    widget.reloadNotifier.value =
+                        widget.reloadNotifier.value + 1;
+                    // await getList();
+                    setState(() {});
+                  }
+                } else {
                   WmsData wmsData = WmsData();
                   wmsData.url = widget.layerSource.getUrl();
                   wmsData.layer = widget.layerSource.getName();
@@ -391,8 +421,6 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                   wmsData.format = widget.layerSource.imageFormat;
                   wmsData.srid = widget.layerSource.getSrid();
                   wmsData.version = widget.layerSource.getVersion();
-                  // wmsData.minZoom = widget.layerSource.getVersion();
-                  // wmsData.maxZoom = widget.layerSource.getVersion();
 
                   String? layerJson = await Navigator.push(
                       context,
@@ -420,16 +448,17 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
 }
 
 class TmsData {
-  String? name;
-  String? url;
-  String? subdomains;
-  String? attribution;
-  String? minZoom;
-  String? maxZoom;
+  String name = "";
+  String url = "";
+  String subdomains = "";
+  String attribution = "";
+  String minZoom = "0";
+  String maxZoom = "19";
 }
 
 class AddTmsStepper extends StatefulWidget {
-  AddTmsStepper({Key? key}) : super(key: key);
+  TmsData? tmsData;
+  AddTmsStepper({this.tmsData, Key? key}) : super(key: key);
 
   @override
   _AddTmsStepperState createState() => _AddTmsStepperState();
@@ -442,6 +471,11 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
 
   @override
   void initState() {
+    if (widget.tmsData == null) {
+      tmsData = TmsData();
+    } else {
+      tmsData = widget.tmsData!;
+    }
     steps = [
       Step(
         title: Text(loc.onlineSourcesPage_setNameTmsService),
@@ -451,6 +485,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
         content: Column(
           children: <Widget>[
             TextFormField(
+              initialValue: tmsData.name,
               decoration: InputDecoration(
                 labelText: loc.onlineSourcesPage_enterName, //"enter name"
                 icon: const Icon(MdiIcons.text),
@@ -458,7 +493,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
               keyboardType: TextInputType.text,
               autocorrect: false,
               onSaved: (String? value) {
-                tmsData.name = value;
+                if (value != null) tmsData.name = value;
               },
               validator: (value) {
                 if (value!.isEmpty || value.length < 1) {
@@ -481,11 +516,11 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
         content: Column(
           children: <Widget>[
             TextFormField(
+              initialValue: tmsData.url,
               keyboardType: TextInputType.text,
               autocorrect: false,
               onSaved: (String? value) {
-                print(value);
-                tmsData.url = value;
+                if (value != null) tmsData.url = value;
               },
               validator: (value) {
                 if (value!.isEmpty ||
@@ -505,10 +540,11 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
               ),
             ),
             TextFormField(
+              initialValue: tmsData.subdomains,
               keyboardType: TextInputType.text,
               autocorrect: false,
               onSaved: (String? value) {
-                tmsData.subdomains = value;
+                if (value != null) tmsData.subdomains = value;
               },
               decoration: InputDecoration(
                 icon: const Icon(MdiIcons.fileTree),
@@ -527,10 +563,11 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
         content: Column(
           children: <Widget>[
             TextFormField(
+              initialValue: tmsData.attribution,
               keyboardType: TextInputType.text,
               autocorrect: false,
               onSaved: (String? value) {
-                tmsData.attribution = value;
+                if (value != null) tmsData.attribution = value;
               },
               decoration: InputDecoration(
                 labelText: loc
@@ -551,7 +588,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
             TextFormField(
               keyboardType: TextInputType.number,
               onSaved: (String? value) {
-                tmsData.minZoom = value;
+                tmsData.minZoom = value!;
               },
               initialValue: "0",
               decoration: InputDecoration(
@@ -560,7 +597,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
             TextFormField(
               keyboardType: TextInputType.number,
               onSaved: (String? value) {
-                tmsData.maxZoom = value;
+                tmsData.maxZoom = value!;
               },
               initialValue: "19",
               decoration: InputDecoration(
@@ -611,16 +648,16 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
               child: new ListBody(
                 children: <Widget>[
                   new Text(SL.of(context).onlineSourcesPage_name +
-                      tmsData.name!), //"Name: "
-                  new Text("URL: " + tmsData.url!),
+                      tmsData.name), //"Name: "
+                  new Text("URL: " + tmsData.url),
                   new Text(SL.of(context).onlineSourcesPage_subDomains +
-                      (tmsData.subdomains ?? "- nv -")), //"Subdomains: "
+                      (tmsData.subdomains)), //"Subdomains: "
                   new Text(SL.of(context).onlineSourcesPage_attribution +
-                      (tmsData.attribution ?? "- nv -")), //"Attribution: "
+                      (tmsData.attribution)), //"Attribution: "
                   new Text(
-                      "${SL.of(context).onlineSourcesPage_minZoom}: ${tmsData.minZoom ?? ""}"), //"Min zoom:"
+                      "${SL.of(context).onlineSourcesPage_minZoom}: ${tmsData.minZoom}"), //"Min zoom:"
                   new Text(
-                      "${SL.of(context).onlineSourcesPage_maxZoom}: ${tmsData.maxZoom ?? ""}"), //"Max zoom:"
+                      "${SL.of(context).onlineSourcesPage_maxZoom}: ${tmsData.maxZoom}"), //"Max zoom:"
                 ],
               ),
             ),
@@ -648,13 +685,13 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
         {
             "$LAYERSKEY_LABEL": "${tmsData.name}",
             "$LAYERSKEY_URL": "${tmsData.url}",
-            "$LAYERSKEY_MINZOOM": ${tmsData.minZoom ?? 0},
-            "$LAYERSKEY_MAXZOOM": ${tmsData.maxZoom ?? 19},
+            "$LAYERSKEY_MINZOOM": ${tmsData.minZoom},
+            "$LAYERSKEY_MAXZOOM": ${tmsData.maxZoom},
             "$LAYERSKEY_OPACITY": 100,
-            "$LAYERSKEY_ATTRIBUTION": "${tmsData.attribution ?? ""}",
+            "$LAYERSKEY_ATTRIBUTION": "${tmsData.attribution}",
             "$LAYERSKEY_TYPE": "$LAYERSTYPE_TMS",
             "$LAYERSKEY_ISVISIBLE": true,
-            "$LAYERSKEY_SUBDOMAINS": "${tmsData.subdomains ?? ""}"
+            "$LAYERSKEY_SUBDOMAINS": "${tmsData.subdomains}"
         }
         ''';
         Navigator.pop(context, json);
@@ -754,11 +791,13 @@ class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
               keyboardType: TextInputType.text,
               autocorrect: false,
               onSaved: (String? value) {
-                if (value!.contains("?")) {
-                  var markIndex = value.indexOf("?");
-                  value = value.substring(0, markIndex + 1);
+                if (value != null) {
+                  if (value.contains("?")) {
+                    var markIndex = value.indexOf("?");
+                    value = value.substring(0, markIndex + 1);
+                  }
+                  wmsData.url = value;
                 }
-                wmsData.url = value;
               },
               validator: (value) {
                 if (value!.isEmpty ||
