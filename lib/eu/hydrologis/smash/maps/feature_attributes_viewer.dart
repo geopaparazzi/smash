@@ -42,7 +42,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
   var _baseLayer;
   bool _loading = true;
   late JTS.Geometry _geometry;
-  var _geomCols = {};
+  var _srids = {};
 
   @override
   void afterFirstLayout(BuildContext context) async {
@@ -59,12 +59,12 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     for (var i = 0; i < f.ids!.length; i++) {
       var db = f.dbs![i];
       var tableName = f.ids![i];
-      var geometryColumn = await db.getGeometryColumnsForTable(TableName(
+      var gcAndSrid = await db.getGeometryColumnNameAndSridForTable(TableName(
           tableName,
           schemaSupported:
               db is PostgisDb || db is PostgresqlDb ? true : false));
-      if (geometryColumn != null) {
-        _geomCols[tableName] = geometryColumn;
+      if (gcAndSrid != null) {
+        _srids[tableName] = gcAndSrid[1];
       }
     }
 
@@ -392,12 +392,12 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
 
     // add also geometry area and perimeter where available
 
-    var geometryColumn = _geomCols[tablename];
-    if (geometryColumn != null) {
+    var srid = _srids[tablename];
+    if (srid != null) {
       var checkGeom = _geometry.clone() as JTS.Geometry;
       bool doRound = false;
-      if (geometryColumn.srid != SmashPrj.EPSG4326_INT) {
-        var to = SmashPrj.fromSrid(geometryColumn.srid);
+      if (srid != SmashPrj.EPSG4326_INT) {
+        var to = SmashPrj.fromSrid(srid);
         SmashPrj.transformGeometry(SmashPrj.EPSG4326, to!, checkGeom);
         doRound = true;
       }

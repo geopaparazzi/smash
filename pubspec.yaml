@@ -49,18 +49,19 @@ dependencies:
 
 
 
-  dart_hydrologis_db: ^1.0.0
+  dart_hydrologis_db: ^1.0.1
   # path: ../dart_hydrologis_db/
   # git:
   #  url: https://github.com/moovida/dart_hydrologis_db.git
 
   # apache 2
-  flutter_geopackage: ^0.6.0+1
+  flutter_geopackage: ^0.6.1
   # path: ../flutter_geopackage/
   #  git:
   #    url: https://github.com/moovida/flutter_geopackage.git
   
-  dart_postgis: ^0.3.0
+  dart_postgis: ^0.3.1
+    # path: /home/hydrologis/development/SMASH/dart_postgis/
   # git:
   #   url: https://github.com/moovida/dart_postgis
   ##################################
@@ -120,12 +121,12 @@ dependencies:
     #   ref: bump_flutter_map_to_1
 
   mapsforge_flutter: #^2.0.1
-    # path: /home/hydrologis/development/mapsforge_flutter/mapsforge_flutter
+    # path: /home/hydrologis/development/SMASH/mapsforge_flutter_moovida/mapsforge_flutter
     git:
-      url: https://github.com/mikes222/mapsforge_flutter.git
-      # url: https://github.com/moovida/mapsforge_flutter.git
+    #   url: https://github.com/mikes222/mapsforge_flutter.git
+      url: https://github.com/moovida/mapsforge_flutter.git
       path: mapsforge_flutter
-      ref: 29d4c8e1aed0c22456a13c5c99a25a7db9d0b3e0
+      ref: smash_compats
 
   #MIT
   extended_image: ^6.3.0

@@ -152,12 +152,16 @@ class FeatureInfoLayer extends StatelessWidget {
             await db.getTableData(layerName, geometry: boundsGeomInSrid);
         if (queryResult.data.isNotEmpty) {
           print("Found data for: " + layerName.name);
+          var name = layerName.name;
+          if (layerName.hasSchema()) {
+            name = layerName.getSchema() + "." + layerName.name;
+          }
 
           var pk = await db.getPrimaryKey(layerName);
 
           var dataPrj = SmashPrj.fromSrid(srid);
           queryResult.geoms.forEach((g) {
-            totalQueryResult.ids!.add(layerName.name);
+            totalQueryResult.ids!.add(name);
             totalQueryResult.primaryKeys!.add(pk);
             totalQueryResult.dbs!.add(db);
             totalQueryResult.fieldAndTypemap!.add(typesMap);

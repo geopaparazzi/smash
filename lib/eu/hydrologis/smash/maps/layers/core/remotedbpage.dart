@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -355,27 +356,21 @@ class _RemoteDbPropertiesContainerState
                 var db = await PostgisConnectionsHandler().open(
                     s.getUrl(), s.getName(), s.getUser(), s.getPassword());
                 if (db != null) {
-                  var tables = await db.getTables(true);
-                  _geomTables = [];
-                  for (var tableName in tables) {
-                    bool isGeom =
-                        await db.getGeometryColumnsForTable(tableName) != null;
-                    if (isGeom) {
-                      _geomTables!.add(tableName.name);
-                    }
-                  }
+                  _geomTables = await db.getGeometryTables();
                   setState(() {
                     _isLoadingGeomTables = false;
                   });
                 } else {
-                  setState(() {
-                    _isLoadingGeomTables = false;
-                  });
-                  SmashDialogs.showWarningDialog(
-                      context,
-                      SL
-                          .of(context)
-                          .remoteDbPage_unableToConnectToDatabase); //"Unable to connect to the database. Check parameters and network."
+                  if (mounted) {
+                    setState(() {
+                      _isLoadingGeomTables = false;
+                    });
+                    SmashDialogs.showWarningDialog(
+                        context,
+                        SL
+                            .of(context)
+                            .remoteDbPage_unableToConnectToDatabase); //"Unable to connect to the database. Check parameters and network."
+                  }
                 }
               } catch (e) {
                 errorMessage = e.toString();

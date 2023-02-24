@@ -580,23 +580,27 @@ class GeometryEditManager {
         // find touching
         for (var geometry in geomsIntersected) {
           if (geometry.intersects(checkGeom)) {
-            var id = int.parse(geometry.getUserData().toString());
-            // distance always from touch center
-            double distance = geometry.distance(touchPointLayerPrj);
-            if (distance < minDist) {
-              // transform to 4326 for editing
-              SmashPrj.transformGeometry(dataPrj!, SmashPrj.EPSG4326, geometry);
-              minDist = distance;
-              editGeom = EditableGeometry();
-              editGeom.geometry = geometry;
-              editGeom.db = db;
-              editGeom.id = id;
-              editGeom.table = tableName;
+            var userData = geometry.getUserData();
+            if (userData != null) {
+              var id = int.parse(userData.toString());
+              // distance always from touch center
+              double distance = geometry.distance(touchPointLayerPrj);
+              if (distance < minDist) {
+                // transform to 4326 for editing
+                SmashPrj.transformGeometry(
+                    dataPrj!, SmashPrj.EPSG4326, geometry);
+                minDist = distance;
+                editGeom = EditableGeometry();
+                editGeom.geometry = geometry;
+                editGeom.db = db;
+                editGeom.id = id;
+                editGeom.table = tableName;
 
-              if (gc.geometryType.isLine()) {
-                _makeLineEditor(editGeom);
-              } else if (gc.geometryType.isPolygon()) {
-                _makePolygonEditor(editGeom);
+                if (gc.geometryType.isLine()) {
+                  _makeLineEditor(editGeom);
+                } else if (gc.geometryType.isPolygon()) {
+                  _makePolygonEditor(editGeom);
+                }
               }
             }
           }

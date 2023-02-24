@@ -22,7 +22,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:mapsforge_flutter/core.dart';
 import 'package:mapsforge_flutter/datastore.dart';
 import 'package:mapsforge_flutter/maps.dart';
-import 'package:mapsforge_flutter/src/implementation/graphics/fluttertilebitmap.dart';
+import 'package:mapsforge_flutter/src/graphics/implementation/fluttertilebitmap.dart';
 import 'package:mapsforge_flutter/src/layer/job/job.dart';
 import 'package:mapsforge_flutter/src/layer/job/jobresult.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/image_widgets.dart';
@@ -157,7 +157,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
     _renderTheme = renderThemeBuilder.build();
 
     _mapDataStore = await MapFile.from(_mapsforgeFile.path, 0, "en");
-
+    await _mapDataStore!.lateOpen();
     dataStoreRenderer = SmashMapDataStoreRenderer(
         _mapDataStore!, _renderTheme, symbolCache, true);
 
@@ -180,6 +180,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
   Future<FM.LatLngBounds> getBounds() async {
     if (_mapDataStore == null) {
       _mapDataStore = await MapFile.from(_mapsforgeFile.path, 0, "en");
+      await _mapDataStore!.lateOpen();
     }
     BoundingBox bBox = _mapDataStore!.boundingBox;
     FM.LatLngBounds bounds = FM.LatLngBounds();

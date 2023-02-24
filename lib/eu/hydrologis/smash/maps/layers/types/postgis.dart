@@ -26,6 +26,7 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
   static final double POINT_SIZE_FACTOR = 3;
 
   late String _tableName;
+  late TableName sqlName;
   bool isVisible = true;
   String _attribution = "";
 
@@ -34,6 +35,7 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
   GeometryColumn? _geometryColumn;
   late SldObjectParser _style;
   TextStyle? _textStyle;
+  late bool canHanldeStyle;
 
   PostgisDb? _pgDb;
   int? _srid;
@@ -102,7 +104,8 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
         isLoaded = false;
         return;
       }
-      var sqlName = TableName(_tableName);
+
+      sqlName = TableName(_tableName);
       _geometryColumn = await _pgDb!.getGeometryColumnsForTable(sqlName);
       if (_geometryColumn == null) {
         SmashDialogs.showErrorDialog(context,
@@ -118,7 +121,12 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
       alphaFields
           .removeWhere((name) => name == _geometryColumn!.geometryColumnName);
 
-      sldString = await _pgDb!.getSld(sqlName);
+      canHanldeStyle = await _pgDb!.canHandleStyle();
+      if (canHanldeStyle) {
+        sldString = await _pgDb!.getSld(sqlName);
+      } else {
+        sldString = await GpPreferences().getString("style_${sqlName.name}");
+      }
       if (sldString == null) {
         await createDefaultSld(sqlName);
       }
@@ -190,6 +198,9 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
     } else if (_geometryColumn!.geometryType.isPolygon()) {
       sldString = DefaultSlds.simplePolygonSld();
       await _pgDb!.updateSld(sqlName, sldString!);
+    }
+    if (!canHanldeStyle && sldString != null) {
+      await GpPreferences().setString("style_${sqlName.name}", sldString!);
     }
   }
 
@@ -585,7 +596,11 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
       _textStyle = textStyleTmp;
     }
     _style = _styleTmp;
-    await _pgDb!.updateSld(TableName(_tableName), sldString!);
+    if (canHanldeStyle) {
+      await _pgDb!.updateSld(TableName(_tableName), sldString!);
+    } else {
+      await GpPreferences().setString("style_${sqlName.name}", sldString!);
+    }
   }
 }
 
@@ -631,7 +646,7 @@ class PostgisConnectionsHandler {
       namesList = <String>[];
       _tableNamesMap[_dbUrl] = namesList;
     }
-    if (tableName != null && !namesList.contains(tableName)) {
+    if (!namesList.contains(tableName)) {
       namesList.add(tableName);
     }
     return db;
