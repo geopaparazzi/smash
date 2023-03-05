@@ -3,7 +3,7 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
@@ -461,12 +461,16 @@ class RulerButton extends StatelessWidget {
         ),
       );
       if (rulerState.lengthMeters != null && rulerState.lengthMeters != 0) {
-        w = Badge(
-          badgeColor: SmashColors.mainSelection,
-          shape: BadgeShape.square,
-          borderRadius: BorderRadius.circular(10.0),
-          toAnimate: false,
-          position: BadgePosition.topStart(
+        w = badges.Badge(
+          badgeStyle: badges.BadgeStyle(
+            badgeColor: SmashColors.mainSelection,
+            shape: badges.BadgeShape.square,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          badgeAnimation: badges.BadgeAnimation.slide(
+            toAnimate: false,
+          ),
+          position: badges.BadgePosition.topStart(
               top: -_iconSize / 2, start: 0.1 * _iconSize),
           badgeContent: Text(
             StringUtilities.formatMeters(rulerState.lengthMeters!),
