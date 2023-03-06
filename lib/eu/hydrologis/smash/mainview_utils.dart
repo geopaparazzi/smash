@@ -7,7 +7,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
@@ -36,18 +36,22 @@ class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue,
       {Color? textColor,
       Color? badgeColor,
-      BadgePosition? badgePosition,
+      badges.BadgePosition? badgePosition,
       double? iconSize}) {
     if (badgeValue > 0) {
-      return Badge(
-        badgeColor: badgeColor != null ? badgeColor : SmashColors.mainSelection,
-        shape: badgeValue > 999 ? BadgeShape.square : BadgeShape.circle,
-        borderRadius: BorderRadius.circular(20.0),
-        toAnimate: false,
+      return badges.Badge(
+        badgeStyle: badges.BadgeStyle(
+          badgeColor: badgeColor != null ? badgeColor : SmashColors.mainSelection,
+          shape: badgeValue > 999 ? badges.BadgeShape.square : badges.BadgeShape.circle,
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        badgeAnimation: badges.BadgeAnimation.slide(
+          toAnimate: false,
+        ),
         position: badgePosition != null
             ? badgePosition
             : iconSize != null
-                ? BadgePosition.topStart(
+                ? badges.BadgePosition.topStart(
                     top: -iconSize / 2, start: 0.1 * iconSize)
                 : null,
         badgeContent: Text(
@@ -64,13 +68,17 @@ class DashboardUtils {
   static Widget makeToolbarZoomBadge(Widget widget, int badgeValue,
       {double? iconSize}) {
     if (badgeValue > 0) {
-      return Badge(
-        badgeColor: SmashColors.mainDecorations,
-        shape: BadgeShape.circle,
+      return badges.Badge(
+        badgeStyle: badges.BadgeStyle(
+          badgeColor: SmashColors.mainDecorations,
+          shape: badges.BadgeShape.circle,
+        ),
         position: iconSize != null
-            ? BadgePosition.topEnd(top: -iconSize / 2, end: -iconSize / 3)
+            ? badges.BadgePosition.topEnd(top: -iconSize / 2, end: -iconSize / 3)
             : null,
-        toAnimate: false,
+        badgeAnimation: badges.BadgeAnimation.slide(
+          toAnimate: false,
+        ),
         badgeContent: Text(
           '$badgeValue',
           style: TextStyle(color: Colors.white),
