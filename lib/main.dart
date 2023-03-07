@@ -4,6 +4,8 @@
  * found in the LICENSE file.
  */
 // import 'package:catcher/catcher.dart';
+import 'dart:io';
+
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
@@ -373,11 +375,16 @@ Future<String?> handleLocationPermission(BuildContext context) async {
 
 Future<String?> handleStoragePermission(BuildContext context) async {
   if (!SmashPlatform.isDesktop()) {
-    var storagePermission = await PermissionManager()
-        .add(PERMISSIONS.STORAGE)
-        .add(
-            PERMISSIONS.MANAGEEXTSTORAGE) // TODO comment this for store release
-        .check(context);
+    var storagePermission;
+    if (Platform.isAndroid) {
+      storagePermission = await PermissionManager()
+          .add(PERMISSIONS.STORAGE)
+          .add(PERMISSIONS.MANAGEEXTSTORAGE)
+          .check(context);
+    } else {
+      storagePermission =
+          await PermissionManager().add(PERMISSIONS.STORAGE).check(context);
+    }
     if (!storagePermission) {
       return SL.of(context).main_storagePermissionIsMandatoryToOpenSmash;
     }
