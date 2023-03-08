@@ -252,6 +252,7 @@ class _RemoteDbPropertiesContainerState
       autovalidateMode: AutovalidateMode.always,
       autofocus: false,
       decoration: urlID,
+      keyboardType: TextInputType.url,
       validator: (txt) {
         sourceMap[LAYERSKEY_URL] = txt;
         var errorText = txt!.isEmpty

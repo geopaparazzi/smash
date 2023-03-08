@@ -517,7 +517,7 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
           children: <Widget>[
             TextFormField(
               initialValue: tmsData.url,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.url,
               autocorrect: false,
               onSaved: (String? value) {
                 if (value != null) tmsData.url = value;
@@ -788,7 +788,7 @@ class _AddWmsStepperState extends State<AddWmsStepper> with Localization {
           children: <Widget>[
             TextFormField(
               initialValue: wmsData.url,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.url,
               autocorrect: false,
               onSaved: (String? value) {
                 if (value != null) {
