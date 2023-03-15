@@ -1249,16 +1249,20 @@ packages:
   smash_import_export_plugins:
     dependency: "direct main"
     description:
-      path: "../smash_import_export_plugins"
-      relative: true
-    source: path
+      path: "."
+      ref: "44a5d8f"
+      resolved-ref: "44a5d8f57032ab09a3b2f590de8581287abb35f6"
+      url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
+    source: git
     version: "0.0.1"
   smashlibs:
     dependency: "direct main"
     description:
-      path: "../smashlibs"
-      relative: true
-    source: path
+      path: "."
+      ref: "9222198"
+      resolved-ref: "9222198c258df01ca4bd0d118e11febc7d7c665f"
+      url: "https://github.com/moovida/smashlibs.git"
+    source: git
     version: "1.0.0"
   source_map_stack_trace:
     dependency: transitive
