@@ -571,10 +571,10 @@ packages:
     dependency: transitive
     description:
       name: idb_shim
-      sha256: "7e2ad3d36a4eb549813d1ef10694c0f1fd5b4713a2021f19569c752e74b54cef"
+      sha256: "3ac9d6a90c29e2192d35c8386d7b20cb3865756f5b299d74a829d5b888776d26"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0+1"
+    version: "2.3.0+2"
   image:
     dependency: transitive
     description:
@@ -1141,10 +1141,10 @@ packages:
     dependency: transitive
     description:
       name: sembast
-      sha256: "94b951623422781800d748c4e5efd5f108f1342d58159cbcfd7dd943955d6636"
+      sha256: c55198f16f4dcafeaf361ed9c62d9aaf946dff503fd6d6c0ca52efae5f358b66
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.1+1"
+    version: "3.4.2"
   share_extend:
     dependency: transitive
     description:
@@ -1250,8 +1250,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "44a5d8f"
-      resolved-ref: "44a5d8f57032ab09a3b2f590de8581287abb35f6"
+      ref: "6f95685"
+      resolved-ref: "6f95685084e52abe1cd9a72a24d821dbbb165ad1"
       url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
     source: git
     version: "0.0.1"
