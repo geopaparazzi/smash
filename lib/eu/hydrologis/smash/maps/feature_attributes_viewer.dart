@@ -50,27 +50,31 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
 
     _total = widget.features.geoms.length;
 
-    EditableQueryResult f = widget.features;
-    _geometry = f.geoms[_index];
-    var env = _geometry.getEnvelopeInternal();
-    var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
-        LatLng(env.getMaxY(), env.getMaxX()));
+    try {
+      EditableQueryResult f = widget.features;
+      _geometry = f.geoms[_index];
+      var env = _geometry.getEnvelopeInternal();
+      var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
+          LatLng(env.getMaxY(), env.getMaxX()));
 
-    for (var i = 0; i < f.ids!.length; i++) {
-      var db = f.dbs![i];
-      var tableName = f.ids![i];
-      var gcAndSrid = await db.getGeometryColumnNameAndSridForTable(TableName(
-          tableName,
-          schemaSupported:
-              db is PostgisDb || db is PostgresqlDb ? true : false));
-      if (gcAndSrid != null) {
-        _srids[tableName] = gcAndSrid[1];
+      for (var i = 0; i < f.ids!.length; i++) {
+        var db = f.dbs![i];
+        var tableName = f.ids![i];
+        var gcAndSrid = await db.getGeometryColumnNameAndSridForTable(TableName(
+            tableName,
+            schemaSupported:
+                db is PostgisDb || db is PostgresqlDb ? true : false));
+        if (gcAndSrid != null) {
+          _srids[tableName] = gcAndSrid[1];
+        }
       }
-    }
 
-    _mapController.onReady.then((v) {
-      _mapController.fitBounds(latLngBounds);
-    });
+      _mapController.onReady.then((v) {
+        _mapController.fitBounds(latLngBounds);
+      });
+    } on Exception catch (e, s) {
+      SMLogger().e("Error.", e, s);
+    }
 
     _loading = false;
     setState(() {});
