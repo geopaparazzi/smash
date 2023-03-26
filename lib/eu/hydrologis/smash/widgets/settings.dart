@@ -1821,9 +1821,9 @@ class DiagnosticsSettingState extends State<DiagnosticsSetting> {
               leading: Icon(MdiIcons.tableEye),
               title: Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: ElevatedButton(
-                    style: SmashUI.defaultElevateButtonStyle(
-                        color: SmashColors.mainBackground),
+                child: TextButton(
+                    style: SmashUI.defaultFlatButtonStyle(
+                        color: SmashColors.mainDecorations),
                     child: Text(SL
                         .of(context)
                         .settings_openFullDebugLog), //"Open full debug log"

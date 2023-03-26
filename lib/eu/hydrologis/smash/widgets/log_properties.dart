@@ -347,7 +347,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       LatLngExt llExt;
       if (prevll == null) {
         llExt = LatLngExt(llTmp.latitude, llTmp.longitude, p.altim!, 0, 0,
-            p.ts!, p.accuracy!);
+            p.ts!, p.accuracy ?? -1);
       } else {
         var distanceMeters = CoordinateUtilities.getDistance(prevll!, llTmp);
         progressiveMeters += distanceMeters;
@@ -359,7 +359,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
         }
 
         llExt = LatLngExt(p.lat, p.lon, p.altim!, progressiveMeters, speedMS,
-            p.ts!, p.accuracy!);
+            p.ts!, p.accuracy ?? -1);
       }
 
       points.add(llExt);
@@ -544,7 +544,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       if (polylines != null) {
         mapLayers.add(polylines);
       }
-      if (staticMarkers != null && staticMarkers.isNotEmpty && _showStats) {
+      if (staticMarkers.isNotEmpty && _showStats) {
         mapLayers.add(MarkerLayerOptions(markers: staticMarkers));
       }
       mapLayers.add(MarkerLayerOptions(markers: markers));
@@ -646,7 +646,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                       onNotification:
                           (ElevationHoverNotification notification) {
                         setState(() {
-                          hoverPoint = notification.position as LatLngExt;
+                          if (notification.position != null)
+                            hoverPoint = notification.position as LatLngExt;
                         });
 
                         return true;
