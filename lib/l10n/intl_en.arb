@@ -960,7 +960,7 @@
   "@network_availableMaps": {},
   "network_searchMapByName": "Search map by name",
   "@network_searchMapByName": {},
-  "network_uploading": "Uploading",
+  "network_uploading": "Uploading…",
   "@network_uploading": {},
   "network_pleaseWait": "please wait…",
   "@network_pleaseWait": {},
