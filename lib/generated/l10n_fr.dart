@@ -1325,7 +1325,7 @@ class SLFr extends SL {
   String get coachMarks_toggleAutoCenterGps => 'dés/activer la centrage auto du GPS';
 
   @override
-  String get coachMarks_layersViewButton => 'Layer View Button';
+  String get coachMarks_layersViewButton => 'Layers View Button';
 
   @override
   String get coachMarks_openLayersView => 'Ouvrir la vue des calques';
@@ -1349,13 +1349,13 @@ class SLFr extends SL {
   String get coachMarks_bottomToolsButton => 'Bottom Tools Button';
 
   @override
-  String get coachMarks_toggleBottomToolsBar => 'Toggle bottom tools bar. ';
+  String get coachMarks_toggleBottomToolsBar => 'Toggle bottom tools bar';
 
   @override
   String get coachMarks_toolsButton => 'Tools Button';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras.';
+  String get coachMarks_openEndDrawerToAccessProject => 'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras';
 
   @override
   String get coachMarks_interactiveCoackMarksButton => 'Interactive coach-marks button';

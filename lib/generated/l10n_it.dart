@@ -149,16 +149,16 @@ class SLIt extends SL {
   String get mainviewUtils_goTo => 'Vai a';
 
   @override
-  String get mainviewUtils_goToCoordinate => 'Go to coordinate';
+  String get mainviewUtils_goToCoordinate => 'Vai a coordinata';
 
   @override
-  String get mainviewUtils_enterLonLat => 'Enter longitude, latitude';
+  String get mainviewUtils_enterLonLat => 'Inserisci longitudine e latitudine';
 
   @override
-  String get mainviewUtils_goToCoordinateWrongFormat => 'Wrong coordinate format. Should be: 11.18463, 46.12345';
+  String get mainviewUtils_goToCoordinateWrongFormat => 'Formato non supportato. Formato richiesto: 11.18463, 46.12345';
 
   @override
-  String get mainviewUtils_goToCoordinateEmpty => 'This can\'t be empty.';
+  String get mainviewUtils_goToCoordinateEmpty => 'Non può essere vuoto.';
 
   @override
   String get mainviewUtils_sharePosition => 'Condividi la posizione';
@@ -503,7 +503,7 @@ class SLIt extends SL {
   String get onlineSourcesPage_addAnAttribution => 'Aggiungi un\'attribuzione.';
 
   @override
-  String get onlineSourcesPage_layer => 'Layer: ';
+  String get onlineSourcesPage_layer => 'Piano: ';
 
   @override
   String get onlineSourcesPage_url => 'URL: ';
@@ -905,7 +905,7 @@ class SLIt extends SL {
   String get noteList_zoomTo => 'Zoom a';
 
   @override
-  String get noteList_edit => '\'Modifica\'';
+  String get noteList_edit => 'Modifica';
 
   @override
   String get noteList_properties => 'Proprietà';
@@ -1004,16 +1004,16 @@ class SLIt extends SL {
   String get settings_mockLocations => 'posizioni fittizie?';
 
   @override
-  String get settings_minDistFilterBlocks => 'Min dist filter blocks';
+  String get settings_minDistFilterBlocks => 'Bloccato da filtro su distanza minima';
 
   @override
-  String get settings_minDistFilterPasses => 'Min dist filter passes';
+  String get settings_minDistFilterPasses => 'Passa filtro su distanza minima';
 
   @override
-  String get settings_minTimeFilterBlocks => 'Min time filter blocks';
+  String get settings_minTimeFilterBlocks => 'Bloccato da filtro su intervallo minimo';
 
   @override
-  String get settings_minTimeFilterPasses => 'Min time filter passes';
+  String get settings_minTimeFilterPasses => 'Passa filtro su intervallo minimo';
 
   @override
   String get settings_hasBeenBlocked => 'E\' stato bloccato';
@@ -1166,10 +1166,10 @@ class SLIt extends SL {
   String get settings_editingTool => 'Strumento Modifica';
 
   @override
-  String get settings_editingDragIconSize => 'Editing drag handler icon size.';
+  String get settings_editingDragIconSize => 'Dimensione icona dei vertici di trascinamento.';
 
   @override
-  String get settings_editingIntermediateDragIconSize => 'Editing intermediate drag handler icon size.';
+  String get settings_editingIntermediateDragIconSize => 'DImensione dei vertici intermedi di trascinamento.';
 
   @override
   String get settings_diagnostics => 'Diagnostica';
@@ -1472,7 +1472,7 @@ class SLIt extends SL {
   String get form_sketch_save => 'Salva';
 
   @override
-  String get form_sketch_sketcher => 'Sketcher';
+  String get form_sketch_sketcher => 'Schizzi';
 
   @override
   String get form_sketch_enableDrawing => 'Attiva disegno';

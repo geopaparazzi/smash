@@ -784,7 +784,7 @@ abstract class SL {
   /// No description provided for @layersView_layerList.
   ///
   /// In en, this message translates to:
-  /// **'Layer List'**
+  /// **'Layers List'**
   String get layersView_layerList;
 
   /// No description provided for @layersView_loadRemoteDatabase.
@@ -2752,7 +2752,7 @@ abstract class SL {
   /// No description provided for @coachMarks_layersViewButton.
   ///
   /// In en, this message translates to:
-  /// **'Layer View Button'**
+  /// **'Layers View Button'**
   String get coachMarks_layersViewButton;
 
   /// No description provided for @coachMarks_openLayersView.
@@ -2800,7 +2800,7 @@ abstract class SL {
   /// No description provided for @coachMarks_toggleBottomToolsBar.
   ///
   /// In en, this message translates to:
-  /// **'Toggle bottom tools bar. '**
+  /// **'Toggle bottom tools bar'**
   String get coachMarks_toggleBottomToolsBar;
 
   /// No description provided for @coachMarks_toolsButton.
@@ -2812,7 +2812,7 @@ abstract class SL {
   /// No description provided for @coachMarks_openEndDrawerToAccessProject.
   ///
   /// In en, this message translates to:
-  /// **'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras.'**
+  /// **'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras'**
   String get coachMarks_openEndDrawerToAccessProject;
 
   /// No description provided for @coachMarks_interactiveCoackMarksButton.
@@ -2992,7 +2992,7 @@ abstract class SL {
   /// No description provided for @network_uploading.
   ///
   /// In en, this message translates to:
-  /// **'Uploading'**
+  /// **'Uploading…'**
   String get network_uploading;
 
   /// No description provided for @network_pleaseWait.

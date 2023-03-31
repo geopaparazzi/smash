@@ -341,7 +341,7 @@ class SLDe extends SL {
   String get importWidget_importFromGeopaparazzi => 'Import from Geopaparazzi Survey Server';
 
   @override
-  String get layersView_layerList => 'Layer List';
+  String get layersView_layerList => 'Layers List';
 
   @override
   String get layersView_loadRemoteDatabase => 'Load remote database';
@@ -1325,7 +1325,7 @@ class SLDe extends SL {
   String get coachMarks_toggleAutoCenterGps => 'toggle automatic center on GPS';
 
   @override
-  String get coachMarks_layersViewButton => 'Layer View Button';
+  String get coachMarks_layersViewButton => 'Layers View Button';
 
   @override
   String get coachMarks_openLayersView => 'Open the layers view';
@@ -1349,13 +1349,13 @@ class SLDe extends SL {
   String get coachMarks_bottomToolsButton => 'Bottom Tools Button';
 
   @override
-  String get coachMarks_toggleBottomToolsBar => 'Toggle bottom tools bar. ';
+  String get coachMarks_toggleBottomToolsBar => 'Toggle bottom tools bar';
 
   @override
   String get coachMarks_toolsButton => 'Tools Button';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras.';
+  String get coachMarks_openEndDrawerToAccessProject => 'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras';
 
   @override
   String get coachMarks_interactiveCoackMarksButton => 'Interactive coach-marks button';
@@ -1445,7 +1445,7 @@ class SLDe extends SL {
   String get network_searchMapByName => 'Search map by name';
 
   @override
-  String get network_uploading => 'Uploading';
+  String get network_uploading => 'Uploading…';
 
   @override
   String get network_pleaseWait => 'please wait…';
