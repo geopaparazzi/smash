@@ -379,7 +379,7 @@ Future<String?> handleStoragePermission(BuildContext context) async {
     if (Platform.isAndroid) {
       storagePermission = await PermissionManager()
           .add(PERMISSIONS.STORAGE)
-          .add(PERMISSIONS.MANAGEEXTSTORAGE)
+          // PLAY STORE FIX: .add(PERMISSIONS.MANAGEEXTSTORAGE)
           .check(context);
     } else {
       storagePermission =
