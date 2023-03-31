@@ -1250,8 +1250,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "88879ca"
-      resolved-ref: "88879caebf79a7087fdb7ea8622f428b4defbd94"
+      ref: e758fe5
+      resolved-ref: e758fe56ec37380e29025270b0c9b4ce5375cab0
       url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
     source: git
     version: "0.0.1"

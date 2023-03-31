@@ -37,7 +37,7 @@ dependencies:
     # path: ../smash_import_export_plugins/
     git:
       url: https://github.com/geopaparazzi/smash_import_export_plugins.git
-      ref: 88879ca
+      ref: e758fe5
 
 
   dart_shp: ^0.4.0
