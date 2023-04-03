@@ -51,7 +51,7 @@ android {
     defaultConfig {
         applicationId "eu.hydrologis.smash"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 32
         compileSdkVersion 33
         buildToolsVersion = "30.0.3"
         

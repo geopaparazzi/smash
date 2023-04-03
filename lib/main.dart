@@ -375,18 +375,28 @@ Future<String?> handleLocationPermission(BuildContext context) async {
 
 Future<String?> handleStoragePermission(BuildContext context) async {
   if (!SmashPlatform.isDesktop()) {
-    var storagePermission;
-    if (Platform.isAndroid) {
-      storagePermission = await PermissionManager()
-          .add(PERMISSIONS.STORAGE)
-          .add(PERMISSIONS.MANAGEEXTSTORAGE)
-          .check(context);
-    } else {
-      storagePermission =
-          await PermissionManager().add(PERMISSIONS.STORAGE).check(context);
-    }
-    if (!storagePermission) {
-      return SL.of(context).main_storagePermissionIsMandatoryToOpenSmash;
+    var status = await Permission.storage.status;
+    var storagePermission = true;
+    if (status != PermissionStatus.granted) {
+      storagePermission = false;
+      if (Platform.isAndroid) {
+        var forStore = false;
+        if (forStore) {
+          storagePermission =
+              await PermissionManager().add(PERMISSIONS.STORAGE).check(context);
+        } else {
+          storagePermission = await PermissionManager()
+              .add(PERMISSIONS.STORAGE)
+              .add(PERMISSIONS.MANAGEEXTSTORAGE)
+              .check(context);
+        }
+      } else {
+        storagePermission =
+            await PermissionManager().add(PERMISSIONS.STORAGE).check(context);
+      }
+      if (!storagePermission) {
+        return SL.of(context).main_storagePermissionIsMandatoryToOpenSmash;
+      }
     }
   }
   return null;
