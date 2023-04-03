@@ -89,3 +89,6 @@ app.*.map.json
 
 # Localization
 # lib/l10n/intl_nb.arb
+
+
+*.aab
