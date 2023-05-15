@@ -949,10 +949,10 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_android
-      sha256: "8028362b40c4a45298f1cbfccd227c8dd6caf0e27088a69f2ba2ab15464159e2"
+      sha256: d8cc6a62ded6d0f49c6eac337e080b066ee3bce4d405bd9439a61e1f1927bfe8
       url: "https://pub.dev"
     source: hosted
-    version: "10.2.0"
+    version: "10.2.1"
   permission_handler_apple:
     dependency: transitive
     description:
@@ -1249,20 +1249,16 @@ packages:
   smash_import_export_plugins:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "0765081"
-      resolved-ref: "076508154259fb96af69587012687b22baa07885"
-      url: "https://github.com/geopaparazzi/smash_import_export_plugins.git"
-    source: git
+      path: "../smash_import_export_plugins"
+      relative: true
+    source: path
     version: "0.0.1"
   smashlibs:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "02331b9"
-      resolved-ref: "02331b95e04960d821a0766b6e1795cf121f74dd"
-      url: "https://github.com/moovida/smashlibs.git"
-    source: git
+      path: "../smashlibs"
+      relative: true
+    source: path
     version: "1.0.0"
   source_map_stack_trace:
     dependency: transitive

@@ -97,7 +97,7 @@ class NotesListWidgetState extends State<NotesListWidget>
 }
 
 class NoteInfo extends StatefulWidget {
-  final dynamic note;
+  dynamic note;
   final GeopaparazziProjectDb db;
   final ProjectState projectState;
   final reloadNotesFunction;
@@ -173,7 +173,9 @@ class _NoteInfoState extends State<NoteInfo> {
           await Navigator.push(context, MaterialPageRoute(builder: (context) {
             return MasterDetailPage(formHelper);
           }));
-          setState(() {});
+          setState(() {
+            widget.note = widget.db.getNoteById(dynNote.id);
+          });
         },
       ));
     } else if (dynNote is Note) {
