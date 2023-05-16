@@ -1249,14 +1249,14 @@ packages:
   smash_import_export_plugins:
     dependency: "direct main"
     description:
-      path: "../smash_import_export_plugins"
+      path: smash_import_export_plugins
       relative: true
     source: path
     version: "0.0.1"
   smashlibs:
     dependency: "direct main"
     description:
-      path: "../smashlibs"
+      path: smashlibs
       relative: true
     source: path
     version: "1.0.0"

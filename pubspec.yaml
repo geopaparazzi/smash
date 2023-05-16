@@ -28,13 +28,13 @@ dependencies:
   geoimage: ^0.2.0
 
   smashlibs:
-    path: ../smashlibs/
+    path: ./smashlibs/
     # git:
     #   url: https://github.com/moovida/smashlibs.git
     #   ref: 02331b9
       
   smash_import_export_plugins:
-    path: ../smash_import_export_plugins/
+    path: ./smash_import_export_plugins/
     # git:
     #   url: https://github.com/geopaparazzi/smash_import_export_plugins.git
     #   ref: "0765081"
