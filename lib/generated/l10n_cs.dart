@@ -1325,7 +1325,7 @@ class SLCs extends SL {
   String get coachMarks_toggleAutoCenterGps => 'přepnout automatické centrování na GPS';
 
   @override
-  String get coachMarks_layersViewButton => 'Tlačítko zobrazení vrstvy';
+  String get coachMarks_layersViewButton => 'Tlačítko zobrazení vrstev';
 
   @override
   String get coachMarks_openLayersView => 'Otevřít zobrazení vrstev';
@@ -1349,13 +1349,13 @@ class SLCs extends SL {
   String get coachMarks_bottomToolsButton => 'Tlačítko nástrojů dole';
 
   @override
-  String get coachMarks_toggleBottomToolsBar => 'Přepínání spodního panelu nástrojů. ';
+  String get coachMarks_toggleBottomToolsBar => 'Přepínání spodního panelu nástrojů';
 
   @override
   String get coachMarks_toolsButton => 'Tlačítko nástrojů';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'Otevřením konce zásuvky získáte přístup k informacím o projektu a možnostem sdílení, stejně jako k mapovým zásuvným modulům, nástrojům funkcí a doplňkům.';
+  String get coachMarks_openEndDrawerToAccessProject => 'Otevřením konce zásuvky získáte přístup k informacím o projektu a možnostem sdílení, stejně jako k mapovým zásuvným modulům, nástrojům funkcí a doplňkům';
 
   @override
   String get coachMarks_interactiveCoackMarksButton => 'Interaktivní tlačítko coach-marks';
@@ -1445,7 +1445,7 @@ class SLCs extends SL {
   String get network_searchMapByName => 'Hledání mapy podle názvu';
 
   @override
-  String get network_uploading => 'Nahrávání';
+  String get network_uploading => 'Nahrávání…';
 
   @override
   String get network_pleaseWait => 'prosím, počkejte…';
