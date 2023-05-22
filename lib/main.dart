@@ -281,7 +281,7 @@ Future<String?> handleProjections(BuildContext context) async {
 Future<String?> handleTags(BuildContext context) async {
   // read tags file
   try {
-    await TagsManager().readFileTags();
+    await TagsManager().readTags();
   } on Exception catch (e, s) {
     var msg = "Error while reading tags.";
     return logMsg(msg, e, s);
