@@ -271,6 +271,11 @@ class SmashFormHelper implements AFormhelper {
 
     projectState.reloadProject(context);
   }
+
+  @override
+  void setData(Map<String, String> newValues) {
+    // not needed here
+  }
 }
 
 class SmashDatabaseFormHelper implements AFormhelper {
@@ -482,5 +487,10 @@ class SmashDatabaseFormHelper implements AFormhelper {
     // // TODO: implement takeSketchForForms
     // throw UnimplementedError();
     return Future.value(null);
+  }
+
+  @override
+  void setData(Map<String, String> newValues) {
+    // not needed here
   }
 }
