@@ -39,7 +39,7 @@ dependencies:
     #   ref: "0765081"
 
 
-  dart_shp: ^0.4.0
+  dart_shp: ^1.0.1
 
   dart_hydrologis_utils: ^0.6.1
     # path: ../dart_hydrologis_utils/
@@ -128,7 +128,7 @@ dependencies:
       ref: smash_compats
 
   #MIT
-  extended_image: ^6.3.0
+  extended_image: ^8.0.1
     # git:
     #   url: https://github.com/moovida/extended_image
 
@@ -151,10 +151,10 @@ dependencies:
   tutorial_coach_mark: ^1.0.3
 
   # MIT
-  after_layout: ^1.0.7+2
+  after_layout: ^1.2.0
 
   # BSD
-  package_info_plus: ^1.4.3+1
+  package_info_plus: ^4.0.1
   
   # NOTES: As noted on issue 20761, package_info on iOS requires the Xcode build folder to be
   # rebuilt after changes to the version string in pubspec.yaml. Clean the Xcode build folder
