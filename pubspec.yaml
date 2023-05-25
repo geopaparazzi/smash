@@ -18,8 +18,7 @@ environment:
 dependencies:
   flutter_localizations:
     sdk: flutter
-  intl: '>=0.16.1 <=0.17.0'
-  # intl: '0.17.0'
+  intl: '>=0.16.1 <=0.18.0'
 
   ##################################
   # OWN
@@ -209,7 +208,7 @@ dependencies:
   rainbow_color: 2.0.1
 
   # BSD
-  stack_trace: ^1.10.0
+  stack_trace: ^1.11.0
 
   # BSD
   url_launcher: ^6.1.5
