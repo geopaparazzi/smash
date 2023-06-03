@@ -118,9 +118,9 @@ class LayerManager {
   }
 
   /// Load the layers as map [LayerOptions]. This reads and load the data.
-  Future<List<LayerOptions>> loadLayers(BuildContext context) async {
+  Future<List<Widget>> loadLayers(BuildContext context) async {
     List<LayerSource> activeLayerSources = LayerManager().getLayerSources();
-    List<LayerOptions> layerOptions = [];
+    List<Widget> layerOptions = [];
     for (int i = 0; i < activeLayerSources.length; i++) {
       var ls = await activeLayerSources[i].toLayers(context);
       if (ls != null) {

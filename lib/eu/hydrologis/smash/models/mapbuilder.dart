@@ -5,7 +5,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
 import 'package:provider/provider.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -19,7 +18,7 @@ class SmashMapBuilder extends ChangeNotifierPlus {
   /// List of rebuilt layers in case they are reloaded from outside the mapview.
   ///
   /// These are set to null after use.
-  List<LayerOptions>? _oneShotUpdateLayers;
+  List<Widget>? _oneShotUpdateLayers;
 
   bool _inProgress = false;
 
@@ -37,11 +36,11 @@ class SmashMapBuilder extends ChangeNotifierPlus {
     notifyListeners();
   }
 
-  set oneShotUpdateLayers(List<LayerOptions>? newLayers) {
+  set oneShotUpdateLayers(List<Widget>? newLayers) {
     _oneShotUpdateLayers = newLayers;
   }
 
-  List<LayerOptions>? get oneShotUpdateLayers {
+  List<Widget>? get oneShotUpdateLayers {
     try {
       return _oneShotUpdateLayers;
     } finally {
