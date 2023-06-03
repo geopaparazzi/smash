@@ -352,42 +352,42 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_map
-      sha256: "09010e452bcd8c57ade1b936b79643c4fd599f93b00d1696630f0b919b6f374a"
+      sha256: "52c65a977daae42f9aae6748418dd1535eaf27186e9bac9bf431843082bc75a3"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "4.0.0"
   flutter_map_dragmarker:
     dependency: transitive
     description:
       name: flutter_map_dragmarker
-      sha256: "31f9e6a29c60cbcb707b42c29f52054fc5eb6df7012c70fb7717b34b07cd97d4"
+      sha256: c41e8f6d52dd5dcb92456f6bea172b1c292fde8f208e1b9483cfce74c7155f45
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "4.1.3"
   flutter_map_line_editor:
     dependency: "direct main"
     description:
       name: flutter_map_line_editor
-      sha256: f14838bf2e51049aec5e720946d0440b88ef98365cbfc285f61aa5c5b1a58960
+      sha256: da1ff6934d38cc9671b09a0944dcbdd122e89e83e96aa72cf65542222d259b8b
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "4.1.0"
   flutter_map_marker_cluster:
     dependency: "direct main"
     description:
       name: flutter_map_marker_cluster
-      sha256: "88e51a1c6a8046ae90a8620c71af433a13fca3f8831ac7e356b78453c58bf6db"
+      sha256: "362088b16311b6743a7930857129ec6c7c807ecca777fe1033c0ad6688339e36"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.4"
+    version: "1.1.1"
   flutter_map_marker_popup:
     dependency: transitive
     description:
       name: flutter_map_marker_popup
-      sha256: "4c0da4301a7007124f3d6d208928075bcb84268785eae8df93d53e2fe3654456"
+      sha256: "7cf30fab25ffe1ba04a9e0fbe1227f44a83c73256d4d70be1c26cf141ce5c41d"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "4.1.0"
   flutter_material_pickers:
     dependency: transitive
     description:
@@ -650,10 +650,10 @@ packages:
     dependency: "direct main"
     description:
       name: lat_lon_grid_plugin
-      sha256: a76231042fb42e79651a9d82b193cba0e0f809c7309d620e2047cdadf16a2fa4
+      sha256: "80da1d1c595479de76a2db1727dc0b980664742fcbd12b50c75fa0e7faa9d1f7"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.3"
+    version: "0.2.6"
   latlong2:
     dependency: "direct main"
     description:
@@ -689,10 +689,11 @@ packages:
   map_elevation:
     dependency: "direct main"
     description:
-      name: map_elevation
-      sha256: "61dbfe33c9de4cfbf2a87412ccfff11487be0292927fc2583a37657b6cd0cb93"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: flutter_map_4_compat
+      resolved-ref: "86cbf74754fccc3e854762bf6767428533107383"
+      url: "https://github.com/moovida/map_elevation.git"
+    source: git
     version: "2.0.0"
   mapsforge_flutter:
     dependency: "direct main"
@@ -984,14 +985,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
-  positioned_tap_detector_2:
-    dependency: "direct main"
-    description:
-      name: positioned_tap_detector_2
-      sha256: "52e06863ad3e1f82b058fd05054fc8c9caeeb3b47d5cea7a24bd9320746059c1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.4"
   postgres:
     dependency: transitive
     description:

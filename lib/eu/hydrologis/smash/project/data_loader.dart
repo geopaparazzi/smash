@@ -17,7 +17,6 @@ import 'package:map_elevation/map_elevation.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
@@ -588,8 +587,8 @@ class DataLoaderUtilities {
     });
   }
 
-  static PolylineLayerOptions loadLogLinesLayer(GeopaparazziProjectDb db,
-      bool doOrig, bool doFiltered, bool doOrigTransp, bool doFilteredTransp) {
+  static PolylineLayer loadLogLinesLayer(GeopaparazziProjectDb db, bool doOrig,
+      bool doFiltered, bool doOrigTransp, bool doFilteredTransp) {
     String logsQuery = '''
         select l.$LOGS_COLUMN_ID, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH 
         from $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
@@ -720,7 +719,7 @@ class DataLoaderUtilities {
       });
     }
 
-    return PolylineLayerOptions(
+    return PolylineLayer(
       polylineCulling: true,
       polylines: lines,
     );

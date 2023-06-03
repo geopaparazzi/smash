@@ -11,8 +11,8 @@ import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:flutter_map_dragmarker/dragmarker.dart';
-import 'package:flutter_map_line_editor/polyeditor.dart';
+import 'package:flutter_map_dragmarker/flutter_map_dragmarker.dart';
+import 'package:flutter_map_line_editor/flutter_map_line_editor.dart';
 import 'package:latlong2/latlong.dart' hide Path;
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -154,11 +154,10 @@ class GeometryEditManager {
 
         pointEditor = DragMarker(
           point: LatLng(coord!.y, coord.x),
-          width: _handleIconSize,
-          height: _handleIconSize,
-          builder: (ctx) => Container(child: _dragHandlerIcon),
+          size: Size(_handleIconSize, _handleIconSize),
+          builder: (_, __, ___) => Container(child: _dragHandlerIcon),
           onDragEnd: (details, point) {},
-          updateMapNearEdge: false,
+          // updateMapNearEdge: false,
         );
       }
       _isEditing = true;
@@ -203,7 +202,7 @@ class GeometryEditManager {
     }
   }
 
-  void addEditLayers(List<LayerOptions> layers) {
+  void addEditLayers(List<Widget> layers) {
     if (_isEditing) {
       if (polyEditor != null) {
         if (editPolyline != null) {
@@ -216,7 +215,7 @@ class GeometryEditManager {
                 points: element.points);
             checkedLines.add(tmp);
           });
-          layers.add(PolylineLayerOptions(
+          layers.add(PolylineLayer(
             polylineCulling: true,
             polylines: checkedLines,
           ));
@@ -232,21 +231,15 @@ class GeometryEditManager {
             );
             checkedPolys.add(tmp);
           });
-          layers.add(PolygonLayerOptions(
+          layers.add(PolygonLayer(
             polygonCulling: true,
             polygons: checkedPolys,
           ));
         }
-        layers.add(DragMarkerPluginOptions(markers: polyEditor!.edit()));
+        layers.add(DragMarkers(markers: polyEditor!.edit()));
       } else if (pointEditor != null) {
-        layers.add(DragMarkerPluginOptions(markers: [pointEditor!]));
+        layers.add(DragMarkers(markers: [pointEditor!]));
       }
-    }
-  }
-
-  void addEditPlugins(List<MapPlugin> plugins) {
-    if (_isEditing) {
-      plugins.add(DragMarkerPlugin());
     }
   }
 
@@ -475,11 +468,10 @@ class GeometryEditManager {
 
         pointEditor = DragMarker(
           point: LatLng(coord!.y, coord.x),
-          width: _handleIconSize,
-          height: _handleIconSize,
-          builder: (ctx) => Container(child: _dragHandlerIcon),
+          size: Size(_handleIconSize, _handleIconSize),
+          builder: (_, __, ___) => Container(child: _dragHandlerIcon),
           onDragEnd: (details, point) {},
-          updateMapNearEdge: false,
+          // updateMapNearEdge: false,
         );
 
         // reload layer geoms

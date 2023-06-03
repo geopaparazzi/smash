@@ -368,7 +368,7 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                         center: new LatLng(lat, lon),
                         zoom: zoom,
                       ),
-                      layers: widget.layers,
+                      children: widget.layers,
                     ),
                   )
                 ],

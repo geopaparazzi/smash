@@ -6,7 +6,6 @@
 
 import 'dart:io';
 
-import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
 import 'package:flutter/material.dart';
@@ -14,7 +13,6 @@ import 'package:flutter_map/plugin_api.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
-import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
@@ -683,7 +681,7 @@ class GpsSettingsState extends State<GpsSettings> {
                 .settings_noPointAvailableYet); //"No point available yet."
       }
 
-      var layer = new MarkerLayerOptions(
+      var layer = new MarkerLayer(
         markers: gpsInfoList.map((msg) {
           var clr = Colors.red.withAlpha(100);
           if (msg == gpsInfoList.first) {
@@ -718,7 +716,7 @@ class GpsSettingsState extends State<GpsSettings> {
               minZoom: 7,
               maxZoom: 21,
             ),
-            layers: [layer],
+            children: [layer],
             mapController: _mapController,
           ),
           Column(

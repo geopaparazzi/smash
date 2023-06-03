@@ -314,18 +314,15 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
   List<Marker> staticMarkers = [];
   bool _showStats = true;
 
-  ErrorTileCallBack? errorTileCallback = (Tile tile, dynamic exception) {
+  ErrorTileCallBack? errorTileCallback = (tile, exception, stacktrace) {
     // ignore tiles that can't load to avoid
-    SMLogger().e("Unable to load tile: ${tile.coordsKey}", exception, null);
+    SMLogger().e("Unable to load tile: ${tile.coordinates}", null, null);
   };
   bool overrideTilesOnUrlChange = true;
 
   @override
   void initState() {
     super.initState();
-    mapController.onReady.then((v) {
-      loadData(context);
-    });
   }
 
   void loadData(BuildContext context) {
@@ -501,7 +498,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
           StringUtilities.formatDurationMillis(currentTouchMillis);
     }
 
-    PolylineLayerOptions? polylines;
+    PolylineLayer? polylines;
     if (bounds != null) {
       var clrSplit =
           EnhancedColorUtility.splitEnhancedColorString(widget.logItem.color!);
@@ -511,12 +508,12 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
         EnhancedColorUtility.buildPolylines(lines, points, colorTable,
             widget.logItem.width!, minLineElev, maxLineElev);
 
-        polylines = PolylineLayerOptions(
+        polylines = PolylineLayer(
           polylineCulling: true,
           polylines: lines,
         );
       } else {
-        polylines = PolylineLayerOptions(
+        polylines = PolylineLayer(
           polylineCulling: true,
           polylines: [
             Polyline(
@@ -530,14 +527,14 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       }
     }
 
-    var mapLayers = <LayerOptions>[];
+    var mapLayers = <Widget>[];
 
     if (center != null) {
       mapLayers = [
-        TileLayerOptions(
+        TileLayer(
           urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
           subdomains: ['a', 'b', 'c'],
-          overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+          // TODO overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
           errorTileCallback: errorTileCallback,
         ),
       ];
@@ -545,9 +542,9 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
         mapLayers.add(polylines);
       }
       if (staticMarkers.isNotEmpty && _showStats) {
-        mapLayers.add(MarkerLayerOptions(markers: staticMarkers));
+        mapLayers.add(MarkerLayer(markers: staticMarkers));
       }
-      mapLayers.add(MarkerLayerOptions(markers: markers));
+      mapLayers.add(MarkerLayer(markers: markers));
     }
     return Scaffold(
       appBar: AppBar(
@@ -583,8 +580,11 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
           options: new MapOptions(
             // center: center,
             zoom: 11.0,
+            onMapReady: () {
+              loadData(context);
+            },
           ),
-          layers: mapLayers,
+          children: mapLayers,
         ),
         hoverPoint != null
             ? Positioned(

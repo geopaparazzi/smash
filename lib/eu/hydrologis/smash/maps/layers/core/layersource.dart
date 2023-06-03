@@ -76,7 +76,7 @@ abstract class LayerSource {
 
   /// Convert the current layer source to an array of layers
   /// with their data loaded and ready to be displayed in map.
-  Future<List<LayerOptions>?> toLayers(BuildContext context);
+  Future<List<Widget>?> toLayers(BuildContext context);
 
   /// Returns the active flag of the layer (usually visible/non visible).
   bool isActive();

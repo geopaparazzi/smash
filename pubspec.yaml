@@ -68,21 +68,21 @@ dependencies:
   ##################################
   # MIT
   # this also pulls flutter_map_dragmarker
-  flutter_map_line_editor: ^3.0.0
+  flutter_map_line_editor: ^4.1.0
 
   # BSD
-  flutter_map: ^2.2.0
+  flutter_map: ^4.0.0
 
-  flutter_map_marker_cluster: ^0.5.4
+  flutter_map_marker_cluster: ^1.1.1
 
   # GPL 3.0 -> not maintained anymore
-  map_elevation: ^2.0.0
-    # git:
-    #   url: https://github.com/moovida/map_elevation.git
-    #   ref: fix_latlng_lib
+  map_elevation: #^2.0.0
+    git:
+      url: https://github.com/moovida/map_elevation.git
+      ref: flutter_map_4_compat
 
   # MIT
-  lat_lon_grid_plugin: ^0.2.3
+  lat_lon_grid_plugin: ^0.2.6
     # git:
     #   url: https://github.com/moovida/lat_lon_grid_plugin.git
     #   ref: bump_flutter_map_to_1
@@ -113,8 +113,8 @@ dependencies:
   # MIT
   sqlite3_flutter_libs: ^0.5.9
 
-  # MIT
-  positioned_tap_detector_2: ^1.0.4
+  # # MIT
+  # positioned_tap_detector_2: ^1.0.4
 
   #MIT
   extended_image: ^8.0.1

@@ -307,5 +307,5 @@ class ProjectData {
   int? logsCount;
   int? formNotesCount;
   List<Marker>? geopapMarkers;
-  PolylineLayerOptions? geopapLogs;
+  PolylineLayer? geopapLogs;
 }

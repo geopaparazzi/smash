@@ -9,32 +9,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
-    hide TextStyle;
 import 'package:dart_jts/dart_jts.dart' hide Position;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
-import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersview.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/current_log_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/fences_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/gps_position_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/heatmap.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/ruler_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -46,7 +32,6 @@ import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_info_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/image_widgets.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
@@ -78,7 +63,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 
   MapController? _mapController;
 
-  List<LayerOptions> _activeLayers = [];
+  List<Widget> _activeLayers = [];
 
   double? _iconSize;
 
@@ -208,7 +193,7 @@ class MainViewWidgetState extends State<MainViewWidget>
   }
 
   WillPopScope consumeBuild(SmashMapBuilder mapBuilder) {
-    var layers = <LayerOptions>[];
+    var layers = <Widget>[];
     _iconSize = GpPreferences().getDoubleSync(
         SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
     var projectState =
@@ -244,10 +229,7 @@ class MainViewWidgetState extends State<MainViewWidget>
     }
     layers.addAll(_activeLayers);
 
-    var pluginsList = <MapPlugin>[];
-    addPluginsPreLayers(pluginsList, layers);
     ProjectData? projectData = addProjectMarkers(projectState, layers);
-    addPluginsPostLayers(pluginsList, layers);
 
     GeometryEditorState editorState =
         Provider.of<GeometryEditorState>(context, listen: false);
@@ -256,7 +238,6 @@ class MainViewWidgetState extends State<MainViewWidget>
         setState(() {});
       });
 
-      GeometryEditManager().addEditPlugins(pluginsList);
       GeometryEditManager().addEditLayers(layers);
     }
 
@@ -297,14 +278,13 @@ class MainViewWidgetState extends State<MainViewWidget>
                   zoom: _initZoom!,
                   minZoom: SmashMapState.MINZOOM,
                   maxZoom: SmashMapState.MAXZOOM,
-                  plugins: pluginsList,
                   onPositionChanged: (newPosition, hasGesture) {
                     mapState.setLastPositionQuiet(
                         Coordinate(newPosition.center!.longitude,
                             newPosition.center!.latitude),
                         newPosition.zoom!);
                   },
-                  allowPanningOnScrollingParent: false,
+                  // TODO allowPanningOnScrollingParent: false,
                   onTap: _handleTap,
                   onLongPress: _handleLongTap,
                   interactiveFlags: InteractiveFlag.all &
@@ -312,7 +292,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                       ~InteractiveFlag.pinchMove &
                       ~InteractiveFlag.rotate,
                 ),
-                layers: layers,
+                children: layers,
                 mapController: _mapController,
               ),
               mapBuilder.inProgress
@@ -787,122 +767,39 @@ class MainViewWidgetState extends State<MainViewWidget>
         context: context, builder: (BuildContext context) => settingsDialog);
   }
 
-  void addPluginsPreLayers(
-      List<MapPlugin> pluginsList, List<LayerOptions> layers) {
-    if (PluginsHandler.FENCE.isOn()) {
-      layers.add(FencesPluginOption());
-      pluginsList.add(FencesPlugin());
-    }
-    if (PluginsHandler.GRID.isOn()) {
-      var gridLayer = MapPluginLatLonGridOptions(
-        labelStyle: TextStyle(
-          color: SmashColors.mainBackground,
-          backgroundColor: SmashColors.mainDecorations.withAlpha(170),
-          fontSize: 12.0,
-        ),
-        lineColor: SmashColors.mainDecorations,
-        lineWidth: 0.5,
-        showCardinalDirections: true,
-        showCardinalDirectionsAsPrefix: false,
-        showLabels: true,
-        rotateLonLabels: true,
-        placeLabelsOnLines: true,
-        offsetLonLabelsBottom: 20.0,
-        offsetLatLabelsLeft: 20.0,
-      );
-      layers.add(gridLayer);
-      pluginsList.add(MapPluginLatLonGrid());
-    }
-  }
-
-  void addPluginsPostLayers(
-      List<MapPlugin> pluginsList, List<LayerOptions> layers) {
-    if (PluginsHandler.HEATMAP_WORKING && PluginsHandler.LOG_HEATMAP.isOn()) {
-      layers.add(HeatmapPluginOption());
-      pluginsList.add(HeatmapPlugin());
-    }
-
-    pluginsList.add(MarkerClusterPlugin());
-
-    layers.add(CurrentGpsLogPluginOption(
-      logColor: Colors.red,
-      logWidth: 5.0,
-    ));
-    pluginsList.add(CurrentGpsLogPlugin());
-
-    int tapAreaPixels = GpPreferences()
-            .getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50) ??
-        50;
-    layers.add(FeatureInfoPluginOption(
-      tapAreaPixelSize: tapAreaPixels.toDouble(),
-    ));
-    pluginsList.add(FeatureInfoPlugin());
-
-    if (PluginsHandler.GPS.isOn()) {
-      layers.add(GpsPositionPluginOption(
-        markerColor: Colors.black,
-        markerSize: 32,
-      ));
-      pluginsList.add(GpsPositionPlugin());
-    }
-
-    if (PluginsHandler.CROSS.isOn()) {
-      var centerCrossStyle = CenterCrossStyle.fromPreferences();
-      if (centerCrossStyle.visible) {
-        layers.add(CenterCrossPluginOption(
-          crossColor: ColorExt(centerCrossStyle.color),
-          crossSize: centerCrossStyle.size,
-          lineWidth: centerCrossStyle.lineWidth,
-        ));
-        pluginsList.add(CenterCrossPlugin());
-      }
-    }
-
-    if (PluginsHandler.SCALE.isOn()) {
-      layers.add(ScaleLayerPluginOption(
-        lineColor: Colors.black,
-        lineWidth: 3,
-        textStyle: TextStyle(color: Colors.black, fontSize: 14),
-        padding: EdgeInsets.all(10),
-      ));
-      pluginsList.add(ScaleLayerPlugin());
-    }
-
-    layers.add(RulerPluginOptions(tapAreaPixelSize: 1));
-    pluginsList.add(RulerPlugin());
-  }
-
   ProjectData? addProjectMarkers(
-      ProjectState projectState, List<LayerOptions> layers) {
+      ProjectState projectState, List<Widget> layers) {
     var projectData = projectState.projectData;
     if (projectData != null) {
       if (projectData.geopapLogs != null) layers.add(projectData.geopapLogs!);
       if (projectData.geopapMarkers != null &&
           projectData.geopapMarkers!.length > 0) {
-        var markerCluster = MarkerClusterLayerOptions(
-          zoomToBoundsOnClick: false,
-          // spiderfyCircleRadius: 150,
-          disableClusteringAtZoom: 16,
-          maxClusterRadius: 80,
-          //        height: 40,
-          //        width: 40,
-          fitBoundsOptions: FitBoundsOptions(
-            padding: EdgeInsets.all(180),
+        var markerCluster = MarkerClusterLayerWidget(
+          options: MarkerClusterLayerOptions(
+            zoomToBoundsOnClick: false,
+            // spiderfyCircleRadius: 150,
+            disableClusteringAtZoom: 16,
+            maxClusterRadius: 80,
+            //        height: 40,
+            //        width: 40,
+            fitBoundsOptions: FitBoundsOptions(
+              padding: EdgeInsets.all(180),
+            ),
+            markers: projectData.geopapMarkers!,
+            polygonOptions: PolygonOptions(
+                borderColor: SmashColors.mainDecorationsDarker,
+                color: SmashColors.mainDecorations.withOpacity(0.2),
+                borderStrokeWidth: 3),
+            builder: (context, markers) {
+              return FloatingActionButton(
+                child: Text(markers.length.toString()),
+                onPressed: null,
+                backgroundColor: SmashColors.mainDecorationsDarker,
+                foregroundColor: SmashColors.mainBackground,
+                heroTag: null,
+              );
+            },
           ),
-          markers: projectData.geopapMarkers!,
-          polygonOptions: PolygonOptions(
-              borderColor: SmashColors.mainDecorationsDarker,
-              color: SmashColors.mainDecorations.withOpacity(0.2),
-              borderStrokeWidth: 3),
-          builder: (context, markers) {
-            return FloatingActionButton(
-              child: Text(markers.length.toString()),
-              onPressed: null,
-              backgroundColor: SmashColors.mainDecorationsDarker,
-              foregroundColor: SmashColors.mainBackground,
-              heroTag: null,
-            );
-          },
         );
         layers.add(markerCluster);
       }
