@@ -64,50 +64,18 @@ dependencies:
   # git:
   #   url: https://github.com/moovida/dart_postgis
   ##################################
-  # OTHERS
+  # OTHERS MAPS RELATED
   ##################################
-  # Apache 2.0
-  # catcher: ^0.6.9
-
-  # MIT
-  flutter_ringtone_player: ^3.2.0
-
-  # flutter_map_dragmarker:
-  #   git:
-  #     # url: https://github.com/moovida/flutter_map_dragmarker.git
-  #     # ref: upgrade_to_latlong2
-  #     url: https://github.com/ibrierley/flutter_map_dragmarker.git  
-  #     ref: nullsafety
-
   # MIT
   # this also pulls flutter_map_dragmarker
   flutter_map_line_editor: ^3.0.0
-    # git:
-    #   # url: https://github.com/moovida/flutter_map_line_editor.git
-    #   # ref: upgrade_to_latlong2
-    #   url: https://github.com/ibrierley/flutter_map_line_editor.git
-    #   ref: 91604d66c3b3fb1c197943679cc4eb701bb82a17
-
-  # MIT
-  sqlite3_flutter_libs: ^0.5.9
 
   # BSD
   flutter_map: ^2.2.0
-    # git:
-    #   url: https://github.com/fleaflet/flutter_map.git
-    #   ref: 1dfc30ed5e4a1f26796266200b737191131af397
 
-  positioned_tap_detector_2: ^1.0.4
-  
   flutter_map_marker_cluster: ^0.5.4
-    # git:
-      # url: https://github.com/pablojimpas/flutter_map_marker_cluster.git
-      # url: https://github.com/moovida/flutter_map_marker_cluster.git
-      # ref: bump-flutter_map-1.0.0
-      # url: https://github.com/moovida/flutter_map_marker_cluster.git
-      # ref: with_flutter_map_1
 
-  # GPL 3.0
+  # GPL 3.0 -> not maintained anymore
   map_elevation: ^2.0.0
     # git:
     #   url: https://github.com/moovida/map_elevation.git
@@ -126,6 +94,27 @@ dependencies:
       url: https://github.com/moovida/mapsforge_flutter.git
       path: mapsforge_flutter
       ref: smash_compats
+
+  # apache
+  latlong2: ^0.8.1
+
+  # MIT
+  geocoding: ^2.0.5
+
+  ##################################
+  # OTHERS
+  ##################################
+  # Apache 2.0
+  # catcher: ^0.6.9
+
+  # MIT
+  flutter_ringtone_player: ^3.2.0
+
+  # MIT
+  sqlite3_flutter_libs: ^0.5.9
+
+  # MIT
+  positioned_tap_detector_2: ^1.0.4
 
   #MIT
   extended_image: ^8.0.1
@@ -190,16 +179,6 @@ dependencies:
   #  <key>NSLocationAlwaysUsageDescription</key>
   #  <string>The app needs access to location in background to be able to log geographic shapes on the territory also while walking with the screen off or during phone calls.</string>
   
-  # apache
-  latlong2: ^0.8.1
-
-  # MIT
-  geodesy: ^0.4.0-nullsafety.0
-
-  # # BSD
-  # flutter_geocoder: ^0.2.2-nullsafety
-  # MIT
-  geocoding: ^2.0.5
 
   # MIT
   flutter_slidable: ^2.0.0

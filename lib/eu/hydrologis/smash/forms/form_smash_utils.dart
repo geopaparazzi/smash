@@ -273,8 +273,13 @@ class SmashFormHelper implements AFormhelper {
   }
 
   @override
-  void setData(Map<String, String> newValues) {
+  void setData(Map<String, dynamic> newValues) {
     // not needed here
+  }
+
+  @override
+  Map<String, dynamic> getFormChangedData() {
+    throw UnimplementedError();
   }
 }
 
@@ -490,7 +495,12 @@ class SmashDatabaseFormHelper implements AFormhelper {
   }
 
   @override
-  void setData(Map<String, String> newValues) {
+  void setData(Map<String, dynamic> newValues) {
     // not needed here
+  }
+
+  @override
+  Map<String, dynamic> getFormChangedData() {
+    throw UnimplementedError();
   }
 }

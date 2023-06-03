@@ -494,14 +494,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
-  geodesy:
-    dependency: "direct main"
-    description:
-      name: geodesy
-      sha256: d9959000de938adf760f946546ccbf9ebdff8f4f6d0b5c54e8b8b1ed350b1028
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0-nullsafety.0"
   geoimage:
     dependency: "direct main"
     description:
@@ -731,10 +723,10 @@ packages:
     dependency: transitive
     description:
       name: material_design_icons_flutter
-      sha256: "8c54c21cf336052193559abc64715e4885d6c9220a6dbdfc561a087266cc5385"
+      sha256: "8ef8562d16e747b2d93e5da5c2508931588939c5c00ebc8e2768e803db7dfd3c"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.6996"
+    version: "6.0.7096"
   meta:
     dependency: transitive
     description:
@@ -1255,10 +1247,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: "2cef47b59d310e56f8275b13734ee80a9cf4a48a43172020cb55a620121fbf66"
+      sha256: "281b672749af2edf259fc801f0fcba092257425bcd32a0ce1c8237130bc934c7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.1"
+    version: "1.11.2"
   sqlite3_flutter_libs:
     dependency: "direct main"
     description:
