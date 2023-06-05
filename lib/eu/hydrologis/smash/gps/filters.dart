@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:dart_jts/dart_jts.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -13,8 +13,8 @@ class GpsFilterManagerMessage {
   bool isLogging = false;
   bool blockedByFilter = false;
 
-  LatLng? previousPosLatLon;
-  LatLng? newPosLatLon;
+  Coordinate? previousPosLatLon;
+  Coordinate? newPosLatLon;
 
   double? distanceLastEvent;
   int? maxAllowedDistanceLastEvent;
@@ -95,7 +95,7 @@ class GpsFilterManager {
   /// In here all the filtering happens.
   ///
   /// Returns true if the point was not blocked.
-  bool onNewPositionEvent(SmashPosition position) {
+  bool onNewPositionEvent(SmashPosition? position) {
     if (position != null && position.mocked) {
       if (_projectState.isLogging && _projectState.currentLogId != null) {
         _projectState.addLogPoint(
@@ -136,9 +136,10 @@ class GpsFilterManager {
       var tmpStatus =
           _projectState.isLogging ? GpsStatus.LOGGING : GpsStatus.ON_WITH_FIX;
 
-      var newPosLatLon = LatLng(position.latitude, position.longitude);
+      var newPosLatLon =
+          Coordinate.fromYX(position.latitude, position.longitude);
       if (_previousLogPosition != null) {
-        var previousPosLatLon = LatLng(
+        var previousPosLatLon = Coordinate.fromYX(
             _previousLogPosition!.latitude, _previousLogPosition!.longitude);
         msg.previousPosLatLon = previousPosLatLon;
         msg.newPosLatLon = newPosLatLon;

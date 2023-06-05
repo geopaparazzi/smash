@@ -6,7 +6,6 @@
 
 import 'dart:core';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
@@ -224,11 +223,11 @@ class GeoImageSource extends RasterLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>> toLayers(BuildContext context) async {
+  Future<List<Widget>> toLayers(BuildContext context) async {
     await load(context);
 
-    List<LayerOptions> layers = [
-      OverlayImageLayerOptions(overlayImages: [
+    List<Widget> layers = [
+      OverlayImageLayer(overlayImages: [
         OverlayImage(
             gaplessPlayback: true,
             imageProvider: _memoryImage!,
@@ -253,7 +252,7 @@ class GeoImageSource extends RasterLayerSource {
     _absolutePath = null;
     _name = null;
 
-    _imageBounds = LatLngBounds();
+    _imageBounds = null;
     isLoaded = false;
     _memoryImage = null;
   }

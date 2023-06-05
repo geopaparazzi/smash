@@ -10,6 +10,7 @@ import 'dart:math';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -638,8 +639,8 @@ class DataLoaderUtilities {
           var lon = map.get(LOGSDATA_COLUMN_LON);
           var speed = 0.0;
           if (prevTs != null) {
-            var distanceMeters =
-                CoordinateUtilities.getDistance(LatLng(lat, lon), prevLatLng);
+            var distanceMeters = CoordinateUtilities.getDistance(
+                Coordinate.fromYX(lat, lon), prevLatLng);
             var deltaTs = (ts - prevTs) / 1000;
             speed = distanceMeters / deltaTs;
           }
@@ -654,7 +655,8 @@ class DataLoaderUtilities {
           var speed = 0.0;
           if (prevTs != null) {
             var distanceMeters = CoordinateUtilities.getDistance(
-                LatLng(latF, lonF), prevLatLngFiltered);
+                Coordinate.fromYX(latF, lonF),
+                prevLatLngFiltered.toCoordinate());
             var deltaTs = (ts - prevTs) / 1000;
             speed = distanceMeters / deltaTs;
           }

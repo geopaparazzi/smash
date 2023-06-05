@@ -18,6 +18,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart'
 import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -691,7 +692,7 @@ class GpsSettingsState extends State<GpsSettings> {
           return new Marker(
             width: 10,
             height: 10,
-            point: msg.newPosLatLon!,
+            point: LatLngExt.fromCoordinate(msg.newPosLatLon!),
             builder: (ctx) => new Stack(
               children: <Widget>[
                 Center(
@@ -711,7 +712,7 @@ class GpsSettingsState extends State<GpsSettings> {
         children: <Widget>[
           FlutterMap(
             options: new MapOptions(
-              center: gpsInfoList.last.newPosLatLon,
+              center: LatLngExt.fromCoordinate(gpsInfoList.last.newPosLatLon!),
               zoom: 19,
               minZoom: 7,
               maxZoom: 21,
@@ -729,9 +730,9 @@ class GpsSettingsState extends State<GpsSettings> {
                     int i = gpsInfoListCounter[index];
                     var infoMap = {
                       SL.of(context).settings_longitudeDeg: //"longitude [deg]"
-                          msg.newPosLatLon!.longitude.toStringAsFixed(6),
+                          msg.newPosLatLon!.x.toStringAsFixed(6),
                       SL.of(context).settings_latitudeDeg: //"latitude [deg]"
-                          msg.newPosLatLon!.latitude.toStringAsFixed(6),
+                          msg.newPosLatLon!.y.toStringAsFixed(6),
                       SL.of(context).settings_accuracyM: //"accuracy [m]"
                           msg.accuracy!.toStringAsFixed(0),
                       SL.of(context).settings_altitudeM: //"altitude [m]"
@@ -907,7 +908,10 @@ class GpsSettingsState extends State<GpsSettings> {
                       onPressed: () {
                         var z = _mapController.zoom + 1;
                         if (z > 21) z = 21;
-                        _mapController.move(gpsInfoList.last.newPosLatLon!, z);
+                        _mapController.move(
+                            LatLngExt.fromCoordinate(
+                                gpsInfoList.last.newPosLatLon!),
+                            z);
                       },
                     ),
                     IconButton(
@@ -919,7 +923,10 @@ class GpsSettingsState extends State<GpsSettings> {
                       onPressed: () {
                         var z = _mapController.zoom - 1;
                         if (z < 7) z = 7;
-                        _mapController.move(gpsInfoList.last.newPosLatLon!, z);
+                        _mapController.move(
+                            LatLngExt.fromCoordinate(
+                                gpsInfoList.last.newPosLatLon!),
+                            z);
                       },
                     ),
                     Spacer(

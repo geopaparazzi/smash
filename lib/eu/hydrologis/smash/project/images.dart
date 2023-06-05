@@ -28,15 +28,18 @@ class ImageWidgetUtilities {
   ///
   /// [dbImageToCompleteAndSave] is passed in with the necessary spatial data
   /// (but missing imageDataId, which will be filled here.
-  static int saveImageToSmashDb(
+  static int? saveImageToSmashDb(
       BuildContext context, String path, DbImage dbImageToCompleteAndSave) {
     var imageBytes = ImageUtilities.bytesFromImageFile(path);
     return saveImageBytesToSmashDb(
         imageBytes, context, dbImageToCompleteAndSave, path);
   }
 
-  static int saveImageBytesToSmashDb(List<int> imageBytes, BuildContext context,
-      DbImage dbImageToCompleteAndSave, String imageIdentifier4Error) {
+  static int? saveImageBytesToSmashDb(
+      List<int> imageBytes,
+      BuildContext context,
+      DbImage dbImageToCompleteAndSave,
+      String imageIdentifier4Error) {
     List<int>? thumbBytes =
         ImageUtilities.resizeImage(imageBytes as Uint8List, newWidth: 200);
 

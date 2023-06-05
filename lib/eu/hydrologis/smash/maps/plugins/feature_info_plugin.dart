@@ -23,40 +23,17 @@ import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// A plugin that handles tap info from vector layers
-class FeatureInfoPlugin implements MapPlugin {
-  @override
-  Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<void> stream) {
-    if (options is FeatureInfoPluginOption) {
-      return FeatureInfoLayer(options, mapState, stream);
-    }
-    throw Exception('Unknown options type for FeatureInfoPlugin: $options');
-  }
-
-  @override
-  bool supportsLayer(LayerOptions options) {
-    return options is FeatureInfoPluginOption;
-  }
-}
-
-class FeatureInfoPluginOption extends LayerOptions {
-  Color tapAreaColor = SmashColors.mainSelectionBorder;
-  double tapAreaPixelSize;
-
-  FeatureInfoPluginOption({this.tapAreaPixelSize = 10});
-}
-
 class FeatureInfoLayer extends StatelessWidget {
-  final FeatureInfoPluginOption featureInfoLayerOpts;
-  final MapState map;
-  final Stream<void> stream;
+  final Color tapAreaColor = SmashColors.mainSelectionBorder;
+  final double tapAreaPixelSize;
 
-  FeatureInfoLayer(this.featureInfoLayerOpts, this.map, this.stream);
+  FeatureInfoLayer({this.tapAreaPixelSize = 10});
 
   @override
   Widget build(BuildContext context) {
+    FlutterMapState map = FlutterMapState.maybeOf(context)!;
     return Consumer<InfoToolState>(builder: (context, infoToolState, child) {
-      double radius = featureInfoLayerOpts.tapAreaPixelSize / 2.0;
+      double radius = tapAreaPixelSize / 2.0;
 
       ProjectState projectState =
           Provider.of<ProjectState>(context, listen: false);
@@ -66,8 +43,8 @@ class FeatureInfoLayer extends StatelessWidget {
           infoToolState.isEnabled && infoToolState.xTapPosition != null
               ? Positioned(
                   child: TapSelectionCircle(
-                    size: featureInfoLayerOpts.tapAreaPixelSize,
-                    color: featureInfoLayerOpts.tapAreaColor.withAlpha(128),
+                    size: tapAreaPixelSize,
+                    color: tapAreaColor.withAlpha(128),
                     shape: BoxShape.circle,
                   ),
                   left: infoToolState.xTapPosition,
@@ -81,9 +58,9 @@ class FeatureInfoLayer extends StatelessWidget {
                     Provider.of<SmashMapBuilder>(context, listen: false)
                         .setInProgress(true);
                     var p = e.localPosition;
-                    var pixelBounds = map.getLastPixelBounds();
+                    var pixelBounds = map.pixelBounds;
 
-                    CustomPoint pixelOrigin = map.getPixelOrigin();
+                    CustomPoint pixelOrigin = map.pixelOrigin;
                     var ll = map.unproject(CustomPoint(
                         pixelOrigin.x + p.dx - radius,
                         pixelOrigin.y + (p.dy - radius)));
@@ -115,9 +92,9 @@ class FeatureInfoLayer extends StatelessWidget {
     boundsGeom.setSRID(4326);
     var boundMap = {4326: boundsGeom};
 
-    List<LayerSource> visibleVectorLayers = LayerManager()
+    List<LayerSource?> visibleVectorLayers = LayerManager()
         .getLayerSources()
-        .where((l) => l is VectorLayerSource && l.isActive())
+        .where((l) => l != null && l is VectorLayerSource && l.isActive())
         .toList();
     EditableQueryResult totalQueryResult = EditableQueryResult();
     totalQueryResult.editable = [];
@@ -126,7 +103,7 @@ class FeatureInfoLayer extends StatelessWidget {
     totalQueryResult.primaryKeys = [];
     totalQueryResult.dbs = [];
     for (var vLayer in visibleVectorLayers) {
-      if (DbVectorLayerSource.isDbVectorLayerSource(vLayer)) {
+      if (DbVectorLayerSource.isDbVectorLayerSource(vLayer!)) {
         var db = await DbVectorLayerSource.getDb(vLayer);
 
         var srid = vLayer.getSrid()!;

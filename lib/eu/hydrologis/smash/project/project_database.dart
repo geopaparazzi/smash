@@ -8,6 +8,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
@@ -670,12 +671,12 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
     double summedDistance = 0.0;
 
     var res = select(sql);
-    LatLng? previousPosition;
+    Coordinate? previousPosition;
     res.forEach((QueryResultRow map) {
       var lon = map.get(LOGSDATA_COLUMN_LON);
       var lat = map.get(LOGSDATA_COLUMN_LAT);
       // var ts = map.get(LOGSDATA_COLUMN_TS);
-      LatLng pos = LatLng(lat, lon);
+      Coordinate pos = Coordinate.fromYX(lat, lon);
       if (previousPosition != null) {
         var distanceMeters =
             CoordinateUtilities.getDistance(pos, previousPosition!);

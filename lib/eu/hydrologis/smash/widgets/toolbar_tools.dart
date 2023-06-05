@@ -7,6 +7,7 @@ import 'package:badges/badges.dart' as badges;
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
+import 'package:dart_jts/dart_jts.dart';
 import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
@@ -295,8 +296,9 @@ class _BottomToolsBarState extends State<BottomToolsBar> {
   Future<void> reloadDbLayers(dynamic db, String table) async {
     // reload layer geoms
     var layerSources = LayerManager().getLayerSources(onlyActive: true);
-    var layer = layerSources.firstWhere((layer) {
-      var isDbVector = DbVectorLayerSource.isDbVectorLayerSource(layer);
+    var layer =
+        layerSources.where((layer) => layer != null).firstWhere((layer) {
+      var isDbVector = DbVectorLayerSource.isDbVectorLayerSource(layer!);
       bool isEqual = isDbVector &&
           layer.getName() == table &&
           (layer as DbVectorLayerSource).db == db;
@@ -541,7 +543,7 @@ class FenceButton extends StatelessWidget {
         onLongPress: () async {
           var mapState = Provider.of<SmashMapState>(context, listen: false);
           var editFence = FenceMaster()
-              .findIn(LatLng(mapState.center.y, mapState.center.x));
+              .findIn(Coordinate.fromYX(mapState.center.y, mapState.center.x));
           if (editFence != null) {
             await FenceMaster()
                 .showFencePropertiesDialog(context, editFence, true);

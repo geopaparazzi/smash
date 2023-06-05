@@ -44,7 +44,7 @@ class LayersPageState extends State<LayersPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<LayerSource> _layersList =
+    List<LayerSource?> _layersList =
         LayerManager().getLayerSources(onlyActive: false);
 
     List<Widget> listItems = createLayersList(_layersList, context);
@@ -158,10 +158,10 @@ class LayersPageState extends State<LayersPage> {
   }
 
   List<Widget> createLayersList(
-      List<LayerSource> _layersList, BuildContext context) {
+      List<LayerSource?> _layersList, BuildContext context) {
     final List fixedList = Iterable<int>.generate(_layersList.length).toList();
-    return fixedList.map((idx) {
-      var layerSourceItem = _layersList[idx];
+    return fixedList.where((idx) => _layersList[idx] != null).map((idx) {
+      var layerSourceItem = _layersList[idx]!;
       var srid = layerSourceItem.getSrid();
       bool? prjSupported;
       if (srid != null) {
@@ -333,8 +333,11 @@ class LayersPageState extends State<LayersPage> {
     });
   }
 
-  void setLayersOnChange(List<LayerSource> _layersList) {
-    List<String> layers = _layersList.map((ls) => ls.toJson()).toList();
+  void setLayersOnChange(List<LayerSource?> _layersList) {
+    List<String> layers = _layersList
+        .where((ls) => ls != null)
+        .map((ls) => ls!.toJson())
+        .toList();
     GpPreferences().setLayerInfoList(layers);
   }
 }

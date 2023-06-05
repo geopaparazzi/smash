@@ -19,7 +19,7 @@ class LayerManager {
 
   factory LayerManager() => _instance;
 
-  List<LayerSource> _layerSources = [onlinesTilesSources[0]];
+  List<LayerSource?> _layerSources = [onlinesTilesSources[0]];
 
   LayerManager._internal();
 
@@ -70,12 +70,12 @@ class LayerManager {
   /// Get the list of layer sources. Note that this doesn't call the load of actual data.
   ///
   /// By default only the active list is supplied.
-  List<LayerSource> getLayerSources({onlyActive: true}) {
-    var list = <LayerSource>[];
+  List<LayerSource?> getLayerSources({onlyActive: true}) {
+    var list = <LayerSource?>[];
     if (!onlyActive) {
       list.addAll(_layerSources.where((ts) => ts != null));
     } else {
-      List<LayerSource> where = _layerSources.where((ts) {
+      List<LayerSource?> where = _layerSources.where((ts) {
         if (ts != null && ts.isActive()) {
           String? file = ts.getAbsolutePath();
           if (file != null && file.isNotEmpty) {
@@ -119,15 +119,21 @@ class LayerManager {
 
   /// Load the layers as map [LayerOptions]. This reads and load the data.
   Future<List<Widget>> loadLayers(BuildContext context) async {
-    List<LayerSource> activeLayerSources = LayerManager().getLayerSources();
-    List<Widget> layerOptions = [];
+    List<LayerSource?> activeLayerSources = LayerManager().getLayerSources();
+    List<Widget> layers = [];
     for (int i = 0; i < activeLayerSources.length; i++) {
-      var ls = await activeLayerSources[i].toLayers(context);
-      if (ls != null) {
-        ls.forEach((l) => layerOptions.add(l));
+      try {
+        if (activeLayerSources[i] != null) {
+          var ls = await activeLayerSources[i]!.toLayers(context);
+          if (ls != null) {
+            ls.forEach((l) => layers.add(l));
+          }
+        }
+      } on Exception catch (e, st) {
+        SMLogger().e(
+            "Unable to load layer ${activeLayerSources[i]!.getName()}", e, st);
       }
-      //SMLogger().d("Layer loaded: ${activeLayersInfos[i].toJson()}");
     }
-    return layerOptions;
+    return layers;
   }
 }

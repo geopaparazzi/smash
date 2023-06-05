@@ -3,43 +3,22 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'dart:async';
 import 'dart:math' as math;
 
-import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' hide Path;
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 
 /// Plugin to show the current GPS position
-class GpsPositionPlugin implements MapPlugin {
-  @override
-  Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<void> stream) {
-    if (options is GpsPositionPluginOption) {
-      return GpsPositionLayer(options, mapState, stream);
-    }
-    throw Exception('Unknown options type for GpsPositionPlugin: $options');
-  }
-
-  @override
-  bool supportsLayer(LayerOptions options) {
-    return options is GpsPositionPluginOption;
-  }
-}
-
-class GpsPositionPluginOption extends LayerOptions {
-  Color markerColor;
-  Color markerColorStale;
+class GpsPositionLayer extends StatelessWidget {
+  final Color markerColor;
+  final Color markerColorStale;
   Color? markerColorLogging;
-  double markerSize;
-
-  GpsPositionPluginOption({
+  final double markerSize;
+  GpsPositionLayer({
     this.markerColor = Colors.black,
     this.markerColorStale = Colors.grey,
     this.markerColorLogging,
@@ -47,29 +26,26 @@ class GpsPositionPluginOption extends LayerOptions {
   }) {
     markerColorLogging ??= SmashColors.gpsLogging;
   }
-}
-
-class GpsPositionLayer extends StatelessWidget {
-  final GpsPositionPluginOption gpsPositionLayerOpts;
-  final MapState map;
-  final Stream<void> stream;
-
-  GpsPositionLayer(this.gpsPositionLayerOpts, this.map, this.stream);
 
   @override
   Widget build(BuildContext context) {
     GpsState gpsState = Provider.of<GpsState>(context, listen: false);
+    var map = FlutterMapState.maybeOf(context)!;
 
     return CustomPaint(
-      painter: CurrentGpsPositionPainter(gpsPositionLayerOpts, gpsState, map),
+      painter: CurrentGpsPositionPainter(markerColor, markerColorStale,
+          markerColorLogging, markerSize, gpsState, map),
     );
   }
 }
 
 class CurrentGpsPositionPainter extends CustomPainter {
-  MapState map;
+  FlutterMapState map;
   GpsState gpsState;
-  GpsPositionPluginOption gpsPositionLayerOpts;
+  Color markerColor;
+  Color markerColorStale;
+  Color? markerColorLogging;
+  double markerSize;
   Paint paintStrokeWhite = Paint()
     ..color = Colors.white
     ..style = PaintingStyle.stroke
@@ -92,7 +68,8 @@ class CurrentGpsPositionPainter extends CustomPainter {
     ..color = Colors.blue.withAlpha(50)
     ..style = PaintingStyle.fill;
 
-  CurrentGpsPositionPainter(this.gpsPositionLayerOpts, this.gpsState, this.map)
+  CurrentGpsPositionPainter(this.markerColor, this.markerColorStale,
+      this.markerColorLogging, this.markerSize, this.gpsState, this.map)
       : super(repaint: gpsState);
 
   @override
@@ -113,7 +90,7 @@ class CurrentGpsPositionPainter extends CustomPainter {
         mainPosLL = LatLng(pos.latitude, pos.longitude);
         accuracy = pos.accuracy;
       }
-      var bounds = map.getBounds();
+      var bounds = map.bounds;
       if (!bounds.contains(mainPosLL)) {
         return;
       }
@@ -122,21 +99,21 @@ class CurrentGpsPositionPainter extends CustomPainter {
       var paintStroke;
       var paintFill;
       if (gpsState.status == GpsStatus.ON_WITH_FIX) {
-        color = gpsPositionLayerOpts.markerColor;
+        color = markerColor;
         paintStroke = paintStrokeWhite;
         paintFill = paintFillWhite;
       } else if (gpsState.status == GpsStatus.ON_NO_FIX) {
-        color = gpsPositionLayerOpts.markerColorStale;
+        color = markerColorStale;
         paintStroke = paintStrokeWhite;
         paintFill = paintFillWhite;
       } else {
-        color = gpsPositionLayerOpts.markerColorLogging;
+        color = markerColorLogging;
         paintStroke = paintStrokeBlack;
         paintFill = paintFillBlack;
       }
 
-      CustomPoint pixelOrigin = map.getPixelOrigin();
-      var radius = gpsPositionLayerOpts.markerSize / 2;
+      CustomPoint pixelOrigin = map.pixelOrigin;
+      var radius = markerSize / 2;
 
       CustomPoint mainPosPixel = map.project(mainPosLL);
       double mainCenterX = mainPosPixel.x - pixelOrigin.x.toDouble();

@@ -21,6 +21,14 @@ import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersview.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/current_log_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/fences_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/gps_position_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/ruler_plugin.dart';
+import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -39,7 +47,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/toolbar_tools.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-
+import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
 import 'mainview_utils.dart';
 
 class MainViewWidget extends StatefulWidget {
@@ -229,7 +237,9 @@ class MainViewWidgetState extends State<MainViewWidget>
     }
     layers.addAll(_activeLayers);
 
+    addPluginsPreLayers(layers);
     ProjectData? projectData = addProjectMarkers(projectState, layers);
+    addPluginsPostLayers(layers);
 
     GeometryEditorState editorState =
         Provider.of<GeometryEditorState>(context, listen: false);
@@ -805,6 +815,79 @@ class MainViewWidgetState extends State<MainViewWidget>
       }
     }
     return projectData;
+  }
+
+  void addPluginsPreLayers(List<Widget> layers) {
+    if (PluginsHandler.FENCE.isOn()) {
+      layers.add(FencesLayer());
+    }
+    if (PluginsHandler.GRID.isOn()) {
+      var gridLayer = LatLonGridLayer(
+          options: LatLonGridLayerOptions(
+        labelStyle: TextStyle(
+          color: SmashColors.mainBackground,
+          backgroundColor: SmashColors.mainDecorations.withAlpha(170),
+          fontSize: 16.0,
+        ),
+        lineColor: SmashColors.mainDecorations,
+        lineWidth: 0.5,
+        showCardinalDirections: true,
+        showCardinalDirectionsAsPrefix: false,
+        showLabels: true,
+        rotateLonLabels: true,
+        placeLabelsOnLines: true,
+        offsetLonLabelsBottom: 20.0,
+        offsetLatLabelsLeft: 20.0,
+      ));
+      layers.add(gridLayer);
+    }
+  }
+
+  void addPluginsPostLayers(List<Widget> layers) {
+    // if (PluginsHandler.HEATMAP_WORKING && PluginsHandler.LOG_HEATMAP.isOn()) {
+    //   layers.add(HeatmapPluginOption());
+    // }
+
+    layers.add(CurrentGpsLogLayer(
+      logColor: Colors.red,
+      logWidth: 5.0,
+    ));
+
+    int tapAreaPixels = GpPreferences()
+            .getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50) ??
+        50;
+    layers.add(FeatureInfoLayer(
+      tapAreaPixelSize: tapAreaPixels.toDouble(),
+    ));
+
+    if (PluginsHandler.GPS.isOn()) {
+      layers.add(GpsPositionLayer(
+        markerColor: Colors.black,
+        markerSize: 32,
+      ));
+    }
+
+    if (PluginsHandler.CROSS.isOn()) {
+      var centerCrossStyle = CenterCrossStyle.fromPreferences();
+      if (centerCrossStyle.visible) {
+        layers.add(CenterCrossLayer(
+          crossColor: ColorExt(centerCrossStyle.color),
+          crossSize: centerCrossStyle.size,
+          lineWidth: centerCrossStyle.lineWidth,
+        ));
+      }
+    }
+
+    if (PluginsHandler.SCALE.isOn()) {
+      layers.add(ScaleLayer(
+        lineColor: Colors.black,
+        lineWidth: 3,
+        textStyle: TextStyle(color: Colors.black, fontSize: 14),
+        padding: EdgeInsets.all(10),
+      ));
+    }
+
+    layers.add(RulerPluginLayer(tapAreaPixelSize: 1));
   }
 
   Future disposeProject(BuildContext context) async {

@@ -521,11 +521,12 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       double distance;
       if (widget.useGpsFilteredGenerally && ldp1.filtered_lat != null) {
         distance = CoordinateUtilities.getDistance(
-            LatLng(ldp1.filtered_lat!, ldp1.filtered_lon!),
-            LatLng(ldp2.filtered_lat!, ldp2.filtered_lon!));
+            Coordinate.fromYX(ldp1.filtered_lat!, ldp1.filtered_lon!),
+            Coordinate.fromYX(ldp2.filtered_lat!, ldp2.filtered_lon!));
       } else {
         distance = CoordinateUtilities.getDistance(
-            LatLng(ldp1.lat, ldp1.lon), LatLng(ldp2.lat, ldp2.lon));
+            Coordinate.fromYX(ldp1.lat, ldp1.lon),
+            Coordinate.fromYX(ldp2.lat, ldp2.lon));
       }
       length += distance;
 

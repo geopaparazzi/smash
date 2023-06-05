@@ -108,7 +108,7 @@ class SmashFormHelper implements AFormhelper {
       dbImage.noteId = _id;
     }
 
-    int imageId;
+    int? imageId;
     var imagePath = fromGallery
         ? await Camera.loadImageFromGallery()
         : await Camera.takePicture(imageQuality: imageQuality);
@@ -156,7 +156,7 @@ class SmashFormHelper implements AFormhelper {
       dbImage.noteId = _id;
     }
 
-    int imageId;
+    int? imageId;
 
     var imageBytes = await Navigator.push(
         context,
