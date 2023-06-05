@@ -3,36 +3,16 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-import 'dart:async';
-
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
-import 'package:latlong2/latlong.dart' hide Path;
+import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/scale_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smash/eu/hydrologis/smash/util/notifications.dart';
 
 /// Plugin to show the current GPS log
-class FencesPlugin implements MapPlugin {
-  @override
-  Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<void> stream) {
-    if (options is FencesPluginOption) {
-      return FencesLayer(options, mapState, stream);
-    }
-    throw Exception('Unknown options type for FencesPlugin: $options');
-  }
-
-  @override
-  bool supportsLayer(LayerOptions options) {
-    return options is FencesPluginOption;
-  }
-}
-
-class FencesPluginOption extends LayerOptions {
+class FencesPluginOption {
   static double width = 2;
 
   Paint noSoundFillColor = Paint()
@@ -57,22 +37,17 @@ class FencesPluginOption extends LayerOptions {
 }
 
 class FencesLayer extends StatelessWidget {
-  final FencesPluginOption opts;
-  final MapState mapState;
-  final Stream<void> stream;
-
-  FencesLayer(this.opts, this.mapState, this.stream) {}
-
   @override
   Widget build(BuildContext context) {
+    var mapState = FlutterMapState.maybeOf(context)!;
     return CustomPaint(
-      painter: CurrentLogPathPainter(opts, mapState),
+      painter: CurrentLogPathPainter(FencesPluginOption(), mapState),
     );
   }
 }
 
 class CurrentLogPathPainter extends CustomPainter {
-  MapState map;
+  FlutterMapState map;
   FencesPluginOption opts;
 
   CurrentLogPathPainter(this.opts, this.map);
@@ -80,38 +55,36 @@ class CurrentLogPathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var fencesList = FenceMaster().fencesList;
-    var bb = map.getBounds();
+    var bb = map.bounds;
     Envelope mapEnv = Envelope(bb.west, bb.east, bb.south, bb.north);
     for (var i = 0; i < fencesList.length; i++) {
       var fence = fencesList[i];
 
-      LatLng center = LatLng(fence.lat, fence.lon);
-      LatLng offsetX =
+      Coordinate center = Coordinate.fromYX(fence.lat, fence.lon);
+      Coordinate offsetX =
           CoordinateUtilities.getAtOffset(center, fence.radius, 90);
-      double deltaX = (offsetX.longitude - center.longitude).abs();
-      LatLng offsetY = CoordinateUtilities.getAtOffset(center, fence.radius, 0);
-      double deltaY = (offsetY.latitude - center.latitude).abs();
+      double deltaX = (offsetX.x - center.x).abs();
+      Coordinate offsetY =
+          CoordinateUtilities.getAtOffset(center, fence.radius, 0);
+      double deltaY = (offsetY.y - center.y).abs();
 
-      Envelope env = Envelope(
-          center.longitude - deltaX,
-          center.longitude + deltaX,
-          center.latitude - deltaY,
-          center.latitude + deltaY);
+      Envelope env = Envelope(center.x - deltaX, center.x + deltaX,
+          center.y - deltaY, center.y + deltaY);
 
       if (!mapEnv.intersectsEnvelope(env)) {
         continue;
       }
 
-      CustomPoint pixelOrigin = map.getPixelOrigin();
+      CustomPoint pixelOrigin = map.pixelOrigin;
 
-      CustomPoint mainPosPixel = map.project(center);
+      CustomPoint mainPosPixel = map.project(LatLng(center.y, center.x));
       double mainCenterX = mainPosPixel.x - pixelOrigin.x.toDouble();
       double mainCenterY = (mainPosPixel.y - pixelOrigin.y.toDouble());
 
-      CustomPoint tmpPixelX = map.project(offsetX);
+      CustomPoint tmpPixelX = map.project(LatLng(offsetX.y, offsetX.x));
       double tmpX = tmpPixelX.x - pixelOrigin.x.toDouble();
       double rX = (mainCenterX - tmpX).abs();
-      CustomPoint tmpPixelY = map.project(offsetY);
+      CustomPoint tmpPixelY = map.project(LatLng(offsetY.y, offsetY.x));
       double tmpY = tmpPixelY.y - pixelOrigin.y.toDouble();
       double rY = (mainCenterY - tmpY).abs();
 

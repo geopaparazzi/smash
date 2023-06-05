@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
@@ -177,7 +178,9 @@ class EnhancedColorUtility {
       loopLine(linePoints, interval, (startI, endI, points) {
         ElevationPoint p1 = linePoints[startI] as ElevationPoint;
         ElevationPoint p2 = linePoints[endI] as ElevationPoint;
-        var distance = CoordinateUtilities.getDistance(p1, p2);
+        var distance = CoordinateUtilities.getDistance(
+            Coordinate(p1.longitude, p1.latitude),
+            Coordinate(p2.longitude, p2.latitude));
         if (distance == 0.0) {
           distance = 0.1;
         }
@@ -310,7 +313,9 @@ class EnhancedColorUtility {
       for (var i = 1; i < linePoints.length; i++) {
         ElevationPoint p1 = linePoints[i - 1] as ElevationPoint;
         ElevationPoint p2 = linePoints[i] as ElevationPoint;
-        var distance = CoordinateUtilities.getDistance(p1, p2);
+        var distance = CoordinateUtilities.getDistance(
+            Coordinate(p1.longitude, p1.latitude),
+            Coordinate(p2.longitude, p2.latitude));
         if (distance == 0.0) {
           distance = 0.1;
         }
@@ -403,7 +408,9 @@ class EnhancedColorUtility {
   /// @return the distance considering also elevation.
   static double distance3d(LatLngExt c1, LatLngExt c2) {
     double deltaElev = (c1.altitude - c2.altitude).abs();
-    var dist = CoordinateUtilities.getDistance(c1, c2);
+    var dist = CoordinateUtilities.getDistance(
+        Coordinate(c1.longitude, c1.latitude),
+        Coordinate(c2.longitude, c2.latitude));
 
     double distance = pythagoras(dist, deltaElev);
     return distance;

@@ -43,7 +43,6 @@ class SmashMBTilesImageProvider extends TileProvider {
 //        UI.Image _emptyImage = await ImageWidgetUtilities.transparentImage();
 //        var byteData = await _emptyImage.toByteData(format: UI.ImageByteFormat.png);
 //        _emptyImageBytes = byteData.buffer.asUint8List();
-
       } on Exception catch (e, s) {
         SMLogger().e("Error getting mbtiles bounds or empty image.", e, s);
       }
@@ -70,20 +69,20 @@ class SmashMBTilesImageProvider extends TileProvider {
   }
 
   @override
-  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
+  ImageProvider getImage(TileCoordinates coords, TileLayer options) {
     var x = coords.x.round();
     var y = options.tms
         ? invertY(coords.y.round(), coords.z.round())
         : coords.y.round();
     var z = coords.z.round();
 
-    return SmashMBTileImage(_loadedDb!, Coords<int>(x, y)..z = z);
+    return SmashMBTileImage(_loadedDb!, TileCoordinates(x, y, z));
   }
 }
 
 class SmashMBTileImage extends ImageProvider<SmashMBTileImage> {
   final MBTilesDb database;
-  final Coords<int> coords;
+  final TileCoordinates coords;
 
   SmashMBTileImage(this.database, this.coords);
 

@@ -52,9 +52,9 @@ class InfoToolState extends ChangeNotifier {
       var env = Envelope.fromCoordinate(
           Coordinate(tapLatLong.longitude, tapLatLong.latitude));
       env.expandByDistance(0.001);
-      List<LayerSource> visibleVectorLayers = LayerManager()
+      List<LayerSource?> visibleVectorLayers = LayerManager()
           .getLayerSources()
-          .where((l) => l is VectorLayerSource)
+          .where((l) => l != null && l is VectorLayerSource)
           .toList();
       for (var vLayer in visibleVectorLayers) {
         if (vLayer is GeopackageSource) {

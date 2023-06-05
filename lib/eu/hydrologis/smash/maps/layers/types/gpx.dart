@@ -10,8 +10,10 @@ import 'dart:math';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:gpx/gpx.dart';
 import 'package:latlong2/latlong.dart';
@@ -35,7 +37,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
   List<LatLng> _wayPoints = [];
   List<String> _wayPointNames = [];
   List<List<LatLng>> _tracksRoutes = [];
-  LatLngBounds _gpxBounds = LatLngBounds();
+  LatLngBounds? _gpxBounds = null;
 
   late String sldString;
   late SldObjectParser _style;
@@ -96,7 +98,11 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
       int count = 1;
       _gpx!.wpts.forEach((wpt) {
         var latLng = LatLng(wpt.lat!, wpt.lon!);
-        _gpxBounds.extend(latLng);
+        if (_gpxBounds == null) {
+          _gpxBounds = LatLngBounds.fromPoints([latLng]);
+        } else {
+          _gpxBounds!.extend(latLng);
+        }
         _wayPoints.add(latLng);
         var name = wpt.name;
         if (name == null) {
@@ -111,25 +117,26 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
       }
 
       double lengthMeters = 0;
-      var prevLatLng;
+      Coordinate? prevLatLng;
       _gpx!.trks.forEach((trk) {
         trk.trksegs.forEach((trkSeg) {
           List<LatLng> points = trkSeg.trkpts.map((wpt) {
-            LatLng latLng;
+            Coordinate coord;
             if (wpt.ele == null) {
-              latLng = LatLng(wpt.lat!, wpt.lon!);
+              coord = Coordinate.fromYX(wpt.lat!, wpt.lon!);
             } else {
-              latLng = ElevationPoint(wpt.lat!, wpt.lon!, wpt.ele!);
+              coord = Coordinate.fromXYZ(wpt.lon!, wpt.lat!, wpt.ele!);
               minLineElev = min(minLineElev, wpt.ele!);
               maxLineElev = max(maxLineElev, wpt.ele!);
             }
             if (prevLatLng != null) {
               var distance =
-                  CoordinateUtilities.getDistance(prevLatLng, latLng);
+                  CoordinateUtilities.getDistance(prevLatLng!, coord);
               lengthMeters += distance;
             }
-            prevLatLng = latLng;
-            _gpxBounds.extend(latLng);
+            prevLatLng = coord;
+            var latLng = LatLng(coord.y, coord.x);
+            _gpxBounds!.extend(latLng);
             return latLng;
           }).toList();
           _tracksRoutes.add(points);
@@ -148,22 +155,23 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
       prevLatLng = null;
       _gpx!.rtes.forEach((rt) {
         List<LatLng> points = rt.rtepts.map((wpt) {
-          var latLng;
+          Coordinate? coord;
           if (wpt.ele == null) {
-            latLng = LatLng(wpt.lat!, wpt.lon!);
+            coord = Coordinate.fromYX(wpt.lat!, wpt.lon!);
           } else {
-            latLng = ElevationPoint(wpt.lat!, wpt.lon!, wpt.ele!);
+            coord = Coordinate.fromXYZ(wpt.lon!, wpt.lat!, wpt.ele!);
             minLineElev = min(minLineElev, wpt.ele!);
             maxLineElev = max(maxLineElev, wpt.ele!);
           }
           if (prevLatLng != null) {
-            var distance = CoordinateUtilities.getDistance(prevLatLng, latLng);
+            var distance = CoordinateUtilities.getDistance(prevLatLng!, coord);
             lengthMeters += distance;
           }
-          prevLatLng = latLng;
-          _gpxBounds.extend(latLng);
+          prevLatLng = coord;
+          var latLng = LatLng(coord.y, coord.x);
+          _gpxBounds!.extend(latLng);
           return latLng;
-        }).toList() as List<LatLng>;
+        }).toList();
         _tracksRoutes.add(points);
       });
       if (_gpx!.rtes.isNotEmpty) {
@@ -221,8 +229,9 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>> toLayers(BuildContext context) async {
+  Future<List<Widget>> toLayers(BuildContext context) async {
     load(context);
+    var map = FlutterMapState.maybeOf(context)!;
 
     LineStyle? lineStyle;
     PointStyle? pointStyle;
@@ -247,7 +256,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
     pointStyle ??= PointStyle();
     textStyle ??= TextStyle();
 
-    List<LayerOptions> layers = [];
+    List<Widget> layers = [];
 
     if (_tracksRoutes.isNotEmpty) {
       List<Polyline> lines = [];
@@ -270,7 +279,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
         });
       }
 
-      var lineLayer = PolylineLayerOptions(
+      var lineLayer = PolylineLayer(
         polylineCulling: true,
         polylines: lines,
       );
@@ -309,34 +318,36 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
                 ));
         waypoints.add(m);
       }
-      var waypointsCluster = MarkerClusterLayerOptions(
-        maxClusterRadius: 20,
-        size: Size(40, 40),
-        fitBoundsOptions: FitBoundsOptions(
-          padding: EdgeInsets.all(50),
-        ),
-        markers: waypoints,
-        polygonOptions: PolygonOptions(
-            borderColor: colorExt,
-            color: colorExt.withOpacity(0.2),
-            borderStrokeWidth: 3),
-        builder: (context, markers) {
-          return FloatingActionButton(
-            child: Text(markers.length.toString()),
-            onPressed: null,
-            backgroundColor: colorExt,
-            foregroundColor: SmashColors.mainBackground,
-            heroTag: null,
-          );
-        },
-      );
+      var waypointsCluster = MarkerClusterLayer(
+          MarkerClusterLayerOptions(
+            maxClusterRadius: 20,
+            size: Size(40, 40),
+            fitBoundsOptions: FitBoundsOptions(
+              padding: EdgeInsets.all(50),
+            ),
+            markers: waypoints,
+            polygonOptions: PolygonOptions(
+                borderColor: colorExt,
+                color: colorExt.withOpacity(0.2),
+                borderStrokeWidth: 3),
+            builder: (context, markers) {
+              return FloatingActionButton(
+                child: Text(markers.length.toString()),
+                onPressed: null,
+                backgroundColor: colorExt,
+                foregroundColor: SmashColors.mainBackground,
+                heroTag: null,
+              );
+            },
+          ),
+          map);
       layers.add(waypointsCluster);
     }
     return layers;
   }
 
   @override
-  Future<LatLngBounds> getBounds() async {
+  Future<LatLngBounds?> getBounds() async {
     return _gpxBounds;
   }
 
@@ -345,7 +356,7 @@ class GpxSource extends VectorLayerSource implements SldLayerSource {
     _wayPoints = [];
     _wayPointNames = [];
     _tracksRoutes = [];
-    _gpxBounds = LatLngBounds();
+    _gpxBounds = null;
     _gpx = null;
     _name = null;
     _absolutePath = null;

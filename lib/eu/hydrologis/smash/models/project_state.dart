@@ -4,19 +4,16 @@
  * found in the LICENSE file.
  */
 
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-
 import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
-
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -40,14 +37,14 @@ class ProjectState extends ChangeNotifierPlus {
   bool _isLogging = false;
   int? _currentLogId;
 
-  List<LatLng> _currentLogPoints = [];
+  List<Coordinate> _currentLogPoints = [];
   double? _currentLogProgressive;
   double? _currentFilteredLogProgressive;
   int? _currentLogTimeDeltaMillis;
   int? _currentLogTimeInitMillis;
   double? _currentSpeedInMs;
   List<dynamic> _lastProgAndAltitudes = [];
-  List<LatLng> _currentFilteredLogPoints = [];
+  List<Coordinate> _currentFilteredLogPoints = [];
   GpsStatus? _lastGpsStatusBeforeLogging;
 
   Future<void> setNewProject(String path, BuildContext context) async {
@@ -179,7 +176,7 @@ class ProjectState extends ChangeNotifierPlus {
       _currentFilteredLogProgressive = 0.0;
     }
     // original log
-    var newPosLatLon = LatLng(latitude, longitude);
+    var newPosLatLon = Coordinate.fromYX(latitude, longitude);
     if (_currentLogPoints.isNotEmpty) {
       var distanceMeters =
           CoordinateUtilities.getDistance(_currentLogPoints.last, newPosLatLon);
@@ -189,7 +186,8 @@ class ProjectState extends ChangeNotifierPlus {
 
     // filtered log
     if (latitudeFiltered != null) {
-      var newFilteredPosLatLon = LatLng(latitudeFiltered, longitudeFiltered!);
+      var newFilteredPosLatLon =
+          Coordinate.fromYX(latitudeFiltered, longitudeFiltered!);
       if (_currentFilteredLogPoints.isNotEmpty) {
         var distanceMeters = CoordinateUtilities.getDistance(
             _currentFilteredLogPoints.last, newFilteredPosLatLon);
@@ -274,8 +272,8 @@ class ProjectState extends ChangeNotifierPlus {
   }
 
   /// Get the list of current log points.
-  List<LatLng> get currentLogPoints => _currentLogPoints;
-  List<LatLng> get currentFilteredLogPoints => _currentFilteredLogPoints;
+  List<Coordinate> get currentLogPoints => _currentLogPoints;
+  List<Coordinate> get currentFilteredLogPoints => _currentFilteredLogPoints;
 
   /// Stop logging to database.
   ///

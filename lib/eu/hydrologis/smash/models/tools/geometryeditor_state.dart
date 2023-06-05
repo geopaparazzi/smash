@@ -486,10 +486,10 @@ class GeometryEditManager {
   }
 
   Map<String, DbVectorLayerSource> _getName2SourcesMap() {
-    List<LayerSource> editableLayers = LayerManager()
+    List<LayerSource?> editableLayers = LayerManager()
         .getLayerSources()
         .reversed
-        .where((l) => l is DbVectorLayerSource && l.isActive())
+        .where((l) => l != null && l is DbVectorLayerSource && l.isActive())
         .toList();
     Map<String, DbVectorLayerSource> name2SourceMap = {};
     editableLayers.forEach((element) {
@@ -511,10 +511,10 @@ class GeometryEditManager {
 
     resetToNulls();
 
-    List<LayerSource> editableLayers = LayerManager()
+    List<LayerSource?> editableLayers = LayerManager()
         .getLayerSources()
         .reversed
-        .where((l) => l is DbVectorLayerSource && l.isActive())
+        .where((l) => l != null && l is DbVectorLayerSource && l.isActive())
         .toList();
 
     var radius = ZOOM2TOUCHRADIUS[zoom] * 10;
@@ -525,8 +525,8 @@ class GeometryEditManager {
 
     EditableGeometry? editGeom;
     double minDist = 1000000000;
-    for (LayerSource vLayer in editableLayers) {
-      var srid = vLayer.getSrid()!;
+    for (LayerSource? vLayer in editableLayers) {
+      var srid = vLayer!.getSrid()!;
       var db = await DbVectorLayerSource.getDb(vLayer);
       // create the env
       var dataPrj = SmashPrj.fromSrid(srid);

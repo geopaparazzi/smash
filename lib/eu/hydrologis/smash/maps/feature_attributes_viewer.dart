@@ -34,8 +34,7 @@ class FeatureAttributesViewer extends StatefulWidget {
       _FeatureAttributesViewerState();
 }
 
-class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
-    with AfterLayoutMixin {
+class _FeatureAttributesViewerState extends State<FeatureAttributesViewer> {
   int _index = 0;
   late int _total;
   MapController _mapController = MapController();
@@ -44,8 +43,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
   late JTS.Geometry _geometry;
   var _srids = {};
 
-  @override
-  void afterFirstLayout(BuildContext context) async {
+  void loadOnReady(BuildContext context) async {
     await setBaseLayer();
 
     _total = widget.features.geoms.length;
@@ -56,6 +54,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
       var env = _geometry.getEnvelopeInternal();
       var latLngBounds = LatLngBounds(LatLng(env.getMinY(), env.getMinX()),
           LatLng(env.getMaxY(), env.getMaxX()));
+      _mapController.fitBounds(latLngBounds);
 
       for (var i = 0; i < f.ids!.length; i++) {
         var db = f.dbs![i];
@@ -68,10 +67,6 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
           _srids[tableName] = gcAndSrid[1];
         }
       }
-
-      _mapController.onReady.then((v) {
-        _mapController.fitBounds(latLngBounds);
-      });
     } on Exception catch (e, s) {
       SMLogger().e("Error.", e, s);
     }
@@ -83,12 +78,14 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
   Future<void> setBaseLayer() async {
     var activeBaseLayers = LayerManager().getLayerSources(onlyActive: true);
     if (activeBaseLayers.isNotEmpty) {
-      var baseLayers = await activeBaseLayers[0].toLayers(context);
-      if (baseLayers!.isNotEmpty) {
-        for (var baseLayer in baseLayers) {
-          if (baseLayer is TileLayerOptions) {
-            _baseLayer = baseLayer;
-            break;
+      if (activeBaseLayers[0] != null) {
+        var baseLayers = await activeBaseLayers[0]!.toLayers(context);
+        if (baseLayers!.isNotEmpty) {
+          for (var baseLayer in baseLayers) {
+            if (baseLayer is TileLayer) {
+              _baseLayer = baseLayer;
+              break;
+            }
           }
         }
       }
@@ -104,7 +101,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     Color fillPoly = Colors.yellow.withOpacity(0.3);
 
     EditableQueryResult f = widget.features;
-    var layers = <LayerOptions>[];
+    var layers = <Widget>[];
 
     if (_baseLayer != null) {
       layers.add(_baseLayer);
@@ -130,7 +127,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     if (gType.isPoint()) {
       double size = 30;
 
-      var layer = new MarkerLayerOptions(
+      var layer = new MarkerLayer(
         markers: [
           new Marker(
             width: size,
@@ -168,7 +165,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
         lines.add(
             Polyline(points: linePoints, strokeWidth: 3, color: borderFill));
       }
-      var lineLayer = PolylineLayerOptions(
+      var lineLayer = PolylineLayer(
         polylineCulling: true,
         polylines: lines,
       );
@@ -195,7 +192,7 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
               color: fillPoly));
         }
       }
-      var polyLayer = PolygonLayerOptions(
+      var polyLayer = PolygonLayer(
         polygonCulling: true,
         polygons: polygons,
       );
@@ -270,8 +267,11 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                           zoom: 15,
                           minZoom: 7,
                           maxZoom: 19,
+                          onMapReady: () {
+                            loadOnReady(context);
+                          },
                         ),
-                        layers: layers,
+                        children: layers,
                         mapController: _mapController,
                       ),
                     ),
@@ -305,8 +305,11 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
                           zoom: 15,
                           minZoom: 7,
                           maxZoom: 19,
+                          onMapReady: () {
+                            loadOnReady(context);
+                          },
                         ),
-                        layers: layers,
+                        children: layers,
                         mapController: _mapController,
                       ),
                     ),
@@ -457,13 +460,13 @@ class _FeatureAttributesViewerState extends State<FeatureAttributesViewer>
     );
   }
 
-  LatLng getCenterFromBounds(LatLngBounds bounds, MapState mapState) {
-    var centerZoom = mapState.getBoundsCenterZoom(bounds, FitBoundsOptions());
-    return centerZoom.center;
-  }
+  // LatLng getCenterFromBounds(LatLngBounds bounds, MapState mapState) {
+  //   var centerZoom = mapState.getBoundsCenterZoom(bounds, FitBoundsOptions());
+  //   return centerZoom.center;
+  // }
 
-  double getZoomFromBounds(LatLngBounds bounds, MapState mapState) {
-    var centerZoom = mapState.getBoundsCenterZoom(bounds, FitBoundsOptions());
-    return centerZoom.zoom;
-  }
+  // double getZoomFromBounds(LatLngBounds bounds, MapState mapState) {
+  //   var centerZoom = mapState.getBoundsCenterZoom(bounds, FitBoundsOptions());
+  //   return centerZoom.zoom;
+  // }
 }

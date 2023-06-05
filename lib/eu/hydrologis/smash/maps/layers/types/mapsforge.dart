@@ -183,9 +183,9 @@ class MapsforgeTileProvider extends FM.TileProvider {
       await _mapDataStore!.lateOpen();
     }
     BoundingBox bBox = _mapDataStore!.boundingBox;
-    FM.LatLngBounds bounds = FM.LatLngBounds();
-    bounds.extend(LatLng(bBox.minLatitude, bBox.minLongitude));
-    bounds.extend(LatLng(bBox.maxLatitude, bBox.maxLongitude));
+    FM.LatLngBounds bounds = FM.LatLngBounds(
+        LatLng(bBox.minLatitude, bBox.minLongitude),
+        LatLng(bBox.maxLatitude, bBox.maxLongitude));
     return bounds;
   }
 
@@ -234,7 +234,7 @@ class MapsforgeTileProvider extends FM.TileProvider {
   }
 
   @override
-  ImageProvider getImage(FM.Coords<num> coords, FM.TileLayerOptions options) {
+  ImageProvider getImage(FM.TileCoordinates coords, FM.TileLayer options) {
     int xTile = coords.x.round();
     int yTile = coords.y.round();
     int zoom = coords.z.round();

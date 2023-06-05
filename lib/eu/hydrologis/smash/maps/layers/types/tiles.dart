@@ -44,12 +44,13 @@ class TileSource extends TiledRasterLayerSource {
 
   bool canDoProperties = true;
 
-  ErrorTileCallBack? errorTileCallback = (tile, exception) {
+  ErrorTileCallBack? errorTileCallback = (tile, exception, stacktrace) {
     // ignore tiles that can't load to avoid
     if (exception is String) {
       SMLogger().e(tile, null, null);
     } else {
-      SMLogger().e("Unable to load tile: ${tile.coordsKey}", exception, null);
+      SMLogger()
+          .e("Unable to load tile: ${tile.coordinatesKey}", null, stacktrace);
     }
   };
   bool overrideTilesOnUrlChange = true;
@@ -337,7 +338,7 @@ class TileSource extends TiledRasterLayerSource {
     return bounds;
   }
 
-  Future<List<LayerOptions>> toLayers(BuildContext context) async {
+  Future<List<Widget>> toLayers(BuildContext context) async {
     bool retinaModeOn = GpPreferences()
         .getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, false);
     if (FileManager.isMapsforge(getAbsolutePath())) {
@@ -347,17 +348,19 @@ class TileSource extends TiledRasterLayerSource {
           MapsforgeTileProvider(File(absolutePath!), tileSize: tileSize);
       await mapsforgeTileProvider.open();
       return [
-        TileLayerOptions(
-          tileProvider: mapsforgeTileProvider,
-          tileSize: tileSize,
-          keepBuffer: 2,
-          maxZoom: 21,
-          tms: isTms,
-          backgroundColor: Colors.transparent,
+        Opacity(
           opacity: opacityPercentage / 100.0,
-          retinaMode: false, // not supported
-          overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
-          errorTileCallback: errorTileCallback,
+          child: TileLayer(
+            tileProvider: mapsforgeTileProvider,
+            tileSize: tileSize,
+            keepBuffer: 2,
+            maxZoom: 21,
+            tms: isTms,
+            backgroundColor: Colors.transparent,
+            retinaMode: false, // not supported
+            // TODO check overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+            errorTileCallback: errorTileCallback,
+          ),
         )
       ];
     } else if (FileManager.isMbtiles(getAbsolutePath())) {
@@ -365,15 +368,17 @@ class TileSource extends TiledRasterLayerSource {
       tileProvider.open();
       // mbtiles
       return [
-        TileLayerOptions(
-          tileProvider: tileProvider,
-          maxZoom: maxZoom.toDouble(),
-          tms: true,
-          backgroundColor: Colors.transparent,
+        Opacity(
           opacity: opacityPercentage / 100.0,
-          retinaMode: false, // not supported
-          overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
-          errorTileCallback: errorTileCallback,
+          child: TileLayer(
+            tileProvider: tileProvider,
+            maxZoom: maxZoom.toDouble(),
+            tms: true,
+            backgroundColor: Colors.transparent,
+            retinaMode: false, // not supported
+            // TODO check overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+            errorTileCallback: errorTileCallback,
+          ),
         )
       ];
     } else if (FileManager.isGeopackage(getAbsolutePath())) {
@@ -405,21 +410,23 @@ class TileSource extends TiledRasterLayerSource {
           );
         }).toList();
         return [
-          OverlayImageLayerOptions(overlayImages: overlayImages),
+          OverlayImageLayer(overlayImages: overlayImages),
         ];
       } else {
         var tileProvider = GeopackageTileImageProvider(
             db, TableName(name!, schemaSupported: false));
         return [
-          TileLayerOptions(
-            tileProvider: tileProvider,
-            maxZoom: maxZoom.toDouble(),
-            tms: true,
-            backgroundColor: Colors.transparent,
+          Opacity(
             opacity: opacityPercentage / 100.0,
-            retinaMode: false, // not supported
-            overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
-            errorTileCallback: errorTileCallback,
+            child: TileLayer(
+              tileProvider: tileProvider,
+              maxZoom: maxZoom.toDouble(),
+              tms: true,
+              backgroundColor: Colors.transparent,
+              retinaMode: false, // not supported
+              // TODO overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+              errorTileCallback: errorTileCallback,
+            ),
           )
         ];
       }
@@ -427,33 +434,37 @@ class TileSource extends TiledRasterLayerSource {
       TileProvider tileProvider =
           ExceptionsToTrack.getDefaultForOnlineServices();
       if (isWms) {
-        var tileLayerOptions = TileLayerOptions(
-          wmsOptions: WMSTileLayerOptions(
-            baseUrl: url!,
-            layers: [name!],
-          ),
-          backgroundColor: Colors.transparent,
+        var tileLayerOptions = Opacity(
           opacity: opacityPercentage / 100.0,
-          maxZoom: maxZoom.toDouble(),
-          retinaMode: retinaModeOn,
-          tileProvider: tileProvider,
-          overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
-          errorTileCallback: errorTileCallback,
+          child: TileLayer(
+            wmsOptions: WMSTileLayerOptions(
+              baseUrl: url!,
+              layers: [name!],
+            ),
+            backgroundColor: Colors.transparent,
+            maxZoom: maxZoom.toDouble(),
+            retinaMode: retinaModeOn,
+            tileProvider: tileProvider,
+            // TODO  overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+            errorTileCallback: errorTileCallback,
+          ),
         );
         return [tileLayerOptions];
       } else {
         return [
-          TileLayerOptions(
-            tms: isTms,
-            urlTemplate: url,
-            backgroundColor: Colors.transparent,
+          Opacity(
             opacity: opacityPercentage / 100.0,
-            maxZoom: maxZoom.toDouble(),
-            subdomains: subdomains,
-            retinaMode: retinaModeOn,
-            tileProvider: tileProvider,
-            overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
-            errorTileCallback: errorTileCallback,
+            child: TileLayer(
+              tms: isTms,
+              urlTemplate: url,
+              backgroundColor: Colors.transparent,
+              maxZoom: maxZoom.toDouble(),
+              subdomains: subdomains,
+              retinaMode: retinaModeOn,
+              tileProvider: tileProvider,
+              // TODO overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+              errorTileCallback: errorTileCallback,
+            ),
           )
         ];
       }

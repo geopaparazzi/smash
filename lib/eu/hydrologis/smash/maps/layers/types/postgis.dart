@@ -13,6 +13,7 @@ import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter/widgets.dart' hide TextStyle;
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
@@ -277,14 +278,16 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>?> toLayers(BuildContext context) async {
+  Future<List<Widget>?> toLayers(BuildContext context) async {
     await load(context);
+
+    var map = FlutterMapState.maybeOf(context)!;
 
     if (_tableData == null) {
       return null;
     }
 
-    List<LayerOptions> layers = [];
+    List<Widget> layers = [];
     if (_tableData!.geoms.isNotEmpty) {
       List<List<Marker>> allPoints = [];
       List<Polyline> allLines = [];
@@ -309,15 +312,15 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
       });
 
       if (allPoints.isNotEmpty) {
-        addMarkerLayer(allPoints, layers, pointFillColor!);
+        addMarkerLayer(allPoints, layers, pointFillColor!, map);
       } else if (allLines.isNotEmpty) {
-        var lineLayer = PolylineLayerOptions(
+        var lineLayer = PolylineLayer(
           polylineCulling: true,
           polylines: allLines,
         );
         layers.add(lineLayer);
       } else if (allPolygons.isNotEmpty) {
-        var polygonLayer = PolygonLayerOptions(
+        var polygonLayer = PolygonLayer(
           polygonCulling: true,
           // simplify: true,
           polygons: allPolygons,
@@ -489,36 +492,38 @@ class PostgisSource extends DbVectorLayerSource implements SldLayerSource {
     return points;
   }
 
-  void addMarkerLayer(List<List<Marker>> allPoints, List<LayerOptions> layers,
-      Color pointFillColor) {
+  void addMarkerLayer(List<List<Marker>> allPoints, List<Widget> layers,
+      Color pointFillColor, FlutterMapState map) {
     if (allPoints.length == 1) {
-      var waypointsCluster = MarkerClusterLayerOptions(
-        maxClusterRadius: 20,
-        size: Size(40, 40),
-        fitBoundsOptions: FitBoundsOptions(
-          padding: EdgeInsets.all(50),
-        ),
-        markers: allPoints[0],
-        polygonOptions: PolygonOptions(
-            borderColor: pointFillColor,
-            color: pointFillColor.withOpacity(0.2),
-            borderStrokeWidth: 3),
-        builder: (context, markers) {
-          return FloatingActionButton(
-            child: Text(markers.length.toString()),
-            onPressed: null,
-            backgroundColor: pointFillColor,
-            foregroundColor: SmashColors.mainBackground,
-            heroTag: null,
-          );
-        },
-      );
+      var waypointsCluster = MarkerClusterLayer(
+          MarkerClusterLayerOptions(
+            maxClusterRadius: 20,
+            size: Size(40, 40),
+            fitBoundsOptions: FitBoundsOptions(
+              padding: EdgeInsets.all(50),
+            ),
+            markers: allPoints[0],
+            polygonOptions: PolygonOptions(
+                borderColor: pointFillColor,
+                color: pointFillColor.withOpacity(0.2),
+                borderStrokeWidth: 3),
+            builder: (context, markers) {
+              return FloatingActionButton(
+                child: Text(markers.length.toString()),
+                onPressed: null,
+                backgroundColor: pointFillColor,
+                foregroundColor: SmashColors.mainBackground,
+                heroTag: null,
+              );
+            },
+          ),
+          map);
       layers.add(waypointsCluster);
     } else {
       // in case of multiple rules, we would not know the color for a mixed cluster.
       List<Marker> points = [];
       allPoints.forEach((p) => points.addAll(p));
-      layers.add(MarkerLayerOptions(markers: points));
+      layers.add(MarkerLayer(markers: points));
     }
   }
 

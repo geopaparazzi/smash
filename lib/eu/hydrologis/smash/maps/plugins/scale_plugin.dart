@@ -1,67 +1,18 @@
 /*
  * Authors: the flutter_map authors.
  */
-import 'dart:async';
 import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart' hide Path;
-import 'package:smashlibs/smashlibs.dart';
-
-class ScaleLayerPluginOption extends LayerOptions {
-  TextStyle textStyle;
-  Color lineColor;
-  double lineWidth;
-  final EdgeInsets padding;
-
-  ScaleLayerPluginOption({
-    Key? key,
-    required this.textStyle,
-    this.lineColor = Colors.white,
-    this.lineWidth = 2,
-    required this.padding,
-    Stream<Null>? rebuild,
-  }) : super(key: key, rebuild: rebuild);
-}
-
-class ScaleLayerPlugin implements MapPlugin {
-  @override
-  Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<void> stream) {
-    if (options is ScaleLayerPluginOption) {
-      return ScaleLayerWidget(options, mapState);
-    }
-    throw Exception('Unknown options type for ScaleLayerPlugin: $options');
-  }
-
-  @override
-  bool supportsLayer(LayerOptions options) {
-    return options is ScaleLayerPluginOption;
-  }
-}
-
-class ScaleLayerWidget extends StatelessWidget {
-  final ScaleLayerPluginOption scaleLayerOpts;
-  final MapState map;
-  ScaleLayerWidget(this.scaleLayerOpts, this.map)
-      : super(key: scaleLayerOpts.key);
-  @override
-  Widget build(BuildContext context) {
-    final mapState = MapState.maybeOf(context);
-    return StreamBuilder<void>(
-        stream: mapState?.onMoved,
-        builder: (BuildContext context, _) {
-          return ScaleLayer(scaleLayerOpts, map);
-        });
-  }
-}
 
 class ScaleLayer extends StatelessWidget {
-  final ScaleLayerPluginOption scaleLayerOpts;
-  final MapState map;
+  final TextStyle textStyle;
+  final Color lineColor;
+  final double lineWidth;
+  final EdgeInsets padding;
   final scale = [
     25000000,
     15000000,
@@ -88,10 +39,17 @@ class ScaleLayer extends StatelessWidget {
     5
   ];
 
-  ScaleLayer(this.scaleLayerOpts, this.map) : super(key: scaleLayerOpts.key);
+  ScaleLayer({
+    Key? key,
+    required this.textStyle,
+    this.lineColor = Colors.white,
+    this.lineWidth = 2,
+    required this.padding,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final map = FlutterMapState.maybeOf(context)!;
     var zoom = map.zoom;
     var distance = scale[max(0, min(20, zoom.round() + 2))].toDouble();
     var center = map.center;
@@ -109,10 +67,10 @@ class ScaleLayer extends StatelessWidget {
           painter: ScalePainter(
             width,
             displayDistance,
-            lineColor: scaleLayerOpts.lineColor,
-            lineWidth: scaleLayerOpts.lineWidth,
-            padding: scaleLayerOpts.padding,
-            textStyle: scaleLayerOpts.textStyle,
+            lineColor: lineColor,
+            lineWidth: lineWidth,
+            padding: padding,
+            textStyle: textStyle,
           ),
         );
       },

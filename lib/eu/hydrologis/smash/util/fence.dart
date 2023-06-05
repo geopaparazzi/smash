@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
+import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
@@ -85,7 +86,7 @@ class FenceMaster {
     return removed;
   }
 
-  Fence? findIn(LatLng center) {
+  Fence? findIn(Coordinate center) {
     if (!_hasFences) {
       return null;
     }
@@ -93,7 +94,7 @@ class FenceMaster {
       for (var i = 0; i < fencesList.length; i++) {
         var fence = fencesList[i];
         var distance = CoordinateUtilities.getDistance(
-            center, LatLng(fence.lat, fence.lon));
+            center, Coordinate.fromYX(fence.lat, fence.lon));
         if (distance <= fence.radius) {
           return fence;
         }
@@ -102,7 +103,7 @@ class FenceMaster {
     return null;
   }
 
-  Future<void> onPositionUpdate(LatLng coordinate) async {
+  Future<void> onPositionUpdate(Coordinate coordinate) async {
     if (!_hasFences) {
       return;
     }
@@ -207,8 +208,8 @@ class Fence {
   ENotificationSounds? onEnter = ENotificationSounds.nosound;
   ENotificationSounds? onExit = ENotificationSounds.nosound;
 
-  Fence(BuildContext context) :
-        creationTs = DateTime.now().millisecondsSinceEpoch,
+  Fence(BuildContext context)
+      : creationTs = DateTime.now().millisecondsSinceEpoch,
         name = SL.of(context).fence_aNewFence; //"a new fence"
 
   dynamic toJson() {

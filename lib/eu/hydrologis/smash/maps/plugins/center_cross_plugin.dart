@@ -52,45 +52,22 @@ class CenterCrossStyle {
   }
 }
 
-class CenterCrossPlugin implements MapPlugin {
-  @override
-  Widget createLayer(
-      LayerOptions options, MapState mapState, Stream<void> stream) {
-    if (options is CenterCrossPluginOption) {
-      return CenterCrossLayer(options, mapState, stream);
-    }
-    throw Exception('Unknown options type for CenterCrossPlugin: $options');
-  }
+class CenterCrossLayer extends StatelessWidget {
+  final Color crossColor;
+  final double crossSize;
+  final double lineWidth;
 
-  @override
-  bool supportsLayer(LayerOptions options) {
-    return options is CenterCrossPluginOption;
-  }
-}
-
-class CenterCrossPluginOption extends LayerOptions {
-  Color crossColor;
-  double crossSize;
-  double lineWidth;
-
-  CenterCrossPluginOption(
+  CenterCrossLayer(
       {this.crossColor = Colors.black,
       this.crossSize = 10,
       this.lineWidth = 2});
-}
-
-class CenterCrossLayer extends StatelessWidget {
-  final CenterCrossPluginOption scaleLayerOpts;
-  final MapState map;
-  final Stream<void> stream;
-
-  CenterCrossLayer(this.scaleLayerOpts, this.map, this.stream);
 
   @override
   Widget build(BuildContext context) {
+    final map = FlutterMapState.maybeOf(context)!;
     var center = map.center;
     CustomPoint centerPixel = map.project(center);
-    CustomPoint pixelOrigin = map.getPixelOrigin();
+    CustomPoint pixelOrigin = map.pixelOrigin;
 
     double centerX = (centerPixel.x - pixelOrigin.x).toDouble();
     double centerY = (centerPixel.y - pixelOrigin.y).toDouble();
@@ -99,9 +76,9 @@ class CenterCrossLayer extends StatelessWidget {
     return CustomPaint(
       painter: CenterCrossLayerPainter(
         centerPix,
-        crossColor: scaleLayerOpts.crossColor,
-        crossSize: scaleLayerOpts.crossSize,
-        lineWidth: scaleLayerOpts.lineWidth,
+        crossColor: crossColor,
+        crossSize: crossSize,
+        lineWidth: lineWidth,
       ),
     );
   }

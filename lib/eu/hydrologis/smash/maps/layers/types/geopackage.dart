@@ -5,8 +5,6 @@
  */
 
 import 'dart:core';
-import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui' as UI;
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
@@ -15,18 +13,16 @@ import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide TextStyle;
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter/widgets.dart' hide TextStyle;
 import 'package:flutter_geopackage/flutter_geopackage.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:image/image.dart' as IMG;
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
-import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:image/image.dart' as IMG;
 
 /// Geopackage vector data layer.
 class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
@@ -200,10 +196,12 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>> toLayers(BuildContext context) async {
+  Future<List<Widget>> toLayers(BuildContext context) async {
     await load(context);
 
-    List<LayerOptions> layers = [];
+    var map = FlutterMapState.maybeOf(context)!;
+
+    List<Widget> layers = [];
     if (_tableData!.geoms.isNotEmpty) {
       List<List<Marker>> allPoints = [];
       List<Polyline> allLines = [];
@@ -228,15 +226,15 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
       });
 
       if (allPoints.isNotEmpty) {
-        addMarkerLayer(allPoints, layers, pointFillColor!);
+        addMarkerLayer(allPoints, layers, pointFillColor!, map);
       } else if (allLines.isNotEmpty) {
-        var lineLayer = PolylineLayerOptions(
+        var lineLayer = PolylineLayer(
           polylineCulling: true,
           polylines: allLines,
         );
         layers.add(lineLayer);
       } else if (allPolygons.isNotEmpty) {
-        var polygonLayer = PolygonLayerOptions(
+        var polygonLayer = PolygonLayer(
           polygonCulling: true,
           // simplify: true,
           polygons: allPolygons,
@@ -408,36 +406,38 @@ class GeopackageSource extends DbVectorLayerSource implements SldLayerSource {
     return points;
   }
 
-  void addMarkerLayer(List<List<Marker>> allPoints, List<LayerOptions> layers,
-      Color pointFillColor) {
+  void addMarkerLayer(List<List<Marker>> allPoints, List<Widget> layers,
+      Color pointFillColor, FlutterMapState map) {
     if (allPoints.length == 1) {
-      var waypointsCluster = MarkerClusterLayerOptions(
-        maxClusterRadius: 20,
-        size: Size(40, 40),
-        fitBoundsOptions: FitBoundsOptions(
-          padding: EdgeInsets.all(50),
-        ),
-        markers: allPoints[0],
-        polygonOptions: PolygonOptions(
-            borderColor: pointFillColor,
-            color: pointFillColor.withOpacity(0.2),
-            borderStrokeWidth: 3),
-        builder: (context, markers) {
-          return FloatingActionButton(
-            child: Text(markers.length.toString()),
-            onPressed: null,
-            backgroundColor: pointFillColor,
-            foregroundColor: SmashColors.mainBackground,
-            heroTag: null,
-          );
-        },
-      );
+      var waypointsCluster = MarkerClusterLayer(
+          MarkerClusterLayerOptions(
+            maxClusterRadius: 20,
+            size: Size(40, 40),
+            fitBoundsOptions: FitBoundsOptions(
+              padding: EdgeInsets.all(50),
+            ),
+            markers: allPoints[0],
+            polygonOptions: PolygonOptions(
+                borderColor: pointFillColor,
+                color: pointFillColor.withOpacity(0.2),
+                borderStrokeWidth: 3),
+            builder: (context, markers) {
+              return FloatingActionButton(
+                child: Text(markers.length.toString()),
+                onPressed: null,
+                backgroundColor: pointFillColor,
+                foregroundColor: SmashColors.mainBackground,
+                heroTag: null,
+              );
+            },
+          ),
+          map);
       layers.add(waypointsCluster);
     } else {
       // in case of multiple rules, we would not know the color for a mixed cluster.
       List<Marker> points = [];
       allPoints.forEach((p) => points.addAll(p));
-      layers.add(MarkerLayerOptions(markers: points));
+      layers.add(MarkerLayer(markers: points));
     }
   }
 
@@ -596,7 +596,10 @@ class GeopackageTileImageProvider extends TileProvider {
   GeopackageDb _loadedDb;
   TableName _tableName;
 
-  GeopackageTileImageProvider(this._loadedDb, this._tableName);
+  GeopackageTileImageProvider(
+    this._loadedDb,
+    this._tableName,
+  );
 
   @override
   void dispose() {
@@ -604,21 +607,21 @@ class GeopackageTileImageProvider extends TileProvider {
   }
 
   @override
-  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
+  ImageProvider getImage(TileCoordinates coords, TileLayer options) {
     var x = coords.x.round();
     var y = options.tms
         ? invertY(coords.y.round(), coords.z.round())
         : coords.y.round();
     var z = coords.z.round();
 
-    return GeopackageTileImage(_loadedDb, _tableName, Coords<int>(x, y)..z = z);
+    return GeopackageTileImage(_loadedDb, _tableName, TileCoordinates(x, y, z));
   }
 }
 
 class GeopackageTileImage extends ImageProvider<GeopackageTileImage> {
   final GeopackageDb database;
   TableName tableName;
-  final Coords<int> coords;
+  final TileCoordinates coords;
   GeopackageTileImage(this.database, this.tableName, this.coords);
 
   @override
@@ -632,13 +635,27 @@ class GeopackageTileImage extends ImageProvider<GeopackageTileImage> {
         });
   }
 
+  // TODO implement properly to avoid deprecation in [load]
+  // @override
+  // ImageStreamCompleter loadImage(
+  //     AssetBundleImageKey key, ImageDecoderCallback decode) {
+  //   return MultiFrameImageStreamCompleter(
+  //       codec: _loadAsync(key),
+  //       scale: 1,
+  //       informationCollector: () sync* {
+  //         yield DiagnosticsProperty<ImageProvider>('Image provider', this);
+  //         yield DiagnosticsProperty<ImageProvider>('Image key', key);
+  //       });
+  // }
+
   Future<UI.Codec> _loadAsync(GeopackageTileImage key) async {
     assert(key == this);
 
     var tileBytes = database.getTile(tableName, coords.x, coords.y, coords.z);
     if (tileBytes != null) {
       Uint8List bytes = tileBytes as Uint8List;
-      return await PaintingBinding.instance.instantiateImageCodec(bytes);
+      UI.ImmutableBuffer b = await UI.ImmutableBuffer.fromUint8List(bytes);
+      return await PaintingBinding.instance.instantiateImageCodecWithSize(b);
     } else {
       // TODO get from other zoomlevels
       if (_emptyImageBytes == null) {
@@ -647,7 +664,10 @@ class GeopackageTileImage extends ImageProvider<GeopackageTileImage> {
       }
       if (_emptyImageBytes != null) {
         var bytes = _emptyImageBytes;
-        return await PaintingBinding.instance.instantiateImageCodec(bytes);
+        UI.ImmutableBuffer b = await UI.ImmutableBuffer.fromUint8List(bytes);
+        return await PaintingBinding.instance.instantiateImageCodecWithSize(b);
+        // var bytes = _emptyImageBytes;
+        // return await PaintingBinding.instance.instantiateImageCodec(bytes);
       } else {
         return Future<UI.Codec>.error(
             'Failed to load tile for coords: $coords');

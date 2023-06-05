@@ -11,7 +11,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -59,7 +59,7 @@ class GeocachingSource extends VectorLayerSource {
   List<dynamic> _pointsList = [];
   int _srid = SmashPrj.EPSG4326_INT;
 
-  LatLngBounds _bounds = LatLngBounds();
+  LatLngBounds? _bounds;
 
   GeocachingSource.fromMap(Map<String, dynamic> map) {
     String relativePath = map[LAYERSKEY_FILE];
@@ -85,7 +85,11 @@ class GeocachingSource extends VectorLayerSource {
         }
         var latitude = postedCoordinates['latitude'];
         var longitude = postedCoordinates['longitude'];
-        _bounds.extend(LatLng(latitude, longitude));
+        if (_bounds == null) {
+          _bounds = LatLngBounds.fromPoints([LatLng(latitude, longitude)]);
+        } else {
+          _bounds!.extend(LatLng(latitude, longitude));
+        }
       }
 
       _attribution = "(${_pointsList.length}) Geocaching HQ";
@@ -134,10 +138,11 @@ class GeocachingSource extends VectorLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>> toLayers(BuildContext context) async {
+  Future<List<Widget>> toLayers(BuildContext context) async {
     load(context);
 
-    List<LayerOptions> layers = [];
+    var map = FlutterMapState.maybeOf(context)!;
+    List<Widget> layers = [];
 
     if (_pointsList.isNotEmpty) {
       List<Marker> geoCaches = [];
@@ -306,40 +311,42 @@ class GeocachingSource extends VectorLayerSource {
       }
       var color = ColorExt("#007106");
       var labelColor = ColorExt("#ffffff");
-      var waypointsCluster = MarkerClusterLayerOptions(
-        maxClusterRadius: 60,
-        size: Size(40, 40),
-        fitBoundsOptions: FitBoundsOptions(
-          padding: EdgeInsets.all(50),
-        ),
-        markers: geoCaches,
-        polygonOptions: PolygonOptions(
-            borderColor: color,
-            color: color.withOpacity(0.2),
-            borderStrokeWidth: 3),
-        builder: (context, markers) {
-          return FloatingActionButton(
-            child: Text(markers.length.toString()),
-            onPressed: null,
-            backgroundColor: color,
-            foregroundColor: labelColor,
-            heroTag: null,
-          );
-        },
-      );
+      var waypointsCluster = MarkerClusterLayer(
+          MarkerClusterLayerOptions(
+            maxClusterRadius: 60,
+            size: Size(40, 40),
+            fitBoundsOptions: FitBoundsOptions(
+              padding: EdgeInsets.all(50),
+            ),
+            markers: geoCaches,
+            polygonOptions: PolygonOptions(
+                borderColor: color,
+                color: color.withOpacity(0.2),
+                borderStrokeWidth: 3),
+            builder: (context, markers) {
+              return FloatingActionButton(
+                child: Text(markers.length.toString()),
+                onPressed: null,
+                backgroundColor: color,
+                foregroundColor: labelColor,
+                heroTag: null,
+              );
+            },
+          ),
+          map);
       layers.add(waypointsCluster);
     }
     return layers;
   }
 
   @override
-  Future<LatLngBounds> getBounds() async {
+  Future<LatLngBounds?> getBounds() async {
     return _bounds;
   }
 
   @override
   void disposeSource() {
-    _bounds = LatLngBounds();
+    _bounds = null;
     _pointsList = [];
     _name = null;
     _absolutePath = null;

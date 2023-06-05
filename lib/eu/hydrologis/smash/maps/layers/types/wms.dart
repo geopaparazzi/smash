@@ -22,15 +22,16 @@ class WmsSource extends RasterLayerSource {
   double? opacityPercentage = 100;
   String? imageFormat;
   bool? isVisible = true;
-  LatLngBounds _serviceBounds = LatLngBounds();
+  LatLngBounds? _serviceBounds = null;
   bool _hasBounds = false;
   String attribution = "";
   String version = "1.1.1";
   int _srid = SmashPrj.EPSG3857_INT;
 
-  ErrorTileCallBack? errorTileCallback = (tile, exception) {
+  ErrorTileCallBack? errorTileCallback = (tile, exception, stacktrace) {
     // ignore tiles that can't load to avoid
-    SMLogger().e("Unable to load WMS tile: ${tile.coordsKey}", exception, null);
+    SMLogger()
+        .e("Unable to load WMS tile: ${tile.coordinatesKey}", null, stacktrace);
   };
   bool overrideTilesOnUrlChange = true;
 
@@ -107,7 +108,7 @@ class WmsSource extends RasterLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>> toLayers(BuildContext context) async {
+  Future<List<Widget>> toLayers(BuildContext context) async {
     await load(context);
 
     Crs crs = Epsg3857();
@@ -118,20 +119,22 @@ class WmsSource extends RasterLayerSource {
     if (!_getCapabilitiesUrl!.endsWith("?")) {
       _getCapabilitiesUrl = _getCapabilitiesUrl! + "?";
     }
-    List<LayerOptions> layers = [
-      TileLayerOptions(
-        opacity: opacityPercentage! / 100.0,
-        backgroundColor: Colors.transparent,
-        wmsOptions: WMSTileLayerOptions(
-          crs: crs,
-          version: version,
-          transparent: true,
-          format: imageFormat!,
-          baseUrl: _getCapabilitiesUrl!,
-          layers: [_layerName!],
+    List<Widget> layers = [
+      Opacity(
+        opacity: opacityPercentage ?? 100 / 100.0,
+        child: TileLayer(
+          backgroundColor: Colors.transparent,
+          wmsOptions: WMSTileLayerOptions(
+            crs: crs,
+            version: version,
+            transparent: true,
+            format: imageFormat!,
+            baseUrl: _getCapabilitiesUrl!,
+            layers: [_layerName!],
+          ),
+          // TODO overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+          errorTileCallback: errorTileCallback,
         ),
-        overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
-        errorTileCallback: errorTileCallback,
       )
     ];
 
@@ -139,7 +142,7 @@ class WmsSource extends RasterLayerSource {
   }
 
   @override
-  Future<LatLngBounds> getBounds() async {
+  Future<LatLngBounds?> getBounds() async {
     return _serviceBounds;
   }
 
@@ -288,7 +291,7 @@ class _LonLat extends Projection {
   Bounds<double> get bounds => _bounds;
 
   @override
-  CustomPoint project(LatLng latlng) {
+  CustomPoint<double> project(LatLng latlng) {
     return CustomPoint(latlng.longitude, latlng.latitude);
   }
 

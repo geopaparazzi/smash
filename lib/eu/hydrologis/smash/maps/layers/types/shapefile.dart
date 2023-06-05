@@ -11,10 +11,10 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' as JTS;
 import 'package:dart_shp/dart_shp.dart' hide Row;
 import 'package:flutter/material.dart' hide TextStyle;
-import 'package:flutter_map/flutter_map.dart' hide Projection;
+import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:proj4dart/proj4dart.dart';
+import 'package:proj4dart/proj4dart.dart' as proj4;
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -65,7 +65,7 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
         alphaFields.add(_shpReader!.header!.getFieldName(i));
       }
 
-      Projection? fromPrj = SmashPrj.fromDataFile(_absolutePath!);
+      proj4.Projection? fromPrj = SmashPrj.fromDataFile(_absolutePath!);
       if (fromPrj != null) {
         var srid = SmashPrj.getSrid(fromPrj);
         if (srid == null) {
@@ -192,10 +192,11 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
   }
 
   @override
-  Future<List<LayerOptions>> toLayers(BuildContext context) async {
+  Future<List<Widget>> toLayers(BuildContext context) async {
     await load(context);
+    var map = FlutterMapState.maybeOf(context)!;
 
-    List<LayerOptions> layers = [];
+    List<Widget> layers = [];
 
     if (features.isNotEmpty) {
       List<List<Marker>> allPoints = [];
@@ -221,15 +222,15 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
       });
 
       if (allPoints.isNotEmpty) {
-        addMarkerLayer(allPoints, layers, pointFillColor!);
+        addMarkerLayer(allPoints, layers, pointFillColor!, map);
       } else if (allLines.isNotEmpty) {
-        var lineLayer = PolylineLayerOptions(
+        var lineLayer = PolylineLayer(
           polylineCulling: true,
           polylines: allLines,
         );
         layers.add(lineLayer);
       } else if (allPolygons.isNotEmpty) {
-        var polygonLayer = PolygonLayerOptions(
+        var polygonLayer = PolygonLayer(
           polygonCulling: true,
           // simplify: true,
           polygons: allPolygons,
@@ -240,36 +241,38 @@ class ShapefileSource extends VectorLayerSource implements SldLayerSource {
     return layers;
   }
 
-  void addMarkerLayer(List<List<Marker>> allPoints, List<LayerOptions> layers,
-      Color pointFillColor) {
+  void addMarkerLayer(List<List<Marker>> allPoints, List<Widget> layers,
+      Color pointFillColor, FlutterMapState map) {
     if (allPoints.length == 1) {
-      var waypointsCluster = MarkerClusterLayerOptions(
-        maxClusterRadius: 20,
-        size: Size(40, 40),
-        fitBoundsOptions: FitBoundsOptions(
-          padding: EdgeInsets.all(50),
-        ),
-        markers: allPoints[0],
-        polygonOptions: PolygonOptions(
-            borderColor: pointFillColor,
-            color: pointFillColor.withOpacity(0.2),
-            borderStrokeWidth: 3),
-        builder: (context, markers) {
-          return FloatingActionButton(
-            child: Text(markers.length.toString()),
-            onPressed: null,
-            backgroundColor: pointFillColor,
-            foregroundColor: SmashColors.mainBackground,
-            heroTag: null,
-          );
-        },
-      );
+      var waypointsCluster = MarkerClusterLayer(
+          MarkerClusterLayerOptions(
+            maxClusterRadius: 20,
+            size: Size(40, 40),
+            fitBoundsOptions: FitBoundsOptions(
+              padding: EdgeInsets.all(50),
+            ),
+            markers: allPoints[0],
+            polygonOptions: PolygonOptions(
+                borderColor: pointFillColor,
+                color: pointFillColor.withOpacity(0.2),
+                borderStrokeWidth: 3),
+            builder: (context, markers) {
+              return FloatingActionButton(
+                child: Text(markers.length.toString()),
+                onPressed: null,
+                backgroundColor: pointFillColor,
+                foregroundColor: SmashColors.mainBackground,
+                heroTag: null,
+              );
+            },
+          ),
+          map);
       layers.add(waypointsCluster);
     } else {
       // in case of multiple rules, we would not know the color for a mixed cluster.
       List<Marker> points = [];
       allPoints.forEach((p) => points.addAll(p));
-      layers.add(MarkerLayerOptions(markers: points));
+      layers.add(MarkerLayer(markers: points));
     }
   }
 

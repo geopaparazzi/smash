@@ -22,6 +22,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:dart_jts/dart_jts.dart';
 
 /// The log properties page.
 class LogPropertiesWidget extends StatefulWidget {
@@ -283,14 +284,26 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 }
 
 class LatLngExt extends ElevationPoint {
-  double prog;
-  double speed;
-  double accuracy;
-  int ts;
+  late double prog;
+  late double speed;
+  late double accuracy;
+  late int ts;
 
   LatLngExt(double latitude, double longitude, double altim, this.prog,
       this.speed, this.ts, this.accuracy)
       : super(latitude, longitude, altim);
+
+  LatLngExt.fromCoordinate(Coordinate coord)
+      : super(coord.y, coord.x, coord.z) {
+    accuracy = -1.0;
+    speed = -1.0;
+    ts = 0;
+    prog = 0.0;
+  }
+
+  Coordinate toCoordinate() {
+    return Coordinate.fromXYZ(longitude, latitude, altitude);
+  }
 }
 
 class LogProfileView extends StatefulWidget {
@@ -335,18 +348,19 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     var maxSpeedLL;
     var maxSpeed = double.negativeInfinity;
     logDataPoints.forEach((p) {
-      LatLng llTmp;
+      Coordinate llTmp;
       if (useGpsFilteredGenerally && p.filtered_accuracy != null) {
-        llTmp = LatLng(p.filtered_lat!, p.filtered_lon!);
+        llTmp = Coordinate.fromYX(p.filtered_lat!, p.filtered_lon!);
       } else {
-        llTmp = LatLng(p.lat, p.lon);
+        llTmp = Coordinate.fromYX(p.lat, p.lon);
       }
       LatLngExt llExt;
       if (prevll == null) {
-        llExt = LatLngExt(llTmp.latitude, llTmp.longitude, p.altim!, 0, 0,
-            p.ts!, p.accuracy ?? -1);
+        llExt = LatLngExt(
+            llTmp.y, llTmp.x, p.altim!, 0, 0, p.ts!, p.accuracy ?? -1);
       } else {
-        var distanceMeters = CoordinateUtilities.getDistance(prevll!, llTmp);
+        var distanceMeters = CoordinateUtilities.getDistance(
+            Coordinate(prevll!.longitude, prevll!.latitude), llTmp);
         progressiveMeters += distanceMeters;
         var deltaTs = (p.ts! - prevll!.ts) / 1000;
         var speedMS = distanceMeters / deltaTs;
@@ -376,7 +390,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     var maxElev = double.negativeInfinity;
 
     Envelope env = Envelope.empty();
-    LatLng? prevll2 = null;
+    Coordinate? prevll2 = null;
     progressiveMeters = 0;
     logDataPoints.forEach((point) {
       var lat = point.lat;
@@ -385,12 +399,12 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       if (halfTimeLL == null && point.ts! > halfTime) {
         halfTimeLL = LatLng(lat, lon);
       }
-      var llTmp = LatLng(lat, lon);
+      var llTmp = Coordinate.fromYX(lat, lon);
       if (prevll2 != null) {
         var distanceMeters = CoordinateUtilities.getDistance(prevll2!, llTmp);
         progressiveMeters += distanceMeters;
         if (halfLengthLL == null && progressiveMeters >= halfLength) {
-          halfLengthLL = llTmp;
+          halfLengthLL = LatLng(llTmp.y, llTmp.x);
         }
       }
       prevll2 = llTmp;
