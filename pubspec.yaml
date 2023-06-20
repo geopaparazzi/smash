@@ -75,12 +75,6 @@ dependencies:
 
   flutter_map_marker_cluster: ^1.1.1
 
-  # GPL 3.0 -> not maintained anymore
-  map_elevation: #^2.0.0
-    git:
-      url: https://github.com/moovida/map_elevation.git
-      ref: flutter_map_4_compat
-
   # MIT
   lat_lon_grid_plugin: ^0.2.6
     # git:

@@ -14,31 +14,10 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/center_cross_plugin.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/pluginshandler.dart';
-import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-
-const SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE = 'SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE';
-const SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE =
-    'SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE';
-const SETTINGS_EDIT_HANLDE_ICON_SIZES = [
-  10,
-  15,
-  20,
-  25,
-  30,
-  35,
-  40,
-  50,
-  60,
-  80,
-  100
-];
 
 class SettingsWidget extends StatefulWidget {
   SettingsWidget({Key? key}) : super(key: key);
@@ -1556,11 +1535,11 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
     int tapAreaPixels = GpPreferences()
             .getIntSync(SmashPreferencesKeys.KEY_VECTOR_TAPAREA_SIZE, 50) ??
         50;
-    int handleIconSize =
-        GpPreferences().getIntSync(SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25) ??
-            25;
-    int intermediateHandleIconSize = GpPreferences()
-            .getIntSync(SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20) ??
+    int handleIconSize = GpPreferences()
+            .getIntSync(SLSettings.SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, 25) ??
+        25;
+    int intermediateHandleIconSize = GpPreferences().getIntSync(
+            SLSettings.SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE, 20) ??
         20;
 
     return Scaffold(
@@ -1731,7 +1710,8 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                         DropdownButton<int>(
                           value: handleIconSize,
                           isExpanded: true,
-                          items: SETTINGS_EDIT_HANLDE_ICON_SIZES.map((i) {
+                          items: SLSettings.SETTINGS_EDIT_HANLDE_ICON_SIZES
+                              .map((i) {
                             return DropdownMenuItem<int>(
                               child: Text(
                                 "$i px",
@@ -1742,7 +1722,8 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                           }).toList(),
                           onChanged: (selected) async {
                             await GpPreferences().setInt(
-                                SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE, selected!);
+                                SLSettings.SETTINGS_KEY_EDIT_HANLDE_ICON_SIZE,
+                                selected!);
                             setState(() {});
                           },
                         ),
@@ -1759,7 +1740,8 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                         DropdownButton<int>(
                           value: intermediateHandleIconSize,
                           isExpanded: true,
-                          items: SETTINGS_EDIT_HANLDE_ICON_SIZES.map((i) {
+                          items: SLSettings.SETTINGS_EDIT_HANLDE_ICON_SIZES
+                              .map((i) {
                             return DropdownMenuItem<int>(
                               child: Text(
                                 "$i px",
@@ -1770,7 +1752,8 @@ class VectorLayerSettingsState extends State<VectorLayerSettings> {
                           }).toList(),
                           onChanged: (selected) async {
                             await GpPreferences().setInt(
-                                SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE,
+                                SLSettings
+                                    .SETTINGS_KEY_EDIT_HANLDEINTERMEDIATE_ICON_SIZE,
                                 selected!);
                             setState(() {});
                           },

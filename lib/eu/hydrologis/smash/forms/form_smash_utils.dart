@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_sketch.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/maps/plugins/feature_info_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
@@ -23,11 +22,11 @@ const HM_FORMS_TABLE = "hm_forms";
 const FORMS_TABLENAME_FIELD = "tablename";
 const FORMS_FIELD = "forms";
 
-class SmashFormHelper implements AFormhelper {
+class SmashFormHelper extends AFormhelper {
   String _sectionName;
   Map<String, dynamic> _sectionMap;
   Widget _titleWidget;
-  int _id;
+  int? _id;
   dynamic _position;
 
   SmashFormHelper(this._id, this._sectionName, this._sectionMap,
@@ -51,7 +50,7 @@ class SmashFormHelper implements AFormhelper {
 
   @override
   int getId() {
-    return _id;
+    return _id!;
   }
 
   @override
@@ -261,237 +260,15 @@ class SmashFormHelper implements AFormhelper {
 
       noteId = db!.addNote(note)!;
     } else {
-      noteId = _id;
+      noteId = _id!;
       // update form for note
-      var note = db!.getNoteById(_id);
+      var note = db!.getNoteById(_id!);
       note.form = jsonForm;
       note.timeStamp = ts;
       db.updateNote(note);
     }
 
     projectState.reloadProject(context);
-  }
-
-  @override
-  void setData(Map<String, dynamic> newValues) {
-    // not needed here
-  }
-
-  @override
-  Map<String, dynamic> getFormChangedData() {
-    throw UnimplementedError();
-  }
-}
-
-class SmashDatabaseFormHelper implements AFormhelper {
-  final EditableQueryResult _queryResult;
-  var _titleWidget;
-  var _sectionName;
-  var _db;
-  List<Map<String, dynamic>> sectionMapList = [];
-  late String _tableName;
-
-  SmashDatabaseFormHelper(this._queryResult) {}
-
-  @override
-  Future<bool> init() async {
-    _db = _queryResult.dbs?[0];
-
-    _titleWidget = SmashUI.titleText(_queryResult.ids!.first,
-        color: SmashColors.mainBackground, bold: true);
-
-    _tableName = _queryResult.ids!.first;
-
-    if (await _db.hasTable(TableName(HM_FORMS_TABLE,
-        schemaSupported:
-            _db is PostgisDb || _db is PostgresqlDb ? true : false))) {
-      QueryResult result = await _db.select(
-          "select $FORMS_FIELD from $HM_FORMS_TABLE where $FORMS_TABLENAME_FIELD='$_tableName'");
-      if (result.length == 1) {
-        String formJsonString = result.first.get(FORMS_FIELD);
-        List<dynamic> tmpList = jsonDecode(formJsonString);
-        tmpList.forEach((element) {
-          if (element is Map<String, dynamic>) {
-            sectionMapList.add(element);
-          }
-        });
-        _sectionName = sectionMapList.first[ATTR_SECTIONNAME];
-
-        List<Map<String, dynamic>> formsList = [];
-        formsList = (sectionMapList.first[ATTR_FORMS] as List<dynamic>)
-            .map((e) => e as Map<String, dynamic>)
-            .toList();
-
-        var data = _queryResult.data.first;
-        data.forEach((key, value) {
-          if (value != null) {
-            formsList.forEach((form) {
-              var formItems = TagsManager.getFormItems(form);
-              FormUtilities.update(formItems, key, value);
-            });
-          }
-        });
-
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @override
-  bool hasForm() {
-    return sectionMapList.isNotEmpty;
-  }
-
-  @override
-  Widget getFormTitleWidget() {
-    return _titleWidget;
-  }
-
-  @override
-  int getId() {
-    var pk = _queryResult.primaryKeys!.first;
-    var id = _queryResult.data.first[pk];
-    return id;
-  }
-
-  @override
-  getPosition() {
-    // TODO: implement getPosition
-    throw UnimplementedError();
-  }
-
-  @override
-  Map<String, dynamic> getSectionMap() {
-    return sectionMapList.first;
-  }
-
-  @override
-  String getSectionName() {
-    return _sectionName;
-  }
-
-  /// Save data on form exit.
-  Future<void> onSaveFunction(BuildContext context) async {
-    List<Map<String, dynamic>> formsList = [];
-    formsList = (sectionMapList.first[ATTR_FORMS] as List<dynamic>)
-        .map((e) => e as Map<String, dynamic>)
-        .toList();
-
-    var data = _queryResult.data.first;
-
-    formsList.forEach((form) {
-      var formItems = TagsManager.getFormItems(form);
-      formItems.forEach((element) {
-        String key = element[TAG_KEY].toString();
-        dynamic value = element[TAG_VALUE];
-        if (value != null) {
-          // TODO check type and convert string to that type (value is always a string)
-          // also booleans need to be checked etc (true doesn't resolve to 1)
-          data[key] = value;
-        }
-      });
-    });
-
-    var pk = _queryResult.primaryKeys!.first;
-    var id = _queryResult.data.first[pk];
-
-    var where = "$pk=$id";
-    await _db.updateMap(
-        TableName(_tableName,
-            schemaSupported:
-                _db is PostgisDb || _db is PostgresqlDb ? true : false),
-        data,
-        where);
-  }
-
-  /// Take a picture for forms
-  Future<String?> takePictureForForms(
-      BuildContext context, bool fromGallery, List<String> imageSplit) async {
-    // DbImage dbImage = DbImage()
-    //   ..timeStamp = DateTime.now().millisecondsSinceEpoch
-    //   ..isDirty = 1;
-
-    // dbImage.lon = position.longitude;
-    // dbImage.lat = position.latitude;
-    // try {
-    //   dbImage.altim = position.altitude;
-    //   dbImage.azim = position.heading;
-    // } catch (e) {
-    //   dbImage.altim = -1;
-    //   dbImage.azim = -1;
-    // }
-    // if (noteId != null) {
-    //   dbImage.noteId = noteId;
-    // }
-
-    // int imageId;
-    // var imagePath = fromGallery
-    //     ? await Camera.loadImageFromGallery()
-    //     : await Camera.takePicture();
-    // if (imagePath != null) {
-    //   var imageName = FileUtilities.nameFromFile(imagePath, true);
-    //   dbImage.text =
-    //       "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
-    //   imageId =
-    //       ImageWidgetUtilities.saveImageToSmashDb(context, imagePath, dbImage);
-    //   if (imageId != null) {
-    //     imageSplit.add(imageId.toString());
-    //     var value = imageSplit.join(IMAGE_ID_SEPARATOR);
-
-    //     File file = File(imagePath);
-    //     if (file.existsSync()) {
-    //       await file.delete();
-    //     }
-    //     return value;
-    //   } else {
-    //     SmashDialogs.showWarningDialog(
-    //         context, "Could not save image in database.");
-    //     return null;
-    //   }
-    // }
-    return null;
-  }
-
-  /// Get thumbnails from the database
-  Future<List<Widget>> getThumbnailsFromDb(BuildContext context,
-      Map<String, dynamic> itemsMap, List<String> imageSplit) async {
-    // ProjectState projectState =
-    //     Provider.of<ProjectState>(context, listen: false);
-
-    // String value = ""; //$NON-NLS-1$
-    // if (itemMap.containsKey(TAG_VALUE)) {
-    //   value = itemMap[TAG_VALUE].trim();
-    // }
-    // if (value.isNotEmpty) {
-    //   var split = value.split(IMAGE_ID_SEPARATOR);
-    //   split.forEach((v) {
-    //     if (!imageSplit.contains(v)) {
-    //       imageSplit.add(v);
-    //     }
-    //   });
-    // }
-
-    // List<Widget> thumbList = [];
-    // for (int i = 0; i < imageSplit.length; i++) {
-    //   var id = int.parse(imageSplit[i]);
-    //   Widget thumbnail = projectState.projectDb.getThumbnail(id);
-    //   Widget withBorder = Container(
-    //     padding: SmashUI.defaultPadding(),
-    //     child: thumbnail,
-    //   );
-    //   thumbList.add(withBorder);
-    // }
-    // return thumbList;
-    return [];
-  }
-
-  @override
-  Future<String> takeSketchForForms(
-      BuildContext context, List<String> imageSplit) {
-    // // TODO: implement takeSketchForForms
-    // throw UnimplementedError();
-    return Future.value(null);
   }
 
   @override

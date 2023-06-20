@@ -12,17 +12,14 @@ import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:map_elevation/map_elevation.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:dart_jts/dart_jts.dart';
 
 /// The log properties page.
 class LogPropertiesWidget extends StatefulWidget {
@@ -280,29 +277,6 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
         ),
       ),
     );
-  }
-}
-
-class LatLngExt extends ElevationPoint {
-  late double prog;
-  late double speed;
-  late double accuracy;
-  late int ts;
-
-  LatLngExt(double latitude, double longitude, double altim, this.prog,
-      this.speed, this.ts, this.accuracy)
-      : super(latitude, longitude, altim);
-
-  LatLngExt.fromCoordinate(Coordinate coord)
-      : super(coord.y, coord.x, coord.z) {
-    accuracy = -1.0;
-    speed = -1.0;
-    ts = 0;
-    prog = 0.0;
-  }
-
-  Coordinate toCoordinate() {
-    return Coordinate.fromXYZ(longitude, latitude, altitude);
   }
 }
 
@@ -638,7 +612,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                               "${SL.of(context).logProperties_speed} ${hoverPoint!.speed.toStringAsFixed(0)} m/s (${(hoverPoint!.speed * 3.6).toStringAsFixed(0)} km/h)"), //Speed:
                         ),
                         SmashUI.normalText(
-                            "${SL.of(context).logProperties_elevation} ${hoverPoint!.altitude.toInt()}m"), //Elevation:
+                            "${SL.of(context).logProperties_elevation} ${hoverPoint!.altim.toInt()}m"), //Elevation:
                       ],
                     ),
                   ),
