@@ -16,13 +16,7 @@ import 'package:proj4dart/proj4dart.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/l10n/localization.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/tools/geometryeditor_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/tools/info_tool_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/tools/ruler_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
 import 'package:smash_import_export_plugins/generated/l10n.dart';
@@ -242,14 +236,10 @@ Future<String?> handleLayers(BuildContext context) async {
       return logMsg(msg, e, s);
     } on Exception catch (e, s) {
       var eMsg = e.toString();
-      if (eMsg != null &&
-          eMsg.toLowerCase().contains("attempt to write a readonly database")) {
+      if (eMsg.toLowerCase().contains("attempt to write a readonly database")) {
         return "Unable to access the filesystem in write mode. This seems like a permission problem. Check your configurations.";
-      }
-      if (e != null) {
+      } else {
         return e.toString();
-      } else if (s != null) {
-        return s.toString();
       }
     }
   }

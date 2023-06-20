@@ -1,11 +1,8 @@
 import 'dart:convert';
 
-import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/postgis.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -354,8 +351,8 @@ class _RemoteDbPropertiesContainerState
               });
               try {
                 var s = PostgisSource.fromMap(sourceMap);
-                var db = await PostgisConnectionsHandler().open(
-                    s.getUrl(), s.getName(), s.getUser(), s.getPassword());
+                var db = await PostgisConnectionsHandler().open(s.getUrl(),
+                    s.getName(), s.getUser(), s.getPassword(), s.useSSL);
                 if (db != null) {
                   _geomTables = await db.getGeometryTables();
                   setState(() {

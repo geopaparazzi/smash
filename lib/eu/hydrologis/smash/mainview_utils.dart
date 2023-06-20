@@ -16,13 +16,9 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:smash/eu/hydrologis/smash/gps/geocoding.dart';
-import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 
-import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
-import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
-import 'package:smash/eu/hydrologis/smash/util/experimentals.dart';
 import 'package:smash/eu/hydrologis/smash/util/network.dart';
 import 'package:smash/eu/hydrologis/smash/util/urls.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
@@ -41,8 +37,11 @@ class DashboardUtils {
     if (badgeValue > 0) {
       return badges.Badge(
         badgeStyle: badges.BadgeStyle(
-          badgeColor: badgeColor != null ? badgeColor : SmashColors.mainSelection,
-          shape: badgeValue > 999 ? badges.BadgeShape.square : badges.BadgeShape.circle,
+          badgeColor:
+              badgeColor != null ? badgeColor : SmashColors.mainSelection,
+          shape: badgeValue > 999
+              ? badges.BadgeShape.square
+              : badges.BadgeShape.circle,
           borderRadius: BorderRadius.circular(20.0),
         ),
         badgeAnimation: badges.BadgeAnimation.slide(
@@ -74,7 +73,8 @@ class DashboardUtils {
           shape: badges.BadgeShape.circle,
         ),
         position: iconSize != null
-            ? badges.BadgePosition.topEnd(top: -iconSize / 2, end: -iconSize / 3)
+            ? badges.BadgePosition.topEnd(
+                top: -iconSize / 2, end: -iconSize / 3)
             : null,
         badgeAnimation: badges.BadgeAnimation.slide(
           toAnimate: false,
@@ -90,8 +90,7 @@ class DashboardUtils {
     }
   }
 
-  static List<Widget> getDrawerTilesList(
-      BuildContext context, MapController mapController) {
+  static List<Widget> getDrawerTilesList(BuildContext context) {
     double iconSize = SmashUI.MEDIUM_ICON_SIZE;
 
     var projectState = Provider.of<ProjectState>(context, listen: false);
@@ -213,8 +212,7 @@ class DashboardUtils {
     ];
   }
 
-  static List<Widget> getEndDrawerListTiles(
-      BuildContext context, MapController mapController) {
+  static List<Widget> getEndDrawerListTiles(BuildContext context) {
     Color c = SmashColors.mainDecorations;
     var iconSize = SmashUI.MEDIUM_ICON_SIZE;
 

@@ -14,24 +14,20 @@ import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:map_elevation/map_elevation.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/images.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
-import 'package:smash/eu/hydrologis/smash/util/elevcolor.dart';
 import 'package:smash/eu/hydrologis/smash/util/urls.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class DataLoaderUtilities {
   static Note addNote(
-      SmashMapBuilder mapBuilder, int doInGpsMode, MapController mapController,
+      SmashMapBuilder mapBuilder, int doInGpsMode, Coordinate center,
       {String? form, String? iconName, String? color, String? text}) {
     int ts = DateTime.now().millisecondsSinceEpoch;
     SmashPosition? pos;
@@ -52,9 +48,8 @@ class DataLoaderUtilities {
         altim = pos.altitude;
       }
     } else {
-      var center = mapController.center;
-      lon = center.longitude;
-      lat = center.latitude;
+      lon = center.x;
+      lat = center.y;
       altim = -1;
     }
     Note note = Note()
@@ -146,8 +141,7 @@ class DataLoaderUtilities {
                     if (imageId != null) {
                       ProjectState projectState =
                           Provider.of<ProjectState>(context, listen: false);
-                      if (projectState != null)
-                        projectState.reloadProject(context);
+                      projectState.reloadProject(context);
 //                } else {
 //                  showWarningDialog(
 //                      context, "Could not save image in database.");
@@ -674,7 +668,7 @@ class DataLoaderUtilities {
       logs.forEach((logId, list) {
         var color = list[0];
         var width = list[1];
-        List<ElevationPoint> points = list[2];
+        List<LatLngExt> points = list[2];
 
         var colorElev = EnhancedColorUtility.splitEnhancedColorString(color);
         var colString = colorElev[0];

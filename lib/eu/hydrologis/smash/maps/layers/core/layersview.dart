@@ -7,26 +7,15 @@
 import 'dart:core';
 
 import 'package:dart_jts/dart_jts.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:geoimage/geoimage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layermanager.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/core/layersource.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/remotedbpage.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/geocaching.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/geoimage.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/geopackage.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/gpx.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/shapefile.dart';
-import 'package:smash/eu/hydrologis/smash/maps/layers/types/tiles.dart';
-import 'package:smash/eu/hydrologis/smash/models/map_state.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -177,7 +166,7 @@ class LayersPageState extends State<LayersPage> {
             foregroundColor: SmashColors.mainDecorations,
             icon: MdiIcons.magnifyScan,
             onPressed: (context) async {
-              LatLngBounds? bb = await layerSourceItem.getBounds();
+              LatLngBounds? bb = await layerSourceItem.getBounds(context);
               if (bb != null) {
                 setLayersOnChange(_layersList);
 
@@ -222,6 +211,7 @@ class LayersPageState extends State<LayersPage> {
       var key = "$idx-${layerSourceItem.getName()}";
       return Slidable(
         key: Key(key),
+        closeOnScroll: false,
         startActionPane: ActionPane(
           extentRatio: 0.35,
           dragDismissible: false,

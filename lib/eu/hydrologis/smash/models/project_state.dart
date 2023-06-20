@@ -11,7 +11,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/models/mapbuilder.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
