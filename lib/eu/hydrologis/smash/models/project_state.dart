@@ -15,6 +15,7 @@ import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 
 /// The provider object of the current project status
 ///
@@ -119,7 +120,38 @@ class ProjectState extends ChangeNotifierPlus {
         SmashPreferencesKeys.NOTESVIEWMODES[0];
     DataLoaderUtilities.loadNotesMarkers(
         projectDb!, tmpList, mapBuilder, notesMode);
-    tmp.geopapMarkers = tmpList;
+
+    if (tmpList.isNotEmpty) {
+      var markerCluster = MarkerClusterLayerWidget(
+        key: ValueKey("SMASH_NOTES_MARKERCLUSTER"),
+        options: MarkerClusterLayerOptions(
+          zoomToBoundsOnClick: false,
+          // spiderfyCircleRadius: 150,
+          disableClusteringAtZoom: 16,
+          maxClusterRadius: 80,
+          //        height: 40,
+          //        width: 40,
+          fitBoundsOptions: FitBoundsOptions(
+            padding: EdgeInsets.all(180),
+          ),
+          markers: tmpList,
+          polygonOptions: PolygonOptions(
+              borderColor: SmashColors.mainDecorationsDarker,
+              color: SmashColors.mainDecorations.withOpacity(0.2),
+              borderStrokeWidth: 3),
+          builder: (context, markers) {
+            return FloatingActionButton(
+              child: Text(markers.length.toString()),
+              onPressed: null,
+              backgroundColor: SmashColors.mainDecorationsDarker,
+              foregroundColor: SmashColors.mainBackground,
+              heroTag: null,
+            );
+          },
+        ),
+      );
+      tmp.geopapMarkers = markerCluster;
+    }
 
     List<String> currentLogViewModes = GpPreferences().getStringListSync(
             SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [
@@ -303,6 +335,6 @@ class ProjectData {
   int? simpleNotesCount;
   int? logsCount;
   int? formNotesCount;
-  List<Marker>? geopapMarkers;
+  MarkerClusterLayerWidget? geopapMarkers;
   PolylineLayer? geopapLogs;
 }

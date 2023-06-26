@@ -53,8 +53,6 @@ class MainViewWidgetState extends State<MainViewWidget>
 
   MainViewCoachMarks coachMarks = MainViewCoachMarks();
 
-  List<LayerSource> _activeLayers = [];
-
   double? _iconSize;
 
   Timer? _centerOnGpsTimer;
@@ -202,7 +200,6 @@ class MainViewWidgetState extends State<MainViewWidget>
   }
 
   Widget consumeBuild(SmashMapBuilder mapBuilder) {
-    var layers = <Widget>[];
     _iconSize = GpPreferences().getDoubleSync(
         SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
     var projectState =
@@ -746,36 +743,8 @@ class MainViewWidgetState extends State<MainViewWidget>
     if (projectData != null) {
       if (projectData.geopapLogs != null)
         mapView.addPostLayer(projectData.geopapLogs!);
-      if (projectData.geopapMarkers != null &&
-          projectData.geopapMarkers!.length > 0) {
-        var markerCluster = MarkerClusterLayerWidget(
-          options: MarkerClusterLayerOptions(
-            zoomToBoundsOnClick: false,
-            // spiderfyCircleRadius: 150,
-            disableClusteringAtZoom: 16,
-            maxClusterRadius: 80,
-            //        height: 40,
-            //        width: 40,
-            fitBoundsOptions: FitBoundsOptions(
-              padding: EdgeInsets.all(180),
-            ),
-            markers: projectData.geopapMarkers!,
-            polygonOptions: PolygonOptions(
-                borderColor: SmashColors.mainDecorationsDarker,
-                color: SmashColors.mainDecorations.withOpacity(0.2),
-                borderStrokeWidth: 3),
-            builder: (context, markers) {
-              return FloatingActionButton(
-                child: Text(markers.length.toString()),
-                onPressed: null,
-                backgroundColor: SmashColors.mainDecorationsDarker,
-                foregroundColor: SmashColors.mainBackground,
-                heroTag: null,
-              );
-            },
-          ),
-        );
-        mapView.addPostLayer(markerCluster);
+      if (projectData.geopapMarkers != null) {
+        mapView.addPostLayer(projectData.geopapMarkers!);
       }
     }
     return projectData;
@@ -787,22 +756,23 @@ class MainViewWidgetState extends State<MainViewWidget>
     }
     if (PluginsHandler.GRID.isOn()) {
       var gridLayer = LatLonGridLayer(
+          key: ValueKey("SMASH_LATLONGRIDLAYER"),
           options: LatLonGridLayerOptions(
-        labelStyle: TextStyle(
-          color: SmashColors.mainBackground,
-          backgroundColor: SmashColors.mainDecorations.withAlpha(170),
-          fontSize: 16.0,
-        ),
-        lineColor: SmashColors.mainDecorations,
-        lineWidth: 0.5,
-        showCardinalDirections: true,
-        showCardinalDirectionsAsPrefix: false,
-        showLabels: true,
-        rotateLonLabels: true,
-        placeLabelsOnLines: true,
-        offsetLonLabelsBottom: 20.0,
-        offsetLatLabelsLeft: 20.0,
-      ));
+            labelStyle: TextStyle(
+              color: SmashColors.mainBackground,
+              backgroundColor: SmashColors.mainDecorations.withAlpha(170),
+              fontSize: 16.0,
+            ),
+            lineColor: SmashColors.mainDecorations,
+            lineWidth: 0.5,
+            showCardinalDirections: true,
+            showCardinalDirectionsAsPrefix: false,
+            showLabels: true,
+            rotateLonLabels: true,
+            placeLabelsOnLines: true,
+            offsetLonLabelsBottom: 20.0,
+            offsetLatLabelsLeft: 20.0,
+          ));
       mapView.addPostLayer(gridLayer);
     }
   }
@@ -844,6 +814,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 
     if (PluginsHandler.SCALE.isOn()) {
       mapView.addPostLayer(ScaleLayer(
+        key: ValueKey("SMASH_SCALELAYER"),
         lineColor: Colors.black,
         lineWidth: 3,
         textStyle: TextStyle(color: Colors.black, fontSize: 14),

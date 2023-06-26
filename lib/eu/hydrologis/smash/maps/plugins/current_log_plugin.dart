@@ -30,9 +30,9 @@ class CurrentGpsLogLayer extends StatelessWidget {
   CurrentGpsLogLayer({
     this.logColor = Colors.red,
     this.logWidth = 4,
-  }) {
-    /// The log view modes [originalData, filteredData].
-  }
+  }) : super(key: ValueKey("SMASH_CURRENTGPSLOGLAYER"));
+
+  /// The log view modes [originalData, filteredData].
 
   @override
   Widget build(BuildContext context) {

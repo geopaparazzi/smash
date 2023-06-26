@@ -22,7 +22,7 @@ class GpsPositionLayer extends StatelessWidget {
     this.markerColorStale = Colors.grey,
     this.markerColorLogging,
     this.markerSize = 10,
-  }) {
+  }) : super(key: ValueKey("SMASH_GPSPOSITIONLAYER")) {
     markerColorLogging ??= SmashColors.gpsLogging;
   }
 

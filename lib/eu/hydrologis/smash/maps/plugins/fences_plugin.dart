@@ -37,6 +37,8 @@ class FencesPluginOption {
 }
 
 class FencesLayer extends StatelessWidget {
+  FencesLayer() : super(key: ValueKey("SMASH_FENCESLAYER"));
+
   @override
   Widget build(BuildContext context) {
     var mapState = FlutterMapState.maybeOf(context)!;
