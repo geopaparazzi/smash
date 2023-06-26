@@ -716,6 +716,7 @@ class DataLoaderUtilities {
     }
 
     return PolylineLayer(
+      key: ValueKey("SMASH_LOG_LINES"),
       polylineCulling: true,
       polylines: lines,
     );
