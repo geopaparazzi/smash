@@ -609,8 +609,8 @@ class DataLoaderUtilities {
     var resLogData = db.select(logDataQuery);
     var rangeMap = <int, List<double>>{};
     var prevTs;
-    var prevLatLng;
-    var prevLatLngFiltered;
+    LatLngExt? prevLatLng;
+    LatLngExt? prevLatLngFiltered;
     resLogData.forEach((QueryResultRow map) {
       var logid = map.get(LOGSDATA_COLUMN_LOGID);
       var log = logs[logid];
@@ -634,7 +634,7 @@ class DataLoaderUtilities {
           var speed = 0.0;
           if (prevTs != null) {
             var distanceMeters = CoordinateUtilities.getDistance(
-                Coordinate.fromYX(lat, lon), prevLatLng);
+                Coordinate.fromYX(lat, lon), prevLatLng!.toCoordinate());
             var deltaTs = (ts - prevTs) / 1000;
             speed = distanceMeters / deltaTs;
           }
@@ -650,7 +650,7 @@ class DataLoaderUtilities {
           if (prevTs != null) {
             var distanceMeters = CoordinateUtilities.getDistance(
                 Coordinate.fromYX(latF, lonF),
-                prevLatLngFiltered.toCoordinate());
+                prevLatLngFiltered!.toCoordinate());
             var deltaTs = (ts - prevTs) / 1000;
             speed = distanceMeters / deltaTs;
           }
