@@ -5,14 +5,14 @@
 A digital field mapping app for Android and iOS \
 for fast qualitative engineering/geologic surveys and GIS data-collection.
 
-Focus:
+# Focus
 
 * Fits in any pocket, always at hand.
 * Take geo-referenced and possibly orientated pictures during surveys, to import them into GIS applications like gvSIG.
 * Make use of any connection to the Internet.
 * Easy and intuitive, providing just a few important functions.
 
-Main features:
+# Main features
 
 * Geo-referenced notes.
 * Geo-referenced and oriented pictures.
@@ -29,7 +29,7 @@ Help [translate SMASH on Hosted Weblate](https://hosted.weblate.org/engage/smash
 
 You can always add other languages.
 
-Build and run:
+# Build and run
 
 ```sh
 # To solve Weblate duplicated translation issue
@@ -39,3 +39,14 @@ flutter pub get
 flutter gen-l10n
 flutter run
 ```
+
+# Install
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/eu.hydrologis.smash/)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=eu.hydrologis.smash)
+
+Or download the latest APK from the [Releases Section](https://github.com/geopaparazzi/smash/releases/latest).
