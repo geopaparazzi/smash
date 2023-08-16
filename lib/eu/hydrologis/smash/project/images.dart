@@ -17,6 +17,7 @@ import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:geoimage/geoimage.dart';
 
 class ImageWidgetUtilities {
   static Image imageFromBytes(Uint8List bytes) {

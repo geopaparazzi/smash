@@ -24,7 +24,7 @@ dependencies:
   # OWN
   ##################################
   # apache 2
-  geoimage: ^0.2.0
+  geoimage: ^0.4.0
 
   smashlibs:
     path: ./smashlibs/
@@ -39,30 +39,31 @@ dependencies:
     #   ref: "0765081"
 
 
-  dart_shp: ^1.0.1
+  dart_shp: ^1.1.0
 
-  dart_hydrologis_utils: ^0.6.1
+  dart_hydrologis_utils: ^0.8.1
     # path: ../dart_hydrologis_utils/
-  dart_jts: ^0.2.2
+  dart_jts: ^0.2.3
     # path: ../dart_jts/
 
 
 
-  dart_hydrologis_db: ^1.0.1
+  dart_hydrologis_db: ^1.1.0
   # path: ../dart_hydrologis_db/
   # git:
   #  url: https://github.com/moovida/dart_hydrologis_db.git
 
   # apache 2
-  flutter_geopackage: ^0.6.1
+  flutter_geopackage: ^0.6.3
   # path: ../flutter_geopackage/
   #  git:
   #    url: https://github.com/moovida/flutter_geopackage.git
   
-  dart_postgis: ^0.3.1
+  dart_postgis: ^0.3.2
     # path: /home/hydrologis/development/SMASH/dart_postgis/
   # git:
   #   url: https://github.com/moovida/dart_postgis
+  
   ##################################
   # OTHERS MAPS RELATED
   ##################################
@@ -205,7 +206,7 @@ dependencies:
 
 dev_dependencies:
   # MIT
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: ^0.13.1
     # git:
     #   url: https://github.com/moovida/flutter_launcher_icons.git
 
