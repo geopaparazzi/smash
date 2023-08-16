@@ -7,9 +7,9 @@
 import 'dart:typed_data';
 import 'dart:ui' as UI;
 
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:geoimage/geoimage.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';

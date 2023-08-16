@@ -191,6 +191,9 @@ class LayersPageState extends State<LayersPage> {
                 if (layerSourceItem is SldLayerSource) {
                   (layerSourceItem as SldLayerSource).updateStyle(newSldString);
                 }
+                if (layerSourceItem is LoadableLayerSource) {
+                  layerSourceItem.isLoaded = false;
+                }
               }
               _somethingChanged = true;
             }));
