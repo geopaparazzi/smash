@@ -186,7 +186,7 @@ class DataLoaderUtilities {
               iconData,
               iconColor,
               noteExt.size,
-              text!,
+              text,
               SmashColors.mainTextColorNeutral,
               iconColor.withAlpha(80),
             ),
