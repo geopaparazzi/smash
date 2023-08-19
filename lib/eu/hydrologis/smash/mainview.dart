@@ -543,6 +543,9 @@ class MainViewWidgetState extends State<MainViewWidget>
       onDoubleTap: () async {
         await openPluginsViewSettings();
       },
+      onVerticalDragEnd: (details) async {
+        await openPluginsViewSettings();
+      },
     );
   }
 
@@ -633,6 +636,9 @@ class MainViewWidgetState extends State<MainViewWidget>
         onDoubleTap: () async {
           await openNotesViewSettings();
         },
+        onVerticalDragEnd: (details) async {
+          await openNotesViewSettings();
+        },
       ),
       projectData != null ? projectData.formNotesCount! : 0,
       iconSize: _iconSize,
@@ -708,6 +714,9 @@ class MainViewWidgetState extends State<MainViewWidget>
                       NotesListWidget(true, projectState.projectDb!)));
         },
         onDoubleTap: () async {
+          await openNotesViewSettings();
+        },
+        onVerticalDragEnd: (details) async {
           await openNotesViewSettings();
         },
       ),
