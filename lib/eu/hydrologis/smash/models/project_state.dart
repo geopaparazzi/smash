@@ -121,37 +121,35 @@ class ProjectState extends ChangeNotifierPlus {
     DataLoaderUtilities.loadNotesMarkers(
         projectDb!, tmpList, mapBuilder, notesMode);
 
-    if (tmpList.isNotEmpty) {
-      var markerCluster = MarkerClusterLayerWidget(
-        key: ValueKey("SMASH_NOTES_MARKERCLUSTER"),
-        options: MarkerClusterLayerOptions(
-          zoomToBoundsOnClick: false,
-          // spiderfyCircleRadius: 150,
-          disableClusteringAtZoom: 16,
-          maxClusterRadius: 80,
-          //        height: 40,
-          //        width: 40,
-          fitBoundsOptions: FitBoundsOptions(
-            padding: EdgeInsets.all(180),
-          ),
-          markers: tmpList,
-          polygonOptions: PolygonOptions(
-              borderColor: SmashColors.mainDecorationsDarker,
-              color: SmashColors.mainDecorations.withOpacity(0.2),
-              borderStrokeWidth: 3),
-          builder: (context, markers) {
-            return FloatingActionButton(
-              child: Text(markers.length.toString()),
-              onPressed: null,
-              backgroundColor: SmashColors.mainDecorationsDarker,
-              foregroundColor: SmashColors.mainBackground,
-              heroTag: null,
-            );
-          },
+    var markerCluster = MarkerClusterLayerWidget(
+      key: ValueKey("SMASH_NOTES_MARKERCLUSTER"),
+      options: MarkerClusterLayerOptions(
+        zoomToBoundsOnClick: false,
+        // spiderfyCircleRadius: 150,
+        disableClusteringAtZoom: 16,
+        maxClusterRadius: 80,
+        //        height: 40,
+        //        width: 40,
+        fitBoundsOptions: FitBoundsOptions(
+          padding: EdgeInsets.all(180),
         ),
-      );
-      tmp.geopapMarkers = markerCluster;
-    }
+        markers: tmpList,
+        polygonOptions: PolygonOptions(
+            borderColor: SmashColors.mainDecorationsDarker,
+            color: SmashColors.mainDecorations.withOpacity(0.2),
+            borderStrokeWidth: 3),
+        builder: (context, markers) {
+          return FloatingActionButton(
+            child: Text(markers.length.toString()),
+            onPressed: null,
+            backgroundColor: SmashColors.mainDecorationsDarker,
+            foregroundColor: SmashColors.mainBackground,
+            heroTag: null,
+          );
+        },
+      ),
+    );
+    tmp.geopapMarkers = markerCluster;
 
     List<String> currentLogViewModes = GpPreferences().getStringListSync(
             SmashPreferencesKeys.KEY_GPS_LOG_VIEW_MODE, [
