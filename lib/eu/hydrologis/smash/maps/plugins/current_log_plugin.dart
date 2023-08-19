@@ -17,7 +17,8 @@ import 'package:smashlibs/smashlibs.dart';
 
 /// Plugin to show the current GPS log
 class CurrentGpsLogLayer extends StatelessWidget {
-  final ValueNotifier panelExpandedValue = ValueNotifier(true);
+  // 0 = large, 1 = medium, 2 = small
+  final ValueNotifier panelExpandedValue = ValueNotifier(1);
   Paint? logPaint;
   Paint? filteredLogPaint;
   bool doFiltered = true;
@@ -64,6 +65,14 @@ class CurrentGpsLogLayer extends StatelessWidget {
             ..strokeWidth = logWidth;
         }
 
+        print(panelExpandedValue.value);
+        var panel = _getInfoWidget(context, projectState, true);
+        if (panelExpandedValue.value == 1) {
+          panel = _getInfoWidget(context, projectState, false);
+        } else if (panelExpandedValue.value == 2) {
+          panel = _getTinyInfoWidget(context, projectState);
+        }
+
         return Stack(
           children: [
             CustomPaint(
@@ -77,9 +86,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
             ValueListenableBuilder(
               valueListenable: panelExpandedValue,
               builder: (context, snapshot, child) {
-                return panelExpandedValue.value
-                    ? _getInfoWidget(context, projectState)
-                    : _getTinyInfoWidget(context, projectState);
+                return panel;
               },
             ),
           ],
@@ -122,7 +129,11 @@ class CurrentGpsLogLayer extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(MdiIcons.resize),
                         onPressed: () {
-                          panelExpandedValue.value = !panelExpandedValue.value;
+                          var newValue = panelExpandedValue.value + 1;
+                          if (newValue == 3) {
+                            newValue = 0;
+                          }
+                          panelExpandedValue.value = newValue;
                         },
                       ),
                     ),
@@ -136,7 +147,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
     );
   }
 
-  Widget _getInfoWidget(BuildContext context, ProjectState projectState) {
+  Widget _getInfoWidget(
+      BuildContext context, ProjectState projectState, bool withChart) {
     var currentLogStats = projectState.getCurrentLogStats();
     double distanceMeter = currentLogStats[0] as double;
     double distanceMeterFiltered = currentLogStats[1] as double;
@@ -245,47 +257,52 @@ class CurrentGpsLogLayer extends StatelessWidget {
                   ],
                 ),
               ),
-              if (maxElevInt != minElevInt)
+              if (withChart && maxElevInt != minElevInt)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text("${maxElevInt + 1}",
                       style:
                           TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                 ),
-              GestureDetector(
-                onDoubleTap: () {
-                  _doFlatChart = !_doFlatChart;
-                  String msg = "Show exagerated elev chart.";
-                  if (_doFlatChart) {
-                    msg = "Show proper ratio chart.";
-                  }
-                  final snackBar = SnackBar(
-                    content: Text(msg),
-                    behavior: SnackBarBehavior.floating,
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 2.0, left: 2.0),
-                  child: SizedBox(
-                    height: 100,
-                    width: 180,
-                    child: LineChart(
-                      getProfileData(elevData, minElevInt, maxElevInt),
+              if (withChart)
+                GestureDetector(
+                  onDoubleTap: () {
+                    _doFlatChart = !_doFlatChart;
+                    String msg = "Show exagerated elev chart.";
+                    if (_doFlatChart) {
+                      msg = "Show proper ratio chart.";
+                    }
+                    final snackBar = SnackBar(
+                      content: Text(msg),
+                      behavior: SnackBarBehavior.floating,
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+                    child: SizedBox(
+                      height: 100,
+                      width: 180,
+                      child: LineChart(
+                        getProfileData(elevData, minElevInt, maxElevInt),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              if (maxElevInt != minElevInt)
+              if (withChart && maxElevInt != minElevInt)
                 Text("${minElevInt - 1}",
                     style:
                         TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
               Padding(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: IconButton(
-                  icon: Icon(MdiIcons.resize),
-                  onPressed: () {
-                    panelExpandedValue.value = !panelExpandedValue.value;
+                padding: const EdgeInsets.only(top: 8.0),
+                child: GestureDetector(
+                  child: Icon(MdiIcons.resize),
+                  onTap: () {
+                    var newValue = panelExpandedValue.value + 1;
+                    if (newValue == 3) {
+                      newValue = 0;
+                    }
+                    panelExpandedValue.value = newValue;
                   },
                 ),
               ),

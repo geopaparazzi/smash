@@ -543,7 +543,7 @@ class MainViewWidgetState extends State<MainViewWidget>
       onDoubleTap: () async {
         await openPluginsViewSettings();
       },
-      onVerticalDragEnd: (details) async {
+      onVerticalDragDown: (details) async {
         await openPluginsViewSettings();
       },
     );
@@ -636,7 +636,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         onDoubleTap: () async {
           await openNotesViewSettings();
         },
-        onVerticalDragEnd: (details) async {
+        onVerticalDragDown: (details) async {
           await openNotesViewSettings();
         },
       ),
@@ -716,7 +716,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         onDoubleTap: () async {
           await openNotesViewSettings();
         },
-        onVerticalDragEnd: (details) async {
+        onVerticalDragDown: (details) async {
           await openNotesViewSettings();
         },
       ),
