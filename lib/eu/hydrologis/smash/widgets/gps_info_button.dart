@@ -69,6 +69,11 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
           mapState.centerOnGps = !mapState.centerOnGps;
           setState(() {});
         },
+        onVerticalDragEnd: (details) {
+          var mapState = Provider.of<SmashMapState>(context, listen: false);
+          mapState.centerOnGps = !mapState.centerOnGps;
+          setState(() {});
+        },
         child: SizedBox(
           height: widget._iconSize * 1.3,
           width: widget._iconSize * 1.3,
