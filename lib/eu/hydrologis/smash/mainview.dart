@@ -207,7 +207,9 @@ class MainViewWidgetState extends State<MainViewWidget>
     var mapState =
         Provider.of<SmashMapState>(mapBuilder.context!, listen: false);
 
-    if (EXPERIMENTAL_ROTATION__ENABLED) {
+    mapView.clearLayers();
+
+    if (EXPERIMENTAL_ROTATION__ENABLED && mapView.isMapReady()) {
       // check map centering and rotation
       try {
         if (mapState.rotateOnHeading) {
