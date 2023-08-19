@@ -355,6 +355,13 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
       LayerManager().addLayerSource(gpxLayer);
       return true;
     }
+  } else if (FileManager.isGeojson(filePath)) {
+    GeojsonSource geojsonLayer = GeojsonSource(filePath);
+    await geojsonLayer.load(context);
+    if (geojsonLayer.hasData()) {
+      LayerManager().addLayerSource(geojsonLayer);
+      return true;
+    }
   } else if (FileManager.isGeocaching(filePath)) {
     GeocachingSource geocachingLayer = GeocachingSource(filePath);
     await geocachingLayer.load(context);
