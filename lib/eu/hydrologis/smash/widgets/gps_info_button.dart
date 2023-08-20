@@ -64,16 +64,6 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             duration: Duration(seconds: 15),
           ));
         },
-        onDoubleTap: () {
-          var mapState = Provider.of<SmashMapState>(context, listen: false);
-          mapState.centerOnGps = !mapState.centerOnGps;
-          setState(() {});
-        },
-        onVerticalDragDown: (details) {
-          var mapState = Provider.of<SmashMapState>(context, listen: false);
-          mapState.centerOnGps = !mapState.centerOnGps;
-          setState(() {});
-        },
         child: SizedBox(
           height: widget._iconSize * 1.3,
           width: widget._iconSize * 1.3,
@@ -135,6 +125,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
 
   Widget getGpsInfoContainer(bool isLandscape) {
     var color = SmashColors.mainBackground;
+    var mapState = Provider.of<SmashMapState>(context, listen: false);
 
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       Widget gpsInfo;
@@ -218,6 +209,24 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
               ),
             ),
             tableWidget,
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: IconButton(
+                onPressed: () {
+                  var mapState =
+                      Provider.of<SmashMapState>(context, listen: false);
+                  mapState.centerOnGps = !mapState.centerOnGps;
+                  setState(() {});
+                },
+                icon: Icon(
+                  mapState.centerOnGps ? MdiIcons.magnetOn : MdiIcons.magnet,
+                  size: 32,
+                ),
+                color: mapState.centerOnGps
+                    ? SmashColors.mainSelection
+                    : SmashColors.mainBackground,
+              ),
+            ),
           ],
         );
       } else {

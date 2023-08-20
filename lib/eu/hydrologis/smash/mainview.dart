@@ -540,12 +540,6 @@ class MainViewWidgetState extends State<MainViewWidget>
         //   _activeLayers.addAll(layers);
         // });
       },
-      onDoubleTap: () async {
-        await openPluginsViewSettings();
-      },
-      onVerticalDragDown: (details) async {
-        await openPluginsViewSettings();
-      },
     );
   }
 
@@ -633,12 +627,6 @@ class MainViewWidgetState extends State<MainViewWidget>
                   builder: (context) =>
                       NotesListWidget(false, projectState.projectDb!)));
         },
-        onDoubleTap: () async {
-          await openNotesViewSettings();
-        },
-        onVerticalDragDown: (details) async {
-          await openNotesViewSettings();
-        },
       ),
       projectData != null ? projectData.formNotesCount! : 0,
       iconSize: _iconSize,
@@ -713,40 +701,10 @@ class MainViewWidgetState extends State<MainViewWidget>
                   builder: (context) =>
                       NotesListWidget(true, projectState.projectDb!)));
         },
-        onDoubleTap: () async {
-          await openNotesViewSettings();
-        },
-        onVerticalDragDown: (details) async {
-          await openNotesViewSettings();
-        },
       ),
       projectData != null ? projectData.simpleNotesCount! : 0,
       iconSize: _iconSize,
     );
-  }
-
-  Future openNotesViewSettings() async {
-    Dialog settingsDialog = Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-        child: NotesViewSetting(),
-      ),
-    );
-    await showDialog(
-        context: context, builder: (BuildContext context) => settingsDialog);
-  }
-
-  Future openPluginsViewSettings() async {
-    Dialog settingsDialog = Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-      child: Padding(
-        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-        child: PluginsViewSetting(),
-      ),
-    );
-    await showDialog(
-        context: context, builder: (BuildContext context) => settingsDialog);
   }
 
   ProjectData? addProjectMarkers(ProjectState projectState) {

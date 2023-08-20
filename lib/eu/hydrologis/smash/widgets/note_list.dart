@@ -18,6 +18,7 @@ import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_properties.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -77,6 +78,14 @@ class NotesListWidgetState extends State<NotesListWidget>
             title: Text(widget._doSimpleNotes
                 ? SL.of(context).noteList_simpleNotesList //"Simple Notes List"
                 : SL.of(context).noteList_formNotesList), //"Form Notes List"
+            actions: [
+              IconButton(
+                  onPressed: () => openNotesViewSettings(),
+                  icon: Icon(
+                    MdiIcons.cog,
+                    color: SmashColors.mainBackground,
+                  ))
+            ],
           ),
           body: _isLoading
               ? Center(
@@ -91,6 +100,18 @@ class NotesListWidgetState extends State<NotesListWidget>
                         _notesList[index], db!, projectState, loadNotes);
                   })),
     );
+  }
+
+  Future openNotesViewSettings() async {
+    Dialog settingsDialog = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+        child: NotesViewSetting(),
+      ),
+    );
+    await showDialog(
+        context: context, builder: (BuildContext context) => settingsDialog);
   }
 }
 
