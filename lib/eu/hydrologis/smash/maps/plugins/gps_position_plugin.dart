@@ -146,7 +146,7 @@ class CurrentGpsPositionPainter extends CustomPainter {
             Offset(mainCenterX, mainCenterY), accuracyRadius, accuracyFill);
       }
 
-      if (pos.heading != null && pos.heading > 0) {
+      if (pos.heading > 0) {
         var heading = pos.heading - 90;
         double rad = degToRadian(heading);
 

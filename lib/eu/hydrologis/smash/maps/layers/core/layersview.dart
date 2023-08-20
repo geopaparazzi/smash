@@ -16,6 +16,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/remotedbpage.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -49,32 +50,6 @@ class LayersPageState extends State<LayersPage> {
           appBar: AppBar(
             title: Text(SL.of(context).layersView_layerList), //"Layer List"
             actions: <Widget>[
-              IconButton(
-                icon: Icon(MdiIcons.database),
-                onPressed: () async {
-                  setState(() {
-                    isLoadingData = true;
-                  });
-
-                  var source = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => RemoteDbsWidget(),
-                      ));
-                  if (source != null) {
-                    await source.load(context);
-                    LayerManager().addLayerSource(source);
-                    _somethingChanged = true;
-                  }
-
-                  setState(() {
-                    isLoadingData = false;
-                  });
-                },
-                tooltip: SL
-                    .of(context)
-                    .layersView_loadRemoteDatabase, //"Load remote database"
-              ),
               IconButton(
                 icon: Icon(MdiIcons.earth),
                 onPressed: () async {
@@ -116,6 +91,46 @@ class LayersPageState extends State<LayersPage> {
                     .of(context)
                     .layersView_loadLocalDatasets, //"Load local datasets"
               ),
+              PopupMenuButton<int>(
+                onSelected: (value) async {
+                  if (value == 1) {
+                    setState(() {
+                      isLoadingData = true;
+                    });
+
+                    var source = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => RemoteDbsWidget(),
+                        ));
+                    if (source != null) {
+                      await source.load(context);
+                      LayerManager().addLayerSource(source);
+                      _somethingChanged = true;
+                    }
+
+                    setState(() {
+                      isLoadingData = false;
+                    });
+                  } else if (value == 2) {
+                    openPluginsViewSettings();
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  var txt1 = SL.of(context).layersView_loadRemoteDatabase;
+                  var txt2 = SL.of(context).settings_SETTING;
+                  return [
+                    PopupMenuItem<int>(
+                      value: 1,
+                      child: Text(txt1),
+                    ),
+                    PopupMenuItem<int>(
+                      value: 2,
+                      child: Text(txt2),
+                    ),
+                  ];
+                },
+              ),
             ],
           ),
           body: isLoadingData
@@ -134,6 +149,18 @@ class LayersPageState extends State<LayersPage> {
                   },
                 ),
         ));
+  }
+
+  Future openPluginsViewSettings() async {
+    Dialog settingsDialog = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+        child: PluginsViewSetting(),
+      ),
+    );
+    await showDialog(
+        context: context, builder: (BuildContext context) => settingsDialog);
   }
 
   Future loadSelectedFile(selectedPath, BuildContext context) async {

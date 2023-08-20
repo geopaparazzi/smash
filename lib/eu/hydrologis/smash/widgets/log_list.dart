@@ -16,6 +16,7 @@ import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smash_import_export_plugins/smash_import_export_plugins.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
@@ -119,6 +120,12 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
         appBar: AppBar(
           title: Text(SL.of(context).logList_gpsLogsList), //"GPS Logs list"
           actions: <Widget>[
+            IconButton(
+                onPressed: () => showSettings(context),
+                icon: Icon(
+                  MdiIcons.cog,
+                  color: SmashColors.mainBackground,
+                )),
             PopupMenuButton<int>(
               onSelected: (value) async {
                 if (value == 1) {
@@ -196,6 +203,18 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                 }),
       ),
     );
+  }
+
+  Future<void> showSettings(BuildContext context) async {
+    Dialog settingsDialog = Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+        child: GpsLogsSetting(),
+      ),
+    );
+    await showDialog(
+        context: context, builder: (BuildContext context) => settingsDialog);
   }
 }
 
