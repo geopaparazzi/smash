@@ -269,10 +269,11 @@ packages:
   extended_image:
     dependency: "direct main"
     description:
-      name: extended_image
-      sha256: e77d18f956649ba6e5ecebd0cb68542120886336a75ee673788145bd4c3f0767
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "migrate-to-3.13"
+      resolved-ref: cff3309c3de6ec33482b4039acf002a28be69bac
+      url: "https://github.com/laiiihz/extended_image"
+    source: git
     version: "8.0.2"
   extended_image_library:
     dependency: transitive
@@ -371,10 +372,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_geopackage
-      sha256: "2e38df87e67505b60a09cc933088ab89a604728f0eb1c720cee1140a0d452047"
+      sha256: "088a307112cc73f52e1f273d988185bb035274e92b31c200b3b1058f1277df68"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.4+1"
+    version: "0.6.4+2"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:

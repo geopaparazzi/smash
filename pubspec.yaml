@@ -112,7 +112,11 @@ dependencies:
   # positioned_tap_detector_2: ^1.0.4
 
   #MIT
-  extended_image: ^8.0.1
+  # extended_image: ^8.0.2
+  extended_image:
+    git:
+      url: https://github.com/laiiihz/extended_image
+      ref: migrate-to-3.13
     # git:
     #   url: https://github.com/moovida/extended_image
 
