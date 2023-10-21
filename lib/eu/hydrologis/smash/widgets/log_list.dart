@@ -435,54 +435,57 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       child: ListTile(
         title: SmashUI.normalText('${logItem.name}',
             bold: true, textAlign: TextAlign.left),
-        subtitle: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: pad),
-                    child: dayIcon,
-                  ),
-                  Text(dayString),
-                ],
-              ),
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: pad),
-                    child: timeIcon,
-                  ),
-                  Text(timeString),
-                  Padding(
-                    padding: EdgeInsets.only(right: pad),
-                    child: distIcon,
-                  ),
-                  Text(lengthString),
-                ],
-              ),
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: pad),
-                    child: upIcon,
-                  ),
-                  Text(upString),
-                  Padding(
-                    padding: EdgeInsets.only(left: padLeft, right: pad),
-                    child: downIcon,
-                  ),
-                  Text(downString),
-                  Padding(
-                    padding: EdgeInsets.only(left: padLeft, right: pad),
-                    child: countIcon,
-                  ),
-                  Text(countString),
-                ],
-              )
-            ],
+        subtitle: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: pad),
+                      child: dayIcon,
+                    ),
+                    Text(dayString),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: pad),
+                      child: timeIcon,
+                    ),
+                    Text(timeString),
+                    Padding(
+                      padding: EdgeInsets.only(right: pad),
+                      child: distIcon,
+                    ),
+                    Text(lengthString),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: pad),
+                      child: upIcon,
+                    ),
+                    Text(upString),
+                    Padding(
+                      padding: EdgeInsets.only(left: padLeft, right: pad),
+                      child: downIcon,
+                    ),
+                    Text(downString),
+                    Padding(
+                      padding: EdgeInsets.only(left: padLeft, right: pad),
+                      child: countIcon,
+                    ),
+                    Text(countString),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
         leading: icon,

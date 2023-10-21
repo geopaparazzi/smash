@@ -28,10 +28,8 @@ class MainViewCoachMarks with Localization {
 
     var title =
         "$i/$all ${loc.coachMarks_simpleNoteButton}"; //Simple Notes Button
-    String? singleTap =
-        "${s}${loc.coachMarks_addNewNote}"; //"add a new note"
-    String? longTap =
-        "${l}${loc.coachMarks_viewNotesList}"; //"view notes list"
+    String? singleTap = "${s}${loc.coachMarks_addNewNote}"; //"add a new note"
+    String? longTap = "${l}${loc.coachMarks_viewNotesList}"; //"view notes list"
     String? doubleTap =
         "${d}${loc.coachMarks_viewNotesSettings}"; //"view notes settings"
     targets.add(TargetFocus(
@@ -41,12 +39,9 @@ class MainViewCoachMarks with Localization {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title =
-        "$i/$all ${loc.coachMarks_formNotesButton}"; //"Form Notes Button"
-    singleTap =
-        "${s}${loc.coachMarks_addNewFormNote}"; //"add new form note"
-    longTap =
-        "${l}${loc.coachMarks_viewFormNoteList}"; //"view form notes list"
+    title = "$i/$all ${loc.coachMarks_formNotesButton}"; //"Form Notes Button"
+    singleTap = "${s}${loc.coachMarks_addNewFormNote}"; //"add new form note"
+    longTap = "${l}${loc.coachMarks_viewFormNoteList}"; //"view form notes list"
     doubleTap =
         "${d}${loc.coachMarks_viewNotesSettings}"; //"view notes settings"
     targets.add(TargetFocus(
@@ -60,8 +55,7 @@ class MainViewCoachMarks with Localization {
     singleTap =
         "${s}${loc.coachMarks_startStopLogging}"; //"start logging/stop logging"
     longTap = "${l}${loc.coachMarks_viewLogsList}"; //"view logs list"
-    doubleTap =
-        "${d}${loc.coachMarks_viewLogsSettings}"; //"view logs settings"
+    doubleTap = "${d}${loc.coachMarks_viewLogsSettings}"; //"view logs settings"
     targets.add(TargetFocus(
       identify: "Target ${i++}",
       keyTarget: logsButtonKey,
@@ -83,10 +77,8 @@ class MainViewCoachMarks with Localization {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title =
-        "$i/$all ${loc.coachMarks_layersViewButton}"; //"Layers View Button"
-    singleTap =
-        "${s}${loc.coachMarks_openLayersView}"; //"Open the layers view"
+    title = "$i/$all ${loc.coachMarks_layersViewButton}"; //"Layers View Button"
+    singleTap = "${s}${loc.coachMarks_openLayersView}"; //"Open the layers view"
     longTap = null;
     doubleTap =
         "${d}${loc.coachMarks_openLayersPluginDialog}"; //"Open the layer plugins dialog"
@@ -98,7 +90,8 @@ class MainViewCoachMarks with Localization {
     ));
 
     title = "$i/$all ${loc.coachMarks_zoomInButton}"; //"Zoom In Button"
-    singleTap = loc.coachMarks_zoomImMapOneLevel; //"Zoom in the map by one level"
+    singleTap =
+        loc.coachMarks_zoomImMapOneLevel; //"Zoom in the map by one level"
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -108,10 +101,9 @@ class MainViewCoachMarks with Localization {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title =
-        "$i/$all ${loc.coachMarks_zoomOutButton}"; //"Zoom Out Button"
-    singleTap = loc
-        .coachMarks_zoomOutMapOneLevel; //"Zoom out the map by one level"
+    title = "$i/$all ${loc.coachMarks_zoomOutButton}"; //"Zoom Out Button"
+    singleTap =
+        loc.coachMarks_zoomOutMapOneLevel; //"Zoom out the map by one level"
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -123,7 +115,8 @@ class MainViewCoachMarks with Localization {
 
     title =
         "$i/$all ${loc.coachMarks_bottomToolsButton}"; //"Bottom Tools Button"
-    singleTap = loc.coachMarks_toggleBottomToolsBar; //"Toggle bottom tools bar. "
+    singleTap =
+        loc.coachMarks_toggleBottomToolsBar; //"Toggle bottom tools bar. "
     longTap = null;
     doubleTap = null;
     targets.add(TargetFocus(
@@ -164,8 +157,7 @@ class MainViewCoachMarks with Localization {
       shape: ShapeLightFocus.Circle,
     ));
 
-    title =
-        "$i/$all ${loc.coachMarks_mainMenuButton}"; //"Main Menu Button"
+    title = "$i/$all ${loc.coachMarks_mainMenuButton}"; //"Main Menu Button"
     singleTap = loc
         .coachMarks_openDrawerToLoadProject; //"Open the drawer to load a project, create a new one, import and export data, synchronize with servers, access settings and exit the application/disable the GPS."
     longTap = null;
@@ -272,6 +264,7 @@ class MainViewCoachMarks with Localization {
         },
         onSkip: () {
           // print("skip");
+          return true;
         })
       ..show(context: context);
   }
