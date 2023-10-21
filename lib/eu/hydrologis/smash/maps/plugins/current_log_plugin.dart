@@ -155,12 +155,13 @@ class CurrentGpsLogLayer extends StatelessWidget {
     int timestampDelta = currentLogStats[2] as int;
     double speedMs = currentLogStats[3];
     double speedKmH = speedMs * 3600 / 1000;
-    List<dynamic> elevDataTmp = currentLogStats[4];
+    List<dynamic> progAndAltitudes = currentLogStats[4];
     double minElev = double.infinity;
     double maxElev = double.negativeInfinity;
 
-    List<dynamic> elevData = [];
-    elevDataTmp.forEach((xy) {
+    List<dynamic> progAltitudData = [];
+    int? firstElevInt;
+    progAndAltitudes.forEach((xy) {
       var tmp = xy[1];
       if (tmp < minElev) {
         minElev = tmp;
@@ -168,7 +169,10 @@ class CurrentGpsLogLayer extends StatelessWidget {
       if (tmp > maxElev) {
         maxElev = tmp;
       }
-      elevData.add(xy);
+      if (firstElevInt == null) {
+        firstElevInt = tmp;
+      }
+      progAltitudData.add(xy);
     });
 
     if (_doFlatChart && (maxElev - minElev) < 25) {
@@ -253,7 +257,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
                       child: Icon(MdiIcons.elevationRise),
                     ),
                     SmashUI.normalText(
-                        "${(elevData.last[1] as double).toStringAsFixed(0)} m"),
+                        "${((progAltitudData.last[1] - firstElevInt ?? 0) as double).toStringAsFixed(0)} m"),
                   ],
                 ),
               ),
@@ -284,7 +288,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
                       height: 100,
                       width: 180,
                       child: LineChart(
-                        getProfileData(elevData, minElevInt, maxElevInt),
+                        getProfileData(progAltitudData, minElevInt, maxElevInt),
                       ),
                     ),
                   ),
