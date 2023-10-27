@@ -160,7 +160,6 @@ class CurrentGpsLogLayer extends StatelessWidget {
     double maxElev = double.negativeInfinity;
 
     List<dynamic> progAltitudData = [];
-    int? firstElevInt;
     progAndAltitudes.forEach((xy) {
       var tmp = xy[1];
       if (tmp < minElev) {
@@ -168,9 +167,6 @@ class CurrentGpsLogLayer extends StatelessWidget {
       }
       if (tmp > maxElev) {
         maxElev = tmp;
-      }
-      if (firstElevInt == null) {
-        firstElevInt = tmp;
       }
       progAltitudData.add(xy);
     });
@@ -257,7 +253,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
                       child: Icon(MdiIcons.elevationRise),
                     ),
                     SmashUI.normalText(
-                        "${((progAltitudData.last[1] - firstElevInt ?? 0) as double).toStringAsFixed(0)} m"),
+                        "${((progAltitudData.last[1]) as double).toStringAsFixed(0)} m"),
                   ],
                 ),
               ),
@@ -369,7 +365,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
           spots: xyList
               .map((e) => FlSpot(e[0], (e[1] * factor).roundToDouble()))
               .toList(),
-          isCurved: true,
+          isCurved: false,
           color: Colors.black.withAlpha(160),
           barWidth: 2,
           isStrokeCapRound: true,
