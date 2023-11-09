@@ -4,8 +4,10 @@
  * found in the LICENSE file.
  */
 
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/generated/l10n.dart';
+import 'package:smash_import_export_plugins/com/hydrologis/smash/import_export_plugins/utils/gss_server_api.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 
@@ -120,6 +123,19 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           showSettingsSheet(context);
         });
 
+    final ListTile gssSettingTile = ListTile(
+        leading: Icon(
+          GssSettingsState.iconData,
+          color: SmashColors.mainDecorations,
+        ),
+        title: SmashUI.normalText("GSS"), // SL.of(context).settings_device),
+        subtitle: Text(SL.of(context).gss_settings),
+        trailing: Icon(Icons.arrow_right),
+        onTap: () {
+          _selectedSetting = GssSettings();
+          showSettingsSheet(context);
+        });
+
     final ListTile diagnosticsSettingTile = ListTile(
         leading: Icon(
           DiagnosticsSettingState.iconData,
@@ -146,6 +162,7 @@ class _SettingsWidgetState extends State<SettingsWidget> {
         vectorLayerSettingTile,
         crsSettingTile,
         deviceSettingTile,
+        gssSettingTile,
         diagnosticsSettingTile,
       ]),
     );
@@ -2100,5 +2117,519 @@ class DeviceSettingsState extends State<DeviceSettings> {
               ),
             ),
     );
+  }
+}
+
+class GssSettings extends StatefulWidget {
+  @override
+  GssSettingsState createState() {
+    return GssSettingsState();
+  }
+}
+
+class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
+  static final iconData = MdiIcons.server;
+  static final String POSITION_UPLOAD_TIMER_TAG = "GSS_POSITION_UPLOAD";
+
+  String? _gssUrl;
+  String? _gssUser;
+  String? _gssPwd;
+  bool? _allowSelfCert;
+  bool? _uploadDevicePosition = false;
+  List<Project> _projectsList = [];
+  Project? _selectedProject;
+  String? serverError;
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    getData();
+  }
+
+  Future<void> getData() async {
+    String? gssUrl = await GpPreferences()
+        .getString(SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_URL, "");
+    String? gssUser = await GpPreferences()
+        .getString(SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_USER, "");
+    String? gssPwd = await GpPreferences()
+        .getString(SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_PWD, "dummy");
+    String? selectedProjectJson = await GpPreferences()
+        .getString(SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_PROJECT, "");
+    Project? selectedProject;
+    var projectsMapsList;
+    try {
+      var projectMap = jsonDecode(selectedProjectJson!);
+      selectedProject = Project()
+        ..id = projectMap['id']
+        ..name = projectMap['name'];
+
+      String? projectsListJson = await GpPreferences().getString(
+          SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_PROJECT_LIST, "");
+
+      projectsMapsList = jsonDecode(projectsListJson!);
+    } catch (e) {
+      projectsMapsList = [];
+    }
+    List<Project> projectsList =
+        List<Project>.from(projectsMapsList.map((projectMap) => Project()
+          ..id = projectMap['id']
+          ..name = projectMap['name']));
+
+    if (selectedProject == null && projectsList.isNotEmpty) {
+      selectedProject = projectsList[0];
+    }
+    if (selectedProject != null &&
+        projectsList.isNotEmpty &&
+        !projectsList.contains(selectedProject)) {
+      selectedProject = projectsList[0];
+    }
+
+    bool? allowSelfCert = await GpPreferences().getBoolean(
+        SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_ALLOW_SELFCERTIFICATE, true);
+
+    setState(() {
+      _gssUrl = gssUrl;
+      _gssUser = gssUser;
+      _gssPwd = gssPwd;
+      _allowSelfCert = allowSelfCert;
+      _selectedProject = selectedProject;
+      _projectsList = projectsList;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var p = SmashUI.DEFAULT_PADDING;
+    return Scaffold(
+      appBar: new AppBar(
+        title: Row(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                iconData,
+                color: SmashColors.mainBackground,
+              ),
+            ),
+            Text(SL.of(context).gss_settings_connection),
+          ],
+        ),
+      ),
+      body: _gssUrl == null
+          ? Center(
+              child: SmashCircularProgress(),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(
+                                SL.of(context).gss_settings_server_url,
+                                bold: true),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: EditableTextField(
+                                SL.of(context).gss_settings_server_url,
+                                _gssUrl!,
+                                (res) async {
+                                  if (res == null || res.trim().length == 0) {
+                                    res = _gssUrl;
+                                  }
+                                  await GpPreferences().setString(
+                                      SmashPreferencesKeys
+                                          .KEY_GSS_DJANGO_SERVER_URL,
+                                      res);
+                                  setState(() {
+                                    _gssUrl = res;
+                                  });
+                                },
+                                validationFunction: (text) {
+                                  if (text.startsWith("http://") ||
+                                      text.startsWith("https://")) {
+                                    return null;
+                                  } else {
+                                    return SL
+                                        .of(context)
+                                        .gss_settings_server_url_start_http;
+                                  }
+                                },
+                                keyboardType: TextInputType.url,
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(
+                                SL.of(context).gss_settings_project,
+                                bold: true),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    height: 50.0,
+                                    width:
+                                        ScreenUtilities.getWidth(context) * 0.8,
+                                    child: DropdownButton<Project>(
+                                      isExpanded: true,
+                                      items: _projectsList.map((Project value) {
+                                        return DropdownMenuItem<Project>(
+                                          value: value,
+                                          child: Text(value.name),
+                                        );
+                                      }).toList(),
+                                      value: _selectedProject,
+                                      onChanged: (newProject) async {
+                                        _selectedProject = newProject;
+                                        await GpPreferences().setString(
+                                            SmashPreferencesKeys
+                                                .KEY_GSS_DJANGO_SERVER_PROJECT,
+                                            _selectedProject!.toJsonString());
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: IconButton(
+                                      icon: Icon(
+                                        MdiIcons.refresh,
+                                        color: SmashColors.mainDecorations,
+                                      ),
+                                      onPressed: () async {
+                                        serverError = null;
+                                        try {
+                                          _projectsList =
+                                              await ServerApi.getProjects();
+                                          if (_projectsList.isNotEmpty) {
+                                            var tmp = _projectsList
+                                                .map((p) => p.toMap())
+                                                .toList();
+                                            var projectsListJson =
+                                                jsonEncode(tmp);
+                                            await GpPreferences().setString(
+                                                SmashPreferencesKeys
+                                                    .KEY_GSS_DJANGO_SERVER_PROJECT_LIST,
+                                                projectsListJson);
+                                            if (_selectedProject == null ||
+                                                !_projectsList.contains(
+                                                    _selectedProject)) {
+                                              _selectedProject =
+                                                  _projectsList[0];
+                                            }
+                                            await GpPreferences().setString(
+                                                SmashPreferencesKeys
+                                                    .KEY_GSS_DJANGO_SERVER_PROJECT,
+                                                _selectedProject!
+                                                    .toJsonString());
+                                          }
+                                        } catch (ex, st) {
+                                          serverError = ex.toString();
+                                          serverError =
+                                              handleError(serverError!);
+                                          SmashDialogs.showToast(
+                                              context, serverError!,
+                                              isError: true);
+                                        }
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(
+                                SL.of(context).gss_settings_server_username,
+                                bold: true),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: EditableTextField(
+                                SL.of(context).gss_settings_server_username,
+                                _gssUser!,
+                                (res) async {
+                                  if (res == null || res.trim().length == 0) {
+                                    res = _gssUser;
+                                  }
+                                  await GpPreferences().setString(
+                                      SmashPreferencesKeys
+                                          .KEY_GSS_DJANGO_SERVER_USER,
+                                      res);
+                                  setState(() {
+                                    _gssUser = res;
+                                  });
+                                },
+                                validationFunction: (text) {
+                                  if (text.toString().trim().isNotEmpty) {
+                                    return null;
+                                  } else {
+                                    return SL
+                                        .of(context)
+                                        .gss_settings_server_username_valid;
+                                  }
+                                },
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(
+                                SL.of(context).gss_settings_password,
+                                bold: true),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: EditableTextField(
+                                SL.of(context).gss_settings_password,
+                                _gssPwd!,
+                                (res) async {
+                                  if (res == null || res.trim().length == 0) {
+                                    res = _gssPwd;
+                                  }
+                                  await GpPreferences().setString(
+                                      SmashPreferencesKeys
+                                          .KEY_GSS_DJANGO_SERVER_PWD,
+                                      res);
+                                  setState(() {
+                                    _gssPwd = res;
+                                  });
+                                },
+                                validationFunction: (text) {
+                                  if (text.toString().trim().isNotEmpty) {
+                                    return null;
+                                  } else {
+                                    return SL
+                                        .of(context)
+                                        .gss_settings_password_valid;
+                                  }
+                                },
+                                isPassword: true,
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(
+                                SL.of(context).gss_settings_certificates_self,
+                                bold: true),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: Checkbox(
+                                value: _allowSelfCert,
+                                onChanged: (newValue) async {
+                                  await GpPreferences().setBoolean(
+                                      SmashPreferencesKeys
+                                          .KEY_GSS_DJANGO_SERVER_ALLOW_SELFCERTIFICATE,
+                                      newValue!);
+                                  if (_gssUrl != null) {
+                                    var url = _gssUrl!
+                                        .replaceFirst("https://", "")
+                                        .replaceFirst("http://", "")
+                                        .split(":")[0];
+                                    NetworkHelper
+                                        .toggleAllowSelfSignedCertificates(
+                                            newValue, url);
+                                  } else {
+                                    // reset to disabled if there is no host to set
+                                    newValue = false;
+                                    await GpPreferences().setBoolean(
+                                        SmashPreferencesKeys
+                                            .KEY_GSS_DJANGO_SERVER_ALLOW_SELFCERTIFICATE,
+                                        newValue);
+                                  }
+
+                                  await getData();
+                                  setState(() {
+                                    _allowSelfCert = newValue;
+                                  });
+                                },
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      margin: SmashUI.defaultMargin(),
+                      color: SmashColors.mainBackground,
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: SmashUI.defaultPadding(),
+                            child: SmashUI.normalText(
+                                SL.of(context).gss_settings_upload_position,
+                                bold: true),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: p, bottom: p, right: p, left: 2 * p),
+                              child: Checkbox(
+                                value: _uploadDevicePosition,
+                                onChanged: (newValue) async {
+                                  GpsState gpsState = Provider.of<GpsState>(
+                                      context,
+                                      listen: false);
+                                  if (newValue!) {
+                                    // enable uploader
+                                    Function updateFunction =
+                                        (SmashPosition position,
+                                            GpsStatus status) async {
+                                      await ServerApi.sendLastUserPositions(
+                                          position);
+                                    };
+                                    gpsState.addGpsTimer(
+                                        POSITION_UPLOAD_TIMER_TAG,
+                                        updateFunction);
+                                  } else {
+                                    gpsState.stopGpsTimer(
+                                        POSITION_UPLOAD_TIMER_TAG);
+                                  }
+                                  setState(() {
+                                    _uploadDevicePosition = newValue;
+                                  });
+                                },
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                              color: SmashColors.mainDecorations, width: 3),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(16),
+                            ),
+                          ),
+                        ),
+                        onPressed: () async {
+                          try {
+                            serverError = null;
+
+                            if (_gssPwd == null ||
+                                _gssUrl == null ||
+                                _gssUser == null ||
+                                _selectedProject == null) {
+                              serverError =
+                                  SL.of(context).gss_settings_data_missing;
+                            } else {
+                              var token = await ServerApi.login(
+                                  _gssUser!, _gssPwd!, _selectedProject!.id);
+                              if (token.startsWith(NETWORKERROR_PREFIX)) {
+                                var errorJson =
+                                    token.replaceFirst(NETWORKERROR_PREFIX, "");
+                                var errorMap = jsonDecode(errorJson);
+                                serverError = errorMap['error'] ?? token;
+                                setState(() {});
+                              } else {
+                                await ServerApi.setGssToken(token);
+                              }
+                            }
+                            setState(() {});
+                          } catch (e) {
+                            setState(() {
+                              if (e is StateError) {
+                                serverError = e.message;
+                              }
+                            });
+                          }
+                          if (serverError != null) {
+                            serverError = handleError(serverError!);
+                            SmashDialogs.showToast(context, serverError!,
+                                isError: true);
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: SmashUI.titleText(
+                              SL.of(context).gss_settings_login),
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (serverError == null)
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Center(
+                        child: ServerApi.getGssToken() == null
+                            ? SmashUI.titleText(
+                                SL.of(context).gss_settings_no_token,
+                                bold: true,
+                                color: SmashColors.mainDanger)
+                            : SmashUI.titleText("Token is in store."),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+    );
+  }
+
+  String handleError(String serverError) {
+    if (serverError
+        .toLowerCase()
+        .contains("certificate_verify_failed: self signed")) {
+      return "Unable to connect to ssl with self signed certificate. Allow self signed certificates in the settings.";
+    }
+    return serverError;
   }
 }

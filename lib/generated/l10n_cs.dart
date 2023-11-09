@@ -1491,4 +1491,46 @@ class SLCs extends SL {
 
   @override
   String get form_smash_cantSaveImageDb => 'Obrázek se nepodařilo uložit do databáze.';
+
+  @override
+  String get gss_settings => 'Geopaparazzi Survey Server Settings';
+
+  @override
+  String get gss_settings_connection => 'GSS Connection Settings';
+
+  @override
+  String get gss_settings_server_url => 'Server URL';
+
+  @override
+  String get gss_settings_server_url_start_http => 'Server url needs to start with http or https.';
+
+  @override
+  String get gss_settings_project => 'GSS Project';
+
+  @override
+  String get gss_settings_server_username => 'Server Username';
+
+  @override
+  String get gss_settings_server_username_valid => 'Please enter a valid server username.';
+
+  @override
+  String get gss_settings_password => 'Server Password';
+
+  @override
+  String get gss_settings_password_valid => 'Please enter a valid server password.';
+
+  @override
+  String get gss_settings_certificates_self => 'Allow self signed certificates';
+
+  @override
+  String get gss_settings_upload_position => 'Upload device position to server in regular time intervals.';
+
+  @override
+  String get gss_settings_data_missing => 'User, password, url and project are necessary to login';
+
+  @override
+  String get gss_settings_login => 'Login';
+
+  @override
+  String get gss_settings_no_token => 'No token available, please login.';
 }
