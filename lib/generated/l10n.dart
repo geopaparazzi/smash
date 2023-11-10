@@ -3168,6 +3168,42 @@ abstract class SL {
   /// In en, this message translates to:
   /// **'No token available, please login.'**
   String get gss_settings_no_token;
+
+  /// No description provided for @layersView_selectGssLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Select GSS Layers'**
+  String get layersView_selectGssLayers;
+
+  /// No description provided for @layersView_noGssLayersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No GSS layers found.'**
+  String get layersView_noGssLayersFound;
+
+  /// No description provided for @layersView_selectGssLayersToLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Select GSS layers to load.'**
+  String get layersView_selectGssLayersToLoad;
+
+  /// No description provided for @layersView_unableToLoadGssLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load:'**
+  String get layersView_unableToLoadGssLayers;
+
+  /// No description provided for @layersView_layerExists.
+  ///
+  /// In en, this message translates to:
+  /// **'Layer exists'**
+  String get layersView_layerExists;
+
+  /// No description provided for @layersView_layerAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'Layer already exists, do you want to overwrite it?'**
+  String get layersView_layerAlreadyExists;
 }
 
 class _SLDelegate extends LocalizationsDelegate<SL> {

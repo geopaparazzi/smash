@@ -1533,4 +1533,22 @@ class SLFr extends SL {
 
   @override
   String get gss_settings_no_token => 'No token available, please login.';
+
+  @override
+  String get layersView_selectGssLayers => 'Select GSS Layers';
+
+  @override
+  String get layersView_noGssLayersFound => 'No GSS layers found.';
+
+  @override
+  String get layersView_selectGssLayersToLoad => 'Select GSS layers to load.';
+
+  @override
+  String get layersView_unableToLoadGssLayers => 'Unable to load:';
+
+  @override
+  String get layersView_layerExists => 'Layer exists';
+
+  @override
+  String get layersView_layerAlreadyExists => 'Layer already exists, do you want to overwrite it?';
 }

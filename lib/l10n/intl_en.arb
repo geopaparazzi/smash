@@ -1006,5 +1006,11 @@
   "gss_settings_upload_position": "Upload device position to server in regular time intervals.",
   "gss_settings_data_missing": "User, password, url and project are necessary to login",
   "gss_settings_login": "Login",
-  "gss_settings_no_token": "No token available, please login."
+  "gss_settings_no_token": "No token available, please login.",
+  "layersView_selectGssLayers": "Select GSS Layers",
+  "layersView_noGssLayersFound": "No GSS layers found.",
+  "layersView_selectGssLayersToLoad": "Select GSS layers to load.",
+  "layersView_unableToLoadGssLayers": "Unable to load:",
+  "layersView_layerExists": "Layer exists",
+  "layersView_layerAlreadyExists": "Layer already exists, do you want to overwrite it?"
 }

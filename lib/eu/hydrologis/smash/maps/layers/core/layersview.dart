@@ -5,7 +5,10 @@
  */
 
 import 'dart:core';
+import 'dart:io';
 
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
+    hide TextStyle;
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
@@ -18,6 +21,7 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dar
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/remotedbpage.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/generated/l10n.dart';
+import 'package:smash_import_export_plugins/com/hydrologis/smash/import_export_plugins/utils/gss_server_api.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class LayersPage extends StatefulWidget {
@@ -113,12 +117,18 @@ class LayersPageState extends State<LayersPage> {
                       isLoadingData = false;
                     });
                   } else if (value == 2) {
+                    setState(() {
+                      isLoadingData = true;
+                    });
+                    selectGssLayers();
+                  } else if (value == 3) {
                     openPluginsViewSettings();
                   }
                 },
                 itemBuilder: (BuildContext context) {
                   var txt1 = SL.of(context).layersView_loadRemoteDatabase;
-                  var txt2 = SL.of(context).settings_SETTING;
+                  var txt2 = SL.of(context).layersView_selectGssLayers;
+                  var txt3 = SL.of(context).settings_SETTING;
                   return [
                     PopupMenuItem<int>(
                       value: 1,
@@ -127,6 +137,10 @@ class LayersPageState extends State<LayersPage> {
                     PopupMenuItem<int>(
                       value: 2,
                       child: Text(txt2),
+                    ),
+                    PopupMenuItem<int>(
+                      value: 3,
+                      child: Text(txt3),
                     ),
                   ];
                 },
@@ -161,6 +175,72 @@ class LayersPageState extends State<LayersPage> {
     );
     await showDialog(
         context: context, builder: (BuildContext context) => settingsDialog);
+  }
+
+  Future selectGssLayers() async {
+    try {
+      var layerName2FormDefinitionMap = await ServerApi.getDynamicLayers();
+
+      if (layerName2FormDefinitionMap == null ||
+          layerName2FormDefinitionMap.isEmpty) {
+        SmashDialogs.showWarningDialog(
+            context, SL.of(context).layersView_noGssLayersFound);
+        return;
+      }
+
+      var layerNames = layerName2FormDefinitionMap.keys.toList();
+      var selectedLayerNames = await SmashDialogs.showMultiSelectionComboDialog(
+        context,
+        SL.of(context).layersView_selectGssLayersToLoad,
+        layerNames,
+      );
+
+      if (selectedLayerNames != null && selectedLayerNames.isNotEmpty) {
+        var unableToLoad = <String>[];
+        for (var selectedLayerName in selectedLayerNames) {
+          var formDefinition = layerName2FormDefinitionMap[selectedLayerName];
+          if (formDefinition != null) {
+            // check if file altready exists
+            var mapsFolder = await Workspace.getMapsFolder();
+            var layerFilePath = FileUtilities.joinPaths(
+                mapsFolder.path, selectedLayerName + ".geojson");
+
+            if (File(layerFilePath).existsSync()) {
+              var doOverwrite = await SmashDialogs.showConfirmDialog(
+                  context,
+                  SL.of(context).layersView_layerExists,
+                  SL.of(context).layersView_layerAlreadyExists +
+                      " " +
+                      selectedLayerName);
+              if (!doOverwrite!) {
+                continue;
+              }
+            }
+
+            String? geojsonPath = await ServerApi.downloadDynamicLayerToDevice(
+                selectedLayerName, formDefinition);
+            if (geojsonPath != null) {
+              var layerSource = GeojsonSource(geojsonPath);
+              await layerSource.load(context);
+              LayerManager().addLayerSource(layerSource);
+              _somethingChanged = true;
+            } else {
+              unableToLoad.add(selectedLayerName);
+            }
+          }
+        }
+        if (unableToLoad.isNotEmpty) {
+          SmashDialogs.showWarningDialog(
+              context,
+              SL.of(context).layersView_unableToLoadGssLayers +
+                  unableToLoad.join(", "));
+        }
+      }
+    } finally {
+      setState(() {
+        isLoadingData = false;
+      });
+    }
   }
 
   Future loadSelectedFile(selectedPath, BuildContext context) async {
