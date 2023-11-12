@@ -1551,4 +1551,7 @@ class SLIt extends SL {
 
   @override
   String get layersView_layerAlreadyExists => 'Layer already exists, do you want to overwrite it?';
+
+  @override
+  String get gss_layerview_upload_changes => 'Upload changes';
 }

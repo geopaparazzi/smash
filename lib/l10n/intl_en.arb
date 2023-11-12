@@ -1012,5 +1012,6 @@
   "layersView_selectGssLayersToLoad": "Select GSS layers to load.",
   "layersView_unableToLoadGssLayers": "Unable to load:",
   "layersView_layerExists": "Layer exists",
-  "layersView_layerAlreadyExists": "Layer already exists, do you want to overwrite it?"
+  "layersView_layerAlreadyExists": "Layer already exists, do you want to overwrite it?",
+  "gss_layerview_upload_changes": "Upload changes"
 }

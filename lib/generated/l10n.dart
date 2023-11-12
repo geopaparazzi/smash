@@ -3204,6 +3204,12 @@ abstract class SL {
   /// In en, this message translates to:
   /// **'Layer already exists, do you want to overwrite it?'**
   String get layersView_layerAlreadyExists;
+
+  /// No description provided for @gss_layerview_upload_changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload changes'**
+  String get gss_layerview_upload_changes;
 }
 
 class _SLDelegate extends LocalizationsDelegate<SL> {

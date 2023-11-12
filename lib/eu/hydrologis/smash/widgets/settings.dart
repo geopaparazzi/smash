@@ -18,7 +18,6 @@ import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/generated/l10n.dart';
-import 'package:smash_import_export_plugins/com/hydrologis/smash/import_export_plugins/utils/gss_server_api.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 

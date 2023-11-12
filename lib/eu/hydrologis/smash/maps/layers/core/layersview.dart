@@ -21,7 +21,6 @@ import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dar
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/remotedbpage.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/generated/l10n.dart';
-import 'package:smash_import_export_plugins/com/hydrologis/smash/import_export_plugins/utils/gss_server_api.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class LayersPage extends StatefulWidget {
@@ -47,6 +46,7 @@ class LayersPageState extends State<LayersPage> {
         onWillPop: () async {
           if (_somethingChanged) {
             setLayersOnChange(_layersList);
+            // Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
           }
           return true;
         },
@@ -201,17 +201,17 @@ class LayersPageState extends State<LayersPage> {
           var formDefinition = layerName2FormDefinitionMap[selectedLayerName];
           if (formDefinition != null) {
             // check if file altready exists
-            var mapsFolder = await Workspace.getMapsFolder();
+            var gssFolder = await GssUtilities.getGssFolder();
             var layerFilePath = FileUtilities.joinPaths(
-                mapsFolder.path, selectedLayerName + ".geojson");
+                gssFolder.path, selectedLayerName + ".geojson");
 
             if (File(layerFilePath).existsSync()) {
               var doOverwrite = await SmashDialogs.showConfirmDialog(
                   context,
-                  SL.of(context).layersView_layerExists,
-                  SL.of(context).layersView_layerAlreadyExists +
-                      " " +
-                      selectedLayerName);
+                  SL.of(context).layersView_layerExists +
+                      ": " +
+                      selectedLayerName,
+                  SL.of(context).layersView_layerAlreadyExists);
               if (!doOverwrite!) {
                 continue;
               }
@@ -221,7 +221,7 @@ class LayersPageState extends State<LayersPage> {
                 selectedLayerName, formDefinition);
             if (geojsonPath != null) {
               var layerSource = GeojsonSource(geojsonPath);
-              await layerSource.load(context);
+              // await layerSource.load(context);
               LayerManager().addLayerSource(layerSource);
               _somethingChanged = true;
             } else {
@@ -302,6 +302,17 @@ class LayersPageState extends State<LayersPage> {
                   layerSourceItem.isLoaded = false;
                 }
               }
+              _somethingChanged = true;
+            }));
+      }
+      if (layerSourceItem is GssLayerSource &&
+          (layerSourceItem as GssLayerSource).canUpload()) {
+        startActions.add(SlidableAction(
+            label: SL.of(context).gss_layerview_upload_changes,
+            foregroundColor: SmashColors.mainDecorations,
+            icon: MdiIcons.upload,
+            onPressed: (context) async {
+              await (layerSourceItem as GssLayerSource).upload(context);
               _somethingChanged = true;
             }));
       }
