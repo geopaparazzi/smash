@@ -24,13 +24,13 @@ const FORMS_FIELD = "forms";
 
 class SmashFormHelper extends AFormhelper {
   String _sectionName;
-  Map<String, dynamic> _sectionMap;
+  SmashSection _section;
   Widget _titleWidget;
   int? _id;
   dynamic _position;
 
-  SmashFormHelper(this._id, this._sectionName, this._sectionMap,
-      this._titleWidget, this._position);
+  SmashFormHelper(this._id, this._sectionName, this._section, this._titleWidget,
+      this._position);
 
   @override
   Future<bool> init() async {
@@ -59,8 +59,8 @@ class SmashFormHelper extends AFormhelper {
   }
 
   @override
-  Map<String, dynamic> getSectionMap() {
-    return _sectionMap;
+  SmashSection getSection() {
+    return _section;
   }
 
   @override
@@ -184,14 +184,11 @@ class SmashFormHelper extends AFormhelper {
 
   /// Get thumbnails from the database
   Future<List<Widget>> getThumbnailsFromDb(BuildContext context,
-      Map<String, dynamic> itemsMap, List<String> imageSplit) async {
+      SmashFormItem formItem, List<String> imageSplit) async {
     ProjectState projectState =
         Provider.of<ProjectState>(context, listen: false);
 
-    String value = ""; //$NON-NLS-1$
-    if (itemsMap.containsKey(TAG_VALUE)) {
-      value = itemsMap[TAG_VALUE].trim();
-    }
+    String value = formItem.value ?? ""; //$NON-NLS-1$
     if (value.isNotEmpty) {
       var split = value.split(IMAGE_ID_SEPARATOR);
       split.forEach((v) {
@@ -219,13 +216,13 @@ class SmashFormHelper extends AFormhelper {
     ProjectState projectState =
         Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
-    String jsonForm = jsonEncode(_sectionMap);
+    String jsonForm = jsonEncode(_section);
     int noteId;
     int ts = DateTime.now().millisecondsSinceEpoch;
     if (_id == null) {
       // create new note in position based on form
 
-      var iconName = TagsManager.getIcon4Section(_sectionMap);
+      var iconName = _section.getIcon();
       String iconColor = ColorExt.asHex(SmashColors.mainDecorationsDarker);
 
       SmashPosition? pos;

@@ -179,16 +179,28 @@ class LayersPageState extends State<LayersPage> {
 
   Future selectGssLayers() async {
     try {
-      var layerName2FormDefinitionMap = await ServerApi.getDynamicLayers();
+      var layersList = await ServerApi.getDynamicLayers();
 
-      if (layerName2FormDefinitionMap == null ||
-          layerName2FormDefinitionMap.isEmpty) {
+      if (layersList == null || layersList.isEmpty) {
         SmashDialogs.showWarningDialog(
             context, SL.of(context).layersView_noGssLayersFound);
         return;
       }
 
-      var layerNames = layerName2FormDefinitionMap.keys.toList();
+      var layerNames = <String>[];
+      var layerName2FormDefinitionMap = <String, dynamic>{};
+      var layerName2GeometryTypeMap = <String, EGeometryType>{};
+      for (var layer in layersList) {
+        var layerName = layer["name"] as String;
+        var formDefinition = layer["form"];
+        var geometryType = layer["geometrytype"] as String;
+        layerNames.add(layerName);
+        layerName2FormDefinitionMap[layerName] = formDefinition;
+        layerName2GeometryTypeMap[layerName] =
+            EGeometryType.forWktName(geometryType);
+      }
+
+      // layersList.map((l) => l["name"] as String).toList();
       var selectedLayerNames = await SmashDialogs.showMultiSelectionComboDialog(
         context,
         SL.of(context).layersView_selectGssLayersToLoad,
@@ -199,7 +211,8 @@ class LayersPageState extends State<LayersPage> {
         var unableToLoad = <String>[];
         for (var selectedLayerName in selectedLayerNames) {
           var formDefinition = layerName2FormDefinitionMap[selectedLayerName];
-          if (formDefinition != null) {
+          var geometryType = layerName2GeometryTypeMap[selectedLayerName];
+          if (formDefinition != null && geometryType != null) {
             // check if file altready exists
             var gssFolder = await GssUtilities.getGssFolder();
             var layerFilePath = FileUtilities.joinPaths(
@@ -218,7 +231,7 @@ class LayersPageState extends State<LayersPage> {
             }
 
             String? geojsonPath = await ServerApi.downloadDynamicLayerToDevice(
-                selectedLayerName, formDefinition);
+                selectedLayerName, formDefinition, geometryType);
             if (geojsonPath != null) {
               var layerSource = GeojsonSource(geojsonPath);
               // await layerSource.load(context);

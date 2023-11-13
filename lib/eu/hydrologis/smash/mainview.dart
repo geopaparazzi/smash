@@ -575,40 +575,37 @@ class MainViewWidgetState extends State<MainViewWidget>
             ],
           );
 
-          var allSectionsMap = TagsManager().getSectionsMap();
-          List<String> sectionNames = allSectionsMap.keys.toList();
+          var tm = TagsManager();
+          var tags = tm.getTags();
+          List<SmashSection> section = tags.getSections();
           List<String> iconNames = [];
-          sectionNames.forEach((key) {
-            var icon4section =
-                TagsManager.getIcon4Section(allSectionsMap[key]!);
-            iconNames.add(icon4section);
+          section.forEach((section) {
+            iconNames.add(section.getIcon());
           });
 
-          var selectedSection = await SmashDialogs.showComboDialog(
+          var sectionNames = tags.getSectionNames();
+          var selectedSectionName = await SmashDialogs.showComboDialog(
               mapBuilder.context!, titleWithMode, sectionNames,
               iconNames: iconNames);
           // refresh mode
           noteInGpsMode = gpsState.insertInGpsMode;
-          if (selectedSection != null) {
+          if (selectedSectionName != null) {
             Widget appbarWidget = getDialogTitleWithInsertionMode(
-                selectedSection, noteInGpsMode, SmashColors.mainBackground);
+                selectedSectionName, noteInGpsMode, SmashColors.mainBackground);
 
-            var selectedIndex = sectionNames.indexOf(selectedSection);
-            var iconName = iconNames[selectedIndex];
-            var sectionMap = allSectionsMap[selectedSection];
-            var jsonString = jsonEncode(sectionMap);
+            var selectSection = tags.getSectionByName(selectedSectionName);
             Note note = DataLoaderUtilities.addNote(
                 mapBuilder, noteInGpsMode, mapView.getBounds()!.centre()!,
-                text: selectedSection,
-                form: jsonString,
-                iconName: iconName,
+                text: selectedSectionName,
+                form: selectSection?.toJson(),
+                iconName: selectSection?.getIcon(),
                 color: ColorExt.asHex(SmashColors.mainDecorationsDarker));
 
             var position = noteInGpsMode == POINT_INSERTION_MODE_GPS
                 ? gpsState.lastGpsPosition
                 : mapView.getBounds()!.centre()!;
-            var formHelper = SmashFormHelper(
-                note.id!, selectedSection, sectionMap!, appbarWidget, position);
+            var formHelper = SmashFormHelper(note.id!, selectedSectionName,
+                selectSection!, appbarWidget, position);
 
             Navigator.push(mapBuilder.context!, MaterialPageRoute(
               builder: (context) {
