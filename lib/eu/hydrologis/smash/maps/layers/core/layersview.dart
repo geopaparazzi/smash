@@ -324,7 +324,7 @@ class LayersPageState extends State<LayersPage> {
             label: SL.of(context).gss_layerview_upload_changes,
             foregroundColor: SmashColors.mainDecorations,
             icon: MdiIcons.upload,
-            onPressed: (context) async {
+            onPressed: (tmpcontext) async {
               await (layerSourceItem as GssLayerSource).upload(context);
               _somethingChanged = true;
             }));
