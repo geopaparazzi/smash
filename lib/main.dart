@@ -96,6 +96,46 @@ class SmashApp extends StatelessWidget {
       title: Workspace.APP_NAME,
       //theme: Provider.of<ThemeState>(context).currentThemeData,
       theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: SmashColors.mainDecorations,
+          background: SmashColors.mainBackground,
+          primary: SmashColors.mainDecorations,
+          // secondary: SmashColors.mainSelection,
+          brightness: Brightness.light,
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: SmashColors.mainDecorations,
+          foregroundColor: SmashColors.mainBackground,
+          titleTextStyle: TextStyle(
+            color: SmashColors.mainBackground,
+            fontWeight: FontWeight.bold,
+            fontSize: SmashUI.BIG_SIZE,
+          ),
+        ),
+        bottomAppBarTheme: BottomAppBarTheme(
+          color: SmashColors.mainDecorations,
+        ),
+        tabBarTheme: TabBarTheme(
+            labelColor: SmashColors.mainBackground,
+            unselectedLabelColor: Colors.grey.shade400),
+        cardTheme: CardTheme(
+          surfaceTintColor: SmashColors.mainBackground,
+          color: SmashColors.mainBackground,
+        ),
+        drawerTheme: DrawerThemeData(
+          backgroundColor: SmashColors.mainBackground,
+          surfaceTintColor: SmashColors.mainBackground,
+        ),
+        dialogTheme: DialogTheme(
+          backgroundColor: SmashColors.mainBackground,
+          surfaceTintColor: SmashColors.mainBackground,
+          titleTextStyle: TextStyle(
+            color: SmashColors.mainBackground,
+            fontWeight: FontWeight.bold,
+            fontSize: SmashUI.BIG_SIZE,
+          ),
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       debugShowMaterialGrid: false,

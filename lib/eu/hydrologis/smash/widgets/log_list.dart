@@ -308,8 +308,11 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     var padLeft = 5.0;
     var pad = 3.0;
 
+    bool isLarge = ScreenUtilities.isLandscape(context) ||
+        ScreenUtilities.isLargeScreen(context);
+
     var startActionPane = ActionPane(
-      extentRatio: 0.35,
+      extentRatio: isLarge ? 0.55 : 1,
       dragDismissible: false,
       motion: const ScrollMotion(),
       dismissible: DismissiblePane(onDismissed: () {}),
@@ -317,7 +320,8 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         // ZOOM TO
         SlidableAction(
             label: SL.of(context).logList_zoomTo, //'Zoom to'
-            foregroundColor: SmashColors.mainDecorations,
+            foregroundColor: SmashColors.mainBackground,
+            backgroundColor: SmashColors.mainDecorations.withAlpha(100),
             icon: MdiIcons.magnifyScan,
             onPressed: (context) async {
               SmashMapState mapState =
@@ -341,14 +345,16 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                     builder: (context) => LogPropertiesWidget(logItem)));
             setState(() {});
           },
-          foregroundColor: SmashColors.mainDecorations,
+          foregroundColor: SmashColors.mainBackground,
+          backgroundColor: SmashColors.mainDecorations.withAlpha(170),
           icon: MdiIcons.palette,
           label: SL.of(context).logList_properties, //'Properties'
         ),
         // PROFILE VIEW
         SlidableAction(
           label: SL.of(context).logList_profileView, //'Profile View'
-          foregroundColor: SmashColors.mainDecorations,
+          foregroundColor: SmashColors.mainBackground,
+          backgroundColor: SmashColors.mainDecorations.withAlpha(250),
           icon: MdiIcons.chartAreaspline,
           onPressed: (context) async {
             await Navigator.push(
@@ -362,7 +368,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
     );
 
     var endActionPane = ActionPane(
-      extentRatio: 0.35,
+      extentRatio: isLarge ? 0.35 : 0.6,
       dragDismissible: false,
       motion: const ScrollMotion(),
       dismissible: DismissiblePane(onDismissed: () {}),
@@ -370,7 +376,8 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         // TO GPX
         SlidableAction(
             label: SL.of(context).logList_toGPX, //'To GPX'
-            foregroundColor: SmashColors.mainDecorations,
+            foregroundColor: SmashColors.mainBackground,
+            backgroundColor: SmashColors.mainDecorations,
             icon: MdiIcons.mapMarker,
             onPressed: (context) async {
               var exportsFolder = await Workspace.getExportsFolder();
@@ -395,6 +402,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         SlidableAction(
             label: SL.of(context).logList_delete, //'Delete'
             foregroundColor: SmashColors.mainDanger,
+            backgroundColor: SmashColors.mainDecorations.withAlpha(200),
             icon: MdiIcons.delete,
             onPressed: (context) async {
               bool? doDelete = await SmashDialogs.showConfirmDialog(
@@ -413,18 +421,18 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
 
     var logColorObject =
         EnhancedColorUtility.splitEnhancedColorString(logItem.color!);
-    var icon;
+    Widget icon;
     if (logColorObject[1] != ColorTables.none) {
       icon = Icon(
         MdiIcons.palette,
         color: ColorExt(logColorObject[0]),
-        size: SmashUI.MEDIUM_ICON_SIZE,
+        size: SmashUI.SMALL_ICON_SIZE,
       );
     } else {
       icon = Icon(
         SmashIcons.logIcon,
         color: ColorExt(logColorObject[0]),
-        size: SmashUI.MEDIUM_ICON_SIZE,
+        size: SmashUI.SMALL_ICON_SIZE,
       );
     }
 
@@ -433,71 +441,84 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       startActionPane: startActionPane,
       endActionPane: endActionPane,
       child: ListTile(
-        title: SmashUI.normalText('${logItem.name}',
-            bold: true, textAlign: TextAlign.left),
-        subtitle: SingleChildScrollView(
+        title: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: pad),
-                      child: dayIcon,
-                    ),
-                    Text(dayString),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: pad),
-                      child: timeIcon,
-                    ),
-                    Text(timeString),
-                    Padding(
-                      padding: EdgeInsets.only(right: pad),
-                      child: distIcon,
-                    ),
-                    Text(lengthString),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: pad),
-                      child: upIcon,
-                    ),
-                    Text(upString),
-                    Padding(
-                      padding: EdgeInsets.only(left: padLeft, right: pad),
-                      child: downIcon,
-                    ),
-                    Text(downString),
-                    Padding(
-                      padding: EdgeInsets.only(left: padLeft, right: pad),
-                      child: countIcon,
-                    ),
-                    Text(countString),
-                  ],
-                )
-              ],
+          child: Row(
+            children: [
+              Checkbox(
+                  value: logItem.isVisible == 1 ? true : false,
+                  onChanged: (isVisible) async {
+                    logItem.isVisible = isVisible! ? 1 : 0;
+                    db.updateGpsLogVisibility(isVisible, logItem.id);
+                    Provider.of<ProjectState>(context, listen: false)
+                        .reloadProject(context);
+                    setState(() {});
+                  }),
+              Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: icon,
+              ),
+              SmashUI.normalText('${logItem.name}',
+                  bold: true, textAlign: TextAlign.left),
+            ],
+          ),
+        ),
+        subtitle: Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: pad),
+                        child: dayIcon,
+                      ),
+                      Text(dayString),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: pad),
+                        child: timeIcon,
+                      ),
+                      Text(timeString),
+                      Padding(
+                        padding: EdgeInsets.only(right: pad),
+                        child: distIcon,
+                      ),
+                      Text(lengthString),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: pad),
+                        child: upIcon,
+                      ),
+                      Text(upString),
+                      Padding(
+                        padding: EdgeInsets.only(left: padLeft, right: pad),
+                        child: downIcon,
+                      ),
+                      Text(downString),
+                      Padding(
+                        padding: EdgeInsets.only(left: padLeft, right: pad),
+                        child: countIcon,
+                      ),
+                      Text(countString),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
-        leading: icon,
-        trailing: Checkbox(
-            value: logItem.isVisible == 1 ? true : false,
-            onChanged: (isVisible) async {
-              logItem.isVisible = isVisible! ? 1 : 0;
-              db.updateGpsLogVisibility(isVisible, logItem.id);
-              Provider.of<ProjectState>(context, listen: false)
-                  .reloadProject(context);
-              setState(() {});
-            }),
       ),
     );
   }

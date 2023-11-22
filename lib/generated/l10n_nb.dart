@@ -1554,6 +1554,15 @@ class SLNb extends SL {
 
   @override
   String get gss_layerview_upload_changes => 'Upload changes';
+
+  @override
+  String get allGpsPointsCount => 'Gps points';
+
+  @override
+  String get filteredGpsPointsCount => 'Filtered points';
+
+  @override
+  String get addTmsFromDefaults => 'Add TMS from defaults';
 }
 
 /// The translations for Norwegian Bokmål, as used in Norway (`nb_NO`).

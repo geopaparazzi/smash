@@ -41,10 +41,6 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         );
       }
       var mapState = Provider.of<SmashMapState>(context, listen: false);
-      bool showAllGpsPointCount = GpPreferences()
-          .getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, false);
-      bool showValidGpsPointCount = GpPreferences().getBooleanSync(
-          SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, false);
 
       Widget button = GestureDetector(
         onLongPress: () {
@@ -65,13 +61,13 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
           ));
         },
         child: SizedBox(
-          height: widget._iconSize * 1.3,
-          width: widget._iconSize * 1.3,
+          height: widget._iconSize * 1.4,
+          width: widget._iconSize * 1.4,
           child: Stack(
             // fit: StackFit.loose,
             children: [
               Transform.scale(
-                scale: 1.3,
+                scale: 1.4,
                 child: FloatingActionButton(
                   key: widget._key,
                   elevation: 1,
@@ -106,19 +102,6 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
         ),
       );
 
-      if (showValidGpsPointCount) {
-        button = DashboardUtils.makeToolbarBadge(
-            button, GpsHandler().filteredPointsCount,
-            badgeColor: SmashColors.mainSelection);
-      }
-      if (showAllGpsPointCount) {
-        button = DashboardUtils.makeToolbarBadge(
-            button, GpsHandler().allPointsCount,
-            textColor: SmashColors.mainBackground,
-            badgeColor: SmashColors.mainDecorations,
-            badgePosition: BadgePosition.bottomStart());
-      }
-
       return button;
     });
   }
@@ -150,6 +133,8 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                     children: [
                       getLatTableRow(color, pos),
                       getLonTableRow(color, pos),
+                      getAllGpsPointsTableRow(color, pos),
+                      getFilteresGpsPointsTableRow(color, pos),
                     ],
                   ),
                 ),
@@ -191,6 +176,8 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
               getHeadingTableRow(color, pos),
               getSpeedTableRow(color, pos),
               getTimestampTableRow(color, pos),
+              getAllGpsPointsTableRow(color, pos),
+              getFilteresGpsPointsTableRow(color, pos),
             ],
           );
         }
@@ -251,6 +238,28 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             color: color), //"Timestamp"
         TableUtilities.cellForString(
             "${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(pos.time.round()))}",
+            color: color),
+      ],
+    );
+  }
+
+  TableRow getAllGpsPointsTableRow(ColorExt color, SmashPosition pos) {
+    return TableRow(
+      children: [
+        TableUtilities.cellForString(SL.of(context).allGpsPointsCount,
+            color: color),
+        TableUtilities.cellForString("${GpsHandler().allPointsCount}",
+            color: color),
+      ],
+    );
+  }
+
+  TableRow getFilteresGpsPointsTableRow(ColorExt color, SmashPosition pos) {
+    return TableRow(
+      children: [
+        TableUtilities.cellForString(SL.of(context).filteredGpsPointsCount,
+            color: color),
+        TableUtilities.cellForString("${GpsHandler().filteredPointsCount}",
             color: color),
       ],
     );

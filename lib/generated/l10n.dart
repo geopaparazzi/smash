@@ -3210,6 +3210,24 @@ abstract class SL {
   /// In en, this message translates to:
   /// **'Upload changes'**
   String get gss_layerview_upload_changes;
+
+  /// No description provided for @allGpsPointsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Gps points'**
+  String get allGpsPointsCount;
+
+  /// No description provided for @filteredGpsPointsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Filtered points'**
+  String get filteredGpsPointsCount;
+
+  /// No description provided for @addTmsFromDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Add TMS from defaults'**
+  String get addTmsFromDefaults;
 }
 
 class _SLDelegate extends LocalizationsDelegate<SL> {

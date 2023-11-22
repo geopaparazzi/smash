@@ -202,6 +202,13 @@ class MainViewWidgetState extends State<MainViewWidget>
   Widget consumeBuild(SmashMapBuilder mapBuilder) {
     _iconSize = GpPreferences().getDoubleSync(
         SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+    var width = ScreenUtilities.getWidth(context);
+    // check if the 7 icons would fit and give a max icon size
+    var maxIconSize = width / 12;
+    if (_iconSize! > maxIconSize) {
+      _iconSize = maxIconSize;
+    }
+
     var projectState =
         Provider.of<ProjectState>(mapBuilder.context!, listen: false);
     var mapState =
@@ -345,18 +352,6 @@ class MainViewWidgetState extends State<MainViewWidget>
               child: ListView(
             children: DashboardUtils.getEndDrawerListTiles(context!),
           )),
-          // Theme(
-          //   data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
-          //   child: Drawer(
-          //       child: Container(
-          //     color: Colors.transparent,
-          //     child: ListView(
-          //       children: DashboardUtils.getEndDrawerListTiles(
-          //           context, _mapController),
-          //     ),
-          //   )),
-          // ),
-
           bottomNavigationBar: _iconMode == IconMode.NAVIGATION_MODE
               ? addBottomNavigationBar(mapBuilder, projectData, mapState)
               : BottomToolsBar(_iconSize),

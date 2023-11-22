@@ -967,10 +967,6 @@ class GpsSettingsState extends State<GpsSettings> {
     var testlogDurationKey = "KEY_GPS_TESTLOG_DURATIONMILLIS";
     int testLogDuration =
         GpPreferences().getIntSync(testlogDurationKey, 500) ?? 500;
-    bool showAllGpsPointCount = GpPreferences()
-        .getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS, false);
-    bool showValidGpsPointCount = GpPreferences()
-        .getBooleanSync(SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS, false);
     bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(
         SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
     bool useGpsGoogleServices = GpPreferences().getBooleanSync(
@@ -982,67 +978,6 @@ class GpsSettingsState extends State<GpsSettings> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Card(
-            margin: SmashUI.defaultMargin(),
-            // elevation: SmashUI.DEFAULT_ELEVATION,
-            color: SmashColors.mainBackground,
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: SmashUI.defaultPadding(),
-                  child: SmashUI.normalText(
-                      SL
-                          .of(context)
-                          .settings_visualizePointCount, //"Visualize point count"
-                      bold: true,
-                      textAlign: TextAlign.start),
-                ),
-                ListTile(
-                  leading: Icon(MdiIcons.formatListNumbered),
-                  title: Text(SL
-                      .of(context)
-                      .settings_showGpsPointsValidPoints), //"Show the GPS points count for VALID points."
-                  subtitle: Wrap(
-                    children: <Widget>[
-                      Checkbox(
-                        value: showValidGpsPointCount,
-                        onChanged: (selValid) async {
-                          await GpPreferences().setBoolean(
-                              SmashPreferencesKeys.KEY_GPS_SHOW_VALID_POINTS,
-                              selValid!);
-                          Provider.of<SmashMapBuilder>(context, listen: false)
-                              .reBuild();
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                ListTile(
-                  leading: Icon(MdiIcons.formatListNumbered),
-                  title: Text(SL
-                      .of(context)
-                      .settings_showGpsPointsAllPoints), //"Show the GPS points count for ALL points."
-                  subtitle: Wrap(
-                    children: <Widget>[
-                      Checkbox(
-                        value: showAllGpsPointCount,
-                        onChanged: (selAll) async {
-                          await GpPreferences().setBoolean(
-                              SmashPreferencesKeys.KEY_GPS_SHOW_ALL_POINTS,
-                              selAll!);
-
-                          Provider.of<SmashMapBuilder>(context, listen: false)
-                              .reBuild();
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
           // TODO enable this when the locationaccuracy works properly
           // Card(
           //   margin: SmashUI.defaultMargin(),

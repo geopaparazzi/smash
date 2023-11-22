@@ -28,6 +28,8 @@ class ProjectView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        // backgroundColor: Theme.of(context).colorScheme.primary,
+        // foregroundColor: Theme.of(context).colorScheme.background,
         title: Text(
           SL.of(context).projectsView_projectsView, //"Project View",
         ),

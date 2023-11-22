@@ -12,8 +12,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-
     <!--  NORMAL PERMISSIONS     -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -49,12 +47,12 @@
             </intent-filter>
         </receiver> -->
 
-        <receiver android:name="yukams.app.background_locator_2.BootBroadcastReceiver"
+        <!-- <receiver android:name="yukams.app.background_locator_2.BootBroadcastReceiver"
             android:enabled="true" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
-        </receiver>
+        </receiver> -->
 
         <service android:name="yukams.app.background_locator_2.IsolateHolderService"
           android:permission="android.permission.FOREGROUND_SERVICE"

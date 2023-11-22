@@ -39,17 +39,18 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-            title: Text(SL
-                .of(context)
-                .onlineSourcesPage_onlineSourcesCatalog), //"Online Sources Catalog"
-            bottom: TabBar(tabs: [
-              Tab(text: "TMS"),
-              Tab(text: "WMS"),
-            ]),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context),
-            )),
+          title: Text(SL
+              .of(context)
+              .onlineSourcesPage_onlineSourcesCatalog), //"Online Sources Catalog"
+          bottom: TabBar(tabs: [
+            Tab(text: "TMS"),
+            Tab(text: "WMS"),
+          ]),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
         endDrawer: Builder(
           builder: (BuildContext context) {
             return buildDrawer(context);
@@ -154,6 +155,36 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
           children: <Widget>[
             ListTile(
               leading: Icon(
+                MdiIcons.map,
+                color: c,
+                size: iconSize,
+              ),
+              title: SmashUI.normalText(
+                SL.of(context).addTmsFromDefaults,
+                bold: true,
+                color: c,
+              ),
+              onTap: () async {
+                Map<String, TileSource> names2SourcesMap = {};
+                for (var i = 0; i < onlinesTilesSources.length; i++) {
+                  var os = onlinesTilesSources[i];
+                  names2SourcesMap[os.getName()!] = os;
+                }
+                var selection = await SmashDialogs.showSingleChoiceDialog(
+                    context,
+                    SL.of(context).addTmsFromDefaults,
+                    names2SourcesMap.keys.toList());
+                if (selection != null) {
+                  var os = names2SourcesMap[selection];
+                  var json = os!.toJson();
+                  await GpPreferences().addNewTms(json);
+                  await getList();
+                  setState(() {});
+                }
+              },
+            ),
+            ListTile(
+              leading: Icon(
                 MdiIcons.import,
                 color: c,
                 size: iconSize,
@@ -256,19 +287,10 @@ class _OnlineSourcesPageState extends State<OnlineSourcesPage>
     } else {
       _tmsCardsList = [];
     }
-    if (tmsList.isEmpty) {
-      // load a default set if empty
-      for (var i = 0; i < onlinesTilesSources.length; i++) {
-        var os = onlinesTilesSources[i];
-        var json = os.toJson();
-        _tmsSourcesList.add(json);
-      }
-    } else {
-      // load from preferences
-      for (var i = 0; i < tmsList.length; i++) {
-        var json = tmsList[i];
-        _tmsSourcesList.add(json);
-      }
+    // load from preferences
+    for (var i = 0; i < tmsList.length; i++) {
+      var json = tmsList[i];
+      _tmsSourcesList.add(json);
     }
     for (var i = 0; i < _tmsSourcesList.length; i++) {
       var json = _tmsSourcesList[i];
@@ -348,15 +370,36 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
     return Center(
       child: Card(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              leading: Icon(MdiIcons.layersTripleOutline),
+              // leading: Icon(MdiIcons.layersTripleOutline),
               title: Text(widget.layerSource.getName()),
               subtitle: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Text(widget.layerSource.getUrl()),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(widget.layerSource.getUrl()),
+                      ),
+                      if (widget.layerSource is TileSource)
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                              "Zoom: min=${widget.layerSource.minZoom}, max=${widget.layerSource.maxZoom}, nativemax=${widget.layerSource.maxNativeZoom}"),
+                        ),
+                      if (widget.layerSource is TileSource)
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                              "Attribution: ${widget.layerSource.attribution}"),
+                        ),
+                    ],
+                  ),
                   Container(
                     padding: EdgeInsets.only(top: 15),
                     height: 100,

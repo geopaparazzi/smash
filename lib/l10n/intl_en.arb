@@ -1013,5 +1013,8 @@
   "layersView_unableToLoadGssLayers": "Unable to load:",
   "layersView_layerExists": "Layer exists",
   "layersView_layerAlreadyExists": "Layer already exists, do you want to overwrite it?",
-  "gss_layerview_upload_changes": "Upload changes"
+  "gss_layerview_upload_changes": "Upload changes",
+  "allGpsPointsCount": "Gps points",
+  "filteredGpsPointsCount": "Filtered points",
+  "addTmsFromDefaults": "Add TMS from defaults"
 }
