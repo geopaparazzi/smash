@@ -304,9 +304,9 @@ class MainViewWidgetState extends State<MainViewWidget>
                     ? IconButton(
                         key: coachMarks.toolbarButtonKey,
                         icon: Icon(
-                          MdiIcons.forwardburger,
+                          MdiIcons.pencilCircle,
                           color: SmashColors.mainDecorations,
-                          size: 32,
+                          size: _iconSize,
                         ),
                         onPressed: () {
                           setState(() {
@@ -316,9 +316,9 @@ class MainViewWidgetState extends State<MainViewWidget>
                       )
                     : IconButton(
                         icon: Icon(
-                          MdiIcons.backburger,
-                          color: SmashColors.mainDecorations,
-                          size: 32,
+                          MdiIcons.pencilCircle,
+                          color: SmashColors.mainSelection,
+                          size: _iconSize,
                         ),
                         onPressed: () {
                           BottomToolbarToolsRegistry.disableAll(context);
@@ -327,7 +327,12 @@ class MainViewWidgetState extends State<MainViewWidget>
                           });
                         },
                       ),
-              )
+              ),
+              if (_iconMode != IconMode.NAVIGATION_MODE)
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: SmashToolsBar(_iconSize),
+                )
             ],
           ),
           drawer: Drawer(
@@ -352,9 +357,8 @@ class MainViewWidgetState extends State<MainViewWidget>
               child: ListView(
             children: DashboardUtils.getEndDrawerListTiles(context!),
           )),
-          bottomNavigationBar: _iconMode == IconMode.NAVIGATION_MODE
-              ? addBottomNavigationBar(mapBuilder, projectData, mapState)
-              : BottomToolsBar(_iconSize),
+          bottomNavigationBar:
+              addBottomNavigationBar(mapBuilder, projectData, mapState),
         ),
         onWillPop: () async {
           return Future.value(false);
