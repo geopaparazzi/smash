@@ -2281,9 +2281,8 @@ class GssSettingsState extends State<GssSettings> with AfterLayoutMixin {
                                           serverError = ex.toString();
                                           serverError =
                                               handleError(serverError!);
-                                          SmashDialogs.showToast(
-                                              context, serverError!,
-                                              isError: true);
+                                          SmashDialogs.showErrorDialog(
+                                              context, serverError!);
                                         }
                                         setState(() {});
                                       },

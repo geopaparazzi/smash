@@ -231,7 +231,9 @@ class LayersPageState extends State<LayersPage> {
             }
 
             String? geojsonPath = await ServerApi.downloadDynamicLayerToDevice(
-                selectedLayerName, formDefinition, geometryType);
+                selectedLayerName,
+                formDefinition: formDefinition,
+                geometryType: geometryType);
             if (geojsonPath != null) {
               var layerSource = GeojsonSource(geojsonPath);
               // await layerSource.load(context);
