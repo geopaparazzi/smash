@@ -1457,39 +1457,6 @@ class SLJa extends SL {
   String get network_couldNotConnectToServer => 'サーバーに接続できませんでした。オンラインですか？ アドレスを確認してください。';
 
   @override
-  String get form_sketch_newSketch => '新しいスケッチ';
-
-  @override
-  String get form_sketch_undo => '元に戻す';
-
-  @override
-  String get form_sketch_noUndo => '元に戻せません';
-
-  @override
-  String get form_sketch_clear => 'クリア';
-
-  @override
-  String get form_sketch_save => '保存';
-
-  @override
-  String get form_sketch_sketcher => 'スケッチャー';
-
-  @override
-  String get form_sketch_enableDrawing => '描画を有効化';
-
-  @override
-  String get form_sketch_enableEraser => '消しゴムを有効化';
-
-  @override
-  String get form_sketch_backColor => '背景色';
-
-  @override
-  String get form_sketch_strokeColor => 'ストローク色';
-
-  @override
-  String get form_sketch_pickColor => '色を取得';
-
-  @override
   String get form_smash_cantSaveImageDb => '画像をデータベースに保存できませんでした。';
 
   @override

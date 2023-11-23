@@ -6,7 +6,6 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_postgis/dart_postgis.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:smash/eu/hydrologis/smash/forms/form_sketch.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:provider/provider.dart';

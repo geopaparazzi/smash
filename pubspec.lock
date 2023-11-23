@@ -1033,7 +1033,7 @@ packages:
     source: hosted
     version: "2.0.1"
   painter:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: painter
       sha256: "8919468e313a5d8ded41ee1e6db8dec72dd85359174b7866feef8fbc82c603cc"

@@ -1457,39 +1457,6 @@ class SLFr extends SL {
   String get network_couldNotConnectToServer => 'Could not connect to the server. Is it online? Check your address.';
 
   @override
-  String get form_sketch_newSketch => 'Nouvelle esquisse';
-
-  @override
-  String get form_sketch_undo => 'Annuler';
-
-  @override
-  String get form_sketch_noUndo => 'Rien à annuler';
-
-  @override
-  String get form_sketch_clear => 'Effacer';
-
-  @override
-  String get form_sketch_save => 'Enregistrer';
-
-  @override
-  String get form_sketch_sketcher => 'Sketcher';
-
-  @override
-  String get form_sketch_enableDrawing => 'Turn on drawing';
-
-  @override
-  String get form_sketch_enableEraser => 'Turn on eraser';
-
-  @override
-  String get form_sketch_backColor => 'Couleur d’arrière-plan';
-
-  @override
-  String get form_sketch_strokeColor => 'Couleur du trait';
-
-  @override
-  String get form_sketch_pickColor => 'Choisissez la couleur';
-
-  @override
   String get form_smash_cantSaveImageDb => 'Impossible d’enregistrer l’image dans la base de données.';
 
   @override

@@ -1457,39 +1457,6 @@ class SLEn extends SL {
   String get network_couldNotConnectToServer => 'Could not connect to the server. Is it online? Check your address.';
 
   @override
-  String get form_sketch_newSketch => 'New Sketch';
-
-  @override
-  String get form_sketch_undo => 'Undo';
-
-  @override
-  String get form_sketch_noUndo => 'Nothing to undo';
-
-  @override
-  String get form_sketch_clear => 'Clear';
-
-  @override
-  String get form_sketch_save => 'Save';
-
-  @override
-  String get form_sketch_sketcher => 'Sketcher';
-
-  @override
-  String get form_sketch_enableDrawing => 'Turn on drawing';
-
-  @override
-  String get form_sketch_enableEraser => 'Turn on eraser';
-
-  @override
-  String get form_sketch_backColor => 'Background color';
-
-  @override
-  String get form_sketch_strokeColor => 'Stroke color';
-
-  @override
-  String get form_sketch_pickColor => 'Pick color';
-
-  @override
   String get form_smash_cantSaveImageDb => 'Could not save image in database.';
 
   @override

@@ -1457,39 +1457,6 @@ class SLCs extends SL {
   String get network_couldNotConnectToServer => 'Nepodařilo se připojit k serveru. Je online? Zkontrolujte svou adresu.';
 
   @override
-  String get form_sketch_newSketch => 'Nový náčrt';
-
-  @override
-  String get form_sketch_undo => 'Vrátit';
-
-  @override
-  String get form_sketch_noUndo => 'Nic, co by šlo vrátit zpět';
-
-  @override
-  String get form_sketch_clear => 'Vymazat';
-
-  @override
-  String get form_sketch_save => 'Uložit';
-
-  @override
-  String get form_sketch_sketcher => 'Skicák';
-
-  @override
-  String get form_sketch_enableDrawing => 'Zapnout kreslení';
-
-  @override
-  String get form_sketch_enableEraser => 'Zapnout gumu';
-
-  @override
-  String get form_sketch_backColor => 'Barva pozadí';
-
-  @override
-  String get form_sketch_strokeColor => 'Barva tahu';
-
-  @override
-  String get form_sketch_pickColor => 'Vyberte barvu';
-
-  @override
   String get form_smash_cantSaveImageDb => 'Obrázek se nepodařilo uložit do databáze.';
 
   @override

@@ -1457,39 +1457,6 @@ class SLIt extends SL {
   String get network_couldNotConnectToServer => 'Impossibile connettersi al server. E\' online? Verifica l\'indirizzo.';
 
   @override
-  String get form_sketch_newSketch => 'Nuovo schizzo';
-
-  @override
-  String get form_sketch_undo => 'Annulla';
-
-  @override
-  String get form_sketch_noUndo => 'Niente da annullare';
-
-  @override
-  String get form_sketch_clear => 'Cancella';
-
-  @override
-  String get form_sketch_save => 'Salva';
-
-  @override
-  String get form_sketch_sketcher => 'Schizzi';
-
-  @override
-  String get form_sketch_enableDrawing => 'Attiva disegno';
-
-  @override
-  String get form_sketch_enableEraser => 'Attiva gomma';
-
-  @override
-  String get form_sketch_backColor => 'Colore di sfondo';
-
-  @override
-  String get form_sketch_strokeColor => 'Colore tratto';
-
-  @override
-  String get form_sketch_pickColor => 'Scegli colore';
-
-  @override
   String get form_smash_cantSaveImageDb => 'Non ho potuto salvare l\'immagine nella base dati.';
 
   @override
