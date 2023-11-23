@@ -129,9 +129,16 @@ class SmashApp extends StatelessWidget {
         ),
         dialogTheme: DialogTheme(
           backgroundColor: SmashColors.mainBackground,
+          shape: BeveledRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+            side: BorderSide(
+              color: SmashColors.mainDecorations,
+              width: 2.0,
+            ),
+          ),
           surfaceTintColor: SmashColors.mainBackground,
           titleTextStyle: TextStyle(
-            color: SmashColors.mainBackground,
+            color: SmashColors.mainDecorations,
             fontWeight: FontWeight.bold,
             fontSize: SmashUI.BIG_SIZE,
           ),

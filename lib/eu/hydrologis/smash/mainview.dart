@@ -527,7 +527,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         await Navigator.push(mapBuilder.context!,
             MaterialPageRoute(builder: (context) => LayersPage()));
 
-        mapView.triggerRebuild(context);
+        Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
         // ! TODO
         // var layers = await LayerManager().loadLayers(context);
         // _activeLayers.clear();
