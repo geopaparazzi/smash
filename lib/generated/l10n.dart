@@ -3162,6 +3162,12 @@ abstract class SL {
   /// In en, this message translates to:
   /// **'Add TMS from defaults'**
   String get addTmsFromDefaults;
+
+  /// No description provided for @form_smash_noCameraDesktop.
+  ///
+  /// In en, this message translates to:
+  /// **'No camera option available on desktop.'**
+  String get form_smash_noCameraDesktop;
 }
 
 class _SLDelegate extends LocalizationsDelegate<SL> {

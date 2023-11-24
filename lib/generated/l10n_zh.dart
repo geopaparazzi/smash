@@ -1530,6 +1530,9 @@ class SLZh extends SL {
 
   @override
   String get addTmsFromDefaults => 'Add TMS from defaults';
+
+  @override
+  String get form_smash_noCameraDesktop => 'No camera option available on desktop.';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hans`).

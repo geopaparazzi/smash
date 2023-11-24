@@ -994,5 +994,6 @@
   "gss_layerview_upload_changes": "Upload changes",
   "allGpsPointsCount": "Gps points",
   "filteredGpsPointsCount": "Filtered points",
-  "addTmsFromDefaults": "Add TMS from defaults"
+  "addTmsFromDefaults": "Add TMS from defaults",
+  "form_smash_noCameraDesktop": "No camera option available on desktop."
 }

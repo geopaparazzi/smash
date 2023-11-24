@@ -1530,6 +1530,9 @@ class SLNb extends SL {
 
   @override
   String get addTmsFromDefaults => 'Add TMS from defaults';
+
+  @override
+  String get form_smash_noCameraDesktop => 'No camera option available on desktop.';
 }
 
 /// The translations for Norwegian Bokmål, as used in Norway (`nb_NO`).

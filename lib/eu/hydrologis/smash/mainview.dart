@@ -575,6 +575,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           );
 
           var tm = TagsManager();
+          await tm.readTags();
           var tags = tm.getTags();
           List<SmashSection> section = tags.getSections();
           List<String> iconNames = [];

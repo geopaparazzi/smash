@@ -315,8 +315,10 @@ class DataLoaderUtilities {
                             iconSize: SmashUI.MEDIUM_ICON_SIZE,
                             onPressed: () {
                               if (note.hasForm()) {
-                                var sectionMap = jsonDecode(note.form!);
-                                var sectionName = sectionMap[ATTR_SECTIONNAME];
+                                var section = jsonDecode(note.form!);
+                                var sectionMap = SmashSection(section);
+                                var sectionName =
+                                    sectionMap.sectionName ?? "Unknown Section";
                                 SmashPosition sp = SmashPosition.fromCoords(
                                     note.lon,
                                     note.lat,
