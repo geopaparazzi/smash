@@ -492,7 +492,8 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
     GeojsonSource geojsonLayer = GeojsonSource(filePath);
     await geojsonLayer.load(context);
     if (geojsonLayer.hasData()) {
-      geojsonLayer.isLoaded = false;
+      geojsonLayer.isLoaded =
+          false; // TODO this should be solved for efficiency
       LayerManager().addLayerSource(geojsonLayer);
       return true;
     }
