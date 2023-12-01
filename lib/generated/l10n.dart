@@ -3168,6 +3168,54 @@ abstract class SL {
   /// In en, this message translates to:
   /// **'No camera option available on desktop.'**
   String get form_smash_noCameraDesktop;
+
+  /// No description provided for @settings_BottombarCustomization.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottombar Customization'**
+  String get settings_BottombarCustomization;
+
+  /// No description provided for @settings_Bottombar_showAddNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the ADD NOTE button'**
+  String get settings_Bottombar_showAddNote;
+
+  /// No description provided for @settings_Bottombar_showAddFormNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the ADD FORM NOTE button'**
+  String get settings_Bottombar_showAddFormNote;
+
+  /// No description provided for @settings_Bottombar_showAddGpsLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the ADD GPS LOG button'**
+  String get settings_Bottombar_showAddGpsLog;
+
+  /// No description provided for @settings_Bottombar_showGpsButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the gps button'**
+  String get settings_Bottombar_showGpsButton;
+
+  /// No description provided for @settings_Bottombar_showLayers.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the layers button'**
+  String get settings_Bottombar_showLayers;
+
+  /// No description provided for @settings_Bottombar_showZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the zoom buttons'**
+  String get settings_Bottombar_showZoom;
+
+  /// No description provided for @settings_Bottombar_showEditing.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the editing button'**
+  String get settings_Bottombar_showEditing;
 }
 
 class _SLDelegate extends LocalizationsDelegate<SL> {

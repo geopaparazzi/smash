@@ -192,16 +192,17 @@ class MainViewWidgetState extends State<MainViewWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SmashMapBuilder>(builder: (context, mapBuilder, child) {
-      mapBuilder.context = context;
-      mapBuilder.scaffoldKey = _scaffoldKey;
-      return consumeBuild(mapBuilder);
+    return Consumer<PreferencesState>(builder: (context, prefsState, child) {
+      _iconSize = prefsState.iconSize;
+      return Consumer<SmashMapBuilder>(builder: (context, mapBuilder, child) {
+        mapBuilder.context = context;
+        mapBuilder.scaffoldKey = _scaffoldKey;
+        return consumeBuild(mapBuilder, prefsState);
+      });
     });
   }
 
-  Widget consumeBuild(SmashMapBuilder mapBuilder) {
-    _iconSize = GpPreferences().getDoubleSync(
-        SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE, SmashUI.MEDIUM_ICON_SIZE);
+  Widget consumeBuild(SmashMapBuilder mapBuilder, PreferencesState prefsState) {
     var width = ScreenUtilities.getWidth(context);
     // check if the 7 icons would fit and give a max icon size
     var maxIconSize = width / 12;
@@ -298,36 +299,13 @@ class MainViewWidgetState extends State<MainViewWidget>
                       ),
                     )
                   : Container(),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: _iconMode == IconMode.NAVIGATION_MODE
-                    ? IconButton(
-                        key: coachMarks.toolbarButtonKey,
-                        icon: Icon(
-                          MdiIcons.pencilCircle,
-                          color: SmashColors.mainDecorations,
-                          size: _iconSize,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _iconMode = IconMode.TOOL_MODE;
-                          });
-                        },
-                      )
-                    : IconButton(
-                        icon: Icon(
-                          MdiIcons.pencilCircle,
-                          color: SmashColors.mainSelection,
-                          size: _iconSize,
-                        ),
-                        onPressed: () {
-                          BottomToolbarToolsRegistry.disableAll(context);
-                          setState(() {
-                            _iconMode = IconMode.NAVIGATION_MODE;
-                          });
-                        },
-                      ),
-              ),
+              if (prefsState.showEditingButton && prefsState.showZoomButton)
+                Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: makeEditButton(prefsState),
+                    )),
               if (_iconMode != IconMode.NAVIGATION_MODE)
                 Align(
                   alignment: Alignment.bottomLeft,
@@ -355,10 +333,10 @@ class MainViewWidgetState extends State<MainViewWidget>
           )),
           endDrawer: Drawer(
               child: ListView(
-            children: DashboardUtils.getEndDrawerListTiles(context!),
+            children: DashboardUtils.getEndDrawerListTiles(context),
           )),
-          bottomNavigationBar:
-              addBottomNavigationBar(mapBuilder, projectData, mapState),
+          bottomNavigationBar: addBottomNavigationBar(
+              mapBuilder, projectData, mapState, prefsState),
         ),
         onWillPop: () async {
           return Future.value(false);
@@ -460,54 +438,65 @@ class MainViewWidgetState extends State<MainViewWidget>
     ];
   }
 
-  BottomAppBar addBottomNavigationBar(SmashMapBuilder mapBuilder,
-      ProjectData? projectData, SmashMapState mapState) {
+  BottomAppBar addBottomNavigationBar(
+      SmashMapBuilder mapBuilder,
+      ProjectData? projectData,
+      SmashMapState mapState,
+      PreferencesState prefsState) {
     return BottomAppBar(
       color: SmashColors.mainDecorations,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          makeSimpleNoteButton(mapBuilder, projectData),
-          makeFormNotesButton(mapBuilder, projectData),
-          DashboardUtils.makeToolbarBadge(
-            LoggingButton(coachMarks.logsButtonKey, _iconSize!),
-            projectData != null ? projectData.logsCount! : 0,
-            iconSize: _iconSize,
-          ),
-          Spacer(),
-          GpsInfoButton(coachMarks.gpsButtonKey, _iconSize!),
-          Spacer(),
-          makeLayersButton(mapBuilder),
-          Consumer<SmashMapState>(builder: (context, mapState, child) {
-            return DashboardUtils.makeToolbarZoomBadge(
-              IconButton(
-                key: coachMarks.zoomInButtonKey,
-                onPressed: () {
-                  mapState.zoomIn();
-                },
-                tooltip: SL.of(context).mainView_zoomIn, //'Zoom in',
-                icon: Icon(
-                  SmashIcons.zoomInIcon,
-                  color: SmashColors.mainBackground,
-                ),
-                iconSize: _iconSize,
-              ),
-              mapState.zoom.toInt(),
+          if (prefsState.showAddNoteButton)
+            makeSimpleNoteButton(mapBuilder, projectData),
+          if (prefsState.showAddFormNoteButton)
+            makeFormNotesButton(mapBuilder, projectData),
+          if (prefsState.showAddLogButton)
+            DashboardUtils.makeToolbarBadge(
+              LoggingButton(coachMarks.logsButtonKey, _iconSize!),
+              projectData != null ? projectData.logsCount! : 0,
               iconSize: _iconSize,
-            );
-          }),
-          IconButton(
-            key: coachMarks.zoomOutButtonKey,
-            onPressed: () {
-              mapState.zoomOut();
-            },
-            tooltip: SL.of(context).mainView_zoomOut, //'Zoom out',
-            icon: Icon(
-              SmashIcons.zoomOutIcon,
-              color: SmashColors.mainBackground,
             ),
-            iconSize: _iconSize,
-          ),
+          Spacer(),
+          if (prefsState.showGpsInfoButton)
+            GpsInfoButton(coachMarks.gpsButtonKey, _iconSize!),
+          Spacer(),
+          if (prefsState.showLayerButton) makeLayersButton(mapBuilder),
+          if (prefsState.showZoomButton)
+            Consumer<SmashMapState>(builder: (context, mapState, child) {
+              return DashboardUtils.makeToolbarZoomBadge(
+                IconButton(
+                  key: coachMarks.zoomInButtonKey,
+                  onPressed: () {
+                    mapState.zoomIn();
+                  },
+                  tooltip: SL.of(context).mainView_zoomIn, //'Zoom in',
+                  icon: Icon(
+                    SmashIcons.zoomInIcon,
+                    color: SmashColors.mainBackground,
+                  ),
+                  iconSize: _iconSize,
+                ),
+                mapState.zoom.toInt(),
+                iconSize: _iconSize,
+              );
+            }),
+          if (prefsState.showZoomButton)
+            IconButton(
+              key: coachMarks.zoomOutButtonKey,
+              onPressed: () {
+                mapState.zoomOut();
+              },
+              tooltip: SL.of(context).mainView_zoomOut, //'Zoom out',
+              icon: Icon(
+                SmashIcons.zoomOutIcon,
+                color: SmashColors.mainBackground,
+              ),
+              iconSize: _iconSize,
+            ),
+          if (prefsState.showEditingButton && !prefsState.showZoomButton)
+            makeEditButton(prefsState)
         ],
       ),
     );
@@ -539,6 +528,46 @@ class MainViewWidgetState extends State<MainViewWidget>
         //   _activeLayers.addAll(layers);
         // });
       },
+    );
+  }
+
+  Widget makeEditButton(PreferencesState prefsState) {
+    return Container(
+      decoration: BoxDecoration(
+        color: SmashColors.mainDecorations,
+        border: Border.all(
+          color: SmashColors.mainDecorations,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(_iconSize!),
+      ),
+      child: _iconMode == IconMode.NAVIGATION_MODE
+          ? InkWell(
+              key: coachMarks.toolbarButtonKey,
+              child: Icon(
+                MdiIcons.pencilCircleOutline,
+                color: SmashColors.mainBackground,
+                size: _iconSize,
+              ),
+              onTap: () {
+                setState(() {
+                  _iconMode = IconMode.TOOL_MODE;
+                });
+              },
+            )
+          : InkWell(
+              child: Icon(
+                MdiIcons.pencilCircleOutline,
+                color: SmashColors.mainSelection,
+                size: _iconSize,
+              ),
+              onTap: () {
+                BottomToolbarToolsRegistry.disableAll(context);
+                setState(() {
+                  _iconMode = IconMode.NAVIGATION_MODE;
+                });
+              },
+            ),
     );
   }
 

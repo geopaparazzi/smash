@@ -297,7 +297,7 @@ class ScreenSettingState extends State<ScreenSetting> {
     bool keepScreenOn = GpPreferences()
         .getBooleanSync(SmashPreferencesKeys.KEY_KEEP_SCREEN_ON, true);
     bool retinaModeOn = GpPreferences()
-        .getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, false);
+        .getBooleanSync(SmashPreferencesKeys.KEY_RETINA_MODE_ON, true);
     double currentIconSize = GpPreferences().getDoubleSync(
             SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE,
             SmashUI.MEDIUM_ICON_SIZE) ??
@@ -539,6 +539,10 @@ class ScreenSettingState extends State<ScreenSetting> {
                                 await GpPreferences().setDouble(
                                     SmashPreferencesKeys.KEY_MAPTOOLS_ICON_SIZE,
                                     newSize);
+                                PreferencesState prefState =
+                                    Provider.of<PreferencesState>(context,
+                                        listen: false);
+                                prefState.readPrefs();
                                 SettingsWidget.reloadMapSettings(context);
                                 setState(() {});
                               },
@@ -551,6 +555,59 @@ class ScreenSettingState extends State<ScreenSetting> {
                             '${currentIconSize.toInt()}',
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Card(
+              margin: SmashUI.defaultMargin(),
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText(
+                        SL.of(context).settings_BottombarCustomization),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        getBottombarCustomizationCheckbox(
+                            context,
+                            SmashPreferencesKeys
+                                .KEY_SCREEN_TOOLBAR_SHOW_ADDNOTES,
+                            SL.of(context).settings_Bottombar_showAddNote),
+                        getBottombarCustomizationCheckbox(
+                            context,
+                            SmashPreferencesKeys
+                                .KEY_SCREEN_TOOLBAR_SHOW_ADDFORMNOTES,
+                            SL.of(context).settings_Bottombar_showAddFormNote),
+                        getBottombarCustomizationCheckbox(
+                            context,
+                            SmashPreferencesKeys.KEY_SCREEN_TOOLBAR_SHOW_ADDLOG,
+                            SL.of(context).settings_Bottombar_showAddGpsLog),
+                        getBottombarCustomizationCheckbox(
+                            context,
+                            SmashPreferencesKeys
+                                .KEY_SCREEN_TOOLBAR_SHOW_GPSBUTTON,
+                            SL.of(context).settings_Bottombar_showGpsButton),
+                        getBottombarCustomizationCheckbox(
+                            context,
+                            SmashPreferencesKeys.KEY_SCREEN_TOOLBAR_SHOW_LAYERS,
+                            SL.of(context).settings_Bottombar_showLayers),
+                        getBottombarCustomizationCheckbox(
+                            context,
+                            SmashPreferencesKeys.KEY_SCREEN_TOOLBAR_SHOW_ZOOM,
+                            SL.of(context).settings_Bottombar_showZoom),
+                        getBottombarCustomizationCheckbox(
+                            context,
+                            SmashPreferencesKeys
+                                .KEY_SCREEN_TOOLBAR_SHOW_EDITING,
+                            SL.of(context).settings_Bottombar_showEditing),
                       ],
                     ),
                   ),
@@ -596,6 +653,25 @@ class ScreenSettingState extends State<ScreenSetting> {
           ],
         ),
       ),
+    );
+  }
+
+  CheckboxListTile getBottombarCustomizationCheckbox(
+      BuildContext context, String prefKey, String title) {
+    bool doShow = GpPreferences().getBooleanSync(prefKey, true);
+    return CheckboxListTile(
+      value: doShow,
+      onChanged: (selected) async {
+        await GpPreferences().setBoolean(prefKey, selected!);
+
+        PreferencesState prefState =
+            Provider.of<PreferencesState>(context, listen: false);
+        prefState.onChanged();
+
+        SettingsWidget.reloadMapSettings(context);
+        setState(() {});
+      },
+      title: SmashUI.normalText(title),
     );
   }
 }

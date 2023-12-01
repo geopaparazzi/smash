@@ -33,13 +33,6 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
   @override
   Widget build(BuildContext context) {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
-      if (gpsState.status == GpsStatus.NOGPS) {
-        return Container(
-          key: widget._key,
-          width: 1,
-          height: 1,
-        );
-      }
       var mapState = Provider.of<SmashMapState>(context, listen: false);
 
       Widget button = GestureDetector(

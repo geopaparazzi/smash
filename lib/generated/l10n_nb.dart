@@ -1533,6 +1533,30 @@ class SLNb extends SL {
 
   @override
   String get form_smash_noCameraDesktop => 'No camera option available on desktop.';
+
+  @override
+  String get settings_BottombarCustomization => 'Bottombar Customization';
+
+  @override
+  String get settings_Bottombar_showAddNote => 'Show the ADD NOTE button';
+
+  @override
+  String get settings_Bottombar_showAddFormNote => 'Show the ADD FORM NOTE button';
+
+  @override
+  String get settings_Bottombar_showAddGpsLog => 'Show the ADD GPS LOG button';
+
+  @override
+  String get settings_Bottombar_showGpsButton => 'Show the gps button';
+
+  @override
+  String get settings_Bottombar_showLayers => 'Show the layers button';
+
+  @override
+  String get settings_Bottombar_showZoom => 'Show the zoom buttons';
+
+  @override
+  String get settings_Bottombar_showEditing => 'Show the editing button';
 }
 
 /// The translations for Norwegian Bokmål, as used in Norway (`nb_NO`).

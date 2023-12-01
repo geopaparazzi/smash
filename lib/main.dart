@@ -60,6 +60,7 @@ MultiProvider getMainWidget() {
       ChangeNotifierProvider(create: (_) => InfoToolState()),
       ChangeNotifierProvider(create: (_) => RulerState()),
       ChangeNotifierProvider(create: (_) => GeometryEditorState()),
+      ChangeNotifierProvider(create: (_) => PreferencesState()),
     ],
     child: SmashApp(),
   );
@@ -329,6 +330,10 @@ Future<String?> handleTags(BuildContext context) async {
 Future<String?> handlePreferences(BuildContext context) async {
   try {
     await GpPreferences().initialize();
+
+    PreferencesState prefsState =
+        Provider.of<PreferencesState>(context, listen: false);
+    prefsState.init();
 
     SmashMapState mapState = Provider.of<SmashMapState>(context, listen: false);
     var pos = await GpPreferences().getLastPosition();

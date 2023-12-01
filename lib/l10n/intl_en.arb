@@ -995,5 +995,13 @@
   "allGpsPointsCount": "Gps points",
   "filteredGpsPointsCount": "Filtered points",
   "addTmsFromDefaults": "Add TMS from defaults",
-  "form_smash_noCameraDesktop": "No camera option available on desktop."
+  "form_smash_noCameraDesktop": "No camera option available on desktop.",
+  "settings_BottombarCustomization": "Bottombar Customization",
+  "settings_Bottombar_showAddNote": "Show the ADD NOTE button",
+  "settings_Bottombar_showAddFormNote": "Show the ADD FORM NOTE button",
+  "settings_Bottombar_showAddGpsLog": "Show the ADD GPS LOG button",
+  "settings_Bottombar_showGpsButton": "Show the gps button",
+  "settings_Bottombar_showLayers": "Show the layers button",
+  "settings_Bottombar_showZoom": "Show the zoom buttons",
+  "settings_Bottombar_showEditing": "Show the editing button"
 }
