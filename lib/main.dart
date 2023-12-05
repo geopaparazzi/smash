@@ -24,11 +24,15 @@ import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:stack_trace/stack_trace.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 //import 'package:flutter_gen/gen_l10n/smash_localization.dart';
 import 'generated/l10n.dart';
 
 const DOCATCHER = false;
+const forStore = false;
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -149,7 +153,74 @@ class SmashApp extends StatelessWidget {
       debugShowMaterialGrid: false,
       debugShowCheckedModeBanner: false,
       showPerformanceOverlay: false,
-      home: WelcomeWidget(),
+      home: forStore ? FarewellWidget() : WelcomeWidget(),
+    );
+  }
+}
+
+class FarewellWidget extends StatelessWidget {
+  const FarewellWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Container(
+        color: SmashColors.mainBackground,
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: HtmlWidget(
+            '''
+            <h2><center><span class="red">WARNING: LAST RELEASE ON PLAY STORE</span></center></h2>
+            <p>
+              Dear S.M.A.S.H. user, this is the last release of S.M.A.S.H. on the Play Store
+              and we apologize for the problems this might cause you.
+            </p>
+            <p>
+              From now on you can find <span class="red">S.M.A.S.H. on the F-Droid</span> store, 
+              where the real open source apps live.
+              This will allow us to <span class="red">keep the app more featurerich and userfriendly</span>.
+            </p>
+            <p>
+              <span class="red">The app is in active development</span> and will continue to work, but will
+              not be updated anymore on Play Store.
+            </p>
+            <p class="red">
+              The best thing to do right now is to click on this link, install the F-Droid store and then S.M.A.S.H. on your device:
+              <h3><center><a href="https://f-droid.org/en/packages/eu.hydrologis.smash/"><strong>
+              S.M.A.S.H. on F-Droid</strong></a></center><h3>
+            </p>
+            <p>
+              <center>Prefer to continue to use this version?</center>
+              <h3><center><a href="https://useit">Click here.</a></center><h3>
+            ''',
+            customStylesBuilder: (e) => e.classes.contains('red')
+                ? {
+                    'color': 'red',
+                  }
+                : null,
+            onTapUrl: (url) async {
+              if (url == "https://useit") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WelcomeWidget()),
+                );
+              } else if (await canLaunchUrlString(url)) {
+                await launchUrlString(url);
+              }
+              return true;
+            },
+
+            renderMode: RenderMode.column,
+
+            // set the default styling for text
+            textStyle: TextStyle(
+              fontSize: 16,
+              color: SmashColors.mainDecorationsDarker,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -422,7 +493,6 @@ Future<String?> handleStoragePermission(BuildContext context) async {
     if (status != PermissionStatus.granted) {
       storagePermission = false;
       if (Platform.isAndroid) {
-        var forStore = false;
         if (forStore) {
           storagePermission =
               await PermissionManager().add(PERMISSIONS.STORAGE).check(context);
