@@ -568,7 +568,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_widget_from_html:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_widget_from_html
       sha256: "5857f120b08b791a67b065384eaad477badafa3ffb57d6095f28a4f6fd37ead4"
@@ -932,10 +932,10 @@ packages:
     description:
       path: mapsforge_flutter
       ref: smash_compats
-      resolved-ref: cec95850446695c21ceec506775e28af90faab68
+      resolved-ref: bc24e788d9b66d007e8bb0413b93b6d3eb39ea2a
       url: "https://github.com/moovida/mapsforge_flutter.git"
     source: git
-    version: "2.0.2"
+    version: "2.0.3"
   matcher:
     dependency: transitive
     description:
@@ -1728,10 +1728,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_avfoundation
-      sha256: bc923884640d6dc403050586eb40713cdb8d1d84e6886d8aca50ab04c59124c2
+      sha256: "01a57940e1dabc8769ccd457c4ae9ea50274e7d5a7617f7820dae5fe1d8436ae"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.2"
+    version: "2.5.3"
   video_player_platform_interface:
     dependency: transitive
     description:

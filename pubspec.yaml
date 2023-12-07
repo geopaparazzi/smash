@@ -210,7 +210,7 @@ dependencies:
   # image: '>=2.1.14 <3.0.0-nullsafety.0'
 
   # MIT
-  flutter_widget_from_html: ^0.14.9
+  # flutter_widget_from_html: ^0.14.9
 
 
 dev_dependencies:
