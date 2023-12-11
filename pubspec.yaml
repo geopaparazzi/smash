@@ -1,11 +1,11 @@
-# Copyright (c) 2019-2020. www.hydrologis.com. All rights reserved.
+# Copyright (c) 2019-2024. www.hydrologis.com. All rights reserved.
 # Use of this source code is governed by a GPL3 license that can be
 # found in the LICENSE file.
 name: smash
 description: The Smart Mobile Application for Surveyor's Happyness.
 publish_to: none
 
-version: 1.8.0+69 # we keep the build number growing to have it properly handled in android
+version: 1.8.1+70 # we keep the build number growing to have it properly handled in android
 # agvtool new-version -all 67
 
 environment:
