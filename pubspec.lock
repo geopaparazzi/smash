@@ -254,10 +254,10 @@ packages:
     dependency: "direct main"
     description:
       name: dart_hydrologis_utils
-      sha256: ed7b48aed1c630e81ea6c5efd41557b4b23aa42efb073138cb792885c4406b95
+      sha256: ce7d483bc1dc79abfceb4896c9fcf5ff4ae7f28be206d6bafeeb31d128d78c5f
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.1+1"
+    version: "0.8.1+2"
   dart_jts:
     dependency: "direct main"
     description:
@@ -278,10 +278,10 @@ packages:
     dependency: "direct main"
     description:
       name: dart_shp
-      sha256: c4eb5d1f30c4dfd56f8b23ecb1b5c2bb2ce20cf64df725a7d47d8804c0bb2ec9
+      sha256: e839e18b18cc94557f45752a415cf7fbec1f593e2b64d5461de6d03aa5f35ae5
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0+3"
+    version: "1.1.0+4"
   dbus:
     dependency: transitive
     description:
@@ -1608,10 +1608,10 @@ packages:
     dependency: "direct main"
     description:
       name: url_launcher
-      sha256: b1c9e98774adf8820c96fbc7ae3601231d324a7d5ebd8babe27b6dfac91357ba
+      sha256: e9aa5ea75c84cf46b3db4eea212523591211c3cf2e13099ee4ec147f54201c86
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.1"
+    version: "6.2.2"
   url_launcher_android:
     dependency: transitive
     description:
@@ -1656,10 +1656,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_web
-      sha256: "138bd45b3a456dcfafc46d1a146787424f8d2edfbf2809c9324361e58f851cf7"
+      sha256: "7286aec002c8feecc338cc33269e96b73955ab227456e9fb2a91f7fab8a358e9"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   url_launcher_windows:
     dependency: transitive
     description:
