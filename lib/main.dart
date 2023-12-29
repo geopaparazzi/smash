@@ -169,15 +169,17 @@ class FarewellWidget extends StatelessWidget {
         color: SmashColors.mainBackground,
         child: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: HtmlWidget(
-            '''
-            <h2><center><span class="red">WARNING: LAST RELEASE ON PLAY STORE</span></center></h2>
+          child: Material(
+            type: MaterialType.transparency,
+            child: HtmlWidget(
+              '''
+            <h3><center><span class="red">WARNING: LAST RELEASE ON PLAY STORE</span></center></h3>
             <p>
-              Dear S.M.A.S.H. user, this is the last release of S.M.A.S.H. on the Play Store
+              Dear SMASH user, this is the last release of SMASH on the Play Store
               and we apologize for the problems this might cause you.
             </p>
             <p>
-              From now on you can find <span class="red">S.M.A.S.H. on the F-Droid</span> store, 
+              From now on you can find <span class="red">SMASH on the F-Droid</span> store, 
               where the real open source apps live.
               This will allow us to <span class="red">keep the app more featurerich and userfriendly</span>.
             </p>
@@ -186,37 +188,67 @@ class FarewellWidget extends StatelessWidget {
               not be updated anymore on Play Store.
             </p>
             <p class="red">
-              The best thing to do right now is to click on this link, install the F-Droid store and then S.M.A.S.H. on your device:
-              <h3><center><a href="https://f-droid.org/en/packages/eu.hydrologis.smash/"><strong>
-              S.M.A.S.H. on F-Droid</strong></a></center><h3>
+              The best thing to do right now is to install the F-Droid store and then SMASH on your device:
+              <h3><center><a class="link" href="https://f-droid.org/en/packages/eu.hydrologis.smash/">
+              SMASH on F-Droid</a></center><h3>
             </p>
             <p>
               <center>Prefer to continue to use this version?</center>
-              <h3><center><a href="https://useit">Click here.</a></center><h3>
+              <h3><center><a class="link" href="https://useit">Click here.</a></center><h3>
             ''',
-            customStylesBuilder: (e) => e.classes.contains('red')
-                ? {
+              customStylesBuilder: (e) {
+                var style;
+                if (e.classes.contains('red')) {
+                  style = {
                     'color': 'red',
+                    'text-align': 'center',
+                    'font-weight': 'bold',
+                  };
+                } else if (e.classes.contains('link')) {
+                  style = {
+                    'color': 'blue',
+                    'text-decoration': 'underline',
+                    'text-align': 'center',
+                    'font-weight': 'bold',
+                  };
+                } else {
+                  if (e.localName == "h2" || e.localName == "h3") {
+                    style = {
+                      'color': 'black',
+                      'text-align': 'center',
+                    };
+                  } else if (e.localName == "p") {
+                    style = {
+                      'color': 'black',
+                      'text-align': 'justify',
+                    };
+                  } else {
+                    style = {
+                      'color': 'black',
+                    };
                   }
-                : null,
-            onTapUrl: (url) async {
-              if (url == "https://useit") {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WelcomeWidget()),
-                );
-              } else if (await canLaunchUrlString(url)) {
-                await launchUrlString(url);
-              }
-              return true;
-            },
+                }
+                return style;
+              },
+              onTapUrl: (url) async {
+                if (url == "https://useit") {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => WelcomeWidget()),
+                  );
+                } else if (await canLaunchUrlString(url)) {
+                  await launchUrlString(url);
+                }
+                return true;
+              },
 
-            renderMode: RenderMode.column,
+              renderMode: RenderMode.column,
 
-            // set the default styling for text
-            textStyle: TextStyle(
-              fontSize: 16,
-              color: SmashColors.mainDecorationsDarker,
+              // set the default styling for text
+              textStyle: TextStyle(
+                fontSize: 16,
+                color: SmashColors.mainDecorationsDarker,
+              ),
             ),
           ),
         ),
