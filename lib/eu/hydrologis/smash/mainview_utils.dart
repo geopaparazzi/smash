@@ -22,6 +22,7 @@ import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smash/eu/hydrologis/smash/util/network.dart';
 import 'package:smash/eu/hydrologis/smash/util/urls.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/gps_mode_selector.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -262,6 +263,7 @@ class DashboardUtils {
         ),
       ))
       ..add(getPositionTools(c, backColor, iconSize, context))
+      // ..add(getEditingTools(c, backColor, iconSize, context))
       ..add(getExtras(c, backColor, iconSize, context));
 
     return list;
@@ -472,6 +474,26 @@ class DashboardUtils {
       ),
     );
   }
+
+  // static Container getEditingTools(
+  //     Color c, Color backColor, double iconSize, BuildContext context) {
+  //   return Container(
+  //     color: backColor,
+  //     child: ExpansionTile(
+  //       initiallyExpanded: true,
+  //       title: SmashUI.normalText(
+  //         "First Editing Point", // SL.of(context).mainviewUtils_positionTools, //"Position Tools"
+  //         bold: true,
+  //         color: c,
+  //       ),
+  //       children: [
+  //         ListTile(
+  //           title: GpsInsertionModeSelector(allowTap: true),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   static Icon getGpsStatusIcon(GpsStatus status, [double? iconSize]) {
     Color color;
