@@ -180,14 +180,15 @@ class _NoteInfoState extends State<NoteInfo> {
         icon: MdiIcons.pencil,
         onPressed: (context) async {
           var sectionMap = jsonDecode(dynNote.form);
-          var sectionName = sectionMap[ATTR_SECTIONNAME];
+          var section = SmashSection(sectionMap);
+          String sectionName = section.sectionName ?? 'No section name';
           SmashPosition sp = SmashPosition.fromCoords(dynNote.lon, dynNote.lat,
               DateTime.now().millisecondsSinceEpoch.toDouble());
 
           var titleWidget = SmashUI.titleText(sectionName,
               color: SmashColors.mainBackground, bold: true);
           var formHelper = SmashFormHelper(
-              dynNote.id, sectionName, sectionMap, titleWidget, sp);
+              dynNote.id, sectionName, section, titleWidget, sp);
 
           await Navigator.push(context, MaterialPageRoute(builder: (context) {
             return MasterDetailPage(formHelper);
