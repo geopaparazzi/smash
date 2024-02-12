@@ -54,7 +54,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 
   MainViewCoachMarks coachMarks = MainViewCoachMarks();
 
-  double? _iconSize;
+  double _iconSize = 32;
 
   Timer? _centerOnGpsTimer;
 
@@ -207,7 +207,7 @@ class MainViewWidgetState extends State<MainViewWidget>
     var width = ScreenUtilities.getWidth(context);
     // check if the 7 icons would fit and give a max icon size
     var maxIconSize = width / 12;
-    if (_iconSize! > maxIconSize) {
+    if (_iconSize > maxIconSize) {
       _iconSize = maxIconSize;
     }
 
@@ -455,13 +455,13 @@ class MainViewWidgetState extends State<MainViewWidget>
             makeFormNotesButton(mapBuilder, projectData),
           if (prefsState.showAddLogButton)
             DashboardUtils.makeToolbarBadge(
-              LoggingButton(coachMarks.logsButtonKey, _iconSize!),
+              LoggingButton(coachMarks.logsButtonKey, _iconSize),
               projectData != null ? projectData.logsCount! : 0,
               iconSize: _iconSize,
             ),
           Spacer(),
           if (prefsState.showGpsInfoButton)
-            GpsInfoButton(coachMarks.gpsButtonKey, _iconSize!),
+            GpsInfoButton(coachMarks.gpsButtonKey, _iconSize),
           Spacer(),
           if (prefsState.showLayerButton) makeLayersButton(mapBuilder),
           if (prefsState.showZoomButton)
@@ -540,7 +540,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           color: SmashColors.mainDecorations,
           width: 1,
         ),
-        borderRadius: BorderRadius.circular(_iconSize!),
+        borderRadius: BorderRadius.circular(_iconSize),
       ),
       child: _iconMode == IconMode.NAVIGATION_MODE
           ? InkWell(

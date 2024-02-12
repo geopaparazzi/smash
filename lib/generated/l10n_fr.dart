@@ -1460,6 +1460,9 @@ class SLFr extends SL {
   String get form_smash_cantSaveImageDb => 'Impossible d’enregistrer l’image dans la base de données.';
 
   @override
+  String get formbuilder => 'Form builder';
+
+  @override
   String get gss_settings => 'Geopaparazzi Survey Server Settings';
 
   @override

@@ -1460,6 +1460,9 @@ class SLJa extends SL {
   String get form_smash_cantSaveImageDb => '画像をデータベースに保存できませんでした。';
 
   @override
+  String get formbuilder => 'Form builder';
+
+  @override
   String get gss_settings => 'Geopaparazzi Survey Server Settings';
 
   @override

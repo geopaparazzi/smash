@@ -3019,6 +3019,12 @@ abstract class SL {
   /// **'Could not save image in database.'**
   String get form_smash_cantSaveImageDb;
 
+  /// No description provided for @formbuilder.
+  ///
+  /// In en, this message translates to:
+  /// **'Form builder'**
+  String get formbuilder;
+
   /// No description provided for @gss_settings.
   ///
   /// In en, this message translates to:

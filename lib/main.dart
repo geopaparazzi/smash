@@ -65,6 +65,7 @@ MultiProvider getMainWidget() {
       ChangeNotifierProvider(create: (_) => RulerState()),
       ChangeNotifierProvider(create: (_) => GeometryEditorState()),
       ChangeNotifierProvider(create: (_) => PreferencesState()),
+      ChangeNotifierProvider(create: (_) => FormHandlerState()),
     ],
     child: SmashApp(),
   );

@@ -970,6 +970,8 @@
   "@network_couldNotConnectToServer": {},
   "form_smash_cantSaveImageDb": "Could not save image in database.",
   "@form_smash_cantSaveImageDb": {},
+  "formbuilder": "Form builder",
+  "@formbuilder": {},
   
   "gss_settings": "Geopaparazzi Survey Server Settings",
   "gss_settings_connection": "GSS Connection Settings",
@@ -1004,4 +1006,5 @@
   "settings_Bottombar_showLayers": "Show the layers button",
   "settings_Bottombar_showZoom": "Show the zoom buttons",
   "settings_Bottombar_showEditing": "Show the editing button"
+  
 }

@@ -1460,6 +1460,9 @@ class SLZh extends SL {
   String get form_smash_cantSaveImageDb => 'Could not save image in database.';
 
   @override
+  String get formbuilder => 'Form builder';
+
+  @override
   String get gss_settings => 'Geopaparazzi Survey Server Settings';
 
   @override

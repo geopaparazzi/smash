@@ -5,6 +5,7 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:badges/badges.dart' as badges;
@@ -271,6 +272,8 @@ class DashboardUtils {
 
   static Container getExtras(
       Color c, Color backColor, double iconSize, BuildContext context) {
+    FormBuilderFormHelper filebasedFormBuilderHelper = FormBuilderFormHelper();
+
     return Container(
       color: backColor,
       child: ExpansionTile(
@@ -316,6 +319,30 @@ class DashboardUtils {
                     context,
                     MaterialPageRoute(
                         builder: (context) => MapsDownloadWidget(mapsFolder)));
+              },
+            ),
+            ListTile(
+              leading: new Icon(
+                MdiIcons.formSelect,
+                color: c,
+                size: iconSize,
+              ),
+              title: SmashUI.normalText(
+                SL.of(context).formbuilder,
+                bold: true,
+                color: c,
+              ),
+              onTap: () async {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MainFormWidget(
+                              filebasedFormBuilderHelper,
+                              presentationMode:
+                                  PresentationMode(isFormbuilder: true),
+                              doScaffold: true,
+                            )));
               },
             ),
           ]),
@@ -590,5 +617,187 @@ Future<void> shareProject(BuildContext context) async {
     if (projectFile.existsSync()) {
       await ShareExtend.share(projectFile.path, "file");
     }
+  }
+}
+
+class FormBuilderFormHelper extends AFormhelper {
+  SmashSection? section;
+
+  FormBuilderFormHelper();
+
+  @override
+  Future<bool> init() async {
+    return Future.value(true);
+  }
+
+  @override
+  Widget getFormTitleWidget() {
+    return SmashUI.titleText("Test form");
+  }
+
+  @override
+  int getId() {
+    return 1;
+  }
+
+  @override
+  getPosition() {
+    return null;
+  }
+
+  @override
+  SmashSection? getSection() {
+    return section;
+  }
+
+  @override
+  String? getSectionName() {
+    return section?.sectionName;
+  }
+
+  @override
+  Future<List<Widget>> getThumbnailsFromDb(
+      BuildContext context, SmashFormItem formItem, List<String> imageSplit) {
+    return Future.value([]);
+  }
+
+  @override
+  bool hasForm() {
+    return true;
+  }
+
+  @override
+  Future<void> onSaveFunction(BuildContext context) async {}
+
+  @override
+  Future<String?> takePictureForForms(
+      BuildContext context, bool fromGallery, List<String> imageSplit) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> takeSketchForForms(
+      BuildContext context, List<String> imageSplit) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget? getOpenFormBuilderAction(BuildContext context, Function? postAction) {
+    return Tooltip(
+      message: "Open and existing form",
+      child: IconButton(
+          onPressed: () async {
+            var lastUsedFolder = await Workspace.getLastUsedFolder();
+            if (context.mounted) {
+              var selectedPath = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => FileBrowser(
+                            false,
+                            const [FileManager.JSON_EXT],
+                            lastUsedFolder,
+                          )));
+
+              if (selectedPath != null &&
+                  selectedPath.toString().endsWith("_tags.json")) {
+                var tagsJson = HU.FileUtilities.readFile(selectedPath);
+                var tm = TagsManager();
+                await tm.readTags(tagsString: tagsJson);
+                section = tm.getTags().getSections()[0];
+
+                if (postAction != null) postAction();
+              }
+            }
+          },
+          icon: Icon(MdiIcons.folderOpenOutline)),
+    );
+  }
+
+  @override
+  Widget? getNewFormBuilderAction(BuildContext context, Function? postAction) {
+    return Tooltip(
+      message: "Create a new form",
+      child: IconButton(
+          onPressed: () async {
+            var answer = await SmashDialogs.showInputDialog(
+                context, "NEW FORM", "Enter a unique form name",
+                validationFunction: (String? value) {
+              if (value == null || value.isEmpty) {
+                return "The name cannot be empty";
+              }
+              // no spaces
+              if (value.contains(" ")) {
+                return "The name cannot contain spaces";
+              }
+              return null;
+            });
+            if (answer != null) {
+              var emptyTagsString = TagsManager.getEmptyTagsString(answer);
+              var tm = TagsManager();
+              await tm.readTags(tagsString: emptyTagsString);
+              section = tm.getTags().getSections()[0];
+
+              if (postAction != null) postAction();
+            }
+          },
+          icon: Icon(MdiIcons.newspaperPlus)),
+    );
+  }
+
+  @override
+  Widget? getSaveFormBuilderAction(BuildContext context, Function? postAction) {
+    return Tooltip(
+      message: "Save the form in the forms folder",
+      child: IconButton(
+          onPressed: () async {
+            // in this demo version we save the form with the name of the section and _tags.json
+            // into the forms folder
+            if (section != null) {
+              Directory formsFolder = await Workspace.getFormsFolder();
+              var name = section!.sectionName ?? "untitled";
+              var saveFilePath = HU.FileUtilities.joinPaths(
+                  formsFolder.path, "${name.replaceAll(" ", "_")}_tags.json");
+              var sectionMap = section!.sectionMap;
+              var jsonString =
+                  const JsonEncoder.withIndent("  ").convert([sectionMap]);
+              HU.FileUtilities.writeStringToFile(saveFilePath, jsonString);
+
+              if (context.mounted) {
+                SmashDialogs.showToast(context, "Form saved to $saveFilePath");
+              }
+            }
+          },
+          icon: Icon(MdiIcons.contentSave)),
+    );
+  }
+
+  @override
+  Widget? getRenameFormBuilderAction(
+      BuildContext context, Function? postAction) {
+    return Tooltip(
+      message: "Rename the form",
+      child: IconButton(
+          onPressed: () async {
+            Directory formsFolder = await Workspace.getFormsFolder();
+            if (section != null && context.mounted) {
+              var newName = await SmashDialogs.showInputDialog(
+                  context, "RENAME", "Enter a unique form name",
+                  validationFunction: (txt) {
+                var filePath = HU.FileUtilities.joinPaths(
+                    formsFolder.path, "${txt.replaceAll(" ", "_")}_tags.json");
+                if (File(filePath).existsSync()) {
+                  return "A form with that name already exists";
+                }
+                return null;
+              });
+
+              if (newName != null) {
+                section!.setSectionName(newName);
+                if (postAction != null) postAction();
+              }
+            }
+          },
+          icon: Icon(MdiIcons.rename)),
+    );
   }
 }

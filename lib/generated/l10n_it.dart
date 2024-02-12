@@ -1460,6 +1460,9 @@ class SLIt extends SL {
   String get form_smash_cantSaveImageDb => 'Non ho potuto salvare l\'immagine nella base dati.';
 
   @override
+  String get formbuilder => 'Form builder';
+
+  @override
   String get gss_settings => 'Geopaparazzi Survey Server Settings';
 
   @override
