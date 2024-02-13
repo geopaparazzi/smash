@@ -42,5 +42,9 @@
   "exportWidget_pdfExported": "PDF exportiert",
   "@exportWidget_pdfExported": {},
   "exportWidget_gpxExported": "GPX exportiert",
-  "@exportWidget_gpxExported": {}
+  "@exportWidget_gpxExported": {},
+  "exportWidget_kmlExported": "KML exportiert",
+  "@exportWidget_kmlExported": {},
+  "exportWidget_exportToGpx": "Projekt als GPX exportieren",
+  "@exportWidget_exportToGpx": {}
 }
