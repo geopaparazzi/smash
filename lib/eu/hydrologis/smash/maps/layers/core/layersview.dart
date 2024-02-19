@@ -320,6 +320,33 @@ class LayersPageState extends State<LayersPage> {
               _somethingChanged = true;
             }));
       }
+      if (layerSourceItem is FilterableLayerSource) {
+        // add where filter
+        startActions.add(SlidableAction(
+            label: SL.of(context).gss_layerview_filter,
+            foregroundColor: SmashColors.mainDecorations,
+            icon: MdiIcons.filter,
+            onPressed: (tmpcontext) async {
+              var filter =
+                  (layerSourceItem as FilterableLayerSource).getFilter();
+              if (filter == null) {
+                filter = "";
+              }
+              var newFilter = await SmashDialogs.showInputDialog(
+                context,
+                SL.of(context).gss_layerview_filter,
+                "",
+                defaultText: filter,
+              );
+              if (newFilter != null) {
+                (layerSourceItem as FilterableLayerSource).setFilter(newFilter);
+                if (layerSourceItem is LoadableLayerSource) {
+                  layerSourceItem.isLoaded = false;
+                }
+                _somethingChanged = true;
+              }
+            }));
+      }
       if (layerSourceItem is GssLayerSource &&
           (layerSourceItem as GssLayerSource).canUpload()) {
         startActions.add(SlidableAction(

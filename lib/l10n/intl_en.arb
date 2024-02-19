@@ -973,20 +973,6 @@
   "formbuilder": "Form builder",
   "@formbuilder": {},
   
-  "gss_settings": "Geopaparazzi Survey Server Settings",
-  "gss_settings_connection": "GSS Connection Settings",
-  "gss_settings_server_url": "Server URL",
-  "gss_settings_server_url_start_http": "Server url needs to start with http or https.",
-  "gss_settings_project": "GSS Project",
-  "gss_settings_server_username": "Server Username",
-  "gss_settings_server_username_valid": "Please enter a valid server username.",
-  "gss_settings_password": "Server Password",
-  "gss_settings_password_valid": "Please enter a valid server password.",
-  "gss_settings_certificates_self": "Allow self signed certificates",
-  "gss_settings_upload_position": "Upload device position to server in regular time intervals.",
-  "gss_settings_data_missing": "User, password, url and project are necessary to login",
-  "gss_settings_login": "Login",
-  "gss_settings_no_token": "No token available, please login.",
   "layersView_selectGssLayers": "Select GSS Layers",
   "layersView_noGssLayersFound": "No GSS layers found.",
   "layersView_selectGssLayersToLoad": "Select GSS layers to load.",
@@ -1005,6 +991,7 @@
   "settings_Bottombar_showGpsButton": "Show the gps button",
   "settings_Bottombar_showLayers": "Show the layers button",
   "settings_Bottombar_showZoom": "Show the zoom buttons",
-  "settings_Bottombar_showEditing": "Show the editing button"
+  "settings_Bottombar_showEditing": "Show the editing button",
+  "gss_layerview_filter": "Filter"
   
 }
