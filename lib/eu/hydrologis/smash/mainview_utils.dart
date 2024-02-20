@@ -682,7 +682,8 @@ class FormBuilderFormHelper extends AFormhelper {
   }
 
   @override
-  Widget? getOpenFormBuilderAction(BuildContext context, Function? postAction) {
+  Widget? getOpenFormBuilderAction(BuildContext context,
+      {Function? postAction}) {
     return Tooltip(
       message: "Open and existing form",
       child: IconButton(
@@ -714,7 +715,8 @@ class FormBuilderFormHelper extends AFormhelper {
   }
 
   @override
-  Widget? getNewFormBuilderAction(BuildContext context, Function? postAction) {
+  Widget? getNewFormBuilderAction(BuildContext context,
+      {Function? postAction}) {
     return Tooltip(
       message: "Create a new form",
       child: IconButton(
@@ -745,7 +747,8 @@ class FormBuilderFormHelper extends AFormhelper {
   }
 
   @override
-  Widget? getSaveFormBuilderAction(BuildContext context, Function? postAction) {
+  Widget? getSaveFormBuilderAction(BuildContext context,
+      {Function? postAction}) {
     return Tooltip(
       message: "Save the form in the forms folder",
       child: IconButton(
@@ -772,8 +775,8 @@ class FormBuilderFormHelper extends AFormhelper {
   }
 
   @override
-  Widget? getRenameFormBuilderAction(
-      BuildContext context, Function? postAction) {
+  Widget? getRenameFormBuilderAction(BuildContext context,
+      {Function? postAction}) {
     return Tooltip(
       message: "Rename the form",
       child: IconButton(
