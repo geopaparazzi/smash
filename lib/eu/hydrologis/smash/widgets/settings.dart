@@ -615,6 +615,45 @@ class ScreenSettingState extends State<ScreenSetting> {
                 ],
               ),
             ),
+            Card(
+              margin: SmashUI.defaultMargin(),
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Formbuilder"),
+                    // SL.of(context).settings_BottombarCustomization),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        CheckboxListTile(
+                          value: GpPreferences().getBooleanSync(
+                              SmashPreferencesKeys.KEY_SHOW_FORMBUILER, false),
+                          onChanged: (selected) async {
+                            await GpPreferences().setBoolean(
+                                SmashPreferencesKeys.KEY_SHOW_FORMBUILER,
+                                selected!);
+
+                            PreferencesState prefState =
+                                Provider.of<PreferencesState>(context,
+                                    listen: false);
+                            prefState.onChanged();
+
+                            SettingsWidget.reloadMapSettings(context);
+                            setState(() {});
+                          },
+                          title: SmashUI.normalText("Enable Formbuilder"),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // TODO enable when working on dark theme
             //            Card(
             //              margin: SmashUI.defaultMargin(),

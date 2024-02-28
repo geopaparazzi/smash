@@ -321,30 +321,32 @@ class DashboardUtils {
                         builder: (context) => MapsDownloadWidget(mapsFolder)));
               },
             ),
-            ListTile(
-              leading: new Icon(
-                MdiIcons.formSelect,
-                color: c,
-                size: iconSize,
+            if (GpPreferences().getBooleanSync(
+                SmashPreferencesKeys.KEY_SHOW_FORMBUILER, false))
+              ListTile(
+                leading: new Icon(
+                  MdiIcons.formSelect,
+                  color: c,
+                  size: iconSize,
+                ),
+                title: SmashUI.normalText(
+                  SL.of(context).formbuilder,
+                  bold: true,
+                  color: c,
+                ),
+                onTap: () async {
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MainFormWidget(
+                                filebasedFormBuilderHelper,
+                                presentationMode:
+                                    PresentationMode(isFormbuilder: true),
+                                doScaffold: true,
+                              )));
+                },
               ),
-              title: SmashUI.normalText(
-                SL.of(context).formbuilder,
-                bold: true,
-                color: c,
-              ),
-              onTap: () async {
-                Navigator.pop(context);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MainFormWidget(
-                              filebasedFormBuilderHelper,
-                              presentationMode:
-                                  PresentationMode(isFormbuilder: true),
-                              doScaffold: true,
-                            )));
-              },
-            ),
           ]),
     );
   }
