@@ -42,13 +42,12 @@ class LayersPageState extends State<LayersPage> {
 
     List<Widget> listItems = createLayersList(_layersList, context);
 
-    return WillPopScope(
-        onWillPop: () async {
-          if (_somethingChanged) {
+    return PopScope(
+        canPop: true,
+        onPopInvoked: (didPop) {
+          if (didPop && _somethingChanged) {
             setLayersOnChange(_layersList);
-            // Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
           }
-          return true;
         },
         child: Scaffold(
           appBar: AppBar(
@@ -179,39 +178,40 @@ class LayersPageState extends State<LayersPage> {
 
   Future selectGssLayers() async {
     try {
-      var layersList = await ServerApi.getDynamicLayers();
+      // get loaded layers to check if they are already loaded
+      List<LayerSource?> _layersList =
+          LayerManager().getLayerSources(onlyActive: false);
+      List<String> loadedLayerNames = _layersList
+          .where((ls) => ls != null)
+          .map((ls) => ls!.getName()!)
+          .toList();
 
-      if (layersList == null || layersList.isEmpty) {
+      // get the list of gss layers from the server
+      var gssLayersList = await GssUtilities.getGssLayersFromServer();
+      if (gssLayersList == null || gssLayersList.isEmpty) {
         SmashDialogs.showWarningDialog(
             context, SL.of(context).layersView_noGssLayersFound);
         return;
       }
 
-      var layerNames = <String>[];
-      var layerName2FormDefinitionMap = <String, dynamic>{};
-      var layerName2GeometryTypeMap = <String, EGeometryType>{};
-      for (var layer in layersList) {
-        var layerName = layer["name"] as String;
-        var formDefinition = layer["form"];
-        var geometryType = layer["geometrytype"] as String;
-        layerNames.add(layerName);
-        layerName2FormDefinitionMap[layerName] = formDefinition;
-        layerName2GeometryTypeMap[layerName] =
-            EGeometryType.forWktName(geometryType);
-      }
+      Map<String, GssLayerDescription> gssLayerDescriptionsMap =
+          GssUtilities.getGssLayerDescriptionsMap(gssLayersList);
+      // remove the ones that are already loaded
+      gssLayerDescriptionsMap
+          .removeWhere((key, value) => loadedLayerNames.contains(key));
 
-      // layersList.map((l) => l["name"] as String).toList();
-      var selectedLayerNames = await SmashDialogs.showMultiSelectionComboDialog(
-        context,
-        SL.of(context).layersView_selectGssLayersToLoad,
-        layerNames,
-      );
+      var selectedLayersAndConfigs = await GssUtilities.selectGssLayerDialog(
+          context, null, gssLayerDescriptionsMap.keys.toList());
+      List<String> selectedLayerNames = selectedLayersAndConfigs[0];
+      bool downloadAll = selectedLayersAndConfigs[1];
+      bool downloadUser = selectedLayersAndConfigs[2];
 
-      if (selectedLayerNames != null && selectedLayerNames.isNotEmpty) {
+      if (selectedLayerNames.isNotEmpty) {
         var unableToLoad = <String>[];
         for (var selectedLayerName in selectedLayerNames) {
-          var formDefinition = layerName2FormDefinitionMap[selectedLayerName];
-          var geometryType = layerName2GeometryTypeMap[selectedLayerName];
+          var gssLayerDescription = gssLayerDescriptionsMap[selectedLayerName]!;
+          var formDefinition = gssLayerDescription.formDefinition;
+          var geometryType = gssLayerDescription.geometryType;
           if (formDefinition != null && geometryType != null) {
             // check if file altready exists
             var gssFolder = await GssUtilities.getGssFolder();
@@ -230,10 +230,17 @@ class LayersPageState extends State<LayersPage> {
               }
             }
 
+            var downloadMode = downloadAll
+                ? 0
+                : downloadUser
+                    ? 1
+                    : 2;
+
             String? geojsonPath = await ServerApi.downloadDynamicLayerToDevice(
                 selectedLayerName,
                 formDefinition: formDefinition,
-                geometryType: geometryType);
+                geometryType: geometryType,
+                downloadMode: downloadMode);
             if (geojsonPath != null) {
               var layerSource = GeojsonSource(geojsonPath);
               // await layerSource.load(context);
