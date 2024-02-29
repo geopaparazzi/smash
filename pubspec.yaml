@@ -5,7 +5,7 @@ name: smash
 description: The Smart Mobile Application for Surveyor's Happyness.
 publish_to: none
 
-version: 1.8.1+70 # we keep the build number growing to have it properly handled in android
+version: 1.9.0+71 # we keep the build number growing to have it properly handled in android
 # agvtool new-version -all 67
 
 environment:
