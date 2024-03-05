@@ -765,16 +765,17 @@ class _AddTmsStepperState extends State<AddTmsStepper> with Localization {
             Padding(
               padding: SmashUI.defaultPadding(),
               child: new ElevatedButton(
-                  child: Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.titleText(
-                        SL.of(context).onlineSourcesPage_save, //"Save"
-                        color: SmashColors.mainBackground),
-                  ),
-                  onPressed: _submitDetails,
-                  style: ElevatedButton.styleFrom(
-                    primary: SmashColors.mainDecorations,
-                  )),
+                child: Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: SmashUI.titleText(
+                      SL.of(context).onlineSourcesPage_save, //"Save"
+                      color: SmashColors.mainBackground),
+                ),
+                onPressed: _submitDetails,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: SmashColors.mainDecorations,
+                ),
+              ),
             ),
           ],
         ),

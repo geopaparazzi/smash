@@ -38,5 +38,6 @@
 		// strings. This setting will prevent that.
 		"editor.wordBasedSuggestions": "off",
 	},
-	"java.compile.nullAnalysis.mode": "disabled"
+	"java.compile.nullAnalysis.mode": "disabled",
+	"java.configuration.updateBuildConfiguration": "automatic"
 }

@@ -1,0 +1,5 @@
+- new integrated Formbuilder
+- added where filter option for geopackage dbs
+- added setting configuration to remove some tools from the toolbar
+- revisited editing menu
+- many many fixes

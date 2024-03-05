@@ -1,0 +1,10 @@
+- new geometries inside forms (polygon, line, point)
+- zoom tile maps beyond max zoomlevel through scaling
+- geojson layer support
+- new 'current log' panel size
+- box selection on info tool
+- more efficient and clean toolbar
+- better online sources handling and recover
+- length and area in feature info
+- url based combo boxes in forms
+- many many fixes
