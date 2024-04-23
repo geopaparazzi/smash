@@ -968,5 +968,7 @@
   "mainviewUtils_goToCoordinate": "Přejít na souřadnice",
   "@mainviewUtils_goToCoordinate": {},
   "mainviewUtils_goToCoordinateWrongFormat": "Špatný formát souřadnic. Mělo by být: 11.18463, 46.12345",
-  "@mainviewUtils_goToCoordinateWrongFormat": {}
+  "@mainviewUtils_goToCoordinateWrongFormat": {},
+  "formbuilder": "Tvůrce formulářů",
+  "@formbuilder": {}
 }
