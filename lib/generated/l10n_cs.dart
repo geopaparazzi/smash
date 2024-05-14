@@ -1460,7 +1460,7 @@ class SLCs extends SL {
   String get form_smash_cantSaveImageDb => 'Obrázek se nepodařilo uložit do databáze.';
 
   @override
-  String get formbuilder => 'Form builder';
+  String get formbuilder => 'Tvůrce formulářů';
 
   @override
   String get layersView_selectGssLayers => 'Select GSS Layers';

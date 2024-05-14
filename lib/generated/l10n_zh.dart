@@ -5,562 +5,562 @@ class SLZh extends SL {
   SLZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get main_welcome => 'Welcome to SMASH!';
+  String get main_welcome => '欢迎使用SMASH！';
 
   @override
-  String get main_check_location_permission => 'Checking location permission…';
+  String get main_check_location_permission => '正在检测位置权限…';
 
   @override
-  String get main_location_permission_granted => 'Location permission granted.';
+  String get main_location_permission_granted => '位置权限已授予。';
 
   @override
-  String get main_checkingStoragePermission => 'Checking storage permission…';
+  String get main_checkingStoragePermission => '正在检测存储权限…';
 
   @override
-  String get main_storagePermissionGranted => 'Storage permission granted.';
+  String get main_storagePermissionGranted => '存储权限已授予。';
 
   @override
-  String get main_loadingPreferences => 'Loading preferences…';
+  String get main_loadingPreferences => '正在载入配置文件…';
 
   @override
-  String get main_preferencesLoaded => 'Preferences loaded.';
+  String get main_preferencesLoaded => '配置文件载入完毕。';
 
   @override
-  String get main_loadingWorkspace => 'Loading workspace…';
+  String get main_loadingWorkspace => '正在载入工作空间…';
 
   @override
-  String get main_workspaceLoaded => 'Workspace loaded.';
+  String get main_workspaceLoaded => '工作空间已载入。';
 
   @override
-  String get main_loadingTagsList => 'Loading tags list…';
+  String get main_loadingTagsList => '正在载入Tag列表…';
 
   @override
-  String get main_tagsListLoaded => 'Tags list loaded.';
+  String get main_tagsListLoaded => 'Tag列表载入完毕。';
 
   @override
-  String get main_loadingKnownProjections => 'Loading known projections…';
+  String get main_loadingKnownProjections => '正在载入已知投影…';
 
   @override
-  String get main_knownProjectionsLoaded => 'Known projections loaded.';
+  String get main_knownProjectionsLoaded => '投影载入完毕。';
 
   @override
-  String get main_loadingFences => 'Loading fences…';
+  String get main_loadingFences => '正在载入地理围栏…';
 
   @override
-  String get main_fencesLoaded => 'Fences loaded.';
+  String get main_fencesLoaded => '地理围栏载入完毕。';
 
   @override
-  String get main_loadingLayersList => 'Loading layers list…';
+  String get main_loadingLayersList => '正在载入图层列表…';
 
   @override
-  String get main_layersListLoaded => 'Layers list loaded.';
+  String get main_layersListLoaded => '图层列表加载完毕。';
 
   @override
-  String get main_locationBackgroundWarning => 'Grant location permission in the next step to allow GPS logging in the background. (Otherwise it only works in the foreground.)\nNo data is shared, and only saved locally on the device.';
+  String get main_locationBackgroundWarning => '下一步授予位置权限将允许GPS在后台记录日志(否则GPS日志将在前台运行)\n提示：日志数据只存放在设备本地，不会进行数据上传。';
 
   @override
-  String get main_StorageIsInternalWarning => 'Please read carefully!\nOn Android 11 and above, the SMASH project folder must be placed in the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage to be used.\nIf the app is uninstalled, the system removes it, so back up your data if you do.\n\nA better solution is in the works.';
+  String get main_StorageIsInternalWarning => '请仔细阅读！\n在 Android 11及以上版本环境下，项目文件夹必须放在\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\n文件夹中。\n如果APP被卸载后，系统将会移除此文件夹，所以请在卸载前备份好你的数据。\n\n关于这个问题，我们正在寻找更夹解决方案。';
 
   @override
-  String get main_locationPermissionIsMandatoryToOpenSmash => 'Location permission is mandatory to open SMASH.';
+  String get main_locationPermissionIsMandatoryToOpenSmash => 'SMASH要求必须打开位置权限。';
 
   @override
-  String get main_storagePermissionIsMandatoryToOpenSmash => 'Storage permission is mandatory to open SMASH.';
+  String get main_storagePermissionIsMandatoryToOpenSmash => 'SMASH要求必须打开存储权限。';
 
   @override
-  String get main_anErrorOccurredTapToView => 'An error occurred. Tap to view.';
+  String get main_anErrorOccurredTapToView => '有错误发生，请单击查看。';
 
   @override
-  String get mainView_loadingData => 'Loading data…';
+  String get mainView_loadingData => '正在加载数据…';
 
   @override
-  String get mainView_turnGpsOn => 'Turn GPS on';
+  String get mainView_turnGpsOn => 'GPS开';
 
   @override
-  String get mainView_turnGpsOff => 'Turn GPS off';
+  String get mainView_turnGpsOff => 'GPS关';
 
   @override
-  String get mainView_exit => 'Exit';
+  String get mainView_exit => '退出';
 
   @override
-  String get mainView_areYouSureCloseTheProject => 'Close the project?';
+  String get mainView_areYouSureCloseTheProject => '关闭工程？';
 
   @override
-  String get mainView_activeOperationsWillBeStopped => 'Active operations will be stopped.';
+  String get mainView_activeOperationsWillBeStopped => '活动操作将会停止。';
 
   @override
-  String get mainView_showInteractiveCoachMarks => 'Show interactive coach marks.';
+  String get mainView_showInteractiveCoachMarks => '显示交互式向导标签。';
 
   @override
-  String get mainView_openToolsDrawer => 'Open tools drawer.';
+  String get mainView_openToolsDrawer => '打开工具箱。';
 
   @override
-  String get mainView_zoomIn => 'Zoom in';
+  String get mainView_zoomIn => '放大';
 
   @override
-  String get mainView_zoomOut => 'Zoom out';
+  String get mainView_zoomOut => '缩小';
 
   @override
-  String get mainView_formNotes => 'Form Notes';
+  String get mainView_formNotes => '表单式注记';
 
   @override
-  String get mainView_simpleNotes => 'Simple Notes';
+  String get mainView_simpleNotes => '简单注记';
 
   @override
-  String get mainviewUtils_projects => 'Projects';
+  String get mainviewUtils_projects => '工程';
 
   @override
-  String get mainviewUtils_import => 'Import';
+  String get mainviewUtils_import => '导入';
 
   @override
-  String get mainviewUtils_export => 'Export';
+  String get mainviewUtils_export => '导出';
 
   @override
-  String get mainviewUtils_settings => 'Settings';
+  String get mainviewUtils_settings => '设置';
 
   @override
-  String get mainviewUtils_onlineHelp => 'Online Help';
+  String get mainviewUtils_onlineHelp => '在线帮助';
 
   @override
-  String get mainviewUtils_about => 'About';
+  String get mainviewUtils_about => '关于';
 
   @override
-  String get mainviewUtils_projectInfo => 'Project Info';
+  String get mainviewUtils_projectInfo => '工程信息';
 
   @override
-  String get mainviewUtils_project => 'Project';
+  String get mainviewUtils_project => '工程';
 
   @override
-  String get mainviewUtils_database => 'Database';
+  String get mainviewUtils_database => '数据库';
 
   @override
-  String get mainviewUtils_extras => 'Extras';
+  String get mainviewUtils_extras => '其他';
 
   @override
-  String get mainviewUtils_availableIcons => 'Available icons';
+  String get mainviewUtils_availableIcons => '可用图标';
 
   @override
-  String get mainviewUtils_offlineMaps => 'Offline maps';
+  String get mainviewUtils_offlineMaps => '离线地图';
 
   @override
-  String get mainviewUtils_positionTools => 'Position Tools';
+  String get mainviewUtils_positionTools => '位置工具';
 
   @override
-  String get mainviewUtils_goTo => 'Go to';
+  String get mainviewUtils_goTo => '转到';
 
   @override
-  String get mainviewUtils_goToCoordinate => 'Go to coordinate';
+  String get mainviewUtils_goToCoordinate => '转到坐标';
 
   @override
-  String get mainviewUtils_enterLonLat => 'Enter longitude, latitude';
+  String get mainviewUtils_enterLonLat => '输入经度，纬度';
 
   @override
-  String get mainviewUtils_goToCoordinateWrongFormat => 'Wrong coordinate format. Should be: 11.18463, 46.12345';
+  String get mainviewUtils_goToCoordinateWrongFormat => '坐标格式错误。 应为 11.18463, 46.12345';
 
   @override
-  String get mainviewUtils_goToCoordinateEmpty => 'This can\'t be empty.';
+  String get mainviewUtils_goToCoordinateEmpty => '此项不能为空。';
 
   @override
-  String get mainviewUtils_sharePosition => 'Share position';
+  String get mainviewUtils_sharePosition => '分享位置';
 
   @override
-  String get mainviewUtils_rotateMapWithGps => 'Rotate map with GPS';
+  String get mainviewUtils_rotateMapWithGps => '通过 GPS 旋转地图';
 
   @override
-  String get exportWidget_export => 'Export';
+  String get exportWidget_export => '导出';
 
   @override
-  String get exportWidget_pdfExported => 'PDF exported';
+  String get exportWidget_pdfExported => 'PDF 已导出';
 
   @override
-  String get exportWidget_exportToPortableDocumentFormat => 'Export project to Portable Document Format';
+  String get exportWidget_exportToPortableDocumentFormat => '将项目导出为便携式文档格式';
 
   @override
-  String get exportWidget_gpxExported => 'GPX exported';
+  String get exportWidget_gpxExported => 'GPX 已导出';
 
   @override
-  String get exportWidget_exportToGpx => 'Export project to GPX';
+  String get exportWidget_exportToGpx => '导出工程为 GPX';
 
   @override
-  String get exportWidget_kmlExported => 'KML exported';
+  String get exportWidget_kmlExported => '已导出为 KML';
 
   @override
-  String get exportWidget_exportToKml => 'Export project to KML';
+  String get exportWidget_exportToKml => '导出工程为 KML';
 
   @override
-  String get exportWidget_imagesToFolderExported => 'Images exported';
+  String get exportWidget_imagesToFolderExported => '图片已导出';
 
   @override
-  String get exportWidget_exportImagesToFolder => 'Export project images to folder';
+  String get exportWidget_exportImagesToFolder => '导出工程图片到文件夹';
 
   @override
-  String get exportWidget_exportImagesToFolderTitle => 'Images';
+  String get exportWidget_exportImagesToFolderTitle => '图片';
 
   @override
-  String get exportWidget_geopackageExported => 'Geopackage exported';
+  String get exportWidget_geopackageExported => '已导出为 Geopakage';
 
   @override
-  String get exportWidget_exportToGeopackage => 'Export project to Geopackage';
+  String get exportWidget_exportToGeopackage => '导出工程为 Geopackage';
 
   @override
-  String get exportWidget_exportToGSS => 'Export to Geopaparazzi Survey Server';
+  String get exportWidget_exportToGSS => '导出为 Geopaparazzi Survey Server';
 
   @override
-  String get gssExport_gssExport => 'GSS Export';
+  String get gssExport_gssExport => 'GSS 导出';
 
   @override
-  String get gssExport_setProjectDirty => 'Set project to DIRTY?';
+  String get gssExport_setProjectDirty => '设置项目为 DIRTY？';
 
   @override
-  String get gssExport_thisCantBeUndone => 'This can\'t be undone!';
+  String get gssExport_thisCantBeUndone => '此操作无法撤销！';
 
   @override
-  String get gssExport_restoreProjectAsDirty => 'Restore project as all dirty.';
+  String get gssExport_restoreProjectAsDirty => '重置工程为dirty。';
 
   @override
-  String get gssExport_setProjectClean => 'Set project to CLEAN?';
+  String get gssExport_setProjectClean => '设置项目为 CLEAN？';
 
   @override
-  String get gssExport_restoreProjectAsClean => 'Restore project as all clean.';
+  String get gssExport_restoreProjectAsClean => '已重置项目为 CLEAN。';
 
   @override
-  String get gssExport_nothingToSync => 'Nothing to sync.';
+  String get gssExport_nothingToSync => '无可同步数据。';
 
   @override
-  String get gssExport_collectingSyncStats => 'Collecting sync stats…';
+  String get gssExport_collectingSyncStats => '正在收集同步状态…';
 
   @override
-  String get gssExport_unableToSyncDueToError => 'Unable to sync due to an error, check diagnostics.';
+  String get gssExport_unableToSyncDueToError => '同步过程出错，请点击诊断。';
 
   @override
-  String get gssExport_noGssUrlSet => 'No GSS server URL has been set. Check your settings.';
+  String get gssExport_noGssUrlSet => '未设置GSS服务端URL。请检查设置。';
 
   @override
-  String get gssExport_noGssPasswordSet => 'No GSS server password has been set. Check your settings.';
+  String get gssExport_noGssPasswordSet => '未设置GSS服务端密码。请检查设置。';
 
   @override
-  String get gssExport_synStats => 'Sync Stats';
+  String get gssExport_synStats => '同步状态';
 
   @override
-  String get gssExport_followingDataWillBeUploaded => 'The following data will be uploaded upon sync.';
+  String get gssExport_followingDataWillBeUploaded => '以下数据将同步到服务端。';
 
   @override
-  String get gssExport_gpsLogs => 'GPS Logs:';
+  String get gssExport_gpsLogs => 'GPS 日志：';
 
   @override
-  String get gssExport_simpleNotes => 'Simple Notes:';
+  String get gssExport_simpleNotes => '简单注释：';
 
   @override
-  String get gssExport_formNotes => 'Form Notes:';
+  String get gssExport_formNotes => '表单注释：';
 
   @override
-  String get gssExport_images => 'Images:';
+  String get gssExport_images => '图片列表：';
 
   @override
-  String get gssExport_shouldNotHappen => 'Should not happen';
+  String get gssExport_shouldNotHappen => '不应该发生';
 
   @override
-  String get gssExport_upload => 'Upload';
+  String get gssExport_upload => '上传';
 
   @override
-  String get geocoding_geocoding => 'Geocoding';
+  String get geocoding_geocoding => '地理编码';
 
   @override
-  String get geocoding_nothingToLookFor => 'Nothing to look for. Insert an address.';
+  String get geocoding_nothingToLookFor => '未找到相关信息。插入一个地址。';
 
   @override
-  String get geocoding_launchGeocoding => 'Launch Geocoding';
+  String get geocoding_launchGeocoding => '启动地理编码';
 
   @override
-  String get geocoding_searching => 'Searching…';
+  String get geocoding_searching => '查找中…';
 
   @override
-  String get gps_smashIsActive => 'SMASH is active';
+  String get gps_smashIsActive => 'SMASH 正在运行';
 
   @override
-  String get gps_smashIsLogging => 'SMASH is logging';
+  String get gps_smashIsLogging => 'SMASH 正在记录';
 
   @override
-  String get gps_locationTracking => 'Location tracking';
+  String get gps_locationTracking => '位置跟踪';
 
   @override
-  String get gps_smashLocServiceIsActive => 'SMASH location service is active.';
+  String get gps_smashLocServiceIsActive => 'SMASH 位置服务已激活。';
 
   @override
-  String get gps_backgroundLocIsOnToKeepRegistering => 'Background location is on to keep the app registering the location even when the app is in background.';
+  String get gps_backgroundLocIsOnToKeepRegistering => '后台定位功能开启后，即使应用程序处于后台，也能继续注册位置信息。';
 
   @override
-  String get gssImport_gssImport => 'GSS Import';
+  String get gssImport_gssImport => 'GSS 导入';
 
   @override
-  String get gssImport_downloadingDataList => 'Downloading data list…';
+  String get gssImport_downloadingDataList => '正在下载数据列表…';
 
   @override
-  String get gssImport_unableDownloadDataList => 'Unable to download data list due to an error. Check your settings and the log.';
+  String get gssImport_unableDownloadDataList => '由于错误，无法下载数据列表。请检查设置和日志。';
 
   @override
-  String get gssImport_noGssUrlSet => 'No GSS server URL has been set. Check your settings.';
+  String get gssImport_noGssUrlSet => '未设置 GSS 服务器 URL。请检查您的设置。';
 
   @override
-  String get gssImport_noGssPasswordSet => 'No GSS server password has been set. Check your settings.';
+  String get gssImport_noGssPasswordSet => '未设置 GSS 服务器密码。请检查您的设置。';
 
   @override
-  String get gssImport_noPermToAccessServer => 'No permission to access the server. Check your credentials.';
+  String get gssImport_noPermToAccessServer => '无访问服务器权限。请检查您的证书。';
 
   @override
-  String get gssImport_data => 'Data';
+  String get gssImport_data => '数据';
 
   @override
-  String get gssImport_dataSetsDownloadedMapsFolder => 'Datasets are downloaded into the maps folder.';
+  String get gssImport_dataSetsDownloadedMapsFolder => '数据集已下载到地图文件夹中。';
 
   @override
-  String get gssImport_noDataAvailable => 'No data available.';
+  String get gssImport_noDataAvailable => '无可用数据。';
 
   @override
-  String get gssImport_projects => 'Projects';
+  String get gssImport_projects => '工程';
 
   @override
-  String get gssImport_projectsDownloadedProjectFolder => 'Projects are downloaded into the projects folder.';
+  String get gssImport_projectsDownloadedProjectFolder => '工程数据已下载到 projects文件夹。';
 
   @override
-  String get gssImport_noProjectsAvailable => 'No projects available.';
+  String get gssImport_noProjectsAvailable => '无可用工程。';
 
   @override
-  String get gssImport_forms => 'Forms';
+  String get gssImport_forms => '表单';
 
   @override
-  String get gssImport_tagsDownloadedFormsFolder => 'Tags files are downloaded into the forms folder.';
+  String get gssImport_tagsDownloadedFormsFolder => 'tag文件已下载到 forms文件夹。';
 
   @override
-  String get gssImport_noTagsAvailable => 'No tags available.';
+  String get gssImport_noTagsAvailable => '无tag可用。';
 
   @override
-  String get importWidget_import => 'Import';
+  String get importWidget_import => '导入';
 
   @override
-  String get importWidget_importFromGeopaparazzi => 'Import from Geopaparazzi Survey Server';
+  String get importWidget_importFromGeopaparazzi => '从GSS服务器导入';
 
   @override
-  String get layersView_layerList => 'Layers List';
+  String get layersView_layerList => '图层列表';
 
   @override
-  String get layersView_loadRemoteDatabase => 'Load remote database';
+  String get layersView_loadRemoteDatabase => '载入远程数据库';
 
   @override
-  String get layersView_loadOnlineSources => 'Load online sources';
+  String get layersView_loadOnlineSources => '加载在线数据源';
 
   @override
-  String get layersView_loadLocalDatasets => 'Load local datasets';
+  String get layersView_loadLocalDatasets => '加载本地数据集';
 
   @override
-  String get layersView_loading => 'Loading…';
+  String get layersView_loading => '加载中…';
 
   @override
-  String get layersView_zoomTo => 'Zoom to';
+  String get layersView_zoomTo => '放大';
 
   @override
-  String get layersView_properties => 'Properties';
+  String get layersView_properties => '属性';
 
   @override
-  String get layersView_delete => 'Delete';
+  String get layersView_delete => '删除';
 
   @override
-  String get layersView_projCouldNotBeRecognized => 'The proj could not be recognised. Tap to enter epsg manually.';
+  String get layersView_projCouldNotBeRecognized => '无法识别的项目。点击手动输入epsg代码。';
 
   @override
-  String get layersView_projNotSupported => 'The proj is not supported. Tap to solve.';
+  String get layersView_projNotSupported => '不支持的项目。单击解决。';
 
   @override
-  String get layersView_onlyImageFilesWithWorldDef => 'Only image files with world file definition are supported.';
+  String get layersView_onlyImageFilesWithWorldDef => '只支持具有世界文件定义的图像文件。';
 
   @override
-  String get layersView_onlyImageFileWithPrjDef => 'Only image files with prj file definition are supported.';
+  String get layersView_onlyImageFileWithPrjDef => '仅支持带有 prj 文件定义的图像文件。';
 
   @override
-  String get layersView_selectTableToLoad => 'Select table to load.';
+  String get layersView_selectTableToLoad => '选择要加载的表格。';
 
   @override
-  String get layersView_fileFormatNotSUpported => 'File format not supported.';
+  String get layersView_fileFormatNotSUpported => '文件格式不支持。';
 
   @override
-  String get onlineSourcesPage_onlineSourcesCatalog => 'Online Sources Catalog';
+  String get onlineSourcesPage_onlineSourcesCatalog => '在线数据源分类';
 
   @override
-  String get onlineSourcesPage_loadingTmsLayers => 'Loading TMS layers…';
+  String get onlineSourcesPage_loadingTmsLayers => '正在载入TMS图层…';
 
   @override
-  String get onlineSourcesPage_loadingWmsLayers => 'Loading WMS layers…';
+  String get onlineSourcesPage_loadingWmsLayers => '正在加载WMS图层…';
 
   @override
-  String get onlineSourcesPage_importFromFile => 'Import from file';
+  String get onlineSourcesPage_importFromFile => '从文件导入';
 
   @override
-  String get onlineSourcesPage_theFile => 'The file';
+  String get onlineSourcesPage_theFile => '文件';
 
   @override
-  String get onlineSourcesPage_doesntExist => 'doesn\'t exist';
+  String get onlineSourcesPage_doesntExist => '不存在';
 
   @override
-  String get onlineSourcesPage_onlineSourcesImported => 'Online sources imported.';
+  String get onlineSourcesPage_onlineSourcesImported => '在线数据源已导入。';
 
   @override
-  String get onlineSourcesPage_exportToFile => 'Export to file';
+  String get onlineSourcesPage_exportToFile => '导出到文件';
 
   @override
-  String get onlineSourcesPage_exportedTo => 'Exported to:';
+  String get onlineSourcesPage_exportedTo => '导出到：';
 
   @override
-  String get onlineSourcesPage_delete => 'Delete';
+  String get onlineSourcesPage_delete => '删除';
 
   @override
-  String get onlineSourcesPage_addToLayers => 'Add to layers';
+  String get onlineSourcesPage_addToLayers => '添加到图层';
 
   @override
-  String get onlineSourcesPage_setNameTmsService => 'Set a name for the TMS service';
+  String get onlineSourcesPage_setNameTmsService => '设置TMS服务名称';
 
   @override
-  String get onlineSourcesPage_enterName => 'enter name';
+  String get onlineSourcesPage_enterName => '输入名称';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidName => 'Please enter a valid name';
+  String get onlineSourcesPage_pleaseEnterValidName => '请输入可用名称';
 
   @override
-  String get onlineSourcesPage_insertUrlOfService => 'Insert the URL of the service.';
+  String get onlineSourcesPage_insertUrlOfService => '插入服务URL。';
 
   @override
-  String get onlineSourcesPage_placeXyzBetBrackets => 'Place the x, y, z between curly brackets.';
+  String get onlineSourcesPage_placeXyzBetBrackets => '在小括弧中输入x,y,z.';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidTmsUrl => 'Please enter a valid TMS URL';
+  String get onlineSourcesPage_pleaseEnterValidTmsUrl => '请输入可用的TMS URL';
 
   @override
-  String get onlineSourcesPage_enterUrl => 'enter URL';
+  String get onlineSourcesPage_enterUrl => '输入URL';
 
   @override
-  String get onlineSourcesPage_enterSubDomains => 'enter subdomains';
+  String get onlineSourcesPage_enterSubDomains => '输入子域名';
 
   @override
-  String get onlineSourcesPage_addAttribution => 'Add an attribution.';
+  String get onlineSourcesPage_addAttribution => '添加所有权信息。';
 
   @override
-  String get onlineSourcesPage_enterAttribution => 'enter attribution';
+  String get onlineSourcesPage_enterAttribution => '输入所有者';
 
   @override
-  String get onlineSourcesPage_setMinMaxZoom => 'Set min and max zoom.';
+  String get onlineSourcesPage_setMinMaxZoom => '设置最大最小缩放级别。';
 
   @override
-  String get onlineSourcesPage_minZoom => 'Min zoom';
+  String get onlineSourcesPage_minZoom => '最小缩放级别';
 
   @override
-  String get onlineSourcesPage_maxZoom => 'Max zoom';
+  String get onlineSourcesPage_maxZoom => '最大缩放级别';
 
   @override
-  String get onlineSourcesPage_pleaseCheckYourData => 'Please check your data';
+  String get onlineSourcesPage_pleaseCheckYourData => '请检查你的数据';
 
   @override
-  String get onlineSourcesPage_details => 'Details';
+  String get onlineSourcesPage_details => '详细信息';
 
   @override
-  String get onlineSourcesPage_name => 'Name: ';
+  String get onlineSourcesPage_name => '名称： ';
 
   @override
-  String get onlineSourcesPage_subDomains => 'Subdomains: ';
+  String get onlineSourcesPage_subDomains => '子域名： ';
 
   @override
-  String get onlineSourcesPage_attribution => 'Attribution: ';
+  String get onlineSourcesPage_attribution => '所有权： ';
 
   @override
-  String get onlineSourcesPage_cancel => 'Cancel';
+  String get onlineSourcesPage_cancel => '取消';
 
   @override
-  String get onlineSourcesPage_ok => 'OK';
+  String get onlineSourcesPage_ok => '确定';
 
   @override
-  String get onlineSourcesPage_newTmsOnlineService => 'New TMS Online Service';
+  String get onlineSourcesPage_newTmsOnlineService => '新建TMS在线服务';
 
   @override
-  String get onlineSourcesPage_save => 'Save';
+  String get onlineSourcesPage_save => '保存';
 
   @override
-  String get onlineSourcesPage_theBaseUrlWithQuestionMark => 'The base URL-ending with question mark.';
+  String get onlineSourcesPage_theBaseUrlWithQuestionMark => '基本URL以?结尾。';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidWmsUrl => 'Please enter a valid WMS URL';
+  String get onlineSourcesPage_pleaseEnterValidWmsUrl => '请输入可用WMS URL';
 
   @override
-  String get onlineSourcesPage_setWmsLayerName => 'Set WMS layer name';
+  String get onlineSourcesPage_setWmsLayerName => '设置WMS层名';
 
   @override
-  String get onlineSourcesPage_enterLayerToLoad => 'enter layer to load';
+  String get onlineSourcesPage_enterLayerToLoad => '输入要加载图层';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidLayer => 'Please enter a valid layer';
+  String get onlineSourcesPage_pleaseEnterValidLayer => '请输入可用图层';
 
   @override
-  String get onlineSourcesPage_setWmsImageFormat => 'Set WMS image format';
+  String get onlineSourcesPage_setWmsImageFormat => '设置WMS图片格式';
 
   @override
-  String get onlineSourcesPage_addAnAttribution => 'Add an attribution.';
+  String get onlineSourcesPage_addAnAttribution => '增加所有权信息。';
 
   @override
-  String get onlineSourcesPage_layer => 'Layer: ';
+  String get onlineSourcesPage_layer => '图层： ';
 
   @override
-  String get onlineSourcesPage_url => 'URL: ';
+  String get onlineSourcesPage_url => 'URL： ';
 
   @override
-  String get onlineSourcesPage_format => 'Format';
+  String get onlineSourcesPage_format => '格式';
 
   @override
-  String get onlineSourcesPage_newWmsOnlineService => 'New WMS Online Service';
+  String get onlineSourcesPage_newWmsOnlineService => '新建WMS在线服务';
 
   @override
-  String get remoteDbPage_remoteDatabases => 'Remote Databases';
+  String get remoteDbPage_remoteDatabases => '远程数据库';
 
   @override
-  String get remoteDbPage_delete => 'Delete';
+  String get remoteDbPage_delete => '删除';
 
   @override
-  String get remoteDbPage_areYouSureDeleteDatabase => 'Delete the database configuration?';
+  String get remoteDbPage_areYouSureDeleteDatabase => '删除数据库配置？';
 
   @override
-  String get remoteDbPage_edit => 'Edit';
+  String get remoteDbPage_edit => '编辑';
 
   @override
-  String get remoteDbPage_table => 'table';
+  String get remoteDbPage_table => '表格';
 
   @override
-  String get remoteDbPage_user => 'user';
+  String get remoteDbPage_user => '用户';
 
   @override
-  String get remoteDbPage_loadInMap => 'Load in map.';
+  String get remoteDbPage_loadInMap => '载入到地图中。';
 
   @override
-  String get remoteDbPage_databaseParameters => 'Database Parameters';
+  String get remoteDbPage_databaseParameters => '数据库参数';
 
   @override
-  String get remoteDbPage_cancel => 'Cancel';
+  String get remoteDbPage_cancel => '取消';
 
   @override
-  String get remoteDbPage_ok => 'OK';
+  String get remoteDbPage_ok => '确定';
 
   @override
-  String get remoteDbPage_theUrlNeedsToBeDefined => 'The URL must be defined (postgis:host:port/databasename)';
+  String get remoteDbPage_theUrlNeedsToBeDefined => '必须定义URL。格式如(postgis:host:port/databasename)';
 
   @override
-  String get remoteDbPage_theUserNeedsToBeDefined => 'A user must be defined.';
+  String get remoteDbPage_theUserNeedsToBeDefined => '必须定义用户。';
 
   @override
-  String get remoteDbPage_password => 'password';
+  String get remoteDbPage_password => '密码';
 
   @override
-  String get remoteDbPage_thePasswordNeedsToBeDefined => 'A password must be defined.';
+  String get remoteDbPage_thePasswordNeedsToBeDefined => '必须设置密码。';
 
   @override
-  String get remoteDbPage_loadingTables => 'Loading tables…';
+  String get remoteDbPage_loadingTables => '正在加载表格…';
 
   @override
-  String get remoteDbPage_theTableNeedsToBeDefined => 'The table name must be defined.';
+  String get remoteDbPage_theTableNeedsToBeDefined => '必须定义表格名称。';
 
   @override
   String get remoteDbPage_unableToConnectToDatabase => 'Unable to connect to the database. Check parameters and network.';
