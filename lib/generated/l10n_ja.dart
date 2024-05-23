@@ -1469,6 +1469,9 @@ class SLJa extends SL {
   String get layersView_noGssLayersFound => 'No GSS layers found.';
 
   @override
+  String get layersView_noGssLayersAvailable => 'No layers available (loaded ones are not shown).';
+
+  @override
   String get layersView_selectGssLayersToLoad => 'Select GSS layers to load.';
 
   @override

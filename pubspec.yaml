@@ -254,6 +254,12 @@ flutter:
     - assets/smash_logo_64.png
     - assets/smash_text.png
     - assets/defaultrender.xml
+    - assets/custom.xml
+    - assets/darkrender.xml
+    - assets/mapsforge_default.xml
+    - assets/mapsforge_osmarender.xml
+    - packages/mapsforge_flutter/assets/patterns/dark_farmland.svg
+    - packages/mapsforge_flutter/assets/patterns/dark_military.png
     - packages/mapsforge_flutter/assets/patterns/coniferous.svg
     - packages/mapsforge_flutter/assets/patterns/coniferous_and_deciduous.svg
     - packages/mapsforge_flutter/assets/patterns/deciduous.svg
@@ -411,6 +417,7 @@ flutter:
     - packages/mapsforge_flutter/assets/symbols/water/weir.svg
     - packages/mapsforge_flutter/assets/symbols/windsock.svg
     - packages/mapsforge_flutter/assets/symbols/viewpoint.svg
+
 
     
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -975,6 +975,7 @@
   
   "layersView_selectGssLayers": "Select GSS Layers",
   "layersView_noGssLayersFound": "No GSS layers found.",
+  "layersView_noGssLayersAvailable": "No layers available (loaded ones are not shown).",
   "layersView_selectGssLayersToLoad": "Select GSS layers to load.",
   "layersView_unableToLoadGssLayers": "Unable to load:",
   "layersView_layerExists": "Layer exists",

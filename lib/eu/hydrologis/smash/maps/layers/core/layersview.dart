@@ -200,6 +200,12 @@ class LayersPageState extends State<LayersPage> {
       gssLayerDescriptionsMap
           .removeWhere((key, value) => loadedLayerNames.contains(key));
 
+      if (gssLayerDescriptionsMap.isEmpty) {
+        SmashDialogs.showWarningDialog(
+            context, SL.of(context).layersView_noGssLayersAvailable);
+        return;
+      }
+
       var selectedLayersAndConfigs = await GssUtilities.selectGssLayerDialog(
           context, null, gssLayerDescriptionsMap.keys.toList());
       List<String> selectedLayerNames = selectedLayersAndConfigs[0];

@@ -334,7 +334,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
       lineTouchData: LineTouchData(
         enabled: true,
         touchTooltipData: LineTouchTooltipData(
-          tooltipBgColor: SmashColors.mainBackground.withOpacity(0.8),
+          getTooltipColor: (touchedSpot) =>
+              SmashColors.mainBackground.withOpacity(0.8),
         ),
       ),
       gridData: FlGridData(

@@ -3037,6 +3037,12 @@ abstract class SL {
   /// **'No GSS layers found.'**
   String get layersView_noGssLayersFound;
 
+  /// No description provided for @layersView_noGssLayersAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No layers available (loaded ones are not shown).'**
+  String get layersView_noGssLayersAvailable;
+
   /// No description provided for @layersView_selectGssLayersToLoad.
   ///
   /// In en, this message translates to:

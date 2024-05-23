@@ -375,10 +375,10 @@ packages:
     dependency: transitive
     description:
       name: file_picker
-      sha256: be325344c1f3070354a1d84a231a1ba75ea85d413774ec4bdf444c023342e030
+      sha256: "29c90806ac5f5fb896547720b73b17ee9aed9bba540dc5d91fe29f8c5745b10a"
       url: "https://pub.dev"
     source: hosted
-    version: "5.5.0"
+    version: "8.0.3"
   file_selector_linux:
     dependency: transitive
     description:
@@ -512,12 +512,11 @@ packages:
   flutter_material_pickers:
     dependency: transitive
     description:
-      path: "."
-      ref: "7b5486c"
-      resolved-ref: "7b5486cf7a8f038610f40910483f598a876f7c05"
-      url: "https://github.com/moovida/flutter_material_pickers.git"
-    source: git
-    version: "3.6.0"
+      name: flutter_material_pickers
+      sha256: "1f0977df9d3977c6621fff602f6956107cf5ff0df58d3441459e5b2e37256131"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.7.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -965,7 +964,7 @@ packages:
     description:
       path: mapsforge_flutter
       ref: smash_compats
-      resolved-ref: bc24e788d9b66d007e8bb0413b93b6d3eb39ea2a
+      resolved-ref: "2adfcab2819cb604e998b4872913eaa591de7952"
       url: "https://github.com/moovida/mapsforge_flutter.git"
     source: git
     version: "2.0.3"
