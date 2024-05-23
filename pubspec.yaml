@@ -125,7 +125,7 @@ dependencies:
     #   url: https://github.com/moovida/extended_image
 
   # BSD
-  fl_chart: ^0.55.1
+  fl_chart: ^0.68.0
 
   # MIT
   permission_handler: ^10.2.0
