@@ -43,17 +43,13 @@ android {
     // }
 
 
-    lintOptions {
-        disable 'InvalidPackage'
-        checkReleaseBuilds false
-    }
 
     defaultConfig {
         applicationId "eu.hydrologis.smash"
         minSdkVersion 21
         targetSdkVersion 34
         compileSdkVersion 34
-        buildToolsVersion = "30.0.3"
+//        buildToolsVersion = "34.0.0"
         
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -78,6 +74,10 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    lint {
+        checkReleaseBuilds false
+        disable 'InvalidPackage'
+    }
 }
 
 
@@ -96,13 +96,13 @@ flutter {
 
 dependencies {
     testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     // required to avoid crash on Android 12 API 31
     // implementation 'androidx.work:work-runtime-ktx:2.7.0'
               // For Java
-    implementation 'androidx.work:work-runtime:2.7.1'
+    implementation 'androidx.work:work-runtime:2.9.0'
 
     // For Kotlin
-    implementation 'androidx.work:work-runtime-ktx:2.7.1'
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
 }
