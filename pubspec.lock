@@ -70,8 +70,8 @@ packages:
     description:
       path: "."
       ref: "fix/callback-in-release-build"
-      resolved-ref: "3e0e4dcad802b5122d480c940e391c4b518a4f45"
-      url: "https://github.com/sanak/background_locator_2.git"
+      resolved-ref: "720c0e462ecda96dc05852f56dbc7b4df5e6a73d"
+      url: "https://github.com/moovida/background_locator_2.git"
     source: git
     version: "2.0.6"
   badges:

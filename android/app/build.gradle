@@ -48,7 +48,7 @@ android {
         applicationId "eu.hydrologis.smash"
         minSdkVersion 21
         targetSdkVersion 34
-        compileSdkVersion 34
+        compileSdk 34
 //        buildToolsVersion = "34.0.0"
         
         versionCode flutterVersionCode.toInteger()
@@ -83,7 +83,7 @@ android {
 
 // START WORKAROUND for hanging build
 // this change also brings "multiDexEnabled true" in defaultConfig
-configurations.all {
+configurations.configureEach {
     resolutionStrategy {
         force 'com.google.android.gms:play-services-location:17.0.0'
     }
@@ -95,7 +95,7 @@ flutter {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     // required to avoid crash on Android 12 API 31

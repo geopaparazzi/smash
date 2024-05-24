@@ -167,7 +167,7 @@ dependencies:
   background_locator_2:
     # path: ../background_locator_2/
     git:
-      url: https://github.com/sanak/background_locator_2.git
+      url: https://github.com/moovida/background_locator_2.git
       ref: fix/callback-in-release-build
 
       
