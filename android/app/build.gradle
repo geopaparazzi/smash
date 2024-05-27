@@ -31,18 +31,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    // buildFeatures.aidl = false
-    // buildFeatures {
-    //     // buildConfig = true
-    //     // viewBinding = false
-    //     // dataBinding = false
-    //     aidl = false
-    //     // renderScript = true
-    //     // resValues = true
-    //     // shaders = true
-    // }
-
-
+    namespace = "eu.hydrologis.smash"
 
     defaultConfig {
         applicationId "eu.hydrologis.smash"
@@ -56,7 +45,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']

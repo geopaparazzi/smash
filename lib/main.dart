@@ -105,7 +105,7 @@ class SmashApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: SmashColors.mainDecorations,
-          background: SmashColors.mainBackground,
+          surface: SmashColors.mainBackground,
           primary: SmashColors.mainDecorations,
           // secondary: SmashColors.mainSelection,
           brightness: Brightness.light,

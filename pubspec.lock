@@ -69,9 +69,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "fix/callback-in-release-build"
-      resolved-ref: "720c0e462ecda96dc05852f56dbc7b4df5e6a73d"
-      url: "https://github.com/moovida/background_locator_2.git"
+      ref: "sanak/develop"
+      resolved-ref: "6ef53dfa81515935738278cc5f6b4f492559adaa"
+      url: "https://github.com/moovida/background_locator_2"
     source: git
     version: "2.0.6"
   badges:
