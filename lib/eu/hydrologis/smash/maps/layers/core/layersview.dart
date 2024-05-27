@@ -445,22 +445,27 @@ class LayersPageState extends State<LayersPage> {
           trailing: Padding(
             padding:
                 EdgeInsets.only(right: SmashPlatform.isDesktop() ? 10.0 : 0.0),
-            child: Checkbox(
-                value: layerSourceItem.isActive(),
-                onChanged: (isVisible) async {
-                  layerSourceItem.setActive(isVisible!);
-                  _somethingChanged = true;
-                  if (isVisible &&
-                      layerSourceItem is LoadableLayerSource &&
-                      !layerSourceItem.isLoaded) {
-                    setState(() {
-                      isLoadingData = true;
-                      loadLayerWithProgressEnd(layerSourceItem, context);
-                    });
-                  } else {
-                    setState(() {});
-                  }
-                }),
+            child: IconButton(
+              icon: Icon(MdiIcons.eye,
+                  color: layerSourceItem.isActive()
+                      ? SmashColors.mainDecorations
+                      : SmashColors.disabled),
+              onPressed: () {
+                var isVisible = !layerSourceItem.isActive();
+                layerSourceItem.setActive(isVisible);
+                _somethingChanged = true;
+                if (isVisible &&
+                    layerSourceItem is LoadableLayerSource &&
+                    !layerSourceItem.isLoaded) {
+                  setState(() {
+                    isLoadingData = true;
+                    loadLayerWithProgressEnd(layerSourceItem, context);
+                  });
+                } else {
+                  setState(() {});
+                }
+              },
+            ),
           ),
         ),
       );
