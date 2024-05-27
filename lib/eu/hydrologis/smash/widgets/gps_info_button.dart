@@ -43,15 +43,16 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
           }
 
           var isLandscape = ScreenUtilities.isLandscape(context);
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            behavior: SnackBarBehavior.floating,
+          showModalBottomSheet(
+            showDragHandle: true,
+            elevation: 10,
             backgroundColor: color,
-            content: Padding(
-              padding: EdgeInsets.only(bottom: 10),
+            context: context,
+            builder: (ctx) => Padding(
+              padding: const EdgeInsets.all(8.0),
               child: getGpsInfoContainer(isLandscape),
             ),
-            duration: Duration(seconds: 15),
-          ));
+          );
         },
         child: SizedBox(
           height: widget._iconSize * 1.4,
