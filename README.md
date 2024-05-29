@@ -1,7 +1,5 @@
 # SMASH — Smart Mobile App for the Surveyor's Happiness
 
-[![Codemagic build status](https://api.codemagic.io/apps/5e988fb818efc25eecc9bbb8/5e988fb818efc25eecc9bbb7/status_badge.svg)](https://codemagic.io/apps/5e988fb818efc25eecc9bbb8/5e988fb818efc25eecc9bbb7/latest_build)
-
 A digital field mapping app for Android and iOS \
 for fast qualitative engineering/geologic surveys and GIS data-collection.
 
@@ -45,8 +43,6 @@ flutter run
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/eu.hydrologis.smash/)
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
-     alt="Get it on Google Play"
-     height="80">](https://play.google.com/store/apps/details?id=eu.hydrologis.smash)
+
 
 Or download the latest APK from the [Releases Section](https://github.com/geopaparazzi/smash/releases/latest).
