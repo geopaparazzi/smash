@@ -128,7 +128,7 @@ dependencies:
   fl_chart: ^0.68.0
 
   # MIT
-  permission_handler: ^10.2.0
+  permission_handler: ^11.3.1
   # git: 
   #   url: https://github.com/Baseflow/flutter-permission-handler.git
   #   path: permission_handler

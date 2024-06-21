@@ -502,7 +502,9 @@ Future<String?> handleLocationPermission(BuildContext context) async {
   try {
     if (!SmashPlatform.isDesktop()) {
       var status = await Permission.location.status;
-      if (status != PermissionStatus.granted) {
+      var statusNotif = await Permission.notification.status;
+      if (status != PermissionStatus.granted ||
+          statusNotif != PermissionStatus.granted) {
         await SmashDialogs.showWarningDialog(
             context, SL.of(context).main_locationBackgroundWarning);
         var locationPermission =
