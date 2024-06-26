@@ -1,0 +1,5 @@
+- bugfix release for log crashes on certain devices
+- cleanup of soem google service leftovers
+- translations update
+- bug fix for logs not loading when to few points
+- fix log info view on map responsiveness
