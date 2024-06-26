@@ -1331,23 +1331,6 @@ class GpsSettingsState extends State<GpsSettings> {
               ],
             ),
           ),
-          if (Platform.isAndroid)
-            Card(
-              margin: SmashUI.defaultMargin(),
-              color: SmashColors.mainBackground,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: SmashUI.defaultPadding(),
-                    child: SmashUI.normalText(
-                        SL
-                            .of(context)
-                            .settings_useGoogleToImproveLoc, //"Use Google Services to improve location"
-                        bold: true),
-                  ),
-                ],
-              ),
-            ),
         ],
       ),
     );

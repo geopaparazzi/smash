@@ -70,7 +70,7 @@ packages:
     description:
       path: "."
       ref: "sanak/develop"
-      resolved-ref: "43994c62d2bafdef2ed67eb138f38668f93ebc1a"
+      resolved-ref: "8ab5d55cf11694a0f6c37f603ce90b5f4fe0d5b7"
       url: "https://github.com/moovida/background_locator_2"
     source: git
     version: "2.0.6"
@@ -1149,10 +1149,10 @@ packages:
     dependency: transitive
     description:
       name: pdf
-      sha256: "243f05342fc0bdf140eba5b069398985cdbdd3dbb1d776cf43d5ea29cc570ba6"
+      sha256: "81d5522bddc1ef5c28e8f0ee40b71708761753c163e0c93a40df56fd515ea0f0"
       url: "https://pub.dev"
     source: hosted
-    version: "3.10.8"
+    version: "3.11.0"
   permission_handler:
     dependency: "direct main"
     description:
@@ -1512,10 +1512,10 @@ packages:
     dependency: transitive
     description:
       name: sqlite3
-      sha256: b384f598b813b347c5a7e5ffad82cbaff1bec3d1561af267041e66f6f0899295
+      sha256: "6d17989c0b06a5870b2190d391925186f944cb943e5262d0d3f778fcfca3bc6e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.3"
+    version: "2.4.4"
   sqlite3_flutter_libs:
     dependency: "direct main"
     description:
