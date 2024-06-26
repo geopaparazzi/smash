@@ -328,12 +328,7 @@ time: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSince
       notificationIconColor: SmashColors.mainDecorations,
     );
 
-    bool useGpsGoogleServices = GpPreferences().getBooleanSync(
-        SmashPreferencesKeys.KEY_GPS_USE_GOOGLE_SERVICES, false);
     var clientType = LocationClient.android;
-    if (useGpsGoogleServices) {
-      clientType = LocationClient.google;
-    }
     GPS.BackgroundLocator.registerLocationUpdate(
       callback,
       //optional
