@@ -43,6 +43,7 @@ class AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     String? version = _version;
+    var thisYear = DateTime.now().year;
 
     return _version == null
         ? SmashCircularProgress(
@@ -95,9 +96,8 @@ class AboutPageState extends State<AboutPage> {
                     title: Text(SL
                         .of(context)
                         .about_legalInformation), //"Legal Information"
-                    subtitle: Text(SL
-                        .of(context)
-                        .about_copyright2020HydroloGIS), //"Copyright 2020, HydroloGIS S.r.l. -  some rights reserved. Tap to visit."
+                    subtitle: Text(
+                        "Copyright 2018-$thisYear, HydroloGIS S.r.l. - some rights reserved. Tap to visit."),
                     onTap: () async {
                       if (await canLaunchUrlString(
                           "http://www.hydrologis.com")) {
