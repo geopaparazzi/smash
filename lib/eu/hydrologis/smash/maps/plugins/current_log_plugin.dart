@@ -37,6 +37,16 @@ class CurrentGpsLogLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: panelExpandedValue,
+      builder: (context, snapshot, child) {
+        print("BAU");
+        return buildOnConsumeGps();
+      },
+    );
+  }
+
+  Consumer<GpsState> buildOnConsumeGps() {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       final map = FlutterMapState.maybeOf(context)!;
       ProjectState projectState =
@@ -65,7 +75,6 @@ class CurrentGpsLogLayer extends StatelessWidget {
             ..strokeWidth = logWidth;
         }
 
-        print(panelExpandedValue.value);
         var panel = _getInfoWidget(context, projectState, true);
         if (panelExpandedValue.value == 1) {
           panel = _getInfoWidget(context, projectState, false);
@@ -83,12 +92,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
                   projectState.currentFilteredLogPoints,
                   map),
             ),
-            ValueListenableBuilder(
-              valueListenable: panelExpandedValue,
-              builder: (context, snapshot, child) {
-                return panel;
-              },
-            ),
+            panel,
           ],
         );
       } else {

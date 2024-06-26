@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'l10n_ca.dart';
 import 'l10n_cs.dart';
 import 'l10n_de.dart';
 import 'l10n_en.dart';
@@ -97,6 +98,7 @@ abstract class SL {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
+    Locale('ca'),
     Locale('cs'),
     Locale('de'),
     Locale('fr'),
@@ -3161,7 +3163,7 @@ class _SLDelegate extends LocalizationsDelegate<SL> {
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['cs', 'de', 'en', 'fr', 'it', 'ja', 'nb', 'ru', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ca', 'cs', 'de', 'en', 'fr', 'it', 'ja', 'nb', 'ru', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_SLDelegate old) => false;
@@ -3191,6 +3193,7 @@ SL lookupSL(Locale locale) {
 
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'ca': return SLCa();
     case 'cs': return SLCs();
     case 'de': return SLDe();
     case 'en': return SLEn();

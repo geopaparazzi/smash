@@ -671,23 +671,24 @@ class DataLoaderUtilities {
         var color = list[0];
         var width = list[1];
         List<LatLngExt> points = list[2];
+        if (points.length > 1) {
+          var colorElev = EnhancedColorUtility.splitEnhancedColorString(color);
+          var colString = colorElev[0];
+          ColorTables ct = colorElev[1];
 
-        var colorElev = EnhancedColorUtility.splitEnhancedColorString(color);
-        var colString = colorElev[0];
-        ColorTables ct = colorElev[1];
-
-        if (ct.isValid()) {
-          var minMax = rangeMap[logId];
-          EnhancedColorUtility.buildPolylines(
-              lines, points, ct, width, minMax![0], minMax[1]);
-        } else {
-          dynamic colorObj = ColorExt(colString);
-          if (doOrigTransp) {
-            colorObj = colorObj.withAlpha(100);
+          if (ct.isValid()) {
+            var minMax = rangeMap[logId];
+            EnhancedColorUtility.buildPolylines(
+                lines, points, ct, width, minMax![0], minMax[1]);
+          } else {
+            dynamic colorObj = ColorExt(colString);
+            if (doOrigTransp) {
+              colorObj = colorObj.withAlpha(100);
+            }
+            var polyline =
+                Polyline(points: points, strokeWidth: width, color: colorObj);
+            lines.add(polyline);
           }
-          var polyline =
-              Polyline(points: points, strokeWidth: width, color: colorObj);
-          lines.add(polyline);
         }
       });
     }
