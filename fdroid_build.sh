@@ -34,7 +34,9 @@ cd $buildfolder
 if [ -f build/app/outputs/flutter-apk/app-release.apk ]; then
     # get latest git tag and use it as version code
     version_code=`git describe --tags --abbrev=0`
-    mv build/app/outputs/flutter-apk/app-release.apk smash-$version_code-unsigned.apk
+    # remove 'version' from the tag'
+    version_code=${version_code:7}
+    mv build/app/outputs/flutter-apk/app-release.apk smash$version_code-unsigned.apk
 fi
 
 rm -rf .pub_cache
