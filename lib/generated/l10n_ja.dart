@@ -1,5 +1,7 @@
 import 'l10n.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Japanese (`ja`).
 class SLJa extends SL {
   SLJa([String locale = 'ja']) : super(locale);

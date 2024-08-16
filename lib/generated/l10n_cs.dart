@@ -1,5 +1,7 @@
 import 'l10n.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Czech (`cs`).
 class SLCs extends SL {
   SLCs([String locale = 'cs']) : super(locale);

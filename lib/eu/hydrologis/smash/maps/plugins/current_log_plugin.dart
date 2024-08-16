@@ -40,7 +40,6 @@ class CurrentGpsLogLayer extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: panelExpandedValue,
       builder: (context, snapshot, child) {
-        print("BAU");
         return buildOnConsumeGps();
       },
     );

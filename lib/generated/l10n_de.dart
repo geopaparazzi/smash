@@ -1,5 +1,7 @@
 import 'l10n.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for German (`de`).
 class SLDe extends SL {
   SLDe([String locale = 'de']) : super(locale);
@@ -173,7 +175,7 @@ class SLDe extends SL {
   String get exportWidget_pdfExported => 'PDF exportiert';
 
   @override
-  String get exportWidget_exportToPortableDocumentFormat => 'Export project to Portable Document Format';
+  String get exportWidget_exportToPortableDocumentFormat => 'Exportiere Projekt als Portable Document Format';
 
   @override
   String get exportWidget_gpxExported => 'GPX exportiert';
@@ -185,28 +187,28 @@ class SLDe extends SL {
   String get exportWidget_kmlExported => 'KML exportiert';
 
   @override
-  String get exportWidget_exportToKml => 'Export project to KML';
+  String get exportWidget_exportToKml => 'Exportiere Projekt als KML';
 
   @override
-  String get exportWidget_imagesToFolderExported => 'Images exported';
+  String get exportWidget_imagesToFolderExported => 'Bilder exportieren';
 
   @override
-  String get exportWidget_exportImagesToFolder => 'Export project images to folder';
+  String get exportWidget_exportImagesToFolder => 'Exportiere Projektbilder in Ordner';
 
   @override
-  String get exportWidget_exportImagesToFolderTitle => 'Images';
+  String get exportWidget_exportImagesToFolderTitle => 'Bilder';
 
   @override
-  String get exportWidget_geopackageExported => 'Geopackage exported';
+  String get exportWidget_geopackageExported => 'Geopaket exportiert';
 
   @override
-  String get exportWidget_exportToGeopackage => 'Export project to Geopackage';
+  String get exportWidget_exportToGeopackage => 'Projekt in Geopaket exportieren';
 
   @override
-  String get exportWidget_exportToGSS => 'Export to Geopaparazzi Survey Server';
+  String get exportWidget_exportToGSS => 'Zum Geopaparazzi Survey Server exportieren';
 
   @override
-  String get gssExport_gssExport => 'GSS Export';
+  String get gssExport_gssExport => 'GSS Exportieren';
 
   @override
   String get gssExport_setProjectDirty => 'Set project to DIRTY?';
