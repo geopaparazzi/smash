@@ -34,7 +34,7 @@ class ENotificationSounds {
       volume: 0.1,
       asAlarm: false,
       durationSeconds: FenceMaster.DEFAULT_SOUND_DURATION}) async {
-    await FlutterRingtonePlayer.play(
+    await FlutterRingtonePlayer().play(
       android: AndroidSound(androidCode),
       ios: IosSound(iosCode),
       looping: loop,
@@ -44,11 +44,11 @@ class ENotificationSounds {
     Future.delayed(
         const Duration(seconds: (FenceMaster.DEFAULT_SOUND_DURATION)),
         () async {
-      await FlutterRingtonePlayer.stop();
+      await FlutterRingtonePlayer().stop();
     });
   }
 
   Future<void> stopCurrentTone() async {
-    await FlutterRingtonePlayer.stop();
+    await FlutterRingtonePlayer().stop();
   }
 }

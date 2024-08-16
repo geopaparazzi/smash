@@ -542,10 +542,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_ringtone_player
-      sha256: "0b036416fda0654da52221989bd1a8ccd2876cea57f61ecc3a4fc272bd738c67"
+      sha256: d0277a04e629a6582d776f5dcc2a879a733f7326ba073b872a9ccfbff9d9b51f
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "4.0.0+3"
   flutter_screen_wake:
     dependency: transitive
     description:
@@ -1186,10 +1186,10 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_android
-      sha256: "2e2a64834daafdde3aa7a0d9a6b90c97fc6229853ac18c2271a9d055631570c1"
+      sha256: "76e4ab092c1b240d31177bb64d2b0bea43f43d0e23541ec866151b9f7b2490fa"
       url: "https://pub.dev"
     source: hosted
-    version: "12.0.11"
+    version: "12.0.12"
   permission_handler_apple:
     dependency: transitive
     description:

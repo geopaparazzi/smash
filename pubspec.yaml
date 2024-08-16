@@ -107,7 +107,7 @@ dependencies:
   # catcher: ^0.6.9
 
   # MIT
-  flutter_ringtone_player: ^3.2.0
+  flutter_ringtone_player: ^4.0.0+3
 
   # MIT
   sqlite3_flutter_libs: ^0.5.9
