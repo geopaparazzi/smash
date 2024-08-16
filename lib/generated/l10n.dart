@@ -16,8 +16,6 @@ import 'l10n_nb.dart';
 import 'l10n_ru.dart';
 import 'l10n_zh.dart';
 
-// ignore_for_file: type=lint
-
 /// Callers can lookup localized strings with an instance of SL
 /// returned by `SL.of(context)`.
 ///

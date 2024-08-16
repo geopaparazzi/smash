@@ -1,7 +1,5 @@
 import 'l10n.dart';
 
-// ignore_for_file: type=lint
-
 /// The translations for Italian (`it`).
 class SLIt extends SL {
   SLIt([String locale = 'it']) : super(locale);

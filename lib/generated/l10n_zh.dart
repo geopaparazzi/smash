@@ -1,7 +1,5 @@
 import 'l10n.dart';
 
-// ignore_for_file: type=lint
-
 /// The translations for Chinese (`zh`).
 class SLZh extends SL {
   SLZh([String locale = 'zh']) : super(locale);

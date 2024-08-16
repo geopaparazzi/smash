@@ -146,7 +146,7 @@ dependencies:
   after_layout: ^1.2.0
 
   # BSD
-  package_info_plus: ^4.0.1
+  package_info_plus: ^8.0.2
   
   # NOTES: As noted on issue 20761, package_info on iOS requires the Xcode build folder to be
   # rebuilt after changes to the version string in pubspec.yaml. Clean the Xcode build folder
