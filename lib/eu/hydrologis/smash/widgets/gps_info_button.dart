@@ -42,15 +42,15 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             color = SmashColors.gpsOnNoFix;
           }
 
-          var isLandscape = ScreenUtilities.isLandscape(context);
           showModalBottomSheet(
+            isScrollControlled: true,
             showDragHandle: true,
             elevation: 10,
             backgroundColor: color,
             context: context,
             builder: (ctx) => Padding(
               padding: const EdgeInsets.all(8.0),
-              child: getGpsInfoContainer(isLandscape),
+              child: GpsInfoTableWidget(),
             ),
           );
         },
@@ -99,130 +99,146 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
       return button;
     });
   }
+}
 
-  Widget getGpsInfoContainer(bool isLandscape) {
+class GpsInfoTableWidget extends StatefulWidget {
+  GpsInfoTableWidget({Key? key}) : super(key: key);
+
+  @override
+  State<GpsInfoTableWidget> createState() => _GpsInfoTableWidgetState();
+}
+
+class _GpsInfoTableWidgetState extends State<GpsInfoTableWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<GpsState>(builder: (context, gpsState, child) {
+      var isLandscape = ScreenUtilities.isLandscape(context);
+
+      return getGpsInfoContainer(isLandscape, gpsState);
+    });
+  }
+
+  Widget getGpsInfoContainer(bool isLandscape, GpsState gpsState) {
     var color = SmashColors.mainBackground;
     var mapState = Provider.of<SmashMapState>(context, listen: false);
 
-    return Consumer<GpsState>(builder: (context, gpsState, child) {
-      Widget gpsInfo;
-      if (gpsState.lastGpsPosition != null) {
-        var pos = gpsState.lastGpsPosition!;
+    Widget gpsInfo;
+    if (gpsState.lastGpsPosition != null) {
+      var pos = gpsState.lastGpsPosition!;
 
-        Widget tableWidget;
+      Widget tableWidget;
 
-        if (isLandscape) {
-          tableWidget = Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Table(
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    columnWidths: {
-                      0: FlexColumnWidth(0.4),
-                      1: FlexColumnWidth(0.6),
-                    },
-                    children: [
-                      getLatTableRow(color, pos),
-                      getLonTableRow(color, pos),
-                      getAllGpsPointsTableRow(color, pos),
-                      getFilteresGpsPointsTableRow(color, pos),
-                    ],
-                  ),
+      if (isLandscape) {
+        tableWidget = Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Table(
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  columnWidths: {
+                    0: FlexColumnWidth(0.4),
+                    1: FlexColumnWidth(0.6),
+                  },
+                  children: [
+                    getLatTableRow(color, pos),
+                    getLonTableRow(color, pos),
+                    getAllGpsPointsTableRow(color, pos),
+                    getFilteresGpsPointsTableRow(color, pos),
+                  ],
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Table(
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    columnWidths: {
-                      0: FlexColumnWidth(0.4),
-                      1: FlexColumnWidth(0.6),
-                    },
-                    children: [
-                      getAltitudeTableRow(color, pos),
-                      getAccuracyTableRow(color, pos),
-                      getHeadingTableRow(color, pos),
-                      getSpeedTableRow(color, pos),
-                      getTimestampTableRow(color, pos),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        } else {
-          tableWidget = Table(
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            columnWidths: {
-              0: FlexColumnWidth(0.4),
-              1: FlexColumnWidth(0.6),
-            },
-            children: [
-              getLatTableRow(color, pos),
-              getLonTableRow(color, pos),
-              getAltitudeTableRow(color, pos),
-              getAccuracyTableRow(color, pos),
-              getHeadingTableRow(color, pos),
-              getSpeedTableRow(color, pos),
-              getTimestampTableRow(color, pos),
-              getAllGpsPointsTableRow(color, pos),
-              getFilteresGpsPointsTableRow(color, pos),
-            ],
-          );
-        }
-        gpsInfo = Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          //              crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12.0),
-              child: SmashUI.titleText(
-                "Last GPS position",
-                textAlign: TextAlign.center,
-                bold: true,
-                color: color,
               ),
             ),
-            tableWidget,
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: IconButton(
-                onPressed: () {
-                  var mapState =
-                      Provider.of<SmashMapState>(context, listen: false);
-                  mapState.centerOnGps = !mapState.centerOnGps;
-                  setState(() {});
-                },
-                icon: Icon(
-                  mapState.centerOnGps ? MdiIcons.magnetOn : MdiIcons.magnet,
-                  size: 32,
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Table(
+                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                  columnWidths: {
+                    0: FlexColumnWidth(0.4),
+                    1: FlexColumnWidth(0.6),
+                  },
+                  children: [
+                    getAltitudeTableRow(color, pos),
+                    getAccuracyTableRow(color, pos),
+                    getHeadingTableRow(color, pos),
+                    getSpeedTableRow(color, pos),
+                    getTimestampTableRow(color, pos),
+                  ],
                 ),
-                color: mapState.centerOnGps
-                    ? SmashColors.mainSelection
-                    : SmashColors.mainBackground,
               ),
             ),
           ],
         );
       } else {
-        gpsInfo = SmashUI.titleText(
-          SL
-              .of(context)
-              .gpsInfoButton_noGpsInfoAvailable, //"No GPS info available..."
-          color: color,
+        tableWidget = Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          columnWidths: {
+            0: FlexColumnWidth(0.4),
+            1: FlexColumnWidth(0.6),
+          },
+          children: [
+            getLatTableRow(color, pos),
+            getLonTableRow(color, pos),
+            getAltitudeTableRow(color, pos),
+            getAccuracyTableRow(color, pos),
+            getHeadingTableRow(color, pos),
+            getSpeedTableRow(color, pos),
+            getTimestampTableRow(color, pos),
+            getAllGpsPointsTableRow(color, pos),
+            getFilteresGpsPointsTableRow(color, pos),
+          ],
         );
       }
-
-      return Container(
-        child: gpsInfo,
+      gpsInfo = Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        //              crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: SmashUI.titleText(
+              "Last GPS position",
+              textAlign: TextAlign.center,
+              bold: true,
+              color: color,
+            ),
+          ),
+          tableWidget,
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: IconButton(
+              onPressed: () {
+                var mapState =
+                    Provider.of<SmashMapState>(context, listen: false);
+                mapState.centerOnGps = !mapState.centerOnGps;
+                setState(() {});
+              },
+              icon: Icon(
+                mapState.centerOnGps ? MdiIcons.magnetOn : MdiIcons.magnet,
+                size: 32,
+              ),
+              color: mapState.centerOnGps
+                  ? SmashColors.mainSelection
+                  : SmashColors.mainBackground,
+            ),
+          ),
+        ],
       );
-    });
+    } else {
+      gpsInfo = SmashUI.titleText(
+        SL
+            .of(context)
+            .gpsInfoButton_noGpsInfoAvailable, //"No GPS info available..."
+        color: color,
+      );
+    }
+
+    return Container(
+      child: gpsInfo,
+    );
   }
 
   TableRow getTimestampTableRow(ColorExt color, SmashPosition pos) {
