@@ -654,6 +654,48 @@ class ScreenSettingState extends State<ScreenSetting> {
                 ],
               ),
             ),
+            Card(
+              margin: SmashUI.defaultMargin(),
+              color: SmashColors.mainBackground,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: SmashUI.normalText("Other"),
+                  ),
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        CheckboxListTile(
+                          value: GpPreferences().getBooleanSync(
+                              SmashPreferencesKeys
+                                  .KEY_SCREEN_SHOW_LOG_INFO_PANEL,
+                              true),
+                          onChanged: (selected) async {
+                            await GpPreferences().setBoolean(
+                                SmashPreferencesKeys
+                                    .KEY_SCREEN_SHOW_LOG_INFO_PANEL,
+                                selected!);
+
+                            PreferencesState prefState =
+                                Provider.of<PreferencesState>(context,
+                                    listen: false);
+                            prefState.onChanged();
+
+                            SettingsWidget.reloadMapSettings(context);
+                            setState(() {});
+                          },
+                          title:
+                              SmashUI.normalText("Toggle GPS log info panel"),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // TODO enable when working on dark theme
             //            Card(
             //              margin: SmashUI.defaultMargin(),

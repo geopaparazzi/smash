@@ -109,6 +109,11 @@ class DataLoaderUtilities {
       }
       dbImage.altim = position.altitude;
       dbImage.azim = position.heading;
+    } else if (position is Coordinate) {
+      dbImage.lon = position.x;
+      dbImage.lat = position.y;
+      dbImage.altim = -1;
+      dbImage.azim = -1;
     } else {
       dbImage.lon = position.longitude;
       dbImage.lat = position.latitude;

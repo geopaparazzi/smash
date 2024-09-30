@@ -1,5 +1,7 @@
 import 'l10n.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for Catalan Valencian (`ca`).
 class SLCa extends SL {
   SLCa([String locale = 'ca']) : super(locale);

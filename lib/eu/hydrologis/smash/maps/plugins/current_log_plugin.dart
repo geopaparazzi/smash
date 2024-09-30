@@ -51,6 +51,9 @@ class CurrentGpsLogLayer extends StatelessWidget {
       ProjectState projectState =
           Provider.of<ProjectState>(context, listen: false);
 
+      bool showInfoPanel = GpPreferences().getBooleanSync(
+          SmashPreferencesKeys.KEY_SCREEN_SHOW_LOG_INFO_PANEL, false);
+
       if (projectState.isLogging && projectState.currentLogPoints.length > 1) {
         if (gpsState.logMode == SmashPreferencesKeys.LOGVIEWMODES[0]) {
           doOrig = false;
@@ -74,11 +77,14 @@ class CurrentGpsLogLayer extends StatelessWidget {
             ..strokeWidth = logWidth;
         }
 
-        var panel = _getInfoWidget(context, projectState, true);
-        if (panelExpandedValue.value == 1) {
-          panel = _getInfoWidget(context, projectState, false);
-        } else if (panelExpandedValue.value == 2) {
-          panel = _getTinyInfoWidget(context, projectState);
+        Widget? panel;
+        if (showInfoPanel) {
+          panel = _getInfoWidget(context, projectState, true);
+          if (panelExpandedValue.value == 1) {
+            panel = _getInfoWidget(context, projectState, false);
+          } else if (panelExpandedValue.value == 2) {
+            panel = _getTinyInfoWidget(context, projectState);
+          }
         }
 
         return Stack(
@@ -91,7 +97,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
                   projectState.currentFilteredLogPoints,
                   map),
             ),
-            panel,
+            if (panel != null) panel,
           ],
         );
       } else {

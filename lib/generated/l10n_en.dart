@@ -1,5 +1,7 @@
 import 'l10n.dart';
 
+// ignore_for_file: type=lint
+
 /// The translations for English (`en`).
 class SLEn extends SL {
   SLEn([String locale = 'en']) : super(locale);
