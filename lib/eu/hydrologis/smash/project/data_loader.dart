@@ -161,6 +161,10 @@ class DataLoaderUtilities {
     if (notesMode == SmashPreferencesKeys.NOTESVIEWMODES[2]) {
       return;
     }
+    if (mapBuilder.context == null || !mapBuilder.context!.mounted) {
+      return;
+    }
+    BuildContext ctx = mapBuilder.context!;
 
     List<Note> notesList = db.getNotes();
     notesList.forEach((note) {
@@ -185,218 +189,215 @@ class DataLoaderUtilities {
         width: noteExt.size * MARKER_ICON_TEXT_EXTRA_WIDTH_FACTOR,
         height: noteExt.size + textExtraHeight,
         point: LatLng(note.lat, note.lon),
-        builder: (ctx) {
-          return GestureDetector(
-            child: MarkerIcon(
-              iconData,
-              iconColor,
-              noteExt.size,
-              text,
-              SmashColors.mainTextColorNeutral,
-              iconColor.withAlpha(80),
-            ),
-            onTap: () {
-              bool sizeSnackBar =
-                  ScreenUtilities.isLargeScreen(mapBuilder.context!) &&
-                      ScreenUtilities.isLandscape(mapBuilder.context!);
-              var halfWidth = ScreenUtilities.getWidth(mapBuilder.context!);
-              if (sizeSnackBar) {
-                halfWidth /= 2;
-                if (halfWidth < 100) {
-                  halfWidth = 100;
-                }
+        child: GestureDetector(
+          child: MarkerIcon(
+            iconData,
+            iconColor,
+            noteExt.size,
+            text,
+            SmashColors.mainTextColorNeutral,
+            iconColor.withAlpha(80),
+          ),
+          onTap: () {
+            bool sizeSnackBar =
+                ScreenUtilities.isLargeScreen(mapBuilder.context!) &&
+                    ScreenUtilities.isLandscape(mapBuilder.context!);
+            var halfWidth = ScreenUtilities.getWidth(mapBuilder.context!);
+            if (sizeSnackBar) {
+              halfWidth /= 2;
+              if (halfWidth < 100) {
+                halfWidth = 100;
               }
-              ScaffoldMessenger.of(ctx).clearSnackBars();
-              ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-                behavior: SnackBarBehavior.floating,
-                width: halfWidth,
-                backgroundColor: SmashColors.snackBarColor,
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: SmashUI.defaultPadding(),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Table(
-                            columnWidths: {
-                              0: FlexColumnWidth(0.4),
-                              1: FlexColumnWidth(0.6),
-                            },
-                            children: [
-                              TableRow(
-                                children: [
-                                  TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context!)
-                                      .dataLoader_Note), //"Note"
-                                  TableUtilities.cellForString(note.text),
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context!)
-                                      .dataLoader_longitude), //"Longitude"
-                                  TableUtilities.cellForString(note.lon
-                                      .toStringAsFixed(SmashPreferencesKeys
-                                          .KEY_LATLONG_DECIMALS)),
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context!)
-                                      .dataLoader_latitude), //"Latitude"
-                                  TableUtilities.cellForString(note.lat
-                                      .toStringAsFixed(SmashPreferencesKeys
-                                          .KEY_LATLONG_DECIMALS)),
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context!)
-                                      .dataLoader_altitude), //"Altitude"
-                                  TableUtilities.cellForString(note.altim!
-                                      .toStringAsFixed(SmashPreferencesKeys
-                                          .KEY_ELEV_DECIMALS)),
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context!)
-                                      .dataLoader_timestamp), //"Timestamp"
-                                  TableUtilities.cellForString(
-                                      TimeUtilities.ISO8601_TS_FORMATTER.format(
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                              note.timeStamp))),
-                                ],
-                              ),
-                              TableRow(
-                                children: [
-                                  TableUtilities.cellForString(SL
-                                      .of(mapBuilder.context!)
-                                      .dataLoader_hasForm), //"Has Form"
-                                  TableUtilities.cellForString(
-                                      "${note.hasForm()}"),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+            }
+            ScaffoldMessenger.of(ctx).clearSnackBars();
+            ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+              behavior: SnackBarBehavior.floating,
+              width: halfWidth,
+              backgroundColor: SmashColors.snackBarColor,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: SmashUI.defaultPadding(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Table(
+                          columnWidths: {
+                            0: FlexColumnWidth(0.4),
+                            1: FlexColumnWidth(0.6),
+                          },
+                          children: [
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString(SL
+                                    .of(mapBuilder.context!)
+                                    .dataLoader_Note), //"Note"
+                                TableUtilities.cellForString(note.text),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString(SL
+                                    .of(mapBuilder.context!)
+                                    .dataLoader_longitude), //"Longitude"
+                                TableUtilities.cellForString(note.lon
+                                    .toStringAsFixed(SmashPreferencesKeys
+                                        .KEY_LATLONG_DECIMALS)),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString(SL
+                                    .of(mapBuilder.context!)
+                                    .dataLoader_latitude), //"Latitude"
+                                TableUtilities.cellForString(note.lat
+                                    .toStringAsFixed(SmashPreferencesKeys
+                                        .KEY_LATLONG_DECIMALS)),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString(SL
+                                    .of(mapBuilder.context!)
+                                    .dataLoader_altitude), //"Altitude"
+                                TableUtilities.cellForString(note.altim!
+                                    .toStringAsFixed(SmashPreferencesKeys
+                                        .KEY_ELEV_DECIMALS)),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString(SL
+                                    .of(mapBuilder.context!)
+                                    .dataLoader_timestamp), //"Timestamp"
+                                TableUtilities.cellForString(TimeUtilities
+                                    .ISO8601_TS_FORMATTER
+                                    .format(DateTime.fromMillisecondsSinceEpoch(
+                                        note.timeStamp))),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                TableUtilities.cellForString(SL
+                                    .of(mapBuilder.context!)
+                                    .dataLoader_hasForm), //"Has Form"
+                                TableUtilities.cellForString(
+                                    "${note.hasForm()}"),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(
-                              Icons.share,
-                              color: SmashColors.mainSelection,
-                            ),
-                            iconSize: SmashUI.MEDIUM_ICON_SIZE,
-                            onPressed: () {
-                              var label =
-                                  "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim!.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
-                              var urlStr = UrlUtilities.osmUrlFromLatLong(
-                                  note.lat, note.lon,
-                                  withMarker: true);
-                              label = "$label\n$urlStr";
-                              ShareHandler.shareText(label);
-                              ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
-                            },
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.share,
+                            color: SmashColors.mainSelection,
                           ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.edit,
-                              color: SmashColors.mainSelection,
-                            ),
-                            iconSize: SmashUI.MEDIUM_ICON_SIZE,
-                            onPressed: () {
-                              if (note.hasForm()) {
-                                var section = jsonDecode(note.form!);
-                                var sectionMap = SmashSection(section);
-                                var sectionName =
-                                    sectionMap.sectionName ?? "Unknown Section";
-                                SmashPosition sp = SmashPosition.fromCoords(
-                                    note.lon,
-                                    note.lat,
-                                    DateTime.now()
-                                        .millisecondsSinceEpoch
-                                        .toDouble());
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
+                          onPressed: () {
+                            var label =
+                                "note: ${note.text}\nlat: ${note.lat}\nlon: ${note.lon}\naltim: ${note.altim!.round()}\nts: ${TimeUtilities.ISO8601_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(note.timeStamp))}";
+                            var urlStr = UrlUtilities.osmUrlFromLatLong(
+                                note.lat, note.lon,
+                                withMarker: true);
+                            label = "$label\n$urlStr";
+                            ShareHandler.shareText(label);
+                            ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.edit,
+                            color: SmashColors.mainSelection,
+                          ),
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
+                          onPressed: () {
+                            if (note.hasForm()) {
+                              var section = jsonDecode(note.form!);
+                              var sectionMap = SmashSection(section);
+                              var sectionName =
+                                  sectionMap.sectionName ?? "Unknown Section";
+                              SmashPosition sp = SmashPosition.fromCoords(
+                                  note.lon,
+                                  note.lat,
+                                  DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toDouble());
 
-                                var titleWidget = SmashUI.titleText(sectionName,
-                                    color: SmashColors.mainBackground,
-                                    bold: true);
-                                var formHelper = SmashFormHelper(note.id!,
-                                    sectionName, sectionMap, titleWidget, sp);
+                              var titleWidget = SmashUI.titleText(sectionName,
+                                  color: SmashColors.mainBackground,
+                                  bold: true);
+                              var formHelper = SmashFormHelper(note.id!,
+                                  sectionName, sectionMap, titleWidget, sp);
 
-                                Navigator.push(
-                                    ctx,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            MasterDetailPage(formHelper)));
-                              } else {
-                                Navigator.push(
-                                    ctx,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            NotePropertiesWidget(note)));
-                              }
-                              ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
-                            },
+                              Navigator.push(
+                                  ctx,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          MasterDetailPage(formHelper)));
+                            } else {
+                              Navigator.push(
+                                  ctx,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          NotePropertiesWidget(note)));
+                            }
+                            ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: SmashColors.mainSelection,
                           ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.delete,
-                              color: SmashColors.mainSelection,
-                            ),
-                            iconSize: SmashUI.MEDIUM_ICON_SIZE,
-                            onPressed: () async {
-                              var doRemove =
-                                  await SmashDialogs.showConfirmDialog(
-                                      ctx,
-                                      SL
-                                          .of(mapBuilder.context!)
-                                          .dataLoader_removeNote, //"Remove Note",
-                                      "${SL.of(mapBuilder.context!).dataLoader_areYouSureRemoveNote} (id:${note.id} - ${note.text})");
-                              if (doRemove!) {
-                                db.deleteNote(note.id!);
-                                var projectState = Provider.of<ProjectState>(
-                                    mapBuilder.context!,
-                                    listen: false);
-                                projectState.reloadProject(ctx);
-                              }
-                              ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
-                            },
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
+                          onPressed: () async {
+                            var doRemove = await SmashDialogs.showConfirmDialog(
+                                ctx,
+                                SL
+                                    .of(mapBuilder.context!)
+                                    .dataLoader_removeNote, //"Remove Note",
+                                "${SL.of(mapBuilder.context!).dataLoader_areYouSureRemoveNote} (id:${note.id} - ${note.text})");
+                            if (doRemove!) {
+                              db.deleteNote(note.id!);
+                              var projectState = Provider.of<ProjectState>(
+                                  mapBuilder.context!,
+                                  listen: false);
+                              projectState.reloadProject(ctx);
+                            }
+                            ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
+                          },
+                        ),
+                        Spacer(flex: 1),
+                        IconButton(
+                          icon: Icon(
+                            Icons.close,
+                            color: SmashColors.mainDecorationsDarker,
                           ),
-                          Spacer(flex: 1),
-                          IconButton(
-                            icon: Icon(
-                              Icons.close,
-                              color: SmashColors.mainDecorationsDarker,
-                            ),
-                            iconSize: SmashUI.MEDIUM_ICON_SIZE,
-                            onPressed: () {
-                              ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
-                            },
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                duration: Duration(seconds: 5),
-              ));
-            },
-          );
-        },
+                          iconSize: SmashUI.MEDIUM_ICON_SIZE,
+                          onPressed: () {
+                            ScaffoldMessenger.of(ctx).hideCurrentSnackBar();
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              duration: Duration(seconds: 5),
+            ));
+          },
+        ),
       ));
     });
   }
@@ -414,6 +415,11 @@ class DataLoaderUtilities {
       }
     }
 
+    if (mapBuilder.context == null || !mapBuilder.context!.mounted) {
+      return;
+    }
+    BuildContext ctx = mapBuilder.context!;
+
     var imagesList = db.getImages();
     imagesList.forEach((image) {
       var size = 48.0;
@@ -423,7 +429,7 @@ class DataLoaderUtilities {
         width: size,
         height: size,
         point: new LatLng(lat, lon),
-        builder: (ctx) => new Container(
+        child: Container(
             child: GestureDetector(
           onTap: () {
             var thumb = db.getThumbnail(image.imageDataId!);

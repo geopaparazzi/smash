@@ -36,7 +36,6 @@ import 'package:smash/eu/hydrologis/smash/widgets/gps_mode_selector.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:lat_lon_grid_plugin/lat_lon_grid_plugin.dart';
 import 'mainview_utils.dart';
 
 class MainViewWidget extends StatefulWidget {
@@ -750,27 +749,27 @@ class MainViewWidgetState extends State<MainViewWidget>
     if (PluginsHandler.FENCE.isOn()) {
       mapView.addPostLayer(FencesLayer());
     }
-    if (PluginsHandler.GRID.isOn()) {
-      var gridLayer = LatLonGridLayer(
-          key: ValueKey("SMASH_LATLONGRIDLAYER"),
-          options: LatLonGridLayerOptions(
-            labelStyle: TextStyle(
-              color: SmashColors.mainBackground,
-              backgroundColor: SmashColors.mainDecorations.withAlpha(170),
-              fontSize: 16.0,
-            ),
-            lineColor: SmashColors.mainDecorations,
-            lineWidth: 0.5,
-            showCardinalDirections: true,
-            showCardinalDirectionsAsPrefix: false,
-            showLabels: true,
-            rotateLonLabels: true,
-            placeLabelsOnLines: true,
-            offsetLonLabelsBottom: 20.0,
-            offsetLatLabelsLeft: 20.0,
-          ));
-      mapView.addPostLayer(gridLayer);
-    }
+    // if (PluginsHandler.GRID.isOn()) {
+    //   var gridLayer = LatLonGridLayer(
+    //       key: ValueKey("SMASH_LATLONGRIDLAYER"),
+    //       options: LatLonGridLayerOptions(
+    //         labelStyle: TextStyle(
+    //           color: SmashColors.mainBackground,
+    //           backgroundColor: SmashColors.mainDecorations.withAlpha(170),
+    //           fontSize: 16.0,
+    //         ),
+    //         lineColor: SmashColors.mainDecorations,
+    //         lineWidth: 0.5,
+    //         showCardinalDirections: true,
+    //         showCardinalDirectionsAsPrefix: false,
+    //         showLabels: true,
+    //         rotateLonLabels: true,
+    //         placeLabelsOnLines: true,
+    //         offsetLonLabelsBottom: 20.0,
+    //         offsetLatLabelsLeft: 20.0,
+    //       ));
+    //   mapView.addPostLayer(gridLayer);
+    // }
   }
 
   void addPluginsPostLayers() {

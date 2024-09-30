@@ -6,7 +6,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' hide Path;
 import 'package:provider/provider.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -29,7 +29,7 @@ class GpsPositionLayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-    var map = FlutterMapState.maybeOf(context)!;
+    var map = MapCamera.maybeOf(context)!;
 
     return CustomPaint(
       painter: CurrentGpsPositionPainter(markerColor, markerColorStale,
@@ -39,7 +39,7 @@ class GpsPositionLayer extends StatelessWidget {
 }
 
 class CurrentGpsPositionPainter extends CustomPainter {
-  FlutterMapState map;
+  MapCamera map;
   GpsState gpsState;
   Color markerColor;
   Color markerColorStale;
@@ -89,7 +89,7 @@ class CurrentGpsPositionPainter extends CustomPainter {
         mainPosLL = LatLng(pos.latitude, pos.longitude);
         accuracy = pos.accuracy;
       }
-      var bounds = map.bounds;
+      var bounds = map.visibleBounds;
       if (!bounds.contains(mainPosLL)) {
         return;
       }

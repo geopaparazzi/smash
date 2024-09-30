@@ -130,9 +130,9 @@ class ProjectState extends ChangeNotifierPlus {
         maxClusterRadius: 80,
         //        height: 40,
         //        width: 40,
-        fitBoundsOptions: FitBoundsOptions(
-          padding: EdgeInsets.all(180),
-        ),
+        // fitBoundsOptions: FitBoundsOptions(
+        //   padding: EdgeInsets.all(180),
+        // ),
         markers: tmpList,
         polygonOptions: PolygonOptions(
             borderColor: SmashColors.mainDecorationsDarker,

@@ -8,11 +8,10 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
 import 'package:dart_jts/dart_jts.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 /// Plugin to show the current GPS log
@@ -47,7 +46,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
 
   Consumer<GpsState> buildOnConsumeGps() {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
-      final map = FlutterMapState.maybeOf(context)!;
+      final map = MapCamera.maybeOf(context)!;
       ProjectState projectState =
           Provider.of<ProjectState>(context, listen: false);
 
@@ -397,7 +396,7 @@ class CurrentLogPathPainter extends CustomPainter {
   Paint? filtereLogPaint;
   List<Coordinate> currentLogPoints;
   List<Coordinate> currentFilteredLogPoints;
-  FlutterMapState map;
+  MapCamera map;
 
   CurrentLogPathPainter(this.logPaint, this.filtereLogPaint,
       this.currentLogPoints, this.currentFilteredLogPoints, this.map);
@@ -406,17 +405,17 @@ class CurrentLogPathPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (logPaint != null) {
       Path path1 = Path();
-      CustomPoint posPixel1 =
+      var posPixel1 =
           map.project(LatLngExt.fromCoordinate(currentLogPoints[0]));
-      CustomPoint pixelOrigin = map.pixelOrigin;
+      var pixelOrigin = map.pixelOrigin;
       double center1X = posPixel1.x - pixelOrigin.x.toDouble();
       double center1Y = (posPixel1.y - pixelOrigin.y.toDouble());
       path1.moveTo(center1X, center1Y);
 
       for (int i = 1; i < currentLogPoints.length; i++) {
-        CustomPoint posPixel1 =
+        var posPixel1 =
             map.project(LatLngExt.fromCoordinate(currentLogPoints[i]));
-        CustomPoint pixelOrigin = map.pixelOrigin;
+        var pixelOrigin = map.pixelOrigin;
         double center1X = posPixel1.x - pixelOrigin.x.toDouble();
         double center1Y = (posPixel1.y - pixelOrigin.y.toDouble());
         path1.lineTo(center1X, center1Y);
@@ -426,17 +425,17 @@ class CurrentLogPathPainter extends CustomPainter {
 
     if (filtereLogPaint != null) {
       Path path2 = Path();
-      CustomPoint posPixel2 =
+      var posPixel2 =
           map.project(LatLngExt.fromCoordinate(currentFilteredLogPoints[0]));
-      CustomPoint pixelOrigin = map.pixelOrigin;
+      var pixelOrigin = map.pixelOrigin;
       double center2X = posPixel2.x - pixelOrigin.x.toDouble();
       double center2Y = (posPixel2.y - pixelOrigin.y.toDouble());
       path2.moveTo(center2X, center2Y);
 
       for (int i = 1; i < currentFilteredLogPoints.length; i++) {
-        CustomPoint posPixel2 =
+        var posPixel2 =
             map.project(LatLngExt.fromCoordinate(currentFilteredLogPoints[i]));
-        CustomPoint pixelOrigin = map.pixelOrigin;
+        var pixelOrigin = map.pixelOrigin;
         double center2X = posPixel2.x - pixelOrigin.x.toDouble();
         double center2Y = (posPixel2.y - pixelOrigin.y.toDouble());
         path2.lineTo(center2X, center2Y);

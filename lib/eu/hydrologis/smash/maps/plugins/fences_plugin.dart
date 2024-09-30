@@ -5,7 +5,7 @@
  */
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/util/fence.dart';
@@ -41,15 +41,15 @@ class FencesLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var mapState = FlutterMapState.maybeOf(context)!;
+    var cameraState = MapCamera.maybeOf(context)!;
     return CustomPaint(
-      painter: CurrentLogPathPainter(FencesPluginOption(), mapState),
+      painter: CurrentLogPathPainter(FencesPluginOption(), cameraState),
     );
   }
 }
 
 class CurrentLogPathPainter extends CustomPainter {
-  FlutterMapState map;
+  MapCamera map;
   FencesPluginOption opts;
 
   CurrentLogPathPainter(this.opts, this.map);
@@ -57,7 +57,7 @@ class CurrentLogPathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var fencesList = FenceMaster().fencesList;
-    var bb = map.bounds;
+    var bb = map.visibleBounds;
     Envelope mapEnv = Envelope(bb.west, bb.east, bb.south, bb.north);
     for (var i = 0; i < fencesList.length; i++) {
       var fence = fencesList[i];

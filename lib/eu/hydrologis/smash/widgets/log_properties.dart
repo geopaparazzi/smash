@@ -10,7 +10,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -428,13 +428,11 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
         SmashColors.mainTextColorNeutral,
         SmashColors.mainBackground.withAlpha(100));
     staticMarkers.add(Marker(
-        anchorPos: AnchorPos.exactly(Anchor(size / 2, size * 3 / 2)),
-        point: ll,
-        width: size * 3 / 2,
-        height: size + MARKER_ICON_TEXT_EXTRA_HEIGHT,
-        builder: (ctx) {
-          return mi;
-        }));
+      point: ll,
+      width: size * 3 / 2,
+      height: size + MARKER_ICON_TEXT_EXTRA_HEIGHT,
+      child: mi,
+    ));
   }
 
   void afterFirstLayout(BuildContext context) {}
@@ -449,11 +447,11 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
           point: hoverPoint!,
           width: 15,
           height: 15,
-          builder: (BuildContext context) => Container(
-                decoration: BoxDecoration(
-                    color: SmashColors.mainDecorations,
-                    borderRadius: BorderRadius.circular(8)),
-              )));
+          child: Container(
+            decoration: BoxDecoration(
+                color: SmashColors.mainDecorations,
+                borderRadius: BorderRadius.circular(8)),
+          )));
 
     var height = ScreenUtilities.getHeight(context);
 
