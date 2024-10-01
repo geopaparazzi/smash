@@ -383,8 +383,6 @@
   "@settings_headingDeg": {},
   "settings_speedMS": "vitesse [m/s]",
   "@settings_speedMS": {},
-  "fence_delete": "Supprimer",
-  "@fence_delete": {},
   "featureAttributesViewer_field": "Champ",
   "@featureAttributesViewer_field": {},
   "noteList_simpleNotesList": "Une simple liste de notes",
