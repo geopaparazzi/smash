@@ -1126,7 +1126,7 @@ class GpsSettingsState extends State<GpsSettings> {
     int testLogDuration =
         GpPreferences().getIntSync(testlogDurationKey, 500) ?? 500;
     bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(
-        SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
+        SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, true);
 
     // SmashLocationAccuracy locationAccuracy =
     //     SmashLocationAccuracy.fromPreferences();
