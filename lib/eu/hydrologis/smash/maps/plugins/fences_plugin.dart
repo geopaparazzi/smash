@@ -57,7 +57,6 @@ class CurrentLogPathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var fencesList = FenceMaster().fencesList;
-    print("FENCES LIST: ${fencesList.length}");
     var bb = map.visibleBounds;
     Envelope mapEnv = Envelope(bb.west, bb.east, bb.south, bb.north);
     for (var i = 0; i < fencesList.length; i++) {
