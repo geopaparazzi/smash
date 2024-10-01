@@ -20,26 +20,9 @@ import 'package:smash/eu/hydrologis/smash/gps/filters.dart';
 import 'package:smash/eu/hydrologis/smash/gps/testlog.dart';
 import 'package:smash/eu/hydrologis/smash/l10n/localization.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
-import 'package:smash/eu/hydrologis/smash/util/fence.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/fence.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-
-/// Utilities to work with coordinates.
-class CoordinateUtilities {
-  static final geodesy = Geodesy();
-
-  /// Get the distance between two latlong coordinates in meters, if not otherwise specified by [unit].
-  static double getDistance(Coordinate ll1, Coordinate ll2) {
-    return geodesy.distanceBetweenTwoGeoPoints(ll1, ll2).toDouble();
-  }
-
-  /// Get the offset coordinate given a starting point, a distance in meters and an azimuth angle.
-  static Coordinate getAtOffset(
-      Coordinate coordinate, double distanceInMeter, double azimuth) {
-    return geodesy.destinationPointByDistanceAndBearing(
-        coordinate, distanceInMeter, azimuth);
-  }
-}
 
 class SmashLocationAccuracy {
   final int code;

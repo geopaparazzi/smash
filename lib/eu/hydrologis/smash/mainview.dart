@@ -26,7 +26,7 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/gps_position_plugin.dart'
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/util/coachmarks.dart';
-import 'package:smash/eu/hydrologis/smash/util/fence.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/fence.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_info_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/note_list.dart';

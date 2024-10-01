@@ -1267,9 +1267,6 @@ class SLCs extends SL {
   String get toolbarTools_measureDistanceWithFinger => 'Měření vzdáleností na mapě prstem.';
 
   @override
-  String get toolbarTools_toggleFenceMapCenter => 'Přepínání plotu ve středu mapy.';
-
-  @override
   String get toolbarTools_modifyGeomVectorLayers => 'Úprava geometrie upravitelných vektorových vrstev.';
 
   @override
@@ -1373,51 +1370,6 @@ class SLCs extends SL {
 
   @override
   String get coachMarks_skip => 'Přeskočit';
-
-  @override
-  String get fence_fenceProperties => 'Vlastnosti plotu Vlastnosti plotu';
-
-  @override
-  String get fence_delete => 'Smazat';
-
-  @override
-  String get fence_removeFence => 'Odstranit plot';
-
-  @override
-  String get fence_areYouSureRemoveFence => 'Chcete odstranit plot?';
-
-  @override
-  String get fence_cancel => 'Zrušit';
-
-  @override
-  String get fence_ok => 'OK';
-
-  @override
-  String get fence_aNewFence => 'nový plot';
-
-  @override
-  String get fence_label => 'Štítek';
-
-  @override
-  String get fence_aNameForFence => 'Název pro plot.';
-
-  @override
-  String get fence_theNameNeedsToBeDefined => 'Název musí být definován.';
-
-  @override
-  String get fence_radius => 'Poloměr';
-
-  @override
-  String get fence_theFenceRadiusMeters => 'Poloměr plotu v metrech.';
-
-  @override
-  String get fence_radiusNeedsToBePositive => 'Poloměr musí být kladné číslo v metrech.';
-
-  @override
-  String get fence_onEnter => 'Při vstupu';
-
-  @override
-  String get fence_onExit => 'Při odchodu';
 
   @override
   String get network_cancelledByUser => 'Zrušeno uživatelem.';

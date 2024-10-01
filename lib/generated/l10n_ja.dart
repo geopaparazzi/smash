@@ -1267,9 +1267,6 @@ class SLJa extends SL {
   String get toolbarTools_measureDistanceWithFinger => '指で地図上の距離を測定します。';
 
   @override
-  String get toolbarTools_toggleFenceMapCenter => '地図中心のフェンスを切り替えます。';
-
-  @override
   String get toolbarTools_modifyGeomVectorLayers => '編集可能なベクターレイヤーのジオメトリを変更します。';
 
   @override
@@ -1373,51 +1370,6 @@ class SLJa extends SL {
 
   @override
   String get coachMarks_skip => 'スキップ';
-
-  @override
-  String get fence_fenceProperties => 'フェンスのプロパティ';
-
-  @override
-  String get fence_delete => '削除';
-
-  @override
-  String get fence_removeFence => 'フェンスを削除';
-
-  @override
-  String get fence_areYouSureRemoveFence => 'フェンスを削除してもよろしいですか？';
-
-  @override
-  String get fence_cancel => 'キャンセル';
-
-  @override
-  String get fence_ok => 'OK';
-
-  @override
-  String get fence_aNewFence => '新しいフェンス';
-
-  @override
-  String get fence_label => 'ラベル';
-
-  @override
-  String get fence_aNameForFence => 'フェンスの名前。';
-
-  @override
-  String get fence_theNameNeedsToBeDefined => '名前を定義する必要があります。';
-
-  @override
-  String get fence_radius => '半径';
-
-  @override
-  String get fence_theFenceRadiusMeters => 'フェンスの半径（メートル）';
-
-  @override
-  String get fence_radiusNeedsToBePositive => '半径はメートル単位の正の数である必要があります。';
-
-  @override
-  String get fence_onEnter => '入力時';
-
-  @override
-  String get fence_onExit => '終了時';
 
   @override
   String get network_cancelledByUser => 'ユーザーによってキャンセルされました。';

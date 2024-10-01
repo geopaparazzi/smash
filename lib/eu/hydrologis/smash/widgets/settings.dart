@@ -1515,7 +1515,6 @@ class _NotesViewSettingState extends State<NotesViewSetting> {
             value: gpsState.notesMode,
             isExpanded: false,
             items: SmashPreferencesKeys.NOTESVIEWMODES.map((i) {
-              print(i);
               return DropdownMenuItem<String>(
                 child: Text(
                   i,
@@ -1567,7 +1566,7 @@ class _PluginsViewSettingState extends State<PluginsViewSetting> {
               bold: true), //"Map Plugins"
         ),
         PluginCheckboxWidget(PluginsHandler.SCALE.key),
-        PluginCheckboxWidget(PluginsHandler.GRID.key),
+        // PluginCheckboxWidget(PluginsHandler.GRID.key),
         PluginCheckboxWidget(PluginsHandler.CROSS.key),
         PluginCheckboxWidget(PluginsHandler.GPS.key),
         PluginCheckboxWidget(PluginsHandler.FENCE.key),

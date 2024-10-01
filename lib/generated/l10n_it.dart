@@ -1267,9 +1267,6 @@ class SLIt extends SL {
   String get toolbarTools_measureDistanceWithFinger => 'Misura le distanze sulla mappa con il dito.';
 
   @override
-  String get toolbarTools_toggleFenceMapCenter => 'Attiva/disattiva recinto virtuale al centro della mappa.';
-
-  @override
   String get toolbarTools_modifyGeomVectorLayers => 'Modifica la geometria dei layers vettoriali modificabili.';
 
   @override
@@ -1373,51 +1370,6 @@ class SLIt extends SL {
 
   @override
   String get coachMarks_skip => 'Salta';
-
-  @override
-  String get fence_fenceProperties => 'Proprietà del recinto virtuale';
-
-  @override
-  String get fence_delete => 'Elimina';
-
-  @override
-  String get fence_removeFence => 'Rimuovi recinto virtuale';
-
-  @override
-  String get fence_areYouSureRemoveFence => 'Rimuovi il recinto virtuale?';
-
-  @override
-  String get fence_cancel => 'Annulla';
-
-  @override
-  String get fence_ok => 'OK';
-
-  @override
-  String get fence_aNewFence => 'un nuovo recinto virtuale';
-
-  @override
-  String get fence_label => 'Etichetta';
-
-  @override
-  String get fence_aNameForFence => 'Un nome per il recinto virtuale.';
-
-  @override
-  String get fence_theNameNeedsToBeDefined => 'Il nume deve essere definito.';
-
-  @override
-  String get fence_radius => 'Raggio';
-
-  @override
-  String get fence_theFenceRadiusMeters => 'Il raggio del recinto virtuale in metri.';
-
-  @override
-  String get fence_radiusNeedsToBePositive => 'Il raggio deve essere un numero positivo in metri.';
-
-  @override
-  String get fence_onEnter => 'In entrata';
-
-  @override
-  String get fence_onExit => 'In uscita';
 
   @override
   String get network_cancelledByUser => 'Annullato dall\'utente.';

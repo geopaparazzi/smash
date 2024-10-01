@@ -2633,12 +2633,6 @@ abstract class SL {
   /// **'Measure distances on the map with your finger.'**
   String get toolbarTools_measureDistanceWithFinger;
 
-  /// No description provided for @toolbarTools_toggleFenceMapCenter.
-  ///
-  /// In en, this message translates to:
-  /// **'Toggle fence in map center.'**
-  String get toolbarTools_toggleFenceMapCenter;
-
   /// No description provided for @toolbarTools_modifyGeomVectorLayers.
   ///
   /// In en, this message translates to:
@@ -2848,96 +2842,6 @@ abstract class SL {
   /// In en, this message translates to:
   /// **'Skip'**
   String get coachMarks_skip;
-
-  /// No description provided for @fence_fenceProperties.
-  ///
-  /// In en, this message translates to:
-  /// **'Fence Properties'**
-  String get fence_fenceProperties;
-
-  /// No description provided for @fence_delete.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete'**
-  String get fence_delete;
-
-  /// No description provided for @fence_removeFence.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove fence'**
-  String get fence_removeFence;
-
-  /// No description provided for @fence_areYouSureRemoveFence.
-  ///
-  /// In en, this message translates to:
-  /// **'Remove the fence?'**
-  String get fence_areYouSureRemoveFence;
-
-  /// No description provided for @fence_cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get fence_cancel;
-
-  /// No description provided for @fence_ok.
-  ///
-  /// In en, this message translates to:
-  /// **'OK'**
-  String get fence_ok;
-
-  /// No description provided for @fence_aNewFence.
-  ///
-  /// In en, this message translates to:
-  /// **'a new fence'**
-  String get fence_aNewFence;
-
-  /// No description provided for @fence_label.
-  ///
-  /// In en, this message translates to:
-  /// **'Label'**
-  String get fence_label;
-
-  /// No description provided for @fence_aNameForFence.
-  ///
-  /// In en, this message translates to:
-  /// **'A name for the fence.'**
-  String get fence_aNameForFence;
-
-  /// No description provided for @fence_theNameNeedsToBeDefined.
-  ///
-  /// In en, this message translates to:
-  /// **'The name must be defined.'**
-  String get fence_theNameNeedsToBeDefined;
-
-  /// No description provided for @fence_radius.
-  ///
-  /// In en, this message translates to:
-  /// **'Radius'**
-  String get fence_radius;
-
-  /// No description provided for @fence_theFenceRadiusMeters.
-  ///
-  /// In en, this message translates to:
-  /// **'The fence radius in meters.'**
-  String get fence_theFenceRadiusMeters;
-
-  /// No description provided for @fence_radiusNeedsToBePositive.
-  ///
-  /// In en, this message translates to:
-  /// **'The radius must be a positive number in meters.'**
-  String get fence_radiusNeedsToBePositive;
-
-  /// No description provided for @fence_onEnter.
-  ///
-  /// In en, this message translates to:
-  /// **'On enter'**
-  String get fence_onEnter;
-
-  /// No description provided for @fence_onExit.
-  ///
-  /// In en, this message translates to:
-  /// **'On exit'**
-  String get fence_onExit;
 
   /// No description provided for @network_cancelledByUser.
   ///

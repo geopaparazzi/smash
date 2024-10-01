@@ -7,9 +7,9 @@ import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/util/fence.dart';
-import 'package:smash/eu/hydrologis/smash/util/notifications.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/fence.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/notifications.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// Plugin to show the current GPS log
 class FencesPluginOption {
@@ -57,6 +57,7 @@ class CurrentLogPathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var fencesList = FenceMaster().fencesList;
+    print("FENCES LIST: ${fencesList.length}");
     var bb = map.visibleBounds;
     Envelope mapEnv = Envelope(bb.west, bb.east, bb.south, bb.north);
     for (var i = 0; i < fencesList.length; i++) {
@@ -77,16 +78,16 @@ class CurrentLogPathPainter extends CustomPainter {
         continue;
       }
 
-      CustomPoint pixelOrigin = map.pixelOrigin;
+      var pixelOrigin = map.pixelOrigin;
 
-      CustomPoint mainPosPixel = map.project(LatLng(center.y, center.x));
+      var mainPosPixel = map.project(LatLng(center.y, center.x));
       double mainCenterX = mainPosPixel.x - pixelOrigin.x.toDouble();
       double mainCenterY = (mainPosPixel.y - pixelOrigin.y.toDouble());
 
-      CustomPoint tmpPixelX = map.project(LatLng(offsetX.y, offsetX.x));
+      var tmpPixelX = map.project(LatLng(offsetX.y, offsetX.x));
       double tmpX = tmpPixelX.x - pixelOrigin.x.toDouble();
       double rX = (mainCenterX - tmpX).abs();
-      CustomPoint tmpPixelY = map.project(LatLng(offsetY.y, offsetY.x));
+      var tmpPixelY = map.project(LatLng(offsetY.y, offsetY.x));
       double tmpY = tmpPixelY.y - pixelOrigin.y.toDouble();
       double rY = (mainCenterY - tmpY).abs();
 

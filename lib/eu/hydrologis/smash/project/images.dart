@@ -67,9 +67,10 @@ class ImageWidgetUtilities {
         }
         return imgId;
       } on Exception catch (e) {
-        print(e);
+        SMLogger()
+            .e("Could not save image to db: $imageIdentifier4Error", e, null);
+        return null;
       }
-      return null;
     });
   }
 

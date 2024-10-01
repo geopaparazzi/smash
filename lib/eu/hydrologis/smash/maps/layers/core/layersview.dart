@@ -42,10 +42,6 @@ class LayersPageState extends State<LayersPage> {
 
     // revert order
     _layersList = _layersList.reversed.toList();
-    print("reload layers");
-    for (var layerSource in _layersList) {
-      print(layerSource);
-    }
 
     List<Widget> listItems = createLayersList(_layersList, context);
 

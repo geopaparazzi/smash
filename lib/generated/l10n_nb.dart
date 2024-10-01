@@ -1267,9 +1267,6 @@ class SLNb extends SL {
   String get toolbarTools_measureDistanceWithFinger => 'Measure distances on the map with your finger.';
 
   @override
-  String get toolbarTools_toggleFenceMapCenter => 'Toggle fence in map center.';
-
-  @override
   String get toolbarTools_modifyGeomVectorLayers => 'Modify the geometry of editable vector layers.';
 
   @override
@@ -1373,51 +1370,6 @@ class SLNb extends SL {
 
   @override
   String get coachMarks_skip => 'Skip';
-
-  @override
-  String get fence_fenceProperties => 'Fence Properties';
-
-  @override
-  String get fence_delete => 'Delete';
-
-  @override
-  String get fence_removeFence => 'Remove fence';
-
-  @override
-  String get fence_areYouSureRemoveFence => 'Remove the fence?';
-
-  @override
-  String get fence_cancel => 'Cancel';
-
-  @override
-  String get fence_ok => 'OK';
-
-  @override
-  String get fence_aNewFence => 'a new fence';
-
-  @override
-  String get fence_label => 'Label';
-
-  @override
-  String get fence_aNameForFence => 'A name for the fence.';
-
-  @override
-  String get fence_theNameNeedsToBeDefined => 'The name must be defined.';
-
-  @override
-  String get fence_radius => 'Radius';
-
-  @override
-  String get fence_theFenceRadiusMeters => 'The fence radius in meters.';
-
-  @override
-  String get fence_radiusNeedsToBePositive => 'The radius must be a positive number in meters.';
-
-  @override
-  String get fence_onEnter => 'On enter';
-
-  @override
-  String get fence_onExit => 'On exit';
 
   @override
   String get network_cancelledByUser => 'Cancelled by user.';
@@ -2781,9 +2733,6 @@ class SLNbNo extends SLNb {
   String get toolbarTools_measureDistanceWithFinger => 'Mål avstander i kartet med fingeren din.';
 
   @override
-  String get toolbarTools_toggleFenceMapCenter => 'Veksle gjerde i kartsenter.';
-
-  @override
   String get toolbarTools_modifyGeomVectorLayers => 'Endre geometri for redigerbare vektorielle lag.';
 
   @override
@@ -2887,51 +2836,6 @@ class SLNbNo extends SLNb {
 
   @override
   String get coachMarks_skip => 'Hopp over';
-
-  @override
-  String get fence_fenceProperties => 'Gjerdeegenskaper';
-
-  @override
-  String get fence_delete => 'Slett';
-
-  @override
-  String get fence_removeFence => 'Fjern gjerde';
-
-  @override
-  String get fence_areYouSureRemoveFence => 'Fjern gjerdet?';
-
-  @override
-  String get fence_cancel => 'Avbryt';
-
-  @override
-  String get fence_ok => 'OK';
-
-  @override
-  String get fence_aNewFence => 'et nytt gjerde';
-
-  @override
-  String get fence_label => 'Etikett';
-
-  @override
-  String get fence_aNameForFence => 'Et navn på gjerdet.';
-
-  @override
-  String get fence_theNameNeedsToBeDefined => 'Navnet må defineres.';
-
-  @override
-  String get fence_radius => 'Radius';
-
-  @override
-  String get fence_theFenceRadiusMeters => 'Gjerderadius i meter.';
-
-  @override
-  String get fence_radiusNeedsToBePositive => 'Radiusen må være et positivt tall i meter.';
-
-  @override
-  String get fence_onEnter => 'Ved inngang';
-
-  @override
-  String get fence_onExit => 'Ved utgang';
 
   @override
   String get network_cancelledByUser => 'Avbrutt av bruker.';

@@ -1267,9 +1267,6 @@ class SLCa extends SL {
   String get toolbarTools_measureDistanceWithFinger => 'Mesureu distàncies al mapa amb el dit.';
 
   @override
-  String get toolbarTools_toggleFenceMapCenter => 'Commuta la tanca al centre del mapa.';
-
-  @override
   String get toolbarTools_modifyGeomVectorLayers => 'Modificar la geometria de les capes vectorials editables.';
 
   @override
@@ -1373,51 +1370,6 @@ class SLCa extends SL {
 
   @override
   String get coachMarks_skip => 'Omet';
-
-  @override
-  String get fence_fenceProperties => 'Propietats de tanca';
-
-  @override
-  String get fence_delete => 'Suprimeix';
-
-  @override
-  String get fence_removeFence => 'Elimina la tanca';
-
-  @override
-  String get fence_areYouSureRemoveFence => 'Voleu eliminar la tanca?';
-
-  @override
-  String get fence_cancel => 'Cancel·lar';
-
-  @override
-  String get fence_ok => 'D\'acord';
-
-  @override
-  String get fence_aNewFence => 'una nova tanca';
-
-  @override
-  String get fence_label => 'Etiqueta';
-
-  @override
-  String get fence_aNameForFence => 'Un nom per a la tanca.';
-
-  @override
-  String get fence_theNameNeedsToBeDefined => 'Cal definir el nom.';
-
-  @override
-  String get fence_radius => 'Radi';
-
-  @override
-  String get fence_theFenceRadiusMeters => 'El radi de la tanca en metres.';
-
-  @override
-  String get fence_radiusNeedsToBePositive => 'El radi ha de ser un nombre positiu en metres.';
-
-  @override
-  String get fence_onEnter => 'En entrar';
-
-  @override
-  String get fence_onExit => 'En sortir';
 
   @override
   String get network_cancelledByUser => 'Cancel·lat per l\'usuari.';
