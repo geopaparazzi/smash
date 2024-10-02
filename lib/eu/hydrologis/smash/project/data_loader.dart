@@ -26,8 +26,7 @@ import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 
 class DataLoaderUtilities {
-  static Note addNote(
-      SmashMapBuilder mapBuilder, int doInGpsMode, Coordinate center,
+  static Note addNote(BuildContext context, int doInGpsMode, Coordinate center,
       {String? form, String? iconName, String? color, String? text}) {
     int ts = DateTime.now().millisecondsSinceEpoch;
     SmashPosition? pos;
@@ -35,7 +34,7 @@ class DataLoaderUtilities {
     double lat;
     double altim;
     if (doInGpsMode == POINT_INSERTION_MODE_GPS) {
-      var gpsState = Provider.of<GpsState>(mapBuilder.context!, listen: false);
+      var gpsState = Provider.of<GpsState>(context, listen: false);
       pos = gpsState.lastGpsPosition;
 
       if (!gpsState.useFilteredGps) {
@@ -53,8 +52,8 @@ class DataLoaderUtilities {
       altim = -1;
     }
     Note note = Note()
-      ..text = text ??= SL.of(mapBuilder.context!).dataLoader_note //"note"
-      ..description = SL.of(mapBuilder.context!).dataLoader_POI //"POI"
+      ..text = text ??= SL.of(context).dataLoader_note //"note"
+      ..description = SL.of(context).dataLoader_POI //"POI"
       ..timeStamp = ts
       ..lon = lon
       ..lat = lat
@@ -78,8 +77,7 @@ class DataLoaderUtilities {
     }
     note.noteExt = next;
 
-    var projectState =
-        Provider.of<ProjectState>(mapBuilder.context!, listen: false);
+    var projectState = Provider.of<ProjectState>(context, listen: false);
     var db = projectState.projectDb;
     db!.addNote(note);
 
@@ -718,7 +716,6 @@ class DataLoaderUtilities {
 
     return PolylineLayer(
       key: ValueKey("SMASH_LOG_LINES"),
-      polylineCulling: true,
       polylines: lines,
     );
   }

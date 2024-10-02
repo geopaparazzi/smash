@@ -336,7 +336,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             children: DashboardUtils.getEndDrawerListTiles(context),
           )),
           bottomNavigationBar: addBottomNavigationBar(
-              mapBuilder, projectData, mapState, prefsState),
+              context, mapBuilder, projectData, mapState, prefsState),
         ),
         onWillPop: () async {
           return Future.value(false);
@@ -439,6 +439,7 @@ class MainViewWidgetState extends State<MainViewWidget>
   }
 
   BottomAppBar addBottomNavigationBar(
+      BuildContext context,
       SmashMapBuilder mapBuilder,
       ProjectData? projectData,
       SmashMapState mapState,
@@ -449,9 +450,9 @@ class MainViewWidgetState extends State<MainViewWidget>
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           if (prefsState.showAddNoteButton)
-            makeSimpleNoteButton(mapBuilder, projectData),
+            makeSimpleNoteButton(context, projectData),
           if (prefsState.showAddFormNoteButton)
-            makeFormNotesButton(mapBuilder, projectData),
+            makeFormNotesButton(context, projectData),
           if (prefsState.showAddLogButton)
             DashboardUtils.makeToolbarBadge(
               LoggingButton(coachMarks.logsButtonKey, _iconSize),
@@ -462,7 +463,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           if (prefsState.showGpsInfoButton)
             GpsInfoButton(coachMarks.gpsButtonKey, _iconSize),
           Spacer(),
-          if (prefsState.showLayerButton) makeLayersButton(mapBuilder),
+          if (prefsState.showLayerButton) makeLayersButton(context),
           if (prefsState.showZoomButton)
             Consumer<SmashMapState>(builder: (context, mapState, child) {
               return DashboardUtils.makeToolbarZoomBadge(
@@ -502,7 +503,7 @@ class MainViewWidgetState extends State<MainViewWidget>
     );
   }
 
-  GestureDetector makeLayersButton(SmashMapBuilder mapBuilder) {
+  GestureDetector makeLayersButton(BuildContext context) {
     return GestureDetector(
       child: Padding(
         padding: SmashUI.defaultPadding(),
@@ -517,8 +518,8 @@ class MainViewWidgetState extends State<MainViewWidget>
         ),
       ),
       onTap: () async {
-        await Navigator.push(mapBuilder.context!,
-            MaterialPageRoute(builder: (context) => LayersPage()));
+        await Navigator.push(
+            context, MaterialPageRoute(builder: (ctx) => LayersPage()));
 
         Provider.of<SmashMapBuilder>(context, listen: false).reBuild();
         // ! TODO
@@ -571,8 +572,7 @@ class MainViewWidgetState extends State<MainViewWidget>
     );
   }
 
-  Widget makeFormNotesButton(
-      SmashMapBuilder mapBuilder, ProjectData? projectData) {
+  Widget makeFormNotesButton(BuildContext context, ProjectData? projectData) {
     return DashboardUtils.makeToolbarBadge(
       GestureDetector(
         child: Padding(
@@ -587,8 +587,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           ),
         ),
         onTap: () async {
-          var gpsState =
-              Provider.of<GpsState>(mapBuilder.context!, listen: false);
+          var gpsState = Provider.of<GpsState>(context, listen: false);
           var noteInGpsMode = gpsState.insertInGpsMode;
           var titleWithMode = Column(
             children: [
@@ -614,7 +613,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 
           var sectionNames = tags.getSectionNames();
           var selectedSectionName = await SmashDialogs.showComboDialog(
-              mapBuilder.context!, titleWithMode, sectionNames,
+              context, titleWithMode, sectionNames,
               iconNames: iconNames);
           // refresh mode
           noteInGpsMode = gpsState.insertInGpsMode;
@@ -624,7 +623,7 @@ class MainViewWidgetState extends State<MainViewWidget>
 
             var selectSection = tags.getSectionByName(selectedSectionName);
             Note note = DataLoaderUtilities.addNote(
-                mapBuilder, noteInGpsMode, mapView.getBounds()!.centre()!,
+                context, noteInGpsMode, mapView.getBounds()!.centre()!,
                 text: selectedSectionName,
                 form: selectSection?.toJson(),
                 iconName: selectSection?.getIcon(),
@@ -636,7 +635,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             var formHelper = SmashFormHelper(note.id!, selectedSectionName,
                 selectSection!, appbarWidget, position);
 
-            Navigator.push(mapBuilder.context!, MaterialPageRoute(
+            Navigator.push(context, MaterialPageRoute(
               builder: (context) {
                 return MasterDetailPage(formHelper);
               },
@@ -648,7 +647,7 @@ class MainViewWidgetState extends State<MainViewWidget>
               Provider.of<ProjectState>(context, listen: false);
 
           Navigator.push(
-              mapBuilder.context!,
+              context,
               MaterialPageRoute(
                   builder: (context) =>
                       NotesListWidget(false, projectState.projectDb!)));
@@ -659,8 +658,7 @@ class MainViewWidgetState extends State<MainViewWidget>
     );
   }
 
-  Widget makeSimpleNoteButton(
-      SmashMapBuilder mapBuilder, ProjectData? projectData) {
+  Widget makeSimpleNoteButton(BuildContext context, ProjectData? projectData) {
     return DashboardUtils.makeToolbarBadge(
       GestureDetector(
         child: InkWell(
@@ -675,8 +673,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           ),
         ),
         onTap: () async {
-          var gpsState =
-              Provider.of<GpsState>(mapBuilder.context!, listen: false);
+          var gpsState = Provider.of<GpsState>(context, listen: false);
 
           var titleWithMode = Column(
             children: [
@@ -694,20 +691,20 @@ class MainViewWidgetState extends State<MainViewWidget>
           if (!SmashPlatform.isDesktop()) {
             types.add("image");
           }
-          var selectedType = await SmashDialogs.showComboDialog(
-              mapBuilder.context!, titleWithMode, types);
+          var selectedType =
+              await SmashDialogs.showComboDialog(context, titleWithMode, types);
           var noteInGpsMode = gpsState.insertInGpsMode;
           if (selectedType != null) {
             if (selectedType == types[0]) {
               Note note = DataLoaderUtilities.addNote(
-                  mapBuilder, noteInGpsMode, mapView.getBounds()!.centre()!);
+                  context, noteInGpsMode, mapView.getBounds()!.centre()!);
               await Navigator.push(
-                  mapBuilder.context!,
+                  context,
                   MaterialPageRoute(
                       builder: (context) => NotePropertiesWidget(note)));
             } else if (selectedType == types[1]) {
               await DataLoaderUtilities.addImage(
-                  mapBuilder.context!,
+                  context,
                   noteInGpsMode == POINT_INSERTION_MODE_GPS
                       ? gpsState.lastGpsPosition
                       : mapView.getBounds()!.centre()!,
@@ -722,7 +719,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           ProjectState projectState =
               Provider.of<ProjectState>(context, listen: false);
           Navigator.push(
-              mapBuilder.context!,
+              context,
               MaterialPageRoute(
                   builder: (context) =>
                       NotesListWidget(true, projectState.projectDb!)));

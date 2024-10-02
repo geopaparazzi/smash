@@ -865,8 +865,9 @@ class GpsSettingsState extends State<GpsSettings> {
         children: <Widget>[
           FlutterMap(
             options: new MapOptions(
-              center: LatLngExt.fromCoordinate(gpsInfoList.last.newPosLatLon!),
-              zoom: 19,
+              initialCenter:
+                  LatLngExt.fromCoordinate(gpsInfoList.last.newPosLatLon!),
+              initialZoom: 19,
               minZoom: 7,
               maxZoom: 21,
             ),
@@ -1059,7 +1060,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         color: SmashColors.mainBackground,
                       ),
                       onPressed: () {
-                        var z = _mapController.zoom + 1;
+                        var z = _mapController.camera.zoom + 1;
                         if (z > 21) z = 21;
                         _mapController.move(
                             LatLngExt.fromCoordinate(
@@ -1074,7 +1075,7 @@ class GpsSettingsState extends State<GpsSettings> {
                         color: SmashColors.mainBackground,
                       ),
                       onPressed: () {
-                        var z = _mapController.zoom - 1;
+                        var z = _mapController.camera.zoom - 1;
                         if (z < 7) z = 7;
                         _mapController.move(
                             LatLngExt.fromCoordinate(

@@ -397,7 +397,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       LatLng(env.getMinY(), env.getMinX()),
       LatLng(env.getMaxY(), env.getMaxX())
     ]);
-    mapController.fitBounds(bounds!);
+    mapController.fitCamera(CameraFit.bounds(bounds: bounds!));
 
     center = LatLng(env.centre()!.y, env.centre()!.x);
 
@@ -495,12 +495,10 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
             widget.logItem.width!, minLineElev, maxLineElev);
 
         polylines = PolylineLayer(
-          polylineCulling: true,
           polylines: lines,
         );
       } else {
         polylines = PolylineLayer(
-          polylineCulling: true,
           polylines: [
             Polyline(
               points: points,
@@ -565,7 +563,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
           mapController: mapController,
           options: new MapOptions(
             // center: center,
-            zoom: 11.0,
+            initialZoom: 11.0,
             onMapReady: () {
               loadData(context);
             },
