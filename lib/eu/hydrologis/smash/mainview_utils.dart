@@ -37,29 +37,30 @@ class DashboardUtils {
       badges.BadgePosition? badgePosition,
       double? iconSize}) {
     if (badgeValue > 0) {
-      return badges.Badge(
-        badgeStyle: badges.BadgeStyle(
-          badgeColor:
-              badgeColor != null ? badgeColor : SmashColors.mainSelection,
-          shape: badgeValue > 999
-              ? badges.BadgeShape.square
-              : badges.BadgeShape.circle,
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        badgeAnimation: badges.BadgeAnimation.slide(
-          toAnimate: false,
-        ),
-        position: badgePosition != null
-            ? badgePosition
-            : iconSize != null
-                ? badges.BadgePosition.topStart(
-                    top: -iconSize / 2, start: 0.1 * iconSize)
-                : null,
-        badgeContent: Text(
-          '$badgeValue',
-          style: TextStyle(color: textColor != null ? textColor : Colors.white),
-        ),
-        child: IgnorePointer(
+      return IgnorePointer(
+        child: badges.Badge(
+          badgeStyle: badges.BadgeStyle(
+            badgeColor:
+                badgeColor != null ? badgeColor : SmashColors.mainSelection,
+            shape: badgeValue > 999
+                ? badges.BadgeShape.square
+                : badges.BadgeShape.circle,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          badgeAnimation: badges.BadgeAnimation.slide(
+            toAnimate: false,
+          ),
+          position: badgePosition != null
+              ? badgePosition
+              : iconSize != null
+                  ? badges.BadgePosition.topStart(
+                      top: -iconSize / 2, start: 0.1 * iconSize)
+                  : null,
+          badgeContent: Text(
+            '$badgeValue',
+            style:
+                TextStyle(color: textColor != null ? textColor : Colors.white),
+          ),
           child: widget,
         ),
       );
@@ -71,23 +72,25 @@ class DashboardUtils {
   static Widget makeToolbarZoomBadge(Widget widget, int badgeValue,
       {double? iconSize}) {
     if (badgeValue > 0) {
-      return badges.Badge(
-        badgeStyle: badges.BadgeStyle(
-          badgeColor: SmashColors.mainDecorations,
-          shape: badges.BadgeShape.circle,
+      return IgnorePointer(
+        child: badges.Badge(
+          badgeStyle: badges.BadgeStyle(
+            badgeColor: SmashColors.mainDecorations,
+            shape: badges.BadgeShape.circle,
+          ),
+          position: iconSize != null
+              ? badges.BadgePosition.topEnd(
+                  top: -iconSize / 2, end: -iconSize / 3)
+              : null,
+          badgeAnimation: badges.BadgeAnimation.slide(
+            toAnimate: false,
+          ),
+          badgeContent: Text(
+            '$badgeValue',
+            style: TextStyle(color: Colors.white),
+          ),
+          child: widget,
         ),
-        position: iconSize != null
-            ? badges.BadgePosition.topEnd(
-                top: -iconSize / 2, end: -iconSize / 3)
-            : null,
-        badgeAnimation: badges.BadgeAnimation.slide(
-          toAnimate: false,
-        ),
-        badgeContent: Text(
-          '$badgeValue',
-          style: TextStyle(color: Colors.white),
-        ),
-        child: widget,
       );
     } else {
       return widget;
