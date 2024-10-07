@@ -77,25 +77,23 @@ class DashboardUtils {
   static Widget makeToolbarZoomBadge(Widget widget, int badgeValue,
       {double? iconSize}) {
     if (badgeValue > 0) {
-      return IgnorePointer(
-        child: badges.Badge(
-          badgeStyle: badges.BadgeStyle(
-            badgeColor: SmashColors.mainDecorations,
-            shape: badges.BadgeShape.circle,
-          ),
-          position: iconSize != null
-              ? badges.BadgePosition.topEnd(
-                  top: -iconSize / 2, end: -iconSize / 3)
-              : null,
-          badgeAnimation: badges.BadgeAnimation.slide(
-            toAnimate: false,
-          ),
-          badgeContent: Text(
-            '$badgeValue',
-            style: TextStyle(color: Colors.white),
-          ),
-          child: widget,
+      return badges.Badge(
+        badgeStyle: badges.BadgeStyle(
+          badgeColor: SmashColors.mainDecorations,
+          shape: badges.BadgeShape.circle,
         ),
+        position: iconSize != null
+            ? badges.BadgePosition.topEnd(
+                top: -iconSize / 2, end: -iconSize / 3)
+            : null,
+        badgeAnimation: badges.BadgeAnimation.slide(
+          toAnimate: false,
+        ),
+        badgeContent: Text(
+          '$badgeValue',
+          style: TextStyle(color: Colors.white),
+        ),
+        child: widget,
       );
     } else {
       return widget;
