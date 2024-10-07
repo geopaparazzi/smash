@@ -59,7 +59,9 @@ class DashboardUtils {
           '$badgeValue',
           style: TextStyle(color: textColor != null ? textColor : Colors.white),
         ),
-        child: widget,
+        child: IgnorePointer(
+          child: widget,
+        ),
       );
     } else {
       return widget;

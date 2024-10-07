@@ -28,7 +28,7 @@ dependencies:
   # OWN
   ##################################
   # apache 2
-  geoimage: ^0.4.0
+  geoimage: ^0.4.1
 
   smashlibs:
     path: ./smashlibs/
