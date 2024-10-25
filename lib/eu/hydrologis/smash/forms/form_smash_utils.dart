@@ -87,19 +87,6 @@ class SmashFormHelper extends AFormhelper {
       lastGpsPosition = SmashPosition.fromCoords(lastGpsPosition.x,
           lastGpsPosition.y, DateTime.now().millisecondsSinceEpoch.toDouble());
     }
-    var cameraResolution = GpPreferences().getStringSync(
-        SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
-    int imageQuality = CameraResolutions.MEDIUM_VAL;
-    switch (cameraResolution) {
-      case CameraResolutions.HIGH:
-        imageQuality = CameraResolutions.HIGH_VAL;
-        break;
-      case CameraResolutions.LOW:
-        imageQuality = CameraResolutions.LOW_VAL;
-        break;
-      case CameraResolutions.MEDIUM:
-      default:
-    }
 
     DbImage dbImage = DbImage()
       ..timeStamp = DateTime.now().millisecondsSinceEpoch
@@ -120,9 +107,9 @@ class SmashFormHelper extends AFormhelper {
 
     int? imageId;
 
-    var imagePath = fromGallery
+    String? imagePath = fromGallery
         ? await Camera.loadImageFromGallery()
-        : await Camera.takePicture(imageQuality: imageQuality);
+        : await openCamera(context);
     if (imagePath != null) {
       // var imageName = FileUtilities.nameFromFile(imagePath, true);
       dbImage.text =
@@ -145,6 +132,38 @@ class SmashFormHelper extends AFormhelper {
       }
     }
     return null;
+  }
+
+  Future<String?> openCamera(BuildContext context) async {
+    var cameraResolution = GpPreferences().getStringSync(
+        SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
+    FrameProperties? frameProperties;
+
+    var w =
+        GpPreferences().getIntSync(SmashPreferencesKeys.KEY_CAMERA_FRAME_W, 0);
+    var h =
+        GpPreferences().getIntSync(SmashPreferencesKeys.KEY_CAMERA_FRAME_H, 0);
+    var colorStr = GpPreferences()
+        .getStringSync(SmashPreferencesKeys.KEY_CAMERA_FRAME_COLOR, "#000000");
+    var doFill = GpPreferences()
+        .getBooleanSync(SmashPreferencesKeys.KEY_CAMERA_FRAME_DOFILL, false);
+    if (w != 0 && h != 0) {
+      double ratio = w! / h!;
+      double? strokeWidth = doFill ? null : 3;
+      frameProperties = FrameProperties.defineRatio(ratio,
+          color: ColorExt(colorStr!).withAlpha(120), strokeWidth: strokeWidth);
+    }
+
+    var cameras = await getCameras();
+    return await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AdvancedCameraWidget(
+            cameras,
+            frameProperties: frameProperties,
+            cameraResolution: cameraResolution!,
+          ),
+        ));
   }
 
   @override

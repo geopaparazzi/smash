@@ -405,8 +405,8 @@ class _OnlineSourceCardState extends State<OnlineSourceCard> {
                     height: 100,
                     child: FlutterMap(
                       options: new MapOptions(
-                        center: new LatLng(lat, lon),
-                        zoom: zoom,
+                        initialCenter: new LatLng(lat, lon),
+                        initialZoom: zoom,
                       ),
                       children: widget.layers,
                     ),

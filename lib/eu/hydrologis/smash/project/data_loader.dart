@@ -86,6 +86,38 @@ class DataLoaderUtilities {
     return note;
   }
 
+  static Future<String?> openCamera(BuildContext context) async {
+    var cameraResolution = GpPreferences().getStringSync(
+        SmashPreferencesKeys.KEY_CAMERA_RESOLUTION, CameraResolutions.MEDIUM);
+    FrameProperties? frameProperties;
+
+    var w =
+        GpPreferences().getIntSync(SmashPreferencesKeys.KEY_CAMERA_FRAME_W, 0);
+    var h =
+        GpPreferences().getIntSync(SmashPreferencesKeys.KEY_CAMERA_FRAME_H, 0);
+    var colorStr = GpPreferences()
+        .getStringSync(SmashPreferencesKeys.KEY_CAMERA_FRAME_COLOR, "#000000");
+    var doFill = GpPreferences()
+        .getBooleanSync(SmashPreferencesKeys.KEY_CAMERA_FRAME_DOFILL, false);
+    if (w != 0 && h != 0) {
+      double ratio = w! / h!;
+      double? strokeWidth = doFill ? null : 3;
+      frameProperties = FrameProperties.defineRatio(ratio,
+          color: ColorExt(colorStr!).withAlpha(120), strokeWidth: strokeWidth);
+    }
+
+    var cameras = await getCameras();
+    return await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AdvancedCameraWidget(
+            cameras,
+            frameProperties: frameProperties,
+            cameraResolution: cameraResolution!,
+          ),
+        ));
+  }
+
   /// Add an image into teh db.
   ///
   /// If [noteId] is specified, the image is added to a specific note.
@@ -124,36 +156,26 @@ class DataLoaderUtilities {
       dbImage.noteId = noteId;
     }
 
-    await Navigator.push(
-        parentContext,
-        MaterialPageRoute(
-            builder: (context) => TakePictureWidget(
-                    SL
-                        .of(context)
-                        .dataLoader_savingImageToDB, //"Saving image to db...",
-                    (String? imagePath) {
-                  if (imagePath != null) {
-                    String imageName =
-                        FileUtilities.nameFromFile(imagePath, true);
-                    dbImage.text =
-                        "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
-                    var imageId = ImageWidgetUtilities.saveImageToSmashDb(
-                        context, imagePath, dbImage);
-                    File file = File(imagePath);
-                    if (file.existsSync()) {
-                      file.deleteSync();
-                    }
-                    if (imageId != null) {
-                      ProjectState projectState =
-                          Provider.of<ProjectState>(context, listen: false);
-                      projectState.reloadProject(context);
+    String? imagePath = await openCamera(parentContext);
+    if (imagePath != null) {
+      String imageName = FileUtilities.nameFromFile(imagePath, true);
+      dbImage.text =
+          "IMG_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.fromMillisecondsSinceEpoch(dbImage.timeStamp))}.jpg";
+      var imageId = ImageWidgetUtilities.saveImageToSmashDb(
+          parentContext, imagePath, dbImage);
+      File file = File(imagePath);
+      if (file.existsSync()) {
+        file.deleteSync();
+      }
+      if (imageId != null) {
+        ProjectState projectState =
+            Provider.of<ProjectState>(parentContext, listen: false);
+        projectState.reloadProject(parentContext);
 //                } else {
 //                  showWarningDialog(
 //                      context, "Could not save image in database.");
-                    }
-                  }
-                  return true;
-                })));
+      }
+    }
   }
 
   static void loadNotesMarkers(GeopaparazziProjectDb db, List<Marker> tmp,
@@ -718,7 +740,6 @@ class DataLoaderUtilities {
 
     return PolylineLayer(
       key: ValueKey("SMASH_LOG_LINES"),
-      polylineCulling: true,
       polylines: lines,
     );
   }

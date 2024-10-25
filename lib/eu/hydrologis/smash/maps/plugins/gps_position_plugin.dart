@@ -111,14 +111,14 @@ class CurrentGpsPositionPainter extends CustomPainter {
         paintFill = paintFillBlack;
       }
 
-      CustomPoint pixelOrigin = map.pixelOrigin;
+      var pixelOrigin = map.pixelOrigin;
       var radius = markerSize / 2;
 
-      CustomPoint mainPosPixel = map.project(mainPosLL);
+      var mainPosPixel = map.project(mainPosLL);
       double mainCenterX = mainPosPixel.x - pixelOrigin.x.toDouble();
       double mainCenterY = (mainPosPixel.y - pixelOrigin.y.toDouble());
 
-      CustomPoint secPosPixel = map.project(secPosLL);
+      var secPosPixel = map.project(secPosLL);
       double secCenterX = secPosPixel.x - pixelOrigin.x.toDouble();
       double secCenterY = (secPosPixel.y - pixelOrigin.y.toDouble());
 
@@ -136,7 +136,7 @@ class CurrentGpsPositionPainter extends CustomPainter {
       if (accuracy != null) {
         var radiusLL =
             calculateEndingGlobalCoordinates(mainPosLL, 90, accuracy);
-        CustomPoint tmpPixel = map.project(radiusLL);
+        var tmpPixel = map.project(radiusLL);
         double tmpX = tmpPixel.x - pixelOrigin.x.toDouble();
         double accuracyRadius = (mainCenterX - tmpX).abs();
 
