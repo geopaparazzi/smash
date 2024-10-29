@@ -29,6 +29,7 @@ import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash_import_export_plugins/smash_import_export_plugins.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:geocoding/geocoding.dart' as GC;
 
 class DashboardUtils {
   static Widget makeToolbarBadge(Widget widget, int badgeValue,
@@ -363,23 +364,25 @@ class DashboardUtils {
           color: c,
         ),
         children: [
-          ListTile(
-            leading: new Icon(
-              MdiIcons.navigation,
-              color: c,
-              size: iconSize,
+          if (GC.GeocodingPlatform.instance != null)
+            ListTile(
+              leading: new Icon(
+                MdiIcons.navigation,
+                color: c,
+                size: iconSize,
+              ),
+              title: SmashUI.normalText(
+                SL.of(context).mainviewUtils_goTo, //"Go to"
+                bold: true,
+                color: c,
+              ),
+              onTap: () {
+                Navigator.pop(context);
+
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => GeocodingPage()));
+              },
             ),
-            title: SmashUI.normalText(
-              SL.of(context).mainviewUtils_goTo, //"Go to"
-              bold: true,
-              color: c,
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => GeocodingPage()));
-            },
-          ),
           ListTile(
             leading: new Icon(
               MdiIcons.mapMarkerUp,
