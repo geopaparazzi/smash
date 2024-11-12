@@ -3,7 +3,6 @@
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
-// import 'package:catcher/catcher.dart';
 import 'dart:io';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
@@ -25,8 +24,8 @@ import 'package:smashlibs/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:stack_trace/stack_trace.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:catcher_2/catcher_2.dart';
 
 //import 'package:flutter_gen/gen_l10n/smash_localization.dart';
 import 'generated/l10n.dart';
@@ -35,22 +34,21 @@ const DOCATCHER = false;
 const forStore = false;
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // TODO endable catcher again once it is aligned with libs
-  // if (DOCATCHER) {
-  //   CatcherOptions debugOptions =
-  //       CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
-  //   CatcherOptions releaseOptions = CatcherOptions(DialogReportMode(), [
-  //     EmailManualHandler(["feedback@geopaparazzi.eu"])
-  //   ]);
+  WidgetsFlutterBinding.ensureInitialized();
+  if (DOCATCHER) {
+    Catcher2Options debugOptions =
+        Catcher2Options(SilentReportMode(), [ConsoleHandler()]);
+    Catcher2Options releaseOptions = Catcher2Options(DialogReportMode(), [
+      EmailManualHandler(["info@g-ant.eu"])
+    ]);
 
-  //   Catcher(
-  //       rootWidget: getMainWidget(),
-  //       debugConfig: debugOptions,
-  //       releaseConfig: releaseOptions);
-  // } else {
-  runApp(getMainWidget());
-  // }
+    Catcher2(
+        rootWidget: getMainWidget(),
+        debugConfig: debugOptions,
+        releaseConfig: releaseOptions);
+  } else {
+    runApp(getMainWidget());
+  }
 }
 
 MultiProvider getMainWidget() {
@@ -66,6 +64,7 @@ MultiProvider getMainWidget() {
       ChangeNotifierProvider(create: (_) => GeometryEditorState()),
       ChangeNotifierProvider(create: (_) => PreferencesState()),
       ChangeNotifierProvider(create: (_) => FormHandlerState()),
+      ChangeNotifierProvider(create: (_) => CameraState()),
     ],
     child: SmashApp(),
   );
@@ -265,21 +264,41 @@ class WelcomeWidget extends StatefulWidget {
   _WelcomeWidgetState createState() => _WelcomeWidgetState();
 }
 
-class _WelcomeWidgetState extends State<WelcomeWidget> {
+class _WelcomeWidgetState extends State<WelcomeWidget>
+    with WidgetsBindingObserver {
   ValueNotifier<int> orderNotifier = ValueNotifier<int>(0);
   var finalOrder = 8;
 
   bool _initFinished = false;
+  CameraState? cameraState;
 
   @override
   void initState() {
+    cameraState = Provider.of<CameraState>(context, listen: false);
+
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
     orderNotifier.addListener(() {
       if (orderNotifier.value == finalOrder) {
         _initFinished = true;
         setState(() {});
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (cameraState != null) {
+      cameraState!.init(context);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
@@ -386,7 +405,7 @@ Future<String?> handleLayers(BuildContext context) async {
     try {
       var msg = "Error while loading layers.";
       return logMsg(msg, e, s);
-    } on Exception catch (e, s) {
+    } on Exception catch (e) {
       var eMsg = e.toString();
       if (eMsg.toLowerCase().contains("attempt to write a readonly database")) {
         return "Unable to access the filesystem in write mode. This seems like a permission problem. Check your configurations.";

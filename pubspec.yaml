@@ -103,7 +103,7 @@ dependencies:
   # OTHERS
   ##################################
   # Apache 2.0
-  # catcher: ^0.6.9
+  catcher_2: ^2.0.1
 
   # MIT
   sqlite3_flutter_libs: ^0.5.9
