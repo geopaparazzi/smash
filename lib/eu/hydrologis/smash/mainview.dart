@@ -191,9 +191,9 @@ class MainViewWidgetState extends State<MainViewWidget>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<PreferencesState>(builder: (context, prefsState, child) {
+    return Consumer<PreferencesState>(builder: (context1, prefsState, child) {
       _iconSize = prefsState.iconSize;
-      return Consumer<SmashMapBuilder>(builder: (context, mapBuilder, child) {
+      return Consumer<SmashMapBuilder>(builder: (context2, mapBuilder, child) {
         mapBuilder.context = context;
         mapBuilder.scaffoldKey = _scaffoldKey;
         return consumeBuild(mapBuilder, prefsState);

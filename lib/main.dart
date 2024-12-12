@@ -65,6 +65,7 @@ MultiProvider getMainWidget() {
       ChangeNotifierProvider(create: (_) => PreferencesState()),
       ChangeNotifierProvider(create: (_) => FormHandlerState()),
       ChangeNotifierProvider(create: (_) => CameraState()),
+      ChangeNotifierProvider(create: (_) => FormUrlItemsState()),
     ],
     child: SmashApp(),
   );
