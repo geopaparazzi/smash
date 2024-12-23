@@ -130,6 +130,9 @@ class SLCa extends SL {
   String get mainviewUtils_projectInfo => 'Informació del projecte';
 
   @override
+  String get mainviewUtils_projectStats => 'Project Stats';
+
+  @override
   String get mainviewUtils_project => 'Projecte';
 
   @override

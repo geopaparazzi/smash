@@ -130,6 +130,9 @@ class SLNb extends SL {
   String get mainviewUtils_projectInfo => 'Project Info';
 
   @override
+  String get mainviewUtils_projectStats => 'Project Stats';
+
+  @override
   String get mainviewUtils_project => 'Project';
 
   @override

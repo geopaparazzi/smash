@@ -130,6 +130,9 @@ class SLFr extends SL {
   String get mainviewUtils_projectInfo => 'Infos sur le projet';
 
   @override
+  String get mainviewUtils_projectStats => 'Project Stats';
+
+  @override
   String get mainviewUtils_project => 'Projet';
 
   @override

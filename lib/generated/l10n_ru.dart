@@ -130,6 +130,9 @@ class SLRu extends SL {
   String get mainviewUtils_projectInfo => 'Информация о проекте';
 
   @override
+  String get mainviewUtils_projectStats => 'Project Stats';
+
+  @override
   String get mainviewUtils_project => 'Проект';
 
   @override

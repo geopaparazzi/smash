@@ -130,6 +130,9 @@ class SLZh extends SL {
   String get mainviewUtils_projectInfo => '工程信息';
 
   @override
+  String get mainviewUtils_projectStats => 'Project Stats';
+
+  @override
   String get mainviewUtils_project => '工程';
 
   @override
@@ -172,91 +175,91 @@ class SLZh extends SL {
   String get exportWidget_export => '导出';
 
   @override
-  String get exportWidget_pdfExported => 'PDF 已导出';
+  String get exportWidget_pdfExported => '已导出的PDF';
 
   @override
-  String get exportWidget_exportToPortableDocumentFormat => '将项目导出为便携式文档格式';
+  String get exportWidget_exportToPortableDocumentFormat => '将项目导出为PDF';
 
   @override
-  String get exportWidget_gpxExported => 'GPX 已导出';
+  String get exportWidget_gpxExported => '已导出的GPX';
 
   @override
-  String get exportWidget_exportToGpx => '导出工程为 GPX';
+  String get exportWidget_exportToGpx => '将工程导出为GPX';
 
   @override
-  String get exportWidget_kmlExported => '已导出为 KML';
+  String get exportWidget_kmlExported => '已导出的KML';
 
   @override
-  String get exportWidget_exportToKml => '导出工程为 KML';
+  String get exportWidget_exportToKml => '将工程导出为KML';
 
   @override
-  String get exportWidget_imagesToFolderExported => '图片已导出';
+  String get exportWidget_imagesToFolderExported => '已导出的图片';
 
   @override
-  String get exportWidget_exportImagesToFolder => '导出工程图片到文件夹';
+  String get exportWidget_exportImagesToFolder => '将项目图片导出到文件夹';
 
   @override
   String get exportWidget_exportImagesToFolderTitle => '图片';
 
   @override
-  String get exportWidget_geopackageExported => '已导出为 Geopakage';
+  String get exportWidget_geopackageExported => '已导出的Geopakage';
 
   @override
-  String get exportWidget_exportToGeopackage => '导出工程为 Geopackage';
+  String get exportWidget_exportToGeopackage => '将项目导出为GPKG';
 
   @override
-  String get exportWidget_exportToGSS => '导出为 Geopaparazzi Survey Server';
+  String get exportWidget_exportToGSS => '导出到Geopaparazzi勘测服务器';
 
   @override
-  String get gssExport_gssExport => 'GSS 导出';
+  String get gssExport_gssExport => 'GSS导出';
 
   @override
-  String get gssExport_setProjectDirty => '设置项目为 DIRTY？';
+  String get gssExport_setProjectDirty => '设置项目到DIRTY么？';
 
   @override
-  String get gssExport_thisCantBeUndone => '此操作无法撤销！';
+  String get gssExport_thisCantBeUndone => '该操作无法撤销！';
 
   @override
-  String get gssExport_restoreProjectAsDirty => '重置工程为dirty。';
+  String get gssExport_restoreProjectAsDirty => '恢复项目为混杂的。';
 
   @override
-  String get gssExport_setProjectClean => '设置项目为 CLEAN？';
+  String get gssExport_setProjectClean => '设置项目到清空么？';
 
   @override
-  String get gssExport_restoreProjectAsClean => '已重置项目为 CLEAN。';
+  String get gssExport_restoreProjectAsClean => '恢复项目为清空。';
 
   @override
-  String get gssExport_nothingToSync => '无可同步数据。';
+  String get gssExport_nothingToSync => '没有需要同步。';
 
   @override
-  String get gssExport_collectingSyncStats => '正在收集同步状态…';
+  String get gssExport_collectingSyncStats => '正在收集同步统计…';
 
   @override
-  String get gssExport_unableToSyncDueToError => '同步过程出错，请点击诊断。';
+  String get gssExport_unableToSyncDueToError => '由于错误不能同步，检查诊断信息。';
 
   @override
-  String get gssExport_noGssUrlSet => '未设置GSS服务端URL。请检查设置。';
+  String get gssExport_noGssUrlSet => '未设置GSS服务端URL，检查你的设置。';
 
   @override
-  String get gssExport_noGssPasswordSet => '未设置GSS服务端密码。请检查设置。';
+  String get gssExport_noGssPasswordSet => '未设置GSS服务端密码，检查你的设置。';
 
   @override
-  String get gssExport_synStats => '同步状态';
+  String get gssExport_synStats => '同步统计';
 
   @override
-  String get gssExport_followingDataWillBeUploaded => '以下数据将同步到服务端。';
+  String get gssExport_followingDataWillBeUploaded => '以下数据将会被上传到服务端进行同步。';
 
   @override
-  String get gssExport_gpsLogs => 'GPS 日志：';
+  String get gssExport_gpsLogs => 'GPS日志：';
 
   @override
-  String get gssExport_simpleNotes => '简单注释：';
+  String get gssExport_simpleNotes => '简单笔记：';
 
   @override
-  String get gssExport_formNotes => '表单注释：';
+  String get gssExport_formNotes => '表单笔记：';
 
   @override
-  String get gssExport_images => '图片列表：';
+  String get gssExport_images => '图片：';
 
   @override
   String get gssExport_shouldNotHappen => '不应该发生';
@@ -292,55 +295,55 @@ class SLZh extends SL {
   String get gps_backgroundLocIsOnToKeepRegistering => '后台定位功能开启后，即使应用程序处于后台，也能继续注册位置信息。';
 
   @override
-  String get gssImport_gssImport => 'GSS 导入';
+  String get gssImport_gssImport => 'GSS导入';
 
   @override
   String get gssImport_downloadingDataList => '正在下载数据列表…';
 
   @override
-  String get gssImport_unableDownloadDataList => '由于错误，无法下载数据列表。请检查设置和日志。';
+  String get gssImport_unableDownloadDataList => '由于错误，无法下载数据列表。检查你的设置和日志。';
 
   @override
-  String get gssImport_noGssUrlSet => '未设置 GSS 服务器 URL。请检查您的设置。';
+  String get gssImport_noGssUrlSet => '未设置 GSS 服务器 URL，检查你的设置。';
 
   @override
-  String get gssImport_noGssPasswordSet => '未设置 GSS 服务器密码。请检查您的设置。';
+  String get gssImport_noGssPasswordSet => '没有设置 GSS 服务器密码，检查你的设置。';
 
   @override
-  String get gssImport_noPermToAccessServer => '无访问服务器权限。请检查您的证书。';
+  String get gssImport_noPermToAccessServer => '无权限访问服务器，检查你的证书。';
 
   @override
   String get gssImport_data => '数据';
 
   @override
-  String get gssImport_dataSetsDownloadedMapsFolder => '数据集已下载到地图文件夹中。';
+  String get gssImport_dataSetsDownloadedMapsFolder => '数据集被下载到地图文件夹中。';
 
   @override
   String get gssImport_noDataAvailable => '无可用数据。';
 
   @override
-  String get gssImport_projects => '工程';
+  String get gssImport_projects => '项目';
 
   @override
-  String get gssImport_projectsDownloadedProjectFolder => '工程数据已下载到 projects文件夹。';
+  String get gssImport_projectsDownloadedProjectFolder => '项目数据被下载到projects文件夹。';
 
   @override
-  String get gssImport_noProjectsAvailable => '无可用工程。';
+  String get gssImport_noProjectsAvailable => '无可用项目。';
 
   @override
   String get gssImport_forms => '表单';
 
   @override
-  String get gssImport_tagsDownloadedFormsFolder => 'tag文件已下载到 forms文件夹。';
+  String get gssImport_tagsDownloadedFormsFolder => '标记文件被下载到表单文件夹。';
 
   @override
-  String get gssImport_noTagsAvailable => '无tag可用。';
+  String get gssImport_noTagsAvailable => '无可用标记。';
 
   @override
   String get importWidget_import => '导入';
 
   @override
-  String get importWidget_importFromGeopaparazzi => '从GSS服务器导入';
+  String get importWidget_importFromGeopaparazzi => '从Geopaparazzi勘测服务器导入';
 
   @override
   String get layersView_layerList => '图层列表';
@@ -565,919 +568,919 @@ class SLZh extends SL {
   String get remoteDbPage_theTableNeedsToBeDefined => '必须定义表格名称。';
 
   @override
-  String get remoteDbPage_unableToConnectToDatabase => 'Unable to connect to the database. Check parameters and network.';
+  String get remoteDbPage_unableToConnectToDatabase => '未能连接到数据库，请检查参数和网络。';
 
   @override
-  String get remoteDbPage_optionalWhereCondition => 'optional \"where\" condition';
+  String get remoteDbPage_optionalWhereCondition => '选项 “where” 条件';
 
   @override
-  String get geoImage_tiffProperties => 'TIFF Properties';
+  String get geoImage_tiffProperties => 'TIFF属性';
 
   @override
-  String get geoImage_opacity => 'Opacity';
+  String get geoImage_opacity => '不透明度';
 
   @override
-  String get geoImage_colorToHide => 'Color to hide';
+  String get geoImage_colorToHide => '隐藏的颜色';
 
   @override
-  String get gpx_gpxProperties => 'GPX Properties';
+  String get gpx_gpxProperties => 'GPX属性';
 
   @override
-  String get gpx_wayPoints => 'Waypoints';
+  String get gpx_wayPoints => '航迹点';
 
   @override
-  String get gpx_color => 'Color';
+  String get gpx_color => '颜色';
 
   @override
-  String get gpx_size => 'Size';
+  String get gpx_size => '大小';
 
   @override
-  String get gpx_viewLabelsIfAvailable => 'View labels if available?';
+  String get gpx_viewLabelsIfAvailable => '如果可用，则显示标记？';
 
   @override
-  String get gpx_tracksRoutes => 'Tracks/routes';
+  String get gpx_tracksRoutes => '轨迹/路径';
 
   @override
-  String get gpx_width => 'Width';
+  String get gpx_width => '宽度';
 
   @override
-  String get gpx_palette => 'Palette';
+  String get gpx_palette => '调色板';
 
   @override
-  String get tiles_tileProperties => 'Tile Properties';
+  String get tiles_tileProperties => '瓦片属性';
 
   @override
-  String get tiles_opacity => 'Opacity';
+  String get tiles_opacity => '不透明度';
 
   @override
-  String get tiles_loadGeoPackageAsOverlay => 'Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).';
+  String get tiles_loadGeoPackageAsOverlay => '加载GPKG瓦片作为叠加图像和瓦片层对比（最好是GDAL库生成的数据和不同的投影）。';
 
   @override
-  String get tiles_colorToHide => 'Color to hide';
+  String get tiles_colorToHide => '隐藏的颜色';
 
   @override
-  String get wms_wmsProperties => 'WMS Properties';
+  String get wms_wmsProperties => 'WMS属性';
 
   @override
-  String get wms_opacity => 'Opacity';
+  String get wms_opacity => '不透明度';
 
   @override
-  String get featureAttributesViewer_loadingData => 'Loading data…';
+  String get featureAttributesViewer_loadingData => '加载数据…';
 
   @override
-  String get featureAttributesViewer_setNewValue => 'Set new value';
+  String get featureAttributesViewer_setNewValue => '设定新值';
 
   @override
-  String get featureAttributesViewer_field => 'Field';
+  String get featureAttributesViewer_field => '字段';
 
   @override
-  String get featureAttributesViewer_value => 'VALUE';
+  String get featureAttributesViewer_value => '值';
 
   @override
-  String get projectsView_projectsView => 'Projects View';
+  String get projectsView_projectsView => '项目视图';
 
   @override
-  String get projectsView_openExistingProject => 'Open an existing project';
+  String get projectsView_openExistingProject => '打开一个已存在的项目';
 
   @override
-  String get projectsView_createNewProject => 'Create a new project';
+  String get projectsView_createNewProject => '新建一个项目';
 
   @override
-  String get projectsView_recentProjects => 'Recent projects';
+  String get projectsView_recentProjects => '最近项目';
 
   @override
-  String get projectsView_newProject => 'New Project';
+  String get projectsView_newProject => '新项目';
 
   @override
-  String get projectsView_enterNameForNewProject => 'Enter a name for the new project or accept the proposed.';
+  String get projectsView_enterNameForNewProject => '输入一个新项目名称或者使用建议的。';
 
   @override
-  String get dataLoader_note => 'note';
+  String get dataLoader_note => '笔记';
 
   @override
-  String get dataLoader_Note => 'Note';
+  String get dataLoader_Note => '笔记';
 
   @override
-  String get dataLoader_hasForm => 'Has Form';
+  String get dataLoader_hasForm => '有格式';
 
   @override
-  String get dataLoader_POI => 'POI';
+  String get dataLoader_POI => '兴趣点';
 
   @override
-  String get dataLoader_savingImageToDB => 'Saving image to database…';
+  String get dataLoader_savingImageToDB => '保存图片到数据库…';
 
   @override
-  String get dataLoader_removeNote => 'Remove Note';
+  String get dataLoader_removeNote => '移除笔记';
 
   @override
-  String get dataLoader_areYouSureRemoveNote => 'Remove note?';
+  String get dataLoader_areYouSureRemoveNote => '移除笔记么？';
 
   @override
-  String get dataLoader_image => 'Image';
+  String get dataLoader_image => '图片';
 
   @override
-  String get dataLoader_longitude => 'Longitude';
+  String get dataLoader_longitude => '经度';
 
   @override
-  String get dataLoader_latitude => 'Latitude';
+  String get dataLoader_latitude => '纬度';
 
   @override
-  String get dataLoader_altitude => 'Altitude';
+  String get dataLoader_altitude => '海拔';
 
   @override
-  String get dataLoader_timestamp => 'Timestamp';
+  String get dataLoader_timestamp => '时间戳';
 
   @override
-  String get dataLoader_removeImage => 'Remove Image';
+  String get dataLoader_removeImage => '移除图片';
 
   @override
-  String get dataLoader_areYouSureRemoveImage => 'Remove the image?';
+  String get dataLoader_areYouSureRemoveImage => '移除图片么？';
 
   @override
-  String get images_loadingImage => 'Loading image…';
+  String get images_loadingImage => '加载图片中…';
 
   @override
-  String get about_loadingInformation => 'Loading info…';
+  String get about_loadingInformation => '加载信息中…';
 
   @override
-  String get about_ABOUT => 'About ';
+  String get about_ABOUT => '关于 ';
 
   @override
-  String get about_smartMobileAppForSurveyor => 'Smart Mobile App for Surveyor Happiness';
+  String get about_smartMobileAppForSurveyor => '令测量员高兴的智能移动应用';
 
   @override
-  String get about_applicationVersion => 'Version';
+  String get about_applicationVersion => '版本';
 
   @override
-  String get about_license => 'License';
+  String get about_license => '协议';
 
   @override
-  String get about_isAvailableUnderGPL3 => ' is copylefted libre software, licensed GPLv3+.';
+  String get about_isAvailableUnderGPL3 => ' 是遵循协议GPLv3+并非盈利的自由软件。';
 
   @override
-  String get about_sourceCode => 'Source Code';
+  String get about_sourceCode => '源码';
 
   @override
-  String get about_tapHereToVisitRepo => 'Tap here to visit the source code repository';
+  String get about_tapHereToVisitRepo => '点按这里查看该源码仓库';
 
   @override
-  String get about_legalInformation => 'Legal Info';
+  String get about_legalInformation => '法律信息';
 
   @override
-  String get about_copyright2020HydroloGIS => 'Copyright © 2020, HydroloGIS S.r.l. — some rights reserved. Tap to visit.';
+  String get about_copyright2020HydroloGIS => '版权©2020，HydroloGIS S.r.l. — 一些权力保留，点按查看。';
 
   @override
-  String get about_supportedBy => 'Supported by';
+  String get about_supportedBy => '被支持';
 
   @override
-  String get about_partiallySupportedByUniversityTrento => 'Partially supported by the project Steep Stream of the University of Trento.';
+  String get about_partiallySupportedByUniversityTrento => '部分由意大利特兰托大学（University of Trento）的Steep Stream项目支持。';
 
   @override
-  String get about_privacyPolicy => 'Privacy Policy';
+  String get about_privacyPolicy => '隐私政策';
 
   @override
-  String get about_tapHereToSeePrivacyPolicy => 'Tap here to see the privacy policy that covers user and location data.';
+  String get about_tapHereToSeePrivacyPolicy => '点按这里查看涵盖用户和位置数据的隐私政策。';
 
   @override
-  String get gpsInfoButton_noGpsInfoAvailable => 'No GPS info available…';
+  String get gpsInfoButton_noGpsInfoAvailable => '没有GPS信息可用…';
 
   @override
-  String get gpsInfoButton_timestamp => 'Timestamp';
+  String get gpsInfoButton_timestamp => '时间戳';
 
   @override
-  String get gpsInfoButton_speed => 'Speed';
+  String get gpsInfoButton_speed => '速度';
 
   @override
-  String get gpsInfoButton_heading => 'Heading';
+  String get gpsInfoButton_heading => '航向';
 
   @override
-  String get gpsInfoButton_accuracy => 'Accuracy';
+  String get gpsInfoButton_accuracy => '精度';
 
   @override
-  String get gpsInfoButton_altitude => 'Altitude';
+  String get gpsInfoButton_altitude => '海报';
 
   @override
-  String get gpsInfoButton_latitude => 'Latitude';
+  String get gpsInfoButton_latitude => '纬度';
 
   @override
-  String get gpsInfoButton_copyLatitudeToClipboard => 'Copy latitude to clipboard.';
+  String get gpsInfoButton_copyLatitudeToClipboard => '复制纬度到剪切板。';
 
   @override
-  String get gpsInfoButton_longitude => 'Longitude';
+  String get gpsInfoButton_longitude => '经度';
 
   @override
-  String get gpsInfoButton_copyLongitudeToClipboard => 'Copy longitude to clipboard.';
+  String get gpsInfoButton_copyLongitudeToClipboard => '复制经度到剪切板。';
 
   @override
-  String get gpsLogButton_stopLogging => 'Stop Logging?';
+  String get gpsLogButton_stopLogging => '停止记录么？';
 
   @override
-  String get gpsLogButton_stopLoggingAndCloseLog => 'Stop logging and close the current GPS log?';
+  String get gpsLogButton_stopLoggingAndCloseLog => '停止记录并关闭当前GPS记录么？';
 
   @override
-  String get gpsLogButton_newLog => 'New Log';
+  String get gpsLogButton_newLog => '新记录';
 
   @override
-  String get gpsLogButton_enterNameForNewLog => 'Enter a name for the new log';
+  String get gpsLogButton_enterNameForNewLog => '为新记录键入名称';
 
   @override
-  String get gpsLogButton_couldNotStartLogging => 'Could not start logging: ';
+  String get gpsLogButton_couldNotStartLogging => '不能开始记录： ';
 
   @override
-  String get imageWidgets_loadingImage => 'Loading image…';
+  String get imageWidgets_loadingImage => '加载图片中…';
 
   @override
-  String get logList_gpsLogsList => 'GPS Logs list';
+  String get logList_gpsLogsList => 'GPS记录文件列表';
 
   @override
-  String get logList_selectAll => 'Select all';
+  String get logList_selectAll => '全选';
 
   @override
-  String get logList_unSelectAll => 'Unselect all';
+  String get logList_unSelectAll => '全不选';
 
   @override
-  String get logList_invertSelection => 'Invert selection';
+  String get logList_invertSelection => '反选';
 
   @override
-  String get logList_mergeSelected => 'Merge selected';
+  String get logList_mergeSelected => '合并选择';
 
   @override
-  String get logList_loadingLogs => 'Loading logs…';
+  String get logList_loadingLogs => '加载记录文件中…';
 
   @override
-  String get logList_zoomTo => 'Zoom to';
+  String get logList_zoomTo => '缩放至';
 
   @override
-  String get logList_properties => 'Properties';
+  String get logList_properties => '属性';
 
   @override
-  String get logList_profileView => 'Profile View';
+  String get logList_profileView => '配置视图';
 
   @override
-  String get logList_toGPX => 'To GPX';
+  String get logList_toGPX => '到GPX';
 
   @override
-  String get logList_gpsSavedInExportFolder => 'GPX saved in export folder.';
+  String get logList_gpsSavedInExportFolder => 'GPX保存在输出文件夹。';
 
   @override
-  String get logList_errorOccurredExportingLogGPX => 'Could not export log to GPX.';
+  String get logList_errorOccurredExportingLogGPX => '不能输出记录到GPX中。';
 
   @override
-  String get logList_delete => 'Delete';
+  String get logList_delete => '删除';
 
   @override
-  String get logList_DELETE => 'Delete';
+  String get logList_DELETE => '删除';
 
   @override
-  String get logList_areYouSureDeleteTheLog => 'Delete the log?';
+  String get logList_areYouSureDeleteTheLog => '删除记录么？';
 
   @override
-  String get logList_hours => 'hours';
+  String get logList_hours => '小时';
 
   @override
-  String get logList_hour => 'hour';
+  String get logList_hour => '小时';
 
   @override
-  String get logList_minutes => 'min';
+  String get logList_minutes => '分钟';
 
   @override
-  String get logProperties_gpsLogProperties => 'GPS Log Properties';
+  String get logProperties_gpsLogProperties => 'GPS记录属性';
 
   @override
-  String get logProperties_logName => 'Log Name';
+  String get logProperties_logName => '日志名称';
 
   @override
-  String get logProperties_start => 'Start';
+  String get logProperties_start => '开始';
 
   @override
-  String get logProperties_end => 'End';
+  String get logProperties_end => '结束';
 
   @override
-  String get logProperties_duration => 'Duration';
+  String get logProperties_duration => '持续';
 
   @override
-  String get logProperties_color => 'Color';
+  String get logProperties_color => '颜色';
 
   @override
-  String get logProperties_palette => 'Palette';
+  String get logProperties_palette => '调色板';
 
   @override
-  String get logProperties_width => 'Width';
+  String get logProperties_width => '宽度';
 
   @override
-  String get logProperties_distanceAtPosition => 'Distance at position:';
+  String get logProperties_distanceAtPosition => '到位置的距离：';
 
   @override
-  String get logProperties_totalDistance => 'Total distance:';
+  String get logProperties_totalDistance => '总距离：';
 
   @override
-  String get logProperties_gpsLogView => 'GPS Log View';
+  String get logProperties_gpsLogView => 'GPS记录视图';
 
   @override
-  String get logProperties_disableStats => 'Turn off stats';
+  String get logProperties_disableStats => '关闭卫星';
 
   @override
-  String get logProperties_enableStats => 'Turn on stats';
+  String get logProperties_enableStats => '打开卫星';
 
   @override
-  String get logProperties_totalDuration => 'Total duration:';
+  String get logProperties_totalDuration => '总共持续：';
 
   @override
-  String get logProperties_timestamp => 'Timestamp:';
+  String get logProperties_timestamp => '时间戳：';
 
   @override
-  String get logProperties_durationAtPosition => 'Duration at position:';
+  String get logProperties_durationAtPosition => '在位置持续时间：';
 
   @override
-  String get logProperties_speed => 'Speed:';
+  String get logProperties_speed => '速度：';
 
   @override
-  String get logProperties_elevation => 'Elevation:';
+  String get logProperties_elevation => '高程：';
 
   @override
-  String get noteList_simpleNotesList => 'Simple List of Notes';
+  String get noteList_simpleNotesList => '简单的笔记列表';
 
   @override
-  String get noteList_formNotesList => 'List of Form Notes';
+  String get noteList_formNotesList => '表单式笔记列表';
 
   @override
-  String get noteList_loadingNotes => 'Loading notes…';
+  String get noteList_loadingNotes => '加载笔记中…';
 
   @override
-  String get noteList_zoomTo => 'Zoom to';
+  String get noteList_zoomTo => '缩放至';
 
   @override
-  String get noteList_edit => 'Edit';
+  String get noteList_edit => '编辑';
 
   @override
-  String get noteList_properties => 'Properties';
+  String get noteList_properties => '属性';
 
   @override
-  String get noteList_delete => 'Delete';
+  String get noteList_delete => '删除';
 
   @override
-  String get noteList_DELETE => 'Delete';
+  String get noteList_DELETE => '删除';
 
   @override
-  String get noteList_areYouSureDeleteNote => 'Delete the note?';
+  String get noteList_areYouSureDeleteNote => '删除该笔记？';
 
   @override
-  String get settings_settings => 'Settings';
+  String get settings_settings => '设置';
 
   @override
-  String get settings_camera => 'Camera';
+  String get settings_camera => '相机';
 
   @override
-  String get settings_cameraResolution => 'Camera Resolution';
+  String get settings_cameraResolution => '相机分辨率';
 
   @override
-  String get settings_resolution => 'Resolution';
+  String get settings_resolution => '分辨率';
 
   @override
-  String get settings_theCameraResolution => 'The camera resolution';
+  String get settings_theCameraResolution => '该相机分辨率';
 
   @override
-  String get settings_screen => 'Screen';
+  String get settings_screen => '屏幕';
 
   @override
-  String get settings_screenScaleBarIconSize => 'Screen, Scalebar and Icon Size';
+  String get settings_screenScaleBarIconSize => '屏幕，比例尺和图标大小';
 
   @override
-  String get settings_keepScreenOn => 'Keep Screen On';
+  String get settings_keepScreenOn => '保持屏幕开启';
 
   @override
-  String get settings_retinaScreenMode => 'HiDPI screen-mode';
+  String get settings_retinaScreenMode => '高分辨率屏幕模式';
 
   @override
-  String get settings_toApplySettingEnterExitLayerView => 'Enter and exit the layer view to apply this setting.';
+  String get settings_toApplySettingEnterExitLayerView => '输入并退出图层视图以应用设置。';
 
   @override
-  String get settings_colorPickerToUse => 'Color Picker to use';
+  String get settings_colorPickerToUse => '颜色拾取使用';
 
   @override
-  String get settings_mapCenterCross => 'Map Center Cross';
+  String get settings_mapCenterCross => '地图中心十字丝';
 
   @override
-  String get settings_color => 'Color';
+  String get settings_color => '颜色';
 
   @override
-  String get settings_size => 'Size';
+  String get settings_size => '大小';
 
   @override
-  String get settings_width => 'Width';
+  String get settings_width => '宽度';
 
   @override
-  String get settings_mapToolsIconSize => 'Icon Size for Map Tools';
+  String get settings_mapToolsIconSize => '地图工具的图标大小';
 
   @override
   String get settings_gps => 'GPS';
 
   @override
-  String get settings_gpsFiltersAndMockLoc => 'GPS filters and mock locations';
+  String get settings_gpsFiltersAndMockLoc => 'GPS过滤器和模拟位置';
 
   @override
-  String get settings_livePreview => 'Live Preview';
+  String get settings_livePreview => '动态预览';
 
   @override
-  String get settings_noPointAvailableYet => 'No point available yet.';
+  String get settings_noPointAvailableYet => '没有可用点。';
 
   @override
-  String get settings_longitudeDeg => 'longitude [deg]';
+  String get settings_longitudeDeg => '经度（度）';
 
   @override
-  String get settings_latitudeDeg => 'latitude [deg]';
+  String get settings_latitudeDeg => '纬度（度）';
 
   @override
-  String get settings_accuracyM => 'accuracy [m]';
+  String get settings_accuracyM => '精度（米）';
 
   @override
-  String get settings_altitudeM => 'altitude [m]';
+  String get settings_altitudeM => '海拔（米）';
 
   @override
-  String get settings_headingDeg => 'heading [deg]';
+  String get settings_headingDeg => '航向（度）';
 
   @override
-  String get settings_speedMS => 'speed [m/s]';
+  String get settings_speedMS => '速度（米每秒）';
 
   @override
-  String get settings_isLogging => 'is logging?';
+  String get settings_isLogging => '记录日记么？';
 
   @override
-  String get settings_mockLocations => 'mock locations?';
+  String get settings_mockLocations => '模拟位置么？';
 
   @override
-  String get settings_minDistFilterBlocks => 'Min dist filter blocks';
+  String get settings_minDistFilterBlocks => '过滤模拟的最小距离';
 
   @override
-  String get settings_minDistFilterPasses => 'Min dist filter passes';
+  String get settings_minDistFilterPasses => '过滤通过的最小距离';
 
   @override
-  String get settings_minTimeFilterBlocks => 'Min time filter blocks';
+  String get settings_minTimeFilterBlocks => '过滤模拟的最小时间';
 
   @override
-  String get settings_minTimeFilterPasses => 'Min time filter passes';
+  String get settings_minTimeFilterPasses => '过滤通过最小时间';
 
   @override
-  String get settings_hasBeenBlocked => 'Has been blocked';
+  String get settings_hasBeenBlocked => '已被屏蔽';
 
   @override
-  String get settings_distanceFromPrevM => 'Distance from prev [m]';
+  String get settings_distanceFromPrevM => '到前一个的距离';
 
   @override
-  String get settings_timeFromPrevS => 'Time since prev [s]';
+  String get settings_timeFromPrevS => '到前一个的时间';
 
   @override
-  String get settings_locationInfo => 'Location Info';
+  String get settings_locationInfo => '位置信息';
 
   @override
-  String get settings_filters => 'Filters';
+  String get settings_filters => '过滤器';
 
   @override
-  String get settings_disableFilters => 'Turn off Filters.';
+  String get settings_disableFilters => '关闭过滤器。';
 
   @override
-  String get settings_enableFilters => 'Turn on Filters.';
+  String get settings_enableFilters => '打开过滤器。';
 
   @override
-  String get settings_zoomIn => 'Zoom in';
+  String get settings_zoomIn => '放大';
 
   @override
-  String get settings_zoomOut => 'Zoom out';
+  String get settings_zoomOut => '缩小';
 
   @override
-  String get settings_activatePointFlow => 'Activate point flow.';
+  String get settings_activatePointFlow => '激活点流。';
 
   @override
-  String get settings_pausePointsFlow => 'Pause points flow.';
+  String get settings_pausePointsFlow => '暂停点流。';
 
   @override
-  String get settings_visualizePointCount => 'Visualize point count';
+  String get settings_visualizePointCount => '可视化点数';
 
   @override
-  String get settings_showGpsPointsValidPoints => 'Show the GPS points count for VALID points.';
+  String get settings_showGpsPointsValidPoints => '显示可用的GPS点数。';
 
   @override
-  String get settings_showGpsPointsAllPoints => 'Show the GPS points count for ALL points.';
+  String get settings_showGpsPointsAllPoints => '显示所有的GPS点数。';
 
   @override
-  String get settings_logFilters => 'Log filters';
+  String get settings_logFilters => '日志过滤器';
 
   @override
-  String get settings_minDistanceBetween2Points => 'Min distance between 2 points.';
+  String get settings_minDistanceBetween2Points => '2点间最小距离。';
 
   @override
-  String get settings_minTimespanBetween2Points => 'Min timespan between 2 points.';
+  String get settings_minTimespanBetween2Points => '2点间最小时间差。';
 
   @override
-  String get settings_gpsFilter => 'GPS Filter';
+  String get settings_gpsFilter => 'GPS过滤器';
 
   @override
-  String get settings_disable => 'Turn off';
+  String get settings_disable => '关闭';
 
   @override
-  String get settings_enable => 'Turn on';
+  String get settings_enable => '打开';
 
   @override
-  String get settings_theUseOfTheGps => 'the use of filtered GPS.';
+  String get settings_theUseOfTheGps => '过滤的GPS的使用。';
 
   @override
-  String get settings_warningThisWillAffectGpsPosition => 'Warning: This will affect GPS position, notes insertion, log statistics and charting.';
+  String get settings_warningThisWillAffectGpsPosition => '警告：这将会影响GPS位置，笔记插入，日志统计和制图。';
 
   @override
-  String get settings_MockLocations => 'Mock locations';
+  String get settings_MockLocations => '模拟的位置';
 
   @override
-  String get settings_testGpsLogDemoUse => 'test GPS log for demo use.';
+  String get settings_testGpsLogDemoUse => '用于演示的GPS测试日志。';
 
   @override
-  String get settings_setDurationGpsPointsInMilli => 'Set duration for GPS points in milliseconds.';
+  String get settings_setDurationGpsPointsInMilli => '设置GPS点间的时间间隔（毫秒）。';
 
   @override
-  String get settings_SETTING => 'Setting';
+  String get settings_SETTING => '设置';
 
   @override
-  String get settings_setMockedGpsDuration => 'Set Mocked GPS duration';
+  String get settings_setMockedGpsDuration => '设置模拟的GPS时间间隔';
 
   @override
-  String get settings_theValueHasToBeInt => 'The value has to be a whole number.';
+  String get settings_theValueHasToBeInt => '该值必须为完整的数字。';
 
   @override
-  String get settings_milliseconds => 'milliseconds';
+  String get settings_milliseconds => '毫秒';
 
   @override
-  String get settings_useGoogleToImproveLoc => 'Use Google Services to improve location';
+  String get settings_useGoogleToImproveLoc => '使用谷歌服务来提升位置精度';
 
   @override
-  String get settings_useOfGoogleServicesRestart => 'use of Google services (app restart needed).';
+  String get settings_useOfGoogleServicesRestart => '谷歌服务的使用（应用需要重启）。';
 
   @override
-  String get settings_gpsLogsViewMode => 'GPS Logs view mode';
+  String get settings_gpsLogsViewMode => 'GPS日志视图模式';
 
   @override
-  String get settings_logViewModeForOrigData => 'Log view mode for original data.';
+  String get settings_logViewModeForOrigData => '用于原始数据的日志视图模式。';
 
   @override
-  String get settings_logViewModeFilteredData => 'Log view mode for filtered data.';
+  String get settings_logViewModeFilteredData => '用于过滤数据的日志视图模式。';
 
   @override
-  String get settings_cancel => 'Cancel';
+  String get settings_cancel => '取消';
 
   @override
-  String get settings_ok => 'OK';
+  String get settings_ok => '确定';
 
   @override
-  String get settings_notesViewModes => 'Notes view modes';
+  String get settings_notesViewModes => '笔记视图模式';
 
   @override
-  String get settings_selectNotesViewMode => 'Select a mode to view notes in.';
+  String get settings_selectNotesViewMode => '选择一个模式来可视笔记。';
 
   @override
-  String get settings_mapPlugins => 'Map Plugins';
+  String get settings_mapPlugins => '地图插件';
 
   @override
-  String get settings_vectorLayers => 'Vector Layers';
+  String get settings_vectorLayers => '矢量图层';
 
   @override
-  String get settings_loadingOptionsInfoTool => 'Loading Options and Info Tool';
+  String get settings_loadingOptionsInfoTool => '加载选项和信息工具';
 
   @override
-  String get settings_dataLoading => 'Data loading';
+  String get settings_dataLoading => '数据加载';
 
   @override
-  String get settings_maxNumberFeatures => 'Max number of features.';
+  String get settings_maxNumberFeatures => '最大的要素数量。';
 
   @override
-  String get settings_maxNumFeaturesPerLayer => 'Max features per layer. Remove and add the layer to apply.';
+  String get settings_maxNumFeaturesPerLayer => '每个图层的最大要素数量。移除和添加该图层并应用。';
 
   @override
-  String get settings_all => 'all';
+  String get settings_all => '所有';
 
   @override
-  String get settings_loadMapArea => 'Load map area.';
+  String get settings_loadMapArea => '加载地图区域。';
 
   @override
-  String get settings_loadOnlyLastVisibleArea => 'Load only on the last visible map area. Remove and add the layer again to apply.';
+  String get settings_loadOnlyLastVisibleArea => '仅加载最后可视的地图区域。移除和再次添加该图层并应用。';
 
   @override
-  String get settings_infoTool => 'Info Tool';
+  String get settings_infoTool => '信息工具';
 
   @override
-  String get settings_tapSizeInfoToolPixels => 'Tap size of the info tool in pixels.';
+  String get settings_tapSizeInfoToolPixels => '信息工具在像素尺度中点按大小。';
 
   @override
-  String get settings_editingTool => 'Editing tool';
+  String get settings_editingTool => '编辑的工具';
 
   @override
-  String get settings_editingDragIconSize => 'Editing drag handler icon size.';
+  String get settings_editingDragIconSize => '编辑拖放处理图标大小。';
 
   @override
-  String get settings_editingIntermediateDragIconSize => 'Editing intermediate drag handler icon size.';
+  String get settings_editingIntermediateDragIconSize => '编辑中中间拖放处理的图标大小。';
 
   @override
-  String get settings_diagnostics => 'Diagnostics';
+  String get settings_diagnostics => '诊断';
 
   @override
-  String get settings_diagnosticsDebugLog => 'Diagnostics and Debug Log';
+  String get settings_diagnosticsDebugLog => '诊断和调试日志';
 
   @override
-  String get settings_openFullDebugLog => 'Open full debug log';
+  String get settings_openFullDebugLog => '打开全部的调试日志';
 
   @override
-  String get settings_debugLogView => 'Debug Log View';
+  String get settings_debugLogView => '调试日志视图';
 
   @override
-  String get settings_viewAllMessages => 'View all messages';
+  String get settings_viewAllMessages => '查看所有消息';
 
   @override
-  String get settings_viewOnlyErrorsWarnings => 'View only errors and warnings';
+  String get settings_viewOnlyErrorsWarnings => '仅看错误和警告';
 
   @override
-  String get settings_clearDebugLog => 'Clear debug log';
+  String get settings_clearDebugLog => '清除调试日志';
 
   @override
-  String get settings_loadingData => 'Loading data…';
+  String get settings_loadingData => '加载数据…';
 
   @override
-  String get settings_device => 'Device';
+  String get settings_device => '设备';
 
   @override
-  String get settings_deviceIdentifier => 'Device identifier';
+  String get settings_deviceIdentifier => '设备识别器';
 
   @override
-  String get settings_deviceId => 'Device ID';
+  String get settings_deviceId => '设备ID';
 
   @override
-  String get settings_overrideDeviceId => 'Override Device ID';
+  String get settings_overrideDeviceId => '覆盖设备ID';
 
   @override
-  String get settings_overrideId => 'Override ID';
+  String get settings_overrideId => '覆盖ID';
 
   @override
-  String get settings_pleaseEnterValidPassword => 'Please enter a valid server password.';
+  String get settings_pleaseEnterValidPassword => '请输入一个有效的服务器密码。';
 
   @override
   String get settings_gss => 'GSS';
 
   @override
-  String get settings_geopaparazziSurveyServer => 'Geopaparazzi Survey Server';
+  String get settings_geopaparazziSurveyServer => 'Geopaparazzi勘测服务器';
 
   @override
-  String get settings_serverUrl => 'Server URL';
+  String get settings_serverUrl => '服务器URL';
 
   @override
-  String get settings_serverUrlStartWithHttp => 'The server URL needs to start with HTTP or HTTPS.';
+  String get settings_serverUrlStartWithHttp => '服务器URL需要以HTTP或者HTTPS开始。';
 
   @override
-  String get settings_serverPassword => 'Server Password';
+  String get settings_serverPassword => '服务器密码';
 
   @override
-  String get settings_allowSelfSignedCert => 'Allow self signed certificates';
+  String get settings_allowSelfSignedCert => '允许自签名证书';
 
   @override
-  String get toolbarTools_zoomOut => 'Zoom out';
+  String get toolbarTools_zoomOut => '缩小';
 
   @override
-  String get toolbarTools_zoomIn => 'Zoom in';
+  String get toolbarTools_zoomIn => '放大';
 
   @override
-  String get toolbarTools_cancelCurrentEdit => 'Cancel current edit.';
+  String get toolbarTools_cancelCurrentEdit => '取消当前编辑。';
 
   @override
-  String get toolbarTools_saveCurrentEdit => 'Save current edit.';
+  String get toolbarTools_saveCurrentEdit => '保存当前编辑。';
 
   @override
-  String get toolbarTools_insertPointMapCenter => 'Insert point in map center.';
+  String get toolbarTools_insertPointMapCenter => '在地图中心插入点。';
 
   @override
-  String get toolbarTools_insertPointGpsPos => 'Insert point in GPS position.';
+  String get toolbarTools_insertPointGpsPos => '在GPS位置上插入点。';
 
   @override
-  String get toolbarTools_removeSelectedFeature => 'Remove selected feature.';
+  String get toolbarTools_removeSelectedFeature => '移除选择的要素。';
 
   @override
-  String get toolbarTools_showFeatureAttributes => 'Show feature attributes.';
+  String get toolbarTools_showFeatureAttributes => '显示要素的属性。';
 
   @override
-  String get toolbarTools_featureDoesNotHavePrimaryKey => 'The feature does not have a primary key. Editing is not allowed.';
+  String get toolbarTools_featureDoesNotHavePrimaryKey => '该要素没有主键，故不允许编辑。';
 
   @override
-  String get toolbarTools_queryFeaturesVectorLayers => 'Query features from loaded vector layers.';
+  String get toolbarTools_queryFeaturesVectorLayers => '从加载的矢量层中查询要素。';
 
   @override
-  String get toolbarTools_measureDistanceWithFinger => 'Measure distances on the map with your finger.';
+  String get toolbarTools_measureDistanceWithFinger => '在地图上使用你的手指测量距离。';
 
   @override
-  String get toolbarTools_modifyGeomVectorLayers => 'Modify the geometry of editable vector layers.';
+  String get toolbarTools_modifyGeomVectorLayers => '修改编辑矢量图层的几何形状。';
 
   @override
-  String get coachMarks_singleTap => 'Single tap: ';
+  String get coachMarks_singleTap => '单按： ';
 
   @override
-  String get coachMarks_longTap => 'Long tap: ';
+  String get coachMarks_longTap => '长按： ';
 
   @override
-  String get coachMarks_doubleTap => 'Double tap: ';
+  String get coachMarks_doubleTap => '双击： ';
 
   @override
-  String get coachMarks_simpleNoteButton => 'Simple Notes Button';
+  String get coachMarks_simpleNoteButton => '简单的笔记按钮';
 
   @override
-  String get coachMarks_addNewNote => 'add a new note';
+  String get coachMarks_addNewNote => '增加一个新的笔记';
 
   @override
-  String get coachMarks_viewNotesList => 'view list of notes';
+  String get coachMarks_viewNotesList => '查看笔记列表';
 
   @override
-  String get coachMarks_viewNotesSettings => 'view settings for notes';
+  String get coachMarks_viewNotesSettings => '查看笔记的设置';
 
   @override
-  String get coachMarks_formNotesButton => 'Form Notes Button';
+  String get coachMarks_formNotesButton => '表单笔记按钮';
 
   @override
-  String get coachMarks_addNewFormNote => 'add new form note';
+  String get coachMarks_addNewFormNote => '增加一个表单笔记';
 
   @override
-  String get coachMarks_viewFormNoteList => 'view list of form notes';
+  String get coachMarks_viewFormNoteList => '查看表单笔记列表';
 
   @override
-  String get coachMarks_gpsLogButton => 'GPS Log Button';
+  String get coachMarks_gpsLogButton => 'GPS日志按钮';
 
   @override
-  String get coachMarks_startStopLogging => 'start logging/stop logging';
+  String get coachMarks_startStopLogging => '开始记录日志/停止记录日志';
 
   @override
-  String get coachMarks_viewLogsList => 'view list of logs';
+  String get coachMarks_viewLogsList => '查看日志列表';
 
   @override
-  String get coachMarks_viewLogsSettings => 'view log settings';
+  String get coachMarks_viewLogsSettings => '查看日志设置';
 
   @override
-  String get coachMarks_gpsInfoButton => 'GPS Info Button (if applicable)';
+  String get coachMarks_gpsInfoButton => 'GPS信息按钮（如果合适）';
 
   @override
-  String get coachMarks_centerMapOnGpsPos => 'center map on GPS position';
+  String get coachMarks_centerMapOnGpsPos => '在GPS位置居中地图';
 
   @override
-  String get coachMarks_showGpsInfo => 'show GPS info';
+  String get coachMarks_showGpsInfo => '显示GPS信息';
 
   @override
-  String get coachMarks_toggleAutoCenterGps => 'toggle automatic center on GPS';
+  String get coachMarks_toggleAutoCenterGps => '自动固定GPS中心';
 
   @override
-  String get coachMarks_layersViewButton => 'Layers View Button';
+  String get coachMarks_layersViewButton => '图层视图按钮';
 
   @override
-  String get coachMarks_openLayersView => 'Open the layers view';
+  String get coachMarks_openLayersView => '打开一个图层视图';
 
   @override
-  String get coachMarks_openLayersPluginDialog => 'Open the layer plugins dialog';
+  String get coachMarks_openLayersPluginDialog => '打开该图层的插件对话框';
 
   @override
-  String get coachMarks_zoomInButton => 'Zoom-in Button';
+  String get coachMarks_zoomInButton => '放大按钮';
 
   @override
-  String get coachMarks_zoomImMapOneLevel => 'Zoom in the map by one level';
+  String get coachMarks_zoomImMapOneLevel => '放大地图一个级别';
 
   @override
-  String get coachMarks_zoomOutButton => 'Zoom-out Button';
+  String get coachMarks_zoomOutButton => '缩小按钮';
 
   @override
-  String get coachMarks_zoomOutMapOneLevel => 'Zoom out the map by one level';
+  String get coachMarks_zoomOutMapOneLevel => '缩小地图一个级别';
 
   @override
-  String get coachMarks_bottomToolsButton => 'Bottom Tools Button';
+  String get coachMarks_bottomToolsButton => '底部工具按钮';
 
   @override
-  String get coachMarks_toggleBottomToolsBar => 'Toggle bottom tools bar';
+  String get coachMarks_toggleBottomToolsBar => '固定底部工具条';
 
   @override
-  String get coachMarks_toolsButton => 'Tools Button';
+  String get coachMarks_toolsButton => '工具按钮';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras';
+  String get coachMarks_openEndDrawerToAccessProject => '打开最后的折叠来获取项目的信息和共享选项和地图插件，要素工具和额外工具一样';
 
   @override
-  String get coachMarks_interactiveCoackMarksButton => 'Interactive coach-marks button';
+  String get coachMarks_interactiveCoackMarksButton => '交互的指导标记按钮';
 
   @override
-  String get coachMarks_openInteractiveCoachMarks => 'Open the interactice coach marks explaining all the actions of the main map view.';
+  String get coachMarks_openInteractiveCoachMarks => '打开该交互的指导标记来阐述主要地图视图中的全部动作。';
 
   @override
-  String get coachMarks_mainMenuButton => 'Main-menu Button';
+  String get coachMarks_mainMenuButton => '主要菜单按钮';
 
   @override
-  String get coachMarks_openDrawerToLoadProject => 'Open the drawer to load or create a project, import and export data, sync with servers, access settings and exit the app/turn off the GPS.';
+  String get coachMarks_openDrawerToLoadProject => '打开折叠来加载或者创建一个项目，导入和导出数据，与服务器同步，进行设置和退出该应用/关闭GPS。';
 
   @override
-  String get coachMarks_skip => 'Skip';
+  String get coachMarks_skip => '跳过';
 
   @override
-  String get network_cancelledByUser => 'Cancelled by user.';
+  String get network_cancelledByUser => '已被用户取消。';
 
   @override
-  String get network_completed => 'Completed.';
+  String get network_completed => '完成。';
 
   @override
-  String get network_buildingBaseCachePerformance => 'Building base cache for improved performance (might take a while)…';
+  String get network_buildingBaseCachePerformance => '构建基本的缓存用于提高性能（可能需要一会）…';
 
   @override
-  String get network_thisFIleAlreadyBeingDownloaded => 'This file is already being downloaded.';
+  String get network_thisFIleAlreadyBeingDownloaded => '该文件已被下载了。';
 
   @override
-  String get network_download => 'Download';
+  String get network_download => '下载';
 
   @override
-  String get network_downloadFile => 'Download file';
+  String get network_downloadFile => '下载文件';
 
   @override
-  String get network_toTheDeviceTakeTime => 'to the device? This can take a while.';
+  String get network_toTheDeviceTakeTime => '到该设备么？这要花费一会。';
 
   @override
-  String get network_availableMaps => 'Available maps';
+  String get network_availableMaps => '可用的地图';
 
   @override
-  String get network_searchMapByName => 'Search map by name';
+  String get network_searchMapByName => '以名字搜索地图';
 
   @override
-  String get network_uploading => 'Uploading…';
+  String get network_uploading => '上传中…';
 
   @override
-  String get network_pleaseWait => 'please wait…';
+  String get network_pleaseWait => '请稍等…';
 
   @override
-  String get network_permissionOnServerDenied => 'Permission on server denied.';
+  String get network_permissionOnServerDenied => '在服务器中权限被拒。';
 
   @override
-  String get network_couldNotConnectToServer => 'Could not connect to the server. Is it online? Check your address.';
+  String get network_couldNotConnectToServer => '不能连接到服务器，它在线么？检查你的地址。';
 
   @override
-  String get form_smash_cantSaveImageDb => 'Could not save image in database.';
+  String get form_smash_cantSaveImageDb => '不能将图片保存到数据库。';
 
   @override
-  String get formbuilder => 'Form builder';
+  String get formbuilder => '表单构造器';
 
   @override
-  String get layersView_selectGssLayers => 'Select GSS Layers';
+  String get layersView_selectGssLayers => '选择GSS图层';
 
   @override
-  String get layersView_noGssLayersFound => 'No GSS layers found.';
+  String get layersView_noGssLayersFound => '未发现GSS图层。';
 
   @override
-  String get layersView_noGssLayersAvailable => 'No layers available (loaded ones are not shown).';
+  String get layersView_noGssLayersAvailable => '没有可用图层（已载入的未显示）。';
 
   @override
-  String get layersView_selectGssLayersToLoad => 'Select GSS layers to load.';
+  String get layersView_selectGssLayersToLoad => '选择GSS图层用于加载。';
 
   @override
-  String get layersView_unableToLoadGssLayers => 'Unable to load:';
+  String get layersView_unableToLoadGssLayers => '不能加载：';
 
   @override
-  String get layersView_layerExists => 'Layer exists';
+  String get layersView_layerExists => '存在的图层';
 
   @override
-  String get layersView_layerAlreadyExists => 'Layer already exists, do you want to overwrite it?';
+  String get layersView_layerAlreadyExists => '该图层已存在，是否覆盖？';
 
   @override
-  String get gss_layerview_upload_changes => 'Upload changes';
+  String get gss_layerview_upload_changes => '上传变更';
 
   @override
-  String get allGpsPointsCount => 'Gps points';
+  String get allGpsPointsCount => 'GPS点';
 
   @override
-  String get filteredGpsPointsCount => 'Filtered points';
+  String get filteredGpsPointsCount => '过滤的点';
 
   @override
-  String get addTmsFromDefaults => 'Add TMS from defaults';
+  String get addTmsFromDefaults => '增加默认的TMS';
 
   @override
-  String get form_smash_noCameraDesktop => 'No camera option available on desktop.';
+  String get form_smash_noCameraDesktop => '桌面没有相机选项可用。';
 
   @override
-  String get settings_BottombarCustomization => 'Bottombar Customization';
+  String get settings_BottombarCustomization => '底部栏自定义';
 
   @override
-  String get settings_Bottombar_showAddNote => 'Show the ADD NOTE button';
+  String get settings_Bottombar_showAddNote => '显示增加笔记的按钮';
 
   @override
-  String get settings_Bottombar_showAddFormNote => 'Show the ADD FORM NOTE button';
+  String get settings_Bottombar_showAddFormNote => '显示增加表单笔记的按钮';
 
   @override
-  String get settings_Bottombar_showAddGpsLog => 'Show the ADD GPS LOG button';
+  String get settings_Bottombar_showAddGpsLog => '显示增加GPS日志按钮';
 
   @override
-  String get settings_Bottombar_showGpsButton => 'Show the gps button';
+  String get settings_Bottombar_showGpsButton => '显示GPS按钮';
 
   @override
-  String get settings_Bottombar_showLayers => 'Show the layers button';
+  String get settings_Bottombar_showLayers => '显示图层按钮';
 
   @override
-  String get settings_Bottombar_showZoom => 'Show the zoom buttons';
+  String get settings_Bottombar_showZoom => '显示缩放按钮';
 
   @override
-  String get settings_Bottombar_showEditing => 'Show the editing button';
+  String get settings_Bottombar_showEditing => '显示编辑按钮';
 
   @override
-  String get gss_layerview_filter => 'Filter';
+  String get gss_layerview_filter => '过滤器';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hans`).

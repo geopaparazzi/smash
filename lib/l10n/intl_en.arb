@@ -82,6 +82,8 @@
   "@mainviewUtils_about": {},
   "mainviewUtils_projectInfo": "Project Info",
   "@mainviewUtils_projectInfo": {},
+  "mainviewUtils_projectStats": "Project Stats",
+  "@mainviewUtils_projectStats": {},
   "mainviewUtils_project": "Project",
   "@mainviewUtils_project": {},
   "mainviewUtils_database": "Database",

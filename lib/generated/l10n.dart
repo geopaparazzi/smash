@@ -359,6 +359,12 @@ abstract class SL {
   /// **'Project Info'**
   String get mainviewUtils_projectInfo;
 
+  /// No description provided for @mainviewUtils_projectStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Project Stats'**
+  String get mainviewUtils_projectStats;
+
   /// No description provided for @mainviewUtils_project.
   ///
   /// In en, this message translates to:

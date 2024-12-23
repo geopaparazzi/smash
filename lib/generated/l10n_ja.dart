@@ -130,6 +130,9 @@ class SLJa extends SL {
   String get mainviewUtils_projectInfo => 'プロジェクト情報';
 
   @override
+  String get mainviewUtils_projectStats => 'Project Stats';
+
+  @override
   String get mainviewUtils_project => 'プロジェクト';
 
   @override

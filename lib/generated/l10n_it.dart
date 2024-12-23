@@ -130,6 +130,9 @@ class SLIt extends SL {
   String get mainviewUtils_projectInfo => 'Informazioni progetto';
 
   @override
+  String get mainviewUtils_projectStats => 'Project Stats';
+
+  @override
   String get mainviewUtils_project => 'Progetto';
 
   @override
