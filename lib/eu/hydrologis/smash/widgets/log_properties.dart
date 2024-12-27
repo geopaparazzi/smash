@@ -412,8 +412,8 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
         LatLng(logDataPoints.last.lat, logDataPoints.last.lon));
     addStaticMarker(size, "1/2t", halfTimeLL);
     addStaticMarker(size, "1/2l", halfLengthLL);
-    addStaticMarker(size, "min", minElevLL);
-    addStaticMarker(size, "max", maxElevLL);
+    addStaticMarker(size, "minEl", minElevLL);
+    addStaticMarker(size, "maxEl", maxElevLL);
     addStaticMarker(size, maxSpeed.toStringAsFixed(0) + "m/s", maxSpeedLL);
 
     setState(() {});
@@ -516,10 +516,13 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     if (center != null) {
       mapLayers = [
         TileLayer(
-          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          subdomains: ['a', 'b', 'c'],
-          // TODO overrideTilesWhenUrlChanges: overrideTilesOnUrlChange,
+          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           errorTileCallback: errorTileCallback,
+          additionalOptions: {
+            "attribution":
+                '&copy; <a href="https://www.openstreetmap.org/copyright">'
+                    'OpenStreetMap</a> contributors',
+          },
         ),
       ];
       if (polylines != null) {
