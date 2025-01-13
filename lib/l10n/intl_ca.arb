@@ -980,5 +980,7 @@
   "settings_Bottombar_showEditing": "Mostra el botó d'edició",
   "@settings_Bottombar_showEditing": {},
   "gss_layerview_filter": "Filtre",
-  "@gss_layerview_filter": {}
+  "@gss_layerview_filter": {},
+  "mainviewUtils_projectStats": "Estadístiques del projecte",
+  "@mainviewUtils_projectStats": {}
 }
