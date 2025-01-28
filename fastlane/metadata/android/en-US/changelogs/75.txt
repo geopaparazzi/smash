@@ -1,0 +1,12 @@
+News:
+
+- There is now a new project info page that gives stats about the project contents
+- Sorting layer list from higher to lower z-order. This has been asked by many and is now in line with usual GIS modes.
+- Images are now optionally exported when exporting a project to Geopackages
+- Images are now exported into a project named folder
+
+Fixes:
+
+- Track log summary covers top right quadrant of screen. Now there is a preference to disable/enable it.
+- Image note not working when note is attached to map centre
+- fences have been fixed and integrated again
