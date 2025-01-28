@@ -980,5 +980,7 @@
   "settings_Bottombar_showEditing": "Zobrazit tlačítko pro úpravy",
   "@settings_Bottombar_showEditing": {},
   "gss_layerview_filter": "Filtr",
-  "@gss_layerview_filter": {}
+  "@gss_layerview_filter": {},
+  "mainviewUtils_projectStats": "Statistiky projektu",
+  "@mainviewUtils_projectStats": {}
 }
