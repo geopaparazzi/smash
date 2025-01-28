@@ -130,7 +130,7 @@ class SLCs extends SL {
   String get mainviewUtils_projectInfo => 'Info o projektu';
 
   @override
-  String get mainviewUtils_projectStats => 'Project Stats';
+  String get mainviewUtils_projectStats => 'Statistiky projektu';
 
   @override
   String get mainviewUtils_project => 'Projekt';
