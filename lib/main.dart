@@ -26,6 +26,9 @@ import 'package:stack_trace/stack_trace.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:catcher_2/catcher_2.dart';
+import 'package:sembast/sembast_io.dart';
+import 'package:path/path.dart' hide context;
+import 'package:path_provider/path_provider.dart';
 
 //import 'package:flutter_gen/gen_l10n/smash_localization.dart';
 import 'generated/l10n.dart';
@@ -71,6 +74,45 @@ MultiProvider getMainWidget() {
   );
 }
 // void main() => runApp(SmashApp());
+
+class MyCache implements ISmashCache {
+  late Database db;
+  var storesMap = <String, StoreRef>{};
+
+  @override
+  Future<void> init() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final dbPath = join(dir.path, 'smash_cache.db');
+    db = await databaseFactoryIo.openDatabase(dbPath);
+  }
+
+  StoreRef _getStore(String name) {
+    if (!storesMap.containsKey(name)) {
+      storesMap[name] = StoreRef<String, dynamic>.main();
+    }
+    return storesMap[name]!;
+  }
+
+  @override
+  Future<void> clear({String? cacheName}) async {
+    var store = _getStore(cacheName ?? "default");
+    await store.drop(db);
+    storesMap.remove(cacheName ?? "default");
+  }
+
+  @override
+  Future<dynamic> get(String key, {String? cacheName}) async {
+    var store = _getStore(cacheName ?? "default");
+    var object = await store.record(key).get(db);
+    return object;
+  }
+
+  @override
+  Future<void> put(String key, dynamic value, {String? cacheName}) async {
+    var store = _getStore(cacheName ?? "default");
+    await store.record(key).put(db, value);
+  }
+}
 
 class SmashApp extends StatelessWidget {
   @override
@@ -483,6 +525,9 @@ Future<String?> handlePreferences(BuildContext context) async {
           SmashPreferencesKeys.KEY_GSS_DJANGO_SERVER_ALLOW_SELFCERTIFICATE,
           false);
     }
+
+    // also init the cache
+    SmashCache().init(MyCache());
 
     return null;
   } on Exception catch (e, s) {
