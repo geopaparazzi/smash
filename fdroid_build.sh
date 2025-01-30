@@ -1,5 +1,7 @@
 set -x 
 
+.flutter/bin/flutter clean
+
 buildfolder=`pwd`
 rm -rf $buildfolder/.pub-cache
 cp -r ~/.pub-cache $buildfolder/
