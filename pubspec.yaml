@@ -181,7 +181,7 @@ dependencies:
   
 
   # MIT
-  flutter_slidable: ^3.0.1
+  # flutter_slidable: ^3.0.1
 
   # BSD  rainbow_vis: 1.0.3
   rainbow_color: 2.0.1
