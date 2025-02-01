@@ -24,7 +24,6 @@ import 'package:smash/eu/hydrologis/smash/maps/plugins/current_log_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/maps/plugins/fences_plugin.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
-import 'package:smash/eu/hydrologis/smash/util/coachmarks.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/fence.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_info_button.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_log_button.dart';
@@ -49,8 +48,6 @@ enum IconMode { NAVIGATION_MODE, TOOL_MODE }
 class MainViewWidgetState extends State<MainViewWidget>
     with WidgetsBindingObserver, AfterLayoutMixin {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  MainViewCoachMarks coachMarks = MainViewCoachMarks();
 
   double _iconSize = 32;
 
@@ -112,7 +109,6 @@ class MainViewWidgetState extends State<MainViewWidget>
       gpsState.statusQuiet = GpsStatus.ON_NO_FIX;
     }
 
-    coachMarks.initCoachMarks();
     super.initState();
   }
 
@@ -184,7 +180,6 @@ class MainViewWidgetState extends State<MainViewWidget>
     var keyCoach = "key_did_show_main_view_coach_marks";
     var didShowCoachMarks = GpPreferences().getBooleanSync(keyCoach, false);
     if (!didShowCoachMarks) {
-      coachMarks.showTutorial(context);
       GpPreferences().setBoolean(keyCoach, true);
     }
   }
@@ -261,30 +256,30 @@ class MainViewWidgetState extends State<MainViewWidget>
         // check when the app is left
         child: new Scaffold(
           key: _scaffoldKey,
-          appBar: AppBar(
-            leading: Builder(
-              builder: (BuildContext context) {
-                return IconButton(
-                  key: coachMarks.drawerButtonKey,
-                  icon: const Icon(Icons.menu),
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  tooltip:
-                      MaterialLocalizations.of(context).openAppDrawerTooltip,
-                );
-              },
-            ),
-            title: Padding(
-              padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
-              child: Image.asset(
-                "assets/smash_text.png",
-                fit: BoxFit.cover,
-                height: 32,
-              ),
-            ),
-            actions: addActionBarButtons(),
-          ),
+          // appBar: AppBar(
+          //   leading: Builder(
+          //     builder: (BuildContext context) {
+          //       return IconButton(
+          //         key: coachMarks.drawerButtonKey,
+          //         icon: const Icon(Icons.menu),
+          //         onPressed: () {
+          //           Scaffold.of(context).openDrawer();
+          //         },
+          //         tooltip:
+          //             MaterialLocalizations.of(context).openAppDrawerTooltip,
+          //       );
+          //     },
+          //   ),
+          //   title: Padding(
+          //     padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+          //     child: Image.asset(
+          //       "assets/smash_text.png",
+          //       fit: BoxFit.cover,
+          //       height: 32,
+          //     ),
+          //   ),
+          //   actions: addActionBarButtons(),
+          // ),
           // backgroundColor: SmashColors.mainBackground,
           body: Stack(
             children: <Widget>[
@@ -298,18 +293,51 @@ class MainViewWidgetState extends State<MainViewWidget>
                       ),
                     )
                   : Container(),
-              if (prefsState.showEditingButton && prefsState.showZoomButton)
-                Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: makeEditButton(prefsState),
-                    )),
+              // if (prefsState.showEditingButton && prefsState.showZoomButton)
+              //   Align(
+              //       alignment: Alignment.bottomRight,
+              //       child: Padding(
+              //         padding: const EdgeInsets.all(8.0),
+              //         child: makeEditButton(prefsState),
+              //       )),
               if (_iconMode != IconMode.NAVIGATION_MODE)
                 Align(
-                  alignment: Alignment.bottomLeft,
+                  alignment: Alignment.centerRight,
                   child: SmashToolsBar(_iconSize),
-                )
+                ),
+              SafeArea(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      /// Menu Button (Drawer)
+                      Builder(
+                        builder: (BuildContext context) {
+                          return IconButton(
+                            icon: const Icon(Icons.menu),
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            tooltip: MaterialLocalizations.of(context)
+                                .openAppDrawerTooltip,
+                            color: SmashColors.mainDecorations,
+                            iconSize: _iconSize,
+                          );
+                        },
+                      ),
+
+                      /// Action Buttons
+                      Row(
+                        children: addActionBarButtons(),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              addBottomNavigationBar(
+                  mapBuilder, projectData, mapState, prefsState),
             ],
           ),
           drawer: Drawer(
@@ -334,8 +362,8 @@ class MainViewWidgetState extends State<MainViewWidget>
               child: ListView(
             children: DashboardUtils.getEndDrawerListTiles(context),
           )),
-          bottomNavigationBar: addBottomNavigationBar(
-              mapBuilder, projectData, mapState, prefsState),
+          // bottomNavigationBar: addBottomNavigationBar(
+          //     mapBuilder, projectData, mapState, prefsState),
         ),
         onWillPop: () async {
           return Future.value(false);
@@ -418,86 +446,83 @@ class MainViewWidgetState extends State<MainViewWidget>
   List<Widget> addActionBarButtons() {
     return <Widget>[
       IconButton(
-          key: coachMarks.coachMarkButtonKey,
-          tooltip: SL
-              .of(context)
-              .mainView_showInteractiveCoachMarks, //"Show interactive coach marks.",
-          icon: Icon(MdiIcons.helpCircleOutline),
-          onPressed: () {
-            coachMarks.showTutorial(context);
-          }),
-      IconButton(
-          key: coachMarks.toolsButtonKey,
           tooltip:
               SL.of(context).mainView_openToolsDrawer, //"Open tools drawer.",
           icon: Icon(MdiIcons.tools),
+          color: SmashColors.mainDecorations,
+          iconSize: _iconSize,
           onPressed: () {
             _scaffoldKey.currentState?.openEndDrawer();
           }),
     ];
   }
 
-  BottomAppBar addBottomNavigationBar(
+  Widget addBottomNavigationBar(
       SmashMapBuilder mapBuilder,
       ProjectData? projectData,
       SmashMapState mapState,
       PreferencesState prefsState) {
-    return BottomAppBar(
-      color: SmashColors.mainDecorations,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          if (prefsState.showAddNoteButton)
-            makeSimpleNoteButton(mapBuilder, projectData),
-          if (prefsState.showAddFormNoteButton)
-            makeFormNotesButton(mapBuilder, projectData),
-          if (prefsState.showAddLogButton)
-            DashboardUtils.makeToolbarBadge(
-              LoggingButton(coachMarks.logsButtonKey, _iconSize),
-              projectData != null ? projectData.logsCount! : 0,
-              iconSize: _iconSize,
-            ),
-          Spacer(),
-          if (prefsState.showGpsInfoButton)
-            GpsInfoButton(coachMarks.gpsButtonKey, _iconSize),
-          Spacer(),
-          if (prefsState.showLayerButton) makeLayersButton(mapBuilder),
-          if (prefsState.showZoomButton)
-            Consumer<SmashMapState>(builder: (context, mapState, child) {
-              return DashboardUtils.makeToolbarZoomBadge(
-                IconButton(
-                  key: coachMarks.zoomInButtonKey,
-                  onPressed: () {
-                    mapState.zoomIn();
-                  },
-                  tooltip: SL.of(context).mainView_zoomIn, //'Zoom in',
-                  icon: Icon(
-                    SmashIcons.zoomInIcon,
-                    color: SmashColors.mainBackground,
-                  ),
-                  iconSize: _iconSize,
-                ),
-                mapState.zoom.toInt(),
+    return Positioned(
+      bottom: 10, // Adjust spacing from the bottom
+      left: 10,
+      right: 10,
+      // color: SmashColors.mainDecorations,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        if (prefsState.showEditingButton)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 35.0, right: 10.0),
+            child: makeEditButton(prefsState),
+          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            if (prefsState.showAddNoteButton)
+              makeSimpleNoteButton(mapBuilder, projectData),
+            if (prefsState.showAddFormNoteButton)
+              makeFormNotesButton(mapBuilder, projectData),
+            if (prefsState.showAddLogButton)
+              DashboardUtils.makeToolbarBadge(
+                LoggingButton(_iconSize),
+                projectData != null ? projectData.logsCount! : 0,
                 iconSize: _iconSize,
-              );
-            }),
-          if (prefsState.showZoomButton)
-            IconButton(
-              key: coachMarks.zoomOutButtonKey,
-              onPressed: () {
-                mapState.zoomOut();
-              },
-              tooltip: SL.of(context).mainView_zoomOut, //'Zoom out',
-              icon: Icon(
-                SmashIcons.zoomOutIcon,
-                color: SmashColors.mainBackground,
               ),
-              iconSize: _iconSize,
-            ),
-          if (prefsState.showEditingButton && !prefsState.showZoomButton)
-            makeEditButton(prefsState)
-        ],
-      ),
+            Spacer(),
+            if (prefsState.showGpsInfoButton) GpsInfoButton(_iconSize),
+            Spacer(),
+            if (prefsState.showLayerButton) makeLayersButton(mapBuilder),
+            if (prefsState.showZoomButton)
+              Consumer<SmashMapState>(builder: (context, mapState, child) {
+                return DashboardUtils.makeToolbarZoomBadge(
+                  IconButton(
+                    onPressed: () {
+                      mapState.zoomIn();
+                    },
+                    tooltip: SL.of(context).mainView_zoomIn, //'Zoom in',
+                    icon: Icon(
+                      SmashIcons.zoomInIcon,
+                      color: SmashColors.mainDecorations,
+                    ),
+                    iconSize: _iconSize,
+                  ),
+                  mapState.zoom.toInt(),
+                  iconSize: _iconSize,
+                );
+              }),
+            if (prefsState.showZoomButton)
+              IconButton(
+                onPressed: () {
+                  mapState.zoomOut();
+                },
+                tooltip: SL.of(context).mainView_zoomOut, //'Zoom out',
+                icon: Icon(
+                  SmashIcons.zoomOutIcon,
+                  color: SmashColors.mainDecorations,
+                ),
+                iconSize: _iconSize,
+              ),
+          ],
+        ),
+      ]),
     );
   }
 
@@ -506,10 +531,9 @@ class MainViewWidgetState extends State<MainViewWidget>
       child: Padding(
         padding: SmashUI.defaultPadding(),
         child: InkWell(
-          key: coachMarks.layersButtonKey,
           child: Icon(
             SmashIcons.layersIcon,
-            color: SmashColors.mainBackground,
+            color: SmashColors.mainDecorations,
             size: _iconSize,
           ),
           // tooltip: 'Open layers list',
@@ -532,20 +556,19 @@ class MainViewWidgetState extends State<MainViewWidget>
 
   Widget makeEditButton(PreferencesState prefsState) {
     return Container(
-      decoration: BoxDecoration(
-        color: SmashColors.mainDecorations,
-        border: Border.all(
-          color: SmashColors.mainDecorations,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.circular(_iconSize),
-      ),
+      // decoration: BoxDecoration(
+      //   color: SmashColors.mainDecorations,
+      //   border: Border.all(
+      //     color: SmashColors.mainDecorations,
+      //     width: 1,
+      //   ),
+      //   borderRadius: BorderRadius.circular(_iconSize),
+      // ),
       child: _iconMode == IconMode.NAVIGATION_MODE
           ? InkWell(
-              key: coachMarks.toolbarButtonKey,
               child: Icon(
                 MdiIcons.pencilCircleOutline,
-                color: SmashColors.mainBackground,
+                color: SmashColors.mainDecorations,
                 size: _iconSize,
               ),
               onTap: () {
@@ -577,10 +600,9 @@ class MainViewWidgetState extends State<MainViewWidget>
         child: Padding(
           padding: SmashUI.defaultPadding(),
           child: InkWell(
-            key: coachMarks.formsButtonKey,
             child: Icon(
               SmashIcons.formNotesIcon,
-              color: SmashColors.mainBackground,
+              color: SmashColors.mainDecorations,
               size: _iconSize,
             ),
           ),
@@ -663,12 +685,11 @@ class MainViewWidgetState extends State<MainViewWidget>
     return DashboardUtils.makeToolbarBadge(
       GestureDetector(
         child: InkWell(
-          key: coachMarks.simpleNotesButtonKey,
           child: Padding(
             padding: SmashUI.defaultPadding(),
             child: Icon(
               SmashIcons.simpleNotesIcon,
-              color: SmashColors.mainBackground,
+              color: SmashColors.mainDecorations,
               size: _iconSize,
             ),
           ),
@@ -812,7 +833,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         lineColor: Colors.black,
         lineWidth: 3,
         textStyle: TextStyle(color: Colors.black, fontSize: 14),
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.only(left: 10, top: 60),
       ));
     }
 
