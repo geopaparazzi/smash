@@ -20,8 +20,7 @@ import 'package:smashlibs/smashlibs.dart';
 ///
 class GpsInfoButton extends StatefulWidget {
   final double _iconSize;
-  final _key;
-  GpsInfoButton(this._key, this._iconSize);
+  GpsInfoButton(this._iconSize);
 
   @override
   State<StatefulWidget> createState() => _GpsInfoButtonState();
@@ -62,11 +61,11 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             children: [
               Transform.scale(
                 scale: 1.4,
-                child: FloatingActionButton(
-                  key: widget._key,
-                  elevation: 1,
-                  backgroundColor: SmashColors.mainDecorations,
-                  child: DashboardUtils.getGpsStatusIcon(
+                child: IconButton(
+                  // elevation: 1,
+                  // backgroundColor:
+                  //     Colors.transparent, // SmashColors.mainDecorations,
+                  icon: DashboardUtils.getGpsStatusIcon(
                       gpsState.status, widget._iconSize),
                   onPressed: () {
                     if (gpsState.hasFix() ||

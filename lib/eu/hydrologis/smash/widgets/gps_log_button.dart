@@ -20,8 +20,7 @@ import 'package:smashlibs/smashlibs.dart';
 ///
 class LoggingButton extends StatefulWidget {
   final double _iconSize;
-  final _key;
-  LoggingButton(this._key, this._iconSize);
+  LoggingButton(this._iconSize);
 
   @override
   State<StatefulWidget> createState() => _LoggingButtonState();
@@ -38,7 +37,6 @@ class _LoggingButtonState extends State<LoggingButton> {
         child: Padding(
           padding: SmashUI.defaultPadding(),
           child: InkWell(
-            key: widget._key,
             child: DashboardUtils.getLoggingIcon(gpsState.status,
                 size: widget._iconSize),
             // iconSize: widget._iconSize,

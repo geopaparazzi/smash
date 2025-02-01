@@ -607,7 +607,7 @@ class DashboardUtils {
       case GpsStatus.LOGGING:
         {
           iconData = SmashIcons.logIcon;
-          color = SmashColors.gpsLogging;
+          color = SmashColors.mainSelection;
           break;
         }
       case GpsStatus.OFF:
@@ -616,13 +616,13 @@ class DashboardUtils {
       case GpsStatus.NOPERMISSION:
         {
           iconData = SmashIcons.logIcon;
-          color = SmashColors.mainBackground;
+          color = SmashColors.mainDecorations;
           break;
         }
       default:
         {
           iconData = SmashIcons.logIcon;
-          color = SmashColors.mainBackground;
+          color = SmashColors.mainDecorations;
         }
     }
     if (size != null) {
