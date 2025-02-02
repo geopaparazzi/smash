@@ -322,7 +322,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             label: SL.of(context).logList_zoomTo, //'Zoom to'
             foregroundColor: SmashColors.mainBackground,
             backgroundColor: SmashColors.mainDecorations.withAlpha(100),
-            icon: MdiIcons.magnifyScan,
+            // icon: MdiIcons.magnifyScan,
             onPressed: (context) async {
               SmashMapState mapState =
                   Provider.of<SmashMapState>(context, listen: false);
@@ -347,7 +347,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
           },
           foregroundColor: SmashColors.mainBackground,
           backgroundColor: SmashColors.mainDecorations.withAlpha(170),
-          icon: MdiIcons.palette,
+          // icon: MdiIcons.palette,
           label: SL.of(context).logList_properties, //'Properties'
         ),
         // PROFILE VIEW
@@ -355,7 +355,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
           label: SL.of(context).logList_profileView, //'Profile View'
           foregroundColor: SmashColors.mainBackground,
           backgroundColor: SmashColors.mainDecorations.withAlpha(250),
-          icon: MdiIcons.chartAreaspline,
+          // icon: MdiIcons.chartAreaspline,
           onPressed: (context) async {
             await Navigator.push(
                 context,
@@ -378,7 +378,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             label: SL.of(context).logList_toGPX, //'To GPX'
             foregroundColor: SmashColors.mainBackground,
             backgroundColor: SmashColors.mainDecorations,
-            icon: MdiIcons.mapMarker,
+            // icon: MdiIcons.mapMarker,
             onPressed: (context) async {
               var exportsFolder = await Workspace.getExportsFolder();
               try {
@@ -401,9 +401,9 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         // DELETE
         SlidableAction(
             label: SL.of(context).logList_delete, //'Delete'
-            foregroundColor: SmashColors.mainDanger,
-            backgroundColor: SmashColors.mainDecorations.withAlpha(200),
-            icon: MdiIcons.delete,
+            foregroundColor: SmashColors.mainBackground,
+            backgroundColor: SmashColors.mainDanger.withAlpha(200),
+            // icon: MdiIcons.delete,
             onPressed: (context) async {
               bool? doDelete = await SmashDialogs.showConfirmDialog(
                   context,

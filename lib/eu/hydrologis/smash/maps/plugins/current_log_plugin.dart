@@ -22,7 +22,6 @@ class CurrentGpsLogLayer extends StatelessWidget {
   Paint? filteredLogPaint;
   bool doFiltered = true;
   // defines if to flatten the chart to have more realistic ratio
-  bool _doFlatChart = true;
   bool doOrig = true;
 
   final Color logColor;
@@ -78,10 +77,8 @@ class CurrentGpsLogLayer extends StatelessWidget {
 
         Widget? panel;
         if (showInfoPanel) {
-          panel = _getInfoWidget(context, projectState, true);
+          panel = _getInfoWidget(context, projectState);
           if (panelExpandedValue.value == 1) {
-            panel = _getInfoWidget(context, projectState, false);
-          } else if (panelExpandedValue.value == 2) {
             panel = _getTinyInfoWidget(context, projectState);
           }
         }
@@ -110,14 +107,14 @@ class CurrentGpsLogLayer extends StatelessWidget {
     int timestampDelta = currentLogStats[2] as int;
     var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
     double height = ScreenUtilities.getHeight(context);
-    double shift = height * 0.1;
+    double shift = height * 0.15;
     return Padding(
       padding: EdgeInsets.only(top: shift),
       child: Align(
         alignment: Alignment.topRight,
         child: Container(
           decoration: BoxDecoration(
-              color: SmashColors.mainBackground.withOpacity(0.7),
+              color: SmashColors.mainBackground.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(8)),
           child: Padding(
             padding: SmashUI.defaultPadding(),
@@ -160,8 +157,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
     );
   }
 
-  Widget _getInfoWidget(
-      BuildContext context, ProjectState projectState, bool withChart) {
+  Widget _getInfoWidget(BuildContext context, ProjectState projectState) {
     var currentLogStats = projectState.getCurrentLogStats();
     double distanceMeter = currentLogStats[0] as double;
     double distanceMeterFiltered = currentLogStats[1] as double;
@@ -169,26 +165,6 @@ class CurrentGpsLogLayer extends StatelessWidget {
     double speedMs = currentLogStats[3];
     double speedKmH = speedMs * 3600 / 1000;
     List<dynamic> progAndAltitudes = currentLogStats[4];
-    double minElev = double.infinity;
-    double maxElev = double.negativeInfinity;
-
-    List<dynamic> progAltitudData = [];
-    progAndAltitudes.forEach((xy) {
-      var tmp = xy[1];
-      if (tmp < minElev) {
-        minElev = tmp;
-      }
-      if (tmp > maxElev) {
-        maxElev = tmp;
-      }
-      progAltitudData.add(xy);
-    });
-
-    if (_doFlatChart && (maxElev - minElev) < 25) {
-      maxElev = minElev + 25;
-    }
-    int minElevInt = minElev.round();
-    int maxElevInt = maxElev.round();
 
     var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
     var distStr = StringUtilities.formatMeters(distanceMeter);
@@ -202,7 +178,7 @@ class CurrentGpsLogLayer extends StatelessWidget {
         alignment: Alignment.topRight,
         child: Container(
           decoration: BoxDecoration(
-              color: SmashColors.mainBackground.withOpacity(0.7),
+              color: SmashColors.mainBackground.withValues(alpha: 0.7),
               borderRadius: BorderRadius.circular(8)),
           child: Padding(
             padding: SmashUI.defaultPadding(),
@@ -271,47 +247,10 @@ class CurrentGpsLogLayer extends StatelessWidget {
                         child: Icon(MdiIcons.elevationRise),
                       ),
                       SmashUI.normalText(
-                          "${((progAltitudData.last[1]) as double).toStringAsFixed(0)} m"),
+                          "${((progAndAltitudes.last[1]) as double).toStringAsFixed(0)} m"),
                     ],
                   ),
                 ),
-                if (withChart && maxElevInt != minElevInt)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text("${maxElevInt + 1}",
-                        style: TextStyle(
-                            fontSize: 10, fontWeight: FontWeight.bold)),
-                  ),
-                if (withChart)
-                  GestureDetector(
-                    onDoubleTap: () {
-                      _doFlatChart = !_doFlatChart;
-                      String msg = "Show exagerated elev chart.";
-                      if (_doFlatChart) {
-                        msg = "Show proper ratio chart.";
-                      }
-                      final snackBar = SnackBar(
-                        content: Text(msg),
-                        behavior: SnackBarBehavior.floating,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 2.0, left: 2.0),
-                      child: SizedBox(
-                        height: 100,
-                        width: 180,
-                        child: LineChart(
-                          getProfileData(
-                              progAltitudData, minElevInt, maxElevInt),
-                        ),
-                      ),
-                    ),
-                  ),
-                if (withChart && maxElevInt != minElevInt)
-                  Text("${minElevInt - 1}",
-                      style:
-                          TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: GestureDetector(

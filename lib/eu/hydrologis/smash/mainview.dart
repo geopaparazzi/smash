@@ -302,8 +302,11 @@ class MainViewWidgetState extends State<MainViewWidget>
               //       )),
               if (_iconMode != IconMode.NAVIGATION_MODE)
                 Align(
-                  alignment: Alignment.centerRight,
-                  child: SmashToolsBar(_iconSize),
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: SmashToolsBar(_iconSize),
+                  ),
                 ),
               SafeArea(
                 child: Padding(
@@ -355,9 +358,9 @@ class MainViewWidgetState extends State<MainViewWidget>
                 ),
               ),
               Align(
-                alignment: Alignment.centerLeft,
+                alignment: Alignment.centerRight,
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(right: 8.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -525,7 +528,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             padding: 0),
       if (prefsState.showAddLogButton)
         DashboardUtils.makeToolbarBadge(
-          SmashUI.makeBackgroundCircle(LoggingButton(_iconSize), padding: 0),
+          LoggingButton(_iconSize),
           projectData != null ? projectData.logsCount! : 0,
           iconSize: _iconSize,
         ),
@@ -543,7 +546,7 @@ class MainViewWidgetState extends State<MainViewWidget>
       left: 10,
       right: 10,
       // color: SmashColors.mainDecorations,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         if (prefsState.showEditingButton)
           Padding(
             padding: const EdgeInsets.only(bottom: 35.0, right: 10.0),
@@ -608,10 +611,10 @@ class MainViewWidgetState extends State<MainViewWidget>
       //   borderRadius: BorderRadius.circular(_iconSize),
       // ),
       child: _iconMode == IconMode.NAVIGATION_MODE
-          ? InkWell(
+          ? SmashUI.makeBackgroundCircle(InkWell(
               child: Icon(
                 MdiIcons.pencilCircleOutline,
-                color: SmashColors.mainDecorations,
+                color: SmashColors.mainBackground,
                 size: _iconSize,
               ),
               onTap: () {
@@ -619,20 +622,22 @@ class MainViewWidgetState extends State<MainViewWidget>
                   _iconMode = IconMode.TOOL_MODE;
                 });
               },
-            )
-          : InkWell(
-              child: Icon(
-                MdiIcons.pencilCircleOutline,
-                color: SmashColors.mainSelection,
-                size: _iconSize,
+            ))
+          : SmashUI.makeBackgroundCircle(
+              InkWell(
+                child: Icon(
+                  MdiIcons.pencilCircleOutline,
+                  color: SmashColors.mainBackground,
+                  size: _iconSize,
+                ),
+                onTap: () {
+                  BottomToolbarToolsRegistry.disableAll(context);
+                  setState(() {
+                    _iconMode = IconMode.NAVIGATION_MODE;
+                  });
+                },
               ),
-              onTap: () {
-                BottomToolbarToolsRegistry.disableAll(context);
-                setState(() {
-                  _iconMode = IconMode.NAVIGATION_MODE;
-                });
-              },
-            ),
+              background: SmashColors.mainSelection),
     );
   }
 
