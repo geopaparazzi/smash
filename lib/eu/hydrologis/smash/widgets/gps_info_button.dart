@@ -34,6 +34,48 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
     return Consumer<GpsState>(builder: (context, gpsState, child) {
       var mapState = Provider.of<SmashMapState>(context, listen: false);
 
+      Color backgroundColor;
+      Color frontColor;
+      IconData iconData;
+      switch (gpsState.status) {
+        case GpsStatus.OFF:
+        case GpsStatus.NOGPS:
+          {
+            backgroundColor = SmashColors.gpsOff;
+            iconData = Icons.gps_off;
+            frontColor = SmashColors.mainDecorationsDarker;
+            break;
+          }
+        case GpsStatus.ON_WITH_FIX:
+          {
+            backgroundColor = SmashColors.gpsOnWithFix;
+            iconData = Icons.gps_fixed;
+            frontColor = SmashColors.mainDecorationsDarker;
+            break;
+          }
+        case GpsStatus.ON_NO_FIX:
+          {
+            iconData = Icons.gps_not_fixed;
+            backgroundColor = SmashColors.gpsOnNoFix;
+            frontColor = SmashColors.mainDecorationsDarker;
+            break;
+          }
+        case GpsStatus.LOGGING:
+          {
+            iconData = Icons.gps_fixed;
+            backgroundColor = SmashColors.mainSelection;
+            frontColor = SmashColors.mainBackground;
+            break;
+          }
+        case GpsStatus.NOPERMISSION:
+          {
+            iconData = Icons.gps_off;
+            backgroundColor = SmashColors.gpsNoPermission;
+            frontColor = SmashColors.mainDecorationsDarker;
+            break;
+          }
+      }
+
       Widget button = GestureDetector(
         onLongPress: () {
           var color = SmashColors.mainDecorations;
@@ -64,9 +106,12 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
                 child: FloatingActionButton(
                   shape: CircleBorder(),
                   elevation: 1,
-                  backgroundColor: SmashColors.mainDecorations,
-                  child: DashboardUtils.getGpsStatusIcon(
-                      gpsState.status, widget._iconSize),
+                  backgroundColor: backgroundColor,
+                  child: Icon(
+                    iconData,
+                    size: widget._iconSize,
+                    color: frontColor,
+                  ),
                   onPressed: () {
                     if (gpsState.hasFix() ||
                         gpsState.status == GpsStatus.ON_NO_FIX) {

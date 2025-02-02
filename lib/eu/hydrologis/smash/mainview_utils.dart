@@ -373,6 +373,48 @@ class DashboardUtils {
                               )));
                 },
               ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
+              value: GpPreferences().getBooleanSync(
+                  SmashPreferencesKeys.KEY_SCREEN_TOOLBAR_SHOW_EDITING, false),
+              onChanged: (selected) async {
+                await GpPreferences().setBoolean(
+                    SmashPreferencesKeys.KEY_SCREEN_TOOLBAR_SHOW_EDITING,
+                    selected!);
+
+                PreferencesState prefState =
+                    Provider.of<PreferencesState>(context, listen: false);
+                prefState.onChanged();
+
+                SettingsWidget.reloadMapSettings(context);
+              },
+              title: SmashUI.normalText(
+                "Toggle editing",
+                bold: true,
+                color: c,
+              ),
+            ),
+            CheckboxListTile(
+              controlAffinity: ListTileControlAffinity.leading,
+              value: GpPreferences().getBooleanSync(
+                  SmashPreferencesKeys.KEY_SCREEN_SHOW_LOG_INFO_PANEL, false),
+              onChanged: (selected) async {
+                await GpPreferences().setBoolean(
+                    SmashPreferencesKeys.KEY_SCREEN_SHOW_LOG_INFO_PANEL,
+                    selected!);
+
+                PreferencesState prefState =
+                    Provider.of<PreferencesState>(context, listen: false);
+                prefState.onChanged();
+
+                SettingsWidget.reloadMapSettings(context);
+              },
+              title: SmashUI.normalText(
+                "Toggle log info panel",
+                bold: true,
+                color: c,
+              ),
+            ),
           ]),
     );
   }

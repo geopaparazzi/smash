@@ -33,31 +33,58 @@ class _LoggingButtonState extends State<LoggingButton> {
       ProjectState projectState =
           Provider.of<ProjectState>(context, listen: false);
 
-      return GestureDetector(
-        child: Padding(
-          padding: SmashUI.defaultPadding(),
-          child: InkWell(
-            child: DashboardUtils.getLoggingIcon(gpsState.status,
-                size: widget._iconSize),
-            // iconSize: widget._iconSize,
-          ),
-        ),
-        onTap: () {
-          if (gpsState.status != GpsStatus.NOGPS &&
-              gpsState.status != GpsStatus.OFF) {
-            _toggleLoggingFunction(context, projectState, gpsState);
+      Color color;
+      IconData iconData;
+      switch (gpsState.status) {
+        case GpsStatus.LOGGING:
+          {
+            iconData = SmashIcons.logIcon;
+            color = SmashColors.mainSelection;
+            break;
           }
-        },
-        onLongPress: () {
-          ProjectState projectState =
-              Provider.of<ProjectState>(context, listen: false);
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      LogListWidget(projectState.projectDb!)));
-        },
-      );
+        case GpsStatus.OFF:
+        case GpsStatus.ON_WITH_FIX:
+        case GpsStatus.ON_NO_FIX:
+        case GpsStatus.NOPERMISSION:
+          {
+            iconData = SmashIcons.logIcon;
+            color = SmashColors.mainDecorations;
+            break;
+          }
+        default:
+          {
+            iconData = SmashIcons.logIcon;
+            color = SmashColors.mainDecorations;
+          }
+      }
+
+      return SmashUI.makeBackgroundCircle(
+          GestureDetector(
+            child: Padding(
+              padding: SmashUI.defaultPadding(),
+              child: InkWell(
+                child: Icon(iconData,
+                    size: widget._iconSize, color: SmashColors.mainBackground),
+              ),
+            ),
+            onTap: () {
+              if (gpsState.status != GpsStatus.NOGPS &&
+                  gpsState.status != GpsStatus.OFF) {
+                _toggleLoggingFunction(context, projectState, gpsState);
+              }
+            },
+            onLongPress: () {
+              ProjectState projectState =
+                  Provider.of<ProjectState>(context, listen: false);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LogListWidget(projectState.projectDb!)));
+            },
+          ),
+          padding: 0,
+          background: color);
     });
   }
 
