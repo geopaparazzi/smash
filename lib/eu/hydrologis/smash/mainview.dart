@@ -308,21 +308,26 @@ class MainViewWidgetState extends State<MainViewWidget>
               SafeArea(
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       /// Menu Button (Drawer)
                       Builder(
                         builder: (BuildContext context) {
                           return IconButton(
-                            icon: const Icon(Icons.menu),
+                            icon: SmashUI.makeBackgroundCircle(
+                              Icon(
+                                MdiIcons.menu,
+                              ),
+                            ),
                             onPressed: () {
                               Scaffold.of(context).openDrawer();
                             },
                             tooltip: MaterialLocalizations.of(context)
                                 .openAppDrawerTooltip,
-                            color: SmashColors.mainDecorations,
+                            color: SmashColors.mainBackground,
                             iconSize: _iconSize,
                           );
                         },
@@ -330,8 +335,69 @@ class MainViewWidgetState extends State<MainViewWidget>
 
                       /// Action Buttons
                       Row(
-                        children: addActionBarButtons(),
+                        children: [
+                          IconButton(
+                              tooltip: SL
+                                  .of(context)
+                                  .mainView_openToolsDrawer, //"Open tools drawer.",
+                              icon: SmashUI.makeBackgroundCircle(
+                                Icon(MdiIcons.dotsVertical),
+                              ),
+                              color: SmashColors.mainBackground,
+                              iconSize: _iconSize,
+                              onPressed: () {
+                                _scaffoldKey.currentState?.openEndDrawer();
+                              }),
+                        ],
                       ),
+                    ],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (prefsState.showZoomButton)
+                        Consumer<SmashMapState>(
+                            builder: (context, mapState, child) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 5.0),
+                            child: SmashUI.makeBackgroundCircle(
+                                IconButton(
+                                  onPressed: () {
+                                    mapState.zoomIn();
+                                  },
+                                  tooltip: SL
+                                      .of(context)
+                                      .mainView_zoomIn, //'Zoom in',
+                                  icon: Icon(
+                                    SmashIcons.zoomInIcon,
+                                    color: SmashColors.mainBackground,
+                                  ),
+                                  iconSize: _iconSize,
+                                ),
+                                padding: 0),
+                          );
+                        }),
+                      if (prefsState.showZoomButton)
+                        SmashUI.makeBackgroundCircle(
+                            IconButton(
+                              onPressed: () {
+                                mapState.zoomOut();
+                              },
+                              tooltip:
+                                  SL.of(context).mainView_zoomOut, //'Zoom out',
+                              icon: Icon(
+                                SmashIcons.zoomOutIcon,
+                                color: SmashColors.mainBackground,
+                              ),
+                              iconSize: _iconSize,
+                            ),
+                            padding: 0),
                     ],
                   ),
                 ),
@@ -443,25 +509,35 @@ class MainViewWidgetState extends State<MainViewWidget>
     }
   }
 
-  List<Widget> addActionBarButtons() {
-    return <Widget>[
-      IconButton(
-          tooltip:
-              SL.of(context).mainView_openToolsDrawer, //"Open tools drawer.",
-          icon: Icon(MdiIcons.tools),
-          color: SmashColors.mainDecorations,
-          iconSize: _iconSize,
-          onPressed: () {
-            _scaffoldKey.currentState?.openEndDrawer();
-          }),
-    ];
-  }
-
   Widget addBottomNavigationBar(
       SmashMapBuilder mapBuilder,
       ProjectData? projectData,
       SmashMapState mapState,
       PreferencesState prefsState) {
+    var actionsList = [
+      if (prefsState.showAddNoteButton)
+        SmashUI.makeBackgroundCircle(
+            makeSimpleNoteButton(mapBuilder, projectData),
+            padding: 0),
+      if (prefsState.showAddFormNoteButton)
+        SmashUI.makeBackgroundCircle(
+            makeFormNotesButton(mapBuilder, projectData),
+            padding: 0),
+      if (prefsState.showAddLogButton)
+        DashboardUtils.makeToolbarBadge(
+          SmashUI.makeBackgroundCircle(LoggingButton(_iconSize), padding: 0),
+          projectData != null ? projectData.logsCount! : 0,
+          iconSize: _iconSize,
+        ),
+    ];
+    // now add a little padding to the right to all but the last
+    for (int i = 0; i < actionsList.length - 1; i++) {
+      actionsList[i] = Padding(
+        padding: const EdgeInsets.only(right: 3.0),
+        child: actionsList[i],
+      );
+    }
+
     return Positioned(
       bottom: 10, // Adjust spacing from the bottom
       left: 10,
@@ -476,49 +552,16 @@ class MainViewWidgetState extends State<MainViewWidget>
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            if (prefsState.showAddNoteButton)
-              makeSimpleNoteButton(mapBuilder, projectData),
-            if (prefsState.showAddFormNoteButton)
-              makeFormNotesButton(mapBuilder, projectData),
-            if (prefsState.showAddLogButton)
-              DashboardUtils.makeToolbarBadge(
-                LoggingButton(_iconSize),
-                projectData != null ? projectData.logsCount! : 0,
-                iconSize: _iconSize,
-              ),
+            if (prefsState.showLayerButton)
+              SmashUI.makeBackgroundCircle(makeLayersButton(mapBuilder),
+                  padding: 0),
             Spacer(),
-            if (prefsState.showGpsInfoButton) GpsInfoButton(_iconSize),
+            ...actionsList,
             Spacer(),
-            if (prefsState.showLayerButton) makeLayersButton(mapBuilder),
-            if (prefsState.showZoomButton)
-              Consumer<SmashMapState>(builder: (context, mapState, child) {
-                return DashboardUtils.makeToolbarZoomBadge(
-                  IconButton(
-                    onPressed: () {
-                      mapState.zoomIn();
-                    },
-                    tooltip: SL.of(context).mainView_zoomIn, //'Zoom in',
-                    icon: Icon(
-                      SmashIcons.zoomInIcon,
-                      color: SmashColors.mainDecorations,
-                    ),
-                    iconSize: _iconSize,
-                  ),
-                  mapState.zoom.toInt(),
-                  iconSize: _iconSize,
-                );
-              }),
-            if (prefsState.showZoomButton)
-              IconButton(
-                onPressed: () {
-                  mapState.zoomOut();
-                },
-                tooltip: SL.of(context).mainView_zoomOut, //'Zoom out',
-                icon: Icon(
-                  SmashIcons.zoomOutIcon,
-                  color: SmashColors.mainDecorations,
-                ),
-                iconSize: _iconSize,
+            if (prefsState.showGpsInfoButton)
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: GpsInfoButton(_iconSize),
               ),
           ],
         ),
@@ -533,7 +576,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         child: InkWell(
           child: Icon(
             SmashIcons.layersIcon,
-            color: SmashColors.mainDecorations,
+            color: SmashColors.mainBackground,
             size: _iconSize,
           ),
           // tooltip: 'Open layers list',
@@ -602,7 +645,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           child: InkWell(
             child: Icon(
               SmashIcons.formNotesIcon,
-              color: SmashColors.mainDecorations,
+              color: SmashColors.mainBackground,
               size: _iconSize,
             ),
           ),
@@ -689,7 +732,7 @@ class MainViewWidgetState extends State<MainViewWidget>
             padding: SmashUI.defaultPadding(),
             child: Icon(
               SmashIcons.simpleNotesIcon,
-              color: SmashColors.mainDecorations,
+              color: SmashColors.mainBackground,
               size: _iconSize,
             ),
           ),
@@ -833,7 +876,7 @@ class MainViewWidgetState extends State<MainViewWidget>
         lineColor: Colors.black,
         lineWidth: 3,
         textStyle: TextStyle(color: Colors.black, fontSize: 14),
-        padding: EdgeInsets.only(left: 10, top: 60),
+        padding: EdgeInsets.only(left: 10, top: _iconSize + 60),
       ));
     }
 

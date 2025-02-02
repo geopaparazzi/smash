@@ -616,13 +616,13 @@ class DashboardUtils {
       case GpsStatus.NOPERMISSION:
         {
           iconData = SmashIcons.logIcon;
-          color = SmashColors.mainDecorations;
+          color = SmashColors.mainBackground;
           break;
         }
       default:
         {
           iconData = SmashIcons.logIcon;
-          color = SmashColors.mainDecorations;
+          color = SmashColors.mainBackground;
         }
     }
     if (size != null) {

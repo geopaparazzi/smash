@@ -109,46 +109,51 @@ class CurrentGpsLogLayer extends StatelessWidget {
     var currentLogStats = projectState.getCurrentLogStats();
     int timestampDelta = currentLogStats[2] as int;
     var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
-    return Align(
-      alignment: Alignment.topRight,
-      child: Container(
-        decoration: BoxDecoration(
-            color: SmashColors.mainBackground.withOpacity(0.7),
-            borderRadius: BorderRadius.circular(8)),
-        child: Padding(
-          padding: SmashUI.defaultPadding(),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    child: Icon(SmashIcons.iconTime),
-                  ),
-                  SmashUI.normalText("$timeStr"),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: RotatedBox(
-                      quarterTurns: 2,
-                      child: IconButton(
-                        icon: Icon(MdiIcons.resize),
-                        onPressed: () {
-                          var newValue = panelExpandedValue.value + 1;
-                          if (newValue == 3) {
-                            newValue = 0;
-                          }
-                          panelExpandedValue.value = newValue;
-                        },
+    double height = ScreenUtilities.getHeight(context);
+    double shift = height * 0.1;
+    return Padding(
+      padding: EdgeInsets.only(top: shift),
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Container(
+          decoration: BoxDecoration(
+              color: SmashColors.mainBackground.withOpacity(0.7),
+              borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+            padding: SmashUI.defaultPadding(),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5.0),
+                      child: Icon(SmashIcons.iconTime),
+                    ),
+                    SmashUI.normalText("$timeStr"),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: RotatedBox(
+                        quarterTurns: 2,
+                        child: IconButton(
+                          icon: Icon(MdiIcons.resize),
+                          onPressed: () {
+                            var newValue = panelExpandedValue.value + 1;
+                            if (newValue == 3) {
+                              newValue = 0;
+                            }
+                            panelExpandedValue.value = newValue;
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -188,133 +193,140 @@ class CurrentGpsLogLayer extends StatelessWidget {
     var timeStr = StringUtilities.formatDurationMillis(timestampDelta);
     var distStr = StringUtilities.formatMeters(distanceMeter);
     var distFilteredStr = StringUtilities.formatMeters(distanceMeterFiltered);
-    return Align(
-      alignment: Alignment.topRight,
-      child: Container(
-        decoration: BoxDecoration(
-            color: SmashColors.mainBackground.withOpacity(0.7),
-            borderRadius: BorderRadius.circular(8)),
-        child: Padding(
-          padding: SmashUI.defaultPadding(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 5.0),
-                    child: Icon(SmashIcons.iconTime),
-                  ),
-                  SmashUI.normalText("$timeStr"),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
+
+    double height = ScreenUtilities.getHeight(context);
+    double shift = height * 0.15;
+    return Padding(
+      padding: EdgeInsets.only(top: shift),
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Container(
+          decoration: BoxDecoration(
+              color: SmashColors.mainBackground.withOpacity(0.7),
+              borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+            padding: SmashUI.defaultPadding(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(
-                        right: 5.0,
-                      ),
-                      child: Icon(SmashIcons.iconDistance),
+                      padding: const EdgeInsets.only(right: 5.0),
+                      child: Icon(SmashIcons.iconTime),
                     ),
-                    SmashUI.normalText("$distStr"),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 3.0, left: 5.0),
-                      child: Icon(SmashIcons.iconFilter),
-                    ),
-                    SmashUI.normalText("$distFilteredStr"),
+                    SmashUI.normalText("$timeStr"),
                   ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        right: 5.0,
-                      ),
-                      child: Icon(SmashIcons.iconSpeed),
-                    ),
-                    SmashUI.normalText(speedKmH.toStringAsFixed(0) + " Km/h"),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        right: 5.0,
-                      ),
-                      child: Icon(MdiIcons.elevationRise),
-                    ),
-                    SmashUI.normalText(
-                        "${((progAltitudData.last[1]) as double).toStringAsFixed(0)} m"),
-                  ],
-                ),
-              ),
-              if (withChart && maxElevInt != minElevInt)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: Text("${maxElevInt + 1}",
-                      style:
-                          TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          right: 5.0,
+                        ),
+                        child: Icon(SmashIcons.iconDistance),
+                      ),
+                      SmashUI.normalText("$distStr"),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 3.0, left: 5.0),
+                        child: Icon(SmashIcons.iconFilter),
+                      ),
+                      SmashUI.normalText("$distFilteredStr"),
+                    ],
+                  ),
                 ),
-              if (withChart)
-                GestureDetector(
-                  onDoubleTap: () {
-                    _doFlatChart = !_doFlatChart;
-                    String msg = "Show exagerated elev chart.";
-                    if (_doFlatChart) {
-                      msg = "Show proper ratio chart.";
-                    }
-                    final snackBar = SnackBar(
-                      content: Text(msg),
-                      behavior: SnackBarBehavior.floating,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 2.0, left: 2.0),
-                    child: SizedBox(
-                      height: 100,
-                      width: 180,
-                      child: LineChart(
-                        getProfileData(progAltitudData, minElevInt, maxElevInt),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          right: 5.0,
+                        ),
+                        child: Icon(SmashIcons.iconSpeed),
+                      ),
+                      SmashUI.normalText(speedKmH.toStringAsFixed(0) + " Km/h"),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          right: 5.0,
+                        ),
+                        child: Icon(MdiIcons.elevationRise),
+                      ),
+                      SmashUI.normalText(
+                          "${((progAltitudData.last[1]) as double).toStringAsFixed(0)} m"),
+                    ],
+                  ),
+                ),
+                if (withChart && maxElevInt != minElevInt)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text("${maxElevInt + 1}",
+                        style: TextStyle(
+                            fontSize: 10, fontWeight: FontWeight.bold)),
+                  ),
+                if (withChart)
+                  GestureDetector(
+                    onDoubleTap: () {
+                      _doFlatChart = !_doFlatChart;
+                      String msg = "Show exagerated elev chart.";
+                      if (_doFlatChart) {
+                        msg = "Show proper ratio chart.";
+                      }
+                      final snackBar = SnackBar(
+                        content: Text(msg),
+                        behavior: SnackBarBehavior.floating,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 2.0, left: 2.0),
+                      child: SizedBox(
+                        height: 100,
+                        width: 180,
+                        child: LineChart(
+                          getProfileData(
+                              progAltitudData, minElevInt, maxElevInt),
+                        ),
                       ),
                     ),
                   ),
+                if (withChart && maxElevInt != minElevInt)
+                  Text("${minElevInt - 1}",
+                      style:
+                          TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: GestureDetector(
+                    child: Icon(MdiIcons.resize),
+                    onTap: () {
+                      var newValue = panelExpandedValue.value + 1;
+                      if (newValue == 3) {
+                        newValue = 0;
+                      }
+                      panelExpandedValue.value = newValue;
+                    },
+                  ),
                 ),
-              if (withChart && maxElevInt != minElevInt)
-                Text("${minElevInt - 1}",
-                    style:
-                        TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: GestureDetector(
-                  child: Icon(MdiIcons.resize),
-                  onTap: () {
-                    var newValue = panelExpandedValue.value + 1;
-                    if (newValue == 3) {
-                      newValue = 0;
-                    }
-                    panelExpandedValue.value = newValue;
-                  },
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
