@@ -61,11 +61,11 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             children: [
               Transform.scale(
                 scale: 1.4,
-                child: IconButton(
-                  // elevation: 1,
-                  // backgroundColor:
-                  //     Colors.transparent, // SmashColors.mainDecorations,
-                  icon: DashboardUtils.getGpsStatusIcon(
+                child: FloatingActionButton(
+                  shape: CircleBorder(),
+                  elevation: 1,
+                  backgroundColor: SmashColors.mainDecorations,
+                  child: DashboardUtils.getGpsStatusIcon(
                       gpsState.status, widget._iconSize),
                   onPressed: () {
                     if (gpsState.hasFix() ||
