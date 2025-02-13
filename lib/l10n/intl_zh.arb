@@ -980,5 +980,7 @@
   "filteredGpsPointsCount": "过滤的点",
   "@filteredGpsPointsCount": {},
   "addTmsFromDefaults": "增加默认的TMS",
-  "@addTmsFromDefaults": {}
+  "@addTmsFromDefaults": {},
+  "mainviewUtils_projectStats": "项目统计",
+  "@mainviewUtils_projectStats": {}
 }
