@@ -102,7 +102,7 @@ class _GpsInfoButtonState extends State<GpsInfoButton> {
             // fit: StackFit.loose,
             children: [
               Transform.scale(
-                scale: 1.4,
+                scale: 1.2,
                 child: FloatingActionButton(
                   shape: CircleBorder(),
                   elevation: 1,

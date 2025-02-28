@@ -772,13 +772,22 @@ class FormBuilderFormHelper extends AFormhelper {
                           )));
 
               if (selectedPath != null &&
-                  selectedPath.toString().endsWith("_tags.json")) {
-                var tagsJson = HU.FileUtilities.readFile(selectedPath);
-                var tm = TagsManager();
-                await tm.readTags(tagsString: tagsJson);
-                section = tm.getTags().getSections()[0];
+                  selectedPath.toString().endsWith("tags.json")) {
+                try {
+                  var tagsJson = HU.FileUtilities.readFile(selectedPath);
+                  var tm = TagsManager();
+                  await tm.readTags(tagsString: tagsJson);
+                  section = tm.getTags().getSections()[0];
+                } on Exception catch (e) {
+                  SmashDialogs.showErrorDialog(context, e.toString());
+                } on Error catch (e) {
+                  SmashDialogs.showErrorDialog(context, e.toString());
+                }
 
                 if (postAction != null) postAction();
+              } else {
+                SmashDialogs.showWarningDialog(context,
+                    "Form files need to end with the tags.json postfix.");
               }
             }
           },
