@@ -329,7 +329,7 @@ class DashboardUtils {
             ),
             ListTile(
               leading: new Icon(
-                Icons.map,
+                MdiIcons.mapPlus,
                 color: c,
                 size: iconSize,
               ),
@@ -349,7 +349,7 @@ class DashboardUtils {
             ),
             ListTile(
               leading: new Icon(
-                Icons.map,
+                MdiIcons.elevationRise,
                 color: c,
                 size: iconSize,
               ),
