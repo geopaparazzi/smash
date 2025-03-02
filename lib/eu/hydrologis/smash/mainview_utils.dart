@@ -347,6 +347,26 @@ class DashboardUtils {
                         builder: (context) => MapsDownloadWidget(mapsFolder)));
               },
             ),
+            ListTile(
+              leading: new Icon(
+                Icons.map,
+                color: c,
+                size: iconSize,
+              ),
+              title: SmashUI.normalText(
+                "Andromaps link",
+                bold: true,
+                color: c,
+              ),
+              onTap: () async {
+                var urlString =
+                    "https://ftp.gwdg.de/pub/misc/openstreetmap/openandromaps/mapsV5/";
+                Uri uri = Uri.parse(urlString);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri);
+                }
+              },
+            ),
             if (GpPreferences().getBooleanSync(
                 SmashPreferencesKeys.KEY_SHOW_FORMBUILER, false))
               ListTile(

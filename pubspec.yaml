@@ -86,13 +86,13 @@ dependencies:
     #   url: https://github.com/moovida/lat_lon_grid_plugin.git
     #   ref: bump_flutter_map_to_1
 
-  mapsforge_flutter: #^2.0.1
-    # path: /home/hydrologis/development/SMASH/mapsforge_flutter_moovida/mapsforge_flutter
-    git:
-      url: https://github.com/mikes222/mapsforge_flutter.git
-      # url: https://github.com/moovida/mapsforge_flutter.git
-      path: mapsforge_flutter
-      ref: 3e5e41e988c2010b5136a7dd5e9dd164eb3e853e
+  mapsforge_flutter: ^3.0.1
+    # # path: /home/hydrologis/development/SMASH/mapsforge_flutter_moovida/mapsforge_flutter
+    # git:
+    #   url: https://github.com/mikes222/mapsforge_flutter.git
+    #   # url: https://github.com/moovida/mapsforge_flutter.git
+    #   path: mapsforge_flutter
+    #   ref: 3e5e41e988c2010b5136a7dd5e9dd164eb3e853e
 
   # apache
   latlong2: ^0.9.1
@@ -252,7 +252,9 @@ flutter:
     - assets/custom.xml
     - assets/darkrender.xml
     - assets/mapsforge_default.xml
-    - assets/mapsforge_osmarender.xml
+    - assets/osmarender.xml
+    - assets/low_contrast.xml
+    - assets/high_contrast.xml
     - packages/mapsforge_flutter/assets/patterns/dark_farmland.svg
     - packages/mapsforge_flutter/assets/patterns/dark_military.png
     - packages/mapsforge_flutter/assets/patterns/coniferous.svg
@@ -413,28 +415,14 @@ flutter:
     - packages/mapsforge_flutter/assets/symbols/windsock.svg
     - packages/mapsforge_flutter/assets/symbols/viewpoint.svg
 
-
-    
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware.
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+   - family: serif
+     fonts:
+       - asset: packages/mapsforge_flutter/assets/fonts/FreeSerif.otf
+       - asset: packages/mapsforge_flutter/assets/fonts/FreeSerifBold.otf
+         weight: 700
+       - asset: packages/mapsforge_flutter/assets/fonts/FreeSerifBoldItalic.otf
+         style: italic
+         weight: 700
+       - asset: packages/mapsforge_flutter/assets/fonts/FreeSerifItalic.otf
+         style: italic
