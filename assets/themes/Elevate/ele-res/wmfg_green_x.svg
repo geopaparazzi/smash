@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" enable-background="new 0 0 24 24">
+ <line x1="5.71" y1="18.29" x2="18.29" y2="5.71" fill="none" stroke="#267f00" stroke-linecap="round" stroke-width="6"/>
+ <line x1="5.71" y1="5.71" x2="18.29" y2="18.29" fill="none" stroke="#267f00" stroke-linecap="round" stroke-width="6"/>
+</svg>
