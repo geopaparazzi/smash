@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="580" height="580" viewBox="0 0 580 580" enable-background="new 0 0 580 580">
+ <metadata id="metadata15"/>
+ <g transform="matrix(0.8054368,0,0,0.81412883,56.423328,53.902639)" id="g4160" mix-blend-mode="normal" solid-color="#000000" opacity="0.8" color-interpolation-filters="linearRGB" enable-background="accumulate" color="#000000" image-rendering="auto" color-rendering="auto" stroke-width="79" isolation="auto" color-interpolation="sRGB" solid-opacity="1" fill="none" stroke="#ffffff" shape-rendering="auto">
+  <path id="path4162" d="m 525.924,336.543 c 0,75.342 -122.917,113.949 -235.486,113.949 -112.569,0 -236.362,-35.398 -236.362,-110.74 0,-39.82 42.978,-96.279 100.123,-140.665 50.974,-39.593 113.221,-69.579 166.294,-69.579 56.08,0 107.269,32.685 144.521,74.804 37.525,42.426 60.91,94.424 60.91,132.231 z" mix-blend-mode="normal" solid-color="#000000" stroke-width="79" isolation="auto" solid-opacity="1"/>
+ </g>
+ <g id="g7" transform="matrix(0.8054368,0,0,0.81412883,56.423328,53.902639)" mix-blend-mode="normal" solid-color="#000000" opacity="1" color-interpolation-filters="linearRGB" vector-effect="none" enable-background="accumulate" color="#000000" image-rendering="auto" color-rendering="auto" stroke-width="1.23" isolation="auto" color-interpolation="sRGB" solid-opacity="1" fill="#c9820d" shape-rendering="auto">
+  <path d="m 525.924,336.543 c 0,75.342 -122.917,113.949 -235.486,113.949 -112.569,0 -236.362,-35.398 -236.362,-110.74 0,-39.82 42.978,-96.279 100.123,-140.665 50.974,-39.593 113.221,-69.579 166.294,-69.579 56.08,0 107.269,32.685 144.521,74.804 37.525,42.426 60.91,94.424 60.91,132.231 z" id="path9" mix-blend-mode="normal" solid-color="#000000" vector-effect="none" stroke-width="1.23" isolation="auto" solid-opacity="1"/>
+ </g>
+</svg>
