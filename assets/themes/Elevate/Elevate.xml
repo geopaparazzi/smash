@@ -5028,7 +5028,7 @@ Please have a look at read_me_elevate.txt for reuse and licenses of resources us
 			<rule cat="nocity" e="node" k="*" v="*">
 				<rule e="any" k="peak_dist" v="pd_1" zoom-max="13" zoom-min="9">
 					<symbol id="s_volcano_small" priority="92" src="assets/themes/Elevate/ele-res/s_volcano_small.svg" symbol-height="8" />
-					<rule e="any" k="*" v="*" zoom-max="12">
+					<rule e="any" k="*" v="*" zoom-max="12" zoom-min="12">
 						<caption k="name" priority="92" symbol-id="s_volcano_small" position="above" font-style="normal" font-size="9" fill="#000000" stroke="#E5FFFFFF" stroke-width="1.7" />
 					</rule>
 					<rule e="any" k="*" v="*" zoom-min="13">
@@ -5038,7 +5038,7 @@ Please have a look at read_me_elevate.txt for reuse and licenses of resources us
 				</rule>
 				<rule e="any" k="peak_dist" v="pd_2" zoom-max="13" zoom-min="10">
 					<symbol id="s_volcano_small" priority="91" src="assets/themes/Elevate/ele-res/s_volcano_small.svg" symbol-height="8" />
-					<rule e="any" k="*" v="*" zoom-max="12">
+					<rule e="any" k="*" v="*" zoom-max="12" zoom-min="12">
 						<caption k="name" priority="91" symbol-id="s_volcano_small" position="above" font-style="normal" font-size="9" fill="#000000" stroke="#E5FFFFFF" stroke-width="1.7" />
 					</rule>
 					<rule e="any" k="*" v="*" zoom-min="13">
@@ -5048,7 +5048,7 @@ Please have a look at read_me_elevate.txt for reuse and licenses of resources us
 				</rule>
 				<rule e="any" k="peak_dist" v="pd_3|~" zoom-max="13" zoom-min="11">
 					<symbol id="s_volcano_small" priority="90" src="assets/themes/Elevate/ele-res/s_volcano_small.svg" symbol-height="8" />
-					<rule e="any" k="*" v="*" zoom-max="12">
+					<rule e="any" k="*" v="*" zoom-max="12" zoom-min="12">
 						<caption k="name" priority="90" symbol-id="s_volcano_small" position="above" font-style="normal" font-size="9" fill="#000000" stroke="#E5FFFFFF" stroke-width="1.7" />
 					</rule>
 					<rule e="any" k="*" v="*" zoom-min="13">
@@ -5058,7 +5058,7 @@ Please have a look at read_me_elevate.txt for reuse and licenses of resources us
 				</rule>
 				<rule e="any" k="peak_dist" v="pd_4" zoom-max="13" zoom-min="12">
 					<symbol id="s_volcano_small" priority="89" src="assets/themes/Elevate/ele-res/s_volcano_small.svg" symbol-height="8" />
-					<rule e="any" k="*" v="*" zoom-max="12">
+					<rule e="any" k="*" v="*" zoom-max="12" zoom-min="12">
 						<caption k="name" priority="89" symbol-id="s_volcano_small" position="above" font-style="normal" font-size="9" fill="#000000" stroke="#E5FFFFFF" stroke-width="1.7" />
 					</rule>
 					<rule e="any" k="*" v="*" zoom-min="13">
@@ -5104,7 +5104,7 @@ Please have a look at read_me_elevate.txt for reuse and licenses of resources us
 			<rule cat="nocity" e="node" k="*" v="*">
 				<rule e="any" k="peak_dist" v="pd_1" zoom-max="13" zoom-min="9">
 					<symbol id="s_peak_small" priority="92" src="assets/themes/Elevate/ele-res/s_peak_small.svg" symbol-height="8" />
-					<rule e="any" k="*" v="*" zoom-max="12">
+					<rule e="any" k="*" v="*" zoom-max="12" zoom-min="12">
 						<caption k="name" priority="92" symbol-id="s_peak_small" position="above" font-style="normal" font-size="9" fill="#000000" stroke="#E5FFFFFF" stroke-width="1.7" />
 					</rule>
 					<rule e="any" k="*" v="*" zoom-min="13">
@@ -5114,7 +5114,7 @@ Please have a look at read_me_elevate.txt for reuse and licenses of resources us
 				</rule>
 				<rule e="any" k="peak_dist" v="pd_2" zoom-max="13" zoom-min="10">
 					<symbol id="s_peak_small" priority="91" src="assets/themes/Elevate/ele-res/s_peak_small.svg" symbol-height="8" />
-					<rule e="any" k="*" v="*" zoom-max="12">
+					<rule e="any" k="*" v="*" zoom-max="12" zoom-min="12">
 						<caption k="name" priority="91" symbol-id="s_peak_small" position="above" font-style="normal" font-size="9" fill="#000000" stroke="#E5FFFFFF" stroke-width="1.7" />
 					</rule>
 					<rule e="any" k="*" v="*" zoom-min="13">
@@ -5124,7 +5124,7 @@ Please have a look at read_me_elevate.txt for reuse and licenses of resources us
 				</rule>
 				<rule e="any" k="peak_dist" v="pd_3|~" zoom-max="13" zoom-min="11">
 					<symbol id="s_peak_small" priority="90" src="assets/themes/Elevate/ele-res/s_peak_small.svg" symbol-height="8" />
-					<rule e="any" k="*" v="*" zoom-max="12">
+					<rule e="any" k="*" v="*" zoom-max="12" zoom-min="12">
 						<caption k="name" priority="90" symbol-id="s_peak_small" position="above" font-style="normal" font-size="9" fill="#000000" stroke="#E5FFFFFF" stroke-width="1.7" />
 					</rule>
 					<rule e="any" k="*" v="*" zoom-min="13">
@@ -5134,7 +5134,7 @@ Please have a look at read_me_elevate.txt for reuse and licenses of resources us
 				</rule>
 				<rule e="any" k="peak_dist" v="pd_4" zoom-max="13" zoom-min="12">
 					<symbol id="s_peak_small" priority="89" src="assets/themes/Elevate/ele-res/s_peak_small.svg" symbol-height="8" />
-					<rule e="any" k="*" v="*" zoom-max="12">
+					<rule e="any" k="*" v="*" zoom-max="12" zoom-min="12">
 						<caption k="name" priority="89" symbol-id="s_peak_small" position="above" font-style="normal" font-size="9" fill="#000000" stroke="#E5FFFFFF" stroke-width="1.7" />
 					</rule>
 					<rule e="any" k="*" v="*" zoom-min="13">
@@ -5453,7 +5453,7 @@ Please have a look at read_me_elevate.txt for reuse and licenses of resources us
 			</rule>
 		</rule>
 		<rule e="any" k="highway|ford" v="ford|fd_yes" zoom-min="15">
-			<rule e="any" k="*" v="*" zoom-max="12">
+			<rule e="any" k="*" v="*" zoom-max="12" zoom-min="12">
 				<symbol id="s_ford" src="assets/themes/Elevate/ele-res/s_ford_small.svg" symbol-height="16" />
 			</rule>
 			<rule e="any" k="*" v="*" zoom-min="13">
