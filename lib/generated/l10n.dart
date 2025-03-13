@@ -14,6 +14,7 @@ import 'l10n_it.dart';
 import 'l10n_ja.dart';
 import 'l10n_nb.dart';
 import 'l10n_ru.dart';
+import 'l10n_tr.dart';
 import 'l10n_zh.dart';
 
 // ignore_for_file: type=lint
@@ -109,6 +110,7 @@ abstract class SL {
     Locale('nb'),
     Locale('nb', 'NO'),
     Locale('ru'),
+    Locale('tr'),
     Locale('zh'),
     Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans')
   ];
@@ -3075,7 +3077,7 @@ class _SLDelegate extends LocalizationsDelegate<SL> {
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['ca', 'cs', 'de', 'en', 'fr', 'it', 'ja', 'nb', 'ru', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ca', 'cs', 'de', 'en', 'fr', 'it', 'ja', 'nb', 'ru', 'tr', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_SLDelegate old) => false;
@@ -3114,6 +3116,7 @@ SL lookupSL(Locale locale) {
     case 'ja': return SLJa();
     case 'nb': return SLNb();
     case 'ru': return SLRu();
+    case 'tr': return SLTr();
     case 'zh': return SLZh();
   }
 

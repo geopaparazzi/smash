@@ -305,7 +305,11 @@ class MainViewWidgetState extends State<MainViewWidget>
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: SmashToolsBar(_iconSize),
+                    child: SmashToolsBar(
+                      _iconSize,
+                      doZoom: false,
+                      doZoomByBox: false,
+                    ),
                   ),
                 ),
               SafeArea(

@@ -130,7 +130,7 @@ class SLZh extends SL {
   String get mainviewUtils_projectInfo => '工程信息';
 
   @override
-  String get mainviewUtils_projectStats => 'Project Stats';
+  String get mainviewUtils_projectStats => '项目统计';
 
   @override
   String get mainviewUtils_project => '工程';
