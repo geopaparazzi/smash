@@ -1,0 +1,5 @@
+News:
+
+- new fullscreen map view
+- support for mutiple storages on devices that support them
+- several fixes 
