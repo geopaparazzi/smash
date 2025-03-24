@@ -63,6 +63,7 @@ MultiProvider getMainWidget() {
       ChangeNotifierProvider(create: (_) => GpsState()),
       ChangeNotifierProvider(create: (_) => SmashMapState()),
       ChangeNotifierProvider(create: (_) => InfoToolState()),
+      ChangeNotifierProvider(create: (_) => BoxZoomState()),
       ChangeNotifierProvider(create: (_) => RulerState()),
       ChangeNotifierProvider(create: (_) => GeometryEditorState()),
       ChangeNotifierProvider(create: (_) => PreferencesState()),
