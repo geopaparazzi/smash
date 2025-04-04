@@ -64,5 +64,15 @@
   "exportWidget_exportToGeopackage": "Projekt in Geopaket exportieren",
   "@exportWidget_exportToGeopackage": {},
   "exportWidget_exportToGSS": "Zum Geopaparazzi Survey Server exportieren",
-  "@exportWidget_exportToGSS": {}
+  "@exportWidget_exportToGSS": {},
+  "gssExport_setProjectDirty": "Projekt auf DIRTY setzen?",
+  "@gssExport_setProjectDirty": {},
+  "gssExport_thisCantBeUndone": "Das kann nicht rückgängig gemacht werden!",
+  "@gssExport_thisCantBeUndone": {},
+  "gssExport_restoreProjectAsDirty": "Stellen Sie das Projekt als völlig fehlerhaft wieder her.",
+  "@gssExport_restoreProjectAsDirty": {},
+  "gssExport_setProjectClean": "Projekt auf CLEAN setzen?",
+  "@gssExport_setProjectClean": {},
+  "gssExport_restoreProjectAsClean": "Projekt als vollständig bereinigt wiederherstellen.",
+  "@gssExport_restoreProjectAsClean": {}
 }
