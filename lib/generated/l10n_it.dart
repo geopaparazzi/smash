@@ -130,7 +130,7 @@ class SLIt extends SL {
   String get mainviewUtils_projectInfo => 'Informazioni progetto';
 
   @override
-  String get mainviewUtils_projectStats => 'Project Stats';
+  String get mainviewUtils_projectStats => 'Statistiche del progetto';
 
   @override
   String get mainviewUtils_project => 'Progetto';
@@ -346,7 +346,7 @@ class SLIt extends SL {
   String get importWidget_importFromGeopaparazzi => 'Importa da GSS (Geopaparazzi Survey Server)';
 
   @override
-  String get layersView_layerList => 'Lista layers';
+  String get layersView_layerList => 'Lista dei layers';
 
   @override
   String get layersView_loadRemoteDatabase => 'Carica database remoto';
@@ -1351,13 +1351,13 @@ class SLIt extends SL {
   String get coachMarks_bottomToolsButton => 'Pulsante strumenti lato inferiore';
 
   @override
-  String get coachMarks_toggleBottomToolsBar => 'Attiva/disattiva barra strumenti inferiore ';
+  String get coachMarks_toggleBottomToolsBar => 'Attiva/disattiva barra strumenti inferiore';
 
   @override
   String get coachMarks_toolsButton => 'Pulsante Strumenti';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'Apre il cassetto per accedere alle informazioni del progetto, alle opzioni di condivisione, ai plugins mappa, agli strumenti e funzioni aggiuntive.';
+  String get coachMarks_openEndDrawerToAccessProject => 'Apre il cassetto per accedere alle informazioni del progetto, alle opzioni di condivisione, ai plugins mappa, agli strumenti e funzioni aggiuntive';
 
   @override
   String get coachMarks_interactiveCoackMarksButton => 'Pulsante tutorial interattivo';
@@ -1402,7 +1402,7 @@ class SLIt extends SL {
   String get network_searchMapByName => 'Ricerca mappa per nome';
 
   @override
-  String get network_uploading => 'Caricamento';
+  String get network_uploading => 'Caricamento…';
 
   @override
   String get network_pleaseWait => 'attendere prego…';
@@ -1417,7 +1417,7 @@ class SLIt extends SL {
   String get form_smash_cantSaveImageDb => 'Non ho potuto salvare l\'immagine nella base dati.';
 
   @override
-  String get formbuilder => 'Form builder';
+  String get formbuilder => 'Costruttore di moduli';
 
   @override
   String get layersView_selectGssLayers => 'Select GSS Layers';

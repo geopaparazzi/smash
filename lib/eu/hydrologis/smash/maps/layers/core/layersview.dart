@@ -637,7 +637,13 @@ Future<bool> loadLayer(BuildContext context, String filePath) async {
           // check if features
           if (featureTables.contains(selectedTable)) {
             GeopackageSource gps = GeopackageSource(filePath, selectedTable);
-            await gps.load(context);
+
+            try {
+              await gps.load(context);
+            } on Exception catch (e) {
+              SmashDialogs.showErrorDialog(context, e.toString());
+              return false;
+            }
             gps.calculateSrid();
             LayerManager().addLayerSource(gps);
             oneLoaded = true;

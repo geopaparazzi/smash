@@ -214,19 +214,19 @@ class SLDe extends SL {
   String get gssExport_gssExport => 'GSS Exportieren';
 
   @override
-  String get gssExport_setProjectDirty => 'Set project to DIRTY?';
+  String get gssExport_setProjectDirty => 'Projekt auf DIRTY setzen?';
 
   @override
-  String get gssExport_thisCantBeUndone => 'This can\'t be undone!';
+  String get gssExport_thisCantBeUndone => 'Das kann nicht rückgängig gemacht werden!';
 
   @override
-  String get gssExport_restoreProjectAsDirty => 'Restore project as all dirty.';
+  String get gssExport_restoreProjectAsDirty => 'Stellen Sie das Projekt als völlig fehlerhaft wieder her.';
 
   @override
-  String get gssExport_setProjectClean => 'Set project to CLEAN?';
+  String get gssExport_setProjectClean => 'Projekt auf CLEAN setzen?';
 
   @override
-  String get gssExport_restoreProjectAsClean => 'Restore project as all clean.';
+  String get gssExport_restoreProjectAsClean => 'Projekt als vollständig bereinigt wiederherstellen.';
 
   @override
   String get gssExport_nothingToSync => 'Nothing to sync.';
