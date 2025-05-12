@@ -532,6 +532,9 @@ class SLTr extends SL {
   String get remoteDbPage_edit => 'Düzenle';
 
   @override
+  String get remoteDbPage_duplicate => 'Duplicate';
+
+  @override
   String get remoteDbPage_table => 'table';
 
   @override

@@ -6,7 +6,7 @@
 
 import 'package:badges/badges.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
-import 'package:dart_jts/dart_jts.dart' hide Position;
+import 'package:dart_jts/dart_jts.dart' hide Position, Key;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

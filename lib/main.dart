@@ -6,7 +6,7 @@
 import 'dart:io';
 
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
-import 'package:dart_jts/dart_jts.dart';
+import 'package:dart_jts/dart_jts.dart' hide Key;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';

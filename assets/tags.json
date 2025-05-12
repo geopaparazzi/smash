@@ -253,6 +253,132 @@
             "type": "stringcombo"
           },
           {
+            "key": "string_wheelslider_with_item_labels",
+            "values": {
+              "items": [
+                {
+                  "item": {
+                    "label": "",
+                    "value": "0"
+                  }
+                },
+                {
+                  "item": {
+                    "label": "choice 1",
+                    "value": "1"
+                  }
+                },
+                {
+                  "item": {
+                    "label": "choice 2",
+                    "value": "2"
+                  }
+                },
+                {
+                  "item": {
+                    "label": "choice 3",
+                    "value": "3"
+                  }
+                },
+                {
+                  "item": {
+                    "label": "choice 4",
+                    "value": "4"
+                  }
+                },
+                {
+                  "item": {
+                    "label": "choice 5",
+                    "value": "5"
+                  }
+                }
+              ]
+            },
+            "value": "4",
+            "type": "stringwheelslider"
+          },
+          {
+            "key": "int_wheelslider_with_item_labels",
+            "values": {
+              "items": [
+                {
+                  "item": {
+                    "value": 7,
+                    "label": "Beginning of bud break"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 10,
+                    "label": "Mouse-ear stage"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 51,
+                    "label": "buds swelling"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 55,
+                    "label": "Flower buds visible "
+                  }
+                },
+                {
+                  "item": {
+                    "value": 56,
+                    "label": "Green bud stage"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 57,
+                    "label": "Pink bud stage"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 65,
+                    "label": "Full flowering"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 67,
+                    "label": "Flowers fading"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 69,
+                    "label": "End of flowering"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 71,
+                    "label": "10mm"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 72,
+                    "label": "20mm"
+                  }
+                },
+                {
+                  "item": {
+                    "value": 74,
+                    "label": "T stage"
+                  }
+                }
+              ]
+            },
+            "value": 4,
+            "type": "intwheelslider"
+          },
+          {
             "key": "two connected combos",
             "values": {
               "items 1": [
@@ -371,6 +497,38 @@
               ]
             },
             "value": "",
+            "type": "autocompletestringcombo"
+          },
+          {
+            "key": "an autocomplete int combo urlbased",
+            "values": {
+              "items": [
+                {
+                  "item": {
+                    "label": "No data",
+                    "value": -1
+                  }
+                }
+              ],
+              "url": "https://raw.githubusercontent.com/geopaparazzi/smashlibs/refs/heads/master/test/forms/examples/exmple_url_intvalue_label.json"
+            },
+            "value": 3,
+            "type": "autocompleteintcombo"
+          },
+          {
+            "key": "an autocomplete string combo urlbased",
+            "values": {
+              "items": [
+                {
+                  "item": {
+                    "label": "No data",
+                    "value": ""
+                  }
+                }
+              ],
+              "url": "https://raw.githubusercontent.com/geopaparazzi/smashlibs/refs/heads/master/test/forms/examples/exmple_url_stringvalue_label.json"
+            },
+            "value": "ABC",
             "type": "autocompletestringcombo"
           },
           {

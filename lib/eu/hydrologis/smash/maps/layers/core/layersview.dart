@@ -9,7 +9,7 @@ import 'dart:io';
 
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
     hide TextStyle;
-import 'package:dart_jts/dart_jts.dart';
+import 'package:dart_jts/dart_jts.dart' hide Key;
 import 'package:flutter/material.dart';
 import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';

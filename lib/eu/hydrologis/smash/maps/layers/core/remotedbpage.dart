@@ -101,6 +101,20 @@ class _RemoteDbsWidgetState extends State<RemoteDbsWidget> {
                   setState(() {});
                 }
               }));
+          startActions.add(SlidableAction(
+              label: SL.of(context).remoteDbPage_duplicate, //"Duplicate"
+              icon: MdiIcons.contentDuplicate,
+              foregroundColor: SmashColors.mainDecorations,
+              onPressed: (context) async {
+                var dbConfigMap = jsonDecode(source.toJson());
+                var duplicatedSource = DbVectorLayerSource.fromMap(dbConfigMap);
+                sources.add(duplicatedSource!);
+                var list = sources.map((s) => jsonDecode(s.toJson())).toList();
+                var jsonString = jsonEncode(list);
+                await GpPreferences().setString(key, jsonString);
+                loadConfig();
+                setState(() {});
+              }));
 
           return Slidable(
             startActionPane: ActionPane(

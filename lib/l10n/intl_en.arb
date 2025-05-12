@@ -350,6 +350,8 @@
   "@remoteDbPage_areYouSureDeleteDatabase": {},
   "remoteDbPage_edit": "Edit",
   "@remoteDbPage_edit": {},
+  "remoteDbPage_duplicate": "Duplicate",
+  "@remoteDbPage_duplicate": {},
   "remoteDbPage_table": "table",
   "@remoteDbPage_table": {},
   "remoteDbPage_user": "user",

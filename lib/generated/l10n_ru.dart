@@ -532,6 +532,9 @@ class SLRu extends SL {
   String get remoteDbPage_edit => 'Редактировать';
 
   @override
+  String get remoteDbPage_duplicate => 'Duplicate';
+
+  @override
   String get remoteDbPage_table => 'table';
 
   @override

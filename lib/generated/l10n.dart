@@ -1167,6 +1167,12 @@ abstract class SL {
   /// **'Edit'**
   String get remoteDbPage_edit;
 
+  /// No description provided for @remoteDbPage_duplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get remoteDbPage_duplicate;
+
   /// No description provided for @remoteDbPage_table.
   ///
   /// In en, this message translates to:

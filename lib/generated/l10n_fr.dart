@@ -532,6 +532,9 @@ class SLFr extends SL {
   String get remoteDbPage_edit => 'Modifier';
 
   @override
+  String get remoteDbPage_duplicate => 'Duplicate';
+
+  @override
   String get remoteDbPage_table => 'tableau';
 
   @override

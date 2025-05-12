@@ -47,7 +47,7 @@ dependencies:
 
   dart_hydrologis_utils: ^0.8.1
     # path: ../dart_hydrologis_utils/
-  dart_jts: ^0.2.3
+  dart_jts: ^0.3.0+1
     # path: ../dart_jts/
 
 
@@ -63,7 +63,7 @@ dependencies:
   #  git:
   #    url: https://github.com/moovida/flutter_geopackage.git
   
-  dart_postgis: ^0.3.2
+  dart_postgis: ^0.3.3+4
     # path: /home/hydrologis/development/SMASH/dart_postgis/
   # git:
   #   url: https://github.com/moovida/dart_postgis
