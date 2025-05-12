@@ -110,9 +110,14 @@ class LayersPageState extends State<LayersPage> {
                           builder: (BuildContext context) => RemoteDbsWidget(),
                         ));
                     if (source != null) {
-                      await source.load(context);
-                      LayerManager().addLayerSource(source);
-                      _somethingChanged = true;
+                      try {
+                        await source.load(context);
+                        LayerManager().addLayerSource(source);
+                        _somethingChanged = true;
+                      } on Exception catch (e) {
+                        await SmashDialogs.showErrorDialog(
+                            context, e.toString());
+                      }
                     }
 
                     setState(() {
