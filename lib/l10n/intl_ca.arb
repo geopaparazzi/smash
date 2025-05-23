@@ -982,5 +982,7 @@
   "gss_layerview_filter": "Filtre",
   "@gss_layerview_filter": {},
   "mainviewUtils_projectStats": "Estadístiques del projecte",
-  "@mainviewUtils_projectStats": {}
+  "@mainviewUtils_projectStats": {},
+  "remoteDbPage_duplicate": "Duplicat",
+  "@remoteDbPage_duplicate": {}
 }
