@@ -15,7 +15,7 @@ import 'package:smash/eu/hydrologis/smash/project/data_loader.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:flutter_map_marker_cluster_plus/flutter_map_marker_cluster_plus.dart';
 
 /// The provider object of the current project status
 ///

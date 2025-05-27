@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/remotedbpage.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings/plugins_settings.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
 

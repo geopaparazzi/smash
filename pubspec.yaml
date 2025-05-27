@@ -73,12 +73,13 @@ dependencies:
   ##################################
   # MIT
   # this also pulls flutter_map_dragmarker
-  flutter_map_line_editor: ^7.0.0
+  flutter_map_line_editor: ^8.0.0
 
   # BSD
-  flutter_map: ^7.0.2
-
-  flutter_map_marker_cluster: ^1.4.0
+  flutter_map: ^8.1.1
+  
+  # BSD3
+  flutter_map_marker_cluster_plus: ^1.4.2
 
   # MIT
   # lat_lon_grid_plugin: ^0.2.6

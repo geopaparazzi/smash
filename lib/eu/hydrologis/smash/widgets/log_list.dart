@@ -17,6 +17,7 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/settings/gpslog_settings.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smash_import_export_plugins/smash_import_export_plugins.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';

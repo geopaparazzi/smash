@@ -357,18 +357,18 @@ class CurrentLogPathPainter extends CustomPainter {
     if (logPaint != null) {
       Path path1 = Path();
       var posPixel1 =
-          map.project(LatLngExt.fromCoordinate(currentLogPoints[0]));
+          map.projectAtZoom(LatLngExt.fromCoordinate(currentLogPoints[0]));
       var pixelOrigin = map.pixelOrigin;
-      double center1X = posPixel1.x - pixelOrigin.x.toDouble();
-      double center1Y = (posPixel1.y - pixelOrigin.y.toDouble());
+      double center1X = posPixel1.dx - pixelOrigin.dx;
+      double center1Y = posPixel1.dy - pixelOrigin.dy;
       path1.moveTo(center1X, center1Y);
 
       for (int i = 1; i < currentLogPoints.length; i++) {
         var posPixel1 =
-            map.project(LatLngExt.fromCoordinate(currentLogPoints[i]));
+            map.projectAtZoom(LatLngExt.fromCoordinate(currentLogPoints[i]));
         var pixelOrigin = map.pixelOrigin;
-        double center1X = posPixel1.x - pixelOrigin.x.toDouble();
-        double center1Y = (posPixel1.y - pixelOrigin.y.toDouble());
+        double center1X = posPixel1.dx - pixelOrigin.dx;
+        double center1Y = posPixel1.dy - pixelOrigin.dy;
         path1.lineTo(center1X, center1Y);
       }
       canvas.drawPath(path1, logPaint!);
@@ -376,19 +376,19 @@ class CurrentLogPathPainter extends CustomPainter {
 
     if (filtereLogPaint != null) {
       Path path2 = Path();
-      var posPixel2 =
-          map.project(LatLngExt.fromCoordinate(currentFilteredLogPoints[0]));
+      var posPixel2 = map
+          .projectAtZoom(LatLngExt.fromCoordinate(currentFilteredLogPoints[0]));
       var pixelOrigin = map.pixelOrigin;
-      double center2X = posPixel2.x - pixelOrigin.x.toDouble();
-      double center2Y = (posPixel2.y - pixelOrigin.y.toDouble());
+      double center2X = posPixel2.dx - pixelOrigin.dx;
+      double center2Y = posPixel2.dy - pixelOrigin.dy;
       path2.moveTo(center2X, center2Y);
 
       for (int i = 1; i < currentFilteredLogPoints.length; i++) {
-        var posPixel2 =
-            map.project(LatLngExt.fromCoordinate(currentFilteredLogPoints[i]));
+        var posPixel2 = map.projectAtZoom(
+            LatLngExt.fromCoordinate(currentFilteredLogPoints[i]));
         var pixelOrigin = map.pixelOrigin;
-        double center2X = posPixel2.x - pixelOrigin.x.toDouble();
-        double center2Y = (posPixel2.y - pixelOrigin.y.toDouble());
+        double center2X = posPixel2.dx - pixelOrigin.dx;
+        double center2Y = posPixel2.dy - pixelOrigin.dy;
         path2.lineTo(center2X, center2Y);
       }
 

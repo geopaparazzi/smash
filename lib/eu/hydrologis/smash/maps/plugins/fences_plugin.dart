@@ -79,15 +79,15 @@ class CurrentLogPathPainter extends CustomPainter {
 
       var pixelOrigin = map.pixelOrigin;
 
-      var mainPosPixel = map.project(LatLng(center.y, center.x));
-      double mainCenterX = mainPosPixel.x - pixelOrigin.x.toDouble();
-      double mainCenterY = (mainPosPixel.y - pixelOrigin.y.toDouble());
+      var mainPosPixel = map.projectAtZoom(LatLng(center.y, center.x));
+      double mainCenterX = mainPosPixel.dx - pixelOrigin.dx;
+      double mainCenterY = mainPosPixel.dy - pixelOrigin.dy;
 
-      var tmpPixelX = map.project(LatLng(offsetX.y, offsetX.x));
-      double tmpX = tmpPixelX.x - pixelOrigin.x.toDouble();
+      var tmpPixelX = map.projectAtZoom(LatLng(offsetX.y, offsetX.x));
+      double tmpX = tmpPixelX.dx - pixelOrigin.dx;
       double rX = (mainCenterX - tmpX).abs();
-      var tmpPixelY = map.project(LatLng(offsetY.y, offsetY.x));
-      double tmpY = tmpPixelY.y - pixelOrigin.y.toDouble();
+      var tmpPixelY = map.projectAtZoom(LatLng(offsetY.y, offsetY.x));
+      double tmpY = tmpPixelY.dy - pixelOrigin.dy;
       double rY = (mainCenterY - tmpY).abs();
 
       bool hasEnter = fence.onEnter != ENotificationSounds.nosound;

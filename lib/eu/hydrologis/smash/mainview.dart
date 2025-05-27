@@ -13,7 +13,7 @@ import 'package:dart_jts/dart_jts.dart' hide Position, Key;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
+import 'package:flutter_map_marker_cluster_plus/flutter_map_marker_cluster_plus.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -708,6 +708,16 @@ class MainViewWidgetState extends State<MainViewWidget>
                 : mapView.getBounds()!.centre()!;
             var formHelper = SmashFormHelper(note.id!, selectedSectionName,
                 selectSection!, appbarWidget, position);
+            var saved =
+                await GpPreferences().getString(FormSettingsState.key, "{}");
+            Map<String, dynamic> memoryKeysMap = jsonDecode(saved!);
+            Map<String, List<String>> convertedMap = memoryKeysMap.map(
+              (key, value) => MapEntry(
+                key,
+                value is List ? List<String>.from(value) : [value.toString()],
+              ),
+            );
+            formHelper.setCacheDefinitions(convertedMap);
 
             Navigator.push(mapBuilder.context!, MaterialPageRoute(
               builder: (context) {
