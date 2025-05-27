@@ -982,5 +982,7 @@
   "gss_layerview_filter": "Filtr",
   "@gss_layerview_filter": {},
   "mainviewUtils_projectStats": "Statistiky projektu",
-  "@mainviewUtils_projectStats": {}
+  "@mainviewUtils_projectStats": {},
+  "remoteDbPage_duplicate": "Duplikovat",
+  "@remoteDbPage_duplicate": {}
 }
