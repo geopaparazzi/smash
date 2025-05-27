@@ -532,7 +532,7 @@ class SLCa extends SL {
   String get remoteDbPage_edit => 'Editar';
 
   @override
-  String get remoteDbPage_duplicate => 'Duplicate';
+  String get remoteDbPage_duplicate => 'Duplicat';
 
   @override
   String get remoteDbPage_table => 'taula';

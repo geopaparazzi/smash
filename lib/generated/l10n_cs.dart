@@ -532,7 +532,7 @@ class SLCs extends SL {
   String get remoteDbPage_edit => 'Upravit';
 
   @override
-  String get remoteDbPage_duplicate => 'Duplicate';
+  String get remoteDbPage_duplicate => 'Duplikovat';
 
   @override
   String get remoteDbPage_table => 'tabulka';
