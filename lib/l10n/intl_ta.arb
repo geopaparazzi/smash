@@ -982,5 +982,7 @@
   "settings_Bottombar_showAddFormNote": "படிவம் குறிப்பு பொத்தானைச் சேர் என்பதைக் காட்டு",
   "@settings_Bottombar_showAddFormNote": {},
   "settings_Bottombar_showAddGpsLog": "சேர் சி.பி.எச் பதிவு பொத்தானைக் காட்டு",
-  "@settings_Bottombar_showAddGpsLog": {}
+  "@settings_Bottombar_showAddGpsLog": {},
+  "remoteDbPage_duplicate": "நகல்",
+  "@remoteDbPage_duplicate": {}
 }
