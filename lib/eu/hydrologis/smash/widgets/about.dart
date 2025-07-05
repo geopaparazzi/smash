@@ -97,20 +97,25 @@ class AboutPageState extends State<AboutPage> {
                         .of(context)
                         .about_legalInformation), //"Legal Information"
                     subtitle: Text(
-                        "Copyright 2018-$thisYear, HydroloGIS S.r.l. - some rights reserved. Tap to visit."),
+                        "Copyright 2024-$thisYear, G-ANT - some rights reserved. Tap to visit."),
+                    onTap: () async {
+                      if (await canLaunchUrlString("https://g-ant.eu")) {
+                        await launchUrlString("https://g-ant.eu");
+                      }
+                    },
+                  ),
+                  ListTile(
+                    title: Text(SL
+                        .of(context)
+                        .about_legalInformation), //"Legal Information"
+                    subtitle: Text(
+                        "Copyright 2018-2024, HydroloGIS S.r.l. - some rights reserved. Tap to visit."),
                     onTap: () async {
                       if (await canLaunchUrlString(
                           "http://www.hydrologis.com")) {
                         await launchUrlString("http://www.hydrologis.com");
                       }
                     },
-                  ),
-                  ListTile(
-                    title:
-                        Text(SL.of(context).about_supportedBy), //"Supported by"
-                    subtitle: Text(SL
-                        .of(context)
-                        .about_partiallySupportedByUniversityTrento), //"Partially supported by the project Steep Stream of the University of Trento."
                   ),
                   ListTile(
                     title: Text(
