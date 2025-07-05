@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'l10n.dart';
 
 // ignore_for_file: type=lint
@@ -58,16 +60,20 @@ class SLJa extends SL {
   String get main_layersListLoaded => 'レイヤーリストが読み込まれました。';
 
   @override
-  String get main_locationBackgroundWarning => 'バックグラウンドでのGPSロギングを有効にするため、次のステップで位置情報を許可してください。(許可しない場合はフォアグラウンドでのみ動作します。)\nデータは共有されず、デバイスのローカルにのみ保存されます。';
+  String get main_locationBackgroundWarning =>
+      'バックグラウンドでのGPSロギングを有効にするため、次のステップで位置情報を許可してください。(許可しない場合はフォアグラウンドでのみ動作します。)\nデータは共有されず、デバイスのローカルにのみ保存されます。';
 
   @override
-  String get main_StorageIsInternalWarning => '注意してお読みください!\nAndroid 11以降では、SMASHのプロジェクトフォルダを、ストレージ内の\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nフォルダに配置しないと使用できません。\nアプリをアンインストールすると、システムがフォルダを削除しますので、アンインストールする場合はデータをバックアップしてください。\n\nより良い解決策を検討中です。';
+  String get main_StorageIsInternalWarning =>
+      '注意してお読みください!\nAndroid 11以降では、SMASHのプロジェクトフォルダを、ストレージ内の\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nフォルダに配置しないと使用できません。\nアプリをアンインストールすると、システムがフォルダを削除しますので、アンインストールする場合はデータをバックアップしてください。\n\nより良い解決策を検討中です。';
 
   @override
-  String get main_locationPermissionIsMandatoryToOpenSmash => 'SMASHを開くには、位置情報の権限が必須です。';
+  String get main_locationPermissionIsMandatoryToOpenSmash =>
+      'SMASHを開くには、位置情報の権限が必須です。';
 
   @override
-  String get main_storagePermissionIsMandatoryToOpenSmash => 'SMASHを開くには、ストレージ権限が必須です。';
+  String get main_storagePermissionIsMandatoryToOpenSmash =>
+      'SMASHを開くには、ストレージ権限が必須です。';
 
   @override
   String get main_anErrorOccurredTapToView => 'エラーが発生しました。タップして表示します。';
@@ -160,7 +166,8 @@ class SLJa extends SL {
   String get mainviewUtils_enterLonLat => 'Enter longitude, latitude';
 
   @override
-  String get mainviewUtils_goToCoordinateWrongFormat => 'Wrong coordinate format. Should be: 11.18463, 46.12345';
+  String get mainviewUtils_goToCoordinateWrongFormat =>
+      'Wrong coordinate format. Should be: 11.18463, 46.12345';
 
   @override
   String get mainviewUtils_goToCoordinateEmpty => 'This can\'t be empty.';
@@ -178,7 +185,8 @@ class SLJa extends SL {
   String get exportWidget_pdfExported => 'PDFエクスポート済み';
 
   @override
-  String get exportWidget_exportToPortableDocumentFormat => 'プロジェクトをPDF形式にエクスポート';
+  String get exportWidget_exportToPortableDocumentFormat =>
+      'プロジェクトをPDF形式にエクスポート';
 
   @override
   String get exportWidget_gpxExported => 'GPXエクスポート済み';
@@ -241,7 +249,8 @@ class SLJa extends SL {
   String get gssExport_noGssUrlSet => 'GSSサーバーのURLが設定されていません。設定を確認してください。';
 
   @override
-  String get gssExport_noGssPasswordSet => 'GSSサーバーのパスワードが設定されていません。設定を確認してください。';
+  String get gssExport_noGssPasswordSet =>
+      'GSSサーバーのパスワードが設定されていません。設定を確認してください。';
 
   @override
   String get gssExport_synStats => '同期統計';
@@ -292,7 +301,8 @@ class SLJa extends SL {
   String get gps_smashLocServiceIsActive => 'SMASHロケーションサービスがアクティブです。';
 
   @override
-  String get gps_backgroundLocIsOnToKeepRegistering => 'アプリがバックグラウンドにある場合でも、アプリが位置情報を登録し続けるために、バックグラウンドロケーションがオンになっています。';
+  String get gps_backgroundLocIsOnToKeepRegistering =>
+      'アプリがバックグラウンドにある場合でも、アプリが位置情報を登録し続けるために、バックグラウンドロケーションがオンになっています。';
 
   @override
   String get gssImport_gssImport => 'GSSインポート';
@@ -301,22 +311,26 @@ class SLJa extends SL {
   String get gssImport_downloadingDataList => 'データリストをダウンロードしています…';
 
   @override
-  String get gssImport_unableDownloadDataList => 'エラーのため、データリストをダウンロードできません。設定とログを確認してください。';
+  String get gssImport_unableDownloadDataList =>
+      'エラーのため、データリストをダウンロードできません。設定とログを確認してください。';
 
   @override
   String get gssImport_noGssUrlSet => 'GSSサーバーのURLが設定されていません。設定を確認してください。';
 
   @override
-  String get gssImport_noGssPasswordSet => 'GSSサーバーのパスワードが設定されていません。設定を確認してください。';
+  String get gssImport_noGssPasswordSet =>
+      'GSSサーバーのパスワードが設定されていません。設定を確認してください。';
 
   @override
-  String get gssImport_noPermToAccessServer => 'サーバーにアクセスする権限がありません。資格情報を確認してください。';
+  String get gssImport_noPermToAccessServer =>
+      'サーバーにアクセスする権限がありません。資格情報を確認してください。';
 
   @override
   String get gssImport_data => 'データ';
 
   @override
-  String get gssImport_dataSetsDownloadedMapsFolder => 'データセットはマップフォルダーにダウンロードされます。';
+  String get gssImport_dataSetsDownloadedMapsFolder =>
+      'データセットはマップフォルダーにダウンロードされます。';
 
   @override
   String get gssImport_noDataAvailable => '利用可能なデータがありません。';
@@ -325,7 +339,8 @@ class SLJa extends SL {
   String get gssImport_projects => 'プロジェクト';
 
   @override
-  String get gssImport_projectsDownloadedProjectFolder => 'プロジェクトはプロジェクトフォルダーにダウンロードされます。';
+  String get gssImport_projectsDownloadedProjectFolder =>
+      'プロジェクトはプロジェクトフォルダーにダウンロードされます。';
 
   @override
   String get gssImport_noProjectsAvailable => '利用可能なプロジェクトがありません。';
@@ -334,7 +349,8 @@ class SLJa extends SL {
   String get gssImport_forms => 'フォーム';
 
   @override
-  String get gssImport_tagsDownloadedFormsFolder => 'タグファイルはフォームフォルダーにダウンロードされます。';
+  String get gssImport_tagsDownloadedFormsFolder =>
+      'タグファイルはフォームフォルダーにダウンロードされます。';
 
   @override
   String get gssImport_noTagsAvailable => '使用可能なタグはありません。';
@@ -343,7 +359,8 @@ class SLJa extends SL {
   String get importWidget_import => 'インポート';
 
   @override
-  String get importWidget_importFromGeopaparazzi => 'Geopaparazzi Survey Serverからインポート';
+  String get importWidget_importFromGeopaparazzi =>
+      'Geopaparazzi Survey Serverからインポート';
 
   @override
   String get layersView_layerList => 'レイヤーリスト';
@@ -370,16 +387,19 @@ class SLJa extends SL {
   String get layersView_delete => '削除';
 
   @override
-  String get layersView_projCouldNotBeRecognized => 'プロジェクトを認識できませんでした。タップしてepsgを手動で入力してください。';
+  String get layersView_projCouldNotBeRecognized =>
+      'プロジェクトを認識できませんでした。タップしてepsgを手動で入力してください。';
 
   @override
   String get layersView_projNotSupported => 'プロジェクトはサポートされていません。タップして解決してください。';
 
   @override
-  String get layersView_onlyImageFilesWithWorldDef => 'ワールドファイル定義の画像ファイルのみがサポートされています。';
+  String get layersView_onlyImageFilesWithWorldDef =>
+      'ワールドファイル定義の画像ファイルのみがサポートされています。';
 
   @override
-  String get layersView_onlyImageFileWithPrjDef => 'prjファイル定義のある画像ファイルのみがサポートされています。';
+  String get layersView_onlyImageFileWithPrjDef =>
+      'prjファイル定義のある画像ファイルのみがサポートされています。';
 
   @override
   String get layersView_selectTableToLoad => 'ロードするテーブルを選択してください。';
@@ -553,7 +573,8 @@ class SLJa extends SL {
   String get remoteDbPage_ok => 'OK';
 
   @override
-  String get remoteDbPage_theUrlNeedsToBeDefined => 'URLを定義する必要があります（postgis:host:port / dbname）';
+  String get remoteDbPage_theUrlNeedsToBeDefined =>
+      'URLを定義する必要があります（postgis:host:port / dbname）';
 
   @override
   String get remoteDbPage_theUserNeedsToBeDefined => 'ユーザーを定義する必要があります。';
@@ -571,7 +592,8 @@ class SLJa extends SL {
   String get remoteDbPage_theTableNeedsToBeDefined => 'テーブル名を定義する必要があります。';
 
   @override
-  String get remoteDbPage_unableToConnectToDatabase => 'データベースに接続できません。パラメータとネットワークを確認してください。';
+  String get remoteDbPage_unableToConnectToDatabase =>
+      'データベースに接続できません。パラメータとネットワークを確認してください。';
 
   @override
   String get remoteDbPage_optionalWhereCondition => 'オプションの \"where\" 条件';
@@ -616,7 +638,8 @@ class SLJa extends SL {
   String get tiles_opacity => '不透明度';
 
   @override
-  String get tiles_loadGeoPackageAsOverlay => 'GeoPackageタイルをタイルレイヤーではなくオーバーレイ画像としてロードします（gdalで生成されたデータやさまざまな投影法に最適）。';
+  String get tiles_loadGeoPackageAsOverlay =>
+      'GeoPackageタイルをタイルレイヤーではなくオーバーレイ画像としてロードします（gdalで生成されたデータやさまざまな投影法に最適）。';
 
   @override
   String get tiles_colorToHide => '非表示にする色';
@@ -655,7 +678,8 @@ class SLJa extends SL {
   String get projectsView_newProject => '新しいプロジェクト';
 
   @override
-  String get projectsView_enterNameForNewProject => '新しいプロジェクトの名前を入力するか、提案を受け入れます。';
+  String get projectsView_enterNameForNewProject =>
+      '新しいプロジェクトの名前を入力するか、提案を受け入れます。';
 
   @override
   String get dataLoader_note => 'note';
@@ -718,7 +742,8 @@ class SLJa extends SL {
   String get about_license => 'ライセンス';
 
   @override
-  String get about_isAvailableUnderGPL3 => ' コピーレフトの自由ソフトウェアで、GPL v3以上でライセンスされています。';
+  String get about_isAvailableUnderGPL3 =>
+      ' コピーレフトの自由ソフトウェアで、GPL v3以上でライセンスされています。';
 
   @override
   String get about_sourceCode => 'ソースコード';
@@ -730,19 +755,22 @@ class SLJa extends SL {
   String get about_legalInformation => '法的情報';
 
   @override
-  String get about_copyright2020HydroloGIS => 'Copyright © 2020, HydroloGIS S.r.l. — 一部の権利は留保されています。タップしてアクセスしてください。';
+  String get about_copyright2020HydroloGIS =>
+      'Copyright © 2020, HydroloGIS S.r.l. — 一部の権利は留保されています。タップしてアクセスしてください。';
 
   @override
   String get about_supportedBy => 'スポンサー';
 
   @override
-  String get about_partiallySupportedByUniversityTrento => 'トレント大学のプロジェクトSteep Streamによって部分的にサポートされています。';
+  String get about_partiallySupportedByUniversityTrento =>
+      'トレント大学のプロジェクトSteep Streamによって部分的にサポートされています。';
 
   @override
   String get about_privacyPolicy => 'プライバシーポリシー';
 
   @override
-  String get about_tapHereToSeePrivacyPolicy => 'ここをタップすると、ユーザーと位置データを対象とするプライバシーポリシーが表示されます。';
+  String get about_tapHereToSeePrivacyPolicy =>
+      'ここをタップすると、ユーザーと位置データを対象とするプライバシーポリシーが表示されます。';
 
   @override
   String get gpsInfoButton_noGpsInfoAvailable => '利用可能なGPS情報がありません…';
@@ -826,7 +854,8 @@ class SLJa extends SL {
   String get logList_gpsSavedInExportFolder => 'GPXはエクスポートフォルダーに保存されました。';
 
   @override
-  String get logList_errorOccurredExportingLogGPX => 'ログをGPXにエクスポート中にエラーが発生しました。';
+  String get logList_errorOccurredExportingLogGPX =>
+      'ログをGPXにエクスポート中にエラーが発生しました。';
 
   @override
   String get logList_delete => '削除';
@@ -955,7 +984,8 @@ class SLJa extends SL {
   String get settings_retinaScreenMode => 'HiDPIスクリーンモード';
 
   @override
-  String get settings_toApplySettingEnterExitLayerView => 'この設定を適用するには、レイヤービューを開始および終了する必要があります。';
+  String get settings_toApplySettingEnterExitLayerView =>
+      'この設定を適用するには、レイヤービューを開始および終了する必要があります。';
 
   @override
   String get settings_colorPickerToUse => '使用するカラーピッカー';
@@ -1087,7 +1117,8 @@ class SLJa extends SL {
   String get settings_theUseOfTheGps => 'フィルタリングされたGPSの使用。';
 
   @override
-  String get settings_warningThisWillAffectGpsPosition => '警告: これはGPS位置、ノートの挿入、ログ統計およびグラフに影響します。';
+  String get settings_warningThisWillAffectGpsPosition =>
+      '警告: これはGPS位置、ノートの挿入、ログ統計およびグラフに影響します。';
 
   @override
   String get settings_MockLocations => 'モックロケーション';
@@ -1096,7 +1127,8 @@ class SLJa extends SL {
   String get settings_testGpsLogDemoUse => 'デモ用のGPSログのテスト。';
 
   @override
-  String get settings_setDurationGpsPointsInMilli => 'GPSポイントの継続時間をミリ秒単位で設定します。';
+  String get settings_setDurationGpsPointsInMilli =>
+      'GPSポイントの継続時間をミリ秒単位で設定します。';
 
   @override
   String get settings_SETTING => '設定';
@@ -1153,7 +1185,8 @@ class SLJa extends SL {
   String get settings_maxNumberFeatures => '地物の最大数';
 
   @override
-  String get settings_maxNumFeaturesPerLayer => 'レイヤーごとの地物の最大数。適用するには、レイヤーを削除して追加します。';
+  String get settings_maxNumFeaturesPerLayer =>
+      'レイヤーごとの地物の最大数。適用するには、レイヤーを削除して追加します。';
 
   @override
   String get settings_all => '全部';
@@ -1162,7 +1195,8 @@ class SLJa extends SL {
   String get settings_loadMapArea => '地図領域を読み込み。';
 
   @override
-  String get settings_loadOnlyLastVisibleArea => '最後に表示された地図領域のみ読み込みます。適用するには、レイヤーを削除して追加し直します。';
+  String get settings_loadOnlyLastVisibleArea =>
+      '最後に表示された地図領域のみ読み込みます。適用するには、レイヤーを削除して追加し直します。';
 
   @override
   String get settings_infoTool => '情報ツール';
@@ -1177,7 +1211,8 @@ class SLJa extends SL {
   String get settings_editingDragIconSize => '編集時のドラッグハンドラーアイコンサイズ。';
 
   @override
-  String get settings_editingIntermediateDragIconSize => '編集時の中間ドラッグハンドラーアイコンサイズ。';
+  String get settings_editingIntermediateDragIconSize =>
+      '編集時の中間ドラッグハンドラーアイコンサイズ。';
 
   @override
   String get settings_diagnostics => '診断';
@@ -1231,7 +1266,8 @@ class SLJa extends SL {
   String get settings_serverUrl => 'サーバーURL';
 
   @override
-  String get settings_serverUrlStartWithHttp => 'サーバーのURLはhttpまたはhttpsで始まる必要があります。';
+  String get settings_serverUrlStartWithHttp =>
+      'サーバーのURLはhttpまたはhttpsで始まる必要があります。';
 
   @override
   String get settings_serverPassword => 'サーバーパスワード';
@@ -1264,16 +1300,19 @@ class SLJa extends SL {
   String get toolbarTools_showFeatureAttributes => '地物属性を表示します。';
 
   @override
-  String get toolbarTools_featureDoesNotHavePrimaryKey => '地物に主キーがありません。編集は許可されていません。';
+  String get toolbarTools_featureDoesNotHavePrimaryKey =>
+      '地物に主キーがありません。編集は許可されていません。';
 
   @override
-  String get toolbarTools_queryFeaturesVectorLayers => '読み込まれたベクターレイヤーから地物をクエリします。';
+  String get toolbarTools_queryFeaturesVectorLayers =>
+      '読み込まれたベクターレイヤーから地物をクエリします。';
 
   @override
   String get toolbarTools_measureDistanceWithFinger => '指で地図上の距離を測定します。';
 
   @override
-  String get toolbarTools_modifyGeomVectorLayers => '編集可能なベクターレイヤーのジオメトリを変更します。';
+  String get toolbarTools_modifyGeomVectorLayers =>
+      '編集可能なベクターレイヤーのジオメトリを変更します。';
 
   @override
   String get coachMarks_singleTap => 'シングルタップ: ';
@@ -1360,19 +1399,22 @@ class SLJa extends SL {
   String get coachMarks_toolsButton => 'ツールボタン';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'エンドドロワーを開いて、プロジェクト情報と共有オプション、マッププラグイン、機能ツールその他にアクセスします。';
+  String get coachMarks_openEndDrawerToAccessProject =>
+      'エンドドロワーを開いて、プロジェクト情報と共有オプション、マッププラグイン、機能ツールその他にアクセスします。';
 
   @override
   String get coachMarks_interactiveCoackMarksButton => 'インタラクティブコーチマークボタン';
 
   @override
-  String get coachMarks_openInteractiveCoachMarks => 'メインマップビューのすべてのアクションを説明するインタラクティブコーチマークを開きます。';
+  String get coachMarks_openInteractiveCoachMarks =>
+      'メインマップビューのすべてのアクションを説明するインタラクティブコーチマークを開きます。';
 
   @override
   String get coachMarks_mainMenuButton => 'メインメニューボタン';
 
   @override
-  String get coachMarks_openDrawerToLoadProject => 'ドロワーを開いて、プロジェクトの読み込み/作成、データのインポート/エクスポート、サーバーとの同期、設定へのアクセスとアプリ終了、GPSのオフが可能です。';
+  String get coachMarks_openDrawerToLoadProject =>
+      'ドロワーを開いて、プロジェクトの読み込み/作成、データのインポート/エクスポート、サーバーとの同期、設定へのアクセスとアプリ終了、GPSのオフが可能です。';
 
   @override
   String get coachMarks_skip => 'スキップ';
@@ -1384,7 +1426,8 @@ class SLJa extends SL {
   String get network_completed => '完了しました。';
 
   @override
-  String get network_buildingBaseCachePerformance => 'パフォーマンス向上のためのベースキャッシュの構築（時間がかかる場合があります）…';
+  String get network_buildingBaseCachePerformance =>
+      'パフォーマンス向上のためのベースキャッシュの構築（時間がかかる場合があります）…';
 
   @override
   String get network_thisFIleAlreadyBeingDownloaded => 'このファイルはすでにダウンロード中です。';
@@ -1396,7 +1439,8 @@ class SLJa extends SL {
   String get network_downloadFile => 'ファイル';
 
   @override
-  String get network_toTheDeviceTakeTime => 'をデバイスにダウンロードしますか？ これには時間がかかる場合があります。';
+  String get network_toTheDeviceTakeTime =>
+      'をデバイスにダウンロードしますか？ これには時間がかかる場合があります。';
 
   @override
   String get network_availableMaps => '利用可能なマップ';
@@ -1414,7 +1458,8 @@ class SLJa extends SL {
   String get network_permissionOnServerDenied => 'サーバーへのアクセスが拒否されました。';
 
   @override
-  String get network_couldNotConnectToServer => 'サーバーに接続できませんでした。オンラインですか？ アドレスを確認してください。';
+  String get network_couldNotConnectToServer =>
+      'サーバーに接続できませんでした。オンラインですか？ アドレスを確認してください。';
 
   @override
   String get form_smash_cantSaveImageDb => '画像をデータベースに保存できませんでした。';
@@ -1429,7 +1474,8 @@ class SLJa extends SL {
   String get layersView_noGssLayersFound => 'No GSS layers found.';
 
   @override
-  String get layersView_noGssLayersAvailable => 'No layers available (loaded ones are not shown).';
+  String get layersView_noGssLayersAvailable =>
+      'No layers available (loaded ones are not shown).';
 
   @override
   String get layersView_selectGssLayersToLoad => 'Select GSS layers to load.';
@@ -1441,7 +1487,8 @@ class SLJa extends SL {
   String get layersView_layerExists => 'Layer exists';
 
   @override
-  String get layersView_layerAlreadyExists => 'Layer already exists, do you want to overwrite it?';
+  String get layersView_layerAlreadyExists =>
+      'Layer already exists, do you want to overwrite it?';
 
   @override
   String get gss_layerview_upload_changes => 'Upload changes';
@@ -1456,7 +1503,8 @@ class SLJa extends SL {
   String get addTmsFromDefaults => 'Add TMS from defaults';
 
   @override
-  String get form_smash_noCameraDesktop => 'No camera option available on desktop.';
+  String get form_smash_noCameraDesktop =>
+      'No camera option available on desktop.';
 
   @override
   String get settings_BottombarCustomization => 'Bottombar Customization';
@@ -1465,7 +1513,8 @@ class SLJa extends SL {
   String get settings_Bottombar_showAddNote => 'Show the ADD NOTE button';
 
   @override
-  String get settings_Bottombar_showAddFormNote => 'Show the ADD FORM NOTE button';
+  String get settings_Bottombar_showAddFormNote =>
+      'Show the ADD FORM NOTE button';
 
   @override
   String get settings_Bottombar_showAddGpsLog => 'Show the ADD GPS LOG button';

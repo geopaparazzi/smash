@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'l10n.dart';
 
 // ignore_for_file: type=lint
@@ -58,13 +60,16 @@ class SLZh extends SL {
   String get main_layersListLoaded => '图层列表加载完毕。';
 
   @override
-  String get main_locationBackgroundWarning => '下一步授予位置权限将允许GPS在后台记录日志(否则GPS日志将在前台运行)\n提示：日志数据只存放在设备本地，不会进行数据上传。';
+  String get main_locationBackgroundWarning =>
+      '下一步授予位置权限将允许GPS在后台记录日志(否则GPS日志将在前台运行)\n提示：日志数据只存放在设备本地，不会进行数据上传。';
 
   @override
-  String get main_StorageIsInternalWarning => '请仔细阅读！\n在 Android 11及以上版本环境下，项目文件夹必须放在\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\n文件夹中。\n如果APP被卸载后，系统将会移除此文件夹，所以请在卸载前备份好你的数据。\n\n关于这个问题，我们正在寻找更夹解决方案。';
+  String get main_StorageIsInternalWarning =>
+      '请仔细阅读！\n在 Android 11及以上版本环境下，项目文件夹必须放在\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\n文件夹中。\n如果APP被卸载后，系统将会移除此文件夹，所以请在卸载前备份好你的数据。\n\n关于这个问题，我们正在寻找更夹解决方案。';
 
   @override
-  String get main_locationPermissionIsMandatoryToOpenSmash => 'SMASH要求必须打开位置权限。';
+  String get main_locationPermissionIsMandatoryToOpenSmash =>
+      'SMASH要求必须打开位置权限。';
 
   @override
   String get main_storagePermissionIsMandatoryToOpenSmash => 'SMASH要求必须打开存储权限。';
@@ -160,7 +165,8 @@ class SLZh extends SL {
   String get mainviewUtils_enterLonLat => '输入经度，纬度';
 
   @override
-  String get mainviewUtils_goToCoordinateWrongFormat => '坐标格式错误。 应为 11.18463, 46.12345';
+  String get mainviewUtils_goToCoordinateWrongFormat =>
+      '坐标格式错误。 应为 11.18463, 46.12345';
 
   @override
   String get mainviewUtils_goToCoordinateEmpty => '此项不能为空。';
@@ -292,7 +298,8 @@ class SLZh extends SL {
   String get gps_smashLocServiceIsActive => 'SMASH 位置服务已激活。';
 
   @override
-  String get gps_backgroundLocIsOnToKeepRegistering => '后台定位功能开启后，即使应用程序处于后台，也能继续注册位置信息。';
+  String get gps_backgroundLocIsOnToKeepRegistering =>
+      '后台定位功能开启后，即使应用程序处于后台，也能继续注册位置信息。';
 
   @override
   String get gssImport_gssImport => 'GSS导入';
@@ -325,7 +332,8 @@ class SLZh extends SL {
   String get gssImport_projects => '项目';
 
   @override
-  String get gssImport_projectsDownloadedProjectFolder => '项目数据被下载到projects文件夹。';
+  String get gssImport_projectsDownloadedProjectFolder =>
+      '项目数据被下载到projects文件夹。';
 
   @override
   String get gssImport_noProjectsAvailable => '无可用项目。';
@@ -553,7 +561,8 @@ class SLZh extends SL {
   String get remoteDbPage_ok => '确定';
 
   @override
-  String get remoteDbPage_theUrlNeedsToBeDefined => '必须定义URL。格式如(postgis:host:port/databasename)';
+  String get remoteDbPage_theUrlNeedsToBeDefined =>
+      '必须定义URL。格式如(postgis:host:port/databasename)';
 
   @override
   String get remoteDbPage_theUserNeedsToBeDefined => '必须定义用户。';
@@ -616,7 +625,8 @@ class SLZh extends SL {
   String get tiles_opacity => '不透明度';
 
   @override
-  String get tiles_loadGeoPackageAsOverlay => '加载GPKG瓦片作为叠加图像和瓦片层对比（最好是GDAL库生成的数据和不同的投影）。';
+  String get tiles_loadGeoPackageAsOverlay =>
+      '加载GPKG瓦片作为叠加图像和瓦片层对比（最好是GDAL库生成的数据和不同的投影）。';
 
   @override
   String get tiles_colorToHide => '隐藏的颜色';
@@ -730,13 +740,15 @@ class SLZh extends SL {
   String get about_legalInformation => '法律信息';
 
   @override
-  String get about_copyright2020HydroloGIS => '版权©2020，HydroloGIS S.r.l. — 一些权力保留，点按查看。';
+  String get about_copyright2020HydroloGIS =>
+      '版权©2020，HydroloGIS S.r.l. — 一些权力保留，点按查看。';
 
   @override
   String get about_supportedBy => '被支持';
 
   @override
-  String get about_partiallySupportedByUniversityTrento => '部分由意大利特兰托大学（University of Trento）的Steep Stream项目支持。';
+  String get about_partiallySupportedByUniversityTrento =>
+      '部分由意大利特兰托大学（University of Trento）的Steep Stream项目支持。';
 
   @override
   String get about_privacyPolicy => '隐私政策';
@@ -1087,7 +1099,8 @@ class SLZh extends SL {
   String get settings_theUseOfTheGps => '过滤的GPS的使用。';
 
   @override
-  String get settings_warningThisWillAffectGpsPosition => '警告：这将会影响GPS位置，笔记插入，日志统计和制图。';
+  String get settings_warningThisWillAffectGpsPosition =>
+      '警告：这将会影响GPS位置，笔记插入，日志统计和制图。';
 
   @override
   String get settings_MockLocations => '模拟的位置';
@@ -1360,19 +1373,22 @@ class SLZh extends SL {
   String get coachMarks_toolsButton => '工具按钮';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => '打开最后的折叠来获取项目的信息和共享选项和地图插件，要素工具和额外工具一样';
+  String get coachMarks_openEndDrawerToAccessProject =>
+      '打开最后的折叠来获取项目的信息和共享选项和地图插件，要素工具和额外工具一样';
 
   @override
   String get coachMarks_interactiveCoackMarksButton => '交互的指导标记按钮';
 
   @override
-  String get coachMarks_openInteractiveCoachMarks => '打开该交互的指导标记来阐述主要地图视图中的全部动作。';
+  String get coachMarks_openInteractiveCoachMarks =>
+      '打开该交互的指导标记来阐述主要地图视图中的全部动作。';
 
   @override
   String get coachMarks_mainMenuButton => '主要菜单按钮';
 
   @override
-  String get coachMarks_openDrawerToLoadProject => '打开折叠来加载或者创建一个项目，导入和导出数据，与服务器同步，进行设置和退出该应用/关闭GPS。';
+  String get coachMarks_openDrawerToLoadProject =>
+      '打开折叠来加载或者创建一个项目，导入和导出数据，与服务器同步，进行设置和退出该应用/关闭GPS。';
 
   @override
   String get coachMarks_skip => '跳过';
@@ -1488,7 +1504,7 @@ class SLZh extends SL {
 
 /// The translations for Chinese, using the Han script (`zh_Hans`).
 class SLZhHans extends SLZh {
-  SLZhHans(): super('zh_Hans');
+  SLZhHans() : super('zh_Hans');
 
   @override
   String get main_welcome => '欢迎使用SMASH!';
@@ -1542,13 +1558,16 @@ class SLZhHans extends SLZh {
   String get main_layersListLoaded => '图层列表加载完毕.';
 
   @override
-  String get main_locationBackgroundWarning => '下一步授予位置权限将允许GPS在后台记录日志(否则GPS日志将在前台运行)，提示：日志数据只存放在设备本地，不会进行数据上传。';
+  String get main_locationBackgroundWarning =>
+      '下一步授予位置权限将允许GPS在后台记录日志(否则GPS日志将在前台运行)，提示：日志数据只存放在设备本地，不会进行数据上传。';
 
   @override
-  String get main_StorageIsInternalWarning => '请仔细阅读！\n在 Android 11及以上版本环境下，项目文件夹必须放在\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\n文件夹中。\n如果APP被卸载后，系统将会移除此文件夹，所以请在卸载前备份好你的数据。\n\n关于这个问题，我们正在寻找更夹解决方案。';
+  String get main_StorageIsInternalWarning =>
+      '请仔细阅读！\n在 Android 11及以上版本环境下，项目文件夹必须放在\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\n文件夹中。\n如果APP被卸载后，系统将会移除此文件夹，所以请在卸载前备份好你的数据。\n\n关于这个问题，我们正在寻找更夹解决方案。';
 
   @override
-  String get main_locationPermissionIsMandatoryToOpenSmash => 'SMASH要求必须打开位置权限。';
+  String get main_locationPermissionIsMandatoryToOpenSmash =>
+      'SMASH要求必须打开位置权限。';
 
   @override
   String get main_storagePermissionIsMandatoryToOpenSmash => 'SMASH要求必须打开存储权限。';
@@ -1761,7 +1780,8 @@ class SLZhHans extends SLZh {
   String get gps_smashLocServiceIsActive => 'SMASH 位置服务已激活。';
 
   @override
-  String get gps_backgroundLocIsOnToKeepRegistering => '后台位置服务一直开启，以保证APP能记录位置信息。';
+  String get gps_backgroundLocIsOnToKeepRegistering =>
+      '后台位置服务一直开启，以保证APP能记录位置信息。';
 
   @override
   String get gssImport_gssImport => 'GSS导入';
@@ -1794,7 +1814,8 @@ class SLZhHans extends SLZh {
   String get gssImport_projects => '工程';
 
   @override
-  String get gssImport_projectsDownloadedProjectFolder => '工程数据已下载到 projects文件夹。';
+  String get gssImport_projectsDownloadedProjectFolder =>
+      '工程数据已下载到 projects文件夹。';
 
   @override
   String get gssImport_noProjectsAvailable => '无可用工程。';
@@ -2019,7 +2040,8 @@ class SLZhHans extends SLZh {
   String get remoteDbPage_ok => '确定';
 
   @override
-  String get remoteDbPage_theUrlNeedsToBeDefined => '必须定义URL。格式如(postgis:host:port/databasename)';
+  String get remoteDbPage_theUrlNeedsToBeDefined =>
+      '必须定义URL。格式如(postgis:host:port/databasename)';
 
   @override
   String get remoteDbPage_theUserNeedsToBeDefined => '必须定义用户。';
@@ -2082,7 +2104,8 @@ class SLZhHans extends SLZh {
   String get tiles_opacity => '透明度';
 
   @override
-  String get tiles_loadGeoPackageAsOverlay => '将geopackage 瓦片当做普通图像进行加载，而不是作为瓦片图层（最好是由gdal生成的数据，并且有不同的投影）。';
+  String get tiles_loadGeoPackageAsOverlay =>
+      '将geopackage 瓦片当做普通图像进行加载，而不是作为瓦片图层（最好是由gdal生成的数据，并且有不同的投影）。';
 
   @override
   String get tiles_colorToHide => '要隐藏的颜色';
@@ -2196,13 +2219,15 @@ class SLZhHans extends SLZh {
   String get about_legalInformation => '法律信息';
 
   @override
-  String get about_copyright2020HydroloGIS => '版权所有方：© 2020, HydroloGIS S.r.l。保留部分权利。单击查看。';
+  String get about_copyright2020HydroloGIS =>
+      '版权所有方：© 2020, HydroloGIS S.r.l。保留部分权利。单击查看。';
 
   @override
   String get about_supportedBy => '支持方';
 
   @override
-  String get about_partiallySupportedByUniversityTrento => '特伦托大学 Steep Stream 项目部分支持。';
+  String get about_partiallySupportedByUniversityTrento =>
+      '特伦托大学 Steep Stream 项目部分支持。';
 
   @override
   String get about_privacyPolicy => '隐私政策';
@@ -2553,7 +2578,8 @@ class SLZhHans extends SLZh {
   String get settings_theUseOfTheGps => '使用滤波GPS。';
 
   @override
-  String get settings_warningThisWillAffectGpsPosition => '警告：这将会影响GPS位置，标记插入，日志统计和图表。';
+  String get settings_warningThisWillAffectGpsPosition =>
+      '警告：这将会影响GPS位置，标记插入，日志统计和图表。';
 
   @override
   String get settings_MockLocations => '模拟位置';

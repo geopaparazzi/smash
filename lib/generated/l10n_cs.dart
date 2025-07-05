@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'l10n.dart';
 
 // ignore_for_file: type=lint
@@ -58,19 +60,24 @@ class SLCs extends SL {
   String get main_layersListLoaded => 'Seznam vrstev načten.';
 
   @override
-  String get main_locationBackgroundWarning => 'V dalším kroku udělíte oprávnění k poloze, abyste umožnili záznam GPS na pozadí. (Jinak bude fungovat pouze na popředí.)\nŽádná data nejsou sdílena a ukládají se pouze lokálně v zařízení.';
+  String get main_locationBackgroundWarning =>
+      'V dalším kroku udělíte oprávnění k poloze, abyste umožnili záznam GPS na pozadí. (Jinak bude fungovat pouze na popředí.)\nŽádná data nejsou sdílena a ukládají se pouze lokálně v zařízení.';
 
   @override
-  String get main_StorageIsInternalWarning => 'Čtěte prosím pozorně!\nV systému Android 11 a novějším musí být složka projektu SMASH umístěna ve složce\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nve vašem úložišti, aby mohl být použit.\nPokud aplikaci odinstalujete, systém ji odstraní, takže v takovém případě si data zálohujte.\n\nNa lepším řešení se pracuje.';
+  String get main_StorageIsInternalWarning =>
+      'Čtěte prosím pozorně!\nV systému Android 11 a novějším musí být složka projektu SMASH umístěna ve složce\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nve vašem úložišti, aby mohl být použit.\nPokud aplikaci odinstalujete, systém ji odstraní, takže v takovém případě si data zálohujte.\n\nNa lepším řešení se pracuje.';
 
   @override
-  String get main_locationPermissionIsMandatoryToOpenSmash => 'Povolení k umístění je pro otevření SMASH povinné.';
+  String get main_locationPermissionIsMandatoryToOpenSmash =>
+      'Povolení k umístění je pro otevření SMASH povinné.';
 
   @override
-  String get main_storagePermissionIsMandatoryToOpenSmash => 'Oprávnění k ukládání je pro otevření SMASH povinné.';
+  String get main_storagePermissionIsMandatoryToOpenSmash =>
+      'Oprávnění k ukládání je pro otevření SMASH povinné.';
 
   @override
-  String get main_anErrorOccurredTapToView => 'Došlo k chybě. Klepněte pro zobrazení.';
+  String get main_anErrorOccurredTapToView =>
+      'Došlo k chybě. Klepněte pro zobrazení.';
 
   @override
   String get mainView_loadingData => 'Načítání dat…';
@@ -88,10 +95,12 @@ class SLCs extends SL {
   String get mainView_areYouSureCloseTheProject => 'Ukončit projekt?';
 
   @override
-  String get mainView_activeOperationsWillBeStopped => 'Aktivní operace budou zastaveny.';
+  String get mainView_activeOperationsWillBeStopped =>
+      'Aktivní operace budou zastaveny.';
 
   @override
-  String get mainView_showInteractiveCoachMarks => 'Zobrazit interaktivní značky trenérů.';
+  String get mainView_showInteractiveCoachMarks =>
+      'Zobrazit interaktivní značky trenérů.';
 
   @override
   String get mainView_openToolsDrawer => 'Otevřít zásuvku s nástroji.';
@@ -160,7 +169,8 @@ class SLCs extends SL {
   String get mainviewUtils_enterLonLat => 'Zadejte zeměpisnou délku, šířku';
 
   @override
-  String get mainviewUtils_goToCoordinateWrongFormat => 'Špatný formát souřadnic. Mělo by být: 11.18463, 46.12345';
+  String get mainviewUtils_goToCoordinateWrongFormat =>
+      'Špatný formát souřadnic. Mělo by být: 11.18463, 46.12345';
 
   @override
   String get mainviewUtils_goToCoordinateEmpty => 'Nemůže být prázdný.';
@@ -178,7 +188,8 @@ class SLCs extends SL {
   String get exportWidget_pdfExported => 'PDF exportováno';
 
   @override
-  String get exportWidget_exportToPortableDocumentFormat => 'Export projektu do formátu Portable Document Format';
+  String get exportWidget_exportToPortableDocumentFormat =>
+      'Export projektu do formátu Portable Document Format';
 
   @override
   String get exportWidget_gpxExported => 'GPX exportováno';
@@ -196,7 +207,8 @@ class SLCs extends SL {
   String get exportWidget_imagesToFolderExported => 'Obrázky exportované';
 
   @override
-  String get exportWidget_exportImagesToFolder => 'Export obrázků projektu do složky';
+  String get exportWidget_exportImagesToFolder =>
+      'Export obrázků projektu do složky';
 
   @override
   String get exportWidget_exportImagesToFolderTitle => 'Obrázky';
@@ -220,7 +232,8 @@ class SLCs extends SL {
   String get gssExport_thisCantBeUndone => 'To se nedá vrátit!';
 
   @override
-  String get gssExport_restoreProjectAsDirty => 'Obnovit projekt jako celý špinavý.';
+  String get gssExport_restoreProjectAsDirty =>
+      'Obnovit projekt jako celý špinavý.';
 
   @override
   String get gssExport_setProjectClean => 'Nastavit projekt na ČISTÝ?';
@@ -232,22 +245,27 @@ class SLCs extends SL {
   String get gssExport_nothingToSync => 'Není co synchronizovat.';
 
   @override
-  String get gssExport_collectingSyncStats => 'Sbírání statistik synchronizace…';
+  String get gssExport_collectingSyncStats =>
+      'Sbírání statistik synchronizace…';
 
   @override
-  String get gssExport_unableToSyncDueToError => 'Synchronizaci nelze provést z důvodu chyby, zkontrolujte diagnostiku.';
+  String get gssExport_unableToSyncDueToError =>
+      'Synchronizaci nelze provést z důvodu chyby, zkontrolujte diagnostiku.';
 
   @override
-  String get gssExport_noGssUrlSet => 'Nebyla nastavena žádná adresa URL serveru GSS. Zkontrolujte nastavení.';
+  String get gssExport_noGssUrlSet =>
+      'Nebyla nastavena žádná adresa URL serveru GSS. Zkontrolujte nastavení.';
 
   @override
-  String get gssExport_noGssPasswordSet => 'Nebylo nastaveno žádné heslo serveru GSS. Zkontrolujte nastavení.';
+  String get gssExport_noGssPasswordSet =>
+      'Nebylo nastaveno žádné heslo serveru GSS. Zkontrolujte nastavení.';
 
   @override
   String get gssExport_synStats => 'Statistiky synchronizace';
 
   @override
-  String get gssExport_followingDataWillBeUploaded => 'Při synchronizaci se nahrají následující data.';
+  String get gssExport_followingDataWillBeUploaded =>
+      'Při synchronizaci se nahrají následující data.';
 
   @override
   String get gssExport_gpsLogs => 'Protokoly GPS:';
@@ -271,7 +289,8 @@ class SLCs extends SL {
   String get geocoding_geocoding => 'Geokódování';
 
   @override
-  String get geocoding_nothingToLookFor => 'Nic, co by stálo za to hledat. Vložte adresu.';
+  String get geocoding_nothingToLookFor =>
+      'Nic, co by stálo za to hledat. Vložte adresu.';
 
   @override
   String get geocoding_launchGeocoding => 'Spustit geokódování';
@@ -289,10 +308,12 @@ class SLCs extends SL {
   String get gps_locationTracking => 'Sledování polohy';
 
   @override
-  String get gps_smashLocServiceIsActive => 'Lokalizační služba SMASH je aktivní.';
+  String get gps_smashLocServiceIsActive =>
+      'Lokalizační služba SMASH je aktivní.';
 
   @override
-  String get gps_backgroundLocIsOnToKeepRegistering => 'Poloha na pozadí je zapnutá, aby aplikace registrovala polohu, i když je na pozadí.';
+  String get gps_backgroundLocIsOnToKeepRegistering =>
+      'Poloha na pozadí je zapnutá, aby aplikace registrovala polohu, i když je na pozadí.';
 
   @override
   String get gssImport_gssImport => 'Import GSS';
@@ -301,22 +322,27 @@ class SLCs extends SL {
   String get gssImport_downloadingDataList => 'Stahování seznamu dat…';
 
   @override
-  String get gssImport_unableDownloadDataList => 'Seznam dat nelze stáhnout z důvodu chyby. Zkontrolujte nastavení a protokol.';
+  String get gssImport_unableDownloadDataList =>
+      'Seznam dat nelze stáhnout z důvodu chyby. Zkontrolujte nastavení a protokol.';
 
   @override
-  String get gssImport_noGssUrlSet => 'Nebyla nastavena žádná adresa URL serveru GSS. Zkontrolujte nastavení.';
+  String get gssImport_noGssUrlSet =>
+      'Nebyla nastavena žádná adresa URL serveru GSS. Zkontrolujte nastavení.';
 
   @override
-  String get gssImport_noGssPasswordSet => 'Nebylo nastaveno žádné heslo serveru GSS. Zkontrolujte nastavení.';
+  String get gssImport_noGssPasswordSet =>
+      'Nebylo nastaveno žádné heslo serveru GSS. Zkontrolujte nastavení.';
 
   @override
-  String get gssImport_noPermToAccessServer => 'Nemáte oprávnění k přístupu na server. Zkontrolujte své pověření.';
+  String get gssImport_noPermToAccessServer =>
+      'Nemáte oprávnění k přístupu na server. Zkontrolujte své pověření.';
 
   @override
   String get gssImport_data => 'Data';
 
   @override
-  String get gssImport_dataSetsDownloadedMapsFolder => 'Datové sady se stahují do složky map.';
+  String get gssImport_dataSetsDownloadedMapsFolder =>
+      'Datové sady se stahují do složky map.';
 
   @override
   String get gssImport_noDataAvailable => 'Nejsou k dispozici žádné údaje.';
@@ -325,16 +351,19 @@ class SLCs extends SL {
   String get gssImport_projects => 'Projekty';
 
   @override
-  String get gssImport_projectsDownloadedProjectFolder => 'Projekty se stahují do složky projects.';
+  String get gssImport_projectsDownloadedProjectFolder =>
+      'Projekty se stahují do složky projects.';
 
   @override
-  String get gssImport_noProjectsAvailable => 'Žádné projekty nejsou k dispozici.';
+  String get gssImport_noProjectsAvailable =>
+      'Žádné projekty nejsou k dispozici.';
 
   @override
   String get gssImport_forms => 'Formuláře';
 
   @override
-  String get gssImport_tagsDownloadedFormsFolder => 'Soubory značek jsou staženy do složky formulářů.';
+  String get gssImport_tagsDownloadedFormsFolder =>
+      'Soubory značek jsou staženy do složky formulářů.';
 
   @override
   String get gssImport_noTagsAvailable => 'Nejsou k dispozici žádné štítky.';
@@ -343,7 +372,8 @@ class SLCs extends SL {
   String get importWidget_import => 'Import';
 
   @override
-  String get importWidget_importFromGeopaparazzi => 'Import z Geopaparazzi Survey Serveru';
+  String get importWidget_importFromGeopaparazzi =>
+      'Import z Geopaparazzi Survey Serveru';
 
   @override
   String get layersView_layerList => 'Seznam vrstev';
@@ -370,22 +400,28 @@ class SLCs extends SL {
   String get layersView_delete => 'Smazat';
 
   @override
-  String get layersView_projCouldNotBeRecognized => 'Proj nebylo možné rozpoznat. Klepněte a zadejte epsg ručně.';
+  String get layersView_projCouldNotBeRecognized =>
+      'Proj nebylo možné rozpoznat. Klepněte a zadejte epsg ručně.';
 
   @override
-  String get layersView_projNotSupported => 'Proj není podporován. Klepněte a vyřešte to.';
+  String get layersView_projNotSupported =>
+      'Proj není podporován. Klepněte a vyřešte to.';
 
   @override
-  String get layersView_onlyImageFilesWithWorldDef => 'Podporovány jsou pouze obrazové soubory s definicí světa.';
+  String get layersView_onlyImageFilesWithWorldDef =>
+      'Podporovány jsou pouze obrazové soubory s definicí světa.';
 
   @override
-  String get layersView_onlyImageFileWithPrjDef => 'Podporovány jsou pouze obrazové soubory s definicí souboru prj.';
+  String get layersView_onlyImageFileWithPrjDef =>
+      'Podporovány jsou pouze obrazové soubory s definicí souboru prj.';
 
   @override
-  String get layersView_selectTableToLoad => 'Vyberte tabulku, která se má načíst.';
+  String get layersView_selectTableToLoad =>
+      'Vyberte tabulku, která se má načíst.';
 
   @override
-  String get layersView_fileFormatNotSUpported => 'Formát souboru není podporován.';
+  String get layersView_fileFormatNotSUpported =>
+      'Formát souboru není podporován.';
 
   @override
   String get onlineSourcesPage_onlineSourcesCatalog => 'Katalog online zdrojů';
@@ -406,7 +442,8 @@ class SLCs extends SL {
   String get onlineSourcesPage_doesntExist => 'neexistuje';
 
   @override
-  String get onlineSourcesPage_onlineSourcesImported => 'Importované online zdroje.';
+  String get onlineSourcesPage_onlineSourcesImported =>
+      'Importované online zdroje.';
 
   @override
   String get onlineSourcesPage_exportToFile => 'Export do souboru';
@@ -421,22 +458,26 @@ class SLCs extends SL {
   String get onlineSourcesPage_addToLayers => 'Přidat k vrstvám';
 
   @override
-  String get onlineSourcesPage_setNameTmsService => 'Nastavení názvu služby TMS';
+  String get onlineSourcesPage_setNameTmsService =>
+      'Nastavení názvu služby TMS';
 
   @override
   String get onlineSourcesPage_enterName => 'zadejte název';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidName => 'Zadejte prosím platný název';
+  String get onlineSourcesPage_pleaseEnterValidName =>
+      'Zadejte prosím platný název';
 
   @override
   String get onlineSourcesPage_insertUrlOfService => 'Vložte URL služby.';
 
   @override
-  String get onlineSourcesPage_placeXyzBetBrackets => 'Údaje x, y, z umístěte do složených závorek.';
+  String get onlineSourcesPage_placeXyzBetBrackets =>
+      'Údaje x, y, z umístěte do složených závorek.';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidTmsUrl => 'Zadejte platnou adresu URL TMS';
+  String get onlineSourcesPage_pleaseEnterValidTmsUrl =>
+      'Zadejte platnou adresu URL TMS';
 
   @override
   String get onlineSourcesPage_enterUrl => 'Zadejte URL';
@@ -451,7 +492,8 @@ class SLCs extends SL {
   String get onlineSourcesPage_enterAttribution => 'zadejte autorství';
 
   @override
-  String get onlineSourcesPage_setMinMaxZoom => 'Nastavení min. a max. přiblížení.';
+  String get onlineSourcesPage_setMinMaxZoom =>
+      'Nastavení min. a max. přiblížení.';
 
   @override
   String get onlineSourcesPage_minZoom => 'Minimální přiblížení';
@@ -487,22 +529,27 @@ class SLCs extends SL {
   String get onlineSourcesPage_save => 'Uložit';
 
   @override
-  String get onlineSourcesPage_theBaseUrlWithQuestionMark => 'Základní adresa URL končící otazníkem.';
+  String get onlineSourcesPage_theBaseUrlWithQuestionMark =>
+      'Základní adresa URL končící otazníkem.';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidWmsUrl => 'Zadejte platnou URL systému WMS';
+  String get onlineSourcesPage_pleaseEnterValidWmsUrl =>
+      'Zadejte platnou URL systému WMS';
 
   @override
   String get onlineSourcesPage_setWmsLayerName => 'Nastavení názvu vrstvy WMS';
 
   @override
-  String get onlineSourcesPage_enterLayerToLoad => 'zadejte vrstvu, která se má načíst';
+  String get onlineSourcesPage_enterLayerToLoad =>
+      'zadejte vrstvu, která se má načíst';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidLayer => 'Zadejte platnou vrstvu';
+  String get onlineSourcesPage_pleaseEnterValidLayer =>
+      'Zadejte platnou vrstvu';
 
   @override
-  String get onlineSourcesPage_setWmsImageFormat => 'Nastavte formát obrázku WMS';
+  String get onlineSourcesPage_setWmsImageFormat =>
+      'Nastavte formát obrázku WMS';
 
   @override
   String get onlineSourcesPage_addAnAttribution => 'Přidejte autorství.';
@@ -526,7 +573,8 @@ class SLCs extends SL {
   String get remoteDbPage_delete => 'Smazat';
 
   @override
-  String get remoteDbPage_areYouSureDeleteDatabase => 'Smazat konfiguraci databáze?';
+  String get remoteDbPage_areYouSureDeleteDatabase =>
+      'Smazat konfiguraci databáze?';
 
   @override
   String get remoteDbPage_edit => 'Upravit';
@@ -553,28 +601,34 @@ class SLCs extends SL {
   String get remoteDbPage_ok => 'OK';
 
   @override
-  String get remoteDbPage_theUrlNeedsToBeDefined => 'Musí být definována adresa URL (postgis:host:port/databasename)';
+  String get remoteDbPage_theUrlNeedsToBeDefined =>
+      'Musí být definována adresa URL (postgis:host:port/databasename)';
 
   @override
-  String get remoteDbPage_theUserNeedsToBeDefined => 'Musí být definován uživatel.';
+  String get remoteDbPage_theUserNeedsToBeDefined =>
+      'Musí být definován uživatel.';
 
   @override
   String get remoteDbPage_password => 'heslo';
 
   @override
-  String get remoteDbPage_thePasswordNeedsToBeDefined => 'Musí být definováno heslo.';
+  String get remoteDbPage_thePasswordNeedsToBeDefined =>
+      'Musí být definováno heslo.';
 
   @override
   String get remoteDbPage_loadingTables => 'Načítání tabulek…';
 
   @override
-  String get remoteDbPage_theTableNeedsToBeDefined => 'Název tabulky musí být definován.';
+  String get remoteDbPage_theTableNeedsToBeDefined =>
+      'Název tabulky musí být definován.';
 
   @override
-  String get remoteDbPage_unableToConnectToDatabase => 'Nelze se připojit k databázi. Zkontrolujte parametry a síť.';
+  String get remoteDbPage_unableToConnectToDatabase =>
+      'Nelze se připojit k databázi. Zkontrolujte parametry a síť.';
 
   @override
-  String get remoteDbPage_optionalWhereCondition => 'volitelná podmínka \"kde\"';
+  String get remoteDbPage_optionalWhereCondition =>
+      'volitelná podmínka \"kde\"';
 
   @override
   String get geoImage_tiffProperties => 'Vlastnosti TIFF';
@@ -598,7 +652,8 @@ class SLCs extends SL {
   String get gpx_size => 'Velikost';
 
   @override
-  String get gpx_viewLabelsIfAvailable => 'Zobrazit štítky, pokud jsou k dispozici?';
+  String get gpx_viewLabelsIfAvailable =>
+      'Zobrazit štítky, pokud jsou k dispozici?';
 
   @override
   String get gpx_tracksRoutes => 'Trasy/cesty';
@@ -616,7 +671,8 @@ class SLCs extends SL {
   String get tiles_opacity => 'Průhlednost';
 
   @override
-  String get tiles_loadGeoPackageAsOverlay => 'Načíst dlaždice geopackage jako překryvný obrázek namísto vrstvy dlaždic (nejlepší pro data generovaná gdal a různé projekce).';
+  String get tiles_loadGeoPackageAsOverlay =>
+      'Načíst dlaždice geopackage jako překryvný obrázek namísto vrstvy dlaždic (nejlepší pro data generovaná gdal a různé projekce).';
 
   @override
   String get tiles_colorToHide => 'Barva pro skrytí';
@@ -655,7 +711,8 @@ class SLCs extends SL {
   String get projectsView_newProject => 'Nový projekt';
 
   @override
-  String get projectsView_enterNameForNewProject => 'Zadejte název nového projektu nebo přijměte navržený.';
+  String get projectsView_enterNameForNewProject =>
+      'Zadejte název nového projektu nebo přijměte navržený.';
 
   @override
   String get dataLoader_note => 'poznámka';
@@ -709,7 +766,8 @@ class SLCs extends SL {
   String get about_ABOUT => 'O aplikaci ';
 
   @override
-  String get about_smartMobileAppForSurveyor => 'Chytrá mobilní aplikace pro šťastné geodety';
+  String get about_smartMobileAppForSurveyor =>
+      'Chytrá mobilní aplikace pro šťastné geodety';
 
   @override
   String get about_applicationVersion => 'Verze';
@@ -718,34 +776,40 @@ class SLCs extends SL {
   String get about_license => 'Licence';
 
   @override
-  String get about_isAvailableUnderGPL3 => ' je copyleftový svobodný software s licencí GPLv3+.';
+  String get about_isAvailableUnderGPL3 =>
+      ' je copyleftový svobodný software s licencí GPLv3+.';
 
   @override
   String get about_sourceCode => 'Zdrojový kód';
 
   @override
-  String get about_tapHereToVisitRepo => 'Klepnutím sem navštivte úložiště zdrojového kódu';
+  String get about_tapHereToVisitRepo =>
+      'Klepnutím sem navštivte úložiště zdrojového kódu';
 
   @override
   String get about_legalInformation => 'Právní informace';
 
   @override
-  String get about_copyright2020HydroloGIS => 'Copyright © 2020, HydroloGIS S.r.l. - některá práva vyhrazena. Klepněte pro návštěvu.';
+  String get about_copyright2020HydroloGIS =>
+      'Copyright © 2020, HydroloGIS S.r.l. - některá práva vyhrazena. Klepněte pro návštěvu.';
 
   @override
   String get about_supportedBy => 'Podporováno';
 
   @override
-  String get about_partiallySupportedByUniversityTrento => 'Částečně podpořeno projektem Steep Stream univerzity v Trentu.';
+  String get about_partiallySupportedByUniversityTrento =>
+      'Částečně podpořeno projektem Steep Stream univerzity v Trentu.';
 
   @override
   String get about_privacyPolicy => 'Zásady ochrany osobních údajů';
 
   @override
-  String get about_tapHereToSeePrivacyPolicy => 'Klepnutím sem zobrazíte zásady ochrany osobních údajů, které se týkají údajů o uživateli a poloze.';
+  String get about_tapHereToSeePrivacyPolicy =>
+      'Klepnutím sem zobrazíte zásady ochrany osobních údajů, které se týkají údajů o uživateli a poloze.';
 
   @override
-  String get gpsInfoButton_noGpsInfoAvailable => 'Žádné informace o GPS nejsou k dispozici…';
+  String get gpsInfoButton_noGpsInfoAvailable =>
+      'Žádné informace o GPS nejsou k dispozici…';
 
   @override
   String get gpsInfoButton_timestamp => 'Časové razítko';
@@ -766,19 +830,22 @@ class SLCs extends SL {
   String get gpsInfoButton_latitude => 'Zeměpisná šířka';
 
   @override
-  String get gpsInfoButton_copyLatitudeToClipboard => 'Kopírování zeměpisné šířky do schránky.';
+  String get gpsInfoButton_copyLatitudeToClipboard =>
+      'Kopírování zeměpisné šířky do schránky.';
 
   @override
   String get gpsInfoButton_longitude => 'Zeměpisná délka';
 
   @override
-  String get gpsInfoButton_copyLongitudeToClipboard => 'Zkopírujte zeměpisnou délku do schránky.';
+  String get gpsInfoButton_copyLongitudeToClipboard =>
+      'Zkopírujte zeměpisnou délku do schránky.';
 
   @override
   String get gpsLogButton_stopLogging => 'Přestat zaznamenávat?';
 
   @override
-  String get gpsLogButton_stopLoggingAndCloseLog => 'Zastavit záznam a zavřít aktuální záznam GPS?';
+  String get gpsLogButton_stopLoggingAndCloseLog =>
+      'Zastavit záznam a zavřít aktuální záznam GPS?';
 
   @override
   String get gpsLogButton_newLog => 'Nový záznam';
@@ -787,7 +854,8 @@ class SLCs extends SL {
   String get gpsLogButton_enterNameForNewLog => 'Zadejte název nového záznamu';
 
   @override
-  String get gpsLogButton_couldNotStartLogging => 'Nelze spustit zaznamenávání: ';
+  String get gpsLogButton_couldNotStartLogging =>
+      'Nelze spustit zaznamenávání: ';
 
   @override
   String get imageWidgets_loadingImage => 'Načítání obrázku…';
@@ -823,10 +891,12 @@ class SLCs extends SL {
   String get logList_toGPX => 'Na GPX';
 
   @override
-  String get logList_gpsSavedInExportFolder => 'GPX uložený ve složce pro export.';
+  String get logList_gpsSavedInExportFolder =>
+      'GPX uložený ve složce pro export.';
 
   @override
-  String get logList_errorOccurredExportingLogGPX => 'Nelze exportovat záznam do GPX.';
+  String get logList_errorOccurredExportingLogGPX =>
+      'Nelze exportovat záznam do GPX.';
 
   @override
   String get logList_delete => 'Smazat';
@@ -946,7 +1016,8 @@ class SLCs extends SL {
   String get settings_screen => 'Obrazovka';
 
   @override
-  String get settings_screenScaleBarIconSize => 'Velikost obrazovky, panelu měřítek a ikon';
+  String get settings_screenScaleBarIconSize =>
+      'Velikost obrazovky, panelu měřítek a ikon';
 
   @override
   String get settings_keepScreenOn => 'Ponechat obrazovku zapnutou';
@@ -955,7 +1026,8 @@ class SLCs extends SL {
   String get settings_retinaScreenMode => 'Režim obrazovky HiDPI';
 
   @override
-  String get settings_toApplySettingEnterExitLayerView => 'Pro použití tohoto nastavení vstupte do zobrazení vrstvy a ukončete je.';
+  String get settings_toApplySettingEnterExitLayerView =>
+      'Pro použití tohoto nastavení vstupte do zobrazení vrstvy a ukončete je.';
 
   @override
   String get settings_colorPickerToUse => 'Použití nástroje pro výběr barev';
@@ -985,7 +1057,8 @@ class SLCs extends SL {
   String get settings_livePreview => 'Náhled v reálném čase';
 
   @override
-  String get settings_noPointAvailableYet => 'Zatím není k dispozici žádný bod.';
+  String get settings_noPointAvailableYet =>
+      'Zatím není k dispozici žádný bod.';
 
   @override
   String get settings_longitudeDeg => 'zeměpisná délka [deg]';
@@ -1012,7 +1085,8 @@ class SLCs extends SL {
   String get settings_mockLocations => 'zkušební místa?';
 
   @override
-  String get settings_minDistFilterBlocks => 'Filtr minimální vzdálenosti blokuje';
+  String get settings_minDistFilterBlocks =>
+      'Filtr minimální vzdálenosti blokuje';
 
   @override
   String get settings_minDistFilterPasses => 'Filtr min. vzdálenosti prošel';
@@ -1060,19 +1134,23 @@ class SLCs extends SL {
   String get settings_visualizePointCount => 'Vizualizace počtu bodů';
 
   @override
-  String get settings_showGpsPointsValidPoints => 'Zobrazit počet bodů GPS pro VALIDNÍ body.';
+  String get settings_showGpsPointsValidPoints =>
+      'Zobrazit počet bodů GPS pro VALIDNÍ body.';
 
   @override
-  String get settings_showGpsPointsAllPoints => 'Zobrazení počtu bodů GPS pro VŠECHNY body.';
+  String get settings_showGpsPointsAllPoints =>
+      'Zobrazení počtu bodů GPS pro VŠECHNY body.';
 
   @override
   String get settings_logFilters => 'Filtry záznamu';
 
   @override
-  String get settings_minDistanceBetween2Points => 'Minimální vzdálenost mezi 2 body.';
+  String get settings_minDistanceBetween2Points =>
+      'Minimální vzdálenost mezi 2 body.';
 
   @override
-  String get settings_minTimespanBetween2Points => 'Minimální časový interval mezi 2 body.';
+  String get settings_minTimespanBetween2Points =>
+      'Minimální časový interval mezi 2 body.';
 
   @override
   String get settings_gpsFilter => 'GPS filtr';
@@ -1087,22 +1165,26 @@ class SLCs extends SL {
   String get settings_theUseOfTheGps => 'použití filtrované GPS.';
 
   @override
-  String get settings_warningThisWillAffectGpsPosition => 'Varování: To ovlivní polohu GPS, vkládání poznámek, statistiky záznamů a tvorbu grafů.';
+  String get settings_warningThisWillAffectGpsPosition =>
+      'Varování: To ovlivní polohu GPS, vkládání poznámek, statistiky záznamů a tvorbu grafů.';
 
   @override
   String get settings_MockLocations => 'Zkušební lokality';
 
   @override
-  String get settings_testGpsLogDemoUse => 'testovací záznam GPS pro demonstrační použití.';
+  String get settings_testGpsLogDemoUse =>
+      'testovací záznam GPS pro demonstrační použití.';
 
   @override
-  String get settings_setDurationGpsPointsInMilli => 'Nastavení doby trvání bodů GPS v milisekundách.';
+  String get settings_setDurationGpsPointsInMilli =>
+      'Nastavení doby trvání bodů GPS v milisekundách.';
 
   @override
   String get settings_SETTING => 'Nastavení';
 
   @override
-  String get settings_setMockedGpsDuration => 'Nastavení doby trvání simulovaného systému GPS';
+  String get settings_setMockedGpsDuration =>
+      'Nastavení doby trvání simulovaného systému GPS';
 
   @override
   String get settings_theValueHasToBeInt => 'Hodnota musí být celé číslo.';
@@ -1111,19 +1193,23 @@ class SLCs extends SL {
   String get settings_milliseconds => 'milisekundy';
 
   @override
-  String get settings_useGoogleToImproveLoc => 'Využití služeb Google ke zlepšení polohy';
+  String get settings_useGoogleToImproveLoc =>
+      'Využití služeb Google ke zlepšení polohy';
 
   @override
-  String get settings_useOfGoogleServicesRestart => 'používání služeb Google (nutný restart aplikace).';
+  String get settings_useOfGoogleServicesRestart =>
+      'používání služeb Google (nutný restart aplikace).';
 
   @override
   String get settings_gpsLogsViewMode => 'Režim zobrazení záznamů GPS';
 
   @override
-  String get settings_logViewModeForOrigData => 'Režim zobrazení záznamu pro původní data.';
+  String get settings_logViewModeForOrigData =>
+      'Režim zobrazení záznamu pro původní data.';
 
   @override
-  String get settings_logViewModeFilteredData => 'Režim zobrazení záznamu pro filtrovaná data.';
+  String get settings_logViewModeFilteredData =>
+      'Režim zobrazení záznamu pro filtrovaná data.';
 
   @override
   String get settings_cancel => 'Zrušit';
@@ -1135,7 +1221,8 @@ class SLCs extends SL {
   String get settings_notesViewModes => 'Režimy zobrazení poznámek';
 
   @override
-  String get settings_selectNotesViewMode => 'Vyberte režim, ve kterém chcete poznámky zobrazit.';
+  String get settings_selectNotesViewMode =>
+      'Vyberte režim, ve kterém chcete poznámky zobrazit.';
 
   @override
   String get settings_mapPlugins => 'Zásuvné moduly mapy';
@@ -1144,7 +1231,8 @@ class SLCs extends SL {
   String get settings_vectorLayers => 'Vektorové vrstvy';
 
   @override
-  String get settings_loadingOptionsInfoTool => 'Možnosti načítání a informační nástroj';
+  String get settings_loadingOptionsInfoTool =>
+      'Možnosti načítání a informační nástroj';
 
   @override
   String get settings_dataLoading => 'Načítání dat';
@@ -1153,7 +1241,8 @@ class SLCs extends SL {
   String get settings_maxNumberFeatures => 'Maximální počet funkcí.';
 
   @override
-  String get settings_maxNumFeaturesPerLayer => 'Maximální počet funkcí na vrstvu. Odeberte a přidejte vrstvu, kterou chcete použít.';
+  String get settings_maxNumFeaturesPerLayer =>
+      'Maximální počet funkcí na vrstvu. Odeberte a přidejte vrstvu, kterou chcete použít.';
 
   @override
   String get settings_all => 'vše';
@@ -1162,22 +1251,26 @@ class SLCs extends SL {
   String get settings_loadMapArea => 'Načtení oblasti mapy.';
 
   @override
-  String get settings_loadOnlyLastVisibleArea => 'Načtení pouze v poslední viditelné oblasti mapy. Pro použití vrstvu odeberte a znovu přidejte.';
+  String get settings_loadOnlyLastVisibleArea =>
+      'Načtení pouze v poslední viditelné oblasti mapy. Pro použití vrstvu odeberte a znovu přidejte.';
 
   @override
   String get settings_infoTool => 'Nástroj Info';
 
   @override
-  String get settings_tapSizeInfoToolPixels => 'Velikost nástroje Info klepnutím, v pixelech.';
+  String get settings_tapSizeInfoToolPixels =>
+      'Velikost nástroje Info klepnutím, v pixelech.';
 
   @override
   String get settings_editingTool => 'Nástroj Úpravy';
 
   @override
-  String get settings_editingDragIconSize => 'Úprava velikosti ikony obsluhy přetahování.';
+  String get settings_editingDragIconSize =>
+      'Úprava velikosti ikony obsluhy přetahování.';
 
   @override
-  String get settings_editingIntermediateDragIconSize => 'Úprava velikosti prostřední ikony obsluhy přetahování.';
+  String get settings_editingIntermediateDragIconSize =>
+      'Úprava velikosti prostřední ikony obsluhy přetahování.';
 
   @override
   String get settings_diagnostics => 'Diagnostika';
@@ -1195,7 +1288,8 @@ class SLCs extends SL {
   String get settings_viewAllMessages => 'Zobrazit všechny zprávy';
 
   @override
-  String get settings_viewOnlyErrorsWarnings => 'Zobrazit pouze chyby a varování';
+  String get settings_viewOnlyErrorsWarnings =>
+      'Zobrazit pouze chyby a varování';
 
   @override
   String get settings_clearDebugLog => 'Vymazat protokol ladění';
@@ -1219,7 +1313,8 @@ class SLCs extends SL {
   String get settings_overrideId => 'Přepsat ID';
 
   @override
-  String get settings_pleaseEnterValidPassword => 'Zadejte platné heslo serveru.';
+  String get settings_pleaseEnterValidPassword =>
+      'Zadejte platné heslo serveru.';
 
   @override
   String get settings_gss => 'GSS';
@@ -1231,13 +1326,15 @@ class SLCs extends SL {
   String get settings_serverUrl => 'Server URL';
 
   @override
-  String get settings_serverUrlStartWithHttp => 'Adresa URL serveru musí začínat HTTP nebo HTTPS.';
+  String get settings_serverUrlStartWithHttp =>
+      'Adresa URL serveru musí začínat HTTP nebo HTTPS.';
 
   @override
   String get settings_serverPassword => 'Heslo serveru';
 
   @override
-  String get settings_allowSelfSignedCert => 'Povolení vlastnoručně podepsaných certifikátů';
+  String get settings_allowSelfSignedCert =>
+      'Povolení vlastnoručně podepsaných certifikátů';
 
   @override
   String get toolbarTools_zoomOut => 'Oddálit';
@@ -1264,16 +1361,20 @@ class SLCs extends SL {
   String get toolbarTools_showFeatureAttributes => 'Zobrazit atributy prvků.';
 
   @override
-  String get toolbarTools_featureDoesNotHavePrimaryKey => 'Funkce nemá primární klíč. Editace není povolena.';
+  String get toolbarTools_featureDoesNotHavePrimaryKey =>
+      'Funkce nemá primární klíč. Editace není povolena.';
 
   @override
-  String get toolbarTools_queryFeaturesVectorLayers => 'Dotazování na prvky z načtených vektorových vrstev.';
+  String get toolbarTools_queryFeaturesVectorLayers =>
+      'Dotazování na prvky z načtených vektorových vrstev.';
 
   @override
-  String get toolbarTools_measureDistanceWithFinger => 'Měření vzdáleností na mapě prstem.';
+  String get toolbarTools_measureDistanceWithFinger =>
+      'Měření vzdáleností na mapě prstem.';
 
   @override
-  String get toolbarTools_modifyGeomVectorLayers => 'Úprava geometrie upravitelných vektorových vrstev.';
+  String get toolbarTools_modifyGeomVectorLayers =>
+      'Úprava geometrie upravitelných vektorových vrstev.';
 
   @override
   String get coachMarks_singleTap => 'Jedno klepnutí: ';
@@ -1303,7 +1404,8 @@ class SLCs extends SL {
   String get coachMarks_addNewFormNote => 'přidat novou poznámku k formuláři';
 
   @override
-  String get coachMarks_viewFormNoteList => 'zobrazit seznam poznámek k formuláři';
+  String get coachMarks_viewFormNoteList =>
+      'zobrazit seznam poznámek k formuláři';
 
   @override
   String get coachMarks_gpsLogButton => 'Tlačítko záznamu GPS';
@@ -1318,7 +1420,8 @@ class SLCs extends SL {
   String get coachMarks_viewLogsSettings => 'zobrazit nastavení záznamu';
 
   @override
-  String get coachMarks_gpsInfoButton => 'Informační tlačítko GPS (pokud je k dispozici)';
+  String get coachMarks_gpsInfoButton =>
+      'Informační tlačítko GPS (pokud je k dispozici)';
 
   @override
   String get coachMarks_centerMapOnGpsPos => 'vystředit mapu na pozici GPS';
@@ -1327,7 +1430,8 @@ class SLCs extends SL {
   String get coachMarks_showGpsInfo => 'zobrazit informace GPS';
 
   @override
-  String get coachMarks_toggleAutoCenterGps => 'přepnout automatické centrování na GPS';
+  String get coachMarks_toggleAutoCenterGps =>
+      'přepnout automatické centrování na GPS';
 
   @override
   String get coachMarks_layersViewButton => 'Tlačítko zobrazení vrstev';
@@ -1336,7 +1440,8 @@ class SLCs extends SL {
   String get coachMarks_openLayersView => 'Otevřít zobrazení vrstev';
 
   @override
-  String get coachMarks_openLayersPluginDialog => 'Otevřít dialogové okno zásuvných modulů vrstvy';
+  String get coachMarks_openLayersPluginDialog =>
+      'Otevřít dialogové okno zásuvných modulů vrstvy';
 
   @override
   String get coachMarks_zoomInButton => 'Tlačítko přiblížení';
@@ -1354,25 +1459,30 @@ class SLCs extends SL {
   String get coachMarks_bottomToolsButton => 'Tlačítko nástrojů dole';
 
   @override
-  String get coachMarks_toggleBottomToolsBar => 'Přepínání spodního panelu nástrojů';
+  String get coachMarks_toggleBottomToolsBar =>
+      'Přepínání spodního panelu nástrojů';
 
   @override
   String get coachMarks_toolsButton => 'Tlačítko nástrojů';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'Otevřením konce zásuvky získáte přístup k informacím o projektu a možnostem sdílení, stejně jako k mapovým zásuvným modulům, nástrojům funkcí a doplňkům';
+  String get coachMarks_openEndDrawerToAccessProject =>
+      'Otevřením konce zásuvky získáte přístup k informacím o projektu a možnostem sdílení, stejně jako k mapovým zásuvným modulům, nástrojům funkcí a doplňkům';
 
   @override
-  String get coachMarks_interactiveCoackMarksButton => 'Interaktivní tlačítko coach-marks';
+  String get coachMarks_interactiveCoackMarksButton =>
+      'Interaktivní tlačítko coach-marks';
 
   @override
-  String get coachMarks_openInteractiveCoachMarks => 'Otevřete interaktivní značky trenéra, které vysvětlují všechny akce hlavního zobrazení mapy.';
+  String get coachMarks_openInteractiveCoachMarks =>
+      'Otevřete interaktivní značky trenéra, které vysvětlují všechny akce hlavního zobrazení mapy.';
 
   @override
   String get coachMarks_mainMenuButton => 'Tlačítko hlavní nabídky';
 
   @override
-  String get coachMarks_openDrawerToLoadProject => 'Otevřením zásuvky můžete načíst nebo vytvořit projekt, importovat a exportovat data, synchronizovat se servery, přistupovat k nastavení a ukončit aplikaci/vypnout GPS.';
+  String get coachMarks_openDrawerToLoadProject =>
+      'Otevřením zásuvky můžete načíst nebo vytvořit projekt, importovat a exportovat data, synchronizovat se servery, přistupovat k nastavení a ukončit aplikaci/vypnout GPS.';
 
   @override
   String get coachMarks_skip => 'Přeskočit';
@@ -1384,10 +1494,12 @@ class SLCs extends SL {
   String get network_completed => 'Dokončeno.';
 
   @override
-  String get network_buildingBaseCachePerformance => 'Vytvoření základní mezipaměti pro zvýšení výkonu (může chvíli trvat)…';
+  String get network_buildingBaseCachePerformance =>
+      'Vytvoření základní mezipaměti pro zvýšení výkonu (může chvíli trvat)…';
 
   @override
-  String get network_thisFIleAlreadyBeingDownloaded => 'Tento soubor je již stažen.';
+  String get network_thisFIleAlreadyBeingDownloaded =>
+      'Tento soubor je již stažen.';
 
   @override
   String get network_download => 'Stáhnout';
@@ -1396,7 +1508,8 @@ class SLCs extends SL {
   String get network_downloadFile => 'Stáhnout soubor';
 
   @override
-  String get network_toTheDeviceTakeTime => 'do zařízení? To může chvíli trvat.';
+  String get network_toTheDeviceTakeTime =>
+      'do zařízení? To může chvíli trvat.';
 
   @override
   String get network_availableMaps => 'Dostupné mapy';
@@ -1411,13 +1524,16 @@ class SLCs extends SL {
   String get network_pleaseWait => 'prosím, počkejte…';
 
   @override
-  String get network_permissionOnServerDenied => 'Oprávnění na serveru odepřeno.';
+  String get network_permissionOnServerDenied =>
+      'Oprávnění na serveru odepřeno.';
 
   @override
-  String get network_couldNotConnectToServer => 'Nepodařilo se připojit k serveru. Je online? Zkontrolujte svou adresu.';
+  String get network_couldNotConnectToServer =>
+      'Nepodařilo se připojit k serveru. Je online? Zkontrolujte svou adresu.';
 
   @override
-  String get form_smash_cantSaveImageDb => 'Obrázek se nepodařilo uložit do databáze.';
+  String get form_smash_cantSaveImageDb =>
+      'Obrázek se nepodařilo uložit do databáze.';
 
   @override
   String get formbuilder => 'Tvůrce formulářů';
@@ -1429,10 +1545,12 @@ class SLCs extends SL {
   String get layersView_noGssLayersFound => 'Nenalezeny žádné vrstvy GSS.';
 
   @override
-  String get layersView_noGssLayersAvailable => 'Nejsou k dispozici žádné vrstvy (načtené se nezobrazují).';
+  String get layersView_noGssLayersAvailable =>
+      'Nejsou k dispozici žádné vrstvy (načtené se nezobrazují).';
 
   @override
-  String get layersView_selectGssLayersToLoad => 'Vyberte vrstvy GSS k načtení.';
+  String get layersView_selectGssLayersToLoad =>
+      'Vyberte vrstvy GSS k načtení.';
 
   @override
   String get layersView_unableToLoadGssLayers => 'Nelze načíst:';
@@ -1441,7 +1559,8 @@ class SLCs extends SL {
   String get layersView_layerExists => 'Vrstva existuje';
 
   @override
-  String get layersView_layerAlreadyExists => 'Vrstva již existuje, chcete ji přepsat?';
+  String get layersView_layerAlreadyExists =>
+      'Vrstva již existuje, chcete ji přepsat?';
 
   @override
   String get gss_layerview_upload_changes => 'Nahrát změny';
@@ -1456,19 +1575,23 @@ class SLCs extends SL {
   String get addTmsFromDefaults => 'Přidat TMS z výchozích nastavení';
 
   @override
-  String get form_smash_noCameraDesktop => 'Na desktopu není k dispozici žádná možnost fotoaparátu.';
+  String get form_smash_noCameraDesktop =>
+      'Na desktopu není k dispozici žádná možnost fotoaparátu.';
 
   @override
   String get settings_BottombarCustomization => 'Přizpůsobení spodní lišty';
 
   @override
-  String get settings_Bottombar_showAddNote => 'Zobrazit tlačítko PŘIDAT POZNÁMKU';
+  String get settings_Bottombar_showAddNote =>
+      'Zobrazit tlačítko PŘIDAT POZNÁMKU';
 
   @override
-  String get settings_Bottombar_showAddFormNote => 'Zobrazit tlačítko PŘIDAT POZNÁMKU K FORMULÁŘI';
+  String get settings_Bottombar_showAddFormNote =>
+      'Zobrazit tlačítko PŘIDAT POZNÁMKU K FORMULÁŘI';
 
   @override
-  String get settings_Bottombar_showAddGpsLog => 'Zobrazit tlačítko PŘIDAT ZÁZNAM GPS';
+  String get settings_Bottombar_showAddGpsLog =>
+      'Zobrazit tlačítko PŘIDAT ZÁZNAM GPS';
 
   @override
   String get settings_Bottombar_showGpsButton => 'Zobrazit tlačítko gps';

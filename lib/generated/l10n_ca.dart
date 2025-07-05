@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'l10n.dart';
 
 // ignore_for_file: type=lint
@@ -10,16 +12,19 @@ class SLCa extends SL {
   String get main_welcome => 'Benvingut a SMASH!';
 
   @override
-  String get main_check_location_permission => 'S\'està comprovant el permís d\'ubicació…';
+  String get main_check_location_permission =>
+      'S\'està comprovant el permís d\'ubicació…';
 
   @override
   String get main_location_permission_granted => 'Permís d\'ubicació concedit.';
 
   @override
-  String get main_checkingStoragePermission => 'S\'està comprovant el permís d\'emmagatzematge…';
+  String get main_checkingStoragePermission =>
+      'S\'està comprovant el permís d\'emmagatzematge…';
 
   @override
-  String get main_storagePermissionGranted => 'Permís d\'emmagatzematge concedit.';
+  String get main_storagePermissionGranted =>
+      'Permís d\'emmagatzematge concedit.';
 
   @override
   String get main_loadingPreferences => 'Carregant les preferències…';
@@ -58,19 +63,24 @@ class SLCa extends SL {
   String get main_layersListLoaded => 'Llista de capes carregada.';
 
   @override
-  String get main_locationBackgroundWarning => 'Doneu permís d\'ubicació al pas següent per permetre el registre GPS en segon pla. (En cas contrari, només funciona en primer pla.)\nNo es comparteixen dades i només es desaran localment al dispositiu.';
+  String get main_locationBackgroundWarning =>
+      'Doneu permís d\'ubicació al pas següent per permetre el registre GPS en segon pla. (En cas contrari, només funciona en primer pla.)\nNo es comparteixen dades i només es desaran localment al dispositiu.';
 
   @override
-  String get main_StorageIsInternalWarning => 'Si us plau, llegiu atentament!\nA Android 11 i superior, la carpeta del projecte SMASH s\'ha de col·locar a la\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\ncarpeta del vostre emmagatzematge per utilitzar-la.\nSi l\'aplicació es desintal·la, el sistema l\'elimina, així que feu una còpia de seguretat de les vostres dades si ho feu.\n\nEstem preparant una solució millor.';
+  String get main_StorageIsInternalWarning =>
+      'Si us plau, llegiu atentament!\nA Android 11 i superior, la carpeta del projecte SMASH s\'ha de col·locar a la\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\ncarpeta del vostre emmagatzematge per utilitzar-la.\nSi l\'aplicació es desintal·la, el sistema l\'elimina, així que feu una còpia de seguretat de les vostres dades si ho feu.\n\nEstem preparant una solució millor.';
 
   @override
-  String get main_locationPermissionIsMandatoryToOpenSmash => 'El permís d\'ubicació és obligatori per obrir SMASH.';
+  String get main_locationPermissionIsMandatoryToOpenSmash =>
+      'El permís d\'ubicació és obligatori per obrir SMASH.';
 
   @override
-  String get main_storagePermissionIsMandatoryToOpenSmash => 'El permís d\'emmagatzematge és obligatori per obrir SMASH.';
+  String get main_storagePermissionIsMandatoryToOpenSmash =>
+      'El permís d\'emmagatzematge és obligatori per obrir SMASH.';
 
   @override
-  String get main_anErrorOccurredTapToView => 'Hi ha hagut un error. Toca per veure\'l.';
+  String get main_anErrorOccurredTapToView =>
+      'Hi ha hagut un error. Toca per veure\'l.';
 
   @override
   String get mainView_loadingData => 'Carregant dades…';
@@ -88,10 +98,12 @@ class SLCa extends SL {
   String get mainView_areYouSureCloseTheProject => 'Tancar projecte?';
 
   @override
-  String get mainView_activeOperationsWillBeStopped => 'S\'aturaran les operacions actives.';
+  String get mainView_activeOperationsWillBeStopped =>
+      'S\'aturaran les operacions actives.';
 
   @override
-  String get mainView_showInteractiveCoachMarks => 'Mostra les marques interactives de l\'entrenador.';
+  String get mainView_showInteractiveCoachMarks =>
+      'Mostra les marques interactives de l\'entrenador.';
 
   @override
   String get mainView_openToolsDrawer => 'Obriu el calaix d\'eines.';
@@ -160,7 +172,8 @@ class SLCa extends SL {
   String get mainviewUtils_enterLonLat => 'Introduïu longitud, latitud';
 
   @override
-  String get mainviewUtils_goToCoordinateWrongFormat => 'Format de coordenades incorrecte. Hauria de ser: 11.18463, 46.12345';
+  String get mainviewUtils_goToCoordinateWrongFormat =>
+      'Format de coordenades incorrecte. Hauria de ser: 11.18463, 46.12345';
 
   @override
   String get mainviewUtils_goToCoordinateEmpty => 'Això no pot estar buit.';
@@ -178,7 +191,8 @@ class SLCa extends SL {
   String get exportWidget_pdfExported => 'PDF exportat';
 
   @override
-  String get exportWidget_exportToPortableDocumentFormat => 'Exportar projecte a Portable Document Format (PDF)';
+  String get exportWidget_exportToPortableDocumentFormat =>
+      'Exportar projecte a Portable Document Format (PDF)';
 
   @override
   String get exportWidget_gpxExported => 'GPX exportat';
@@ -196,7 +210,8 @@ class SLCa extends SL {
   String get exportWidget_imagesToFolderExported => 'Imatges exportades';
 
   @override
-  String get exportWidget_exportImagesToFolder => 'Exportar les imatges del projecte a una carpeta';
+  String get exportWidget_exportImagesToFolder =>
+      'Exportar les imatges del projecte a una carpeta';
 
   @override
   String get exportWidget_exportImagesToFolderTitle => 'Imatges';
@@ -205,10 +220,12 @@ class SLCa extends SL {
   String get exportWidget_geopackageExported => 'Geopackage exportat';
 
   @override
-  String get exportWidget_exportToGeopackage => 'Exportar projecte a Geopackage';
+  String get exportWidget_exportToGeopackage =>
+      'Exportar projecte a Geopackage';
 
   @override
-  String get exportWidget_exportToGSS => 'Exportar a Geopaparazzi Survey Server';
+  String get exportWidget_exportToGSS =>
+      'Exportar a Geopaparazzi Survey Server';
 
   @override
   String get gssExport_gssExport => 'Exportar GSS';
@@ -220,7 +237,8 @@ class SLCa extends SL {
   String get gssExport_thisCantBeUndone => 'Això no es pot desfer!';
 
   @override
-  String get gssExport_restoreProjectAsDirty => 'Restaura el projecte com a Brut.';
+  String get gssExport_restoreProjectAsDirty =>
+      'Restaura el projecte com a Brut.';
 
   @override
   String get gssExport_setProjectClean => 'Marcar el projecte com Net?';
@@ -232,22 +250,27 @@ class SLCa extends SL {
   String get gssExport_nothingToSync => 'Res a sincronitzar.';
 
   @override
-  String get gssExport_collectingSyncStats => 'S\'estan recopilant estadístiques de sincronització…';
+  String get gssExport_collectingSyncStats =>
+      'S\'estan recopilant estadístiques de sincronització…';
 
   @override
-  String get gssExport_unableToSyncDueToError => 'No es pot sincronitzar a causa d\'un error, comproveu els diagnòstics.';
+  String get gssExport_unableToSyncDueToError =>
+      'No es pot sincronitzar a causa d\'un error, comproveu els diagnòstics.';
 
   @override
-  String get gssExport_noGssUrlSet => 'No s\'ha definit cap URL del servidor GSS. Comproveu la vostra configuració.';
+  String get gssExport_noGssUrlSet =>
+      'No s\'ha definit cap URL del servidor GSS. Comproveu la vostra configuració.';
 
   @override
-  String get gssExport_noGssPasswordSet => 'No s\'ha definit cap contrasenya del servidor GSS. Comproveu la vostra configuració.';
+  String get gssExport_noGssPasswordSet =>
+      'No s\'ha definit cap contrasenya del servidor GSS. Comproveu la vostra configuració.';
 
   @override
   String get gssExport_synStats => 'Estadístiques de sincronització';
 
   @override
-  String get gssExport_followingDataWillBeUploaded => 'Les dades següents s\'enviaran quan la sincronització.';
+  String get gssExport_followingDataWillBeUploaded =>
+      'Les dades següents s\'enviaran quan la sincronització.';
 
   @override
   String get gssExport_gpsLogs => 'Registres GPS:';
@@ -289,34 +312,42 @@ class SLCa extends SL {
   String get gps_locationTracking => 'Seguiment de la ubicació';
 
   @override
-  String get gps_smashLocServiceIsActive => 'El servei d\'ubicació SMASH està actiu.';
+  String get gps_smashLocServiceIsActive =>
+      'El servei d\'ubicació SMASH està actiu.';
 
   @override
-  String get gps_backgroundLocIsOnToKeepRegistering => 'La ubicació en segon pla està activada per mantenir l\'aplicació registrant la ubicació fins i tot quan l\'aplicació està en segon pla.';
+  String get gps_backgroundLocIsOnToKeepRegistering =>
+      'La ubicació en segon pla està activada per mantenir l\'aplicació registrant la ubicació fins i tot quan l\'aplicació està en segon pla.';
 
   @override
   String get gssImport_gssImport => 'Importar GSS';
 
   @override
-  String get gssImport_downloadingDataList => 'S\'està baixant la llista de dades…';
+  String get gssImport_downloadingDataList =>
+      'S\'està baixant la llista de dades…';
 
   @override
-  String get gssImport_unableDownloadDataList => 'No es pot baixar la llista de dades a causa d\'un error. Comproveu la vostra configuració i el registre.';
+  String get gssImport_unableDownloadDataList =>
+      'No es pot baixar la llista de dades a causa d\'un error. Comproveu la vostra configuració i el registre.';
 
   @override
-  String get gssImport_noGssUrlSet => 'No s\'ha definit cap URL del servidor GSS. Comproveu la vostra configuració.';
+  String get gssImport_noGssUrlSet =>
+      'No s\'ha definit cap URL del servidor GSS. Comproveu la vostra configuració.';
 
   @override
-  String get gssImport_noGssPasswordSet => 'No s\'ha definit cap contrasenya del servidor GSS. Comproveu la vostra configuració.';
+  String get gssImport_noGssPasswordSet =>
+      'No s\'ha definit cap contrasenya del servidor GSS. Comproveu la vostra configuració.';
 
   @override
-  String get gssImport_noPermToAccessServer => 'No teniu permís per accedir al servidor. Comproveu les vostres credencials.';
+  String get gssImport_noPermToAccessServer =>
+      'No teniu permís per accedir al servidor. Comproveu les vostres credencials.';
 
   @override
   String get gssImport_data => 'Dades';
 
   @override
-  String get gssImport_dataSetsDownloadedMapsFolder => 'Els conjunts de dades es descarreguen a la carpeta de mapes.';
+  String get gssImport_dataSetsDownloadedMapsFolder =>
+      'Els conjunts de dades es descarreguen a la carpeta de mapes.';
 
   @override
   String get gssImport_noDataAvailable => 'No hi ha dades disponibles.';
@@ -325,7 +356,8 @@ class SLCa extends SL {
   String get gssImport_projects => 'Projectes';
 
   @override
-  String get gssImport_projectsDownloadedProjectFolder => 'Els projectes es descarreguen a la carpeta de projectes.';
+  String get gssImport_projectsDownloadedProjectFolder =>
+      'Els projectes es descarreguen a la carpeta de projectes.';
 
   @override
   String get gssImport_noProjectsAvailable => 'No hi ha projectes disponibles.';
@@ -334,7 +366,8 @@ class SLCa extends SL {
   String get gssImport_forms => 'Formularis';
 
   @override
-  String get gssImport_tagsDownloadedFormsFolder => 'Els fitxers d\'etiquetes es descarreguen a la carpeta de formularis.';
+  String get gssImport_tagsDownloadedFormsFolder =>
+      'Els fitxers d\'etiquetes es descarreguen a la carpeta de formularis.';
 
   @override
   String get gssImport_noTagsAvailable => 'No hi ha etiquetes disponibles.';
@@ -343,19 +376,22 @@ class SLCa extends SL {
   String get importWidget_import => 'Importar';
 
   @override
-  String get importWidget_importFromGeopaparazzi => 'Importar de Geopaparazzi Survey Server';
+  String get importWidget_importFromGeopaparazzi =>
+      'Importar de Geopaparazzi Survey Server';
 
   @override
   String get layersView_layerList => 'Llista de capes';
 
   @override
-  String get layersView_loadRemoteDatabase => 'Carregueu una base de dades remota';
+  String get layersView_loadRemoteDatabase =>
+      'Carregueu una base de dades remota';
 
   @override
   String get layersView_loadOnlineSources => 'Carregueu fonts en línia';
 
   @override
-  String get layersView_loadLocalDatasets => 'Carregueu conjunts de dades locals';
+  String get layersView_loadLocalDatasets =>
+      'Carregueu conjunts de dades locals';
 
   @override
   String get layersView_loading => 'Carregant…';
@@ -370,25 +406,32 @@ class SLCa extends SL {
   String get layersView_delete => 'Suprimeix';
 
   @override
-  String get layersView_projCouldNotBeRecognized => 'No es reconeix el \"proj\". Toqueu per definir EPSG manualment.';
+  String get layersView_projCouldNotBeRecognized =>
+      'No es reconeix el \"proj\". Toqueu per definir EPSG manualment.';
 
   @override
-  String get layersView_projNotSupported => 'No s\'admet el \"proj\". Toqueu per resoldre-ho.';
+  String get layersView_projNotSupported =>
+      'No s\'admet el \"proj\". Toqueu per resoldre-ho.';
 
   @override
-  String get layersView_onlyImageFilesWithWorldDef => 'Només s\'admeten fitxers d\'imatge amb fitxer mundial de definició.';
+  String get layersView_onlyImageFilesWithWorldDef =>
+      'Només s\'admeten fitxers d\'imatge amb fitxer mundial de definició.';
 
   @override
-  String get layersView_onlyImageFileWithPrjDef => 'Només s\'admeten fitxers d\'imatge amb fitxer prj de definició.';
+  String get layersView_onlyImageFileWithPrjDef =>
+      'Només s\'admeten fitxers d\'imatge amb fitxer prj de definició.';
 
   @override
-  String get layersView_selectTableToLoad => 'Seleccioneu la taula per carregar.';
+  String get layersView_selectTableToLoad =>
+      'Seleccioneu la taula per carregar.';
 
   @override
-  String get layersView_fileFormatNotSUpported => 'Format de fitxer no compatible.';
+  String get layersView_fileFormatNotSUpported =>
+      'Format de fitxer no compatible.';
 
   @override
-  String get onlineSourcesPage_onlineSourcesCatalog => 'Catàleg de fonts en línia';
+  String get onlineSourcesPage_onlineSourcesCatalog =>
+      'Catàleg de fonts en línia';
 
   @override
   String get onlineSourcesPage_loadingTmsLayers => 'Carregant capes TMS…';
@@ -406,7 +449,8 @@ class SLCa extends SL {
   String get onlineSourcesPage_doesntExist => 'no existeix';
 
   @override
-  String get onlineSourcesPage_onlineSourcesImported => 'Fonts en línia importades.';
+  String get onlineSourcesPage_onlineSourcesImported =>
+      'Fonts en línia importades.';
 
   @override
   String get onlineSourcesPage_exportToFile => 'Exporta al fitxer';
@@ -421,7 +465,8 @@ class SLCa extends SL {
   String get onlineSourcesPage_addToLayers => 'Afegeix a les capes';
 
   @override
-  String get onlineSourcesPage_setNameTmsService => 'Doneu un nom al servei TMS';
+  String get onlineSourcesPage_setNameTmsService =>
+      'Doneu un nom al servei TMS';
 
   @override
   String get onlineSourcesPage_enterName => 'introduïu el nom';
@@ -430,13 +475,16 @@ class SLCa extends SL {
   String get onlineSourcesPage_pleaseEnterValidName => 'Introduïu un nom vàlid';
 
   @override
-  String get onlineSourcesPage_insertUrlOfService => 'Afegiu l\'URL del servei.';
+  String get onlineSourcesPage_insertUrlOfService =>
+      'Afegiu l\'URL del servei.';
 
   @override
-  String get onlineSourcesPage_placeXyzBetBrackets => 'Poseu la x, y, z entre claudàtors.';
+  String get onlineSourcesPage_placeXyzBetBrackets =>
+      'Poseu la x, y, z entre claudàtors.';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidTmsUrl => 'Introduïu un URL de TMS vàlid';
+  String get onlineSourcesPage_pleaseEnterValidTmsUrl =>
+      'Introduïu un URL de TMS vàlid';
 
   @override
   String get onlineSourcesPage_enterUrl => 'introduïu URL';
@@ -451,7 +499,8 @@ class SLCa extends SL {
   String get onlineSourcesPage_enterAttribution => 'introduir atribució';
 
   @override
-  String get onlineSourcesPage_setMinMaxZoom => 'Definiu el zoom mínim i màxim.';
+  String get onlineSourcesPage_setMinMaxZoom =>
+      'Definiu el zoom mínim i màxim.';
 
   @override
   String get onlineSourcesPage_minZoom => 'Zoom mínim';
@@ -460,7 +509,8 @@ class SLCa extends SL {
   String get onlineSourcesPage_maxZoom => 'Zoom màxim';
 
   @override
-  String get onlineSourcesPage_pleaseCheckYourData => 'Si us plau, comproveu les vostres dades';
+  String get onlineSourcesPage_pleaseCheckYourData =>
+      'Si us plau, comproveu les vostres dades';
 
   @override
   String get onlineSourcesPage_details => 'Detalls';
@@ -487,22 +537,28 @@ class SLCa extends SL {
   String get onlineSourcesPage_save => 'Desar';
 
   @override
-  String get onlineSourcesPage_theBaseUrlWithQuestionMark => 'L\'URL base que acaba amb un signe d\'interrogació.';
+  String get onlineSourcesPage_theBaseUrlWithQuestionMark =>
+      'L\'URL base que acaba amb un signe d\'interrogació.';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidWmsUrl => 'Introduïu un URL WMS vàlid';
+  String get onlineSourcesPage_pleaseEnterValidWmsUrl =>
+      'Introduïu un URL WMS vàlid';
 
   @override
-  String get onlineSourcesPage_setWmsLayerName => 'Definiu el nom de la capa WMS';
+  String get onlineSourcesPage_setWmsLayerName =>
+      'Definiu el nom de la capa WMS';
 
   @override
-  String get onlineSourcesPage_enterLayerToLoad => 'introduïu la capa per carregar';
+  String get onlineSourcesPage_enterLayerToLoad =>
+      'introduïu la capa per carregar';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidLayer => 'Introduïu una capa vàlida';
+  String get onlineSourcesPage_pleaseEnterValidLayer =>
+      'Introduïu una capa vàlida';
 
   @override
-  String get onlineSourcesPage_setWmsImageFormat => 'Definiu el format d\'imatge WMS';
+  String get onlineSourcesPage_setWmsImageFormat =>
+      'Definiu el format d\'imatge WMS';
 
   @override
   String get onlineSourcesPage_addAnAttribution => 'Afegiu una atribució.';
@@ -526,7 +582,8 @@ class SLCa extends SL {
   String get remoteDbPage_delete => 'Suprimir';
 
   @override
-  String get remoteDbPage_areYouSureDeleteDatabase => 'Suprimir la configuració de la base de dades?';
+  String get remoteDbPage_areYouSureDeleteDatabase =>
+      'Suprimir la configuració de la base de dades?';
 
   @override
   String get remoteDbPage_edit => 'Editar';
@@ -544,7 +601,8 @@ class SLCa extends SL {
   String get remoteDbPage_loadInMap => 'Carregar al mapa.';
 
   @override
-  String get remoteDbPage_databaseParameters => 'Paràmetres de la base de dades';
+  String get remoteDbPage_databaseParameters =>
+      'Paràmetres de la base de dades';
 
   @override
   String get remoteDbPage_cancel => 'Cancel·lar';
@@ -553,28 +611,34 @@ class SLCa extends SL {
   String get remoteDbPage_ok => 'D\'acord';
 
   @override
-  String get remoteDbPage_theUrlNeedsToBeDefined => 'S\'ha de definir l\'URL (postgis:host:port/databasename)';
+  String get remoteDbPage_theUrlNeedsToBeDefined =>
+      'S\'ha de definir l\'URL (postgis:host:port/databasename)';
 
   @override
-  String get remoteDbPage_theUserNeedsToBeDefined => 'S\'ha de definir un usuari.';
+  String get remoteDbPage_theUserNeedsToBeDefined =>
+      'S\'ha de definir un usuari.';
 
   @override
   String get remoteDbPage_password => 'contrasenya';
 
   @override
-  String get remoteDbPage_thePasswordNeedsToBeDefined => 'S\'ha de definir una contrasenya.';
+  String get remoteDbPage_thePasswordNeedsToBeDefined =>
+      'S\'ha de definir una contrasenya.';
 
   @override
   String get remoteDbPage_loadingTables => 'Carregant taules…';
 
   @override
-  String get remoteDbPage_theTableNeedsToBeDefined => 'S\'ha de definir el nom de la taula.';
+  String get remoteDbPage_theTableNeedsToBeDefined =>
+      'S\'ha de definir el nom de la taula.';
 
   @override
-  String get remoteDbPage_unableToConnectToDatabase => 'No es pot connectar a la base de dades. Comproveu els paràmetres i la xarxa.';
+  String get remoteDbPage_unableToConnectToDatabase =>
+      'No es pot connectar a la base de dades. Comproveu els paràmetres i la xarxa.';
 
   @override
-  String get remoteDbPage_optionalWhereCondition => 'condició opcional \"where\"';
+  String get remoteDbPage_optionalWhereCondition =>
+      'condició opcional \"where\"';
 
   @override
   String get geoImage_tiffProperties => 'Propietats TIFF';
@@ -598,7 +662,8 @@ class SLCa extends SL {
   String get gpx_size => 'Mida';
 
   @override
-  String get gpx_viewLabelsIfAvailable => 'Veure les etiquetes si estan disponibles?';
+  String get gpx_viewLabelsIfAvailable =>
+      'Veure les etiquetes si estan disponibles?';
 
   @override
   String get gpx_tracksRoutes => 'Traces/rutes';
@@ -616,7 +681,8 @@ class SLCa extends SL {
   String get tiles_opacity => 'Opacitat';
 
   @override
-  String get tiles_loadGeoPackageAsOverlay => 'Carregueu les tessel·les del Geopackage com a imatge de superposició en lloc de la capa de mosaic (el millor per a dades generades amb GDAL i diferents projeccions).';
+  String get tiles_loadGeoPackageAsOverlay =>
+      'Carregueu les tessel·les del Geopackage com a imatge de superposició en lloc de la capa de mosaic (el millor per a dades generades amb GDAL i diferents projeccions).';
 
   @override
   String get tiles_colorToHide => 'Color per amagar';
@@ -655,7 +721,8 @@ class SLCa extends SL {
   String get projectsView_newProject => 'Projecte nou';
 
   @override
-  String get projectsView_enterNameForNewProject => 'Introduïu un nom per al nou projecte o accepteu la proposta.';
+  String get projectsView_enterNameForNewProject =>
+      'Introduïu un nom per al nou projecte o accepteu la proposta.';
 
   @override
   String get dataLoader_note => 'nota';
@@ -670,7 +737,8 @@ class SLCa extends SL {
   String get dataLoader_POI => 'POI';
 
   @override
-  String get dataLoader_savingImageToDB => 'S\'està desant la imatge a la base de dades…';
+  String get dataLoader_savingImageToDB =>
+      'S\'està desant la imatge a la base de dades…';
 
   @override
   String get dataLoader_removeNote => 'Elimina la nota';
@@ -709,7 +777,8 @@ class SLCa extends SL {
   String get about_ABOUT => 'Sobre · ';
 
   @override
-  String get about_smartMobileAppForSurveyor => 'Aplicació mòbil intel·ligent per a la felicitat del topògraf';
+  String get about_smartMobileAppForSurveyor =>
+      'Aplicació mòbil intel·ligent per a la felicitat del topògraf';
 
   @override
   String get about_applicationVersion => 'Versió';
@@ -718,34 +787,40 @@ class SLCa extends SL {
   String get about_license => 'Llicència';
 
   @override
-  String get about_isAvailableUnderGPL3 => ' · és un programari lliure copyleft, amb llicència GPLv3+.';
+  String get about_isAvailableUnderGPL3 =>
+      ' · és un programari lliure copyleft, amb llicència GPLv3+.';
 
   @override
   String get about_sourceCode => 'Codi font';
 
   @override
-  String get about_tapHereToVisitRepo => 'Toqueu aquí per visitar el dipòsit de codi font';
+  String get about_tapHereToVisitRepo =>
+      'Toqueu aquí per visitar el dipòsit de codi font';
 
   @override
   String get about_legalInformation => 'Informació legal';
 
   @override
-  String get about_copyright2020HydroloGIS => 'Copyright © 2020, HydroloGIS S.r.l. - alguns drets reservats. Toqueu per visitar-nos.';
+  String get about_copyright2020HydroloGIS =>
+      'Copyright © 2020, HydroloGIS S.r.l. - alguns drets reservats. Toqueu per visitar-nos.';
 
   @override
   String get about_supportedBy => 'Recolzat per';
 
   @override
-  String get about_partiallySupportedByUniversityTrento => 'Amb el suport parcial del projecte Steep Stream de la Universitat de Trento.';
+  String get about_partiallySupportedByUniversityTrento =>
+      'Amb el suport parcial del projecte Steep Stream de la Universitat de Trento.';
 
   @override
   String get about_privacyPolicy => 'Política de privacitat';
 
   @override
-  String get about_tapHereToSeePrivacyPolicy => 'Toqueu aquí per veure la política de privadesa que cobreix les dades d\'usuari i d\'ubicació.';
+  String get about_tapHereToSeePrivacyPolicy =>
+      'Toqueu aquí per veure la política de privadesa que cobreix les dades d\'usuari i d\'ubicació.';
 
   @override
-  String get gpsInfoButton_noGpsInfoAvailable => 'No hi ha informació disponibel del GPS…';
+  String get gpsInfoButton_noGpsInfoAvailable =>
+      'No hi ha informació disponibel del GPS…';
 
   @override
   String get gpsInfoButton_timestamp => 'Marca de temps';
@@ -766,28 +841,33 @@ class SLCa extends SL {
   String get gpsInfoButton_latitude => 'Latitud';
 
   @override
-  String get gpsInfoButton_copyLatitudeToClipboard => 'Copia latitud al porta-retalls.';
+  String get gpsInfoButton_copyLatitudeToClipboard =>
+      'Copia latitud al porta-retalls.';
 
   @override
   String get gpsInfoButton_longitude => 'Longitud';
 
   @override
-  String get gpsInfoButton_copyLongitudeToClipboard => 'Copia longitud al porta-retalls.';
+  String get gpsInfoButton_copyLongitudeToClipboard =>
+      'Copia longitud al porta-retalls.';
 
   @override
   String get gpsLogButton_stopLogging => 'Aturar el registre?';
 
   @override
-  String get gpsLogButton_stopLoggingAndCloseLog => 'Aturar el registre i tancar el registre GPS actual?';
+  String get gpsLogButton_stopLoggingAndCloseLog =>
+      'Aturar el registre i tancar el registre GPS actual?';
 
   @override
   String get gpsLogButton_newLog => 'Nou registre';
 
   @override
-  String get gpsLogButton_enterNameForNewLog => 'Introduïu un nom per al registre nou';
+  String get gpsLogButton_enterNameForNewLog =>
+      'Introduïu un nom per al registre nou';
 
   @override
-  String get gpsLogButton_couldNotStartLogging => 'No s\'ha pogut iniciar el registre: · ';
+  String get gpsLogButton_couldNotStartLogging =>
+      'No s\'ha pogut iniciar el registre: · ';
 
   @override
   String get imageWidgets_loadingImage => 'S\'està carregant la imatge…';
@@ -823,10 +903,12 @@ class SLCa extends SL {
   String get logList_toGPX => 'A GPX';
 
   @override
-  String get logList_gpsSavedInExportFolder => 'GPX desat a la carpeta d\'exportació.';
+  String get logList_gpsSavedInExportFolder =>
+      'GPX desat a la carpeta d\'exportació.';
 
   @override
-  String get logList_errorOccurredExportingLogGPX => 'No s\'ha pogut exportar el registre a GPX.';
+  String get logList_errorOccurredExportingLogGPX =>
+      'No s\'ha pogut exportar el registre a GPX.';
 
   @override
   String get logList_delete => 'Suprimeix';
@@ -847,7 +929,8 @@ class SLCa extends SL {
   String get logList_minutes => 'minuts';
 
   @override
-  String get logProperties_gpsLogProperties => 'Propietats del registre del GPS';
+  String get logProperties_gpsLogProperties =>
+      'Propietats del registre del GPS';
 
   @override
   String get logProperties_logName => 'Nom del registre';
@@ -946,7 +1029,8 @@ class SLCa extends SL {
   String get settings_screen => 'Pantalla';
 
   @override
-  String get settings_screenScaleBarIconSize => 'Mides de la pantalla, la barra d\'escala i la icona';
+  String get settings_screenScaleBarIconSize =>
+      'Mides de la pantalla, la barra d\'escala i la icona';
 
   @override
   String get settings_keepScreenOn => 'Mantenir la pantalla encesa';
@@ -955,7 +1039,8 @@ class SLCa extends SL {
   String get settings_retinaScreenMode => 'Mode de pantalla HiDPI';
 
   @override
-  String get settings_toApplySettingEnterExitLayerView => 'Entreu i sortiu de la vista de capa per aplicar aquesta configuració.';
+  String get settings_toApplySettingEnterExitLayerView =>
+      'Entreu i sortiu de la vista de capa per aplicar aquesta configuració.';
 
   @override
   String get settings_colorPickerToUse => 'Selector de colors per utilitzar';
@@ -973,19 +1058,22 @@ class SLCa extends SL {
   String get settings_width => 'Amplada';
 
   @override
-  String get settings_mapToolsIconSize => 'Mida de la icona per a les eines de mapa';
+  String get settings_mapToolsIconSize =>
+      'Mida de la icona per a les eines de mapa';
 
   @override
   String get settings_gps => 'GPS';
 
   @override
-  String get settings_gpsFiltersAndMockLoc => 'Filtres GPS i ubicacions simulades';
+  String get settings_gpsFiltersAndMockLoc =>
+      'Filtres GPS i ubicacions simulades';
 
   @override
   String get settings_livePreview => 'Vista prèvia en directe';
 
   @override
-  String get settings_noPointAvailableYet => 'Encara no hi ha cap punt disponible.';
+  String get settings_noPointAvailableYet =>
+      'Encara no hi ha cap punt disponible.';
 
   @override
   String get settings_longitudeDeg => 'longitud [deg]';
@@ -1012,16 +1100,19 @@ class SLCa extends SL {
   String get settings_mockLocations => 'simular ubicacions?';
 
   @override
-  String get settings_minDistFilterBlocks => 'Blocs de filtre de distància mínima';
+  String get settings_minDistFilterBlocks =>
+      'Blocs de filtre de distància mínima';
 
   @override
-  String get settings_minDistFilterPasses => 'Passades del filtre de distància mínima';
+  String get settings_minDistFilterPasses =>
+      'Passades del filtre de distància mínima';
 
   @override
   String get settings_minTimeFilterBlocks => 'Blocs de filtre de temps mínim';
 
   @override
-  String get settings_minTimeFilterPasses => 'Passades del filtre de temps mínim';
+  String get settings_minTimeFilterPasses =>
+      'Passades del filtre de temps mínim';
 
   @override
   String get settings_hasBeenBlocked => 'S\'ha bloquejat';
@@ -1060,19 +1151,23 @@ class SLCa extends SL {
   String get settings_visualizePointCount => 'Visualitza el recompte de punts';
 
   @override
-  String get settings_showGpsPointsValidPoints => 'Mostra el recompte de punts GPS per als punts VÀLIDS.';
+  String get settings_showGpsPointsValidPoints =>
+      'Mostra el recompte de punts GPS per als punts VÀLIDS.';
 
   @override
-  String get settings_showGpsPointsAllPoints => 'Mostra el recompte de punts GPS per a TOTS els punts.';
+  String get settings_showGpsPointsAllPoints =>
+      'Mostra el recompte de punts GPS per a TOTS els punts.';
 
   @override
   String get settings_logFilters => 'Filtres de registre';
 
   @override
-  String get settings_minDistanceBetween2Points => 'Distància mínima entre 2 punts.';
+  String get settings_minDistanceBetween2Points =>
+      'Distància mínima entre 2 punts.';
 
   @override
-  String get settings_minTimespanBetween2Points => 'Interval de temps mínim entre 2 punts.';
+  String get settings_minTimespanBetween2Points =>
+      'Interval de temps mínim entre 2 punts.';
 
   @override
   String get settings_gpsFilter => 'Filtre GPS';
@@ -1087,43 +1182,53 @@ class SLCa extends SL {
   String get settings_theUseOfTheGps => 'l\'ús de GPS filtrat.';
 
   @override
-  String get settings_warningThisWillAffectGpsPosition => 'Avís: això afectarà la posició GPS, la inserció de notes, les estadístiques de registre i els gràfics.';
+  String get settings_warningThisWillAffectGpsPosition =>
+      'Avís: això afectarà la posició GPS, la inserció de notes, les estadístiques de registre i els gràfics.';
 
   @override
   String get settings_MockLocations => 'Ubicacions simulades';
 
   @override
-  String get settings_testGpsLogDemoUse => 'proveu el registre del GPS per a ús de demostració.';
+  String get settings_testGpsLogDemoUse =>
+      'proveu el registre del GPS per a ús de demostració.';
 
   @override
-  String get settings_setDurationGpsPointsInMilli => 'Definiu la durada dels punts GPS en mil·lisegons.';
+  String get settings_setDurationGpsPointsInMilli =>
+      'Definiu la durada dels punts GPS en mil·lisegons.';
 
   @override
   String get settings_SETTING => 'Paràmetre';
 
   @override
-  String get settings_setMockedGpsDuration => 'Estableix la durada del GPS simulat';
+  String get settings_setMockedGpsDuration =>
+      'Estableix la durada del GPS simulat';
 
   @override
-  String get settings_theValueHasToBeInt => 'El valor ha de ser un nombre sencer.';
+  String get settings_theValueHasToBeInt =>
+      'El valor ha de ser un nombre sencer.';
 
   @override
   String get settings_milliseconds => 'mil·lisegons';
 
   @override
-  String get settings_useGoogleToImproveLoc => 'Utilitzeu els serveis de Google per millorar la ubicació';
+  String get settings_useGoogleToImproveLoc =>
+      'Utilitzeu els serveis de Google per millorar la ubicació';
 
   @override
-  String get settings_useOfGoogleServicesRestart => 'ús dels serveis de Google (cal reiniciar l\'aplicació).';
+  String get settings_useOfGoogleServicesRestart =>
+      'ús dels serveis de Google (cal reiniciar l\'aplicació).';
 
   @override
-  String get settings_gpsLogsViewMode => 'Mode de visualització de registres del GPS';
+  String get settings_gpsLogsViewMode =>
+      'Mode de visualització de registres del GPS';
 
   @override
-  String get settings_logViewModeForOrigData => 'Mode de visualització de registre de les dades originals.';
+  String get settings_logViewModeForOrigData =>
+      'Mode de visualització de registre de les dades originals.';
 
   @override
-  String get settings_logViewModeFilteredData => 'Mode de visualització de registre per a les dades filtrades.';
+  String get settings_logViewModeFilteredData =>
+      'Mode de visualització de registre per a les dades filtrades.';
 
   @override
   String get settings_cancel => 'Cancel·lar';
@@ -1135,7 +1240,8 @@ class SLCa extends SL {
   String get settings_notesViewModes => 'Modes de visualització de notes';
 
   @override
-  String get settings_selectNotesViewMode => 'Seleccioneu un mode per veure les notes.';
+  String get settings_selectNotesViewMode =>
+      'Seleccioneu un mode per veure les notes.';
 
   @override
   String get settings_mapPlugins => 'Connectors de mapes';
@@ -1144,7 +1250,8 @@ class SLCa extends SL {
   String get settings_vectorLayers => 'Capes vector';
 
   @override
-  String get settings_loadingOptionsInfoTool => 'Opcions de càrrega i eina d\'informació';
+  String get settings_loadingOptionsInfoTool =>
+      'Opcions de càrrega i eina d\'informació';
 
   @override
   String get settings_dataLoading => 'Càrrega de dades';
@@ -1153,7 +1260,8 @@ class SLCa extends SL {
   String get settings_maxNumberFeatures => 'Nombre màxim de funcions.';
 
   @override
-  String get settings_maxNumFeaturesPerLayer => 'Característiques màximes per capa. Traieu i afegiu la capa per aplicar.';
+  String get settings_maxNumFeaturesPerLayer =>
+      'Característiques màximes per capa. Traieu i afegiu la capa per aplicar.';
 
   @override
   String get settings_all => 'totes';
@@ -1162,31 +1270,37 @@ class SLCa extends SL {
   String get settings_loadMapArea => 'Carrega l\'àrea del mapa.';
 
   @override
-  String get settings_loadOnlyLastVisibleArea => 'Carregueu només a l\'última àrea del mapa visible. Traieu i torneu a afegir la capa per aplicar-la.';
+  String get settings_loadOnlyLastVisibleArea =>
+      'Carregueu només a l\'última àrea del mapa visible. Traieu i torneu a afegir la capa per aplicar-la.';
 
   @override
   String get settings_infoTool => 'Eina d\'informació';
 
   @override
-  String get settings_tapSizeInfoToolPixels => 'Toqueu la mida de l\'eina d\'informació en píxels.';
+  String get settings_tapSizeInfoToolPixels =>
+      'Toqueu la mida de l\'eina d\'informació en píxels.';
 
   @override
   String get settings_editingTool => 'Eina d\'edició';
 
   @override
-  String get settings_editingDragIconSize => 'Edició de la mida de la icona del gestor d\'arrossegament.';
+  String get settings_editingDragIconSize =>
+      'Edició de la mida de la icona del gestor d\'arrossegament.';
 
   @override
-  String get settings_editingIntermediateDragIconSize => 'Edició de la mida de la icona del gestor d\'arrossegament intermedi.';
+  String get settings_editingIntermediateDragIconSize =>
+      'Edició de la mida de la icona del gestor d\'arrossegament intermedi.';
 
   @override
   String get settings_diagnostics => 'Diagnòstics';
 
   @override
-  String get settings_diagnosticsDebugLog => 'Diagnòstic i registre de depuració';
+  String get settings_diagnosticsDebugLog =>
+      'Diagnòstic i registre de depuració';
 
   @override
-  String get settings_openFullDebugLog => 'Obriu el registre de depuració complet';
+  String get settings_openFullDebugLog =>
+      'Obriu el registre de depuració complet';
 
   @override
   String get settings_debugLogView => 'Vista de registre de depuració';
@@ -1213,13 +1327,15 @@ class SLCa extends SL {
   String get settings_deviceId => 'ID dispositiu';
 
   @override
-  String get settings_overrideDeviceId => 'Anul·la l\'identificador del dispositiu';
+  String get settings_overrideDeviceId =>
+      'Anul·la l\'identificador del dispositiu';
 
   @override
   String get settings_overrideId => 'Anul·la ID';
 
   @override
-  String get settings_pleaseEnterValidPassword => 'Introduïu una contrasenya de servidor vàlida.';
+  String get settings_pleaseEnterValidPassword =>
+      'Introduïu una contrasenya de servidor vàlida.';
 
   @override
   String get settings_gss => 'GSS';
@@ -1231,7 +1347,8 @@ class SLCa extends SL {
   String get settings_serverUrl => 'URL del servidor';
 
   @override
-  String get settings_serverUrlStartWithHttp => 'L\'URL del servidor ha de començar per HTTP o HTTPS.';
+  String get settings_serverUrlStartWithHttp =>
+      'L\'URL del servidor ha de començar per HTTP o HTTPS.';
 
   @override
   String get settings_serverPassword => 'Contrasenya del servidor';
@@ -1252,28 +1369,36 @@ class SLCa extends SL {
   String get toolbarTools_saveCurrentEdit => 'Desa l\'edició actual.';
 
   @override
-  String get toolbarTools_insertPointMapCenter => 'Afegeix un punt al centre del mapa.';
+  String get toolbarTools_insertPointMapCenter =>
+      'Afegeix un punt al centre del mapa.';
 
   @override
-  String get toolbarTools_insertPointGpsPos => 'Afegeix un punt a la posició GPS.';
+  String get toolbarTools_insertPointGpsPos =>
+      'Afegeix un punt a la posició GPS.';
 
   @override
-  String get toolbarTools_removeSelectedFeature => 'Elimina la funció seleccionada.';
+  String get toolbarTools_removeSelectedFeature =>
+      'Elimina la funció seleccionada.';
 
   @override
-  String get toolbarTools_showFeatureAttributes => 'Mostra els atributs de les característiques.';
+  String get toolbarTools_showFeatureAttributes =>
+      'Mostra els atributs de les característiques.';
 
   @override
-  String get toolbarTools_featureDoesNotHavePrimaryKey => 'La funció no té una clau primària. No se\'n permet l\'edició.';
+  String get toolbarTools_featureDoesNotHavePrimaryKey =>
+      'La funció no té una clau primària. No se\'n permet l\'edició.';
 
   @override
-  String get toolbarTools_queryFeaturesVectorLayers => 'Consulta característiques de capes vectorials carregades.';
+  String get toolbarTools_queryFeaturesVectorLayers =>
+      'Consulta característiques de capes vectorials carregades.';
 
   @override
-  String get toolbarTools_measureDistanceWithFinger => 'Mesureu distàncies al mapa amb el dit.';
+  String get toolbarTools_measureDistanceWithFinger =>
+      'Mesureu distàncies al mapa amb el dit.';
 
   @override
-  String get toolbarTools_modifyGeomVectorLayers => 'Modificar la geometria de les capes vectorials editables.';
+  String get toolbarTools_modifyGeomVectorLayers =>
+      'Modificar la geometria de les capes vectorials editables.';
 
   @override
   String get coachMarks_singleTap => 'Toc simple: · ';
@@ -1294,7 +1419,8 @@ class SLCa extends SL {
   String get coachMarks_viewNotesList => 'veure la llista de notes';
 
   @override
-  String get coachMarks_viewNotesSettings => 'veure la configuració de les notes';
+  String get coachMarks_viewNotesSettings =>
+      'veure la configuració de les notes';
 
   @override
   String get coachMarks_formNotesButton => 'Botó de notes del formulari';
@@ -1303,7 +1429,8 @@ class SLCa extends SL {
   String get coachMarks_addNewFormNote => 'afegir una nova nota de formulari';
 
   @override
-  String get coachMarks_viewFormNoteList => 'veure la llista de notes del formulari';
+  String get coachMarks_viewFormNoteList =>
+      'veure la llista de notes del formulari';
 
   @override
   String get coachMarks_gpsLogButton => 'Botó de registre del GPS';
@@ -1315,10 +1442,12 @@ class SLCa extends SL {
   String get coachMarks_viewLogsList => 'veure la llista de registres';
 
   @override
-  String get coachMarks_viewLogsSettings => 'veure la configuració del registre';
+  String get coachMarks_viewLogsSettings =>
+      'veure la configuració del registre';
 
   @override
-  String get coachMarks_gpsInfoButton => 'Botó d\'informació del GPS (si s\'escau)';
+  String get coachMarks_gpsInfoButton =>
+      'Botó d\'informació del GPS (si s\'escau)';
 
   @override
   String get coachMarks_centerMapOnGpsPos => 'centra el mapa a la posició GPS';
@@ -1327,7 +1456,8 @@ class SLCa extends SL {
   String get coachMarks_showGpsInfo => 'mostra la informació GPS';
 
   @override
-  String get coachMarks_toggleAutoCenterGps => 'commuta el centrat automàtic al GPS';
+  String get coachMarks_toggleAutoCenterGps =>
+      'commuta el centrat automàtic al GPS';
 
   @override
   String get coachMarks_layersViewButton => 'Botó de visualització de capes';
@@ -1336,7 +1466,8 @@ class SLCa extends SL {
   String get coachMarks_openLayersView => 'Obriu la vista de capes';
 
   @override
-  String get coachMarks_openLayersPluginDialog => 'Obriu el diàleg de complements de capa';
+  String get coachMarks_openLayersPluginDialog =>
+      'Obriu el diàleg de complements de capa';
 
   @override
   String get coachMarks_zoomInButton => 'Botó d\'ampliar';
@@ -1354,25 +1485,30 @@ class SLCa extends SL {
   String get coachMarks_bottomToolsButton => 'Botó d\'eines inferior';
 
   @override
-  String get coachMarks_toggleBottomToolsBar => 'Commuta la barra d\'eines inferior';
+  String get coachMarks_toggleBottomToolsBar =>
+      'Commuta la barra d\'eines inferior';
 
   @override
   String get coachMarks_toolsButton => 'Botó d\'eines';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'Obriu el calaix final per accedir a la informació del projecte i a les opcions per compartir, així com a complements de mapes, eines de funcions i extres';
+  String get coachMarks_openEndDrawerToAccessProject =>
+      'Obriu el calaix final per accedir a la informació del projecte i a les opcions per compartir, així com a complements de mapes, eines de funcions i extres';
 
   @override
-  String get coachMarks_interactiveCoackMarksButton => 'Botó interactiu de marques guia';
+  String get coachMarks_interactiveCoackMarksButton =>
+      'Botó interactiu de marques guia';
 
   @override
-  String get coachMarks_openInteractiveCoachMarks => 'Obriu les marques guia interactives que expliquen totes les accions de la vista del mapa principal.';
+  String get coachMarks_openInteractiveCoachMarks =>
+      'Obriu les marques guia interactives que expliquen totes les accions de la vista del mapa principal.';
 
   @override
   String get coachMarks_mainMenuButton => 'Botó del menú principal';
 
   @override
-  String get coachMarks_openDrawerToLoadProject => 'Obriu el calaix per carregar o crear un projecte, importar i exportar dades, sincronitzar amb servidors, accedir a la configuració i sortir de l\'aplicació/apagar el GPS.';
+  String get coachMarks_openDrawerToLoadProject =>
+      'Obriu el calaix per carregar o crear un projecte, importar i exportar dades, sincronitzar amb servidors, accedir a la configuració i sortir de l\'aplicació/apagar el GPS.';
 
   @override
   String get coachMarks_skip => 'Omet';
@@ -1384,10 +1520,12 @@ class SLCa extends SL {
   String get network_completed => 'Fet.';
 
   @override
-  String get network_buildingBaseCachePerformance => 'Preparant la memòria cau bàsica per millorar el rendiment (pot trigar una estona)…';
+  String get network_buildingBaseCachePerformance =>
+      'Preparant la memòria cau bàsica per millorar el rendiment (pot trigar una estona)…';
 
   @override
-  String get network_thisFIleAlreadyBeingDownloaded => 'Aquest fitxer ja s\'està baixant.';
+  String get network_thisFIleAlreadyBeingDownloaded =>
+      'Aquest fitxer ja s\'està baixant.';
 
   @override
   String get network_download => 'Descarregar';
@@ -1396,7 +1534,8 @@ class SLCa extends SL {
   String get network_downloadFile => 'Descarregar arxiu';
 
   @override
-  String get network_toTheDeviceTakeTime => 'al dispositiu? Pot trigar una estona.';
+  String get network_toTheDeviceTakeTime =>
+      'al dispositiu? Pot trigar una estona.';
 
   @override
   String get network_availableMaps => 'Mapes disponibles';
@@ -1411,13 +1550,16 @@ class SLCa extends SL {
   String get network_pleaseWait => 'si us plau, espereu…';
 
   @override
-  String get network_permissionOnServerDenied => 'S\'ha denegat el permís al servidor.';
+  String get network_permissionOnServerDenied =>
+      'S\'ha denegat el permís al servidor.';
 
   @override
-  String get network_couldNotConnectToServer => 'No s\'ha pogut connectar amb el servidor. Està en línia? Comproveu la vostra adreça.';
+  String get network_couldNotConnectToServer =>
+      'No s\'ha pogut connectar amb el servidor. Està en línia? Comproveu la vostra adreça.';
 
   @override
-  String get form_smash_cantSaveImageDb => 'No s\'ha pogut desar la imatge a la base de dades.';
+  String get form_smash_cantSaveImageDb =>
+      'No s\'ha pogut desar la imatge a la base de dades.';
 
   @override
   String get formbuilder => 'Constructor de formularis';
@@ -1429,10 +1571,12 @@ class SLCa extends SL {
   String get layersView_noGssLayersFound => 'No s\'han trobat capes GSS.';
 
   @override
-  String get layersView_noGssLayersAvailable => 'No hi ha capes disponibles (no es mostren les ja carregades).';
+  String get layersView_noGssLayersAvailable =>
+      'No hi ha capes disponibles (no es mostren les ja carregades).';
 
   @override
-  String get layersView_selectGssLayersToLoad => 'Seleccioneu les capes GSS per carregar.';
+  String get layersView_selectGssLayersToLoad =>
+      'Seleccioneu les capes GSS per carregar.';
 
   @override
   String get layersView_unableToLoadGssLayers => 'No es pot carregar:';
@@ -1441,7 +1585,8 @@ class SLCa extends SL {
   String get layersView_layerExists => 'La capa existeix';
 
   @override
-  String get layersView_layerAlreadyExists => 'La capa ja existeix, la voleu sobreescriure?';
+  String get layersView_layerAlreadyExists =>
+      'La capa ja existeix, la voleu sobreescriure?';
 
   @override
   String get gss_layerview_upload_changes => 'Pugeu els canvis';
@@ -1456,19 +1601,24 @@ class SLCa extends SL {
   String get addTmsFromDefaults => 'Afegeix TMS des dels valors predeterminats';
 
   @override
-  String get form_smash_noCameraDesktop => 'No hi ha cap opció de càmera disponible a l\'escriptori.';
+  String get form_smash_noCameraDesktop =>
+      'No hi ha cap opció de càmera disponible a l\'escriptori.';
 
   @override
-  String get settings_BottombarCustomization => 'Personalització de la barra inferior';
+  String get settings_BottombarCustomization =>
+      'Personalització de la barra inferior';
 
   @override
-  String get settings_Bottombar_showAddNote => 'Mostra el botó AFEGEIX UNA NOTA';
+  String get settings_Bottombar_showAddNote =>
+      'Mostra el botó AFEGEIX UNA NOTA';
 
   @override
-  String get settings_Bottombar_showAddFormNote => 'Mostra el botó AFEGEIX UNA NOTA DE FORMULARI';
+  String get settings_Bottombar_showAddFormNote =>
+      'Mostra el botó AFEGEIX UNA NOTA DE FORMULARI';
 
   @override
-  String get settings_Bottombar_showAddGpsLog => 'Mostra el botó AFEGIR REGISTRE GPS';
+  String get settings_Bottombar_showAddGpsLog =>
+      'Mostra el botó AFEGIR REGISTRE GPS';
 
   @override
   String get settings_Bottombar_showGpsButton => 'Mostra el botó del GPS';

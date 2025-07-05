@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'l10n.dart';
 
 // ignore_for_file: type=lint
@@ -58,16 +60,20 @@ class SLRu extends SL {
   String get main_layersListLoaded => 'Layers list loaded.';
 
   @override
-  String get main_locationBackgroundWarning => 'Grant location permission in the next step to allow GPS logging in the background. (Otherwise it only works in the foreground.)\nNo data is shared, and only saved locally on the device.';
+  String get main_locationBackgroundWarning =>
+      'Grant location permission in the next step to allow GPS logging in the background. (Otherwise it only works in the foreground.)\nNo data is shared, and only saved locally on the device.';
 
   @override
-  String get main_StorageIsInternalWarning => 'Please read carefully!\nOn Android 11 and above, the SMASH project folder must be placed in the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage to be used.\nIf the app is uninstalled, the system removes it, so back up your data if you do.\n\nA better solution is in the works.';
+  String get main_StorageIsInternalWarning =>
+      'Please read carefully!\nOn Android 11 and above, the SMASH project folder must be placed in the\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\nfolder in your storage to be used.\nIf the app is uninstalled, the system removes it, so back up your data if you do.\n\nA better solution is in the works.';
 
   @override
-  String get main_locationPermissionIsMandatoryToOpenSmash => 'Location permission is mandatory to open SMASH.';
+  String get main_locationPermissionIsMandatoryToOpenSmash =>
+      'Location permission is mandatory to open SMASH.';
 
   @override
-  String get main_storagePermissionIsMandatoryToOpenSmash => 'Storage permission is mandatory to open SMASH.';
+  String get main_storagePermissionIsMandatoryToOpenSmash =>
+      'Storage permission is mandatory to open SMASH.';
 
   @override
   String get main_anErrorOccurredTapToView => 'An error occurred. Tap to view.';
@@ -88,10 +94,12 @@ class SLRu extends SL {
   String get mainView_areYouSureCloseTheProject => 'Close the project?';
 
   @override
-  String get mainView_activeOperationsWillBeStopped => 'Active operations will be stopped.';
+  String get mainView_activeOperationsWillBeStopped =>
+      'Active operations will be stopped.';
 
   @override
-  String get mainView_showInteractiveCoachMarks => 'Show interactive coach marks.';
+  String get mainView_showInteractiveCoachMarks =>
+      'Show interactive coach marks.';
 
   @override
   String get mainView_openToolsDrawer => 'Open tools drawer.';
@@ -160,7 +168,8 @@ class SLRu extends SL {
   String get mainviewUtils_enterLonLat => 'Enter longitude, latitude';
 
   @override
-  String get mainviewUtils_goToCoordinateWrongFormat => 'Wrong coordinate format. Should be: 11.18463, 46.12345';
+  String get mainviewUtils_goToCoordinateWrongFormat =>
+      'Wrong coordinate format. Should be: 11.18463, 46.12345';
 
   @override
   String get mainviewUtils_goToCoordinateEmpty => 'This can\'t be empty.';
@@ -178,7 +187,8 @@ class SLRu extends SL {
   String get exportWidget_pdfExported => 'PDF exported';
 
   @override
-  String get exportWidget_exportToPortableDocumentFormat => 'Export project to Portable Document Format';
+  String get exportWidget_exportToPortableDocumentFormat =>
+      'Export project to Portable Document Format';
 
   @override
   String get exportWidget_gpxExported => 'GPX exported';
@@ -196,7 +206,8 @@ class SLRu extends SL {
   String get exportWidget_imagesToFolderExported => 'Images exported';
 
   @override
-  String get exportWidget_exportImagesToFolder => 'Export project images to folder';
+  String get exportWidget_exportImagesToFolder =>
+      'Export project images to folder';
 
   @override
   String get exportWidget_exportImagesToFolderTitle => 'Изображения';
@@ -235,19 +246,23 @@ class SLRu extends SL {
   String get gssExport_collectingSyncStats => 'Collecting sync stats…';
 
   @override
-  String get gssExport_unableToSyncDueToError => 'Unable to sync due to an error, check diagnostics.';
+  String get gssExport_unableToSyncDueToError =>
+      'Unable to sync due to an error, check diagnostics.';
 
   @override
-  String get gssExport_noGssUrlSet => 'No GSS server URL has been set. Check your settings.';
+  String get gssExport_noGssUrlSet =>
+      'No GSS server URL has been set. Check your settings.';
 
   @override
-  String get gssExport_noGssPasswordSet => 'No GSS server password has been set. Check your settings.';
+  String get gssExport_noGssPasswordSet =>
+      'No GSS server password has been set. Check your settings.';
 
   @override
   String get gssExport_synStats => 'Sync Stats';
 
   @override
-  String get gssExport_followingDataWillBeUploaded => 'The following data will be uploaded upon sync.';
+  String get gssExport_followingDataWillBeUploaded =>
+      'The following data will be uploaded upon sync.';
 
   @override
   String get gssExport_gpsLogs => 'GPS Logs:';
@@ -271,7 +286,8 @@ class SLRu extends SL {
   String get geocoding_geocoding => 'Геокодирование';
 
   @override
-  String get geocoding_nothingToLookFor => 'Nothing to look for. Insert an address.';
+  String get geocoding_nothingToLookFor =>
+      'Nothing to look for. Insert an address.';
 
   @override
   String get geocoding_launchGeocoding => 'Запустите геокодирование';
@@ -292,7 +308,8 @@ class SLRu extends SL {
   String get gps_smashLocServiceIsActive => 'SMASH location service is active.';
 
   @override
-  String get gps_backgroundLocIsOnToKeepRegistering => 'Background location is on to keep the app registering the location even when the app is in background.';
+  String get gps_backgroundLocIsOnToKeepRegistering =>
+      'Background location is on to keep the app registering the location even when the app is in background.';
 
   @override
   String get gssImport_gssImport => 'Импорт GSS';
@@ -301,22 +318,27 @@ class SLRu extends SL {
   String get gssImport_downloadingDataList => 'Downloading data list…';
 
   @override
-  String get gssImport_unableDownloadDataList => 'Unable to download data list due to an error. Check your settings and the log.';
+  String get gssImport_unableDownloadDataList =>
+      'Unable to download data list due to an error. Check your settings and the log.';
 
   @override
-  String get gssImport_noGssUrlSet => 'No GSS server URL has been set. Check your settings.';
+  String get gssImport_noGssUrlSet =>
+      'No GSS server URL has been set. Check your settings.';
 
   @override
-  String get gssImport_noGssPasswordSet => 'No GSS server password has been set. Check your settings.';
+  String get gssImport_noGssPasswordSet =>
+      'No GSS server password has been set. Check your settings.';
 
   @override
-  String get gssImport_noPermToAccessServer => 'No permission to access the server. Check your credentials.';
+  String get gssImport_noPermToAccessServer =>
+      'No permission to access the server. Check your credentials.';
 
   @override
   String get gssImport_data => 'Данные';
 
   @override
-  String get gssImport_dataSetsDownloadedMapsFolder => 'Datasets are downloaded into the maps folder.';
+  String get gssImport_dataSetsDownloadedMapsFolder =>
+      'Datasets are downloaded into the maps folder.';
 
   @override
   String get gssImport_noDataAvailable => 'No data available.';
@@ -325,7 +347,8 @@ class SLRu extends SL {
   String get gssImport_projects => 'Проекты';
 
   @override
-  String get gssImport_projectsDownloadedProjectFolder => 'Projects are downloaded into the projects folder.';
+  String get gssImport_projectsDownloadedProjectFolder =>
+      'Projects are downloaded into the projects folder.';
 
   @override
   String get gssImport_noProjectsAvailable => 'No projects available.';
@@ -334,7 +357,8 @@ class SLRu extends SL {
   String get gssImport_forms => 'Forms';
 
   @override
-  String get gssImport_tagsDownloadedFormsFolder => 'Tags files are downloaded into the forms folder.';
+  String get gssImport_tagsDownloadedFormsFolder =>
+      'Tags files are downloaded into the forms folder.';
 
   @override
   String get gssImport_noTagsAvailable => 'No tags available.';
@@ -343,7 +367,8 @@ class SLRu extends SL {
   String get importWidget_import => 'Импорт';
 
   @override
-  String get importWidget_importFromGeopaparazzi => 'Import from Geopaparazzi Survey Server';
+  String get importWidget_importFromGeopaparazzi =>
+      'Import from Geopaparazzi Survey Server';
 
   @override
   String get layersView_layerList => 'Список слоев';
@@ -370,16 +395,20 @@ class SLRu extends SL {
   String get layersView_delete => 'Удалить';
 
   @override
-  String get layersView_projCouldNotBeRecognized => 'The proj could not be recognised. Tap to enter epsg manually.';
+  String get layersView_projCouldNotBeRecognized =>
+      'The proj could not be recognised. Tap to enter epsg manually.';
 
   @override
-  String get layersView_projNotSupported => 'The proj is not supported. Tap to solve.';
+  String get layersView_projNotSupported =>
+      'The proj is not supported. Tap to solve.';
 
   @override
-  String get layersView_onlyImageFilesWithWorldDef => 'Only image files with world file definition are supported.';
+  String get layersView_onlyImageFilesWithWorldDef =>
+      'Only image files with world file definition are supported.';
 
   @override
-  String get layersView_onlyImageFileWithPrjDef => 'Only image files with prj file definition are supported.';
+  String get layersView_onlyImageFileWithPrjDef =>
+      'Only image files with prj file definition are supported.';
 
   @override
   String get layersView_selectTableToLoad => 'Select table to load.';
@@ -406,7 +435,8 @@ class SLRu extends SL {
   String get onlineSourcesPage_doesntExist => 'doesn\'t exist';
 
   @override
-  String get onlineSourcesPage_onlineSourcesImported => 'Online sources imported.';
+  String get onlineSourcesPage_onlineSourcesImported =>
+      'Online sources imported.';
 
   @override
   String get onlineSourcesPage_exportToFile => 'Export to file';
@@ -421,22 +451,27 @@ class SLRu extends SL {
   String get onlineSourcesPage_addToLayers => 'Add to layers';
 
   @override
-  String get onlineSourcesPage_setNameTmsService => 'Set a name for the TMS service';
+  String get onlineSourcesPage_setNameTmsService =>
+      'Set a name for the TMS service';
 
   @override
   String get onlineSourcesPage_enterName => 'введите имя';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidName => 'Please enter a valid name';
+  String get onlineSourcesPage_pleaseEnterValidName =>
+      'Please enter a valid name';
 
   @override
-  String get onlineSourcesPage_insertUrlOfService => 'Insert the URL of the service.';
+  String get onlineSourcesPage_insertUrlOfService =>
+      'Insert the URL of the service.';
 
   @override
-  String get onlineSourcesPage_placeXyzBetBrackets => 'Place the x, y, z between curly brackets.';
+  String get onlineSourcesPage_placeXyzBetBrackets =>
+      'Place the x, y, z between curly brackets.';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidTmsUrl => 'Please enter a valid TMS URL';
+  String get onlineSourcesPage_pleaseEnterValidTmsUrl =>
+      'Please enter a valid TMS URL';
 
   @override
   String get onlineSourcesPage_enterUrl => 'введите URL-адрес';
@@ -487,10 +522,12 @@ class SLRu extends SL {
   String get onlineSourcesPage_save => 'Сохранить';
 
   @override
-  String get onlineSourcesPage_theBaseUrlWithQuestionMark => 'The base URL-ending with question mark.';
+  String get onlineSourcesPage_theBaseUrlWithQuestionMark =>
+      'The base URL-ending with question mark.';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidWmsUrl => 'Please enter a valid WMS URL';
+  String get onlineSourcesPage_pleaseEnterValidWmsUrl =>
+      'Please enter a valid WMS URL';
 
   @override
   String get onlineSourcesPage_setWmsLayerName => 'Set WMS layer name';
@@ -499,7 +536,8 @@ class SLRu extends SL {
   String get onlineSourcesPage_enterLayerToLoad => 'enter layer to load';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidLayer => 'Please enter a valid layer';
+  String get onlineSourcesPage_pleaseEnterValidLayer =>
+      'Please enter a valid layer';
 
   @override
   String get onlineSourcesPage_setWmsImageFormat => 'Set WMS image format';
@@ -526,7 +564,8 @@ class SLRu extends SL {
   String get remoteDbPage_delete => 'Удалить';
 
   @override
-  String get remoteDbPage_areYouSureDeleteDatabase => 'Delete the database configuration?';
+  String get remoteDbPage_areYouSureDeleteDatabase =>
+      'Delete the database configuration?';
 
   @override
   String get remoteDbPage_edit => 'Редактировать';
@@ -553,7 +592,8 @@ class SLRu extends SL {
   String get remoteDbPage_ok => 'ОК';
 
   @override
-  String get remoteDbPage_theUrlNeedsToBeDefined => 'The URL must be defined (postgis:host:port/databasename)';
+  String get remoteDbPage_theUrlNeedsToBeDefined =>
+      'The URL must be defined (postgis:host:port/databasename)';
 
   @override
   String get remoteDbPage_theUserNeedsToBeDefined => 'A user must be defined.';
@@ -562,19 +602,23 @@ class SLRu extends SL {
   String get remoteDbPage_password => 'пароль';
 
   @override
-  String get remoteDbPage_thePasswordNeedsToBeDefined => 'A password must be defined.';
+  String get remoteDbPage_thePasswordNeedsToBeDefined =>
+      'A password must be defined.';
 
   @override
   String get remoteDbPage_loadingTables => 'Loading tables…';
 
   @override
-  String get remoteDbPage_theTableNeedsToBeDefined => 'The table name must be defined.';
+  String get remoteDbPage_theTableNeedsToBeDefined =>
+      'The table name must be defined.';
 
   @override
-  String get remoteDbPage_unableToConnectToDatabase => 'Unable to connect to the database. Check parameters and network.';
+  String get remoteDbPage_unableToConnectToDatabase =>
+      'Unable to connect to the database. Check parameters and network.';
 
   @override
-  String get remoteDbPage_optionalWhereCondition => 'optional \"where\" condition';
+  String get remoteDbPage_optionalWhereCondition =>
+      'optional \"where\" condition';
 
   @override
   String get geoImage_tiffProperties => 'Свойства TIFF';
@@ -616,7 +660,8 @@ class SLRu extends SL {
   String get tiles_opacity => 'Непрозрачность';
 
   @override
-  String get tiles_loadGeoPackageAsOverlay => 'Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).';
+  String get tiles_loadGeoPackageAsOverlay =>
+      'Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).';
 
   @override
   String get tiles_colorToHide => 'Color to hide';
@@ -655,7 +700,8 @@ class SLRu extends SL {
   String get projectsView_newProject => 'Новый проект';
 
   @override
-  String get projectsView_enterNameForNewProject => 'Введите название для нового проекта или примите предложенное.';
+  String get projectsView_enterNameForNewProject =>
+      'Введите название для нового проекта или примите предложенное.';
 
   @override
   String get dataLoader_note => 'примечание';
@@ -709,7 +755,8 @@ class SLRu extends SL {
   String get about_ABOUT => 'О программе ';
 
   @override
-  String get about_smartMobileAppForSurveyor => 'Smart Mobile App for Surveyor Happiness';
+  String get about_smartMobileAppForSurveyor =>
+      'Smart Mobile App for Surveyor Happiness';
 
   @override
   String get about_applicationVersion => 'Версия';
@@ -718,31 +765,36 @@ class SLRu extends SL {
   String get about_license => 'Лицензия';
 
   @override
-  String get about_isAvailableUnderGPL3 => ' is copylefted libre software, licensed GPLv3+.';
+  String get about_isAvailableUnderGPL3 =>
+      ' is copylefted libre software, licensed GPLv3+.';
 
   @override
   String get about_sourceCode => 'Исходный код';
 
   @override
-  String get about_tapHereToVisitRepo => 'Tap here to visit the source code repository';
+  String get about_tapHereToVisitRepo =>
+      'Tap here to visit the source code repository';
 
   @override
   String get about_legalInformation => 'Юридическая информация';
 
   @override
-  String get about_copyright2020HydroloGIS => 'Copyright © 2020, HydroloGIS S.r.l. — some rights reserved. Tap to visit.';
+  String get about_copyright2020HydroloGIS =>
+      'Copyright © 2020, HydroloGIS S.r.l. — some rights reserved. Tap to visit.';
 
   @override
   String get about_supportedBy => 'При поддержке';
 
   @override
-  String get about_partiallySupportedByUniversityTrento => 'Partially supported by the project Steep Stream of the University of Trento.';
+  String get about_partiallySupportedByUniversityTrento =>
+      'Partially supported by the project Steep Stream of the University of Trento.';
 
   @override
   String get about_privacyPolicy => 'Политика конфиденциальности';
 
   @override
-  String get about_tapHereToSeePrivacyPolicy => 'Tap here to see the privacy policy that covers user and location data.';
+  String get about_tapHereToSeePrivacyPolicy =>
+      'Tap here to see the privacy policy that covers user and location data.';
 
   @override
   String get gpsInfoButton_noGpsInfoAvailable => 'No GPS info available…';
@@ -766,19 +818,22 @@ class SLRu extends SL {
   String get gpsInfoButton_latitude => 'Широта';
 
   @override
-  String get gpsInfoButton_copyLatitudeToClipboard => 'Copy latitude to clipboard.';
+  String get gpsInfoButton_copyLatitudeToClipboard =>
+      'Copy latitude to clipboard.';
 
   @override
   String get gpsInfoButton_longitude => 'Долгота';
 
   @override
-  String get gpsInfoButton_copyLongitudeToClipboard => 'Copy longitude to clipboard.';
+  String get gpsInfoButton_copyLongitudeToClipboard =>
+      'Copy longitude to clipboard.';
 
   @override
   String get gpsLogButton_stopLogging => 'Stop Logging?';
 
   @override
-  String get gpsLogButton_stopLoggingAndCloseLog => 'Stop logging and close the current GPS log?';
+  String get gpsLogButton_stopLoggingAndCloseLog =>
+      'Stop logging and close the current GPS log?';
 
   @override
   String get gpsLogButton_newLog => 'New Log';
@@ -826,7 +881,8 @@ class SLRu extends SL {
   String get logList_gpsSavedInExportFolder => 'GPX saved in export folder.';
 
   @override
-  String get logList_errorOccurredExportingLogGPX => 'Could not export log to GPX.';
+  String get logList_errorOccurredExportingLogGPX =>
+      'Could not export log to GPX.';
 
   @override
   String get logList_delete => 'Удалить';
@@ -946,7 +1002,8 @@ class SLRu extends SL {
   String get settings_screen => 'Экран';
 
   @override
-  String get settings_screenScaleBarIconSize => 'Screen, Scalebar and Icon Size';
+  String get settings_screenScaleBarIconSize =>
+      'Screen, Scalebar and Icon Size';
 
   @override
   String get settings_keepScreenOn => 'Keep Screen On';
@@ -955,7 +1012,8 @@ class SLRu extends SL {
   String get settings_retinaScreenMode => 'HiDPI screen-mode';
 
   @override
-  String get settings_toApplySettingEnterExitLayerView => 'Enter and exit the layer view to apply this setting.';
+  String get settings_toApplySettingEnterExitLayerView =>
+      'Enter and exit the layer view to apply this setting.';
 
   @override
   String get settings_colorPickerToUse => 'Color Picker to use';
@@ -1060,19 +1118,23 @@ class SLRu extends SL {
   String get settings_visualizePointCount => 'Visualize point count';
 
   @override
-  String get settings_showGpsPointsValidPoints => 'Show the GPS points count for VALID points.';
+  String get settings_showGpsPointsValidPoints =>
+      'Show the GPS points count for VALID points.';
 
   @override
-  String get settings_showGpsPointsAllPoints => 'Show the GPS points count for ALL points.';
+  String get settings_showGpsPointsAllPoints =>
+      'Show the GPS points count for ALL points.';
 
   @override
   String get settings_logFilters => 'Log filters';
 
   @override
-  String get settings_minDistanceBetween2Points => 'Min distance between 2 points.';
+  String get settings_minDistanceBetween2Points =>
+      'Min distance between 2 points.';
 
   @override
-  String get settings_minTimespanBetween2Points => 'Min timespan between 2 points.';
+  String get settings_minTimespanBetween2Points =>
+      'Min timespan between 2 points.';
 
   @override
   String get settings_gpsFilter => 'GPS Filter';
@@ -1087,7 +1149,8 @@ class SLRu extends SL {
   String get settings_theUseOfTheGps => 'the use of filtered GPS.';
 
   @override
-  String get settings_warningThisWillAffectGpsPosition => 'Warning: This will affect GPS position, notes insertion, log statistics and charting.';
+  String get settings_warningThisWillAffectGpsPosition =>
+      'Warning: This will affect GPS position, notes insertion, log statistics and charting.';
 
   @override
   String get settings_MockLocations => 'Mock locations';
@@ -1096,7 +1159,8 @@ class SLRu extends SL {
   String get settings_testGpsLogDemoUse => 'test GPS log for demo use.';
 
   @override
-  String get settings_setDurationGpsPointsInMilli => 'Set duration for GPS points in milliseconds.';
+  String get settings_setDurationGpsPointsInMilli =>
+      'Set duration for GPS points in milliseconds.';
 
   @override
   String get settings_SETTING => 'Setting';
@@ -1105,25 +1169,30 @@ class SLRu extends SL {
   String get settings_setMockedGpsDuration => 'Set Mocked GPS duration';
 
   @override
-  String get settings_theValueHasToBeInt => 'The value has to be a whole number.';
+  String get settings_theValueHasToBeInt =>
+      'The value has to be a whole number.';
 
   @override
   String get settings_milliseconds => 'миллисекунды';
 
   @override
-  String get settings_useGoogleToImproveLoc => 'Use Google Services to improve location';
+  String get settings_useGoogleToImproveLoc =>
+      'Use Google Services to improve location';
 
   @override
-  String get settings_useOfGoogleServicesRestart => 'use of Google services (app restart needed).';
+  String get settings_useOfGoogleServicesRestart =>
+      'use of Google services (app restart needed).';
 
   @override
   String get settings_gpsLogsViewMode => 'GPS Logs view mode';
 
   @override
-  String get settings_logViewModeForOrigData => 'Log view mode for original data.';
+  String get settings_logViewModeForOrigData =>
+      'Log view mode for original data.';
 
   @override
-  String get settings_logViewModeFilteredData => 'Log view mode for filtered data.';
+  String get settings_logViewModeFilteredData =>
+      'Log view mode for filtered data.';
 
   @override
   String get settings_cancel => 'Отмена';
@@ -1153,7 +1222,8 @@ class SLRu extends SL {
   String get settings_maxNumberFeatures => 'Max number of features.';
 
   @override
-  String get settings_maxNumFeaturesPerLayer => 'Max features per layer. Remove and add the layer to apply.';
+  String get settings_maxNumFeaturesPerLayer =>
+      'Max features per layer. Remove and add the layer to apply.';
 
   @override
   String get settings_all => 'all';
@@ -1162,13 +1232,15 @@ class SLRu extends SL {
   String get settings_loadMapArea => 'Load map area.';
 
   @override
-  String get settings_loadOnlyLastVisibleArea => 'Load only on the last visible map area. Remove and add the layer again to apply.';
+  String get settings_loadOnlyLastVisibleArea =>
+      'Load only on the last visible map area. Remove and add the layer again to apply.';
 
   @override
   String get settings_infoTool => 'Info Tool';
 
   @override
-  String get settings_tapSizeInfoToolPixels => 'Tap size of the info tool in pixels.';
+  String get settings_tapSizeInfoToolPixels =>
+      'Tap size of the info tool in pixels.';
 
   @override
   String get settings_editingTool => 'Editing tool';
@@ -1177,7 +1249,8 @@ class SLRu extends SL {
   String get settings_editingDragIconSize => 'Editing drag handler icon size.';
 
   @override
-  String get settings_editingIntermediateDragIconSize => 'Editing intermediate drag handler icon size.';
+  String get settings_editingIntermediateDragIconSize =>
+      'Editing intermediate drag handler icon size.';
 
   @override
   String get settings_diagnostics => 'Диагностика';
@@ -1219,7 +1292,8 @@ class SLRu extends SL {
   String get settings_overrideId => 'Override ID';
 
   @override
-  String get settings_pleaseEnterValidPassword => 'Please enter a valid server password.';
+  String get settings_pleaseEnterValidPassword =>
+      'Please enter a valid server password.';
 
   @override
   String get settings_gss => 'GSS';
@@ -1231,7 +1305,8 @@ class SLRu extends SL {
   String get settings_serverUrl => 'Server URL';
 
   @override
-  String get settings_serverUrlStartWithHttp => 'The server URL needs to start with HTTP or HTTPS.';
+  String get settings_serverUrlStartWithHttp =>
+      'The server URL needs to start with HTTP or HTTPS.';
 
   @override
   String get settings_serverPassword => 'Server Password';
@@ -1264,16 +1339,20 @@ class SLRu extends SL {
   String get toolbarTools_showFeatureAttributes => 'Show feature attributes.';
 
   @override
-  String get toolbarTools_featureDoesNotHavePrimaryKey => 'The feature does not have a primary key. Editing is not allowed.';
+  String get toolbarTools_featureDoesNotHavePrimaryKey =>
+      'The feature does not have a primary key. Editing is not allowed.';
 
   @override
-  String get toolbarTools_queryFeaturesVectorLayers => 'Query features from loaded vector layers.';
+  String get toolbarTools_queryFeaturesVectorLayers =>
+      'Query features from loaded vector layers.';
 
   @override
-  String get toolbarTools_measureDistanceWithFinger => 'Measure distances on the map with your finger.';
+  String get toolbarTools_measureDistanceWithFinger =>
+      'Measure distances on the map with your finger.';
 
   @override
-  String get toolbarTools_modifyGeomVectorLayers => 'Modify the geometry of editable vector layers.';
+  String get toolbarTools_modifyGeomVectorLayers =>
+      'Modify the geometry of editable vector layers.';
 
   @override
   String get coachMarks_singleTap => 'Single tap: ';
@@ -1336,7 +1415,8 @@ class SLRu extends SL {
   String get coachMarks_openLayersView => 'Open the layers view';
 
   @override
-  String get coachMarks_openLayersPluginDialog => 'Open the layer plugins dialog';
+  String get coachMarks_openLayersPluginDialog =>
+      'Open the layer plugins dialog';
 
   @override
   String get coachMarks_zoomInButton => 'Zoom-in Button';
@@ -1360,19 +1440,23 @@ class SLRu extends SL {
   String get coachMarks_toolsButton => 'Tools Button';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras';
+  String get coachMarks_openEndDrawerToAccessProject =>
+      'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras';
 
   @override
-  String get coachMarks_interactiveCoackMarksButton => 'Interactive coach-marks button';
+  String get coachMarks_interactiveCoackMarksButton =>
+      'Interactive coach-marks button';
 
   @override
-  String get coachMarks_openInteractiveCoachMarks => 'Open the interactice coach marks explaining all the actions of the main map view.';
+  String get coachMarks_openInteractiveCoachMarks =>
+      'Open the interactice coach marks explaining all the actions of the main map view.';
 
   @override
   String get coachMarks_mainMenuButton => 'Main-menu Button';
 
   @override
-  String get coachMarks_openDrawerToLoadProject => 'Open the drawer to load or create a project, import and export data, sync with servers, access settings and exit the app/turn off the GPS.';
+  String get coachMarks_openDrawerToLoadProject =>
+      'Open the drawer to load or create a project, import and export data, sync with servers, access settings and exit the app/turn off the GPS.';
 
   @override
   String get coachMarks_skip => 'Пропустить';
@@ -1384,10 +1468,12 @@ class SLRu extends SL {
   String get network_completed => 'Завершено.';
 
   @override
-  String get network_buildingBaseCachePerformance => 'Building base cache for improved performance (might take a while)…';
+  String get network_buildingBaseCachePerformance =>
+      'Building base cache for improved performance (might take a while)…';
 
   @override
-  String get network_thisFIleAlreadyBeingDownloaded => 'This file is already being downloaded.';
+  String get network_thisFIleAlreadyBeingDownloaded =>
+      'This file is already being downloaded.';
 
   @override
   String get network_download => 'Download';
@@ -1396,7 +1482,8 @@ class SLRu extends SL {
   String get network_downloadFile => 'Download file';
 
   @override
-  String get network_toTheDeviceTakeTime => 'to the device? This can take a while.';
+  String get network_toTheDeviceTakeTime =>
+      'to the device? This can take a while.';
 
   @override
   String get network_availableMaps => 'Available maps';
@@ -1414,7 +1501,8 @@ class SLRu extends SL {
   String get network_permissionOnServerDenied => 'Permission on server denied.';
 
   @override
-  String get network_couldNotConnectToServer => 'Could not connect to the server. Is it online? Check your address.';
+  String get network_couldNotConnectToServer =>
+      'Could not connect to the server. Is it online? Check your address.';
 
   @override
   String get form_smash_cantSaveImageDb => 'Could not save image in database.';
@@ -1429,7 +1517,8 @@ class SLRu extends SL {
   String get layersView_noGssLayersFound => 'No GSS layers found.';
 
   @override
-  String get layersView_noGssLayersAvailable => 'No layers available (loaded ones are not shown).';
+  String get layersView_noGssLayersAvailable =>
+      'No layers available (loaded ones are not shown).';
 
   @override
   String get layersView_selectGssLayersToLoad => 'Select GSS layers to load.';
@@ -1441,7 +1530,8 @@ class SLRu extends SL {
   String get layersView_layerExists => 'Layer exists';
 
   @override
-  String get layersView_layerAlreadyExists => 'Layer already exists, do you want to overwrite it?';
+  String get layersView_layerAlreadyExists =>
+      'Layer already exists, do you want to overwrite it?';
 
   @override
   String get gss_layerview_upload_changes => 'Upload changes';
@@ -1456,7 +1546,8 @@ class SLRu extends SL {
   String get addTmsFromDefaults => 'Add TMS from defaults';
 
   @override
-  String get form_smash_noCameraDesktop => 'No camera option available on desktop.';
+  String get form_smash_noCameraDesktop =>
+      'No camera option available on desktop.';
 
   @override
   String get settings_BottombarCustomization => 'Bottombar Customization';
@@ -1465,7 +1556,8 @@ class SLRu extends SL {
   String get settings_Bottombar_showAddNote => 'Show the ADD NOTE button';
 
   @override
-  String get settings_Bottombar_showAddFormNote => 'Show the ADD FORM NOTE button';
+  String get settings_Bottombar_showAddFormNote =>
+      'Show the ADD FORM NOTE button';
 
   @override
   String get settings_Bottombar_showAddGpsLog => 'Show the ADD GPS LOG button';

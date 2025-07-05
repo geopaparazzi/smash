@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'l10n.dart';
 
 // ignore_for_file: type=lint
@@ -10,16 +12,20 @@ class SLFr extends SL {
   String get main_welcome => 'Bienvenue dans SMASH !';
 
   @override
-  String get main_check_location_permission => 'Vérification de l’autorisation de localisation…';
+  String get main_check_location_permission =>
+      'Vérification de l’autorisation de localisation…';
 
   @override
-  String get main_location_permission_granted => 'Autorisation de localisation accordée.';
+  String get main_location_permission_granted =>
+      'Autorisation de localisation accordée.';
 
   @override
-  String get main_checkingStoragePermission => 'Vérification de l’autorisation de stockage…';
+  String get main_checkingStoragePermission =>
+      'Vérification de l’autorisation de stockage…';
 
   @override
-  String get main_storagePermissionGranted => 'Autorisation de stockage accordée.';
+  String get main_storagePermissionGranted =>
+      'Autorisation de stockage accordée.';
 
   @override
   String get main_loadingPreferences => 'Chargement des préférences…';
@@ -40,7 +46,8 @@ class SLFr extends SL {
   String get main_tagsListLoaded => 'Liste des étiquettes chargée.';
 
   @override
-  String get main_loadingKnownProjections => 'Chargement des projections connues…';
+  String get main_loadingKnownProjections =>
+      'Chargement des projections connues…';
 
   @override
   String get main_knownProjectionsLoaded => 'Projections connues chargées.';
@@ -58,19 +65,24 @@ class SLFr extends SL {
   String get main_layersListLoaded => 'Liste des calques chargée.';
 
   @override
-  String get main_locationBackgroundWarning => 'Autoriser la permission de localisation dans l\'étape suivante permet la récupération des données GPS en arrière-plan. (Sinon, ça ne fonctionne que quand l\'application est en premier plan.)\nAucune de ces données ne sera partagée, elles seront uniquement sauvegardées localement sur l\'appareil.';
+  String get main_locationBackgroundWarning =>
+      'Autoriser la permission de localisation dans l\'étape suivante permet la récupération des données GPS en arrière-plan. (Sinon, ça ne fonctionne que quand l\'application est en premier plan.)\nAucune de ces données ne sera partagée, elles seront uniquement sauvegardées localement sur l\'appareil.';
 
   @override
-  String get main_StorageIsInternalWarning => 'Veuillez lire attentivement !\nSous Android 11 et plus récent, le dossier de projet SMASH doit être placé dans le dossier\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\ndans l\'espace de stockage à utiliser.\nSi l\'application est désinstallée, le système le supprimera, veillez donc à faire une copie dans ce cas.\n\nUne meilleure solution est prévue.';
+  String get main_StorageIsInternalWarning =>
+      'Veuillez lire attentivement !\nSous Android 11 et plus récent, le dossier de projet SMASH doit être placé dans le dossier\n\nAndroid/data/eu.hydrologis.smash/files/smash\n\ndans l\'espace de stockage à utiliser.\nSi l\'application est désinstallée, le système le supprimera, veillez donc à faire une copie dans ce cas.\n\nUne meilleure solution est prévue.';
 
   @override
-  String get main_locationPermissionIsMandatoryToOpenSmash => 'La permission de localisation est obligatoire pour ouvrir SMASH.';
+  String get main_locationPermissionIsMandatoryToOpenSmash =>
+      'La permission de localisation est obligatoire pour ouvrir SMASH.';
 
   @override
-  String get main_storagePermissionIsMandatoryToOpenSmash => 'La permission de stockage est obligatoire pour ouvrir SMASH.';
+  String get main_storagePermissionIsMandatoryToOpenSmash =>
+      'La permission de stockage est obligatoire pour ouvrir SMASH.';
 
   @override
-  String get main_anErrorOccurredTapToView => 'Une erreur est survenue. Tapez pour voir.';
+  String get main_anErrorOccurredTapToView =>
+      'Une erreur est survenue. Tapez pour voir.';
 
   @override
   String get mainView_loadingData => 'Chargement des données…';
@@ -88,10 +100,12 @@ class SLFr extends SL {
   String get mainView_areYouSureCloseTheProject => 'Fermer le projet ?';
 
   @override
-  String get mainView_activeOperationsWillBeStopped => 'Tous les opérations en cours seront arrêtées.';
+  String get mainView_activeOperationsWillBeStopped =>
+      'Tous les opérations en cours seront arrêtées.';
 
   @override
-  String get mainView_showInteractiveCoachMarks => 'Show interactive coach marks.';
+  String get mainView_showInteractiveCoachMarks =>
+      'Show interactive coach marks.';
 
   @override
   String get mainView_openToolsDrawer => 'Ouvrir la barre d\'outils.';
@@ -160,7 +174,8 @@ class SLFr extends SL {
   String get mainviewUtils_enterLonLat => 'Enter longitude, latitude';
 
   @override
-  String get mainviewUtils_goToCoordinateWrongFormat => 'Wrong coordinate format. Should be: 11.18463, 46.12345';
+  String get mainviewUtils_goToCoordinateWrongFormat =>
+      'Wrong coordinate format. Should be: 11.18463, 46.12345';
 
   @override
   String get mainviewUtils_goToCoordinateEmpty => 'This can\'t be empty.';
@@ -178,7 +193,8 @@ class SLFr extends SL {
   String get exportWidget_pdfExported => 'PDF exporté';
 
   @override
-  String get exportWidget_exportToPortableDocumentFormat => 'Exporter le projet en Portable Document Format (PDF)';
+  String get exportWidget_exportToPortableDocumentFormat =>
+      'Exporter le projet en Portable Document Format (PDF)';
 
   @override
   String get exportWidget_gpxExported => 'GPX exporté';
@@ -196,7 +212,8 @@ class SLFr extends SL {
   String get exportWidget_imagesToFolderExported => 'Images exportées';
 
   @override
-  String get exportWidget_exportImagesToFolder => 'Exporter les images du projet dans un dossier';
+  String get exportWidget_exportImagesToFolder =>
+      'Exporter les images du projet dans un dossier';
 
   @override
   String get exportWidget_exportImagesToFolderTitle => 'Images';
@@ -205,10 +222,12 @@ class SLFr extends SL {
   String get exportWidget_geopackageExported => 'Geopackage exporté';
 
   @override
-  String get exportWidget_exportToGeopackage => 'Exporter le projets vers Geopackage';
+  String get exportWidget_exportToGeopackage =>
+      'Exporter le projets vers Geopackage';
 
   @override
-  String get exportWidget_exportToGSS => 'Exporter vers Geopaparazzi Survey Server';
+  String get exportWidget_exportToGSS =>
+      'Exporter vers Geopaparazzi Survey Server';
 
   @override
   String get gssExport_gssExport => 'Export en GSS';
@@ -232,22 +251,27 @@ class SLFr extends SL {
   String get gssExport_nothingToSync => 'Rien à synchroniser.';
 
   @override
-  String get gssExport_collectingSyncStats => 'Récupération des statistiques de synchronisation…';
+  String get gssExport_collectingSyncStats =>
+      'Récupération des statistiques de synchronisation…';
 
   @override
-  String get gssExport_unableToSyncDueToError => 'Échec de la synchronisation, veuillez analyser le diagnostique.';
+  String get gssExport_unableToSyncDueToError =>
+      'Échec de la synchronisation, veuillez analyser le diagnostique.';
 
   @override
-  String get gssExport_noGssUrlSet => 'Aucune URL vers un serveur GSS n\'a été spécifiée. Veuillez vérifier vos préférences.';
+  String get gssExport_noGssUrlSet =>
+      'Aucune URL vers un serveur GSS n\'a été spécifiée. Veuillez vérifier vos préférences.';
 
   @override
-  String get gssExport_noGssPasswordSet => 'Aucun mot de passe pour le serveur GSS n\'a été spécifié. Veuillez vérifier vos préférences.';
+  String get gssExport_noGssPasswordSet =>
+      'Aucun mot de passe pour le serveur GSS n\'a été spécifié. Veuillez vérifier vos préférences.';
 
   @override
   String get gssExport_synStats => 'Statistiques de synchronisation';
 
   @override
-  String get gssExport_followingDataWillBeUploaded => 'Les données suivantes seront envoyées lors de la synchronisation.';
+  String get gssExport_followingDataWillBeUploaded =>
+      'Les données suivantes seront envoyées lors de la synchronisation.';
 
   @override
   String get gssExport_gpsLogs => 'Journal GPS :';
@@ -271,7 +295,8 @@ class SLFr extends SL {
   String get geocoding_geocoding => 'Geocoding';
 
   @override
-  String get geocoding_nothingToLookFor => 'Rien a rechercher. Veuillez préciser une adresse.';
+  String get geocoding_nothingToLookFor =>
+      'Rien a rechercher. Veuillez préciser une adresse.';
 
   @override
   String get geocoding_launchGeocoding => 'Lancer Geocoding';
@@ -289,34 +314,42 @@ class SLFr extends SL {
   String get gps_locationTracking => 'Suivi de la localisation';
 
   @override
-  String get gps_smashLocServiceIsActive => 'Le service de localisation de SMASH est actif.';
+  String get gps_smashLocServiceIsActive =>
+      'Le service de localisation de SMASH est actif.';
 
   @override
-  String get gps_backgroundLocIsOnToKeepRegistering => 'La localisation en arrière-plan est active pour permettre à l\'application d\'enregistrer la position même quand elle est en arrière-plan.';
+  String get gps_backgroundLocIsOnToKeepRegistering =>
+      'La localisation en arrière-plan est active pour permettre à l\'application d\'enregistrer la position même quand elle est en arrière-plan.';
 
   @override
   String get gssImport_gssImport => 'Importer en GSS';
 
   @override
-  String get gssImport_downloadingDataList => 'Téléchargement de la liste des données…';
+  String get gssImport_downloadingDataList =>
+      'Téléchargement de la liste des données…';
 
   @override
-  String get gssImport_unableDownloadDataList => 'Le téléchargement de la liste des données à échoué. Veuillez vérifier vos préférences et le journal.';
+  String get gssImport_unableDownloadDataList =>
+      'Le téléchargement de la liste des données à échoué. Veuillez vérifier vos préférences et le journal.';
 
   @override
-  String get gssImport_noGssUrlSet => 'Aucune URL de serveur GSS n\'a été spécifiée. Veuillez vérifier vos préférences.';
+  String get gssImport_noGssUrlSet =>
+      'Aucune URL de serveur GSS n\'a été spécifiée. Veuillez vérifier vos préférences.';
 
   @override
-  String get gssImport_noGssPasswordSet => 'Aucun mot de passe pour le serveur GSS n\'a été spécifié. Veuillez vérifier vos préférences.';
+  String get gssImport_noGssPasswordSet =>
+      'Aucun mot de passe pour le serveur GSS n\'a été spécifié. Veuillez vérifier vos préférences.';
 
   @override
-  String get gssImport_noPermToAccessServer => 'Aucune permission pour l\'accès au serveur. Veuillez vérifier vos identifiants.';
+  String get gssImport_noPermToAccessServer =>
+      'Aucune permission pour l\'accès au serveur. Veuillez vérifier vos identifiants.';
 
   @override
   String get gssImport_data => 'Données';
 
   @override
-  String get gssImport_dataSetsDownloadedMapsFolder => 'Les jeux de données sont téléchargés dans le dossier des cartes.';
+  String get gssImport_dataSetsDownloadedMapsFolder =>
+      'Les jeux de données sont téléchargés dans le dossier des cartes.';
 
   @override
   String get gssImport_noDataAvailable => 'Aucune donnée disponible.';
@@ -325,7 +358,8 @@ class SLFr extends SL {
   String get gssImport_projects => 'Projets';
 
   @override
-  String get gssImport_projectsDownloadedProjectFolder => 'Les projets sont téléchargés dans le dossier des projets.';
+  String get gssImport_projectsDownloadedProjectFolder =>
+      'Les projets sont téléchargés dans le dossier des projets.';
 
   @override
   String get gssImport_noProjectsAvailable => 'Aucun projet disponible.';
@@ -334,7 +368,8 @@ class SLFr extends SL {
   String get gssImport_forms => 'Formulaires';
 
   @override
-  String get gssImport_tagsDownloadedFormsFolder => 'Les fichiers de marquage sont téléchargés dans le dossier des formulaires.';
+  String get gssImport_tagsDownloadedFormsFolder =>
+      'Les fichiers de marquage sont téléchargés dans le dossier des formulaires.';
 
   @override
   String get gssImport_noTagsAvailable => 'Aucun marquage disponible.';
@@ -343,19 +378,22 @@ class SLFr extends SL {
   String get importWidget_import => 'Importer';
 
   @override
-  String get importWidget_importFromGeopaparazzi => 'Importer depuis Geopaparazzi Survey Server';
+  String get importWidget_importFromGeopaparazzi =>
+      'Importer depuis Geopaparazzi Survey Server';
 
   @override
   String get layersView_layerList => 'Liste des calques';
 
   @override
-  String get layersView_loadRemoteDatabase => 'Charger une base de données distante';
+  String get layersView_loadRemoteDatabase =>
+      'Charger une base de données distante';
 
   @override
   String get layersView_loadOnlineSources => 'Charger des sources en ligne';
 
   @override
-  String get layersView_loadLocalDatasets => 'Charger des jeux de données locaux';
+  String get layersView_loadLocalDatasets =>
+      'Charger des jeux de données locaux';
 
   @override
   String get layersView_loading => 'Chargement…';
@@ -370,31 +408,39 @@ class SLFr extends SL {
   String get layersView_delete => 'Supprimer';
 
   @override
-  String get layersView_projCouldNotBeRecognized => 'Le « proj » n\'a pu être reconnu. Tapez pour entrer le « epsg » manuellement.';
+  String get layersView_projCouldNotBeRecognized =>
+      'Le « proj » n\'a pu être reconnu. Tapez pour entrer le « epsg » manuellement.';
 
   @override
-  String get layersView_projNotSupported => 'Le « proj » n\'est pas supporté. Tapez pour résoudre.';
+  String get layersView_projNotSupported =>
+      'Le « proj » n\'est pas supporté. Tapez pour résoudre.';
 
   @override
-  String get layersView_onlyImageFilesWithWorldDef => 'Only image files with world file definition are supported.';
+  String get layersView_onlyImageFilesWithWorldDef =>
+      'Only image files with world file definition are supported.';
 
   @override
-  String get layersView_onlyImageFileWithPrjDef => 'Seules les fichiers d\'image avec le fichier de définition « prj » sont supportés.';
+  String get layersView_onlyImageFileWithPrjDef =>
+      'Seules les fichiers d\'image avec le fichier de définition « prj » sont supportés.';
 
   @override
-  String get layersView_selectTableToLoad => 'Sélectionnez le tableau à charger.';
+  String get layersView_selectTableToLoad =>
+      'Sélectionnez le tableau à charger.';
 
   @override
-  String get layersView_fileFormatNotSUpported => 'Ce format de fichier n\'est pas supporté.';
+  String get layersView_fileFormatNotSUpported =>
+      'Ce format de fichier n\'est pas supporté.';
 
   @override
   String get onlineSourcesPage_onlineSourcesCatalog => 'Online Sources Catalog';
 
   @override
-  String get onlineSourcesPage_loadingTmsLayers => 'Chargement des calques TMS…';
+  String get onlineSourcesPage_loadingTmsLayers =>
+      'Chargement des calques TMS…';
 
   @override
-  String get onlineSourcesPage_loadingWmsLayers => 'Chargement des calques WMS…';
+  String get onlineSourcesPage_loadingWmsLayers =>
+      'Chargement des calques WMS…';
 
   @override
   String get onlineSourcesPage_importFromFile => 'Importer depuis un fichier';
@@ -406,7 +452,8 @@ class SLFr extends SL {
   String get onlineSourcesPage_doesntExist => 'n\'existe pas';
 
   @override
-  String get onlineSourcesPage_onlineSourcesImported => 'Online sources imported.';
+  String get onlineSourcesPage_onlineSourcesImported =>
+      'Online sources imported.';
 
   @override
   String get onlineSourcesPage_exportToFile => 'Exporter dans le fichier';
@@ -421,22 +468,27 @@ class SLFr extends SL {
   String get onlineSourcesPage_addToLayers => 'Ajouter aux calques';
 
   @override
-  String get onlineSourcesPage_setNameTmsService => 'Spécifiez un nom pour le service TMS';
+  String get onlineSourcesPage_setNameTmsService =>
+      'Spécifiez un nom pour le service TMS';
 
   @override
   String get onlineSourcesPage_enterName => 'entrer nom';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidName => 'Veuillez entrer un nom valide';
+  String get onlineSourcesPage_pleaseEnterValidName =>
+      'Veuillez entrer un nom valide';
 
   @override
-  String get onlineSourcesPage_insertUrlOfService => 'Insérez l\'URL du service.';
+  String get onlineSourcesPage_insertUrlOfService =>
+      'Insérez l\'URL du service.';
 
   @override
-  String get onlineSourcesPage_placeXyzBetBrackets => 'Placer les x, y, z entre les accolades.';
+  String get onlineSourcesPage_placeXyzBetBrackets =>
+      'Placer les x, y, z entre les accolades.';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidTmsUrl => 'Veuillez entrer une URL TMS valide';
+  String get onlineSourcesPage_pleaseEnterValidTmsUrl =>
+      'Veuillez entrer une URL TMS valide';
 
   @override
   String get onlineSourcesPage_enterUrl => 'entrez l\'URL';
@@ -460,7 +512,8 @@ class SLFr extends SL {
   String get onlineSourcesPage_maxZoom => 'Zoom max';
 
   @override
-  String get onlineSourcesPage_pleaseCheckYourData => 'Veuillez vérifier vos données';
+  String get onlineSourcesPage_pleaseCheckYourData =>
+      'Veuillez vérifier vos données';
 
   @override
   String get onlineSourcesPage_details => 'Détails';
@@ -481,25 +534,30 @@ class SLFr extends SL {
   String get onlineSourcesPage_ok => 'OK';
 
   @override
-  String get onlineSourcesPage_newTmsOnlineService => 'Nouveau service TMS en ligne';
+  String get onlineSourcesPage_newTmsOnlineService =>
+      'Nouveau service TMS en ligne';
 
   @override
   String get onlineSourcesPage_save => 'Enregistrer';
 
   @override
-  String get onlineSourcesPage_theBaseUrlWithQuestionMark => 'L\'URL de base finissant par « ? ».';
+  String get onlineSourcesPage_theBaseUrlWithQuestionMark =>
+      'L\'URL de base finissant par « ? ».';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidWmsUrl => 'Veuillez entrer une URL WMS valide';
+  String get onlineSourcesPage_pleaseEnterValidWmsUrl =>
+      'Veuillez entrer une URL WMS valide';
 
   @override
-  String get onlineSourcesPage_setWmsLayerName => 'Définir le nom du calque WMS';
+  String get onlineSourcesPage_setWmsLayerName =>
+      'Définir le nom du calque WMS';
 
   @override
   String get onlineSourcesPage_enterLayerToLoad => 'entrez le calque à charger';
 
   @override
-  String get onlineSourcesPage_pleaseEnterValidLayer => 'Please enter a valid layer';
+  String get onlineSourcesPage_pleaseEnterValidLayer =>
+      'Please enter a valid layer';
 
   @override
   String get onlineSourcesPage_setWmsImageFormat => 'Set WMS image format';
@@ -526,7 +584,8 @@ class SLFr extends SL {
   String get remoteDbPage_delete => 'Supprimer';
 
   @override
-  String get remoteDbPage_areYouSureDeleteDatabase => 'Supprimer la configuration de la base de données ?';
+  String get remoteDbPage_areYouSureDeleteDatabase =>
+      'Supprimer la configuration de la base de données ?';
 
   @override
   String get remoteDbPage_edit => 'Modifier';
@@ -553,7 +612,8 @@ class SLFr extends SL {
   String get remoteDbPage_ok => 'OK';
 
   @override
-  String get remoteDbPage_theUrlNeedsToBeDefined => 'The URL must be defined (postgis:host:port/databasename)';
+  String get remoteDbPage_theUrlNeedsToBeDefined =>
+      'The URL must be defined (postgis:host:port/databasename)';
 
   @override
   String get remoteDbPage_theUserNeedsToBeDefined => 'A user must be defined.';
@@ -562,19 +622,23 @@ class SLFr extends SL {
   String get remoteDbPage_password => 'mot de passe';
 
   @override
-  String get remoteDbPage_thePasswordNeedsToBeDefined => 'A password must be defined.';
+  String get remoteDbPage_thePasswordNeedsToBeDefined =>
+      'A password must be defined.';
 
   @override
   String get remoteDbPage_loadingTables => 'Loading tables…';
 
   @override
-  String get remoteDbPage_theTableNeedsToBeDefined => 'The table name must be defined.';
+  String get remoteDbPage_theTableNeedsToBeDefined =>
+      'The table name must be defined.';
 
   @override
-  String get remoteDbPage_unableToConnectToDatabase => 'Unable to connect to the database. Check parameters and network.';
+  String get remoteDbPage_unableToConnectToDatabase =>
+      'Unable to connect to the database. Check parameters and network.';
 
   @override
-  String get remoteDbPage_optionalWhereCondition => 'optional \"where\" condition';
+  String get remoteDbPage_optionalWhereCondition =>
+      'optional \"where\" condition';
 
   @override
   String get geoImage_tiffProperties => 'TIFF Properties';
@@ -616,7 +680,8 @@ class SLFr extends SL {
   String get tiles_opacity => 'Opacité';
 
   @override
-  String get tiles_loadGeoPackageAsOverlay => 'Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).';
+  String get tiles_loadGeoPackageAsOverlay =>
+      'Load geopackage tiles as overlay image as opposed to tile layer (best for gdal generated data and different projections).';
 
   @override
   String get tiles_colorToHide => 'Color to hide';
@@ -655,7 +720,8 @@ class SLFr extends SL {
   String get projectsView_newProject => 'Nouveau projet';
 
   @override
-  String get projectsView_enterNameForNewProject => 'Enter a name for the new project or accept the proposed.';
+  String get projectsView_enterNameForNewProject =>
+      'Enter a name for the new project or accept the proposed.';
 
   @override
   String get dataLoader_note => 'note';
@@ -670,7 +736,8 @@ class SLFr extends SL {
   String get dataLoader_POI => 'POI';
 
   @override
-  String get dataLoader_savingImageToDB => 'Enregistrement de l\'image dans la base de données…';
+  String get dataLoader_savingImageToDB =>
+      'Enregistrement de l\'image dans la base de données…';
 
   @override
   String get dataLoader_removeNote => 'Remove Note';
@@ -709,7 +776,8 @@ class SLFr extends SL {
   String get about_ABOUT => 'À propos ';
 
   @override
-  String get about_smartMobileAppForSurveyor => 'Smart Mobile App for Surveyor Happiness';
+  String get about_smartMobileAppForSurveyor =>
+      'Smart Mobile App for Surveyor Happiness';
 
   @override
   String get about_applicationVersion => 'Version';
@@ -718,34 +786,40 @@ class SLFr extends SL {
   String get about_license => 'Licence';
 
   @override
-  String get about_isAvailableUnderGPL3 => ' is copylefted libre software, licensed GPLv3+.';
+  String get about_isAvailableUnderGPL3 =>
+      ' is copylefted libre software, licensed GPLv3+.';
 
   @override
   String get about_sourceCode => 'Source Code';
 
   @override
-  String get about_tapHereToVisitRepo => 'Tap here to visit the source code repository';
+  String get about_tapHereToVisitRepo =>
+      'Tap here to visit the source code repository';
 
   @override
   String get about_legalInformation => 'Informations légales';
 
   @override
-  String get about_copyright2020HydroloGIS => 'Copyright © 2020, HydroloGIS S.r.l. — certains droits réservés. Tapez pour visiter.';
+  String get about_copyright2020HydroloGIS =>
+      'Copyright © 2020, HydroloGIS S.r.l. — certains droits réservés. Tapez pour visiter.';
 
   @override
   String get about_supportedBy => 'Soutenu par';
 
   @override
-  String get about_partiallySupportedByUniversityTrento => 'En partie supporté dans le cadre du projet Steep Stream de l\'Université de Trento.';
+  String get about_partiallySupportedByUniversityTrento =>
+      'En partie supporté dans le cadre du projet Steep Stream de l\'Université de Trento.';
 
   @override
   String get about_privacyPolicy => 'Privacy Policy';
 
   @override
-  String get about_tapHereToSeePrivacyPolicy => 'Tapez ici pour accéder à la politique de confidentialité couvrant la gestion des données utilisateur et de localisation.';
+  String get about_tapHereToSeePrivacyPolicy =>
+      'Tapez ici pour accéder à la politique de confidentialité couvrant la gestion des données utilisateur et de localisation.';
 
   @override
-  String get gpsInfoButton_noGpsInfoAvailable => 'Aucune donnée GPS disponible…';
+  String get gpsInfoButton_noGpsInfoAvailable =>
+      'Aucune donnée GPS disponible…';
 
   @override
   String get gpsInfoButton_timestamp => 'Horodatage';
@@ -766,19 +840,22 @@ class SLFr extends SL {
   String get gpsInfoButton_latitude => 'Latitude';
 
   @override
-  String get gpsInfoButton_copyLatitudeToClipboard => 'Copier la latitude dans le presse-papier.';
+  String get gpsInfoButton_copyLatitudeToClipboard =>
+      'Copier la latitude dans le presse-papier.';
 
   @override
   String get gpsInfoButton_longitude => 'Longitude';
 
   @override
-  String get gpsInfoButton_copyLongitudeToClipboard => 'Copier la longitude dans le presse-papier.';
+  String get gpsInfoButton_copyLongitudeToClipboard =>
+      'Copier la longitude dans le presse-papier.';
 
   @override
   String get gpsLogButton_stopLogging => 'Stop Logging?';
 
   @override
-  String get gpsLogButton_stopLoggingAndCloseLog => 'Stop logging and close the current GPS log?';
+  String get gpsLogButton_stopLoggingAndCloseLog =>
+      'Stop logging and close the current GPS log?';
 
   @override
   String get gpsLogButton_newLog => 'Nouveau journal';
@@ -826,7 +903,8 @@ class SLFr extends SL {
   String get logList_gpsSavedInExportFolder => 'GPX saved in export folder.';
 
   @override
-  String get logList_errorOccurredExportingLogGPX => 'Could not export log to GPX.';
+  String get logList_errorOccurredExportingLogGPX =>
+      'Could not export log to GPX.';
 
   @override
   String get logList_delete => 'Supprimer';
@@ -946,7 +1024,8 @@ class SLFr extends SL {
   String get settings_screen => 'L\'écran';
 
   @override
-  String get settings_screenScaleBarIconSize => 'Screen, Scalebar and Icon Size';
+  String get settings_screenScaleBarIconSize =>
+      'Screen, Scalebar and Icon Size';
 
   @override
   String get settings_keepScreenOn => 'Garder l\'écran allumé';
@@ -955,7 +1034,8 @@ class SLFr extends SL {
   String get settings_retinaScreenMode => 'Mode d\'écran HiDPI';
 
   @override
-  String get settings_toApplySettingEnterExitLayerView => 'Entrez puis quitter la vue des calques pour appliquer cette préférence.';
+  String get settings_toApplySettingEnterExitLayerView =>
+      'Entrez puis quitter la vue des calques pour appliquer cette préférence.';
 
   @override
   String get settings_colorPickerToUse => 'Color Picker to use';
@@ -973,7 +1053,8 @@ class SLFr extends SL {
   String get settings_width => 'Largeur';
 
   @override
-  String get settings_mapToolsIconSize => 'La taille des icônes d\'outils de la carte';
+  String get settings_mapToolsIconSize =>
+      'La taille des icônes d\'outils de la carte';
 
   @override
   String get settings_gps => 'GPS';
@@ -985,7 +1066,8 @@ class SLFr extends SL {
   String get settings_livePreview => 'Aperçu direct';
 
   @override
-  String get settings_noPointAvailableYet => 'Aucun point n\'est disponible encore.';
+  String get settings_noPointAvailableYet =>
+      'Aucun point n\'est disponible encore.';
 
   @override
   String get settings_longitudeDeg => 'longitude [deg]';
@@ -1060,19 +1142,23 @@ class SLFr extends SL {
   String get settings_visualizePointCount => 'Visualize point count';
 
   @override
-  String get settings_showGpsPointsValidPoints => 'Show the GPS points count for VALID points.';
+  String get settings_showGpsPointsValidPoints =>
+      'Show the GPS points count for VALID points.';
 
   @override
-  String get settings_showGpsPointsAllPoints => 'Show the GPS points count for ALL points.';
+  String get settings_showGpsPointsAllPoints =>
+      'Show the GPS points count for ALL points.';
 
   @override
   String get settings_logFilters => 'Log filters';
 
   @override
-  String get settings_minDistanceBetween2Points => 'Min distance between 2 points.';
+  String get settings_minDistanceBetween2Points =>
+      'Min distance between 2 points.';
 
   @override
-  String get settings_minTimespanBetween2Points => 'Min timespan between 2 points.';
+  String get settings_minTimespanBetween2Points =>
+      'Min timespan between 2 points.';
 
   @override
   String get settings_gpsFilter => 'GPS Filter';
@@ -1084,19 +1170,23 @@ class SLFr extends SL {
   String get settings_enable => 'Activer';
 
   @override
-  String get settings_theUseOfTheGps => 'l\'utilisation de données GPS filtrées.';
+  String get settings_theUseOfTheGps =>
+      'l\'utilisation de données GPS filtrées.';
 
   @override
-  String get settings_warningThisWillAffectGpsPosition => 'Warning: This will affect GPS position, notes insertion, log statistics and charting.';
+  String get settings_warningThisWillAffectGpsPosition =>
+      'Warning: This will affect GPS position, notes insertion, log statistics and charting.';
 
   @override
   String get settings_MockLocations => 'Locations fictives';
 
   @override
-  String get settings_testGpsLogDemoUse => 'journal GPS de test pour démonstration.';
+  String get settings_testGpsLogDemoUse =>
+      'journal GPS de test pour démonstration.';
 
   @override
-  String get settings_setDurationGpsPointsInMilli => 'Définir la durée des points du GPS en millisecondes.';
+  String get settings_setDurationGpsPointsInMilli =>
+      'Définir la durée des points du GPS en millisecondes.';
 
   @override
   String get settings_SETTING => 'Préférence';
@@ -1105,25 +1195,30 @@ class SLFr extends SL {
   String get settings_setMockedGpsDuration => 'Set Mocked GPS duration';
 
   @override
-  String get settings_theValueHasToBeInt => 'Cette valeur doit être un nombre entier.';
+  String get settings_theValueHasToBeInt =>
+      'Cette valeur doit être un nombre entier.';
 
   @override
   String get settings_milliseconds => 'millisecondes';
 
   @override
-  String get settings_useGoogleToImproveLoc => 'Utiliser les Services Google pour améliorer la localisation';
+  String get settings_useGoogleToImproveLoc =>
+      'Utiliser les Services Google pour améliorer la localisation';
 
   @override
-  String get settings_useOfGoogleServicesRestart => 'utiliser les services Google (requiert un redémarrage de l\'application).';
+  String get settings_useOfGoogleServicesRestart =>
+      'utiliser les services Google (requiert un redémarrage de l\'application).';
 
   @override
   String get settings_gpsLogsViewMode => 'Mode d\'aperçu des journaux de GPS';
 
   @override
-  String get settings_logViewModeForOrigData => 'Log view mode for original data.';
+  String get settings_logViewModeForOrigData =>
+      'Log view mode for original data.';
 
   @override
-  String get settings_logViewModeFilteredData => 'Log view mode for filtered data.';
+  String get settings_logViewModeFilteredData =>
+      'Log view mode for filtered data.';
 
   @override
   String get settings_cancel => 'Annuler';
@@ -1135,7 +1230,8 @@ class SLFr extends SL {
   String get settings_notesViewModes => 'Notes view modes';
 
   @override
-  String get settings_selectNotesViewMode => 'Sélectionnez un mode pour voir les notes.';
+  String get settings_selectNotesViewMode =>
+      'Sélectionnez un mode pour voir les notes.';
 
   @override
   String get settings_mapPlugins => 'Greffons de la carte';
@@ -1150,10 +1246,12 @@ class SLFr extends SL {
   String get settings_dataLoading => 'Chargement des données';
 
   @override
-  String get settings_maxNumberFeatures => 'Le nombre maximum de fonctionnalités.';
+  String get settings_maxNumberFeatures =>
+      'Le nombre maximum de fonctionnalités.';
 
   @override
-  String get settings_maxNumFeaturesPerLayer => 'Max features per layer. Remove and add the layer to apply.';
+  String get settings_maxNumFeaturesPerLayer =>
+      'Max features per layer. Remove and add the layer to apply.';
 
   @override
   String get settings_all => 'tous';
@@ -1162,13 +1260,15 @@ class SLFr extends SL {
   String get settings_loadMapArea => 'Load map area.';
 
   @override
-  String get settings_loadOnlyLastVisibleArea => 'Ne charger que la dernière partie visible de la carte. Veuillez retirer pour ajouter à nouveau le calque pour que ça s\'applique.';
+  String get settings_loadOnlyLastVisibleArea =>
+      'Ne charger que la dernière partie visible de la carte. Veuillez retirer pour ajouter à nouveau le calque pour que ça s\'applique.';
 
   @override
   String get settings_infoTool => 'Information de l\'outil';
 
   @override
-  String get settings_tapSizeInfoToolPixels => 'La taille en pixels de la zone de tape des outils d\'info';
+  String get settings_tapSizeInfoToolPixels =>
+      'La taille en pixels de la zone de tape des outils d\'info';
 
   @override
   String get settings_editingTool => 'Editing tool';
@@ -1177,16 +1277,19 @@ class SLFr extends SL {
   String get settings_editingDragIconSize => 'Editing drag handler icon size.';
 
   @override
-  String get settings_editingIntermediateDragIconSize => 'Editing intermediate drag handler icon size.';
+  String get settings_editingIntermediateDragIconSize =>
+      'Editing intermediate drag handler icon size.';
 
   @override
   String get settings_diagnostics => 'Diagnostiques';
 
   @override
-  String get settings_diagnosticsDebugLog => 'Diagnostiques et journal de débogage';
+  String get settings_diagnosticsDebugLog =>
+      'Diagnostiques et journal de débogage';
 
   @override
-  String get settings_openFullDebugLog => 'Ouvrir le journal de débogage en entier';
+  String get settings_openFullDebugLog =>
+      'Ouvrir le journal de débogage en entier';
 
   @override
   String get settings_debugLogView => 'Vue du journal de débogage';
@@ -1195,7 +1298,8 @@ class SLFr extends SL {
   String get settings_viewAllMessages => 'Afficher tous les messages';
 
   @override
-  String get settings_viewOnlyErrorsWarnings => 'N\'afficher que les erreurs et les avertissements';
+  String get settings_viewOnlyErrorsWarnings =>
+      'N\'afficher que les erreurs et les avertissements';
 
   @override
   String get settings_clearDebugLog => 'Clear debug log';
@@ -1219,7 +1323,8 @@ class SLFr extends SL {
   String get settings_overrideId => 'Override ID';
 
   @override
-  String get settings_pleaseEnterValidPassword => 'Veuillez entrer un mot de passe de serveur valide.';
+  String get settings_pleaseEnterValidPassword =>
+      'Veuillez entrer un mot de passe de serveur valide.';
 
   @override
   String get settings_gss => 'GSS';
@@ -1231,13 +1336,15 @@ class SLFr extends SL {
   String get settings_serverUrl => 'L\'URL du serveur';
 
   @override
-  String get settings_serverUrlStartWithHttp => 'L\'URL du serveur doit commencer par HTTP ou HTTPS.';
+  String get settings_serverUrlStartWithHttp =>
+      'L\'URL du serveur doit commencer par HTTP ou HTTPS.';
 
   @override
   String get settings_serverPassword => 'Mot de passe du serveur';
 
   @override
-  String get settings_allowSelfSignedCert => 'Autoriser les certificats auto-signés';
+  String get settings_allowSelfSignedCert =>
+      'Autoriser les certificats auto-signés';
 
   @override
   String get toolbarTools_zoomOut => 'Dézoomer';
@@ -1246,34 +1353,43 @@ class SLFr extends SL {
   String get toolbarTools_zoomIn => 'Zoomer';
 
   @override
-  String get toolbarTools_cancelCurrentEdit => 'Annuler la modification actuelle.';
+  String get toolbarTools_cancelCurrentEdit =>
+      'Annuler la modification actuelle.';
 
   @override
-  String get toolbarTools_saveCurrentEdit => 'Enregistrer la modification actuelle.';
+  String get toolbarTools_saveCurrentEdit =>
+      'Enregistrer la modification actuelle.';
 
   @override
-  String get toolbarTools_insertPointMapCenter => 'Insérer un point au centre de la carte.';
+  String get toolbarTools_insertPointMapCenter =>
+      'Insérer un point au centre de la carte.';
 
   @override
-  String get toolbarTools_insertPointGpsPos => 'Insérer un point sur la position GPS.';
+  String get toolbarTools_insertPointGpsPos =>
+      'Insérer un point sur la position GPS.';
 
   @override
-  String get toolbarTools_removeSelectedFeature => 'Retirer les fonctionnalités sélectionnées.';
+  String get toolbarTools_removeSelectedFeature =>
+      'Retirer les fonctionnalités sélectionnées.';
 
   @override
   String get toolbarTools_showFeatureAttributes => 'Show feature attributes.';
 
   @override
-  String get toolbarTools_featureDoesNotHavePrimaryKey => 'The feature does not have a primary key. Editing is not allowed.';
+  String get toolbarTools_featureDoesNotHavePrimaryKey =>
+      'The feature does not have a primary key. Editing is not allowed.';
 
   @override
-  String get toolbarTools_queryFeaturesVectorLayers => 'Query features from loaded vector layers.';
+  String get toolbarTools_queryFeaturesVectorLayers =>
+      'Query features from loaded vector layers.';
 
   @override
-  String get toolbarTools_measureDistanceWithFinger => 'Mesurer les distances sur la carte avec votre doigt.';
+  String get toolbarTools_measureDistanceWithFinger =>
+      'Mesurer les distances sur la carte avec votre doigt.';
 
   @override
-  String get toolbarTools_modifyGeomVectorLayers => 'Modifier la géométrie des calques vectoriels modifiables.';
+  String get toolbarTools_modifyGeomVectorLayers =>
+      'Modifier la géométrie des calques vectoriels modifiables.';
 
   @override
   String get coachMarks_singleTap => 'Simple tape : ';
@@ -1294,7 +1410,8 @@ class SLFr extends SL {
   String get coachMarks_viewNotesList => 'afficher la liste des notes';
 
   @override
-  String get coachMarks_viewNotesSettings => 'afficher les préférences des notes';
+  String get coachMarks_viewNotesSettings =>
+      'afficher les préférences des notes';
 
   @override
   String get coachMarks_formNotesButton => 'Form Notes Button';
@@ -1309,25 +1426,29 @@ class SLFr extends SL {
   String get coachMarks_gpsLogButton => 'GPS Log Button';
 
   @override
-  String get coachMarks_startStopLogging => 'démarrer/arrêter l\'enregistrement';
+  String get coachMarks_startStopLogging =>
+      'démarrer/arrêter l\'enregistrement';
 
   @override
   String get coachMarks_viewLogsList => 'afficher la liste des journaux';
 
   @override
-  String get coachMarks_viewLogsSettings => 'afficher les préférences du journal';
+  String get coachMarks_viewLogsSettings =>
+      'afficher les préférences du journal';
 
   @override
   String get coachMarks_gpsInfoButton => 'GPS Info Button (if applicable)';
 
   @override
-  String get coachMarks_centerMapOnGpsPos => 'centrer la carte sur la position GPS';
+  String get coachMarks_centerMapOnGpsPos =>
+      'centrer la carte sur la position GPS';
 
   @override
   String get coachMarks_showGpsInfo => 'afficher les infos du GPS';
 
   @override
-  String get coachMarks_toggleAutoCenterGps => 'dés/activer la centrage auto du GPS';
+  String get coachMarks_toggleAutoCenterGps =>
+      'dés/activer la centrage auto du GPS';
 
   @override
   String get coachMarks_layersViewButton => 'Layers View Button';
@@ -1336,7 +1457,8 @@ class SLFr extends SL {
   String get coachMarks_openLayersView => 'Ouvrir la vue des calques';
 
   @override
-  String get coachMarks_openLayersPluginDialog => 'Ouvrir le dialogue des greffons des calques';
+  String get coachMarks_openLayersPluginDialog =>
+      'Ouvrir le dialogue des greffons des calques';
 
   @override
   String get coachMarks_zoomInButton => 'Bouton de zoom avant';
@@ -1348,7 +1470,8 @@ class SLFr extends SL {
   String get coachMarks_zoomOutButton => 'Bouton de zoom arrière';
 
   @override
-  String get coachMarks_zoomOutMapOneLevel => 'Zoom la carte un niveau en arrière';
+  String get coachMarks_zoomOutMapOneLevel =>
+      'Zoom la carte un niveau en arrière';
 
   @override
   String get coachMarks_bottomToolsButton => 'Bottom Tools Button';
@@ -1360,19 +1483,23 @@ class SLFr extends SL {
   String get coachMarks_toolsButton => 'Tools Button';
 
   @override
-  String get coachMarks_openEndDrawerToAccessProject => 'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras';
+  String get coachMarks_openEndDrawerToAccessProject =>
+      'Open the end drawer to access project info and sharing options as well as map plugins, feature tools and extras';
 
   @override
-  String get coachMarks_interactiveCoackMarksButton => 'Interactive coach-marks button';
+  String get coachMarks_interactiveCoackMarksButton =>
+      'Interactive coach-marks button';
 
   @override
-  String get coachMarks_openInteractiveCoachMarks => 'Open the interactice coach marks explaining all the actions of the main map view.';
+  String get coachMarks_openInteractiveCoachMarks =>
+      'Open the interactice coach marks explaining all the actions of the main map view.';
 
   @override
   String get coachMarks_mainMenuButton => 'Main-menu Button';
 
   @override
-  String get coachMarks_openDrawerToLoadProject => 'Ouvrez le menu pour charger ou créer un projet, importer ou exporter les données, synchroniser avec un serveur, accéder aux préférences, quitter l\'application ou désactiver le GPS.';
+  String get coachMarks_openDrawerToLoadProject =>
+      'Ouvrez le menu pour charger ou créer un projet, importer ou exporter les données, synchroniser avec un serveur, accéder aux préférences, quitter l\'application ou désactiver le GPS.';
 
   @override
   String get coachMarks_skip => 'Skip';
@@ -1384,10 +1511,12 @@ class SLFr extends SL {
   String get network_completed => 'Terminé.';
 
   @override
-  String get network_buildingBaseCachePerformance => 'Building base cache for improved performance (might take a while)…';
+  String get network_buildingBaseCachePerformance =>
+      'Building base cache for improved performance (might take a while)…';
 
   @override
-  String get network_thisFIleAlreadyBeingDownloaded => 'This file is already being downloaded.';
+  String get network_thisFIleAlreadyBeingDownloaded =>
+      'This file is already being downloaded.';
 
   @override
   String get network_download => 'Télécharger';
@@ -1396,7 +1525,8 @@ class SLFr extends SL {
   String get network_downloadFile => 'Télécharger le fichier';
 
   @override
-  String get network_toTheDeviceTakeTime => 'sur l’appareil ? Ceci peut prendre un certain temps.';
+  String get network_toTheDeviceTakeTime =>
+      'sur l’appareil ? Ceci peut prendre un certain temps.';
 
   @override
   String get network_availableMaps => 'Cartes disponibles';
@@ -1414,10 +1544,12 @@ class SLFr extends SL {
   String get network_permissionOnServerDenied => 'Permission on server denied.';
 
   @override
-  String get network_couldNotConnectToServer => 'Could not connect to the server. Is it online? Check your address.';
+  String get network_couldNotConnectToServer =>
+      'Could not connect to the server. Is it online? Check your address.';
 
   @override
-  String get form_smash_cantSaveImageDb => 'Impossible d’enregistrer l’image dans la base de données.';
+  String get form_smash_cantSaveImageDb =>
+      'Impossible d’enregistrer l’image dans la base de données.';
 
   @override
   String get formbuilder => 'Form builder';
@@ -1429,7 +1561,8 @@ class SLFr extends SL {
   String get layersView_noGssLayersFound => 'No GSS layers found.';
 
   @override
-  String get layersView_noGssLayersAvailable => 'No layers available (loaded ones are not shown).';
+  String get layersView_noGssLayersAvailable =>
+      'No layers available (loaded ones are not shown).';
 
   @override
   String get layersView_selectGssLayersToLoad => 'Select GSS layers to load.';
@@ -1441,7 +1574,8 @@ class SLFr extends SL {
   String get layersView_layerExists => 'Layer exists';
 
   @override
-  String get layersView_layerAlreadyExists => 'Layer already exists, do you want to overwrite it?';
+  String get layersView_layerAlreadyExists =>
+      'Layer already exists, do you want to overwrite it?';
 
   @override
   String get gss_layerview_upload_changes => 'Upload changes';
@@ -1456,7 +1590,8 @@ class SLFr extends SL {
   String get addTmsFromDefaults => 'Add TMS from defaults';
 
   @override
-  String get form_smash_noCameraDesktop => 'No camera option available on desktop.';
+  String get form_smash_noCameraDesktop =>
+      'No camera option available on desktop.';
 
   @override
   String get settings_BottombarCustomization => 'Bottombar Customization';
@@ -1465,7 +1600,8 @@ class SLFr extends SL {
   String get settings_Bottombar_showAddNote => 'Show the ADD NOTE button';
 
   @override
-  String get settings_Bottombar_showAddFormNote => 'Show the ADD FORM NOTE button';
+  String get settings_Bottombar_showAddFormNote =>
+      'Show the ADD FORM NOTE button';
 
   @override
   String get settings_Bottombar_showAddGpsLog => 'Show the ADD GPS LOG button';

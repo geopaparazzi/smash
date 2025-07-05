@@ -95,3 +95,4 @@ app.*.map.json
 
 # ignore flutter submodule
 .flutter
+ios/Flutter/ephemeral/

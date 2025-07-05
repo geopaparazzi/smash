@@ -22,7 +22,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   
-  intl: '>=0.16.1'
+  intl: ^0.18.1
 
   ##################################
   # OWN
@@ -207,6 +207,10 @@ dependencies:
 
   # MIT
   # flutter_widget_from_html: ^0.14.9
+
+# dep override for intl
+dependency_overrides: 
+  intl: ^0.20.2
 
 
 dev_dependencies:
