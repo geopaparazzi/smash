@@ -165,10 +165,10 @@ class SmashApp extends StatelessWidget {
         bottomAppBarTheme: BottomAppBarTheme(
           color: SmashColors.mainDecorations,
         ),
-        tabBarTheme: TabBarTheme(
+        tabBarTheme: TabBarThemeData(
             labelColor: SmashColors.mainBackground,
             unselectedLabelColor: Colors.grey.shade400),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           surfaceTintColor: SmashColors.mainBackground,
           color: SmashColors.mainBackground,
         ),
@@ -176,7 +176,7 @@ class SmashApp extends StatelessWidget {
           backgroundColor: SmashColors.mainBackground,
           surfaceTintColor: SmashColors.mainBackground,
         ),
-        dialogTheme: DialogTheme(
+        dialogTheme: DialogThemeData(
           backgroundColor: SmashColors.mainBackground,
           shape: BeveledRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
