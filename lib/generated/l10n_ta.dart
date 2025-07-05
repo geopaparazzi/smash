@@ -600,7 +600,7 @@ class SLTa extends SL {
   String get remoteDbPage_edit => 'தொகு';
 
   @override
-  String get remoteDbPage_duplicate => 'Duplicate';
+  String get remoteDbPage_duplicate => 'நகல்';
 
   @override
   String get remoteDbPage_table => 'அட்டவணை';
