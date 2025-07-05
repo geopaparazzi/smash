@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:smash/eu/hydrologis/smash/gps/geocoding.dart';
 
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
@@ -707,7 +707,12 @@ Future<void> shareProject(BuildContext context) async {
   if (projectState.projectPath != null) {
     File projectFile = File("${projectState.projectPath}");
     if (projectFile.existsSync()) {
-      await ShareExtend.share(projectFile.path, "file");
+      final params = ShareParams(
+        text: HU.FileUtilities.nameFromFile(projectFile.path, true),
+        files: [XFile(projectFile.path)],
+      );
+
+      await SharePlus.instance.share(params);
     }
   }
 }

@@ -35,8 +35,8 @@ android {
     defaultConfig {
         applicationId "eu.hydrologis.smash"
         minSdkVersion 23
-        targetSdkVersion 34
-        compileSdk 34
+        targetSdkVersion 35
+        compileSdk 35
 //        buildToolsVersion = "34.0.0"
         
         versionCode flutterVersionCode.toInteger()
