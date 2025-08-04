@@ -523,6 +523,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                 '&copy; <a href="https://www.openstreetmap.org/copyright">'
                     'OpenStreetMap</a> contributors',
           },
+          userAgentPackageName: USER_AGENT,
         ),
       ];
       if (polylines != null) {
