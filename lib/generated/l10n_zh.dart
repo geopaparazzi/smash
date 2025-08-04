@@ -540,7 +540,7 @@ class SLZh extends SL {
   String get remoteDbPage_edit => '编辑';
 
   @override
-  String get remoteDbPage_duplicate => 'Duplicate';
+  String get remoteDbPage_duplicate => '复制';
 
   @override
   String get remoteDbPage_table => '表格';
