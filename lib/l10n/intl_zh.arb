@@ -982,5 +982,7 @@
   "addTmsFromDefaults": "增加默认的TMS",
   "@addTmsFromDefaults": {},
   "mainviewUtils_projectStats": "项目统计",
-  "@mainviewUtils_projectStats": {}
+  "@mainviewUtils_projectStats": {},
+  "remoteDbPage_duplicate": "复制",
+  "@remoteDbPage_duplicate": {}
 }
