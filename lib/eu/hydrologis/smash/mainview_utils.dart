@@ -40,6 +40,7 @@ class DashboardUtils {
       double? iconSize}) {
     if (badgeValue > 0) {
       return badges.Badge(
+        ignorePointer: true,
         badgeStyle: badges.BadgeStyle(
           badgeColor:
               badgeColor != null ? badgeColor : SmashColors.mainSelection,
@@ -55,7 +56,7 @@ class DashboardUtils {
             ? badgePosition
             : iconSize != null
                 ? badges.BadgePosition.topStart(
-                    top: -iconSize / 2, start: 0.1 * iconSize)
+                    top: -iconSize * 3 / 5, start: -5)
                 : null,
         badgeContent: Text(
           '$badgeValue',

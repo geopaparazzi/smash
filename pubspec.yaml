@@ -108,25 +108,25 @@ dependencies:
   catcher_2: ^2.0.1
 
   # MIT
-  sqlite3_flutter_libs: ^0.5.9
+  sqlite3_flutter_libs: ^0.5.39
 
   # # MIT
   # positioned_tap_detector_2: ^1.0.4
 
   #MIT
-  # extended_image: ^8.0.2
-  extended_image:
-    git:
-      url: https://github.com/laiiihz/extended_image
-      ref: migrate-to-3.13
+  extended_image: ^10.0.1
+  # extended_image:
+  #   git:
+  #     url: https://github.com/laiiihz/extended_image
+  #     ref: migrate-to-3.13
     # git:
     #   url: https://github.com/moovida/extended_image
 
   # BSD
-  fl_chart: ^0.68.0
+  fl_chart: ^1.0.0
 
   # MIT
-  permission_handler: ^11.3.1
+  permission_handler: ^12.0.1
   # git: 
   #   url: https://github.com/Baseflow/flutter-permission-handler.git
   #   path: permission_handler
@@ -194,7 +194,7 @@ dependencies:
   xml: ^6.1.0 #'>=4.5.1 <=5.3.1'
 
   # Apache 2.0
-  gpx: ^2.1.0
+  gpx: ^2.3.0
     # git:
     #   url: https://github.com/moovida/dart-gpx.git
     #   ref: "540e167"
