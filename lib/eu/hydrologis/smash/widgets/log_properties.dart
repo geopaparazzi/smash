@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:after_layout/after_layout.dart';
@@ -289,30 +290,23 @@ class LogProfileView extends StatefulWidget {
   _LogProfileViewState createState() => _LogProfileViewState();
 }
 
-class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
+class _LogProfileViewState extends State<LogProfileView> {
   LatLngExt? hoverPoint;
   List<LatLngExt> points = [];
   LatLng? center;
-  LatLngBounds? bounds;
+  LatLngBoundsExt? bounds;
   double? totalLengthMeters;
   double minLineElev = double.infinity;
   double maxLineElev = double.negativeInfinity;
-  MapController mapController = new MapController();
   List<Marker> staticMarkers = [];
   bool _showStats = true;
 
-  ErrorTileCallBack? errorTileCallback = (tile, exception, stacktrace) {
-    // ignore tiles that can't load to avoid
-    SMLogger().e("Unable to load tile: ${tile.coordinates}", null, null);
-  };
-  bool overrideTilesOnUrlChange = true;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  SmashMapWidget? mapView;
 
   void loadData(BuildContext context) {
+    if (mapView != null) {
+      return;
+    }
     ProjectState project = Provider.of<ProjectState>(context, listen: false);
     var logDataPoints = project.projectDb!.getLogDataPoints(widget.logItem.id!);
     bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(
@@ -393,11 +387,19 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       }
     });
 
-    bounds = LatLngBounds.fromPoints([
-      LatLng(env.getMinY(), env.getMinX()),
-      LatLng(env.getMaxY(), env.getMaxX())
-    ]);
-    mapController.fitCamera(CameraFit.bounds(bounds: bounds!));
+    bounds = LatLngBoundsExt(LatLng(env.getMinY(), env.getMinX()),
+        LatLng(env.getMaxY(), env.getMaxX()));
+
+    mapView = SmashMapWidget();
+    mapView!
+        .setInitParameters(canRotate: false, initBounds: bounds!.toEnvelope());
+    // mapView!.setOnPositionChanged((newPosition, hasGest) {
+    //   SmashMapState mapState =
+    //       Provider.of<SmashMapState>(context, listen: false);
+    //   mapState.setLastPositionQuiet(
+    //       LatLngExt.fromLatLng(newPosition.center).toCoordinate(),
+    //       newPosition.zoom);
+    // });
 
     center = LatLng(env.centre()!.y, env.centre()!.x);
 
@@ -415,8 +417,6 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     addStaticMarker(size, "minEl", minElevLL);
     addStaticMarker(size, "maxEl", maxElevLL);
     addStaticMarker(size, maxSpeed.toStringAsFixed(0) + "m/s", maxSpeedLL);
-
-    setState(() {});
   }
 
   void addStaticMarker(double size, String labelText, LatLng ll) {
@@ -435,10 +435,26 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
     ));
   }
 
-  void afterFirstLayout(BuildContext context) {}
-
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      builder: (context, projectSnap) {
+        if (projectSnap.hasError) {
+          return SmashUI.errorWidget(projectSnap.error.toString());
+        } else if (projectSnap.connectionState == ConnectionState.none ||
+            projectSnap.data == null) {
+          return SmashCircularProgress();
+        }
+
+        Widget widget = projectSnap.data as Widget;
+        return widget;
+      },
+      future: getWidget(context),
+    );
+  }
+
+  Future<Widget> getWidget(BuildContext context) async {
+    loadData(context);
     List<Marker> markers = [];
     var opacity = 0.7;
 
@@ -495,10 +511,12 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
             widget.logItem.width!, minLineElev, maxLineElev);
 
         polylines = PolylineLayer(
+          key: Key("log_polyline_${widget.logItem.id}_valid_color"),
           polylines: lines,
         );
       } else {
         polylines = PolylineLayer(
+          key: Key("log_polyline_${widget.logItem.id}"),
           polylines: [
             Polyline(
               points: points,
@@ -511,29 +529,16 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
       }
     }
 
-    var mapLayers = <Widget>[];
-
-    if (center != null) {
-      mapLayers = [
-        TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          errorTileCallback: errorTileCallback,
-          additionalOptions: {
-            "attribution":
-                '&copy; <a href="https://www.openstreetmap.org/copyright">'
-                    'OpenStreetMap</a> contributors',
-          },
-          userAgentPackageName: USER_AGENT,
-        ),
-      ];
-      if (polylines != null) {
-        mapLayers.add(polylines);
-      }
-      if (staticMarkers.isNotEmpty && _showStats) {
-        mapLayers.add(MarkerLayer(markers: staticMarkers));
-      }
-      mapLayers.add(MarkerLayer(markers: markers));
+    mapView!.clearPostLayers();
+    if (polylines != null) {
+      mapView!.addPostLayer(polylines);
     }
+    if (staticMarkers.isNotEmpty && _showStats) {
+      mapView!.addPostLayer(MarkerLayer(
+          key: Key("log_static_markers_${widget.logItem.id}"),
+          markers: staticMarkers));
+    }
+    mapView!.addPostLayer(MarkerLayer(key: UniqueKey(), markers: markers));
     return Scaffold(
       appBar: AppBar(
         title: Text(SL.of(context).logProperties_gpsLogView), //"GPS Log View"
@@ -558,22 +563,13 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
               setState(() {
                 _showStats = !_showStats;
               });
+              mapView!.triggerRebuild(context);
             },
           )
         ],
       ),
       body: Stack(children: [
-        FlutterMap(
-          mapController: mapController,
-          options: new MapOptions(
-            // center: center,
-            initialZoom: 11.0,
-            onMapReady: () {
-              loadData(context);
-            },
-          ),
-          children: mapLayers,
-        ),
+        mapView!,
         hoverPoint != null
             ? Positioned(
                 top: 0,
@@ -637,7 +633,7 @@ class _LogProfileViewState extends State<LogProfileView> with AfterLayoutMixin {
                           if (notification.position != null)
                             hoverPoint = notification.position as LatLngExt;
                         });
-
+                        mapView!.triggerRebuild(context);
                         return true;
                       },
                       child: Padding(
