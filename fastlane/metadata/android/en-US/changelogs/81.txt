@@ -1,0 +1,5 @@
+Bugfix release:
+
+- simple image notes on map do not open
+- badges often trap the tap on the add note/log buttons
+- profile view now uses the map configuration of the main view
