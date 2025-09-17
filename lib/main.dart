@@ -162,7 +162,7 @@ class SmashApp extends StatelessWidget {
             fontSize: SmashUI.BIG_SIZE,
           ),
         ),
-        bottomAppBarTheme: BottomAppBarTheme(
+        bottomAppBarTheme: BottomAppBarThemeData(
           color: SmashColors.mainDecorations,
         ),
         tabBarTheme: TabBarThemeData(
