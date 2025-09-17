@@ -112,7 +112,7 @@ class DeviceSettingsState extends State<DeviceSettings> {
                                       SmashPreferencesKeys.DEVICE_ID_OVERRIDE,
                                       res);
                                   setState(() {
-                                    _overrideId = res;
+                                    _overrideId = res!;
                                   });
                                 },
                                 validationFunction: (text) {

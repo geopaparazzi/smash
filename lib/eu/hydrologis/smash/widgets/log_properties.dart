@@ -119,7 +119,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                                     Provider.of<ProjectState>(context,
                                         listen: false);
                                 projectState.projectDb!
-                                    .updateGpsLogName(_logItem.id!, res);
+                                    .updateGpsLogName(_logItem.id!, res!);
                                 setState(() {
                                   _logItem.name = res;
                                 });
@@ -269,7 +269,7 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
             }
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
-            projectState.projectDb!.updateGpsLogName(item.id!, res);
+            projectState.projectDb!.updateGpsLogName(item.id!, res!);
             setState(() {
               item.name = res;
             });

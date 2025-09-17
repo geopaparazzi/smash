@@ -107,7 +107,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                                   res = _note.text;
                                 }
                                 setState(() {
-                                  _note.text = res;
+                                  _note.text = res!;
                                   _somethingChanged = true;
                                 });
                               },

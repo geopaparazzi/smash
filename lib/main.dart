@@ -95,22 +95,22 @@ class MyCache implements ISmashCache {
   }
 
   @override
-  Future<void> clear({String? cacheName}) async {
-    var store = _getStore(cacheName ?? "default");
+  Future<void> clear({String? storeName}) async {
+    var store = _getStore(storeName ?? "default");
     await store.drop(db);
-    storesMap.remove(cacheName ?? "default");
+    storesMap.remove(storeName ?? "default");
   }
 
   @override
-  Future<dynamic> get(String key, {String? cacheName}) async {
-    var store = _getStore(cacheName ?? "default");
+  Future<dynamic> get(String key, {String? storeName}) async {
+    var store = _getStore(storeName ?? "default");
     var object = await store.record(key).get(db);
     return object;
   }
 
   @override
-  Future<void> put(String key, dynamic value, {String? cacheName}) async {
-    var store = _getStore(cacheName ?? "default");
+  Future<void> put(String key, dynamic value, {String? storeName}) async {
+    var store = _getStore(storeName ?? "default");
     await store.record(key).put(db, value);
   }
 }
