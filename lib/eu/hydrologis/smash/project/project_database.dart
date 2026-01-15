@@ -492,7 +492,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   LogProperty? getLogProperties(int logId) {
     String logPropQuery = """
             select $LOGSPROP_COLUMN_ID, $LOGSPROP_COLUMN_COLOR, $LOGSPROP_COLUMN_VISIBLE, 
-            $LOGSPROP_COLUMN_WIDTH,$LOGSPROP_COLUMN_LOGID
+            $LOGSPROP_COLUMN_WIDTH,$LOGSPROP_COLUMN_LOGID, $LOGSPROP_COLUMN_KEYWORDS
             from $TABLE_GPSLOG_PROPERTIES where $LOGSPROP_COLUMN_LOGID=$logId
             """;
     var resLogData = select(logPropQuery);
@@ -503,7 +503,8 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
         ..color = map.get(LOGSPROP_COLUMN_COLOR)
         ..isVisible = map.get(LOGSPROP_COLUMN_VISIBLE)
         ..width = map.get(LOGSPROP_COLUMN_WIDTH)
-        ..logid = map.get(LOGSPROP_COLUMN_LOGID);
+        ..logid = map.get(LOGSPROP_COLUMN_LOGID)
+        ..tags = map.get(LOGSPROP_COLUMN_KEYWORDS);
       return prop;
     }
     return null;
@@ -658,6 +659,13 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
         END
     ''';
     var updatedId = execute(sql);
+    return updatedId;
+  }
+
+  @override
+  int? updateGpsLogTags(int logId, String tags) {
+    var updatedId = execute(
+        "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_KEYWORDS='$tags' where $LOGSPROP_COLUMN_LOGID=$logId");
     return updatedId;
   }
 
@@ -908,6 +916,25 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
         _db.execute(sql);
         sql =
             "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_LON_FILTERED real;";
+        _db.execute(sql);
+      });
+    }
+
+    // add a column keywords to the gpslog properties table
+    tableColumns = getTableColumns(
+        TableName(TABLE_GPSLOG_PROPERTIES, schemaSupported: false));
+    bool hasKeywords = false;
+    tableColumns.forEach((list) {
+      String name = list[0];
+      if (name.toLowerCase() == LOGSPROP_COLUMN_KEYWORDS) {
+        hasKeywords = true;
+      }
+    });
+    if (!hasKeywords) {
+      SMLogger().w("Adding extra column keywords to log properties.");
+      Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
+        String sql =
+            "alter table $TABLE_GPSLOG_PROPERTIES add column $LOGSPROP_COLUMN_KEYWORDS text;";
         _db.execute(sql);
       });
     }

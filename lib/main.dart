@@ -539,7 +539,18 @@ Future<String?> handlePreferences(BuildContext context) async {
 
 Future<String?> handleWorkspace(BuildContext context) async {
   try {
-    await Workspace.init(doSafeMode: false);
+    try {
+      await Workspace.init(doSafeMode: false);
+    } on Exception catch (e, s) {
+      var msg = "Error during workspace init, retrying in safe mode";
+      if (e.toString() != "Exception") {
+        msg += ": ${e.toString()}";
+      }
+      logMsg(msg, e, s);
+      // try again in safe mode
+      await Workspace.init(doSafeMode: true);
+    }
+
     var directory = await Workspace.getConfigFolder();
     bool init = SLogger().init(directory.path) ?? false; // init logger
     if (init) SMLogger().setSubLogger(SLogger());
@@ -559,7 +570,10 @@ Future<String?> handleWorkspace(BuildContext context) async {
     }
     return null;
   } on Exception catch (e, s) {
-    var msg = "Error during workspace initialization.";
+    var msg = "Error during workspace initialization";
+    if (e.toString() != "Exception") {
+      msg += ": ${e.toString()}";
+    }
     return logMsg(msg, e, s);
   }
 }
