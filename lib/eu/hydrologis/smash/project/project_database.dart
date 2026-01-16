@@ -639,6 +639,13 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   }
 
   @override
+  int? updateGpsLogKeywords(int logId, String keywords) {
+    var updatedId = execute(
+        "update $TABLE_GPSLOG_PROPERTIES set $LOGSPROP_COLUMN_KEYWORDS='$keywords' where $LOGSPROP_COLUMN_LOGID=$logId");
+    return updatedId;
+  }
+
+  @override
   int? updateGpsLogVisibility(bool isVisible, [int? logId]) {
     String where = "";
     if (logId != null) {

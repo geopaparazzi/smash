@@ -179,7 +179,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                             SL.of(context).settings_size), //"Size"
                         Flexible(
                             flex: 1,
-                            child: Slider(
+                            child: SmashSlider(
                               activeColor: SmashColors.mainSelection,
                               min: 5.0,
                               max: 100,
@@ -211,7 +211,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                             SL.of(context).settings_width), //"Width"
                         Flexible(
                             flex: 1,
-                            child: Slider(
+                            child: SmashSlider(
                               activeColor: SmashColors.mainSelection,
                               min: 1,
                               max: 20,
@@ -255,7 +255,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                       children: <Widget>[
                         Flexible(
                             flex: 1,
-                            child: Slider(
+                            child: SmashSlider(
                               activeColor: SmashColors.mainSelection,
                               min: 10.0,
                               max: 100,

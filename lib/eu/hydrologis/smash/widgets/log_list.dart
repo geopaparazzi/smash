@@ -6,7 +6,8 @@
 
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
-import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
+    hide TextStyle;
 import 'package:dart_jts/dart_jts.dart' hide Orientation, Key;
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -22,6 +23,7 @@ import 'package:smash/generated/l10n.dart';
 import 'package:smash_import_export_plugins/smash_import_export_plugins.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
+import 'package:flutter_tags_x/flutter_tags_x.dart';
 
 /// Log object dedicated to the list widget containing logs.
 class Log4ListWidget {
@@ -33,6 +35,7 @@ class Log4ListWidget {
   double? lengthm = 0.0;
   String? color;
   int? isVisible;
+  String? keywords;
 }
 
 /// [QueryObjectBuilder] to allow easy extraction from the db.
@@ -47,7 +50,8 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
       ..lengthm = map.get(LOGS_COLUMN_LENGTHM)
       ..color = map.get(LOGSPROP_COLUMN_COLOR)
       ..width = map.get(LOGSPROP_COLUMN_WIDTH)
-      ..isVisible = map.get(LOGSPROP_COLUMN_VISIBLE);
+      ..isVisible = map.get(LOGSPROP_COLUMN_VISIBLE)
+      ..keywords = map.get(LOGSPROP_COLUMN_KEYWORDS);
     return l;
   }
 
@@ -55,7 +59,7 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
   String querySql() {
     String sql = '''
         SELECT l.$LOGS_COLUMN_ID, l.$LOGS_COLUMN_TEXT, l.$LOGS_COLUMN_STARTTS, l.$LOGS_COLUMN_ENDTS, 
-               l.$LOGS_COLUMN_LENGTHM, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH, p.$LOGSPROP_COLUMN_VISIBLE
+               l.$LOGS_COLUMN_LENGTHM, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH, p.$LOGSPROP_COLUMN_VISIBLE, p.$LOGSPROP_COLUMN_KEYWORDS
         FROM $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
         WHERE l.$LOGS_COLUMN_ID=p.$LOGSPROP_COLUMN_LOGID
         ORDER BY l.$LOGS_COLUMN_ID
@@ -87,6 +91,7 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
   List<dynamic> _logsList = [];
   bool _isLoading = true;
   bool? useGpsFilteredGenerally;
+  List<String> _selectedTags = [];
 
   @override
   void afterFirstLayout(BuildContext context) {
@@ -97,10 +102,8 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
 
   loadLogs() {
     var itemsList = widget.db.getQueryObjectsList(Log4ListWidgetBuilder());
+    _logsList = itemsList.reversed.toList();
 
-    if (itemsList != null) {
-      _logsList = itemsList.reversed.toList();
-    }
     setState(() {
       _isLoading = false;
     });
@@ -122,10 +125,35 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
           title: Text(SL.of(context).logList_gpsLogsList), //"GPS Logs list"
           actions: <Widget>[
             IconButton(
-                onPressed: () => showSettings(context),
+                onPressed: () async {
+                  await showSettings(context);
+                  loadLogs();
+                },
                 icon: Icon(
                   MdiIcons.cog,
                   color: SmashColors.mainBackground,
+                )),
+            IconButton(
+                onPressed: () async {
+                  var allTags = GpPreferences().getStringListSync(
+                      SmashPreferencesKeys.KEY_GPS_LOG_TAGS, [])!;
+                  allTags.sort(
+                      (a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+
+                  var selected =
+                      await SmashDialogs.showMultiSelectionComboDialog(
+                          context, "Select tags to view", allTags,
+                          selectedItems: _selectedTags);
+                  if (selected != null) {
+                    _selectedTags = selected;
+                    setState(() {});
+                  }
+                },
+                icon: Icon(
+                  MdiIcons.filterVariant,
+                  color: _selectedTags.isEmpty
+                      ? SmashColors.mainBackground
+                      : SmashColors.mainSelection,
                 )),
             PopupMenuButton<int>(
               onSelected: (value) async {
@@ -194,16 +222,37 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                 child: SmashCircularProgress(
                     label:
                         SL.of(context).logList_loadingLogs)) //"Loading logs..."
-            : ListView.builder(
-                itemCount: _logsList.length,
-                itemBuilder: (context, index) {
-                  Log4ListWidget logItem = _logsList[index] as Log4ListWidget;
-                  return LogInfo(logItem, gpsState, projectState, loadLogs,
-                      useGpsFilteredGenerally,
-                      key: Key("${logItem.id}"));
-                }),
+            : filterLogs(gpsState, projectState),
       ),
     );
+  }
+
+  ListView filterLogs(GpsState gpsState, ProjectState projectState) {
+    List<dynamic> filteredList = [];
+    if (_selectedTags.isNotEmpty) {
+      for (var logItem in _logsList) {
+        Log4ListWidget log = logItem as Log4ListWidget;
+        if (log.keywords != null && log.keywords!.isNotEmpty) {
+          var logTags = log.keywords!.split(";");
+          for (var selectedTag in _selectedTags) {
+            if (logTags.contains(selectedTag)) {
+              filteredList.add(logItem);
+              break;
+            }
+          }
+        }
+      }
+    } else {
+      filteredList = _logsList;
+    }
+    return ListView.builder(
+        itemCount: filteredList.length,
+        itemBuilder: (context, index) {
+          Log4ListWidget logItem = filteredList[index] as Log4ListWidget;
+          return LogInfo(logItem, gpsState, projectState, loadLogs,
+              useGpsFilteredGenerally,
+              key: Key("${logItem.id}"));
+        });
   }
 
   Future<void> showSettings(BuildContext context) async {
@@ -344,7 +393,7 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                 context,
                 MaterialPageRoute(
                     builder: (context) => LogPropertiesWidget(logItem)));
-            setState(() {});
+            widget.reloadLogFunction();
           },
           foregroundColor: SmashColors.mainBackground,
           backgroundColor: SmashColors.mainDecorations.withAlpha(170),
@@ -514,7 +563,13 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                       ),
                       Text(countString),
                     ],
-                  )
+                  ),
+                  if (logItem.keywords != null &&
+                      logItem.keywords!.trim().isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: LogTagsView(tagsString: logItem.keywords),
+                    )
                 ],
               ),
             ),
@@ -632,5 +687,54 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       }
     }
     return [up, down.abs(), length, pointsList.length.toDouble()];
+  }
+}
+
+class LogTagsView extends StatelessWidget {
+  final String? tagsString; // e.g. "forest;hydrology;field"
+  final double fontSize;
+  final bool wrapSpacingTight;
+
+  const LogTagsView({
+    required this.tagsString,
+    this.fontSize = 14,
+    this.wrapSpacingTight = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final tags = (tagsString ?? '')
+        .split(';')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toSet()
+        .toList()
+      ..sort();
+
+    if (tags.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Tags(
+      alignment: WrapAlignment.start,
+      spacing: wrapSpacingTight ? 4 : 8,
+      runSpacing: wrapSpacingTight ? 4 : 8,
+      itemCount: tags.length,
+      itemBuilder: (int index) {
+        final t = tags[index];
+        return ItemTags(
+          key: Key('tag_$index'),
+          index: index,
+          title: t,
+          active: true,
+          pressEnabled: false, // just display
+          textStyle: TextStyle(fontSize: fontSize),
+          activeColor: SmashColors.mainDecorations,
+          color: SmashColors.mainDecorations,
+          textActiveColor: SmashColors.mainBackground,
+          borderRadius: BorderRadius.circular(12),
+        );
+      },
+    );
   }
 }

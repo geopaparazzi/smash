@@ -234,14 +234,13 @@ class GpsLogDialogs {
     String okText = 'Ok',
     String cancelText = 'Cancel',
     bool isPassword = false,
-    String prefsKeyAllTags = 'smash_pref_keywords',
     List<String>? initialSelectedTags,
     String? Function(String?)? validationFunction,
   }) async {
     // Load default/available tags from prefs
-    List<String> allTags =
-        (await GpPreferences().getStringList(prefsKeyAllTags, [])) ??
-            <String>[];
+    List<String> allTags = (await GpPreferences()
+            .getStringList(SmashPreferencesKeys.KEY_GPS_LOG_TAGS, [])) ??
+        <String>[];
     allTags = allTags
         .map((e) => e.trim())
         .where((e) => e.isNotEmpty)
@@ -281,7 +280,8 @@ class GpsLogDialogs {
               if (!allTags.contains(tag)) {
                 allTags.add(tag);
                 allTags.sort();
-                GpPreferences().setStringListSync(prefsKeyAllTags, allTags);
+                GpPreferences().setStringListSync(
+                    SmashPreferencesKeys.KEY_GPS_LOG_TAGS, allTags);
               }
 
               setState(() {});
@@ -337,28 +337,6 @@ class GpsLogDialogs {
                           style: Theme.of(ctx).textTheme.labelLarge),
                       const SizedBox(height: 8),
 
-                      // Input row: type + add
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: tagController,
-                              focusNode: tagFocusNode,
-                              decoration: const InputDecoration(
-                                hintText: 'Type a new tag and press +',
-                              ),
-                              onSubmitted: (_) => addFromInput(),
-                              textInputAction: TextInputAction.done,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: addFromInput,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-
                       // Selected tags list (removable)
                       if (selectedTags.isEmpty)
                         Text(
@@ -377,7 +355,13 @@ class GpsLogDialogs {
                               title: item,
                               active: true,
                               pressEnabled: true,
+                              activeColor: SmashColors.mainDecorations,
+                              color: SmashColors.mainDecorations,
+                              textActiveColor: SmashColors.mainBackground,
+                              borderRadius: BorderRadius.circular(12),
                               removeButton: ItemTagsRemoveButton(
+                                backgroundColor: SmashColors.mainBackground,
+                                color: SmashColors.mainDecorations,
                                 onRemoved: () {
                                   removeSelectedTagAt(index);
                                   return true;
@@ -406,7 +390,9 @@ class GpsLogDialogs {
                           children: [
                             for (final t in availableTags)
                               ActionChip(
-                                label: Text(t),
+                                label: SmashUI.normalText(t,
+                                    color: SmashColors.mainBackground),
+                                backgroundColor: Colors.lightGreen,
                                 onPressed: () {
                                   addSelectedTag(t);
                                   tagController.clear();
@@ -415,6 +401,29 @@ class GpsLogDialogs {
                               ),
                           ],
                         ),
+
+                      const SizedBox(height: 10),
+                      // Input row: type + add
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: tagController,
+                              focusNode: tagFocusNode,
+                              decoration: const InputDecoration(
+                                hintText: 'or type a new tag and press +',
+                              ),
+                              onSubmitted: (_) => addFromInput(),
+                              textInputAction: TextInputAction.done,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: addFromInput,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),

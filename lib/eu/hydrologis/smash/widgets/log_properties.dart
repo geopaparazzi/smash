@@ -10,6 +10,7 @@ import 'dart:math';
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Key;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -41,6 +42,10 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
   ColorTables _ct = ColorTables.none;
   double maxWidth = 20.0;
   bool _somethingChanged = false;
+  late List<String> _tags; // tags on this log
+  late List<String> _allTags; // all tags in project (load from db)
+  final TextEditingController _tagController = TextEditingController();
+  final FocusNode _tagFocusNode = FocusNode();
 
   LogPropertiesWidgetState(this._logItem);
 
@@ -55,6 +60,14 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
         EnhancedColorUtility.splitEnhancedColorString(_logItem.color!);
     _logColor = ColorExt(logColor[0]);
     _ct = logColor[1];
+
+    _tags = [];
+    if (_logItem.keywords != null && _logItem.keywords!.trim().isNotEmpty) {
+      _tags = _logItem.keywords!.split(";");
+    }
+
+    _allTags = GpPreferences()
+        .getStringListSync(SmashPreferencesKeys.KEY_GPS_LOG_TAGS, [])!;
 
     super.initState();
   }
@@ -75,12 +88,22 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
 
             ProjectState projectState =
                 Provider.of<ProjectState>(context, listen: false);
+            var lp = projectState.projectDb!.getLogProperties(_logItem.id!);
+            if (lp != null) {
+              var newKeywords = _tags.join(";");
+              if (lp.tags != newKeywords) {
+                lp.tags = newKeywords;
+                projectState.projectDb!
+                    .updateGpsLogKeywords(_logItem.id!, newKeywords);
+              }
+            }
+
             projectState.projectDb!.updateGpsLogStyle(
                 _logItem.id!, _logItem.color!, _logItem.width!);
             projectState.reloadProject(context);
           }
           Navigator.pop(context, _somethingChanged);
-          return true;
+          return false;
         },
         child: Scaffold(
           appBar: AppBar(
@@ -88,7 +111,8 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                 .of(context)
                 .logProperties_gpsLogProperties), //"GPS Log Properties"
           ),
-          body: Center(
+          body: SingleChildScrollView(
+            padding: SmashUI.defaultPadding(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -139,7 +163,210 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                       ),
                     ),
                   ),
-                )
+                ),
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Card(
+                    elevation: SmashUI.DEFAULT_ELEVATION,
+                    shape: SmashUI.defaultShapeBorder(),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: SmashUI.defaultPadding(),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              SmashUI.normalText(
+                                  SL.of(context).logProperties_color), //"Color"
+                              Flexible(
+                                flex: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: ColorPickerButton(
+                                      Color(_logColor.value), (newColor) {
+                                    _logColor = ColorExt.fromColor(newColor);
+                                    _somethingChanged = true;
+                                  }),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: SmashUI.defaultPadding(),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              SmashUI.normalText(SL
+                                  .of(context)
+                                  .logProperties_palette), //"Palette"
+                              Flexible(
+                                flex: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8.0),
+                                  child: DropdownButton<ColorTables>(
+                                    value: _ct,
+                                    isExpanded: false,
+                                    items: ColorTables.valuesLogs.map((i) {
+                                      return DropdownMenuItem<ColorTables>(
+                                        child: Text(
+                                          i.name,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        value: i,
+                                      );
+                                    }).toList(),
+                                    onChanged: (selectedCt) async {
+                                      setState(() {
+                                        _ct = selectedCt!;
+                                        _somethingChanged = true;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: SmashUI.defaultPadding(),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              SmashUI.normalText(
+                                  SL.of(context).logProperties_width), //"Width"
+                              Flexible(
+                                flex: 1,
+                                child: SmashSlider(
+                                  key: const ValueKey(
+                                      'log_properties_width_slider'),
+                                  activeColor: SmashColors.mainSelection,
+                                  min: 1.0,
+                                  max: 20.0,
+                                  divisions: 20,
+                                  onChanged: (newRating) {
+                                    _somethingChanged = true;
+                                    setState(
+                                        () => _widthSliderValue = newRating);
+                                  },
+                                  value: _widthSliderValue.clamp(1.0, 20.0),
+                                ),
+                              ),
+                              Container(
+                                width: 50.0,
+                                alignment: Alignment.center,
+                                child: SmashUI.normalText(
+                                  '${_widthSliderValue.toInt()}',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // add card for tags
+                Padding(
+                  padding: SmashUI.defaultPadding(),
+                  child: Card(
+                    elevation: SmashUI.DEFAULT_ELEVATION,
+                    shape: SmashUI.defaultShapeBorder(),
+                    child: Padding(
+                      padding: SmashUI.defaultPadding(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SmashUI.normalText("Keywords"),
+                          const SizedBox(height: 12),
+
+                          Text('Current tags',
+                              style: Theme.of(context).textTheme.labelLarge),
+                          const SizedBox(height: 8),
+
+                          // Selected tags list (removable)
+                          if (_tags.isEmpty)
+                            Text(
+                              'No tags yet.',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            )
+                          else
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                for (final t in _tags)
+                                  Chip(
+                                    label: SmashUI.normalText(t,
+                                        color: SmashColors.mainBackground),
+                                    backgroundColor:
+                                        SmashColors.mainDecorations,
+                                    deleteIconColor: SmashColors.mainBackground,
+                                    onDeleted: () => _removeSelectedTag(t),
+                                  ),
+                              ],
+                            ),
+
+                          const SizedBox(height: 16),
+
+                          Text('Available tags',
+                              style: Theme.of(context).textTheme.labelLarge),
+                          const SizedBox(height: 8),
+
+                          // Available tags area (tap to add)
+                          Builder(
+                            builder: (ctx) {
+                              final available = _availableTags;
+                              if (available.isEmpty) {
+                                return Text(
+                                  'No available tags.',
+                                  style: Theme.of(ctx).textTheme.bodySmall,
+                                );
+                              }
+                              return Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  for (final t in available)
+                                    ActionChip(
+                                      label: SmashUI.normalText(t,
+                                          color: SmashColors.mainBackground),
+                                      backgroundColor: Colors.lightGreen,
+                                      onPressed: () => _addSelectedTag(t),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          // Input row: type + add
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: _tagController,
+                                  focusNode: _tagFocusNode,
+                                  decoration: const InputDecoration(
+                                    hintText: 'or type a new tag and press +',
+                                  ),
+                                  onSubmitted: (_) => _addTagFromInput(),
+                                  textInputAction: TextInputAction.done,
+                                ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: _addTagFromInput,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -174,85 +401,6 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
               _logItem.endTime! - _logItem.startTime!)),
         ],
       ),
-      TableRow(
-        children: [
-          TableUtilities.cellForString(
-              SL.of(context).logProperties_color), //"Color"
-          TableCell(
-            child: Padding(
-              padding: SmashUI.defaultPadding(),
-              child: ColorPickerButton(Color(_logColor.value), (newColor) {
-                _logColor = ColorExt.fromColor(newColor);
-                _somethingChanged = true;
-              }),
-            ),
-          ),
-        ],
-      ),
-      TableRow(
-        children: [
-          TableUtilities.cellForString(
-              SL.of(context).logProperties_palette), //"Palette"
-          TableCell(
-            child: Padding(
-              padding: SmashUI.defaultPadding(),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownButton<ColorTables>(
-                  value: _ct,
-                  isExpanded: false,
-                  items: ColorTables.valuesLogs.map((i) {
-                    return DropdownMenuItem<ColorTables>(
-                      child: Text(
-                        i.name,
-                        textAlign: TextAlign.center,
-                      ),
-                      value: i,
-                    );
-                  }).toList(),
-                  onChanged: (selectedCt) async {
-                    setState(() {
-                      _ct = selectedCt!;
-                      _somethingChanged = true;
-                    });
-                  },
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      TableRow(
-        children: [
-          TableUtilities.cellForString(
-              SL.of(context).logProperties_width), //"Width"
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Flexible(
-                  flex: 1,
-                  child: Slider(
-                    activeColor: SmashColors.mainSelection,
-                    min: 1.0,
-                    max: 20.0,
-                    divisions: 10,
-                    onChanged: (newRating) {
-                      _somethingChanged = true;
-                      setState(() => _widthSliderValue = newRating);
-                    },
-                    value: _widthSliderValue,
-                  )),
-              Container(
-                width: 50.0,
-                alignment: Alignment.center,
-                child: SmashUI.normalText(
-                  '${_widthSliderValue.toInt()}',
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
     ];
   }
 
@@ -278,6 +426,64 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tagController.dispose();
+    _tagFocusNode.dispose();
+    super.dispose();
+  }
+
+  List<String> get _availableTags {
+    final sel = _tags.toSet();
+    final f = _tagController.text.trim().toLowerCase();
+    final base = _allTags.where((t) => !sel.contains(t));
+    if (f.isEmpty) return base.toList()..sort();
+    return base.where((t) => t.toLowerCase().contains(f)).toList()..sort();
+  }
+
+  void _persistAllTagsIfNeeded() {
+    GpPreferences().setStringListSync(
+      SmashPreferencesKeys.KEY_GPS_LOG_TAGS,
+      _allTags,
+    );
+  }
+
+  void _addTagFromInput() {
+    final raw = _tagController.text.trim();
+    if (raw.isEmpty) return;
+
+    setState(() {
+      if (!_tags.contains(raw)) {
+        _tags.add(raw);
+        _somethingChanged = true;
+      }
+      if (!_allTags.contains(raw)) {
+        _allTags.add(raw);
+        _persistAllTagsIfNeeded();
+      }
+      _tagController.clear();
+      _tagFocusNode.requestFocus();
+    });
+  }
+
+  void _removeSelectedTag(String tag) {
+    setState(() {
+      _tags.remove(tag);
+      _somethingChanged = true;
+    });
+  }
+
+  void _addSelectedTag(String tag) {
+    setState(() {
+      if (!_tags.contains(tag)) {
+        _tags.add(tag);
+        _somethingChanged = true;
+      }
+      _tagController.clear();
+      _tagFocusNode.requestFocus();
+    });
   }
 }
 
