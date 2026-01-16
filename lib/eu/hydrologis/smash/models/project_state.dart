@@ -251,7 +251,7 @@ class ProjectState extends ChangeNotifierPlus {
     ];
   }
 
-  int addGpsLog(String logName) {
+  int addGpsLog(String logName, {List<String>? tags}) {
     _currentLogProgressive = null;
     _currentFilteredLogProgressive = null;
     _currentLogTimeDeltaMillis = null;
@@ -267,6 +267,9 @@ class ProjectState extends ChangeNotifierPlus {
     lp.isVisible = 1;
     lp.color = "#FF0000";
     lp.width = 3;
+    if (tags != null && tags.isNotEmpty) {
+      lp.tags = tags.join(";");
+    }
     var logId = projectDb?.addGpsLog(l, lp);
     if (logId != null) {
       return logId;
@@ -282,9 +285,9 @@ class ProjectState extends ChangeNotifierPlus {
   ///
   /// Once logging, the [_onPositionUpdate] method adds the
   /// points as the come.
-  int? startLogging(String logName, GpsState gpsState) {
+  int? startLogging(String logName, GpsState gpsState, {List<String>? tags}) {
     try {
-      var logId = addGpsLog(logName);
+      var logId = addGpsLog(logName, tags: tags);
       _currentLogId = logId;
       _isLogging = true;
 
