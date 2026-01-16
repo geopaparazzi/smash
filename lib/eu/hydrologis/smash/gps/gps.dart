@@ -134,7 +134,7 @@ class GpsHandler with Localization {
 
   Future<void> init(GpsState initGpsState, ProjectState projectState) async {
     SMLogger().i("Init GpsHandler");
-    if (SmashPlatform.isDesktop()) {
+    if (SmashPlatform.isDesktop() && !initGpsState.doTestLog) {
       SMLogger().i("No gps handler active on desktop.");
       return;
     }
@@ -160,6 +160,8 @@ class GpsHandler with Localization {
   Future initGpsWithCheck() async {
     if (_gpsState.doTestLog) {
       TestLogStream().start();
+      _gpsState.status = GpsStatus.ON_NO_FIX;
+      return;
     } else {
       TestLogStream().stop();
     }

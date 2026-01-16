@@ -156,14 +156,12 @@ class _SettingsWidgetState extends State<SettingsWidget> {
           showSettingsSheet(context);
         });
 
-    GpsState gpsState = Provider.of<GpsState>(context, listen: false);
-
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(SL.of(context).settings_settings), //"Settings"
       ),
       body: ListView(children: <Widget>[
-        if (gpsState.status != GpsStatus.NOGPS) gpsSettingTile,
+        gpsSettingTile,
         screenSettingTile,
         cameraSettingTile,
         vectorLayerSettingTile,
