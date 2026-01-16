@@ -31,12 +31,13 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "eu.hydrologis.smash"
+    
+    compileSdk 36
 
     defaultConfig {
         applicationId "eu.hydrologis.smash"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 35
-        compileSdk 35
+        targetSdkVersion 36
 //        buildToolsVersion = "34.0.0"
         
         versionCode flutterVersionCode.toInteger()
