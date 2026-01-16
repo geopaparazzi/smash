@@ -211,6 +211,7 @@ dependencies:
 # dep override for intl
 dependency_overrides: 
   intl: ^0.20.2
+  ecache: 2.0.10
 
 
 dev_dependencies:

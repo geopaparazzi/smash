@@ -45,7 +45,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
     List<GridTile> _iconButtons = [];
     chosenIconsList.forEach((iconName) {
       var color = SmashColors.mainDecorations;
-      if (iconName == _marker) color = SmashColors.mainSelection;
+      if (iconName == _marker) color = _noteColor;
       var but = GridTile(
           child: FittedBox(
         child: Card(
@@ -151,6 +151,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                                     child: ColorPickerButton(_noteColor,
                                         (newColor) {
                                       _noteColor = ColorExt.fromColor(newColor);
+                                      setState(() {});
                                       _somethingChanged = true;
                                     }),
                                   )),
