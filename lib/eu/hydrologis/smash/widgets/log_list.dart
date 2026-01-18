@@ -515,64 +515,62 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(left: 12.0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: pad),
-                        child: dayIcon,
-                      ),
-                      Text(dayString),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: pad),
-                        child: timeIcon,
-                      ),
-                      Text(timeString),
-                      Padding(
-                        padding: EdgeInsets.only(right: pad),
-                        child: distIcon,
-                      ),
-                      Text(lengthString),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: pad),
-                        child: upIcon,
-                      ),
-                      Text(upString),
-                      Padding(
-                        padding: EdgeInsets.only(left: padLeft, right: pad),
-                        child: downIcon,
-                      ),
-                      Text(downString),
-                      Padding(
-                        padding: EdgeInsets.only(left: padLeft, right: pad),
-                        child: countIcon,
-                      ),
-                      Text(countString),
-                    ],
-                  ),
-                  if (logItem.keywords != null &&
-                      logItem.keywords!.trim().isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: LogTagsView(tagsString: logItem.keywords),
-                    )
-                ],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.only(right: pad),
+                            child: dayIcon),
+                        Text(dayString),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.only(right: pad),
+                            child: timeIcon),
+                        Text(timeString),
+                        Padding(
+                            padding: EdgeInsets.only(right: pad),
+                            child: distIcon),
+                        Text(lengthString),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.only(right: pad),
+                            child: upIcon),
+                        Text(upString),
+                        Padding(
+                            padding: EdgeInsets.only(left: padLeft, right: pad),
+                            child: downIcon),
+                        Text(downString),
+                        Padding(
+                            padding: EdgeInsets.only(left: padLeft, right: pad),
+                            child: countIcon),
+                        Text(countString),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
+              if (logItem.keywords != null &&
+                  logItem.keywords!.trim().isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: LogTagsView(tagsString: logItem.keywords),
+                ),
+            ],
           ),
         ),
       ),

@@ -293,10 +293,17 @@ class GpsLogDialogs {
             }
 
             void addFromInput() {
+              final hadFocus = tagFocusNode.hasFocus;
               final v = tagController.text;
               addSelectedTag(v);
               tagController.clear();
-              tagFocusNode.requestFocus();
+
+              if (hadFocus) {
+                tagFocusNode
+                    .requestFocus(); // keep keyboard only if they were already typing
+              } else {
+                FocusScope.of(ctx).unfocus();
+              }
             }
 
             final nameField = TextFormField(
@@ -396,7 +403,8 @@ class GpsLogDialogs {
                                 onPressed: () {
                                   addSelectedTag(t);
                                   tagController.clear();
-                                  tagFocusNode.requestFocus();
+                                  FocusScope.of(ctx)
+                                      .unfocus(); // just remove focus calls entirely
                                 },
                               ),
                           ],
