@@ -1,0 +1,18 @@
+Features:
+
+- added tags for logs to better catalog and filer data
+- make gpx layers queryable when description contains key=value pairs
+
+Enhancements:
+
+- better markers with labels support. Fixes the ugly look of long labels.
+- file browser case insensitive sort order
+- show all values in the autocomplete forms on focus
+- Add the possibility to set memory enabled fields in the forms. The values for these fields will be remembered and filled on form opening the next time.
+
+Bugfixes:
+
+- fix on gpx layers showing empty when set without labels
+- fix for gpx layers with broken properties view
+- fix on notes and plog properties colors
+- fix to see elevate theme on mapsforge maps (isolines, openandromap)
