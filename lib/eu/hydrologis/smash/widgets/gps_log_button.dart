@@ -17,6 +17,7 @@ import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/log_tags.dart';
 
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///
@@ -108,17 +109,6 @@ class _LoggingButtonState extends State<LoggingButton> {
         String logName =
             "log_${TimeUtilities.DATE_TS_FORMATTER.format(DateTime.now())}";
 
-        // String? userString = await showInputDialog(
-        //   context,
-        //   SL.of(context).gpsLogButton_newLog, //"New Log"
-        //   SL
-        //       .of(context)
-        //       .gpsLogButton_enterNameForNewLog, //"Enter a name for the new log"
-        //   hintText: '',
-        //   defaultText: logName,
-        //   validationFunction: noEmptyValidator,
-        // );
-
         final NameAndTagsResult? res =
             await GpsLogDialogs.showNameAndTagsDialog(
           context,
@@ -147,75 +137,6 @@ class _LoggingButtonState extends State<LoggingButton> {
       }
     }
   }
-
-//   static Future<String?> showInputDialog(
-//       BuildContext context, String title, String label,
-//       {defaultText: '',
-//       hintText: '',
-//       okText: 'Ok',
-//       cancelText: 'Cancel',
-//       isPassword: false,
-//       Function? validationFunction}) async {
-//     String? errorText;
-
-//     var textEditingController = new TextEditingController(text: defaultText);
-//     var inputDecoration = new InputDecoration(
-//       labelText: label,
-//       hintText: hintText,
-//     );
-//     var _textWidget = new TextFormField(
-//       controller: textEditingController,
-//       autofocus: true,
-//       autovalidateMode: AutovalidateMode.onUserInteraction,
-//       decoration: inputDecoration,
-//       obscureText: isPassword,
-//       validator: (inputText) {
-//         if (validationFunction != null) {
-//           errorText = validationFunction(inputText);
-//         } else {
-//           errorText = null;
-//         }
-//         return errorText;
-//       },
-//     );
-
-//     return showDialog<String>(
-//       context: context,
-//       barrierDismissible: false,
-//       // dialog is dismissible with a tap on the barrier
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text(title),
-//           content: Builder(builder: (context) {
-//             var width = MediaQuery.of(context).size.width;
-//             return Container(
-//               width: width,
-//               child: new Row(
-//                 mainAxisSize: MainAxisSize.max,
-//                 children: <Widget>[new Expanded(child: _textWidget)],
-//               ),
-//             );
-//           }),
-//           actions: <Widget>[
-//             TextButton(
-//               child: Text(cancelText),
-//               onPressed: () {
-//                 Navigator.of(context).pop(null);
-//               },
-//             ),
-//             TextButton(
-//               child: Text(okText),
-//               onPressed: () {
-//                 if (errorText == null) {
-//                   Navigator.of(context).pop(textEditingController.text);
-//                 }
-//               },
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
 }
 
 class NameAndTagsResult {
@@ -237,18 +158,7 @@ class GpsLogDialogs {
     List<String>? initialSelectedTags,
     String? Function(String?)? validationFunction,
   }) async {
-    // Load default/available tags from prefs
-    List<String> allTags = (await GpPreferences()
-            .getStringList(SmashPreferencesKeys.KEY_GPS_LOG_TAGS, [])) ??
-        <String>[];
-    allTags = allTags
-        .map((e) => e.trim())
-        .where((e) => e.isNotEmpty)
-        .toSet()
-        .toList()
-      ..sort();
-
-    final List<String> selectedTags = (initialSelectedTags ?? <String>[])
+    List<String> selectedTags = (initialSelectedTags ?? <String>[])
         .map((e) => e.trim())
         .where((e) => e.isNotEmpty)
         .toSet()
@@ -258,54 +168,12 @@ class GpsLogDialogs {
     String? errorText;
     final nameController = TextEditingController(text: defaultText);
 
-    final tagController = TextEditingController();
-    final tagFocusNode = FocusNode();
-
     return showDialog<NameAndTagsResult>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext dialogCtx) {
         return StatefulBuilder(
           builder: (ctx, setState) {
-            void addSelectedTag(String raw) {
-              final tag = raw.trim();
-              if (tag.isEmpty) return;
-
-              if (!selectedTags.contains(tag)) {
-                selectedTags.add(tag);
-                selectedTags.sort();
-              }
-
-              // If new, also add to defaults and persist
-              if (!allTags.contains(tag)) {
-                allTags.add(tag);
-                allTags.sort();
-                GpPreferences().setStringListSync(
-                    SmashPreferencesKeys.KEY_GPS_LOG_TAGS, allTags);
-              }
-
-              setState(() {});
-            }
-
-            void removeSelectedTagAt(int index) {
-              selectedTags.removeAt(index);
-              setState(() {});
-            }
-
-            void addFromInput() {
-              final hadFocus = tagFocusNode.hasFocus;
-              final v = tagController.text;
-              addSelectedTag(v);
-              tagController.clear();
-
-              if (hadFocus) {
-                tagFocusNode
-                    .requestFocus(); // keep keyboard only if they were already typing
-              } else {
-                FocusScope.of(ctx).unfocus();
-              }
-            }
-
             final nameField = TextFormField(
               controller: nameController,
               autofocus: true,
@@ -322,16 +190,13 @@ class GpsLogDialogs {
               textInputAction: TextInputAction.next,
             );
 
-            // Available tags = defaults minus selected
-            final availableTags =
-                allTags.where((t) => !selectedTags.contains(t)).toList();
-
+            var isLandscape = ScreenUtilities.isLandscape(ctx);
+            var sWidth = ScreenUtilities.getWidth(ctx);
+            var w = isLandscape ? sWidth * 0.6 : sWidth;
             return AlertDialog(
               title: Text(title),
               content: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(ctx).size.width * 0.9,
-                ),
+                constraints: BoxConstraints(minWidth: w, maxWidth: w),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -339,97 +204,17 @@ class GpsLogDialogs {
                     children: [
                       nameField,
                       const SizedBox(height: 16),
-
-                      Text('Current tags',
-                          style: Theme.of(ctx).textTheme.labelLarge),
-                      const SizedBox(height: 8),
-
-                      // Selected tags list (removable)
-                      if (selectedTags.isEmpty)
-                        Text(
-                          'No tags yet.',
-                          style: Theme.of(ctx).textTheme.bodySmall,
-                        )
-                      else
-                        Tags(
-                          alignment: WrapAlignment.start,
-                          itemCount: selectedTags.length,
-                          itemBuilder: (int index) {
-                            final item = selectedTags[index];
-                            return ItemTags(
-                              key: Key('sel_$index'),
-                              index: index,
-                              title: item,
-                              active: true,
-                              pressEnabled: true,
-                              activeColor: SmashColors.mainDecorations,
-                              color: SmashColors.mainDecorations,
-                              textActiveColor: SmashColors.mainBackground,
-                              borderRadius: BorderRadius.circular(12),
-                              removeButton: ItemTagsRemoveButton(
-                                backgroundColor: SmashColors.mainBackground,
-                                color: SmashColors.mainDecorations,
-                                onRemoved: () {
-                                  removeSelectedTagAt(index);
-                                  return true;
-                                },
-                              ),
-                            );
-                          },
-                        ),
-
-                      const SizedBox(height: 16),
-
-                      Text('Available tags',
-                          style: Theme.of(ctx).textTheme.labelLarge),
-                      const SizedBox(height: 8),
-
-                      // Available tags area (tap to add)
-                      if (availableTags.isEmpty)
-                        Text(
-                          'No available tags.',
-                          style: Theme.of(ctx).textTheme.bodySmall,
-                        )
-                      else
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            for (final t in availableTags)
-                              ActionChip(
-                                label: SmashUI.normalText(t,
-                                    color: SmashColors.mainBackground),
-                                backgroundColor: Colors.lightGreen,
-                                onPressed: () {
-                                  addSelectedTag(t);
-                                  tagController.clear();
-                                  FocusScope.of(ctx)
-                                      .unfocus(); // just remove focus calls entirely
-                                },
-                              ),
-                          ],
-                        ),
-
-                      const SizedBox(height: 10),
-                      // Input row: type + add
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: tagController,
-                              focusNode: tagFocusNode,
-                              decoration: const InputDecoration(
-                                hintText: 'or type a new tag and press +',
-                              ),
-                              onSubmitted: (_) => addFromInput(),
-                              textInputAction: TextInputAction.done,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: addFromInput,
-                          ),
-                        ],
+                      SmashTagEditor(
+                        title: "",
+                        tags: selectedTags,
+                        onTagsChanged: (next) {
+                          setState(() {
+                            selectedTags = next;
+                          });
+                        },
+                        onAllTagsChanged: (nextAll) {
+                          setState(() {});
+                        },
                       ),
                       const SizedBox(height: 10),
                     ],

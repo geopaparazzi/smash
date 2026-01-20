@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/log_tags.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -43,7 +44,6 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
   double maxWidth = 20.0;
   bool _somethingChanged = false;
   late List<String> _tags; // tags on this log
-  late List<String> _allTags; // all tags in project (load from db)
   final TextEditingController _tagController = TextEditingController();
   final FocusNode _tagFocusNode = FocusNode();
 
@@ -65,9 +65,6 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
     if (_logItem.keywords != null && _logItem.keywords!.trim().isNotEmpty) {
       _tags = _logItem.keywords!.split(";");
     }
-
-    _allTags = GpPreferences()
-        .getStringListSync(SmashPreferencesKeys.KEY_GPS_LOG_TAGS, [])!;
 
     super.initState();
   }
@@ -274,95 +271,17 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                     shape: SmashUI.defaultShapeBorder(),
                     child: Padding(
                       padding: SmashUI.defaultPadding(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SmashUI.normalText("Keywords"),
-                          const SizedBox(height: 12),
-
-                          Text('Current tags',
-                              style: Theme.of(context).textTheme.labelLarge),
-                          const SizedBox(height: 8),
-
-                          // Selected tags list (removable)
-                          if (_tags.isEmpty)
-                            Text(
-                              'No tags yet.',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          else
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: [
-                                for (final t in _tags)
-                                  Chip(
-                                    label: SmashUI.normalText(t,
-                                        color: SmashColors.mainBackground),
-                                    backgroundColor:
-                                        SmashColors.mainDecorations,
-                                    deleteIconColor: SmashColors.mainBackground,
-                                    onDeleted: () => _removeSelectedTag(t),
-                                  ),
-                              ],
-                            ),
-
-                          const SizedBox(height: 16),
-
-                          Text('Available tags',
-                              style: Theme.of(context).textTheme.labelLarge),
-                          const SizedBox(height: 8),
-
-                          // Available tags area (tap to add)
-                          Builder(
-                            builder: (ctx) {
-                              final available = _availableTags;
-                              if (available.isEmpty) {
-                                return Text(
-                                  'No available tags.',
-                                  style: Theme.of(ctx).textTheme.bodySmall,
-                                );
-                              }
-                              return Wrap(
-                                spacing: 8,
-                                runSpacing: 8,
-                                children: [
-                                  for (final t in available)
-                                    ActionChip(
-                                      label: SmashUI.normalText(t,
-                                          color: SmashColors.mainBackground),
-                                      backgroundColor: Colors.lightGreen,
-                                      onPressed: () => _addSelectedTag(t),
-                                    ),
-                                ],
-                              );
-                            },
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          // Input row: type + add
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _tagController,
-                                  focusNode: _tagFocusNode,
-                                  decoration: const InputDecoration(
-                                    hintText: 'or type a new tag and press +',
-                                  ),
-                                  onSubmitted: (_) => _addTagFromInput(),
-                                  textInputAction: TextInputAction.done,
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.add),
-                                onPressed: _addTagFromInput,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                        ],
+                      child: SmashTagEditor(
+                        tags: _tags,
+                        onTagsChanged: (next) {
+                          setState(() {
+                            _tags = next;
+                            _somethingChanged = true;
+                          });
+                        },
+                        onAllTagsChanged: (nextAll) {
+                          setState(() {});
+                        },
                       ),
                     ),
                   ),
@@ -433,57 +352,6 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
     _tagController.dispose();
     _tagFocusNode.dispose();
     super.dispose();
-  }
-
-  List<String> get _availableTags {
-    final sel = _tags.toSet();
-    final f = _tagController.text.trim().toLowerCase();
-    final base = _allTags.where((t) => !sel.contains(t));
-    if (f.isEmpty) return base.toList()..sort();
-    return base.where((t) => t.toLowerCase().contains(f)).toList()..sort();
-  }
-
-  void _persistAllTagsIfNeeded() {
-    GpPreferences().setStringListSync(
-      SmashPreferencesKeys.KEY_GPS_LOG_TAGS,
-      _allTags,
-    );
-  }
-
-  void _addTagFromInput() {
-    final raw = _tagController.text.trim();
-    if (raw.isEmpty) return;
-
-    setState(() {
-      if (!_tags.contains(raw)) {
-        _tags.add(raw);
-        _somethingChanged = true;
-      }
-      if (!_allTags.contains(raw)) {
-        _allTags.add(raw);
-        _persistAllTagsIfNeeded();
-      }
-      _tagController.clear();
-      _tagFocusNode.requestFocus();
-    });
-  }
-
-  void _removeSelectedTag(String tag) {
-    setState(() {
-      _tags.remove(tag);
-      _somethingChanged = true;
-    });
-  }
-
-  void _addSelectedTag(String tag) {
-    setState(() {
-      if (!_tags.contains(tag)) {
-        _tags.add(tag);
-        _somethingChanged = true;
-      }
-      _tagController.clear();
-      _tagFocusNode.requestFocus();
-    });
   }
 }
 

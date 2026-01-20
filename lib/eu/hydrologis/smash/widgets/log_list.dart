@@ -17,13 +17,13 @@ import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/project_database.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_properties.dart';
+import './log_tags.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings/gpslog_settings.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smash_import_export_plugins/smash_import_export_plugins.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:flutter_tags_x/flutter_tags_x.dart';
 
 /// Log object dedicated to the list widget containing logs.
 class Log4ListWidget {
@@ -713,26 +713,10 @@ class LogTagsView extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Tags(
-      alignment: WrapAlignment.start,
-      spacing: wrapSpacingTight ? 4 : 8,
-      runSpacing: wrapSpacingTight ? 4 : 8,
-      itemCount: tags.length,
-      itemBuilder: (int index) {
-        final t = tags[index];
-        return ItemTags(
-          key: Key('tag_$index'),
-          index: index,
-          title: t,
-          active: true,
-          pressEnabled: false, // just display
-          textStyle: TextStyle(fontSize: fontSize),
-          activeColor: SmashColors.mainDecorations,
-          color: SmashColors.mainDecorations,
-          textActiveColor: SmashColors.mainBackground,
-          borderRadius: BorderRadius.circular(12),
-        );
-      },
+    return SmashSelectedReadonlyTags(
+      tags: tags,
+      fontSize: fontSize,
+      wrapSpacingTight: wrapSpacingTight,
     );
   }
 }
