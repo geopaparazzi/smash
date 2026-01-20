@@ -214,7 +214,10 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                             padding: EdgeInsets.all(5),
                             mainAxisSpacing: 2,
                             crossAxisSpacing: 2,
-                            children: _iconButtons,
+                            children: [
+                              ..._iconButtons,
+                              _buildMoreIconsTile(context),
+                            ],
                           );
                         },
                       ),
@@ -225,6 +228,33 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
             ),
           ),
         ));
+  }
+
+  Widget _buildMoreIconsTile(BuildContext context) {
+    return GridTile(
+        child: FittedBox(
+      child: Card(
+        margin: EdgeInsets.all(10),
+        elevation: 5,
+        color: SmashColors.mainBackground,
+        child: IconButton(
+            icon: Icon(Icons.add),
+            color: Colors.lightGreen,
+            onPressed: () async {
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => IconsWidget()));
+              // reload chosen icons
+              chosenIconsList = GpPreferences().getStringListSync(
+                      SmashPreferencesKeys.KEY_ICONS_LIST,
+                      DEFAULT_NOTES_ICONDATA) ??
+                  DEFAULT_NOTES_ICONDATA;
+              if (!chosenIconsList.contains(_marker)) {
+                chosenIconsList.insert(0, _marker);
+              }
+              setState(() {});
+            }),
+      ),
+    ));
   }
 
   _getInfoTableCells(BuildContext context) {
