@@ -192,7 +192,7 @@ class SLCa extends SL {
 
   @override
   String get exportWidget_exportToPortableDocumentFormat =>
-      'Exportar projecte a Portable Document Format (PDF)';
+      'Exportar projecte a Portable Document Format';
 
   @override
   String get exportWidget_gpxExported => 'GPX exportat';
