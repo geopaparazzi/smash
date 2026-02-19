@@ -1057,7 +1057,6 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   Future<int?> _showAddPiecePicker(BuildContext context, int parentId) async {
     final db = widget.projectState.projectDb!;
 
-    // Pull all logs as list widgets (fast enough; if you want, later we can pass them in)
     final all =
         db.getQueryObjectsList(Log4ListWidgetBuilder()).cast<Log4ListWidget>();
 
@@ -1076,6 +1075,10 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
 
       // avoid nesting: do not allow selecting a log that is already a child
       if (l.parentId != null) return false;
+
+      // also do not allow selecting logs that have children, to avoid nesting
+      final hasChildren = all.any((other) => other.parentId == id);
+      if (hasChildren) return false;
 
       return true;
     }).toList();
@@ -1126,9 +1129,10 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                     Row(
                       children: [
                         Expanded(
-                          child: Text(
+                          child: SmashUI.titleText(
                             "Add piece", // TODO i18n
-                            style: Theme.of(ctx).textTheme.titleMedium,
+                            bold: true, textAlign: TextAlign.center,
+                            color: SmashColors.mainDecorationsDarker,
                           ),
                         ),
                         IconButton(
@@ -1154,7 +1158,9 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                     if (filtered.isEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 24.0),
-                        child: Text("No eligible logs found."), // TODO i18n
+                        child: SmashUI.normalText("No eligible logs found.",
+                            color:
+                                SmashColors.mainDecorationsDarker), // TODO i18n
                       )
                     else
                       ConstrainedBox(
@@ -1175,9 +1181,13 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                                 : "";
 
                             return ListTile(
+                              leading: _buildLogColorIcon(l),
                               dense: true,
-                              title: Text(l.name ?? "Log ${l.id}"),
-                              subtitle: Text(day),
+                              title: SmashUI.normalText(l.name ?? "Log ${l.id}",
+                                  color: SmashColors.mainDecorationsDarker,
+                                  bold: true),
+                              subtitle: SmashUI.normalText(day,
+                                  color: SmashColors.mainDecorationsDarker),
                               onTap: () => Navigator.pop(ctx, l.id),
                             );
                           },
