@@ -25,6 +25,9 @@ import 'package:smashlibs/smashlibs.dart';
 /// Log object dedicated to the list widget containing logs.
 class Log4ListWidget {
   int? id;
+  int? parentId;
+  bool get isChild => parentId != null;
+
   String? name;
   double? width;
   int? startTime = 0;
@@ -35,12 +38,35 @@ class Log4ListWidget {
   String? keywords;
 }
 
+class PieceStats {
+  final int id;
+  final String name;
+  final String day;
+  final String duration;
+  final double lengthMeters;
+  final double up;
+  final double down;
+  final int count;
+
+  PieceStats({
+    required this.id,
+    required this.name,
+    required this.day,
+    required this.duration,
+    required this.lengthMeters,
+    required this.up,
+    required this.down,
+    required this.count,
+  });
+}
+
 /// [QueryObjectBuilder] to allow easy extraction from the db.
 class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
   @override
   Log4ListWidget fromRow(QueryResultRow map) {
     Log4ListWidget l = new Log4ListWidget()
       ..id = map.get(LOGS_COLUMN_ID)
+      ..parentId = map.get(LOGS_COLUMN_PARENTID)
       ..name = map.get(LOGS_COLUMN_TEXT)
       ..startTime = map.get(LOGS_COLUMN_STARTTS)
       ..endTime = map.get(LOGS_COLUMN_ENDTS)
@@ -55,11 +81,22 @@ class Log4ListWidgetBuilder extends QueryObjectBuilder<Log4ListWidget> {
   @override
   String querySql() {
     String sql = '''
-        SELECT l.$LOGS_COLUMN_ID, l.$LOGS_COLUMN_TEXT, l.$LOGS_COLUMN_STARTTS, l.$LOGS_COLUMN_ENDTS, 
-               l.$LOGS_COLUMN_LENGTHM, p.$LOGSPROP_COLUMN_COLOR, p.$LOGSPROP_COLUMN_WIDTH, p.$LOGSPROP_COLUMN_VISIBLE, p.$LOGSPROP_COLUMN_KEYWORDS
+        SELECT l.$LOGS_COLUMN_ID, 
+               l.$LOGS_COLUMN_PARENTID, 
+               l.$LOGS_COLUMN_TEXT, 
+               l.$LOGS_COLUMN_STARTTS, 
+               l.$LOGS_COLUMN_ENDTS, 
+               l.$LOGS_COLUMN_LENGTHM, 
+               p.$LOGSPROP_COLUMN_COLOR, 
+               p.$LOGSPROP_COLUMN_WIDTH, 
+               p.$LOGSPROP_COLUMN_VISIBLE, 
+               p.$LOGSPROP_COLUMN_KEYWORDS
         FROM $TABLE_GPSLOGS l, $TABLE_GPSLOG_PROPERTIES p 
         WHERE l.$LOGS_COLUMN_ID=p.$LOGSPROP_COLUMN_LOGID
-        ORDER BY l.$LOGS_COLUMN_ID
+        ORDER BY
+          COALESCE(l.$LOGS_COLUMN_PARENTID, l.$LOGS_COLUMN_ID),
+          CASE WHEN l.$LOGS_COLUMN_PARENTID IS NULL THEN 0 ELSE 1 END,
+          l.$LOGS_COLUMN_STARTTS
     ''';
     return sql;
   }
@@ -84,26 +121,45 @@ class LogListWidget extends StatefulWidget {
 }
 
 /// The log list widget state.
-class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
-  List<dynamic> _logsList = [];
-  bool _isLoading = true;
+class LogListWidgetState extends State<LogListWidget> {
   bool? useGpsFilteredGenerally;
   List<String> _selectedTags = [];
 
+  late Future<List<Log4ListWidget>> _logsFuture;
+  late Map<int, List<Log4ListWidget>> childrenByParentId;
+
   @override
-  void afterFirstLayout(BuildContext context) {
+  void initState() {
+    super.initState();
     useGpsFilteredGenerally = GpPreferences().getBooleanSync(
-        SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
-    loadLogs();
+      SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY,
+      false,
+    );
+    // Provide an initial future so build() always has something.
+    _logsFuture = _loadLogs();
   }
 
-  loadLogs() {
-    var itemsList = widget.db.getQueryObjectsList(Log4ListWidgetBuilder());
-    _logsList = itemsList.reversed.toList();
-
+  void _refreshLogs() {
     setState(() {
-      _isLoading = false;
+      _logsFuture = _loadLogs();
     });
+  }
+
+  Future<List<Log4ListWidget>> _loadLogs() async {
+    var logs = widget.db.getQueryObjectsList(Log4ListWidgetBuilder());
+
+    // first remove child logs
+    var parentLogs = logs.where((log) => log.parentId == null).toList();
+    parentLogs = parentLogs.reversed.toList();
+
+    childrenByParentId = <int, List<Log4ListWidget>>{};
+    for (final l in logs.cast<Log4ListWidget>()) {
+      final pid = l.parentId;
+      if (pid != null) {
+        childrenByParentId.putIfAbsent(pid, () => []).add(l);
+      }
+    }
+    return parentLogs;
   }
 
   @override
@@ -124,7 +180,7 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
             IconButton(
                 onPressed: () async {
                   await showSettings(context);
-                  loadLogs();
+                  _refreshLogs();
                 },
                 icon: Icon(
                   MdiIcons.cog,
@@ -156,18 +212,19 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
               onSelected: (value) async {
                 if (value == 1) {
                   db.updateGpsLogVisibility(true);
-                  loadLogs();
+                  _refreshLogs();
                 } else if (value == 2) {
                   db.updateGpsLogVisibility(false);
-                  loadLogs();
+                  _refreshLogs();
                 } else if (value == 3) {
                   db.invertGpsLogsVisibility();
-                  loadLogs();
+                  _refreshLogs();
                 } else if (value == 4) {
-                  if (_logsList.length > 1) {
+                  final logs = await _logsFuture;
+                  if (logs.length > 1) {
                     var minTs = double.infinity;
                     var masterId;
-                    _logsList.forEach((l) {
+                    logs.forEach((l) {
                       var lw = l as Log4ListWidget;
                       if (lw.isVisible == 1 && lw.startTime! < minTs) {
                         masterId = lw.id;
@@ -175,13 +232,13 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
                     });
 
                     var mergeIds = <int>[];
-                    for (Log4ListWidget log in _logsList) {
+                    for (Log4ListWidget log in logs) {
                       if (log.isVisible == 1 && log.id != masterId) {
                         mergeIds.add(log.id!);
                       }
                     }
                     db.mergeGpslogs(masterId, mergeIds);
-                    loadLogs();
+                    _refreshLogs();
                   }
                 }
               },
@@ -214,21 +271,45 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
             ),
           ],
         ),
-        body: _isLoading
-            ? Center(
+        body: FutureBuilder<List<Log4ListWidget>>(
+          future: _logsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
                 child: SmashCircularProgress(
-                    label:
-                        SL.of(context).logList_loadingLogs)) //"Loading logs..."
-            : filterLogs(gpsState, projectState),
+                  label: SL.of(context).logList_loadingLogs,
+                ),
+              );
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("Error loading logs: ${snapshot.error}"),
+              );
+            }
+
+            final parentLogs = snapshot.data ?? const <Log4ListWidget>[];
+            return filterLogs(gpsState, projectState, parentLogs);
+          },
+        ),
+
+        // _isLoading
+        //     ? Center(
+        //         child: SmashCircularProgress(
+        //             label:
+        //                 SL.of(context).logList_loadingLogs)) //"Loading logs..."
+        //     : filterLogs(gpsState, projectState),
       ),
     );
   }
 
-  ListView filterLogs(GpsState gpsState, ProjectState projectState) {
-    List<dynamic> filteredList = [];
+  ListView filterLogs(GpsState gpsState, ProjectState projectState,
+      List<Log4ListWidget> parentLogs) {
+    // then filter of necessary
+    List<Log4ListWidget> filteredList = [];
     if (_selectedTags.isNotEmpty) {
-      for (var logItem in _logsList) {
-        Log4ListWidget log = logItem as Log4ListWidget;
+      for (var logItem in parentLogs) {
+        Log4ListWidget log = logItem;
         if (log.keywords != null && log.keywords!.isNotEmpty) {
           var logTags = log.keywords!.split(";");
           for (var selectedTag in _selectedTags) {
@@ -240,16 +321,34 @@ class LogListWidgetState extends State<LogListWidget> with AfterLayoutMixin {
         }
       }
     } else {
-      filteredList = _logsList;
+      filteredList = parentLogs;
     }
-    return ListView.builder(
-        itemCount: filteredList.length,
-        itemBuilder: (context, index) {
-          Log4ListWidget logItem = filteredList[index] as Log4ListWidget;
-          return LogInfo(logItem, gpsState, projectState, loadLogs,
-              useGpsFilteredGenerally,
-              key: Key("${logItem.id}"));
-        });
+    return ListView.separated(
+      itemCount: filteredList.length,
+      itemBuilder: (context, index) {
+        Log4ListWidget logItem = filteredList[index];
+        final children =
+            childrenByParentId[logItem.id] ?? const <Log4ListWidget>[];
+
+        return LogInfo(
+          logItem,
+          gpsState,
+          projectState,
+          _refreshLogs,
+          useGpsFilteredGenerally,
+          children: children,
+          key: Key("${logItem.id}"),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return const Divider(
+          height: 1,
+          thickness: 1,
+          indent: 0,
+          endIndent: 0,
+        );
+      },
+    );
   }
 
   Future<void> showSettings(BuildContext context) async {
@@ -271,10 +370,11 @@ class LogInfo extends StatefulWidget {
   final Log4ListWidget logItem;
   final reloadLogFunction;
   final useGpsFilteredGenerally;
+  final List<Log4ListWidget> children;
 
   LogInfo(this.logItem, this.gpsState, this.projectState,
       this.reloadLogFunction, this.useGpsFilteredGenerally,
-      {Key? key})
+      {required this.children, Key? key})
       : super(key: key);
 
   @override
@@ -290,36 +390,115 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
   String upString = "- nv -";
   String downString = "- nv -";
 
+  bool _expanded = false;
+
+  List<PieceStats> _pieceStats = const []; // for the expanded view
+
+  List<Log4ListWidget> get _pieces => [widget.logItem, ...widget.children];
+
   @override
   void afterFirstLayout(BuildContext context) {
-    dayString = TimeUtilities.ISO8601_TS_FORMATTER
-        .format(DateTime.fromMillisecondsSinceEpoch(widget.logItem.startTime!));
     var db = widget.projectState.projectDb!;
 
-    timeString = _getTime(widget.logItem, widget.gpsState, widget.projectState);
-    // lengthString = _getLength(widget.logItem, widget.gpsState);
-    List<double> upDownLengthCount =
-        _getElevMinMaxAndLengthDeltaCount(widget.logItem, widget.gpsState, db);
-    if (upDownLengthCount[0] == -1) {
+    final pieces = _pieces;
+    // Day: choose earliest start among pieces
+    final minStart = pieces
+        .where((p) => p.startTime != null)
+        .map((p) => p.startTime!)
+        .fold<int>(1 << 62, (a, b) => a < b ? a : b);
+    dayString = TimeUtilities.ISO8601_TS_FORMATTER
+        .format(DateTime.fromMillisecondsSinceEpoch(minStart));
+
+    double totalUp = 0;
+    double totalDown = 0;
+    double totalLen = 0;
+    double totalCount = 0;
+
+    int totalDurationMs = 0;
+
+    final perPiece = <PieceStats>[];
+
+    for (final p in pieces) {
+      final dur =
+          _getDurationMillis(p, widget.gpsState, widget.projectState, db);
+      totalDurationMs += dur;
+
+      final upDownLenCnt =
+          _getElevMinMaxAndLengthDeltaCount(p, widget.gpsState, db);
+      final up = upDownLenCnt[0];
+      final down = upDownLenCnt[1];
+      final len = upDownLenCnt[2];
+      final cnt = upDownLenCnt[3];
+
+      // Your method returns -1 sentinel sometimes
+      if (up != -1) {
+        totalUp += up;
+        totalDown += down;
+      }
+
+      totalLen += len;
+      totalCount += cnt;
+
+      perPiece.add(PieceStats(
+        id: p.id!,
+        name: p.name ?? "",
+        day: TimeUtilities.ISO8601_TS_FORMATTER
+            .format(DateTime.fromMillisecondsSinceEpoch(p.startTime!)),
+        duration: StringUtilities.formatDurationMillis(dur),
+        lengthMeters: len,
+        up: up,
+        down: down,
+        count: cnt.toInt(),
+      ));
+    }
+
+    timeString = StringUtilities.formatDurationMillis(totalDurationMs);
+    if (totalUp == 0 && totalDown == 0) {
       upString = "- nv -";
       downString = "- nv -";
     } else {
-      upString = "${upDownLengthCount[0].toInt()}m";
-      downString = "${upDownLengthCount[1].toInt()}m";
+      upString = "${totalUp.toInt()}m";
+      downString = "${totalDown.toInt()}m";
     }
 
-    var count = upDownLengthCount[3];
-    countString = "${count.toInt()} pts";
+    countString = "${totalCount.toInt()} pts";
 
-    var length = upDownLengthCount[2];
-    if (length > 1000) {
-      var lengthKm = length / 1000;
+    if (totalLen > 1000) {
+      var lengthKm = totalLen / 1000;
       var l = (lengthKm * 10).toInt() / 10.0;
       lengthString = "${l.toStringAsFixed(1)} km";
     } else {
-      lengthString = "${length.round()} m";
+      lengthString = "${totalLen.round()} m";
     }
-    setState(() {});
+
+    _pieceStats = perPiece;
+
+    if (mounted) setState(() {});
+  }
+
+  int _getDurationMillis(
+    Log4ListWidget item,
+    GpsState gpsState,
+    ProjectState projectState,
+    GeopaparazziProjectDb db,
+  ) {
+    var endTime = item.endTime ?? 0;
+    if (endTime == 0) {
+      if (projectState.isLogging && item.id == projectState.currentLogId) {
+        endTime = DateTime.now().millisecondsSinceEpoch;
+      } else {
+        // fix endts using last point (your existing logic)
+        final data = db.getLogDataPointsById(item.id!);
+        if (data.isNotEmpty) {
+          final ts = data.last.ts;
+          if (ts != null) db.updateGpsLogEndts(item.id!, ts);
+          endTime = ts ?? item.startTime!;
+        } else {
+          endTime = item.startTime ?? 0;
+        }
+      }
+    }
+    return (endTime - (item.startTime ?? endTime)).clamp(0, 1 << 62);
   }
 
   @override
@@ -364,6 +543,25 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       motion: const ScrollMotion(),
       dismissible: DismissiblePane(onDismissed: () {}),
       children: [
+        // ADD PIECE
+        SlidableAction(
+          label: "Add piece", // TODO i18n
+          foregroundColor: SmashColors.mainBackground,
+          backgroundColor: SmashColors.mainDecorations.withAlpha(130),
+          onPressed: (context) async {
+            final parentId = logItem.id;
+            if (parentId == null) return;
+
+            final selectedChildId =
+                await _showAddPiecePicker(context, parentId);
+            if (selectedChildId != null) {
+              db.setParentLog(selectedChildId, parentId);
+
+              widget.reloadLogFunction();
+            }
+          },
+        ),
+
         // ZOOM TO
         SlidableAction(
             label: SL.of(context).logList_zoomTo, //'Zoom to'
@@ -373,13 +571,20 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             onPressed: (context) async {
               SmashMapState mapState =
                   Provider.of<SmashMapState>(context, listen: false);
-              var logDataPoints = db.getLogDataPoints(logItem.id!);
+              // Collect parent + children ids
+              final ids = <int>[
+                if (logItem.id != null) logItem.id!,
+                ...widget.children.where((c) => c.id != null).map((c) => c.id!),
+              ];
+
               Envelope env = Envelope.empty();
-              logDataPoints.forEach((point) {
-                var lat = point.lat;
-                var lon = point.lon;
-                env.expandToInclude(lon, lat);
-              });
+
+              for (final id in ids) {
+                final logDataPoints = db.getLogDataPoints(id);
+                for (final point in logDataPoints) {
+                  env.expandToInclude(point.lon, point.lat);
+                }
+              }
               mapState.setBounds(env);
               Navigator.of(context).pop();
             }),
@@ -452,6 +657,14 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
             backgroundColor: SmashColors.mainDanger.withAlpha(200),
             // icon: MdiIcons.delete,
             onPressed: (context) async {
+              bool hasChildren = widget.children.isNotEmpty;
+              if (hasChildren) {
+                // deleting log with children is not allowed, first remove children
+                await SmashDialogs.showInfoDialog(context,
+                    'Cannot delete logs with children. Please remove the children first.');
+                return;
+              }
+
               bool? doDelete = await SmashDialogs.showConfirmDialog(
                   context,
                   SL.of(context).logList_DELETE, //"DELETE"
@@ -493,14 +706,25 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
           child: Row(
             children: [
               Checkbox(
-                  value: logItem.isVisible == 1 ? true : false,
-                  onChanged: (isVisible) async {
-                    logItem.isVisible = isVisible! ? 1 : 0;
-                    db.updateGpsLogVisibility(isVisible, logItem.id);
-                    Provider.of<ProjectState>(context, listen: false)
-                        .reloadProject(context);
-                    setState(() {});
-                  }),
+                value: logItem.isVisible == 1,
+                onChanged: (isVisible) async {
+                  if (isVisible == null) return;
+                  final ids = <int>[
+                    logItem.id!,
+                    ...widget.children.map((c) => c.id!),
+                  ];
+
+                  // Update all pieces in one go
+                  for (final id in ids) {
+                    db.updateGpsLogVisibility(isVisible, id);
+                  }
+                  Provider.of<ProjectState>(context, listen: false)
+                      .reloadProject(context);
+                  setState(() {
+                    logItem.isVisible = isVisible ? 1 : 0;
+                  });
+                },
+              ),
               Padding(
                 padding: const EdgeInsets.only(right: 4.0),
                 child: icon,
@@ -566,6 +790,129 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: LogTagsView(tagsString: logItem.keywords),
+                ),
+              // expand/collapse if children exist
+              if (widget.children.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 6.0),
+                  child: InkWell(
+                    onTap: () => setState(() => _expanded = !_expanded),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _expanded ? MdiIcons.chevronUp : MdiIcons.chevronDown,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(_expanded ? "Hide details" : "Show details"),
+                        const SizedBox(width: 8),
+                        Text("(${widget.children.length + 1} pieces)"),
+                      ],
+                    ),
+                  ),
+                ),
+              // if expanded, show details for parent + children
+              if (_expanded && _pieceStats.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 6.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _pieceStats.map((ps) {
+                      final lenStr = ps.lengthMeters > 1000
+                          ? "${(ps.lengthMeters / 1000).toStringAsFixed(1)} km"
+                          : "${ps.lengthMeters.round()} m";
+
+                      final isParent = ps.id == widget.logItem.id;
+                      Log4ListWidget? piece = null;
+                      for (final p in widget.children) {
+                        if (p.id == ps.id) {
+                          piece = p;
+                          break;
+                        }
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              isParent
+                                  ? MdiIcons.arrowRight
+                                  : MdiIcons.subdirectoryArrowRight,
+                              size: 24,
+                              color: SmashColors.mainDecorationsDarker,
+                            ),
+                            const SizedBox(width: 6),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child:
+                                  _buildLogColorIcon(piece ?? widget.logItem),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    ps.name,
+                                    style: TextStyle(
+                                      fontWeight: isParent
+                                          ? FontWeight.w700
+                                          : FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text("${ps.day} • ${ps.duration} • $lenStr"),
+                                ],
+                              ),
+                            ),
+                            if (!isParent && piece != null)
+                              IconButton(
+                                icon: Icon(
+                                  MdiIcons.palette,
+                                  size: 18,
+                                  color: SmashColors.mainDecorationsDarker,
+                                ),
+
+                                tooltip: SL
+                                    .of(context)
+                                    .logList_properties, // or your string
+                                onPressed: () async {
+                                  await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          LogPropertiesWidget(piece!),
+                                    ),
+                                  );
+                                  setState(() {});
+                                },
+                              ),
+                            if (!isParent)
+                              Tooltip(
+                                message: "Remove this log from its parent",
+                                child: IconButton(
+                                  icon: Icon(MdiIcons.linkOff),
+                                  color: SmashColors.mainDecorationsDarker,
+                                  onPressed: () async {
+                                    final doIt =
+                                        await SmashDialogs.showConfirmDialog(
+                                      context,
+                                      "REMOVE",
+                                      "Remove this log from its parent?",
+                                    );
+                                    if (doIt == true) {
+                                      final db = widget.projectState.projectDb!;
+                                      db.setParentLog(ps.id, null);
+                                      widget.reloadLogFunction();
+                                    }
+                                  },
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
             ],
           ),
@@ -682,6 +1029,168 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       }
     }
     return [up, down.abs(), length, pointsList.length.toDouble()];
+  }
+
+  Widget _buildLogColorIcon(Log4ListWidget item) {
+    if (item.color == null) {
+      return Icon(SmashIcons.logIcon, size: SmashUI.SMALL_ICON_SIZE);
+    }
+
+    final logColorObject =
+        EnhancedColorUtility.splitEnhancedColorString(item.color!);
+
+    if (logColorObject[1] != ColorTables.none) {
+      return Icon(
+        MdiIcons.palette,
+        color: ColorExt(logColorObject[0]),
+        size: SmashUI.SMALL_ICON_SIZE,
+      );
+    } else {
+      return Icon(
+        SmashIcons.logIcon,
+        color: ColorExt(logColorObject[0]),
+        size: SmashUI.SMALL_ICON_SIZE,
+      );
+    }
+  }
+
+  Future<int?> _showAddPiecePicker(BuildContext context, int parentId) async {
+    final db = widget.projectState.projectDb!;
+
+    // Pull all logs as list widgets (fast enough; if you want, later we can pass them in)
+    final all =
+        db.getQueryObjectsList(Log4ListWidgetBuilder()).cast<Log4ListWidget>();
+
+    // Exclude: the parent itself + already in this group
+    final excludedIds = <int>{
+      parentId,
+      ...widget.children.where((c) => c.id != null).map((c) => c.id!),
+    };
+
+    // Optional: avoid nesting (only allow logs that are not already children)
+    // If you want to allow moving a child from another parent, remove this constraint.
+    final candidates = all.where((l) {
+      final id = l.id;
+      if (id == null) return false;
+      if (excludedIds.contains(id)) return false;
+
+      // avoid nesting: do not allow selecting a log that is already a child
+      if (l.parentId != null) return false;
+
+      return true;
+    }).toList();
+
+    candidates.sort((a, b) {
+      final at = a.startTime ?? 0;
+      final bt = b.startTime ?? 0;
+      return bt.compareTo(at); // newest first
+    });
+
+    return showModalBottomSheet<int>(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) {
+        String query = "";
+        List<Log4ListWidget> filtered = List.of(candidates);
+
+        void applyFilter(void Function(void Function()) setModalState) {
+          setModalState(() {
+            if (query.trim().isEmpty) {
+              filtered = List.of(candidates);
+            } else {
+              final q = query.toLowerCase();
+              filtered = candidates.where((l) {
+                final name = (l.name ?? "").toLowerCase();
+                final kws = (l.keywords ?? "").toLowerCase();
+                return name.contains(q) ||
+                    kws.contains(q) ||
+                    "${l.id}".contains(q);
+              }).toList();
+            }
+          });
+        }
+
+        return StatefulBuilder(
+          builder: (ctx, setModalState) {
+            return SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 12,
+                  right: 12,
+                  top: 12,
+                  bottom: MediaQuery.of(ctx).viewInsets.bottom + 12,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Add piece", // TODO i18n
+                            style: Theme.of(ctx).textTheme.titleMedium,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.pop(ctx),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: "Search logs…", // TODO i18n
+                        prefixIcon: const Icon(Icons.search),
+                        border: const OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      onChanged: (v) {
+                        query = v;
+                        applyFilter(setModalState);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    if (filtered.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 24.0),
+                        child: Text("No eligible logs found."), // TODO i18n
+                      )
+                    else
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(ctx).size.height * 0.6,
+                        ),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: filtered.length,
+                          separatorBuilder: (_, __) => const Divider(height: 1),
+                          itemBuilder: (_, i) {
+                            final l = filtered[i];
+                            final day = (l.startTime != null)
+                                ? TimeUtilities.ISO8601_TS_FORMATTER.format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                        l.startTime!),
+                                  )
+                                : "";
+
+                            return ListTile(
+                              dense: true,
+                              title: Text(l.name ?? "Log ${l.id}"),
+                              subtitle: Text(day),
+                              onTap: () => Navigator.pop(ctx, l.id),
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 }
 

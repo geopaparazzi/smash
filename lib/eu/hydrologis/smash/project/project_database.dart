@@ -713,6 +713,36 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
     return summedDistance;
   }
 
+  /// Get the parent log id for a log identified by [logId].
+  ///
+  /// Returns the log id if found, null otherwise.
+  int? getParentLog(int logId) {
+    String sql = '''
+      select $LOGS_COLUMN_PARENTLOGID from $TABLE_GPSLOGS 
+      where $LOGS_COLUMN_ID=$logId
+      limit 1
+    ''';
+    var res = select(sql);
+    if (res.length == 1) {
+      var map = res.first;
+      var parentLogId = map.get(LOGS_COLUMN_PARENTLOGID);
+      return parentLogId;
+    }
+    return null;
+  }
+
+  /// Set the parent log id for a log identified by [logId].
+  ///
+  /// If [parentLogId] is null, the parent log id will be set to null,
+  /// which has the effect of unparenting the log.
+  void setParentLog(int logId, int? parentLogId) {
+    String sql = '''
+      update $TABLE_GPSLOGS set $LOGS_COLUMN_PARENTLOGID=${parentLogId ?? 'null'} 
+      where $LOGS_COLUMN_ID=$logId
+    ''';
+    execute(sql);
+  }
+
   @override
   int updateNote(Note note) {
     note.isDirty = 1; // set the note to dirty again
@@ -900,6 +930,7 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
       });
     }
 
+    // add columns for filtered data to gpslog data table
     var tableColumns =
         getTableColumns(TableName(TABLE_GPSLOG_DATA, schemaSupported: false));
     bool hasFiltered = false;
@@ -923,6 +954,28 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
         _db.execute(sql);
         sql =
             "alter table $TABLE_GPSLOG_DATA add column $LOGSDATA_COLUMN_LON_FILTERED real;";
+        _db.execute(sql);
+      });
+    }
+    // add parent log id to logs
+    bool hasParentLogId = false;
+    tableColumns.forEach((list) {
+      String name = list[0];
+      if (name.toLowerCase() == LOGS_COLUMN_PARENTLOGID) {
+        hasParentLogId = true;
+      }
+    });
+    if (!hasParentLogId) {
+      SMLogger().w("Adding extra column parentlogid to logs.");
+      Transaction(this).runInTransaction((GeopaparazziProjectDb _db) {
+        String sql =
+            "alter table $TABLE_GPSLOGS add column $LOGS_COLUMN_PARENTLOGID integer;";
+        _db.execute(sql);
+        sql =
+            'CREATE INDEX IF NOT EXISTS ${TABLE_GPSLOGS}_parent_idx ON $TABLE_GPSLOGS($LOGS_COLUMN_PARENTLOGID);';
+        _db.execute(sql);
+        sql =
+            "CREATE INDEX IF NOT EXISTS ${TABLE_GPSLOGS}_parent_${LOGS_COLUMN_STARTTS}_idx ON $TABLE_GPSLOGS($LOGS_COLUMN_PARENTLOGID, $LOGS_COLUMN_STARTTS);";
         _db.execute(sql);
       });
     }
