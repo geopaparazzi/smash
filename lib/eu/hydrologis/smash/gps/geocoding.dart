@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 /*
- * Copyright (c) 2019-2020. Antonello Andrea (www.hydrologis.com). All rights reserved.
+ * Copyright (c) 2019-2026. Antonello Andrea (https://g-ant.eu). All rights reserved.
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */

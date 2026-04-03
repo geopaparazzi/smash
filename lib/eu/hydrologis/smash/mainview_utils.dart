@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020. Antonello Andrea (www.hydrologis.com). All rights reserved.
+ * Copyright (c) 2019-2026. Antonello Andrea (https://g-ant.eu). All rights reserved.
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
@@ -23,6 +23,7 @@ import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smash/eu/hydrologis/smash/util/network.dart';
 import 'package:smash/eu/hydrologis/smash/util/urls.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/about.dart';
+import 'package:smash/eu/hydrologis/smash/widgets/log_compare.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/gps_mode_selector.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/stats_page.dart';
@@ -394,6 +395,24 @@ class DashboardUtils {
                               )));
                 },
               ),
+            // open LogCompare
+            ListTile(
+              leading: new Icon(
+                MdiIcons.chartLineStacked,
+                color: c,
+                size: iconSize,
+              ),
+              title: SmashUI.normalText(
+                "Log compare",
+                bold: true,
+                color: c,
+              ),
+              onTap: () async {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LogCompare()));
+              },
+            ),
             CheckboxListTile(
               controlAffinity: ListTileControlAffinity.leading,
               value: GpPreferences().getBooleanSync(

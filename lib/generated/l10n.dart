@@ -1907,6 +1907,234 @@ abstract class SL {
   /// **'Elevation:'**
   String get logProperties_elevation;
 
+  /// No description provided for @logCompare_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Log compare'**
+  String get logCompare_title;
+
+  /// No description provided for @logCompare_log1.
+  ///
+  /// In en, this message translates to:
+  /// **'Log 1'**
+  String get logCompare_log1;
+
+  /// No description provided for @logCompare_log2.
+  ///
+  /// In en, this message translates to:
+  /// **'Log 2'**
+  String get logCompare_log2;
+
+  /// No description provided for @logCompare_chartTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Chart'**
+  String get logCompare_chartTab;
+
+  /// No description provided for @logCompare_selectLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Select log'**
+  String get logCompare_selectLog;
+
+  /// No description provided for @logCompare_selectProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Select project'**
+  String get logCompare_selectProject;
+
+  /// No description provided for @logCompare_backToProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to projects'**
+  String get logCompare_backToProjects;
+
+  /// No description provided for @logCompare_filterLogs.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter logs...'**
+  String get logCompare_filterLogs;
+
+  /// No description provided for @logCompare_filterProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter projects...'**
+  String get logCompare_filterProjects;
+
+  /// No description provided for @logCompare_clearFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear filter'**
+  String get logCompare_clearFilter;
+
+  /// No description provided for @logCompare_noProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'No projects'**
+  String get logCompare_noProjects;
+
+  /// No description provided for @logCompare_selectProjectFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a project'**
+  String get logCompare_selectProjectFirst;
+
+  /// No description provided for @logCompare_noLogsOrLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'No logs (or still loading)'**
+  String get logCompare_noLogsOrLoading;
+
+  /// No description provided for @logCompare_noLogsMatchFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'No logs match the filter'**
+  String get logCompare_noLogsMatchFilter;
+
+  /// No description provided for @logCompare_logWithId.
+  ///
+  /// In en, this message translates to:
+  /// **'Log {id}'**
+  String logCompare_logWithId(Object id);
+
+  /// No description provided for @logCompare_idWithValue.
+  ///
+  /// In en, this message translates to:
+  /// **'id: {id}'**
+  String logCompare_idWithValue(Object id);
+
+  /// No description provided for @logCompare_selectAtLeastOneLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one log'**
+  String get logCompare_selectAtLeastOneLog;
+
+  /// No description provided for @logCompare_vs.
+  ///
+  /// In en, this message translates to:
+  /// **'vs.'**
+  String get logCompare_vs;
+
+  /// No description provided for @logCompare_xAxis.
+  ///
+  /// In en, this message translates to:
+  /// **'X'**
+  String get logCompare_xAxis;
+
+  /// No description provided for @logCompare_yAxis.
+  ///
+  /// In en, this message translates to:
+  /// **'Y'**
+  String get logCompare_yAxis;
+
+  /// No description provided for @logCompare_distance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get logCompare_distance;
+
+  /// No description provided for @logCompare_time.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get logCompare_time;
+
+  /// No description provided for @logCompare_altitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Altitude'**
+  String get logCompare_altitude;
+
+  /// No description provided for @logCompare_speed.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed'**
+  String get logCompare_speed;
+
+  /// No description provided for @logCompare_noChartableData.
+  ///
+  /// In en, this message translates to:
+  /// **'No chartable data in the selected logs.'**
+  String get logCompare_noChartableData;
+
+  /// No description provided for @logCompare_timeAxisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time [hh:mm]'**
+  String get logCompare_timeAxisTitle;
+
+  /// No description provided for @logCompare_distanceAxisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance [m]'**
+  String get logCompare_distanceAxisTitle;
+
+  /// No description provided for @logCompare_speedAxisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Speed [m/s]'**
+  String get logCompare_speedAxisTitle;
+
+  /// No description provided for @logCompare_altitudeAxisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Altitude [m]'**
+  String get logCompare_altitudeAxisTitle;
+
+  /// No description provided for @logCompare_raw.
+  ///
+  /// In en, this message translates to:
+  /// **'Raw'**
+  String get logCompare_raw;
+
+  /// No description provided for @logCompare_smoothed.
+  ///
+  /// In en, this message translates to:
+  /// **'Smoothed'**
+  String get logCompare_smoothed;
+
+  /// No description provided for @logCompare_zoomIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom in'**
+  String get logCompare_zoomIn;
+
+  /// No description provided for @logCompare_zoomOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Zoom out'**
+  String get logCompare_zoomOut;
+
+  /// No description provided for @logCompare_resetZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset zoom'**
+  String get logCompare_resetZoom;
+
+  /// No description provided for @logCompare_panUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Pan up'**
+  String get logCompare_panUp;
+
+  /// No description provided for @logCompare_panLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Pan left'**
+  String get logCompare_panLeft;
+
+  /// No description provided for @logCompare_panRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Pan right'**
+  String get logCompare_panRight;
+
+  /// No description provided for @logCompare_panDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Pan down'**
+  String get logCompare_panDown;
+
   /// No description provided for @noteList_simpleNotesList.
   ///
   /// In en, this message translates to:

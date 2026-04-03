@@ -1,0 +1,8 @@
+Features:
+
+- added a log compare view to compare logs from different project
+- added possibility to nest logs to create logical units with interruptions
+
+Bugfixes:
+
+- fix gpx layers broken when using elevation colortable

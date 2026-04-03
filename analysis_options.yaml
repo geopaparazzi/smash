@@ -8,5 +8,7 @@ linter:
     non_constant_identifier_names: false.
 #     - camel_case_types
 analyzer:
+  errors:
+    prefer_single_quotes: ignore
 #   exclude:
 #     - path/to/excluded/files/**

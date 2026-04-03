@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020. Antonello Andrea (www.hydrologis.com). All rights reserved.
+ * Copyright (c) 2019-2026. Antonello Andrea (https://g-ant.eu). All rights reserved.
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
@@ -39,7 +39,10 @@ const List<List<String>> MAPLINKS = [
   ['europe/greece.map', '$BASEPATH/europe/greece.map'],
   ['europe/hungary.map', '$BASEPATH/europe/hungary.map'],
   ['europe/iceland.map', '$BASEPATH/europe/iceland.map'],
-  ['europe/ireland-and-northern-ireland.map', '$BASEPATH/europe/ireland-and-northern-ireland.map'],
+  [
+    'europe/ireland-and-northern-ireland.map',
+    '$BASEPATH/europe/ireland-and-northern-ireland.map'
+  ],
   ['europe/isle-of-man.map', '$BASEPATH/europe/isle-of-man.map'],
   ['europe/italy.map', '$BASEPATH/europe/italy.map'],
   ['europe/kosovo.map', '$BASEPATH/europe/kosovo.map'],
@@ -86,7 +89,10 @@ const List<List<String>> MAPLINKS = [
   ['asia/kyrgyzstan.map', '$BASEPATH/asia/kyrgyzstan.map'],
   ['asia/laos.map', '$BASEPATH/asia/laos.map'],
   ['asia/lebanon.map', '$BASEPATH/asia/lebanon.map'],
-  ['asia/malaysia-singapore-brunei.map', '$BASEPATH/asia/malaysia-singapore-brunei.map'],
+  [
+    'asia/malaysia-singapore-brunei.map',
+    '$BASEPATH/asia/malaysia-singapore-brunei.map'
+  ],
   ['asia/maldives.map', '$BASEPATH/asia/maldives.map'],
   ['asia/mongolia.map', '$BASEPATH/asia/mongolia.map'],
   ['asia/myanmar.map', '$BASEPATH/asia/myanmar.map'],
@@ -115,11 +121,17 @@ const List<List<String>> MAPLINKS = [
   ['africa/cameroon.map', '$BASEPATH/africa/cameroon.map'],
   ['africa/canary-islands.map', '$BASEPATH/africa/canary-islands.map'],
   ['africa/cape-verde.map', '$BASEPATH/africa/cape-verde.map'],
-  ['africa/central-african-republic.map', '$BASEPATH/africa/central-african-republic.map'],
+  [
+    'africa/central-african-republic.map',
+    '$BASEPATH/africa/central-african-republic.map'
+  ],
   ['africa/chad.map', '$BASEPATH/africa/chad.map'],
   ['africa/comores.map', '$BASEPATH/africa/comores.map'],
   ['africa/congo-brazzaville.map', '$BASEPATH/africa/congo-brazzaville.map'],
-  ['africa/congo-democratic-republic.map', '$BASEPATH/africa/congo-democratic-republic.map'],
+  [
+    'africa/congo-democratic-republic.map',
+    '$BASEPATH/africa/congo-democratic-republic.map'
+  ],
   ['africa/djibouti.map', '$BASEPATH/africa/djibouti.map'],
   ['africa/egypt.map', '$BASEPATH/africa/egypt.map'],
   ['africa/equatorial-guinea.map', '$BASEPATH/africa/equatorial-guinea.map'],
@@ -145,13 +157,22 @@ const List<List<String>> MAPLINKS = [
   ['africa/niger.map', '$BASEPATH/africa/niger.map'],
   ['africa/nigeria.map', '$BASEPATH/africa/nigeria.map'],
   ['africa/rwanda.map', '$BASEPATH/africa/rwanda.map'],
-  ['africa/saint-helena-ascension-and-tristan-da-cunha.map', '$BASEPATH/africa/saint-helena-ascension-and-tristan-da-cunha.map'],
-  ['africa/sao-tome-and-principe.map', '$BASEPATH/africa/sao-tome-and-principe.map'],
+  [
+    'africa/saint-helena-ascension-and-tristan-da-cunha.map',
+    '$BASEPATH/africa/saint-helena-ascension-and-tristan-da-cunha.map'
+  ],
+  [
+    'africa/sao-tome-and-principe.map',
+    '$BASEPATH/africa/sao-tome-and-principe.map'
+  ],
   ['africa/senegal-and-gambia.map', '$BASEPATH/africa/senegal-and-gambia.map'],
   ['africa/seychelles.map', '$BASEPATH/africa/seychelles.map'],
   ['africa/sierra-leone.map', '$BASEPATH/africa/sierra-leone.map'],
   ['africa/somalia.map', '$BASEPATH/africa/somalia.map'],
-  ['africa/south-africa-and-lesotho.map', '$BASEPATH/africa/south-africa-and-lesotho.map'],
+  [
+    'africa/south-africa-and-lesotho.map',
+    '$BASEPATH/africa/south-africa-and-lesotho.map'
+  ],
   ['africa/south-sudan.map', '$BASEPATH/africa/south-sudan.map'],
   ['africa/sudan.map', '$BASEPATH/africa/sudan.map'],
   ['africa/swaziland.map', '$BASEPATH/africa/swaziland.map'],
@@ -161,7 +182,7 @@ const List<List<String>> MAPLINKS = [
   ['africa/uganda.map', '$BASEPATH/africa/uganda.map'],
   ['africa/zambia.map', '$BASEPATH/africa/zambia.map'],
   ['africa/zimbabwe.map', '$BASEPATH/africa/zimbabwe.map'],
-  
+
   /// South America
   ['south-america/argentina.map', '$BASEPATH/south-america/argentina.map'],
   ['south-america/bolivia.map', '$BASEPATH/south-america/bolivia.map'],
@@ -179,17 +200,35 @@ const List<List<String>> MAPLINKS = [
   ['north-america/greenland.map', '$BASEPATH/north-america/greenland.map'],
   ['north-america/mexico.map', '$BASEPATH/north-america/mexico.map'],
   ['north-america/us-midwest.map', '$BASEPATH/north-america/us-midwest.map'],
-  ['north-america/us-northeast.map', '$BASEPATH/north-america/us-northeast.map'],
+  [
+    'north-america/us-northeast.map',
+    '$BASEPATH/north-america/us-northeast.map'
+  ],
   ['north-america/us-pacific.map', '$BASEPATH/north-america/us-pacific.map'],
   ['north-america/us-south.map', '$BASEPATH/north-america/us-south.map'],
   ['north-america/us-west.map', '$BASEPATH/north-america/us-west.map'],
 
   /// Russia
-  ['russia/central-fed-district.map', '$BASEPATH/russia/central-fed-district.map'],
-  ['russia/crimean-fed-district.map', '$BASEPATH/russia/crimean-fed-district.map'],
-  ['russia/north-caucasus-fed-district.map', '$BASEPATH/russia/north-caucasus-fed-district.map'],
-  ['russia/northwestern-fed-district.map', '$BASEPATH/russia/northwestern-fed-district.map'],
-  ['russia/siberian-fed-district.map', '$BASEPATH/russia/siberian-fed-district.map'],
+  [
+    'russia/central-fed-district.map',
+    '$BASEPATH/russia/central-fed-district.map'
+  ],
+  [
+    'russia/crimean-fed-district.map',
+    '$BASEPATH/russia/crimean-fed-district.map'
+  ],
+  [
+    'russia/north-caucasus-fed-district.map',
+    '$BASEPATH/russia/north-caucasus-fed-district.map'
+  ],
+  [
+    'russia/northwestern-fed-district.map',
+    '$BASEPATH/russia/northwestern-fed-district.map'
+  ],
+  [
+    'russia/siberian-fed-district.map',
+    '$BASEPATH/russia/siberian-fed-district.map'
+  ],
   ['russia/south-fed-district.map', '$BASEPATH/russia/south-fed-district.map'],
   ['russia/volga-fed-district.map', '$BASEPATH/russia/volga-fed-district.map'],
 
@@ -197,14 +236,29 @@ const List<List<String>> MAPLINKS = [
   ['central-america/belize.map', '$BASEPATH/central-america/belize.map'],
   ['central-america/cuba.map', '$BASEPATH/central-america/cuba.map'],
   ['central-america/guatemala.map', '$BASEPATH/central-america/guatemala.map'],
-  ['central-america/haiti-and-domrep.map', '$BASEPATH/central-america/haiti-and-domrep.map'],
+  [
+    'central-america/haiti-and-domrep.map',
+    '$BASEPATH/central-america/haiti-and-domrep.map'
+  ],
   ['central-america/jamaica.map', '$BASEPATH/central-america/jamaica.map'],
   ['central-america/nicaragua.map', '$BASEPATH/central-america/nicaragua.map'],
 
   /// Australia Oceania
-  ['australia-oceania/australia.map', '$BASEPATH/australia-oceania/australia.map'],
+  [
+    'australia-oceania/australia.map',
+    '$BASEPATH/australia-oceania/australia.map'
+  ],
   ['australia-oceania/fiji.map', '$BASEPATH/australia-oceania/fiji.map'],
-  ['australia-oceania/new-caledonia.map', '$BASEPATH/australia-oceania/new-caledonia.map'],
-  ['australia-oceania/new-zealand.map', '$BASEPATH/australia-oceania/new-zealand.map'],
-  ['australia-oceania/papua-new-guinea.map', '$BASEPATH/australia-oceania/papua-new-guinea.map'],
+  [
+    'australia-oceania/new-caledonia.map',
+    '$BASEPATH/australia-oceania/new-caledonia.map'
+  ],
+  [
+    'australia-oceania/new-zealand.map',
+    '$BASEPATH/australia-oceania/new-zealand.map'
+  ],
+  [
+    'australia-oceania/papua-new-guinea.map',
+    '$BASEPATH/australia-oceania/papua-new-guinea.map'
+  ],
 ];

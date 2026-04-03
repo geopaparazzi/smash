@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020. Antonello Andrea (www.hydrologis.com). All rights reserved.
+ * Copyright (c) 2019-2026. Antonello Andrea (https://g-ant.eu). All rights reserved.
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
@@ -10,20 +10,15 @@ import 'dart:math';
 import 'package:after_layout/after_layout.dart';
 import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
 import 'package:dart_jts/dart_jts.dart' hide Key;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/log_tags.dart';
 import 'package:smash/generated/l10n.dart';
-import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
-import 'package:smashlibs/smashlibs.dart'
-    hide SmashSelectedReadonlyTags, SmashTagEditor;
+import 'package:smashlibs/smashlibs.dart';
 
 /// The log properties page.
 class LogPropertiesWidget extends StatefulWidget {
@@ -95,6 +90,12 @@ class LogPropertiesWidgetState extends State<LogPropertiesWidget> {
                     .updateGpsLogKeywords(_logItem.id!, newKeywords);
               }
             }
+
+            // check for childen and update them as well
+            projectState.projectDb!.getChildLogs(_logItem.id!).forEach((child) {
+              projectState.projectDb!.updateGpsLogStyle(
+                  child.id!, _logItem.color!, _logItem.width!);
+            });
 
             projectState.projectDb!.updateGpsLogStyle(
                 _logItem.id!, _logItem.color!, _logItem.width!);

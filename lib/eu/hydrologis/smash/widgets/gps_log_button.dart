@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019-2020. Antonello Andrea (www.hydrologis.com). All rights reserved.
+ * Copyright (c) 2019-2026. Antonello Andrea (https://g-ant.eu). All rights reserved.
  * Use of this source code is governed by a GPL3 license that can be
  * found in the LICENSE file.
  */
@@ -9,16 +9,11 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart'
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
-import 'package:smash/eu/hydrologis/smash/mainview_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/log_list.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
-import 'package:smashlibs/smashlibs.dart'
-    hide SmashSelectedReadonlyTags, SmashTagEditor;
-import 'package:flutter_tags_x/flutter_tags_x.dart';
-import 'package:smash/eu/hydrologis/smash/widgets/log_tags.dart';
+import 'package:smashlibs/smashlibs.dart';
 
 /// Class to hold the state of the GPS info button, updated by the gps state notifier.
 ///

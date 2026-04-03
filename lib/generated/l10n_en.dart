@@ -957,6 +957,125 @@ class SLEn extends SL {
   String get logProperties_elevation => 'Elevation:';
 
   @override
+  String get logCompare_title => 'Log compare';
+
+  @override
+  String get logCompare_log1 => 'Log 1';
+
+  @override
+  String get logCompare_log2 => 'Log 2';
+
+  @override
+  String get logCompare_chartTab => 'Chart';
+
+  @override
+  String get logCompare_selectLog => 'Select log';
+
+  @override
+  String get logCompare_selectProject => 'Select project';
+
+  @override
+  String get logCompare_backToProjects => 'Back to projects';
+
+  @override
+  String get logCompare_filterLogs => 'Filter logs...';
+
+  @override
+  String get logCompare_filterProjects => 'Filter projects...';
+
+  @override
+  String get logCompare_clearFilter => 'Clear filter';
+
+  @override
+  String get logCompare_noProjects => 'No projects';
+
+  @override
+  String get logCompare_selectProjectFirst => 'Select a project';
+
+  @override
+  String get logCompare_noLogsOrLoading => 'No logs (or still loading)';
+
+  @override
+  String get logCompare_noLogsMatchFilter => 'No logs match the filter';
+
+  @override
+  String logCompare_logWithId(Object id) {
+    return 'Log $id';
+  }
+
+  @override
+  String logCompare_idWithValue(Object id) {
+    return 'id: $id';
+  }
+
+  @override
+  String get logCompare_selectAtLeastOneLog => 'Select at least one log';
+
+  @override
+  String get logCompare_vs => 'vs.';
+
+  @override
+  String get logCompare_xAxis => 'X';
+
+  @override
+  String get logCompare_yAxis => 'Y';
+
+  @override
+  String get logCompare_distance => 'Distance';
+
+  @override
+  String get logCompare_time => 'Time';
+
+  @override
+  String get logCompare_altitude => 'Altitude';
+
+  @override
+  String get logCompare_speed => 'Speed';
+
+  @override
+  String get logCompare_noChartableData =>
+      'No chartable data in the selected logs.';
+
+  @override
+  String get logCompare_timeAxisTitle => 'Time [hh:mm]';
+
+  @override
+  String get logCompare_distanceAxisTitle => 'Distance [m]';
+
+  @override
+  String get logCompare_speedAxisTitle => 'Speed [m/s]';
+
+  @override
+  String get logCompare_altitudeAxisTitle => 'Altitude [m]';
+
+  @override
+  String get logCompare_raw => 'Raw';
+
+  @override
+  String get logCompare_smoothed => 'Smoothed';
+
+  @override
+  String get logCompare_zoomIn => 'Zoom in';
+
+  @override
+  String get logCompare_zoomOut => 'Zoom out';
+
+  @override
+  String get logCompare_resetZoom => 'Reset zoom';
+
+  @override
+  String get logCompare_panUp => 'Pan up';
+
+  @override
+  String get logCompare_panLeft => 'Pan left';
+
+  @override
+  String get logCompare_panRight => 'Pan right';
+
+  @override
+  String get logCompare_panDown => 'Pan down';
+
+  @override
   String get noteList_simpleNotesList => 'Simple List of Notes';
 
   @override
