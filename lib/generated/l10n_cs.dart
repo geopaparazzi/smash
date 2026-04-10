@@ -980,31 +980,31 @@ class SLCs extends SL {
   String get logCompare_log2 => 'Log 2';
 
   @override
-  String get logCompare_chartTab => 'Chart';
+  String get logCompare_chartTab => 'Graf';
 
   @override
   String get logCompare_selectLog => 'Select log';
 
   @override
-  String get logCompare_selectProject => 'Select project';
+  String get logCompare_selectProject => 'Vybrat projekt';
 
   @override
-  String get logCompare_backToProjects => 'Back to projects';
+  String get logCompare_backToProjects => 'Zpět na projekty';
 
   @override
   String get logCompare_filterLogs => 'Filter logs...';
 
   @override
-  String get logCompare_filterProjects => 'Filter projects...';
+  String get logCompare_filterProjects => 'Filtrovat projekty...';
 
   @override
-  String get logCompare_clearFilter => 'Clear filter';
+  String get logCompare_clearFilter => 'Vymazat filtr';
 
   @override
-  String get logCompare_noProjects => 'No projects';
+  String get logCompare_noProjects => 'Žádné projekty';
 
   @override
-  String get logCompare_selectProjectFirst => 'Select a project';
+  String get logCompare_selectProjectFirst => 'Vyberte projekt';
 
   @override
   String get logCompare_noLogsOrLoading => 'No logs (or still loading)';
@@ -1035,59 +1035,59 @@ class SLCs extends SL {
   String get logCompare_yAxis => 'Y';
 
   @override
-  String get logCompare_distance => 'Distance';
+  String get logCompare_distance => 'Vzdálenost';
 
   @override
-  String get logCompare_time => 'Time';
+  String get logCompare_time => 'Čas';
 
   @override
-  String get logCompare_altitude => 'Altitude';
+  String get logCompare_altitude => 'Nadm. výška';
 
   @override
-  String get logCompare_speed => 'Speed';
+  String get logCompare_speed => 'Rychlost';
 
   @override
   String get logCompare_noChartableData =>
       'No chartable data in the selected logs.';
 
   @override
-  String get logCompare_timeAxisTitle => 'Time [hh:mm]';
+  String get logCompare_timeAxisTitle => 'Čas [hh:mm]';
 
   @override
-  String get logCompare_distanceAxisTitle => 'Distance [m]';
+  String get logCompare_distanceAxisTitle => 'Vzdálenost [m]';
 
   @override
-  String get logCompare_speedAxisTitle => 'Speed [m/s]';
+  String get logCompare_speedAxisTitle => 'Rychlost [m/s]';
 
   @override
-  String get logCompare_altitudeAxisTitle => 'Altitude [m]';
+  String get logCompare_altitudeAxisTitle => 'Výška [m]';
 
   @override
   String get logCompare_raw => 'Raw';
 
   @override
-  String get logCompare_smoothed => 'Smoothed';
+  String get logCompare_smoothed => 'Vyhlazený';
 
   @override
-  String get logCompare_zoomIn => 'Zoom in';
+  String get logCompare_zoomIn => 'Přiblížení';
 
   @override
-  String get logCompare_zoomOut => 'Zoom out';
+  String get logCompare_zoomOut => 'Oddálení';
 
   @override
-  String get logCompare_resetZoom => 'Reset zoom';
+  String get logCompare_resetZoom => 'Obnovit přiblížení';
 
   @override
-  String get logCompare_panUp => 'Pan up';
+  String get logCompare_panUp => 'Posun nahoru';
 
   @override
-  String get logCompare_panLeft => 'Pan left';
+  String get logCompare_panLeft => 'Posun vlevo';
 
   @override
-  String get logCompare_panRight => 'Pan right';
+  String get logCompare_panRight => 'Posun vpravo';
 
   @override
-  String get logCompare_panDown => 'Pan down';
+  String get logCompare_panDown => 'Posun dolu';
 
   @override
   String get noteList_simpleNotesList => 'Jednoduchý seznam poznámek';
