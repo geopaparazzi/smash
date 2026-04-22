@@ -248,7 +248,7 @@
     "logList_unSelectAll": "Zrušit výběr všeho",
     "logList_invertSelection": "Invertovat výběr",
     "logList_mergeSelected": "Sloučení vybraných",
-    "logList_zoomTo": "Přiblížení",
+    "logList_zoomTo": "Přiblížit na",
     "logList_properties": "Vlastnosti",
     "logList_profileView": "Zobrazení profilu",
     "logList_toGPX": "Na GPX",
@@ -523,5 +523,21 @@
     "logCompare_panUp": "Posun nahoru",
     "logCompare_panLeft": "Posun vlevo",
     "logCompare_panRight": "Posun vpravo",
-    "logCompare_panDown": "Posun dolu"
+    "logCompare_panDown": "Posun dolu",
+    "logCompare_title": "Porovnat protokoly",
+    "logCompare_log1": "Protokol 1",
+    "logCompare_log2": "Protokol 2",
+    "logCompare_selectLog": "Vyberte protokol",
+    "logCompare_filterLogs": "Filtrovat protokoly...",
+    "logCompare_noLogsOrLoading": "Žádné protokoly (nebo se načítají)",
+    "logCompare_noLogsMatchFilter": "Žádný protokol neodpovídá filtru",
+    "logCompare_logWithId": "Protokol {id}",
+    "@logCompare_logWithId": {
+        "placeholders": {
+            "id": {}
+        }
+    },
+    "logCompare_selectAtLeastOneLog": "Vyberte nejméně jeden protokol",
+    "logCompare_vs": "vs.",
+    "logCompare_noChartableData": "Žádná tabulková data ve vybraných protokolech."
 }
