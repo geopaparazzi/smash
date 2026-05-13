@@ -491,5 +491,53 @@
     "settings_Bottombar_showEditing": "Mostra el botó d'edició",
     "gss_layerview_filter": "Filtre",
     "mainviewUtils_projectStats": "Estadístiques del projecte",
-    "remoteDbPage_duplicate": "Duplicat"
+    "remoteDbPage_duplicate": "Duplicat",
+    "logCompare_title": "Comparació de registres",
+    "logCompare_log1": "Registre 1",
+    "logCompare_log2": "Registre 2",
+    "logCompare_chartTab": "Gràfic",
+    "logCompare_selectLog": "Escollir registre",
+    "logCompare_selectProject": "Escollir projecte",
+    "logCompare_backToProjects": "Torna als projectes",
+    "logCompare_filterLogs": "Filtra els registres...",
+    "logCompare_filterProjects": "Filtra els projectes...",
+    "logCompare_clearFilter": "Esborra el filtre",
+    "logCompare_noProjects": "Sense projectes",
+    "logCompare_selectProjectFirst": "Escolliu un projecte",
+    "logCompare_noLogsOrLoading": "No hi ha registres (o encara s'està carregant)",
+    "logCompare_noLogsMatchFilter": "No hi ha registres que coincideixin amb el filtre",
+    "logCompare_logWithId": "Registre {id}",
+    "@logCompare_logWithId": {
+        "placeholders": {
+            "id": {}
+        }
+    },
+    "logCompare_idWithValue": "id: {id}",
+    "@logCompare_idWithValue": {
+        "placeholders": {
+            "id": {}
+        }
+    },
+    "logCompare_selectAtLeastOneLog": "Seleccioneu com a mínim un registre",
+    "logCompare_vs": "contra",
+    "logCompare_xAxis": "X",
+    "logCompare_yAxis": "Y",
+    "logCompare_distance": "Distància",
+    "logCompare_time": "Temps",
+    "logCompare_altitude": "Altitud",
+    "logCompare_speed": "Velocitat",
+    "logCompare_noChartableData": "No hi ha dades que es puguin representar gràficament als registres seleccionats.",
+    "logCompare_timeAxisTitle": "Temps [hh:mm]",
+    "logCompare_distanceAxisTitle": "Distància [m]",
+    "logCompare_speedAxisTitle": "Velocitat [m/s]",
+    "logCompare_altitudeAxisTitle": "Altitud [m]",
+    "logCompare_raw": "Cru",
+    "logCompare_smoothed": "Suavitzat",
+    "logCompare_zoomIn": "Apropa",
+    "logCompare_zoomOut": "Allunya",
+    "logCompare_resetZoom": "Restableix el zoom",
+    "logCompare_panUp": "Panoràmica cap amunt",
+    "logCompare_panLeft": "Panoràmica cap a l'esquerra",
+    "logCompare_panRight": "Panoràmica cap a la dreta",
+    "logCompare_panDown": "Panoràmica cap avall"
 }
