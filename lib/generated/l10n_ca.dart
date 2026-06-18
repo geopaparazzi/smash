@@ -984,50 +984,52 @@ class SLCa extends SL {
   String get logProperties_elevation => 'Elevació:';
 
   @override
-  String get logCompare_title => 'Log compare';
+  String get logCompare_title => 'Comparació de registres';
 
   @override
-  String get logCompare_log1 => 'Log 1';
+  String get logCompare_log1 => 'Registre 1';
 
   @override
-  String get logCompare_log2 => 'Log 2';
+  String get logCompare_log2 => 'Registre 2';
 
   @override
-  String get logCompare_chartTab => 'Chart';
+  String get logCompare_chartTab => 'Gràfic';
 
   @override
-  String get logCompare_selectLog => 'Select log';
+  String get logCompare_selectLog => 'Escollir registre';
 
   @override
-  String get logCompare_selectProject => 'Select project';
+  String get logCompare_selectProject => 'Escollir projecte';
 
   @override
-  String get logCompare_backToProjects => 'Back to projects';
+  String get logCompare_backToProjects => 'Torna als projectes';
 
   @override
-  String get logCompare_filterLogs => 'Filter logs...';
+  String get logCompare_filterLogs => 'Filtra els registres...';
 
   @override
-  String get logCompare_filterProjects => 'Filter projects...';
+  String get logCompare_filterProjects => 'Filtra els projectes...';
 
   @override
-  String get logCompare_clearFilter => 'Clear filter';
+  String get logCompare_clearFilter => 'Esborra el filtre';
 
   @override
-  String get logCompare_noProjects => 'No projects';
+  String get logCompare_noProjects => 'Sense projectes';
 
   @override
-  String get logCompare_selectProjectFirst => 'Select a project';
+  String get logCompare_selectProjectFirst => 'Escolliu un projecte';
 
   @override
-  String get logCompare_noLogsOrLoading => 'No logs (or still loading)';
+  String get logCompare_noLogsOrLoading =>
+      'No hi ha registres (o encara s\'està carregant)';
 
   @override
-  String get logCompare_noLogsMatchFilter => 'No logs match the filter';
+  String get logCompare_noLogsMatchFilter =>
+      'No hi ha registres que coincideixin amb el filtre';
 
   @override
   String logCompare_logWithId(Object id) {
-    return 'Log $id';
+    return 'Registre $id';
   }
 
   @override
@@ -1036,10 +1038,11 @@ class SLCa extends SL {
   }
 
   @override
-  String get logCompare_selectAtLeastOneLog => 'Select at least one log';
+  String get logCompare_selectAtLeastOneLog =>
+      'Seleccioneu com a mínim un registre';
 
   @override
-  String get logCompare_vs => 'vs.';
+  String get logCompare_vs => 'contra';
 
   @override
   String get logCompare_xAxis => 'X';
@@ -1048,59 +1051,59 @@ class SLCa extends SL {
   String get logCompare_yAxis => 'Y';
 
   @override
-  String get logCompare_distance => 'Distance';
+  String get logCompare_distance => 'Distància';
 
   @override
-  String get logCompare_time => 'Time';
+  String get logCompare_time => 'Temps';
 
   @override
-  String get logCompare_altitude => 'Altitude';
+  String get logCompare_altitude => 'Altitud';
 
   @override
-  String get logCompare_speed => 'Speed';
+  String get logCompare_speed => 'Velocitat';
 
   @override
   String get logCompare_noChartableData =>
-      'No chartable data in the selected logs.';
+      'No hi ha dades que es puguin representar gràficament als registres seleccionats.';
 
   @override
-  String get logCompare_timeAxisTitle => 'Time [hh:mm]';
+  String get logCompare_timeAxisTitle => 'Temps [hh:mm]';
 
   @override
-  String get logCompare_distanceAxisTitle => 'Distance [m]';
+  String get logCompare_distanceAxisTitle => 'Distància [m]';
 
   @override
-  String get logCompare_speedAxisTitle => 'Speed [m/s]';
+  String get logCompare_speedAxisTitle => 'Velocitat [m/s]';
 
   @override
-  String get logCompare_altitudeAxisTitle => 'Altitude [m]';
+  String get logCompare_altitudeAxisTitle => 'Altitud [m]';
 
   @override
-  String get logCompare_raw => 'Raw';
+  String get logCompare_raw => 'Cru';
 
   @override
-  String get logCompare_smoothed => 'Smoothed';
+  String get logCompare_smoothed => 'Suavitzat';
 
   @override
-  String get logCompare_zoomIn => 'Zoom in';
+  String get logCompare_zoomIn => 'Apropa';
 
   @override
-  String get logCompare_zoomOut => 'Zoom out';
+  String get logCompare_zoomOut => 'Allunya';
 
   @override
-  String get logCompare_resetZoom => 'Reset zoom';
+  String get logCompare_resetZoom => 'Restableix el zoom';
 
   @override
-  String get logCompare_panUp => 'Pan up';
+  String get logCompare_panUp => 'Panoràmica cap amunt';
 
   @override
-  String get logCompare_panLeft => 'Pan left';
+  String get logCompare_panLeft => 'Panoràmica cap a l\'esquerra';
 
   @override
-  String get logCompare_panRight => 'Pan right';
+  String get logCompare_panRight => 'Panoràmica cap a la dreta';
 
   @override
-  String get logCompare_panDown => 'Pan down';
+  String get logCompare_panDown => 'Panoràmica cap avall';
 
   @override
   String get noteList_simpleNotesList => 'Llista simple de notes';

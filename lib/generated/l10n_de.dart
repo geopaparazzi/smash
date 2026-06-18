@@ -236,7 +236,7 @@ class SLDe extends SL {
 
   @override
   String get gssExport_restoreProjectAsDirty =>
-      'Stellen Sie das Projekt als völlig fehlerhaft wieder her.';
+      'Stelle das Projekt als völlig fehlerhaft wieder her.';
 
   @override
   String get gssExport_setProjectClean => 'Projekt auf CLEAN setzen?';
