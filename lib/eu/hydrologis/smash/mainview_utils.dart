@@ -13,7 +13,7 @@ import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
 import 'package:dart_jts/dart_jts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:smash/eu/hydrologis/smash/gps/geocoding.dart';

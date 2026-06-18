@@ -12,7 +12,7 @@ import 'package:dart_jts/dart_jts.dart' hide Orientation;
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';

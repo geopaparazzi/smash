@@ -3,7 +3,7 @@ import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smashlibs/smashlibs.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:provider/provider.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 
 class NotesViewSetting extends StatefulWidget {
   NotesViewSetting({Key? key}) : super(key: key);

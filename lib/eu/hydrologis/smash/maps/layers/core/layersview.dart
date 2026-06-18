@@ -15,7 +15,7 @@ import 'package:flutter_geopackage/flutter_geopackage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:geoimage/geoimage.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/onlinesourcespage.dart';
 import 'package:smash/eu/hydrologis/smash/maps/layers/core/remotedbpage.dart';

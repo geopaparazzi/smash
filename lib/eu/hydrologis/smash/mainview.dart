@@ -15,7 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster_plus/flutter_map_marker_cluster_plus.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:smash/eu/hydrologis/smash/forms/form_smash_utils.dart';
 import 'package:smash/eu/hydrologis/smash/gps/gps.dart';
