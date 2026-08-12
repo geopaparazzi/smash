@@ -282,6 +282,7 @@ class MainViewWidgetState extends State<MainViewWidget>
           // ),
           // backgroundColor: SmashColors.mainBackground,
           body: SafeArea(
+            top: false,
             child: Stack(
               children: <Widget>[
                 mapView,
