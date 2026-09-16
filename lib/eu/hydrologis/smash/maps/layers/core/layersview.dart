@@ -89,8 +89,9 @@ class LayersPageState extends State<LayersPage> {
                   var selectedPath = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              FileBrowser(false, allowed, lastUsedFolder)));
+                          builder: (context) => FileBrowser(
+                              false, allowed, lastUsedFolder,
+                              doMultiSelect: true)));
 
                   loadSelectedFile(selectedPath, context);
                 },
@@ -281,7 +282,12 @@ class LayersPageState extends State<LayersPage> {
   }
 
   Future loadSelectedFile(selectedPath, BuildContext context) async {
-    if (selectedPath != null) {
+    if (selectedPath is List) {
+      for (final path in selectedPath) {
+        await loadLayer(context, path);
+        _somethingChanged = true;
+      }
+    } else if (selectedPath != null) {
       await loadLayer(context, selectedPath);
       _somethingChanged = true;
     }
