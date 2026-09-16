@@ -29,7 +29,7 @@ import 'package:smash/eu/hydrologis/smash/widgets/settings.dart';
 import 'package:smash/eu/hydrologis/smash/widgets/stats_page.dart';
 import 'package:smash/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
-import 'package:smash_import_export_plugins/smash_import_export_plugins.dart';
+import 'package:smash/eu/hydrologis/smash/import_export/import_export_plugins.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geocoding/geocoding.dart' as GC;
 

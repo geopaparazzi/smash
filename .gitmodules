@@ -5,6 +5,3 @@
 [submodule "smashlibs"]
 	path = smashlibs
 	url = https://github.com/moovida/smashlibs.git
-[submodule "smash_import_export_plugins"]
-	path = smash_import_export_plugins
-	url = https://github.com/geopaparazzi/smash_import_export_plugins.git

@@ -1,0 +1,42 @@
+library smash_import_export;
+
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:after_layout/after_layout.dart';
+import 'package:dart_hydrologis_db/dart_hydrologis_db.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart';
+import 'package:dart_hydrologis_utils/dart_hydrologis_utils.dart' as HU;
+import 'package:dart_jts/dart_jts.dart' hide Key;
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_geopackage/flutter_geopackage.dart';
+import 'package:gpx/gpx.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:smash/generated/l10n.dart';
+import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
+import 'package:smashlibs/smashlibs.dart';
+import 'package:http/http.dart' hide MultipartFile, Response;
+import 'package:provider/provider.dart';
+import 'package:archive/archive.dart';
+import 'package:archive/archive_io.dart';
+import 'package:geoimage/geoimage.dart';
+
+part 'export.dart';
+part 'export/geopackage/geopackage_export.dart';
+part 'export/gpx/gpx_export.dart';
+part 'export/gss/gss_export.dart';
+part 'import/gss/gss_import.dart';
+part 'export/images/images_export.dart';
+part 'export/kml/kml_export.dart';
+part 'export/pdf/pdf_export.dart';
+part 'import.dart';
+part 'plugins.dart';
+part 'utils/gpx_kml_utilities.dart';
+part 'utils/pdf_utilities.dart';

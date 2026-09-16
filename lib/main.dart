@@ -18,7 +18,6 @@ import 'package:smash/eu/hydrologis/smash/l10n/localization.dart';
 import 'package:smash/eu/hydrologis/smash/models/project_state.dart';
 import 'package:smash/eu/hydrologis/smash/project/projects_view.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/fence.dart';
-import 'package:smash_import_export_plugins/generated/l10n.dart';
 import 'package:smashlibs/com/hydrologis/flutterlibs/utils/logging.dart';
 import 'package:smashlibs/generated/l10n.dart';
 import 'package:smashlibs/smashlibs.dart';
@@ -122,7 +121,6 @@ class SmashApp extends StatelessWidget {
       //  locale: Locale('ja', 'JP'),
       localizationsDelegates: [
         SL.delegate,
-        IEL.delegate,
         SLL.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
