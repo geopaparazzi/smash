@@ -311,6 +311,7 @@ class MainViewWidgetState extends State<MainViewWidget>
                         _iconSize,
                         doZoom: false,
                         doZoomByBox: false,
+                        doRuler: false,
                       ),
                     ),
                   ),
@@ -408,6 +409,14 @@ class MainViewWidgetState extends State<MainViewWidget>
                                 iconSize: _iconSize,
                               ),
                               padding: 0),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: SmashUI.makeBackgroundCircle(
+                              RulerButton(_iconSize, SmashColors.mainBackground,
+                                  SmashColors.mainSelection,
+                                  badgeGrowsToStart: true),
+                              padding: 0),
+                        ),
                       ],
                     ),
                   ),

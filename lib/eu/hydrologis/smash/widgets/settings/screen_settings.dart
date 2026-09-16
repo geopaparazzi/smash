@@ -332,7 +332,8 @@ class ScreenSettingState extends State<ScreenSetting> {
                             context,
                             SmashPreferencesKeys
                                 .KEY_SCREEN_TOOLBAR_SHOW_EDITING,
-                            SL.of(context).settings_Bottombar_showEditing),
+                            SL.of(context).settings_Bottombar_showEditing,
+                            defaultValue: false),
                       ],
                     ),
                   ),
@@ -396,7 +397,7 @@ class ScreenSettingState extends State<ScreenSetting> {
                           value: GpPreferences().getBooleanSync(
                               SmashPreferencesKeys
                                   .KEY_SCREEN_SHOW_LOG_INFO_PANEL,
-                              true),
+                              false),
                           onChanged: (selected) async {
                             await GpPreferences().setBoolean(
                                 SmashPreferencesKeys
@@ -463,8 +464,9 @@ class ScreenSettingState extends State<ScreenSetting> {
   }
 
   CheckboxListTile getBottombarCustomizationCheckbox(
-      BuildContext context, String prefKey, String title) {
-    bool doShow = GpPreferences().getBooleanSync(prefKey, true);
+      BuildContext context, String prefKey, String title,
+      {bool defaultValue = true}) {
+    bool doShow = GpPreferences().getBooleanSync(prefKey, defaultValue);
     return CheckboxListTile(
       value: doShow,
       onChanged: (selected) async {
