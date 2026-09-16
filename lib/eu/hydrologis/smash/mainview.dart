@@ -799,7 +799,8 @@ class MainViewWidgetState extends State<MainViewWidget>
               await Navigator.push(
                   mapBuilder.context!,
                   MaterialPageRoute(
-                      builder: (context) => NotePropertiesWidget(note)));
+                      builder: (context) =>
+                          NotePropertiesWidget(note, isNewNote: true)));
             } else if (selectedType == types[1]) {
               await DataLoaderUtilities.addImage(
                   mapBuilder.context!,

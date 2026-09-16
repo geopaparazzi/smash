@@ -19,8 +19,9 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
   String _marker = NoteExt.DEFAULT_MARKER;
   bool _somethingChanged = false;
   var chosenIconsList = [];
+  final bool _isNewNote;
 
-  NotePropertiesWidgetState(this._note);
+  NotePropertiesWidgetState(this._note, this._isNewNote);
 
   @override
   void initState() {
@@ -114,6 +115,7 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
                               validationFunction: noEmptyValidator,
                               doBold: true,
                               hintText: "note",
+                              clearOnFirstFocus: _isNewNote,
                             ),
                           ),
                           Table(
@@ -295,10 +297,14 @@ class NotePropertiesWidgetState extends State<NotePropertiesWidget> {
 class NotePropertiesWidget extends StatefulWidget {
   var _note;
 
-  NotePropertiesWidget(this._note);
+  /// True when the note was just created and this is its first properties
+  /// page, as opposed to opening an already existing note for editing.
+  final bool isNewNote;
+
+  NotePropertiesWidget(this._note, {this.isNewNote = false});
 
   @override
   State<StatefulWidget> createState() {
-    return NotePropertiesWidgetState(_note);
+    return NotePropertiesWidgetState(_note, isNewNote);
   }
 }
