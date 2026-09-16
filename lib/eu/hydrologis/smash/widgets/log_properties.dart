@@ -386,7 +386,7 @@ class _LogProfileViewState extends State<LogProfileView> {
     ProjectState project = Provider.of<ProjectState>(context, listen: false);
     var logDataPoints = project.projectDb!.getLogDataPoints(widget.logItem.id!);
     bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(
-        SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, false);
+        SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, true);
     LatLngExt? prevll;
     double progressiveMeters = 0;
     var maxSpeedLL;
@@ -410,11 +410,11 @@ class _LogProfileViewState extends State<LogProfileView> {
         var speedMS = distanceMeters / deltaTs;
         if (speedMS > maxSpeed) {
           maxSpeed = speedMS;
-          maxSpeedLL = LatLng(p.lat, p.lon);
+          maxSpeedLL = LatLng(llTmp.y, llTmp.x);
         }
 
-        llExt = LatLngExt(p.lat, p.lon, p.altim!, progressiveMeters, speedMS,
-            p.ts!, p.accuracy ?? -1);
+        llExt = LatLngExt(llTmp.y, llTmp.x, p.altim!, progressiveMeters,
+            speedMS, p.ts!, p.accuracy ?? -1);
       }
 
       points.add(llExt);

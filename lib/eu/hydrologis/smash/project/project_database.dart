@@ -704,20 +704,28 @@ class GeopaparazziProjectDb extends SqliteDb implements ProjectDb {
   @override
   double? updateLogLength(int logId) {
     var sql = '''
-      SELECT $LOGSDATA_COLUMN_LON,$LOGSDATA_COLUMN_LAT,$LOGSDATA_COLUMN_TS 
-      FROM $TABLE_GPSLOG_DATA 
+      SELECT $LOGSDATA_COLUMN_LON,$LOGSDATA_COLUMN_LAT,$LOGSDATA_COLUMN_TS,
+        $LOGSDATA_COLUMN_LON_FILTERED,$LOGSDATA_COLUMN_LAT_FILTERED
+      FROM $TABLE_GPSLOG_DATA
       WHERE $LOGSDATA_COLUMN_LOGID=$logId
       ORDER BY $LOGSDATA_COLUMN_TS ASC
     ''';
     double summedDistance = 0.0;
+
+    bool useGpsFilteredGenerally = GpPreferences().getBooleanSync(
+        SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY, true);
 
     var res = select(sql);
     Coordinate? previousPosition;
     res.forEach((QueryResultRow map) {
       var lon = map.get(LOGSDATA_COLUMN_LON);
       var lat = map.get(LOGSDATA_COLUMN_LAT);
+      var lonFiltered = map.get(LOGSDATA_COLUMN_LON_FILTERED);
+      var latFiltered = map.get(LOGSDATA_COLUMN_LAT_FILTERED);
       // var ts = map.get(LOGSDATA_COLUMN_TS);
-      Coordinate pos = Coordinate.fromYX(lat, lon);
+      Coordinate pos = useGpsFilteredGenerally && latFiltered != null
+          ? Coordinate.fromYX(latFiltered, lonFiltered)
+          : Coordinate.fromYX(lat, lon);
       if (previousPosition != null) {
         var distanceMeters =
             CoordinateUtilities.getDistance(pos, previousPosition!);

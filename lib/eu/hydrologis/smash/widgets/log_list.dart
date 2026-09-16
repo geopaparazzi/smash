@@ -133,7 +133,7 @@ class LogListWidgetState extends State<LogListWidget> {
     super.initState();
     useGpsFilteredGenerally = GpPreferences().getBooleanSync(
       SmashPreferencesKeys.KEY_GPS_USE_FILTER_GENERALLY,
-      false,
+      true,
     );
     // Provide an initial future so build() always has something.
     _logsFuture = _loadLogs();
@@ -957,7 +957,9 @@ class _LogInfoState extends State<LogInfo> with AfterLayoutMixin {
       LogDataPoint ldp1 = pointsList[i];
       LogDataPoint ldp2 = pointsList[i + 1];
       double distance;
-      if (widget.useGpsFilteredGenerally && ldp1.filtered_lat != null) {
+      if (widget.useGpsFilteredGenerally &&
+          ldp1.filtered_lat != null &&
+          ldp2.filtered_lat != null) {
         distance = CoordinateUtilities.getDistance(
             Coordinate.fromYX(ldp1.filtered_lat!, ldp1.filtered_lon!),
             Coordinate.fromYX(ldp2.filtered_lat!, ldp2.filtered_lon!));
