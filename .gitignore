@@ -4,6 +4,10 @@
 *.pyc
 *.swp
 .DS_Store
+
+# Sphinx docs build output
+docs/_build/
+docs/.venv/
 .atom/
 .buildlog/
 .history

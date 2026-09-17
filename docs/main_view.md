@@ -4,15 +4,9 @@ After selecting the project, the main map view appears.
 
 All the features that need to be quickly accessed, such as GPS logging, notes creation, as well as the visualization of the current position on a map are accessible from that view.
 
-<!--
-NEEDS SCREENSHOT: images/main_view.png
-The current main map view, showing the top bar (drawer button, project
-menu), the bottom bar (notes/log actions, edit toggle), the zoom + ruler
-column on the right, and the layers/menu icons.
--->
 :::{figure} images/main_view.png
 :alt: The main view of SMASH
-:width: 50%
+:width: 90%
 :align: center
 
 The main view of SMASH.
@@ -32,7 +26,7 @@ From the main view the following primary functions can be accessed:
 
 ## GPS info button
 
-The central bottom button is the GPS info button. Its background color reflects the current GPS status:
+The button in the right lower corner is the GPS info button. Its background color reflects the current GPS status:
 
 - a light red/salmon background means the GPS is off, has no permission, or is not available
 - a light orange background means the GPS is on but no fix has been acquired yet
@@ -47,10 +41,9 @@ Tapping the button centers the map on the last known GPS position, when availabl
 
 Long-pressing the button opens a bottom sheet with the current GPS information: latitude, longitude (each tappable to copy its value to the clipboard), altitude, accuracy, heading, speed, timestamp, and the count of all vs. filtered GPS points collected so far.
 
-<!-- NEEDS SCREENSHOT: images/gps_info_panel.png -->
 :::{figure} images/gps_info_panel.png
 :alt: The GPS info panel
-:width: 50%
+:width: 80%
 :align: center
 
 The GPS info panel.

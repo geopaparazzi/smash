@@ -14,11 +14,6 @@ To create a simple note tap the first icon of the lower toolbar. The **Simple No
 - a text or an image note
 - placing the note at the current GPS position or at the current map center, toggled with the position selector shown at the top of the dialog.
 
-<!--
-NEEDS SCREENSHOT: images/simple_notes_dialog.png
-The "Simple Notes" type-selection dialog, including the GPS/map-center
-position selector at the top.
--->
 :::{figure} images/simple_notes_dialog.png
 :alt: Adding a simple note to the project
 :width: 50%
@@ -29,7 +24,6 @@ Adding a simple note to the project.
 
 When the **note** entry is selected, the note properties view opens directly, ready for editing:
 
-<!-- NEEDS SCREENSHOT: images/note_properties.png -->
 :::{figure} images/note_properties.png
 :alt: The note properties view
 :width: 50%
@@ -48,10 +42,9 @@ If a note is tapped on the map view, a quick-info panel opens, allowing you to s
 
 Long-press the **add note** button to open the notes list.
 
-<!-- NEEDS SCREENSHOT: images/notes_list.png -->
 :::{figure} images/notes_list.png
 :alt: The notes list view
-:width: 50%
+:width: 90%
 :align: center
 
 The notes list view.
@@ -65,47 +58,40 @@ The second icon from the left on the lower toolbar is for form based notes.
 
 Form based notes allow you to take complex, structured notes containing detailed information. Some example forms are included in the installation of SMASH; the **examples** entry in particular shows all the possible form widgets available.
 
+:::{figure} images/forms_examples.png
+:alt: The 'examples' form.
+:width: 90%
+:align: center
+
+The 'examples' form.
+:::
+
 The notes can be saved and modified at any time.
 
-To understand how to create forms, have a look at the [dedicated section in the geopaparazzi project](https://www.geopaparazzi.org/v600/index.html#_using_form_based_notes). The two projects share the exact same project and form format.
+The forms definition files are stored within the project and can be edited either manually (not recommended) or using the FormBuilder. On your device, they are typically located in the `forms` folder within the project directory.
 
-There is only one thing in which SMASH and geopaparazzi forms differ, and that is icons. SMASH supports icons in the single note definition but also in the definition of each widget.
+### Building forms visually with the FormBuilder
 
-To add an icon to the form definition, a **sectionicon** tag needs to be added to the section. This can be seen in the example forms, for example:
+Rather than hand-editing form definition files, SMASH includes a built-in **FormBuilder** to design forms directly on the device. It is disabled by default; enable it from Settings, under Screen Settings, and it then appears as an entry in the tools drawer's Extras section (see [Settings](settings.md#screen-settings) and [Extras](tools_drawer.md#extras)).
 
-```json
-{
-  "sectionname": "text note",
-  "sectiondescription": "a simple text note",
-  "sectionicon": "fileAlt",
-  "forms": [
-    {
-      "formname": "text note",
-      "formitems": [
-        {
-          "key": "title",
-          "value": "",
-          "icon": "font",
-          "islabel": "true",
-          "type": "string",
-          "mandatory": "no"
-        },
-        {
-          "key": "description",
-          "value": "",
-          "icon": "infoCircle",
-          "type": "string",
-          "mandatory": "no"
-        }
-      ]
-    }
-  ]
-}
-```
+:::{figure} images/formbuilder.png
+:alt: The FormBuilder
+:width: 90%
+:align: center
 
-The same goes for **formitems**, which can also feature an **icon** tag.
+Designing a form with the built-in FormBuilder.
+:::
 
-The icon name itself can be looked up in the [Available icons](tools_drawer.md#available-icons) section of SMASH.
+The video below walks through building a form with it end to end:
+
+<a href="https://www.youtube.com/watch?v=lRXou2QnE3s" style="display: block; max-width: 560px; margin: 0 auto; position: relative;">
+<img src="https://img.youtube.com/vi/lRXou2QnE3s/maxresdefault.jpg" alt="SMASH FormBuilder video thumbnail" style="width: 100%; display: block; border-radius: 10px;">
+<span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 68px; height: 48px; background: rgba(0,0,0,0.75); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+<span style="width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 20px solid white; margin-left: 4px;"></span>
+</span>
+</a>
+
+<p style="text-align: center;"><a href="https://www.youtube.com/watch?v=lRXou2QnE3s">Watch "SMASH FormBuilder" on YouTube</a></p>
 
 ### Form Based Notes List
 

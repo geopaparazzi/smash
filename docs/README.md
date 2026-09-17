@@ -5,11 +5,10 @@ This is the SMASH user manual, in MyST Markdown for Sphinx, kept alongside the a
 ## Building locally
 
 ```sh
-pip install -r requirements.txt
-sphinx-build -b html . _build/html
+./build_locally.sh
 ```
 
-Then open `_build/html/index.html`. Read the Docs builds the same way automatically on push, driven by `.readthedocs.yaml` at the repository root.
+This creates a local virtualenv (`.venv/`, git-ignored) on first run, installs `requirements.txt` into it, and builds into `_build/html/` (also git-ignored). No server needed - open `_build/html/index.html` directly in a browser (the script tries to do this for you automatically). Read the Docs builds the same way on push, driven by `.readthedocs.yaml` at the repository root.
 
 ## File structure
 
@@ -68,6 +67,7 @@ Full list of screenshots needed:
 - `images/simple_notes_dialog.png` - the "Simple Notes" type-selection dialog (`notes.md`)
 - `images/note_properties.png` - the note properties view (`notes.md`)
 - `images/notes_list.png` - the notes list view (`notes.md`)
+- `images/formbuilder.png` - the built-in FormBuilder in use (`notes.md`)
 - `images/log_info_panel.png` - the live GPS logging info panel (`gps_logging.md`)
 - `images/logs_list.png` - the GPS logs list view (`gps_logging.md`)
 - `images/logs_list_pieces_expanded.png` - a parent log expanded to show its pieces (`gps_logging.md`)

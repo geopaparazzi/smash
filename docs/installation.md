@@ -14,11 +14,7 @@ SMASH can be installed from [F-Droid](https://f-droid.org/packages/eu.hydrologis
 
 Search for **SMASH** in the F-Droid app, or open the package page directly at <https://f-droid.org/packages/eu.hydrologis.smash/>.
 
-<!--
-NEEDS SCREENSHOT: images/fdroid_page.png
-A current screenshot of the SMASH page on F-Droid (either the F-Droid app
-or https://f-droid.org/packages/eu.hydrologis.smash/).
--->
+
 :::{figure} images/fdroid_page.png
 :alt: The SMASH entry on F-Droid
 :width: 70%
@@ -33,12 +29,6 @@ Installing through F-Droid also gives you automatic update notifications wheneve
 
 For those who prefer not to use F-Droid, every release also ships a downloadable APK on the [SMASH releases page](https://github.com/geopaparazzi/smash/releases). Open the **Assets** section of the latest release and download the **apk** file; if the link is opened directly from an Android device, the system will offer to install it right away.
 
-<!--
-NEEDS SCREENSHOT: images/github_release.png
-A current screenshot of the Assets section of a release page at
-https://github.com/geopaparazzi/smash/releases (the project moved from
-github.com/moovida/smash to github.com/geopaparazzi/smash).
--->
 :::{figure} images/github_release.png
 :alt: The GitHub release page, with the apk to download under Assets
 :width: 70%

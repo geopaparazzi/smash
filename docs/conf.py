@@ -28,7 +28,23 @@ source_suffix = {
     ".md": "markdown",
 }
 
-exclude_patterns = ["README.md", "_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["README.md", "_build", ".venv", "Thumbs.db", ".DS_Store"]
 
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"
 html_title = "SMASH Reference Manual"
+html_static_path = ["_static"]
+html_css_files = ["custom.css"]
+
+# SMASH's own accent color (SmashColors.mainSelection, #bf360c) used as the
+# brand color, so the manual doesn't look like a generic ReadTheDocs site.
+html_theme_options = {
+    "light_css_variables": {
+        "color-brand-primary": "#bf360c",
+        "color-brand-content": "#bf360c",
+    },
+    "dark_css_variables": {
+        "color-brand-primary": "#ff8a65",
+        "color-brand-content": "#ff8a65",
+    },
+    "sidebar_hide_name": False,
+}
