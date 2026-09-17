@@ -7,15 +7,6 @@ To create or edit a style, open the layers list and swipe the layer to the right
 
 ## Style a Geopackage layer
 
-<!-- NEEDS SCREENSHOT: images/sld_layers_list.png -->
-:::{figure} images/sld_layers_list.png
-:alt: A layers list containing some Geopackage layers
-:width: 30%
-:align: center
-
-A layers list containing some Geopackage layers.
-:::
-
 For a polygon layer it is possible to edit the _fill_ and _stroke_ properties; for a line layer, only the _stroke_; for a point layer, the _shape_, the _fill_, and labeling of the features.
 
 :::{note}
@@ -27,3 +18,48 @@ SMASH also supports one type of theming: styling by **unique values**. In this c
 ## Style a GPX layer
 
 The style properties of a GPX layer are saved to an SLD sidecar file next to it, to ensure the style persists across sessions. Lines and points can both be styled; if waypoints carry a **name** tag, it can be used for labeling.
+
+## Different layer types
+
+Different layer types have different styling options. Here a few examples.
+
+
+### Shapefile
+
+:::{figure} images/style_shp.png
+:alt: Shapefile with theming and labeling options
+:width: 80%
+:align: center
+
+Shapefile with theming and labeling options.
+:::
+
+### GPX
+
+:::{figure} images/style_gpx.png
+:alt: GPX layer styling options
+:width: 80%
+:align: center
+
+GPX layer styling options.
+:::
+
+### Geopackage lines
+
+:::{figure} images/style_gpkg.png
+:alt: Geopackage line layer styling options
+:width: 80%
+:align: center
+
+Geopackage line layer styling options.
+:::
+
+### Geojson polygons
+
+:::{figure} images/style_geojson.png
+:alt: Geojson polygon layer styling options
+:width: 80%
+:align: center
+
+Geojson polygon layer styling options.
+:::

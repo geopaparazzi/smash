@@ -3,7 +3,7 @@
 project = "SMASH"
 copyright = "2019-2026, G-ANT - manual content licensed under CC BY 4.0"
 author = "G-ANT"
-release = "1.11.0"
+release = "1.12.0"
 
 extensions = [
     "myst_parser",

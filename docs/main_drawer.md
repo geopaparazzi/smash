@@ -2,10 +2,9 @@
 
 The left drawer contains the main operations a user typically performs outside of active surveying: managing projects, importing/exporting data, settings, help and about information.
 
-<!-- NEEDS SCREENSHOT: images/main_drawer.png -->
 :::{figure} images/main_drawer.png
 :alt: The main, or left, drawer
-:width: 30%
+:width: 70%
 :align: center
 
 The main, or left, drawer.
@@ -21,7 +20,7 @@ Opens the project view, where you can:
 
 New projects are created inside the [application's folder structure](folder_structure.md).
 
-SMASH projects use the exact same format as [Geopaparazzi](https://www.geopaparazzi.org/geopaparazzi/index.html) projects, hence the **gpap** file extension.
+SMASH projects inherit the format from its predecessor, Geopaparazzi, hence the **gpap** file extension.
 
 ## Import
 
@@ -42,3 +41,8 @@ Opens the online SMASH documentation in the browser (requires an internet connec
 ## About
 
 Shows information about the app, including version and license.
+
+## Exit
+
+Closes the application, disabling all background processes and saving the current state.
+This is an important action to remember, as it ensures that all data is properly saved and no background tasks are left running.

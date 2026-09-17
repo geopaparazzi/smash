@@ -1,6 +1,6 @@
 # SMASH Reference Manual
 
-[G-ANT](https://g-ant.eu) - SMASH version 1.11.0, 2026-09
+[G-ANT](https://g-ant.eu) - SMASH version 1.12.0, 2026-09
 
 ## SMASH, the free and open source digital field mapping app for Android
 
@@ -88,6 +88,7 @@ measurement_tool
 tools_drawer
 main_drawer
 import_export
+gss
 settings
 map_types
 layers_style

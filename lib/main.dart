@@ -69,6 +69,7 @@ MultiProvider getMainWidget() {
       ChangeNotifierProvider(create: (_) => FormHandlerState()),
       ChangeNotifierProvider(create: (_) => CameraState()),
       ChangeNotifierProvider(create: (_) => FormUrlItemsState()),
+      ChangeNotifierProvider(create: (_) => LoadingStatusState()),
     ],
     child: SmashApp(),
   );
@@ -697,26 +698,37 @@ class _ProgressTileState extends State<ProgressTile> {
       );
     }
     var color = isStarted ? SmashColors.mainSelection : null;
-    return ListTile(
-      leading: Icon(
-        widget.iconData,
-        color: color,
-      ),
-      title: error == null
-          ? Text(
-              isDone ? widget.doneMsg : widget.initMsg,
-              style: textStyle,
-            )
-          : TextButton(
-              child: Text(
-                SL.of(context).main_anErrorOccurredTapToView,
-                style:
-                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-              onPressed: () async {
-                await SmashDialogs.showErrorDialog(context, error!);
-              },
-            ),
+    return Consumer<LoadingStatusState>(
+      builder: (context, loadingStatus, child) {
+        var currentStatus = isStarted ? loadingStatus.status : null;
+        return ListTile(
+          leading: Icon(
+            widget.iconData,
+            color: color,
+          ),
+          title: error == null
+              ? Text(
+                  isDone ? widget.doneMsg : widget.initMsg,
+                  style: textStyle,
+                )
+              : TextButton(
+                  child: Text(
+                    SL.of(context).main_anErrorOccurredTapToView,
+                    style: TextStyle(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () async {
+                    await SmashDialogs.showErrorDialog(context, error!);
+                  },
+                ),
+          subtitle: currentStatus != null
+              ? Text(
+                  currentStatus,
+                  style: TextStyle(color: SmashColors.mainSelection),
+                )
+              : null,
+        );
+      },
     );
   }
 }

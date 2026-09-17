@@ -1,9 +1,8 @@
 # Settings
 
-<!-- NEEDS SCREENSHOT: images/settings_view.png -->
 :::{figure} images/settings_view.png
 :alt: The settings view
-:width: 40%
+:width: 90%
 :align: center
 
 The settings view.
@@ -31,31 +30,39 @@ A second, _Live Preview_ tab shows in detail the raw points as they come from th
 - style the map center cross (color, size, line width)
 - set the size of the main view's toolbar icons
 - customize which buttons appear in the bottom toolbar (add note, add form note, add log, GPS button, layers, zoom, edit toggle)
+- enable the Formbuilder entry in the tools drawer's Extras section.
 - toggle the GPS log info panel (see [GPS Logging](gps_logging.md))
-- enable the (experimental) Formbuilder entry in the tools drawer's Extras section.
 
 ## Camera Settings
 
 Choose the picture resolution used for photos: high, medium or low.
 
+It also allows to define a frame size for the camera preview. This can help in adjusting the preview to match the aspect ratio of the final captured image.
+
 ## Vector Layers
 
 - the amount of data loaded per layer, useful for large vector datasets that would otherwise make map navigation less smooth (_all_, or a fixed number of features between _50_ and _10000_)
 - whether to load data only for the currently visible map area
-- the tap radius used by the info/query and editing tools
+- the tap radius used by the info tool
 - the size of the editing drag handles and of the intermediate drag handles.
 
 ## CRS
 
 Lists the coordinate reference systems supported by the application, with the possibility to add new ones by EPSG code. These are used to reproject vector datasets (Geopackage layers and shapefiles) onto the map.
 
+## Forms configurations
+
+Lists every field from every form currently loaded in the project (section name and item key), each with a checkbox to mark it as "remembered". A checked field is pre-filled with its own last-entered value the next time a form note of that type is created, instead of starting empty; saving the note then updates that stored value for the following one.
+
+This is meant for fields that tend to stay the same across a session or survey day - surveyor name, project code, weather conditions - so they don't need to be retyped on every note. Leave fields that genuinely vary per observation unchecked.
+
 ## Device Settings
 
-Shows the device id, used for example to identify a surveyor when synchronizing with the [Geopaparazzi Survey Server](https://www.geopaparazzi.org/gss/index.html). It can be overridden where an organization needs a standardized id scheme.
+Shows the device id, used for example to identify a surveyor when synchronizing with the [Geopaparazzi Survey Server](gss.md). It can be overridden where an organization needs a standardized id scheme.
 
 ## GSS Settings
 
-Sets the server URL, password and (once available) selected project used to synchronize with an instance of the [Geopaparazzi Survey Server](https://www.geopaparazzi.org/gss/index.html). This is also reachable directly from the GSS import/export screens if no project is selected yet.
+Sets the server URL, password and (once available) selected project used to synchronize with an instance of the [Geopaparazzi Survey Server](gss.md). This is also reachable directly from the GSS import/export screens if no project is selected yet.
 
 ## Diagnostics Settings
 
