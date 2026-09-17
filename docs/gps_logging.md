@@ -2,14 +2,23 @@
 
 To start logging, tap the **GPS log** button (this requires an active GPS fix). You are prompted to enter a name (and optionally tags) for the log, or to accept the default name generated from the current date and time (**log_YYYYMMDD_HHMMSS**).
 
+It is also possible to add tags to the log at this stage, for better organization and later filtering.
+
+:::{figure} images/log_name_dialog.png
+:alt: The GPS log name and tags dialog
+:width: 70%
+:align: center
+
+The GPS log name and tags dialog.
+:::
+
 Once logging has started, the GPS log button turns into the app's accent color. To stop logging, tap the same button again; you will be asked to confirm before the log is closed.
 
 While logging, an optional live info panel can be shown on the map (large/medium/small, resizable), with the elevation/distance profile of the log in progress. It is off by default; it can be toggled from the right drawer (see [Tools drawer](tools_drawer.md)) or from Settings.
 
-<!-- NEEDS SCREENSHOT: images/log_info_panel.png -->
 :::{figure} images/log_info_panel.png
 :alt: The live GPS logging info panel
-:width: 50%
+:width: 70%
 :align: center
 
 The live GPS logging info panel.
@@ -21,14 +30,9 @@ On **Android**, the dynamic GPS notification also shows the logging operation, t
 
 Long-press the **GPS log** button to open the list of GPS logs.
 
-<!--
-NEEDS SCREENSHOT: images/logs_list.png
-The GPS logs list view (current UI, including logs with a merged
-"pieces" group, added after the multi-piece log merge feature).
--->
 :::{figure} images/logs_list.png
 :alt: The GPS logging list view
-:width: 50%
+:width: 90%
 :align: center
 
 The GPS logging list view.
@@ -50,10 +54,9 @@ When several separate recordings belong to the same physical survey (eg. a walk 
 Nesting logs as pieces of a parent log
 : From a log's swipe actions, **Add piece** lets you pick another, still ungrouped log to attach underneath it as a child. The parent log then shows a **Show details (N pieces)** toggle in the list: expanding it lists every piece with its own name, day, duration and length, each still individually reachable (properties, restyle, remove from parent) via a small unlink icon, but rolled up together for zoom-to, total length/duration, and elevation gain/loss. This is non-destructive: the underlying GPS points and each piece's own identity are untouched, only a parent/child relationship is recorded, and any piece can be detached again at any time.
 
-  <!-- NEEDS SCREENSHOT: images/logs_list_pieces_expanded.png -->
   :::{figure} images/logs_list_pieces_expanded.png
   :alt: A log expanded to show its pieces
-  :width: 50%
+  :width: 100%
   :align: center
 
   A log expanded to show its pieces.
