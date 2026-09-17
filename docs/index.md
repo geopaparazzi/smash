@@ -18,10 +18,9 @@ The main aim of SMASH is to have a tool that:
 - is able to easily exploit an Internet connection, if available
 - is extremely easy to use and intuitive, providing just few important functions
 
-<!-- NEEDS SCREENSHOT: images/smash_on_android.png -->
 :::{figure} images/smash_on_android.png
 :alt: SMASH on Android
-:width: 70%
+:width: 40%
 :align: center
 
 SMASH on Android.
@@ -48,20 +47,19 @@ SMASH is closely related to the older, more mature, Android-only app Geopaparazz
 
 Find out the [latest SMASH news](http://jgrasstechtips.blogspot.com/search/label/smash).
 
-Join the [Geopaparazzi user's discussion](https://groups.google.com/forum/#!forum/geopaparazzi-users)! Feel free to post also about SMASH.
 
-And there's a group for [Geopaparazzi/SMASH developers too](https://groups.google.com/forum/#!forum/geopaparazzi-devel).
+The main communication channels in the past for SMASH users and developers have been mailing lists.
+We now decided to move the main communication to the [discussions page](https://github.com/geopaparazzi/smash/discussions).
 
-You can even contribute to this [Geopaparazzi or SMASH manual](https://github.com/geopaparazzi/usermanual)! This particular copy of the manual lives alongside the SMASH source code, under `docs/`, so that documentation changes can travel together with the feature changes that motivate them.
+
+You can even contribute to this manual. This particular copy of the manual lives alongside the SMASH source code, under `docs/`, so that documentation changes can travel together with the feature changes that motivate them.
 
 Help [translate SMASH on Hosted Weblate](https://hosted.weblate.org/engage/smash/).
 
 (need-help)=
 ### Need help?
 
-Subscribe to the [mailinglist](http://groups.google.com/group/geopaparazzi-users), we are here to help you!
-
-We also have a [mailinglist for developers](http://groups.google.com/group/geopaparazzi-devel).
+Drop a note on the [discussions page](https://github.com/geopaparazzi/smash/discussions).
 
 ### Found bugs?
 
@@ -72,16 +70,8 @@ If you found a bug, please report it in our [issue tracker](https://github.com/g
 If you would like to see new features in SMASH, you have a few ways to get there:
 
 - develop them yourself and [contribute them to the project via pull requests](https://help.github.com/articles/using-pull-requests)
-- hire someone to do that for you - get in touch with us
+- hire someone to do that for you - get in touch with us, custom development services is what makes it possible to keep SMASH evolving and free.
 - create a new feature request in our issue tracker and wait for someone interested to pick it up.
-
-### Donations
-
-If you find this application useful for your job, please consider donating to support the development. Donations to this project support the development of the [Hortonmachine](http://www.hortonmachine.org/), [Geopaparazzi](http://www.geopaparazzi.eu/) and SMASH projects.
-
-Thanks for helping to keep this development free and open source.
-
-[TO DONATE CLICK HERE](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=84U4N2DVQ74S6&lc=IT&item_name=JGrass%20BeeGIS%20Geopaparazzi%20Donations&item_number=jgrassdonations&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted).
 
 ```{toctree}
 :maxdepth: 3
