@@ -194,7 +194,7 @@ class DashboardUtils {
           if (!await HU.NetworkUtilities.isConnected()) {
             SmashDialogs.showOperationNeedsNetwork(context);
           } else {
-            var urlString = "https://www.geopaparazzi.org/smash/index.html";
+            var urlString = "https://www.geopaparazzi.org";
             if (await canLaunch(urlString)) {
               await launch(urlString);
             }

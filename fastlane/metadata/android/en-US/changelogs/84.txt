@@ -1,0 +1,13 @@
+Features:
+
+- first and foremost: finally the new and updated manual at https://www.geopaparazzi.org
+- multiple selection for maps loading
+- notes text enhancements for faster surveying
+- initial monitoring of layer loading for better user interaction
+- measurement tool always available + now has area measures
+
+Bugfixes:
+
+- fix for navigation bar covering the toolbar buttons
+- fix for logs considering unfiltered distances (blown up log lengths)
+- various bugfixes
