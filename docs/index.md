@@ -1,6 +1,6 @@
 # SMASH Reference Manual
 
-HydroloGIS S.r.l. <feedback@geopaparazzi.eu> - SMASH version 1.11.0, 2026-09
+[G-ANT](https://g-ant.eu) - SMASH version 1.11.0, 2026-09
 
 ## SMASH, the free and open source digital field mapping app for Android
 

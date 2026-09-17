@@ -1,8 +1,8 @@
 """Sphinx configuration for the SMASH user manual (hosted on Read the Docs)."""
 
 project = "SMASH"
-copyright = "2019-2026, HydroloGIS S.r.l."
-author = "HydroloGIS S.r.l."
+copyright = "2019-2026, G-ANT - manual content licensed under CC BY 4.0"
+author = "G-ANT"
 release = "1.11.0"
 
 extensions = [
