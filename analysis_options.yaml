@@ -10,5 +10,12 @@ linter:
 analyzer:
   errors:
     prefer_single_quotes: ignore
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - windows/**
+    - macos/**
+    - linux/**
 #   exclude:
 #     - path/to/excluded/files/**
